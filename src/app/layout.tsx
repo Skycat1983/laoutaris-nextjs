@@ -2,7 +2,39 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+import React from "react";
+import Navbar from "@/components/Navbar";
+import {
+  Archivo_Black,
+  Cinzel_Decorative,
+  Archivo,
+  Roboto_Serif,
+  Playfair_Display,
+  Cormorant,
+} from "next/font/google";
+
+const archivoBlack = Archivo_Black({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-archivo-black",
+});
+
+const archivo = Archivo({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  // display: "swap",
+
+  variable: "--font-archivo",
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+
+  variable: "--font-cinzel-decorative",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +47,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html
+      lang="en"
+      className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable}`}
+    >
+      <body>
+        <Navbar />
+        {children}
+        {/* </Navbar> */}
+      </body>
     </html>
   );
 }
