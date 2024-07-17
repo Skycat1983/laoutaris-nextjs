@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import React from "react";
-import Navbar from "@/components/Navbar";
 import {
   Archivo_Black,
   Cinzel_Decorative,
@@ -12,6 +11,8 @@ import {
   Playfair_Display,
   Cormorant,
 } from "next/font/google";
+import Footer from "@/components/Footer";
+import Header from "@/components/ui/header/header";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -52,8 +53,9 @@ export default function RootLayout({
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable}`}
     >
       <body>
-        <Navbar />
+        <Header />
         {children}
+        <Footer />
         {/* </Navbar> */}
       </body>
     </html>

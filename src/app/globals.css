@@ -72,6 +72,9 @@
   .subheading {
     @apply font-[600];
   }
+  .subheading-button {
+    @apply font-[600] text-primary border border-black border-[1px] px-6 py-3;
+  }
 }
 
 @tailwind utilities;

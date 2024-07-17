@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Footer from "./Footer";
 import Link from "next/link";
-import MyBreadcrumbs from "./ui/breadcrumbs/myBreadcrumbs";
-import Searchbar from "./ui/inputs/Searchbar";
+import MyBreadcrumbs from "../breadcrumbs/myBreadcrumbs";
+import Searchbar from "../inputs/searchbar";
+import { CircleUser, Heart, ShoppingCart, Menu } from "lucide-react";
 
 interface NavBarProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ interface NavBarProps {
 
 interface NavOption {
   to: string;
-  label: string;
+  label: string | React.ReactNode;
 }
 
 const centralNavigation: NavOption[] = [
@@ -22,7 +22,13 @@ const centralNavigation: NavOption[] = [
   { to: "/blog", label: "Blog" },
 ];
 
-const Navbar = () => {
+const accountNavigation: NavOption[] = [
+  { to: "/account", label: <CircleUser /> },
+  { to: "/wishlist", label: <Heart /> },
+  { to: "/cart", label: <ShoppingCart /> },
+];
+
+const Header = () => {
   return (
     <div className="max-w-screen mx-auto flex flex-col min-h-screen">
       <header className="fixed top-0 z-10 w-screen bg-whitish">
@@ -47,42 +53,48 @@ const Navbar = () => {
                 <React.Fragment key={index}>
                   <Link href={link.to} key={index}>
                     <div className="hidden md:flex flex-row items-center">
-                      <h2 className="font-face-default subheading">
+                      <h2 className="font-face-default subheading-button">
                         {link.label}
                       </h2>
                     </div>
                   </Link>
-                  {index < centralNavigation.length - 1 && ( // Only add separators between items
+                  {index < centralNavigation.length && ( // Only add separators between items
                     <div className="hidden md:flex items-center">
                       <h2 className="px-2 text-xl font-thin">|</h2>
                     </div>
                   )}
                 </React.Fragment>
               ))}
+              {accountNavigation.map((link, index) => (
+                <React.Fragment key={index}>
+                  <Link href={link.to}>
+                    <div className="flex flex-row items-center">
+                      {link.label}
+                    </div>
+                  </Link>
+                </React.Fragment>
+              ))}
             </nav>
 
-            {/* account routes/hamburger */}
-            <nav className="hidden sm:block md:hidden lg:block lg:space-x-6">
-              {/* <AccountNav user={false} /> */}
-            </nav>
-            <div className="block flex my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
-              {/* <HamburgerIcon /> */}
-            </div>
+            {/* <div className="block flex my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
+              <Menu />
+            </div> */}
           </div>
         </div>
+
         {/* primary routes re-rendered below app logo at breakpoint */}
         <div className="bg-whitish block flex flex-row space-x-4 px-4 pb-4 md:hidden">
-          <nav className="flex items-center justify-center flex-row space-x-4 custom:space-x-6">
+          <nav className="flex flex-row justify-start items-center  space-x-0 w-full">
             {centralNavigation.map((link, index) => (
-              <React.Fragment key={index}>
-                <Link key={index} href={link.to}>
-                  <div className=" flex flex-row justify-center items-center outline-thin py-1 px-8 ">
-                    <h2 className="font-face-default bg-red-100">
-                      {link.label}
-                    </h2>
-                  </div>
-                </Link>
-              </React.Fragment>
+              // <React.Fragment key={index}>
+              <Link key={index} href={link.to}>
+                <div className="flex flex-row justify-start items-center outline-thin py-1 px-2 text-center">
+                  <h2 className="font-face-default subheading-button w-[120px]">
+                    {link.label}
+                  </h2>
+                </div>
+              </Link>
+              // </React.Fragment>
             ))}
           </nav>
         </div>
@@ -96,18 +108,8 @@ const Navbar = () => {
           <hr className="flex flex-row flex-grow" />
         </div>
       </header>
-      <div></div>
-      {/* {descendantRoutes.length > 0 && <Subnav items={descendantRoutes} />} */}
-
-      {/* content */}
-      <main className="flex flex-col flex-grow">
-        {/* <Outlet /> */}
-        {/* {children} */}
-      </main>
-
-      <Footer />
     </div>
   );
 };
 
-export default Navbar;
+export default Header;
