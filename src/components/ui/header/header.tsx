@@ -5,6 +5,7 @@ import Link from "next/link";
 import MyBreadcrumbs from "../breadcrumbs/myBreadcrumbs";
 import Searchbar from "../inputs/searchbar";
 import { CircleUser, Heart, ShoppingCart, Menu } from "lucide-react";
+import Logo from "./logo";
 
 interface NavBarProps {
   children: React.ReactNode;
@@ -37,13 +38,14 @@ const Header = () => {
           {/* app logo */}
           <nav className="flex flex-row items-center my-auto">
             <Link href="/">
-              <div className="flex items-center space-x-2">
+              <Logo />
+              {/* <div className="flex items-center space-x-2">
                 <div>
                   <h1 className="fontface-bold font-heading truncate my-auto text-3xl">
                     Joseph Laoutaris
                   </h1>
                 </div>
-              </div>
+              </div> */}
             </Link>
           </nav>
           {/* main nav options */}
