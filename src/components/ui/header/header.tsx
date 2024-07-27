@@ -53,7 +53,7 @@ const Header = () => {
                 <React.Fragment key={index}>
                   <Link href={link.to} key={index}>
                     <div className="hidden md:flex flex-row items-center">
-                      <h2 className="font-face-default subheading-button">
+                      <h2 className="font-face-default subheading">
                         {link.label}
                       </h2>
                     </div>
