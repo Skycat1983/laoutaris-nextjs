@@ -39,7 +39,7 @@ const Header = () => {
           </nav>
           {/* main nav options */}
           <div className="flex flex-row space-x-4">
-            {/* <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6">
+            <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6">
               {centralNavigation.map((link, index) => (
                 <React.Fragment key={index}>
                   <Link href={link.to} key={index}>
@@ -65,7 +65,7 @@ const Header = () => {
                   </Link>
                 </React.Fragment>
               ))}
-            </nav> */}
+            </nav>
 
             {/* <div className="block flex my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
               <Menu />
@@ -75,8 +75,9 @@ const Header = () => {
 
         {/* primary routes re-rendered below app logo at breakpoint */}
         <div className="bg-whitish block flex flex-row space-x-4 px-4 pb-4 md:hidden">
-          {/* <nav className="flex flex-row justify-start items-center  space-x-0 w-full">
+          <nav className="flex flex-row justify-start items-center  space-x-0 w-full">
             {centralNavigation.map((link, index) => (
+              // <React.Fragment key={index}>
               <Link key={index} href={link.to}>
                 <div className="flex flex-row justify-start items-center outline-thin py-1 px-2 text-center">
                   <h2 className="font-face-default subheading-button w-[120px]">
@@ -84,8 +85,9 @@ const Header = () => {
                   </h2>
                 </div>
               </Link>
+              // </React.Fragment>
             ))}
-          </nav> */}
+          </nav>
         </div>
         {/* Secondary Nav (breadcrumbs, search bar)*/}
         <div className="flex flex-col w-full bg-whitish px-4">
