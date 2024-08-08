@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 export interface IHeroSlide {
   image: HeroContent;
@@ -34,7 +35,7 @@ interface HeroBackground {
 interface HeroSlideProps {
   slide: IHeroSlide;
 }
-const Slide = ({ slide }: HeroSlideProps) => {
+const HeroSlide = ({ slide }: HeroSlideProps) => {
   const { image, backgroundAdjustments, overlay } = slide;
   const backgroundStyle = {
     // backgroundImage: `url(${image.url})`,
@@ -43,29 +44,26 @@ const Slide = ({ slide }: HeroSlideProps) => {
   };
 
   return (
-    <div className="relative h-auto max-h-[700px]  w-full overflow-hidden">
-      <Image
-        src={image.url}
-        height={slide.height}
-        width={slide.width}
-        className="relative lg:bottom-[50px] cover"
-        // objectFit="contain"
-        alt="bla"
-      />
-    </div>
-  );
-};
-
-export default Slide;
-
-{
-  /* <div
+    <div className="relative flex flex-col h-[700px] w-full overflow-hidden">
+      <div
         className="bg-no-repeat bg-cover bg-center h-[500px] md:h-[800px] w-full"
         style={backgroundStyle}
-      > */
-}
-{
-  /* <div
+      >
+        <Image
+          src={image.url}
+          height={slide.height}
+          width={slide.width}
+          objectFit="cover"
+          alt="bla"
+          // className="w-8 h-8"
+        />
+      </div>
+
+      <div
+        className="bg-no-repeat bg-cover bg-center h-[500px] md:h-[800px] w-full"
+        style={backgroundStyle}
+      >
+        <div
           className="absolute top-0 left-0 w-full h-full grid grid-cols-12 z-0"
           style={{ gridTemplateRows: "repeat(12, minmax(0, auto))" }}
         >
@@ -98,8 +96,10 @@ export default Slide;
           >
             {image.link.text}
           </Link>
-        </div> */
-}
-{
-  /* </div> */
-}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HeroSlide;

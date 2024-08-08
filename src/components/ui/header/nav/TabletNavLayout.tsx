@@ -28,19 +28,19 @@ const TabletNavLayout = () => {
         {/* bottom row */}
         <div className="flex flex-row space-x-4 px-4">
           <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
-            <div className="hidden md:flex flex-row items-center">
+            <div className="flex flex-row items-center">
               <h2 className="font-face-default subheading-button">Artwork</h2>
             </div>
-            <div className="hidden md:flex flex-row items-center">
+            <div className="flex flex-row items-center">
               <h2 className="font-face-default subheading-button">Artist</h2>
             </div>
-            <div className="hidden md:flex flex-row items-center">
+            <div className="flex flex-row items-center">
               <h2 className="font-face-default subheading-button">Project</h2>
             </div>
-            <div className="hidden md:flex flex-row items-center">
+            <div className="flex flex-row items-center">
               <h2 className="font-face-default subheading-button">Blog</h2>
             </div>
-            <div className="hidden md:flex flex-row items-center">
+            <div className="flex flex-row items-center">
               <h2 className="font-face-default subheading-button">Shop</h2>
             </div>
           </nav>
