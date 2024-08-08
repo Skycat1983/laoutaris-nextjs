@@ -2,39 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { DimmedOverlay, RadialGradientOverlay } from "./Overlays";
 
-export interface IHeroSlide {
-  image: HeroContent;
-  backgroundAdjustments: HeroBackground;
-  overlay: React.ReactElement | null;
-  height: number;
-  width: number;
-}
-
-interface HeroContent {
-  url: string;
-  heading: HeroTextItem | null;
-  subheading: HeroTextItem | null;
-  summary: HeroTextItem | null;
-  link: HeroLink;
-}
-
-interface HeroTextItem {
-  text: string;
-  className: string;
-}
-
-interface HeroLink extends HeroTextItem {
-  path: string;
-}
-
-interface HeroBackground {
-  position: string;
-  size: string;
-}
-
-interface HeroSlideProps {
-  slide: IHeroSlide;
-}
 const FamilyFavourites = () => {
   const slide = {
     height: 3504,
