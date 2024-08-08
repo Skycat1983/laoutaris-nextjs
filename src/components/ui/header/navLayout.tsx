@@ -1,6 +1,4 @@
-import Link from "next/link";
 import React from "react";
-import Logo from "./logo";
 import { NavOption } from "./headerTypes";
 
 const NavLayout = () => {

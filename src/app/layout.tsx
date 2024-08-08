@@ -12,7 +12,8 @@ import {
   Cormorant,
 } from "next/font/google";
 import Footer from "@/components/Footer";
-import Header from "@/components/ui/header/header";
+import MobileNavLayout from "@/components/ui/header/MobileNavLayout";
+import TabletNavLayout from "@/components/ui/header/TabletNavLayout";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -53,7 +54,13 @@ export default function RootLayout({
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable}`}
     >
       <body>
-        <Header />
+        {/* <div className="block sm:hidden">
+          <MobileNavLayout />
+        </div> */}
+        <div className="hidden sm:block">
+          <TabletNavLayout />
+        </div>
+        {/* <Header /> */}
         {children}
         <Footer />
         {/* </Navbar> */}
