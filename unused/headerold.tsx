@@ -2,10 +2,10 @@
 
 import React from "react";
 import Link from "next/link";
-import MyBreadcrumbs from "../src/components/ui/breadcrumbs/myBreadcrumbs";
-import Searchbar from "../src/components/ui/inputs/searchbar";
+import MyBreadcrumbs from "../src/components/ui/header/breadcrumbs/Breadcrumbs";
+import Searchbar from "../src/components/atoms/inputs/Searchbar";
 import { CircleUser, Heart, ShoppingCart, Menu } from "lucide-react";
-import Logo from "../src/components/ui/header/Logo";
+import Logo from "../src/components/atoms/Logo";
 
 interface NavOption {
   to: string;

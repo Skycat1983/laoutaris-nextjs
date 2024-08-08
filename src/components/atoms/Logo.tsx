@@ -26,17 +26,3 @@ const Logo = () => {
 };
 
 export default Logo;
-
-{
-  /* <div className="flex flex-row">
-  <div className="h-[100px] w-[100px] bg-gradient-to-bl from-gray-400/10 to-gray-900/20 m-4 flex justify-center items-center">
-    <div className="h-[35px] w-full m-auto flex justify-center items-center border-r-[6px] border-black pl-2">
-      <h1 className="font-archivo text-5xl">JL</h1>
-    </div>
-  </div>
-  <div className="text-left justify-start items-center my-auto">
-    <h1 className="font-archivoBlack text-xl">Joseph </h1>
-    <h1 className="font-archivoBlack text-xl">Laoutaris </h1>
-  </div>
-</div>; */
-}

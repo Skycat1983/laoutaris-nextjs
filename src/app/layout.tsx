@@ -11,10 +11,8 @@ import {
   Playfair_Display,
   Cormorant,
 } from "next/font/google";
-import Footer from "@/components/Footer";
-import MobileNavLayout from "@/components/ui/header/MobileNavLayout";
-import TabletNavLayout from "@/components/ui/header/TabletNavLayout";
-import DesktopNavLayout from "@/components/ui/header/DesktopNavLayout";
+import Footer from "@/components/ui/footer/Footer";
+
 import Header from "@/components/ui/header/Header";
 
 const archivoBlack = Archivo_Black({
@@ -57,19 +55,8 @@ export default function RootLayout({
     >
       <body>
         <Header />
-        {/* <div className="block sm:hidden">
-          <MobileNavLayout />
-        </div>
-        <div className="hidden sm:block lg:hidden">
-          <TabletNavLayout />
-        </div>
-        <div className="hidden lg:block">
-          <DesktopNavLayout />
-        </div> */}
-        {/* <Header /> */}
         {children}
         <Footer />
-        {/* </Navbar> */}
       </body>
     </html>
   );

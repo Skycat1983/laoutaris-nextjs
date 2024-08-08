@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { Menu, Search, ShoppingBasket, User } from "lucide-react";
-import Logo from "./Logo";
+import Logo from "../../../atoms/Logo";
 
 const MobileNavLayout = () => {
   return (

@@ -6,13 +6,13 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumbs/shadBreadcrumb";
+} from "@/components/ui/header/breadcrumbs/breadcrumb";
 import { usePathname } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 
 import React from "react";
 
-const MyBreadcrumbs = () => {
+const Breadcrumbs = () => {
   const pathname = usePathname();
   const segments = pathname.split("/").filter((item) => item !== "");
   console.log("pathname :>> ", pathname);
@@ -24,7 +24,7 @@ const MyBreadcrumbs = () => {
           <div className="flex flex-row justify-center items-center gap-10">
             <BreadcrumbItem>
               <BreadcrumbLink href="/">
-                <HouseIcon className="" />
+                <HouseIcon className="bg-whitish" />
               </BreadcrumbLink>
             </BreadcrumbItem>
             {segments.map((segment, index) => (
@@ -47,4 +47,4 @@ const MyBreadcrumbs = () => {
   );
 };
 
-export default MyBreadcrumbs;
+export default Breadcrumbs;
