@@ -14,6 +14,8 @@ import {
 import Footer from "@/components/Footer";
 import MobileNavLayout from "@/components/ui/header/MobileNavLayout";
 import TabletNavLayout from "@/components/ui/header/TabletNavLayout";
+import DesktopNavLayout from "@/components/ui/header/DesktopNavLayout";
+import Header from "@/components/ui/header/Header";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -54,12 +56,16 @@ export default function RootLayout({
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable}`}
     >
       <body>
+        <Header />
         {/* <div className="block sm:hidden">
           <MobileNavLayout />
-        </div> */}
-        <div className="hidden sm:block">
+        </div>
+        <div className="hidden sm:block lg:hidden">
           <TabletNavLayout />
         </div>
+        <div className="hidden lg:block">
+          <DesktopNavLayout />
+        </div> */}
         {/* <Header /> */}
         {children}
         <Footer />

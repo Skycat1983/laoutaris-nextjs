@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import Logo from "./logo";
 import { Menu, Search, ShoppingBasket, User } from "lucide-react";
+import Logo from "./Logo";
 
 const MobileNavLayout = () => {
   return (
@@ -12,7 +12,7 @@ const MobileNavLayout = () => {
         </div>
         <div className="block flex gap-4 my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
           <Search />
-          {/* <ShoppingBasket /> */}
+          <ShoppingBasket />
           <User />
           <Menu />
         </div>

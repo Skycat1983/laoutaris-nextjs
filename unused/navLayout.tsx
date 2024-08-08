@@ -1,5 +1,5 @@
 import React from "react";
-import { NavOption } from "./headerTypes";
+import { NavOption } from "../src/components/ui/header/headerTypes";
 
 const NavLayout = () => {
   const centralNavigation: NavOption[] = [
