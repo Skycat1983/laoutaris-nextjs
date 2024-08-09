@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BaseModel } from "./base.js";
+import { ContentModel } from "./content.js";
 
 const collectionSchema = new mongoose.Schema({
   criteriaKey: { type: String },
@@ -8,7 +8,7 @@ const collectionSchema = new mongoose.Schema({
 });
 
 const CollectionModel =
-  BaseModel.discriminators?.["Collection"] ||
-  BaseModel.discriminator("Collection", collectionSchema);
+  ContentModel.discriminators?.["Collection"] ||
+  ContentModel.discriminator("Collection", collectionSchema);
 
 export { CollectionModel };

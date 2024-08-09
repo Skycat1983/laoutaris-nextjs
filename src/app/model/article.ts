@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BaseModel } from "./base";
+import { ContentModel } from "./content";
 
 const articleSchema = new mongoose.Schema({
   overlayColour: {
@@ -10,7 +10,7 @@ const articleSchema = new mongoose.Schema({
 });
 
 const ArticleModel =
-  BaseModel.discriminators?.["Article"] ||
-  BaseModel.discriminator("Article", articleSchema);
+  ContentModel.discriminators?.["Article"] ||
+  ContentModel.discriminator("Article", articleSchema);
 
 export { ArticleModel };

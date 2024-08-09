@@ -1,9 +1,10 @@
 import dbConnect from "@/utils/mongodb";
 import { ArticleModel } from "../model/article";
 import { NextApiRequest, NextApiResponse } from "next";
-import { BaseModel } from "../model/base";
 import Subnav from "@/components/ui/subnav/Subnav";
 import { getSectionContent } from "@/utils/server/getSectionContent";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default async function Biography() {
   // ! not needed as fetching from layout?

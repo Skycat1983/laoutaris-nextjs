@@ -22,7 +22,7 @@ export default async function BiographyLayout({
   // if (subNavLinks.length) {
   //   redirect(subNavLinks[0].slug);
   // }
-  console.log("articles :>> ", sectionContent);
+  // console.log("articles :>> ", sectionContent);
   return (
     <section>
       <Subnav items={subNavLinks} stem={stem} />

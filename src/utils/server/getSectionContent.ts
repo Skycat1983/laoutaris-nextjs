@@ -1,10 +1,10 @@
-import { BaseModel } from "@/app/model/base";
+import { ContentModel } from "@/app/model/content";
 
 export const getSectionContent = async (section: string) => {
   console.log("getting section content for", section);
   try {
-    const content = await BaseModel.find({ section: section });
-    console.log("content in getSectionContent :>> ", content);
+    const content = await ContentModel.find({ section: section });
+    // console.log("content in getSectionContent :>> ", content);
     return content;
   } catch (error) {
     console.log("error :>> ", error);

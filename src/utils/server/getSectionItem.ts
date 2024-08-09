@@ -1,10 +1,10 @@
-import { BaseModel } from "@/app/model/base";
+import { ContentModel } from "@/app/model/content";
 
 export const getSectionItem = async (slug: string) => {
   // const { slug } = req.params;
 
   try {
-    const content = await BaseModel.findOne({ slug: slug }).lean(); // `.lean()` for faster execution since we might re-query
+    const content = await ContentModel.findOne({ slug: slug }).lean(); // `.lean()` for faster execution since we might re-query
 
     if (!content) {
       return null;
@@ -13,13 +13,13 @@ export const getSectionItem = async (slug: string) => {
 
     switch (content.contentType) {
       case "Collection":
-        const populatedContent = await BaseModel.findOne({
+        const populatedContent = await ContentModel.findOne({
           slug: slug,
         }).populate("artworks");
         return populatedContent;
       //   return res.status(200).json(populatedContent);
       case "Article":
-        const populatedArticle = await BaseModel.findOne({
+        const populatedArticle = await ContentModel.findOne({
           slug: slug,
         });
         //! .populate("author");
