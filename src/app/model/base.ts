@@ -26,4 +26,7 @@ const baseSchema = new mongoose.Schema(
   baseOptions
 );
 
-export const BaseContentModel = mongoose.model("Content", baseSchema);
+const BaseModel =
+  mongoose.models.Content || mongoose.model("Content", baseSchema);
+
+export { BaseModel };

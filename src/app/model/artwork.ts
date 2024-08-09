@@ -61,3 +61,9 @@ const artworkSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+export const ArtworkModel =
+  mongoose.models.Artwork || mongoose.model("Artwork", artworkSchema);
+
+// const BaseModel =
+// mongoose.models.Content || mongoose.model("Content", baseSchema);

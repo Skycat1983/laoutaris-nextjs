@@ -15,7 +15,12 @@ const baseUserSchema = new mongoose.Schema(
   baseOptions
 );
 
-export const BaseUserModel = mongoose.model("BaseUser", baseUserSchema);
+// export const BaseUserModel = mongoose.model("BaseUser", baseUserSchema);
+
+const BaseUserModel =
+  mongoose.models.BaseUser || mongoose.model("BaseUser", baseUserSchema);
+
+export { BaseUserModel };
 
 const adminSchema = new mongoose.Schema({
   biography: { type: String, required: true },
@@ -75,4 +80,8 @@ userSchema.pre("save", async function (next) {
 
 //? Lean Queries: Use .lean() with populate to retrieve plain JavaScript objects instead of Mongoose documents. This reduces processing time because Mongoose skips instantiating full model instances.
 // Projection: Use projection to limit the fields returned by the query. This can significantly reduce the workload on MongoDB and the amount of data transferred.
-export const UserModel = mongoose.model("user", userSchema);
+// export const UserModel = mongoose.model("user", userSchema);
+
+const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
+
+export { UserModel };

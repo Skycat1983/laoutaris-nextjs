@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { BaseContentModel } from "./base";
+import { BaseModel } from "./base";
 
 const articleSchema = new mongoose.Schema({
   overlayColour: {
@@ -8,7 +8,9 @@ const articleSchema = new mongoose.Schema({
     enum: ["white", "black"],
   },
 });
-export const ArticleModel = BaseContentModel.discriminator(
-  "Article",
-  articleSchema
-);
+
+const ArticleModel =
+  BaseModel.discriminators?.["Article"] ||
+  BaseModel.discriminator("Article", articleSchema);
+
+export { ArticleModel };
