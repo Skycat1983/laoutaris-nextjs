@@ -3,6 +3,10 @@ import dbConnect from "@/utils/mongodb";
 import { getSectionContent } from "@/utils/server/getSectionContent";
 import { redirect } from "next/navigation";
 
+const navigate = async (stem: string, slug: string) => {
+  redirect(`/${stem}/${slug}`);
+};
+
 export default async function BiographyLayout({
   children,
 }: {
@@ -19,10 +23,7 @@ export default async function BiographyLayout({
     ? sectionContent
     : [];
 
-  // if (subNavLinks.length) {
-  //   redirect(subNavLinks[0].slug);
-  // }
-  // console.log("articles :>> ", sectionContent);
+  console.log("articles :>> ", sectionContent);
   return (
     <section>
       <Subnav items={subNavLinks} stem={stem} />

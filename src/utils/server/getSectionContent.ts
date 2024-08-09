@@ -4,11 +4,9 @@ export const getSectionContent = async (section: string) => {
   console.log("getting section content for", section);
   try {
     const content = await ContentModel.find({ section: section });
-    // console.log("content in getSectionContent :>> ", content);
     return content;
   } catch (error) {
     console.log("error :>> ", error);
-    // res.status(404).json({ message: error.message });
   }
 };
 
