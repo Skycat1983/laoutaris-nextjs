@@ -64,7 +64,7 @@ export default function RootLayout({
     >
       <body>
         <Header />
-        <div className="mt-[100px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full bg-blue-100 container"></div>
+        <div className="mt-[100px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
 
         {children}
         <Footer />

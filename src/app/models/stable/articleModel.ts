@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 
-// this model is the base model for all content types
-export interface IContent extends Document {
+// Define the interface that includes both content and article-specific fields
+export interface IArticleContent extends Document {
   title: string;
   subtitle: string;
   summary: string;
@@ -10,16 +10,11 @@ export interface IContent extends Document {
   imageUrl: string;
   slug: string;
   section: "artwork" | "biography" | "project";
+  overlayColour: "white" | "black";
 }
 
-// this is the base schema for all article/collection types
-const baseOptions = {
-  discriminatorKey: "contentType", // our discriminator key
-  collection: "content", // name of the collection in MongoDB
-  timestamps: true, // automatically include createdAt and updatedAt
-};
-
-const baseSchema = new mongoose.Schema<IContent>(
+// Combine the schemas into one
+const articleContentSchema = new mongoose.Schema<IArticleContent>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -33,11 +28,20 @@ const baseSchema = new mongoose.Schema<IContent>(
       required: true,
       enum: ["artwork", "biography", "project"],
     },
+    overlayColour: {
+      type: String,
+      required: true,
+      enum: ["white", "black"],
+    },
   },
-  baseOptions
+  {
+    collection: "articles", // Name of the collection in MongoDB
+    timestamps: true, // Automatically include createdAt and updatedAt
+  }
 );
 
-const ContentModel =
-  mongoose.models?.Content || mongoose.model<IContent>("Content", baseSchema);
+const ArticleContentModel =
+  mongoose.models?.ArticleContent ||
+  mongoose.model<IArticleContent>("ArticleContent", articleContentSchema);
 
-export { ContentModel };
+export { ArticleContentModel };

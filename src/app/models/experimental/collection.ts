@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-import { ContentModel, IContent } from "./baseContent.js";
+import { ContentModel, IContent } from "./baseContent";
 
 // a collection is a group of artworks that share a common criteria
 export interface ICollection extends IContent {
   criteriaKey?: string;
   criteriaValue?: string;
-  artworks?: mongoose.Schema.Types.ObjectId[];
+  artworks: mongoose.Schema.Types.ObjectId[];
 }
 
 const collectionSchema = new mongoose.Schema({
@@ -16,6 +16,6 @@ const collectionSchema = new mongoose.Schema({
 
 const CollectionModel =
   ContentModel.discriminators?.["Collection"] ||
-  ContentModel.discriminator<IContent>("Collection", collectionSchema);
+  ContentModel.discriminator<ICollection>("Collection", collectionSchema);
 
 export { CollectionModel };

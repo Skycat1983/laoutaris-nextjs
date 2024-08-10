@@ -1,4 +1,4 @@
-import { ContentModel, IContent } from "@/app/models/content/baseContent";
+import { ContentModel, IContent } from "@/app/models/experimental/baseContent";
 
 export const getDefaultRedirect = async (section: string) => {
   console.log("getting first section item for", section);

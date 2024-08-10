@@ -1,5 +1,68 @@
 import mongoose, { Document } from "mongoose";
 
+// Define the union types for specific fields
+// export type Decade =
+//   | "1950s"
+//   | "1960s"
+//   | "1970s"
+//   | "1980s"
+//   | "1990s"
+//   | "2000s"
+//   | "2010s"
+//   | "2020s";
+
+// export type ArtStyle = "abstract" | "semi-abstract" | "figurative";
+
+// export type Medium =
+//   | "oil"
+//   | "acrylic"
+//   | "paint"
+//   | "watercolour"
+//   | "pastel"
+//   | "pencil"
+//   | "charcoal"
+//   | "ink"
+//   | "sand";
+
+// export type Surface = "paper" | "canvas" | "wood" | "film";
+
+// // Define the interface for image colors
+// export interface Color {
+//   color: string;
+//   percentage: number;
+//   _id: string; // Make _id optional in case it's not available
+// }
+
+// export interface PredominantColors {
+//   cloudinary: Color[];
+//   google: Color[];
+// }
+
+// export interface Image {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: Color[];
+//   predominantColors: PredominantColors;
+// }
+
+// // Define the main IArtwork interface
+// export interface IArtwork extends Document {
+//   _id: string;
+//   title: string;
+//   decade: Decade;
+//   artstyle: ArtStyle;
+//   medium: Medium;
+//   surface: Surface;
+//   featured: boolean;
+//   watcherlist: mongoose.Schema.Types.ObjectId[];
+//   image: Image;
+//   __v: number;
+// }
+
 export interface IArtwork extends Document {
   title?: string;
   decade:
@@ -18,10 +81,10 @@ export interface IArtwork extends Document {
     pixelHeight: number;
     pixelWidth: number;
     format: string;
-    hexColors?: { color: string; percentage: number }[];
-    predominantColors?: {
-      cloudinary?: { color: string; percentage: number }[];
-      google?: { color: string; percentage: number }[];
+    hexColors: { color: string; percentage: number }[];
+    predominantColors: {
+      cloudinary: { color: string; percentage: number; _id: string }[];
+      google: { color: string; percentage: number; _id: string }[];
     };
   };
   artstyle: "abstract" | "semi-abstract" | "figurative";

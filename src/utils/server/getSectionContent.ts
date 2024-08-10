@@ -1,4 +1,4 @@
-import { ContentModel } from "@/app/models/content/baseContent";
+import { ContentModel } from "@/app/models/experimental/baseContent";
 
 export const getSectionContent = async (section: string) => {
   console.log("getting section content for", section);

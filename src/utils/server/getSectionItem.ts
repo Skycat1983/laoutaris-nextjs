@@ -1,38 +1,38 @@
-import { ContentModel } from "@/app/models/content/baseContent";
-
+import { ArticleModel, IArticle } from "@/app/models/experimental/article";
+import { ContentModel } from "@/app/models/experimental/baseContent";
+import {
+  CollectionModel,
+  ICollection,
+} from "@/app/models/experimental/collection";
 export const getSectionItem = async (slug: string) => {
-  // const { slug } = req.params;
-
   try {
-    const content = await ContentModel.findOne({ slug: slug }).lean(); // `.lean()` for faster execution since we might re-query
+    const content = await ContentModel.findOne({ slug }).lean().exec();
 
     if (!content) {
       return null;
-      // return res.status(404).json({ message: "Item not found" });
     }
 
     switch (content.contentType) {
       case "Collection":
-        const populatedContent = await ContentModel.findOne({
-          slug: slug,
-        }).populate("artworks");
-        return populatedContent;
-      //   return res.status(200).json(populatedContent);
+        const populatedCollection = (await CollectionModel.findOne({ slug })
+          .populate("artworks")
+          .lean()
+          .exec()) as ICollection;
+        return populatedCollection;
+
       case "Article":
-        const populatedArticle = await ContentModel.findOne({
-          slug: slug,
-        });
-        //! .populate("author");
-        // ? issue with user model not created yet
+        const populatedArticle = (await ArticleModel.findOne({ slug })
+          .populate("author")
+          .lean()
+          .exec()) as IArticle;
         return populatedArticle;
-      //   return res.status(200).json(populatedArticle);
+
       default:
         return content;
-      //   return res.status(200).json(content);
     }
   } catch (error) {
     console.error("Error fetching content: ", error);
-    //   res.status(500).json({ message: error.message });
+    return null;
   }
 };
 
