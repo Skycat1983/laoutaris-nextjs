@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-slate w-full mt-auto py-8">
+    <footer className="bg-slate-800/10 w-full mt-auto py-8">
       {/* <div className="max-w-screen-xl mx-auto px-4"> */}
       <div className="max-w-screen-xl mx-auto ">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 divide-x divide-greyer">
