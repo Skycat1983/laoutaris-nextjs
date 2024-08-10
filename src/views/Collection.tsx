@@ -39,6 +39,8 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
     handlePageChange(1);
   }, [handlePageChange]);
 
+  console.warn(collection);
+
   return (
     <div className="flex flex-col">
       <div className="grid min-h-screen w-full p-x-8 grid-rows-0 lg:grid-cols-2 grid-rows-0">

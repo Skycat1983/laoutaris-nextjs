@@ -1,6 +1,6 @@
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getSectionContent } from "@/utils/server/getSectionContent";
+import { getArtworkSection } from "@/utils/server/getArtworkSection";
 
 export default async function ArtworkLayout({
   children,
@@ -8,7 +8,8 @@ export default async function ArtworkLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  const sectionContent = await getSectionContent("artwork");
+  const sectionContent = await getArtworkSection("artwork");
+  console.log("sectionContent in ARTWORK LAYOUT", sectionContent);
   const stem = "artwork";
 
   const subNavLinks = sectionContent?.map((article) => ({
@@ -17,6 +18,8 @@ export default async function ArtworkLayout({
   }))
     ? sectionContent
     : [];
+
+  console.log("subNavLinks", subNavLinks);
 
   console.log("artwork :>> ", sectionContent);
   return (

@@ -1,10 +1,11 @@
 import dbConnect from "@/utils/mongodb";
+import { getCollection } from "@/utils/server/getCollection";
 import { getSectionItem } from "@/utils/server/getSectionItem";
 import Collection from "@/views/Collection";
 
 export default async function Item({ params }: { params: { slug: string } }) {
   await dbConnect();
-  const sectionItem = await getSectionItem(params.slug);
+  const sectionItem = await getCollection(params.slug);
   console.log("sectionItem :>> ", sectionItem);
 
   return (
