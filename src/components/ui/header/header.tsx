@@ -8,7 +8,7 @@ import Searchbar from "../../atoms/inputs/Searchbar";
 const Header = () => {
   return (
     <>
-      <header className="fixed top-0 z-10 w-screen bg-whitish">
+      <header className="fixed top-0 z-10 w-screen bg-white">
         <nav>
           <div className="block sm:hidden">
             <MobileNavLayout />

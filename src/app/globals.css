@@ -94,4 +94,8 @@
   .fontface-decorative {
     font-family: var(--font-cinzel-decorative), sans-serif;
   }
+  .fontface-crimson {
+    font-family: var(--font-crimson), sans-serif;
+    @apply font-thin;
+  }
 }

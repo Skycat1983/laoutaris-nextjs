@@ -20,7 +20,8 @@ const config = {
     fontFamily: {
       archivo: ["var(--font-archivo)", "sans-serif"],
       archivoBlack: ["var(--font-archivo-black)", "sans-serif"],
-      conzelDecorative: ["var(--font-cinzel-decorative)", "serif"],
+      cinzelDecorative: ["var(--font-cinzel-decorative)", "serif"],
+      crimson: ["var(--font-crimson", "serif"],
     },
     extend: {
       // fontFamily: {

@@ -1,3 +1,4 @@
+import NavItem from "@/components/atoms/buttons/NavItem";
 import SubnavButton from "@/components/atoms/buttons/SubnavButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,7 +16,13 @@ const Subnav = ({ items, stem }: SubnavProps) => {
       {items.map((post, i) => (
         <li key={i}>
           <Link href={`/${stem}/${post.slug}`}>
-            <SubnavButton title={post.title} slug={post.slug} />
+            {/* <SubnavButton title={post.title} slug={post.slug} /> */}
+            <NavItem
+              label={post.title}
+              slug={post.slug}
+              className="font-face-default subheading-button"
+              activeClassName="font-face-default subheading-button-active"
+            />
           </Link>
         </li>
       ))}
