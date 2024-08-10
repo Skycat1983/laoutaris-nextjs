@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-// Define the TypeScript interface for the content
+// this model is the base model for all content types
 export interface IContent extends Document {
   title: string;
   subtitle: string;

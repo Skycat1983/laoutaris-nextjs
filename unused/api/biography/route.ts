@@ -1,5 +1,5 @@
-import { ArticleModel } from "@/app/model/article";
-import { BaseModel } from "@/app/model/content";
+import { ArticleModel } from "@/app/models/content/article";
+import { BaseModel } from "@/app/models/content/baseContent";
 import dbConnect from "@/utils/mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";

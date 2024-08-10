@@ -75,6 +75,10 @@
   .subheading-button {
     @apply font-[600] text-primary border border-black border-[2px] px-6 py-3;
   }
+
+  .subheading-button-active {
+    @apply font-[600] text-primary bg-black text-white border border-black border-[2px] px-6 py-3;
+  }
 }
 
 @tailwind utilities;

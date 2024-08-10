@@ -1,4 +1,4 @@
-import { ContentModel } from "@/app/model/content";
+import { ContentModel } from "@/app/models/content/baseContent";
 
 export const getSectionItem = async (slug: string) => {
   // const { slug } = req.params;

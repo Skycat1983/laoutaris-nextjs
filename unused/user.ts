@@ -78,10 +78,10 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-//? Lean Queries: Use .lean() with populate to retrieve plain JavaScript objects instead of Mongoose documents. This reduces processing time because Mongoose skips instantiating full model instances.
-// Projection: Use projection to limit the fields returned by the query. This can significantly reduce the workload on MongoDB and the amount of data transferred.
-// export const UserModel = mongoose.model("user", userSchema);
-
 const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 
 export { UserModel };
+
+//? Lean Queries: Use .lean() with populate to retrieve plain JavaScript objects instead of Mongoose documents. This reduces processing time because Mongoose skips instantiating full model instances.
+// Projection: Use projection to limit the fields returned by the query. This can significantly reduce the workload on MongoDB and the amount of data transferred.
+// export const UserModel = mongoose.model("user", userSchema);

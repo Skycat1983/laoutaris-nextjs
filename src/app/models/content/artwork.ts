@@ -1,4 +1,44 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
+
+export interface IArtwork extends Document {
+  title?: string;
+  decade:
+    | "1950s"
+    | "1960s"
+    | "1970s"
+    | "1980s"
+    | "1990s"
+    | "2000s"
+    | "2010s"
+    | "2020s";
+  image: {
+    secure_url: string;
+    public_id: string;
+    bytes: number;
+    pixelHeight: number;
+    pixelWidth: number;
+    format: string;
+    hexColors?: { color: string; percentage: number }[];
+    predominantColors?: {
+      cloudinary?: { color: string; percentage: number }[];
+      google?: { color: string; percentage: number }[];
+    };
+  };
+  artstyle: "abstract" | "semi-abstract" | "figurative";
+  medium:
+    | "oil"
+    | "acrylic"
+    | "paint"
+    | "watercolour"
+    | "pastel"
+    | "pencil"
+    | "charcoal"
+    | "ink"
+    | "sand";
+  surface: "paper" | "canvas" | "wood" | "film";
+  featured?: boolean;
+  watcherlist?: mongoose.Schema.Types.ObjectId[];
+}
 
 const artworkSchema = new mongoose.Schema(
   {
@@ -63,7 +103,7 @@ const artworkSchema = new mongoose.Schema(
 );
 
 export const ArtworkModel =
-  mongoose.models.Artwork || mongoose.model("Artwork", artworkSchema);
+  mongoose.models.Artwork || mongoose.model<IArtwork>("Artwork", artworkSchema);
 
 // const BaseModel =
 // mongoose.models.Content || mongoose.model("Content", baseSchema);

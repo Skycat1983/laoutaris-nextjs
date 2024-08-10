@@ -1,7 +1,7 @@
 import React from "react";
-import MobileNavLayout from "./nav/MobileNavLayout";
-import TabletNavLayout from "./nav/TabletNavLayout";
-import DesktopNavLayout from "./nav/DesktopNavLayout";
+import MobileNavLayout from "./mainNav/MobileNavLayout";
+import TabletNavLayout from "./mainNav/TabletNavLayout";
+import DesktopNavLayout from "./mainNav/DesktopNavLayout";
 import Breadcrumbs from "./breadcrumbs/Breadcrumbs";
 import Searchbar from "../../atoms/inputs/Searchbar";
 

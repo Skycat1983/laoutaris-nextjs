@@ -1,4 +1,18 @@
 import mongoose from "mongoose";
+import Document from "next/document";
+
+export interface IBlog extends Document {
+  title: string;
+  subtitle: string;
+  summary: string;
+  text: string;
+  imageUrl?: string;
+  author: mongoose.Schema.Types.ObjectId;
+  slug: string;
+  displayDate: Date;
+  featured?: boolean;
+  tags?: string[];
+}
 
 const blogSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -22,4 +36,4 @@ const blogSchema = new mongoose.Schema({
   // ],
 });
 
-export const BlogModel = mongoose.model("blog", blogSchema);
+export const BlogModel = mongoose.model<IBlog>("blog", blogSchema);

@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import { ContentModel } from "./content";
+import { ContentModel, IContent } from "./baseContent";
+
+export interface IArticle extends IContent {
+  overlayColour: "white" | "black";
+}
 
 const articleSchema = new mongoose.Schema({
   overlayColour: {
@@ -11,6 +15,6 @@ const articleSchema = new mongoose.Schema({
 
 const ArticleModel =
   ContentModel.discriminators?.["Article"] ||
-  ContentModel.discriminator("Article", articleSchema);
+  ContentModel.discriminator<IArticle>("Article", articleSchema);
 
 export { ArticleModel };
