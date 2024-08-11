@@ -9,7 +9,7 @@ export default async function ArtworkLayout({
 }) {
   await dbConnect();
   const sectionContent = await getArtworkSection("artwork");
-  console.log("sectionContent in ARTWORK LAYOUT", sectionContent);
+  // console.log("sectionContent in ARTWORK LAYOUT", sectionContent);
   const stem = "artwork";
 
   const subNavLinks = sectionContent?.map((article) => ({
@@ -19,9 +19,8 @@ export default async function ArtworkLayout({
     ? sectionContent
     : [];
 
-  console.log("subNavLinks", subNavLinks);
+  // console.log("subNavLinks", subNavLinks);
 
-  console.log("artwork :>> ", sectionContent);
   return (
     <section>
       <Subnav items={subNavLinks} stem={stem} />

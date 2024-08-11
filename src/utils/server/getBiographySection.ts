@@ -1,10 +1,9 @@
-import { ArticleModel } from "@/app/models/experimental/article";
-import { ArticleContentModel } from "@/app/models/stable/articleModel";
+import { ArticleModel } from "@/app/models/content";
 
 export const getBiographySection = async (section: string) => {
   console.log("getting section content for", section);
   try {
-    const content = await ArticleContentModel.find({ section: section });
+    const content = await ArticleModel.find({ section: section });
     return content;
   } catch (error) {
     console.log("error :>> ", error);

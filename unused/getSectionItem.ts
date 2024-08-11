@@ -1,9 +1,6 @@
-import { ArticleModel, IArticle } from "@/app/models/experimental/article";
-import { ContentModel } from "@/app/models/experimental/baseContent";
-import {
-  CollectionModel,
-  ICollection,
-} from "@/app/models/experimental/collection";
+import { ArticleModel, IArticle } from "./experimental/article";
+import { ContentModel } from "./experimental/baseContent";
+import { CollectionModel, ICollection } from "./experimental/collection";
 export const getSectionItem = async (slug: string) => {
   try {
     const content = await ContentModel.findOne({ slug }).lean().exec();

@@ -40,8 +40,8 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
   }
 );
 
-const ArticleContentModel =
+const ArticleModel =
   mongoose.models?.ArticleContent ||
   mongoose.model<IArticleContent>("ArticleContent", articleContentSchema);
 
-export { ArticleContentModel };
+export { ArticleModel };

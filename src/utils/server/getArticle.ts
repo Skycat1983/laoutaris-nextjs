@@ -1,9 +1,9 @@
-import { ArticleContentModel } from "@/app/models/stable/articleModel";
+import { ArticleModel } from "@/app/models/content";
 
 export const getArticle = async (slug: string) => {
   console.log("getting article for", slug);
   try {
-    const content = await ArticleContentModel.findOne({ slug: slug });
+    const content = await ArticleModel.findOne({ slug: slug });
     return content;
   } catch (error) {
     console.log("error :>> ", error);

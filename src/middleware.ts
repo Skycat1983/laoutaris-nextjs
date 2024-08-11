@@ -1,4 +1,4 @@
-import { getSectionContent } from "@/utils/server/getSectionContent";
+import { getSectionContent } from "../unused/getSectionContent";
 import { NextResponse, type NextRequest } from "next/server";
 import type { NextFetchEvent } from "next/server";
 import dbConnect from "./utils/mongodb";

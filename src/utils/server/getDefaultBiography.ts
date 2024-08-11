@@ -1,12 +1,9 @@
-import {
-  ArticleContentModel,
-  IArticleContent,
-} from "@/app/models/stable/articleModel";
+import { ArticleModel, IArticleContent } from "@/app/models/content";
 
 export const getDefaultBiography = async (section: string) => {
   console.log("getting first section item for", section);
   try {
-    const content = (await ArticleContentModel.findOne({ section: "biography" })
+    const content = (await ArticleModel.findOne({ section: "biography" })
       .select("slug")
       .lean()) as IArticleContent;
     // Check if content and slug exist

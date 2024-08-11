@@ -1,5 +1,5 @@
 import mongoose, { Document } from "mongoose";
-import { IContent } from "../experimental/baseContent";
+import { IContent } from "../../../../unused/experimental/baseContent";
 
 // Define the interface that includes both content and collection-specific fields
 export interface ICollectionContent extends Document {
@@ -43,11 +43,11 @@ const collectionSchema = new mongoose.Schema<ICollectionContent>(
   }
 );
 
-const CollectionContentModel =
+const CollectionModel =
   mongoose.models.Collection ||
   mongoose.model<ICollectionContent>("Collection", collectionSchema);
 
+export { CollectionModel };
+
 //   export const ArtworkModel =
 //   mongoose.models.Artwork || mongoose.model<IArtwork>("Artwork", artworkSchema);
-
-export { CollectionContentModel };

@@ -1,6 +1,6 @@
 import dbConnect from "@/utils/mongodb";
 import { getArticle } from "@/utils/server/getArticle";
-import { getSectionItem } from "@/utils/server/getSectionItem";
+import { getSectionItem } from "../../../../unused/getSectionItem";
 import Article from "@/views/Article";
 
 export default async function Item({ params }: { params: { slug: string } }) {

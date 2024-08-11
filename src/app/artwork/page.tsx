@@ -1,6 +1,6 @@
 import dbConnect from "@/utils/mongodb";
 import { getDefaultCollection } from "@/utils/server/getDefaultCollection";
-import { getDefaultRedirect } from "@/utils/server/getDefaultRedirectUrl";
+import { getDefaultRedirect } from "../../../unused/getDefaultRedirectUrl";
 import { redirect } from "next/navigation";
 
 export default async function Artwork() {

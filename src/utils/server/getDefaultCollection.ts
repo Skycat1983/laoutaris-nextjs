@@ -1,12 +1,9 @@
-import {
-  CollectionContentModel,
-  ICollectionContent,
-} from "@/app/models/stable/collectionModel";
+import { CollectionModel, ICollectionContent } from "@/app/models/content";
 
 export const getDefaultCollection = async (section: string) => {
   // console.log("getting first section item for", section);
   try {
-    const content = (await CollectionContentModel.findOne({
+    const content = (await CollectionModel.findOne({
       section: "artwork",
     })
       .select("slug")
