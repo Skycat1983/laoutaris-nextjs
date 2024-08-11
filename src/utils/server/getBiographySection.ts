@@ -7,7 +7,6 @@ export const getBiographySection = async (section: string) => {
     return content;
   } catch (error) {
     console.log("error :>> ", error);
-
     return null;
   }
 };

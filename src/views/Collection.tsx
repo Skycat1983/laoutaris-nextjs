@@ -16,28 +16,28 @@ interface CollectionProps {
 const Collection: React.FC<CollectionProps> = ({ collection }) => {
   const [isShowing, setIsShowing] = useState(true);
   const [displayedArtwork, setDisplayedArtwork] =
-    useState<IFrontendArtwork | null>(null);
+    useState<IFrontendArtwork | null>(collection.artworks[0]);
 
   console.log("collection :>> ", collection);
 
-  const handlePageChange = useCallback(
-    (page: number) => {
-      setIsShowing(false);
+  // const handlePageChange = useCallback(
+  //   (page: number) => {
+  //     setIsShowing(false);
 
-      setTimeout(() => {
-        setDisplayedArtwork(collection.artworks[page - 1]);
-        setTimeout(() => {
-          setIsShowing(true);
-        }, 300);
-      }, 300);
-    },
-    [collection.artworks]
-  );
+  //     setTimeout(() => {
+  //       setDisplayedArtwork(collection.artworks[page - 1]);
+  //       setTimeout(() => {
+  //         setIsShowing(true);
+  //       }, 300);
+  //     }, 300);
+  //   },
+  //   [collection.artworks]
+  // );
 
-  // Initially display the first artwork
-  useEffect(() => {
-    handlePageChange(1);
-  }, [handlePageChange]);
+  // // Initially display the first artwork
+  // useEffect(() => {
+  //   handlePageChange(1);
+  // }, [handlePageChange]);
 
   console.warn(collection);
 

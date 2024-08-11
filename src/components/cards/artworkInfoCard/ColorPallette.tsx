@@ -5,6 +5,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import { ChevronDown } from "lucide-react";
 
 export interface HexColor {
   color: string;
@@ -25,9 +26,10 @@ const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
           <p className="font-archivo text-md font-light text-gray-500">
             {label}
           </p>
-          <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
+          <ChevronDown className="w-6 h-6" />
+          {/* <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
             expand_more
-          </span>
+          </span> */}
         </div>
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">
@@ -63,9 +65,11 @@ const CloudinaryColorPalette: React.FC<CloudinaryColorPaletteProps> = ({
           <p className="font-archivo text-md font-light text-gray-500">
             {label}
           </p>
-          <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
+          <ChevronDown className="w-6 h-6" />
+
+          {/* <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
             expand_more
-          </span>
+          </span> */}
         </div>
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">

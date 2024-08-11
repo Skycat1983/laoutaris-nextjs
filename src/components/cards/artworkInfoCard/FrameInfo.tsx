@@ -3,6 +3,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface IFrameInfoProps {
   info: IFrameInfo;
@@ -34,14 +35,17 @@ const FrameInfo = ({ info, label }: IFrameInfoProps) => {
   const { height, width, material, style } = info;
   return (
     <Disclosure>
-      <DisclosureButton className="py-2 text-left">
-        <div className="flex flex-row justify-between">
+      <DisclosureButton className="py-2 text-left ">
+        <div className="flex flex-row justify-between" data-open>
           <p className="font-archivo text-md font-light text-gray-500">
             {label}
           </p>
-          <span className="mr-2 ui-open:rotate-180 material-symbols-outlined">
+
+          <ChevronDown className="w-6 h-6 data-[open]:rotate-180" />
+
+          {/* <span className="mr-2 ui-open:rotate-180 material-symbols-outlined">
             expand_more
-          </span>
+          </span> */}
         </div>
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">
