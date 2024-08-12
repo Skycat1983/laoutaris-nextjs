@@ -8,7 +8,7 @@ export default async function Item({ params }: { params: { slug: string } }) {
   console.log("sectionItem :>> ", sectionItem);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-24 py-4">
+    <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
       {sectionItem && <Collection collection={sectionItem} />}
     </main>
   );
