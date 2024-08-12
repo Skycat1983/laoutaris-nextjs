@@ -18,7 +18,7 @@ const ArtworkInfoCard = (artwork: IFrontendArtwork) => {
 
   return (
     // <div className="flex flex-row justify-end items-start p-10 w-full">
-    <div className="bg-green-100 flex flex-col text-left space-y-4  md:w-full md:mx-10 lg:w-[400px]">
+    <div className="bg-green-100 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]">
       <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
         {artwork.title}

@@ -40,11 +40,11 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
 
   return (
     <div className="flex flex-col justify-start items-center w-auto  max-w-[90vw] bg-black/10">
-      <div className="container bg-blue-100 grid w-full gap-10 lg:grid-cols-2 lg:gap-0 ">
+      <div className="container bg-blue-100  w-full grid gap-10 lg:grid-cols-2 lg:gap-0 ">
         {displayedArtwork && (
           <>
-            <div className="flex flex-row justify-center align-start h-auto max-h-[75vh] lg:justify-end  overflow-none bg-red-100">
-              <div className="flex flex-col">
+            <div className="flex flex-row justify-center align-start h-auto max-h-[75vh]  lg:justify-end  overflow-none bg-red-100">
+              <div className="flex flex-col bg-green-100">
                 <Image
                   src={displayedArtwork.image.secure_url}
                   alt="Artwork Title"
@@ -54,7 +54,7 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
                 />
               </div>
             </div>
-            <div className="flex flex-row w-full justify-end h-auto overflow-none bg-blue-100">
+            <div className="flex flex-row justify-center w-2/3 lg:w-full lg:justify-end h-auto overflow-none bg-blue-100">
               <ArtworkInfoCard {...displayedArtwork} />
             </div>
           </>
