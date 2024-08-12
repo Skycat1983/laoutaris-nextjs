@@ -1,4 +1,3 @@
-import { IFrontendCollection } from "@/lib/types/collection";
 import dbConnect from "@/utils/mongodb";
 import { getCollection } from "@/utils/server/getCollection";
 import Collection from "@/views/Collection";

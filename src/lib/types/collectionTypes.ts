@@ -1,4 +1,4 @@
-import { IFrontendArtwork } from "./artwork";
+import { IFrontendArtwork } from "./artworkTypes";
 
 export interface IFrontendCollection {
   title: string;

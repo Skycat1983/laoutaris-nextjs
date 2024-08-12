@@ -20,7 +20,7 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
     subtitle: { type: String, required: true },
     summary: { type: String, required: true },
     text: { type: String, required: true },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     imageUrl: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     section: {
@@ -41,7 +41,7 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
 );
 
 const ArticleModel =
-  mongoose.models?.ArticleContent ||
-  mongoose.model<IArticleContent>("ArticleContent", articleContentSchema);
+  mongoose.models.Article ||
+  mongoose.model<IArticleContent>("Article", articleContentSchema);
 
 export { ArticleModel };

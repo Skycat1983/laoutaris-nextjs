@@ -48,6 +48,3 @@ const CollectionModel =
   mongoose.model<ICollectionContent>("Collection", collectionSchema);
 
 export { CollectionModel };
-
-//   export const ArtworkModel =
-//   mongoose.models.Artwork || mongoose.model<IArtwork>("Artwork", artworkSchema);

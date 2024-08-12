@@ -3,7 +3,7 @@
 import ArtworkImage from "@/components/animations/ArtworkImage";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
-import { IFrontendArtwork } from "@/lib/types/artwork";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { useCallback, useEffect, useState } from "react";
 
 interface CollectionProps {

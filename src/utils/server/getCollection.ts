@@ -1,5 +1,5 @@
-import { CollectionModel, ICollectionContent } from "@/app/models/content";
-import { IFrontendCollection } from "@/lib/types/collection";
+import { CollectionModel } from "@/app/models/content";
+import { IFrontendCollection } from "@/lib/types/collectionTypes";
 
 export const getCollection = async (slug: string) => {
   console.log("getting article for", slug);

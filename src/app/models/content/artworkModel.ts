@@ -97,7 +97,7 @@ const artworkSchema = new mongoose.Schema(
       required: true,
     },
     featured: { type: Boolean, default: false },
-    watcherlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+    watcherlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

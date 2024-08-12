@@ -1,5 +1,5 @@
 import { ArticleModel } from "@/app/models/content";
-import { IFrontendArticle } from "@/lib/types/article";
+import { IFrontendArticle } from "@/lib/types/articleTypes";
 
 export const getArticle = async (slug: string) => {
   console.log("getting article for", slug);
