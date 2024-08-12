@@ -10,7 +10,8 @@ interface NavItemProps {
 
 const NavItem = ({ label, slug, activeClassName, className }: NavItemProps) => {
   const pathname = usePathname();
-  const isActive = pathname.includes(slug);
+  const pathSegments = pathname.split("/");
+  const isActive = pathSegments.includes(slug);
 
   return (
     <div className={isActive ? activeClassName : className}>

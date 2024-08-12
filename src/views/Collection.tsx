@@ -5,6 +5,7 @@ import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
 import Pagination from "@/components/ui/pagination/Pagination";
 import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
 interface CollectionProps {
@@ -35,28 +36,31 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
     [collection.artworks]
   );
 
-  // // Initially display the first artwork
-  // useEffect(() => {
-  //   handlePageChange(1);
-  // }, [handlePageChange]);
-
   console.warn(collection);
 
   return (
-    <div className="flex flex-col">
-      <div className="grid min-h-screen w-full p-x-8 grid-rows-0 lg:grid-cols-2 grid-rows-0">
+    <div className="flex flex-col justify-start items-center w-auto  max-w-[90vw] bg-black/10">
+      <div className="container bg-blue-100 grid w-full gap-10 lg:grid-cols-2 lg:gap-0 ">
         {displayedArtwork && (
           <>
-            <ArtworkImage
-              src={displayedArtwork.image.secure_url}
-              alt="Artwork Title"
-              isShowing={isShowing}
-            />
-            <ArtworkInfoCard {...displayedArtwork} />
+            <div className="flex flex-row justify-center align-start h-auto max-h-[75vh] lg:justify-end  overflow-none bg-red-100">
+              <div className="flex flex-col">
+                <Image
+                  src={displayedArtwork.image.secure_url}
+                  alt="Artwork Title"
+                  height={displayedArtwork.image.pixelHeight}
+                  width={displayedArtwork.image.pixelWidth}
+                  className="max-h-full w-auto max-w-[90vw] object-contain self-start"
+                />
+              </div>
+            </div>
+            <div className="flex flex-row w-full justify-end h-auto overflow-none bg-blue-100">
+              <ArtworkInfoCard {...displayedArtwork} />
+            </div>
           </>
         )}
       </div>
-      <div className="py-8">
+      <div className="pb-8">
         <HorizontalDivider />
       </div>
       {collection.artworks.length > 1 && (
@@ -79,3 +83,11 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
 };
 
 export default Collection;
+
+{
+  /* <ArtworkImage
+              src={displayedArtwork.image.secure_url}
+              alt="Artwork Title"
+              isShowing={isShowing}
+            /> */
+}

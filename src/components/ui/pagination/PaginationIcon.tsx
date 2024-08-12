@@ -9,7 +9,7 @@ type Props = {
 
 const PaginationIconsContainer = ({ children }: Props) => {
   return (
-    <div className="flex flex-row gap-4 items-center justify-center">
+    <div className="flex flex-row gap-4 items-center justify-center mt-8">
       {children}
     </div>
   );

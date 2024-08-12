@@ -3,6 +3,9 @@ import { usePagination } from "./usePagination";
 import NavigationButton from "./PaginationButton";
 import PaginationCard from "./PaginationCard";
 import { PaginationIcon, PaginationIconsContainer } from "./PaginationIcon";
+import { ScrollArea, ScrollBar } from "../scroll-area";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type PaginationContainerProps = {
   children: React.ReactNode;
@@ -16,10 +19,6 @@ const PaginationNavigationContainer = ({
   children,
 }: PaginationContainerProps) => {
   return <div className="flex items-center px-4">{children}</div>;
-};
-
-const PaginationNumbersContainer = ({ children }: PaginationContainerProps) => {
-  return <div className="flex flex-row gap-10 items-start">{children}</div>;
 };
 
 interface PaginationProps {
@@ -49,7 +48,7 @@ const Pagination = ({
 
   return (
     <>
-      <PaginationContainer>
+      <div className="flex flex-row justify-center">
         <PaginationNavigationContainer>
           {showFirstLast && (
             <NavigationButton
@@ -67,24 +66,30 @@ const Pagination = ({
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
               googleIcon={
-                <span className="material-symbols-outlined">
-                  arrow_back_ios
-                </span>
+                <ChevronLeft />
+                // <span className="material-symbols-outlined">
+                //   arrow_back_ios
+                // </span>
               }
             />
           )}
         </PaginationNavigationContainer>
-        <div className="flex flex-col items-center justify-center gap-5">
-          <PaginationNumbersContainer>
-            {pageNumbersToDisplay.map((page) => (
-              <PaginationCard
-                key={page}
-                isActive={currentPage === page}
-                onClick={() => onPageChange(page)}
-                item={paginationItems[page - 1]}
-              />
-            ))}
-          </PaginationNumbersContainer>
+        <div className="flex flex-col items-center justify-center h-auto">
+          <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
+            <div className="flex w-max space-x-4 h-auto">
+              {pageNumbersToDisplay.map((page, i) => (
+                <PaginationCard
+                  key={page}
+                  isActive={currentPage === page}
+                  onClick={() => onPageChange(page)}
+                  item={paginationItems[page - 1]}
+                />
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" className="p-12" />
+          </ScrollArea>
+          {/* <div className="h-24"></div> */}
+
           <PaginationIconsContainer>
             {pageNumbersToDisplay.map((page) => (
               <PaginationIcon
@@ -105,9 +110,10 @@ const Pagination = ({
               }
               disabled={currentPage === totalPages}
               googleIcon={
-                <span className="material-symbols-outlined">
-                  arrow_forward_ios
-                </span>
+                <ChevronRight />
+                // <span className="material-symbols-outlined">
+                //   arrow_forward_ios
+                // </span>
               }
             />
           )}
@@ -122,9 +128,21 @@ const Pagination = ({
             />
           )}
         </PaginationNavigationContainer>
-      </PaginationContainer>
+      </div>
     </>
   );
 };
 
 export default Pagination;
+
+// <figure key={i} className="w-full">
+//   <div className="overflow-hidden rounded-md">
+//     <Image
+//       src={paginationItems[page - 1].image.secure_url}
+//       alt={`ENTER SOMETHING`}
+//       className="aspect-[3/4] h-fit w-fit object-cover"
+//       width={300}
+//       height={400}
+//     />
+//   </div>
+// </figure>
