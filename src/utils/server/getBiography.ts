@@ -1,7 +1,7 @@
 import { ArticleModel } from "@/app/models/content";
 import { IFrontendArticle } from "@/lib/types/articleTypes";
 
-export const getArticle = async (slug: string) => {
+export const getBiography = async (slug: string) => {
   console.log("getting article for", slug);
   try {
     const content = await ArticleModel.findOne({ slug: slug })

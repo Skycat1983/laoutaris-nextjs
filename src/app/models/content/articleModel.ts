@@ -35,8 +35,8 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
     },
   },
   {
-    collection: "articles", // Name of the collection in MongoDB
-    timestamps: true, // Automatically include createdAt and updatedAt
+    collection: "articles",
+    timestamps: true,
   }
 );
 

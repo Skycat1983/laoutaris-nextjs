@@ -1,6 +1,6 @@
 import { CollectionModel } from "@/app/models/content";
 
-export const getArtworkSection = async (section: string) => {
+export const getCollectionSection = async (section: string) => {
   console.log("getting section content for", section);
   try {
     const content = await CollectionModel.find({ section: section });
