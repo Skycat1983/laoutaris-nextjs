@@ -2,9 +2,13 @@ import dbConnect from "@/utils/mongodb";
 import { getBiography } from "@/utils/server/getBiography";
 import Article from "@/views/Article";
 
-export default async function Item({ params }: { params: { slug: string } }) {
+export default async function Item({
+  params,
+}: {
+  params: { articleSlug: string };
+}) {
   await dbConnect();
-  const sectionItem = await getBiography(params.slug);
+  const sectionItem = await getBiography(params.articleSlug);
   console.log("sectionItem :>> ", sectionItem);
 
   return (

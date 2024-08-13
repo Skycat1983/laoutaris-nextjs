@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IBaseUser } from "./baseUserModel";
-import { BaseUserModel } from "../../../../unused/user";
+import { BaseUserModel } from "../../../unused/user";
 
 // Define the interface for the Admin user
 export interface IAdmin extends IBaseUser {

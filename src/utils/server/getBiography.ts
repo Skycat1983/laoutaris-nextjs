@@ -1,4 +1,4 @@
-import { ArticleModel } from "@/app/models/content";
+import { ArticleModel } from "@/app/models";
 import { IFrontendArticle } from "@/lib/types/articleTypes";
 
 export const getBiography = async (slug: string) => {
