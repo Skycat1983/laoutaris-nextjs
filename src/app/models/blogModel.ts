@@ -19,7 +19,7 @@ const blogSchema = new mongoose.Schema<IBlogEntry>({
   summary: { type: String, required: true },
   text: { type: String, required: true },
   imageUrl: { type: String, required: false },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   slug: { type: String, required: true, unique: true },
   displayDate: { type: Date, required: true },
   featured: { type: Boolean, default: false },

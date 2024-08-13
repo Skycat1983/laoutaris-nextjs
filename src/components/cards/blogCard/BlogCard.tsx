@@ -2,10 +2,12 @@ import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import Link from "next/link";
 
 interface BlogCardProps {
+  stem: string;
   blogEntry: IFrontendBlogEntry;
 }
 
 const BlogCard = ({
+  stem,
   blogEntry: {
     title,
     subtitle,
@@ -22,7 +24,7 @@ const BlogCard = ({
   const featuredText = featured ? "Featured" : "";
   return (
     <>
-      <Link href={`/blog/id/${slug}`}>
+      <Link href={`/blog/${stem}/${slug}`}>
         <div className="grid grid-cols-3 py-8">
           <div className="col-span-1">
             <img src={imageUrl} />

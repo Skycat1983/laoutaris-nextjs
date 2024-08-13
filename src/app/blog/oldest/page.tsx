@@ -13,13 +13,12 @@ export default async function OldestBlogs() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container ">
-      {/* {sectionItem && <Article article={sectionItem} />} */}
       <div className="text-left flex w-full">
         <h1 className="text-4xl">{dateToYear(oldestEntries[0].displayDate)}</h1>
       </div>
       <HorizontalDivider />
       {oldestEntries.flatMap((item, index) => [
-        <BlogCard key={index} blogEntry={item} />,
+        <BlogCard key={index} blogEntry={item} stem="oldest" />,
         index < oldestEntries.length - 1 && (
           <HorizontalDivider key={`divider-${index}`} />
         ),
