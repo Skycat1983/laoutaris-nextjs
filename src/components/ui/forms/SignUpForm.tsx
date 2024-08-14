@@ -1,27 +1,19 @@
 "use client";
 
-import { signUp } from "@/app/actions";
+import { SignupResponse, signUpAction } from "@/app/actions";
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInForm";
 
-const initialState = {
+const initialState: SignupResponse = {
+  type: "validation",
   formValidationErrors: { email: "", password: "", username: "" },
-  authError: null,
-  user: null,
 };
 
 const SignUpForm = () => {
   const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(signUp, initialState);
-
-  console.log("state :>> ", state);
-
-  if (state.authError) {
-    const stringifiedError = JSON.stringify(state.authError);
-    console.warn(stringifiedError);
-  }
+  const [state, formAction] = useFormState(signUpAction, initialState);
 
   return (
     <>
@@ -36,7 +28,7 @@ const SignUpForm = () => {
             name="email"
             id="email"
           />
-          {state?.formValidationErrors && (
+          {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.email}
             </p>
@@ -49,7 +41,7 @@ const SignUpForm = () => {
             name="password"
             id="password"
           />
-          {state?.formValidationErrors && (
+          {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.password}
             </p>
@@ -62,12 +54,12 @@ const SignUpForm = () => {
             name="username"
             id="username"
           />
-          {state?.formValidationErrors && (
+          {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.username}
             </p>
           )}
-          {state?.authError && (
+          {state?.type === "auth" && (
             <p aria-live="polite" className="bg-red-100">
               {JSON.stringify(state.authError)}
             </p>

@@ -1,29 +1,54 @@
+import { SignUpFormData } from "@/app/actions";
 import { encrypt } from "@/lib/auth";
 import { IUser, UserModel } from "@/lib/models";
 import { ISignupData } from "@/lib/types/userTypes";
 import { encryptPassword } from "@/utils/bcrypt";
 // import { encryptPassword } from "@/utils/bcrypt";
 
+interface CreateUserSuccess {
+  success: true;
+  message: string;
+  user: {
+    _id: string;
+    email: string;
+    username: string;
+  };
+}
+
+interface CreateUserError {
+  success: false;
+  error: string;
+}
+
+type CreateUserResponse = CreateUserSuccess | CreateUserError;
+
 export const createUser = async ({
   email,
   username,
   password,
-}: ISignupData) => {
-  console.log("email, username, password", email, username, password);
-  const hashedPassword = await encryptPassword(password);
-  console.log("hashedPassword", hashedPassword);
-  // console.log("req.body :>> ", req.body);
-  const newUser = new UserModel({
-    email: email,
-    username: username,
-    password: hashedPassword,
-  });
-
-  console.log("newUser :>> ", newUser);
+}: SignUpFormData): Promise<CreateUserResponse> => {
   try {
+    console.log("email, username, password", email, username, password);
+
+    // Encrypt the password
+    const hashedPassword = await encryptPassword(password);
+    console.log("hashedPassword", hashedPassword);
+
+    // Create a new user instance
+    const newUser = new UserModel({
+      email,
+      username,
+      password: hashedPassword,
+    });
+    console.log("newUser :>> ", newUser);
+
+    // Save the user to the database
     const result = await newUser.save();
     console.log("result :>> ", result);
-    const response = {
+
+    // Return success response
+    return {
+      success: true,
       message: "User created successfully",
       user: {
         _id: result._id,
@@ -31,17 +56,13 @@ export const createUser = async ({
         username: result.username,
       },
     };
-    return response;
-    //   res.status(201).json(response); // 201 for resource creation
-  } catch (e) {
-    console.log(e);
-    // 11000 is Mongo's duplicate key error
-    //   if (e.code === 11000) {
-    //     const error = new Error("That email is already registered");
-    //     error.statusCode = 409;
-    //     next(error);
-    //   } else {
-    //     next(e);
-    //   }
+  } catch (error) {
+    console.log("Error creating user:", error);
+
+    // Return error response
+    return {
+      success: false,
+      error: "Failed to create user",
+    };
   }
 };
