@@ -1,7 +1,7 @@
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import BlogCard from "@/components/cards/blogCard/BlogCard";
 import dbConnect from "@/utils/mongodb";
-import { getLatestBlogEntries } from "@/utils/server/getBlogEntries";
+import { getLatestBlogEntries } from "@/lib/server/blog/getBlogEntries";
 
 export default async function LatestBlogs() {
   await dbConnect();

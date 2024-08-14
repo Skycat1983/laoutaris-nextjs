@@ -1,7 +1,7 @@
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import BlogCard from "@/components/cards/blogCard/BlogCard";
 import dbConnect from "@/utils/mongodb";
-import { getFeaturedBlogEntries } from "@/utils/server/getBlogEntries";
+import { getFeaturedBlogEntries } from "@/lib/server/blog/getBlogEntries";
 
 export default async function FeaturedBlogs() {
   await dbConnect();

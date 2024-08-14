@@ -1,4 +1,4 @@
-import { BlogModel, IBlogEntry } from "@/app/models";
+import { BlogModel, IBlogEntry } from "@/lib/models";
 import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 
 export const getBlogEntry = async (slug: string) => {

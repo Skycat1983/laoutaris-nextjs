@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import { getBiography } from "@/utils/server/getBiography";
+import { getBiography } from "@/lib/server/biography/getBiography";
 import Article from "@/views/Article";
 
 export default async function Item({

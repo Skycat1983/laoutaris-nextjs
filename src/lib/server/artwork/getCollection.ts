@@ -1,4 +1,4 @@
-import { CollectionModel } from "@/app/models";
+import { CollectionModel } from "@/lib/models";
 import { IFrontendCollection } from "@/lib/types/collectionTypes";
 
 export const getCollection = async (slug: string) => {

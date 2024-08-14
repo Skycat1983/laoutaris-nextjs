@@ -1,6 +1,6 @@
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getBiographySection } from "@/utils/server/getBiographySection";
+import { getBiographySection } from "@/lib/server/biography/getBiographySection";
 import { getSectionContent } from "../../../unused/getSectionContent";
 
 export default async function BiographyLayout({

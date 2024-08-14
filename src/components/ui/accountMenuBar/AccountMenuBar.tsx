@@ -15,6 +15,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/shadcn/menubar";
+import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import {
   ChevronDown,
   Heart,
@@ -25,8 +26,11 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import SignUpForm from "../forms/SignUpForm";
+import SignInForm from "../forms/SignInForm";
 
 export function AccountMenuBar() {
+  const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
   return (
     <Menubar>
@@ -35,13 +39,23 @@ export function AccountMenuBar() {
           <User />
         </MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
+          <MenubarItem
+            onSelect={() => {
+              setModalContent(<SignUpForm />);
+              openModal();
+            }}
+          >
             Sign up{" "}
             <MenubarShortcut>
               <Mail className="w-4 h-4" />
             </MenubarShortcut>
           </MenubarItem>
-          <MenubarItem>
+          <MenubarItem
+            onSelect={() => {
+              setModalContent(<SignInForm />);
+              openModal();
+            }}
+          >
             Sign in{" "}
             <MenubarShortcut>
               <LogIn className="w-4 h-4" />

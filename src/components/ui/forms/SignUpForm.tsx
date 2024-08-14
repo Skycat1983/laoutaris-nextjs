@@ -1,20 +1,20 @@
 "use client";
 
-import { createUser } from "@/app/actions";
+import { signUp } from "@/app/actions";
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInForm";
 
 const initialState = {
-  formValidationErrors: { email: "", password: "" },
+  formValidationErrors: { email: "", password: "", username: "" },
   authError: null,
   user: null,
 };
 
 const SignUpForm = () => {
   const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(createUser, initialState);
+  const [state, formAction] = useFormState(signUp, initialState);
 
   console.log("state :>> ", state);
 
@@ -52,6 +52,19 @@ const SignUpForm = () => {
           {state?.formValidationErrors && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.password}
+            </p>
+          )}
+          <input
+            type="text"
+            placeholder="username"
+            className="w-full p-3 border border-gray-300 rounded-md"
+            autoComplete="new-password"
+            name="username"
+            id="username"
+          />
+          {state?.formValidationErrors && (
+            <p aria-live="polite" className="bg-red-100">
+              {state.formValidationErrors.username}
             </p>
           )}
           {state?.authError && (

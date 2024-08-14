@@ -1,7 +1,6 @@
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
-import { getDefaultRedirect } from "../../../unused/getDefaultRedirectUrl";
-import { getDefaultBiography } from "@/utils/server/getDefaultBiography";
+import { getDefaultBiography } from "@/lib/server/biography/getDefaultBiography";
 
 export default async function Biography() {
   await dbConnect();

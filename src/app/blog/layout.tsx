@@ -1,7 +1,7 @@
 import BlogSidebar from "@/components/ui/sidebar/BlogSidebar";
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getBlogAvailability } from "@/utils/server/getBlogAvailability";
+import { getBlogAvailability } from "@/lib/server/blog/getBlogAvailability";
 
 export default async function BlogLayout({
   children,

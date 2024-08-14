@@ -1,10 +1,10 @@
 "use client";
 
-import { createUser } from "@/app/actions";
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
+import { signIn, signUp } from "@/app/actions";
 
 const initialState = {
   formValidationErrors: { email: "", password: "" },
@@ -14,7 +14,7 @@ const initialState = {
 
 const SignInForm = () => {
   const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(createUser, initialState);
+  const [state, formAction] = useFormState(signIn, initialState);
 
   console.log("state :>> ", state);
 

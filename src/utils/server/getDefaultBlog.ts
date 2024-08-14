@@ -1,1 +1,0 @@
-export const getDefaultBlog = async () => {};

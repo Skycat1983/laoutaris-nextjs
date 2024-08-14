@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import { getCollection } from "@/utils/server/getCollection";
+import { getCollection } from "@/lib/server/artwork/getCollection";
 import Collection from "@/views/Collection";
 
 export default async function Item({

@@ -1,4 +1,4 @@
-import { CollectionModel, ICollectionContent } from "@/app/models";
+import { CollectionModel, ICollectionContent } from "@/lib/models";
 
 export const getDefaultCollection = async (section: string) => {
   // console.log("getting first section item for", section);

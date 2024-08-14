@@ -1,4 +1,4 @@
-import { BlogModel } from "@/app/models";
+import { BlogModel } from "@/lib/models";
 
 /*
  * This function retrieves all blog entries from the database and calculates their availability by year and month.

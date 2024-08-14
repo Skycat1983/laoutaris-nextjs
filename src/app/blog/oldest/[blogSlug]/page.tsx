@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import { getBlogEntry } from "@/utils/server/getBlogEntry";
+import { getBlogEntry } from "@/lib/server/blog/getBlogEntry";
 import BlogItem from "@/views/BlogItem";
 
 export default async function BlogEntry({
