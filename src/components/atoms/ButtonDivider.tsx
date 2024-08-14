@@ -7,7 +7,7 @@ type Props = {
 
 const ButtonDivider = ({ label, link }: Props) => {
   return (
-    <div className="relative w-full">
+    <div className="relative w-full flex justify-center">
       <div className="absolute mt-7 flex justify-center w-full">
         <div className="w-full border-t border-gray-300"></div>
       </div>

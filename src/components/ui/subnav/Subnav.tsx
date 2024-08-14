@@ -1,6 +1,6 @@
 import NavItem from "@/components/atoms/buttons/NavItem";
 import Link from "next/link";
-import { ScrollArea, ScrollBar } from "../scroll-area";
+import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 
 interface SubnavProps {
   stem: string;

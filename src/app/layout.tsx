@@ -15,6 +15,8 @@ import {
 import Footer from "@/components/ui/footer/Footer";
 
 import Header from "@/components/ui/header/Header";
+import { GlobalFeaturesProvider } from "@/lib/contexts/GlobalFeaturesContext";
+import Modal from "@/components/ui/modal/Modal";
 
 const archivoBlack = Archivo_Black({
   weight: "400",
@@ -62,13 +64,16 @@ export default function RootLayout({
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
     >
-      <body>
-        <Header />
-        <div className="mt-[100px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
+      <GlobalFeaturesProvider>
+        <body>
+          <Modal />
 
-        {children}
-        <Footer />
-      </body>
+          <Header />
+          <div className="mt-[120px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
+          {children}
+          <Footer />
+        </body>
+      </GlobalFeaturesProvider>
     </html>
   );
 }

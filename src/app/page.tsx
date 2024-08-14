@@ -7,10 +7,16 @@ export default function Home() {
   return (
     <main className="flex min-h-screen max-w-screen flex-col items-center justify-start">
       <Hero />
-      <div className="flex flex-col items-center  justify-center gap-[1px] py-[100px] container">
-        <ArtworkSection />
-        <ProjectSection />
-        <BiographySection />
+      <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container">
+        <div className="">
+          <ArtworkSection />
+        </div>
+        {/* <div className="">
+          <ProjectSection />
+        </div> */}
+
+        {/* 
+        <BiographySection /> */}
       </div>
     </main>
   );

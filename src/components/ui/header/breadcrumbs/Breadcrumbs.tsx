@@ -6,7 +6,7 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@/components/ui/header/breadcrumbs/breadcrumb";
+} from "@/components/ui/shadcn/breadcrumb";
 import { usePathname } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 

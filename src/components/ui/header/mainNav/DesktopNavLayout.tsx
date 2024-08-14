@@ -2,6 +2,7 @@ import React from "react";
 import Logo from "../../../atoms/Logo";
 import { ChevronDown, Heart, ShoppingBasket, User } from "lucide-react";
 import Link from "next/link";
+import { AccountMenuBar } from "../../accountMenuBar/AccountMenuBar";
 
 const DesktopNavLayout = () => {
   return (
@@ -57,14 +58,15 @@ const DesktopNavLayout = () => {
               <h2 className="px-2 text-xl font-thin">|</h2>
             </div>
           </nav>
-          <User />
+          <AccountMenuBar />
+          {/* <User />
           <Heart />
-          <ShoppingBasket />
+          <ShoppingBasket /> */}
 
-          <div className="flex flex-row pr-6">
+          {/* <div className="flex flex-row pr-6">
             <h1>DE</h1>
             <ChevronDown />
-          </div>
+          </div> */}
         </div>
       </div>
     </>

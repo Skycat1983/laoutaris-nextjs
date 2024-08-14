@@ -3,7 +3,7 @@ import { usePagination } from "./usePagination";
 import NavigationButton from "./PaginationButton";
 import PaginationCard from "./PaginationCard";
 import { PaginationIcon, PaginationIconsContainer } from "./PaginationIcon";
-import { ScrollArea, ScrollBar } from "../scroll-area";
+import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 

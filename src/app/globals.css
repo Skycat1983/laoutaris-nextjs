@@ -79,6 +79,10 @@
   .subheading-button-active {
     @apply font-[600] text-primary bg-black text-white border border-black border-[2px] px-6 py-3;
   }
+
+  .menubar-trigger[data-disabled] {
+    @apply opacity-50 cursor-not-allowed;
+  }
 }
 
 @tailwind utilities;

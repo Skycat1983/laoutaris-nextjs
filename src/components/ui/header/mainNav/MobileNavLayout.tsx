@@ -17,7 +17,7 @@ const MobileNavLayout = () => {
           <Menu />
         </div>
       </div>
-      <div className="w-full bg-gray-100 h-[1px]"></div>
+      {/* <div className="w-full bg-gray-100 h-[1px]"></div> */}
     </>
   );
 };
