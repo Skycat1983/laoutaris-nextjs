@@ -4,6 +4,8 @@ import { SignupFormSchema } from "@/lib/definitions";
 import { createUser } from "@/lib/server/user/createUser";
 import { loginUser } from "@/lib/server/user/loginUser";
 import { validateSignup } from "@/lib/validate";
+import { getErrorMessage } from "@/utils/getErrorMessage";
+import dbConnect from "@/utils/mongodb";
 
 export interface SignUpFormData {
   email: string;
@@ -36,6 +38,7 @@ export async function signUpAction(
   formData: FormData
 ): Promise<SignupResponse> {
   "use server";
+  await dbConnect();
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -67,9 +70,10 @@ export async function signUpAction(
       };
     }
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
     return {
       type: "auth",
-      authError: "Failed to create user",
+      authError: errorMessage,
     };
   }
 }

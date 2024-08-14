@@ -3,6 +3,7 @@ import { encrypt } from "@/lib/auth";
 import { IUser, UserModel } from "@/lib/models";
 import { ISignupData } from "@/lib/types/userTypes";
 import { encryptPassword } from "@/utils/bcrypt";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 // import { encryptPassword } from "@/utils/bcrypt";
 
 interface CreateUserSuccess {
@@ -58,11 +59,12 @@ export const createUser = async ({
     };
   } catch (error) {
     console.log("Error creating user:", error);
+    const errorMessage = getErrorMessage(error);
 
     // Return error response
     return {
       success: false,
-      error: "Failed to create user",
+      error: errorMessage,
     };
   }
 };

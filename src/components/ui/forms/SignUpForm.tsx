@@ -15,6 +15,8 @@ const SignUpForm = () => {
   const { setModalContent } = useGlobalFeatures();
   const [state, formAction] = useFormState(signUpAction, initialState);
 
+  console.log("state", state);
+
   return (
     <>
       <div className="bg-white w-1/2 p-12 mx-auto">
