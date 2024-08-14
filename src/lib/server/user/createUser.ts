@@ -1,13 +1,17 @@
+import { encrypt } from "@/lib/auth";
 import { IUser, UserModel } from "@/lib/models";
 import { ISignupData } from "@/lib/types/userTypes";
 import { encryptPassword } from "@/utils/bcrypt";
+// import { encryptPassword } from "@/utils/bcrypt";
 
 export const createUser = async ({
   email,
   username,
   password,
 }: ISignupData) => {
+  console.log("email, username, password", email, username, password);
   const hashedPassword = await encryptPassword(password);
+  console.log("hashedPassword", hashedPassword);
   // console.log("req.body :>> ", req.body);
   const newUser = new UserModel({
     email: email,

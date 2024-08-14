@@ -58,7 +58,7 @@ const SignUpForm = () => {
             type="text"
             placeholder="username"
             className="w-full p-3 border border-gray-300 rounded-md"
-            autoComplete="new-password"
+            autoComplete="new-username"
             name="username"
             id="username"
           />
