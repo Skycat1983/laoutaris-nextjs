@@ -1,7 +1,9 @@
+"use server";
+
 import dbConnect from "@/utils/mongodb";
 import { validateLoginData } from "../validation/validateLoginData";
 import { authenticateUser } from "../data-fetching/authenticateUser";
-import { createSession } from "../session/auth";
+import { createSession } from "../session/session";
 
 export interface LoginFormData {
   email: string;
@@ -32,7 +34,6 @@ export async function processLogin(
   prevState: LoginProcessResponse,
   formData: FormData
 ): Promise<LoginProcessResponse> {
-  "use server";
   await dbConnect();
 
   const email = formData.get("email") as string;

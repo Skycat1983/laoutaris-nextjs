@@ -1,7 +1,14 @@
 "use client";
 
-import { ReactNode, createContext, useContext } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import useModal, { UseModalValues } from "../hooks/useModal";
+import { getSession } from "@/lib/server/user/session/session";
 
 type GlobalFeaturesContextValues = UseModalValues;
 
@@ -23,7 +30,23 @@ interface GlobalFeaturesProviderProps {
 export const GlobalFeaturesProvider = ({
   children,
 }: GlobalFeaturesProviderProps): React.ReactElement => {
+  // const [activeSession, setActiveSession] = useState(false);
   const modal = useModal();
+
+  // useEffect(() => {
+  //   const session = async () => {
+  //     const session = await getSession();
+  //     if (session) {
+  //       setActiveSession(true);
+  //     }
+  //   };
+  //   session();
+  //   // first
+
+  //   return () => {
+  //     // second
+  //   };
+  // }, []);
 
   return (
     <GlobalFeaturesContext.Provider

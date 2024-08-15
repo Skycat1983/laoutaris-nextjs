@@ -1,3 +1,5 @@
+"use server";
+
 import dbConnect from "@/utils/mongodb";
 import { validateRegistrationData } from "../validation/validateRegistrationData";
 import { registerUser } from "../data-fetching/registerUser";
@@ -33,7 +35,6 @@ export async function processRegistration(
   state: RegistrationResponse,
   formData: FormData
 ): Promise<RegistrationResponse> {
-  "use server";
   await dbConnect();
 
   const email = formData.get("email") as string;

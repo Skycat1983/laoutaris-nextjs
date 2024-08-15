@@ -1,4 +1,6 @@
-import { destroySession } from "../session/auth";
+"use server";
+
+import { destroySession } from "../session/session";
 
 interface LogoutSuccessResult {
   type: "success";
@@ -13,8 +15,6 @@ interface AuthErrorResult {
 export type LogoutProcessResponse = LogoutSuccessResult | AuthErrorResult;
 
 export async function processLogout(): Promise<LogoutProcessResponse> {
-  "use server";
-
   try {
     // Destroy the user's session
     await destroySession();

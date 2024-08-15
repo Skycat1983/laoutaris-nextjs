@@ -25,15 +25,18 @@ import {
   ShoppingBasket,
   User,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SignUpForm from "../forms/SignUpForm";
 import SignInForm from "../forms/SignInForm";
+import { getSession } from "@/lib/server/user/session/session";
 
 export function AccountMenuBar() {
+  // const session = await getSession();
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
+
   return (
-    <Menubar>
+    <Menubar className="flex flex-row w-auto gap-0 my-auto items-center ">
       <MenubarMenu>
         <MenubarTrigger>
           <User />
@@ -120,28 +123,30 @@ export function AccountMenuBar() {
           <MenubarItem inset>Hide Sidebar</MenubarItem>
         </MenubarContent>
       </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger>
-          <div className="flex flex-row pr-6 items-center">
-            <h1>{selectedLanguage.toUpperCase()}</h1>
-            <ChevronDown />
-          </div>
-        </MenubarTrigger>
-        <MenubarContent>
-          <MenubarRadioGroup
-            value={selectedLanguage}
-            onValueChange={setSelectedLanguage}
-          >
-            <MenubarRadioItem value="de">DE</MenubarRadioItem>
-            <MenubarRadioItem value="en">EN</MenubarRadioItem>
-            <MenubarRadioItem value="fr">FR</MenubarRadioItem>
-          </MenubarRadioGroup>
-          {/* <MenubarSeparator />
+      <div className="hidden md:block">
+        <MenubarMenu>
+          <MenubarTrigger>
+            <div className="flex flex-row pr-6 items-center">
+              <h1>{selectedLanguage.toUpperCase()}</h1>
+              <ChevronDown />
+            </div>
+          </MenubarTrigger>
+          <MenubarContent>
+            <MenubarRadioGroup
+              value={selectedLanguage}
+              onValueChange={setSelectedLanguage}
+            >
+              <MenubarRadioItem value="de">DE</MenubarRadioItem>
+              <MenubarRadioItem value="en">EN</MenubarRadioItem>
+              <MenubarRadioItem value="fr">FR</MenubarRadioItem>
+            </MenubarRadioGroup>
+            {/* <MenubarSeparator />
           <MenubarItem inset>Edit...</MenubarItem>
           <MenubarSeparator />
           <MenubarItem inset>Add Profile...</MenubarItem> */}
-        </MenubarContent>
-      </MenubarMenu>
+          </MenubarContent>
+        </MenubarMenu>
+      </div>
     </Menubar>
   );
 }

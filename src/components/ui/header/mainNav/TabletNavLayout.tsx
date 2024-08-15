@@ -3,6 +3,7 @@ import Logo from "../../../atoms/Logo";
 import Link from "next/link";
 import { ChevronDown, Euro, Heart, ShoppingBasket, User } from "lucide-react";
 import NavItem from "@/components/atoms/buttons/NavItem";
+import { AccountMenuBar } from "../../accountMenuBar/AccountMenuBar";
 
 const TabletNavLayout = () => {
   return (
@@ -16,14 +17,16 @@ const TabletNavLayout = () => {
             </Link>
           </nav>
           <div className="flex flex-row gap-5 items-center">
-            <User />
+            <AccountMenuBar />
+
+            {/* <User />
             <Heart />
             <ShoppingBasket />
 
             <div className="flex flex-row">
               <h1>DE</h1>
               <ChevronDown />
-            </div>
+            </div> */}
           </div>
         </div>
         {/* bottom row */}

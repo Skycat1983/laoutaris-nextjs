@@ -5,7 +5,8 @@
       "@components/*": ["components/*"],
       "@lib/*": ["lib/*"],
       "@public/*": ["public/*"],
-      "@/app/*": ["./src/*"]
+      "@/app/*": ["./src/*"],
+      "@auth/*": ["src/auth/*"]
     }
   }
 }
