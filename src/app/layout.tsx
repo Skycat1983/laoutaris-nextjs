@@ -4,7 +4,9 @@ import { getServerSession } from "next-auth";
 
 import React from "react";
 import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
-import SessionProvider from "@/lib/client/contexts/SessionProvider";
+import SessionProvider, {
+  SessionContextProvider,
+} from "@/lib/client/contexts/SessionProvider";
 
 import Header from "@/components/ui/header/Header";
 import Modal from "@/components/ui/modal/Modal";
@@ -27,15 +29,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
-  console.log("session", session);
+  const githubSession = await getServerSession();
+  console.log("githubSession", githubSession);
+
+  const session = await getSession();
+
+  console.log("regular session", session);
   return (
     <html
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
     >
       <body>
-        <SessionProvider session={session}>
+        <SessionContextProvider session={githubSession}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
@@ -43,11 +49,24 @@ export default async function RootLayout({
             {children}
             <Footer />
           </GlobalFeaturesProvider>
-        </SessionProvider>
+        </SessionContextProvider>
       </body>
     </html>
   );
 }
+
+// user: {
+//   name: 'Heron',
+//   email: 'hlaoutaris@gmail.com',
+//   image: 'https://avatars.githubusercontent.com/u/106820512?v=4'
+// }
+
+// regular session {
+//   user: { email: 'testing91@testing.com', password: 'testing91' },
+//   expires: '2024-08-15T15:42:13.592Z',
+//   iat: 1723736523,
+//   exp: 1723736533
+// }
 
 // const archivoBlack = Archivo_Black({
 //   weight: "400",

@@ -35,7 +35,7 @@ import ModalMessage from "@/components/atoms/ModalMessage";
 export function AccountMenuBar() {
   const { data: session } = useSession();
 
-  console.log("session", session);
+  console.log("session in Account menu bar", session);
   // const session = await getSession();
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");

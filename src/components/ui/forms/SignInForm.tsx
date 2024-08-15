@@ -59,7 +59,7 @@ const SignInForm = () => {
               {JSON.stringify(state.authError)}
             </p>
           )}
-          <SubmitButton label={"Sign up"} />
+          <SubmitButton label={"Sign in"} />
         </form>
         <h2 className="text-lg py-4 text-[#000000BF]">
           Not registered?{" "}
