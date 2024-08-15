@@ -6,7 +6,7 @@
       "@lib/*": ["lib/*"],
       "@public/*": ["public/*"],
       "@/app/*": ["./src/*"],
-      "@auth/*": ["src/auth/*"]
+      "@auth/*": ["./src/auth/*"]
     }
   }
 }

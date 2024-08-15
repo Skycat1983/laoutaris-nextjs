@@ -29,8 +29,13 @@ import { useEffect, useState } from "react";
 import SignUpForm from "../forms/SignUpForm";
 import SignInForm from "../forms/SignInForm";
 import { getSession } from "@/lib/server/user/session/session";
+import { useSession, signIn, signOut } from "next-auth/react";
+import ModalMessage from "@/components/atoms/ModalMessage";
 
 export function AccountMenuBar() {
+  const { data: session } = useSession();
+
+  console.log("session", session);
   // const session = await getSession();
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
@@ -47,6 +52,7 @@ export function AccountMenuBar() {
               setModalContent(<SignUpForm />);
               openModal();
             }}
+            disabled={!!session?.user?.name}
           >
             Sign up{" "}
             <MenubarShortcut>
@@ -54,6 +60,7 @@ export function AccountMenuBar() {
             </MenubarShortcut>
           </MenubarItem>
           <MenubarItem
+            disabled={!!session?.user?.name}
             onSelect={() => {
               setModalContent(<SignInForm />);
               openModal();
@@ -65,7 +72,14 @@ export function AccountMenuBar() {
             </MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem disabled>
+          <MenubarItem
+            disabled={!session?.user?.name}
+            onSelect={() => {
+              signOut();
+              setModalContent(<ModalMessage message="Sign out successful" />);
+              openModal();
+            }}
+          >
             Sign out{" "}
             <MenubarShortcut>
               <LogOut className="w-4 h-4" />

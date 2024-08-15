@@ -1,54 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { getSession } from "@/lib/server/user/session/session";
+import { getServerSession } from "next-auth";
 
 import React from "react";
-import {
-  Archivo_Black,
-  Cinzel_Decorative,
-  Archivo,
-  Roboto_Serif,
-  Playfair_Display,
-  Cormorant,
-  Crimson_Text,
-} from "next/font/google";
-import Footer from "@/components/ui/footer/Footer";
+import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
+import SessionProvider from "@/lib/client/contexts/SessionProvider";
 
 import Header from "@/components/ui/header/Header";
-import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
 import Modal from "@/components/ui/modal/Modal";
-import { getSession } from "@/lib/server/user/session/session";
-
-const archivoBlack = Archivo_Black({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-archivo-black",
-});
-
-const archivo = Archivo({
-  weight: ["400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  // display: "swap",
-
-  variable: "--font-archivo",
-});
-
-const cinzelDecorative = Cinzel_Decorative({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-
-  variable: "--font-cinzel-decorative",
-});
-
-const crimson = Crimson_Text({
-  weight: ["400"],
-  subsets: ["latin"],
-  display: "swap",
-
-  variable: "--font-crimson",
-});
+import Footer from "@/components/ui/footer/Footer";
+import {
+  archivo,
+  archivoBlack,
+  cinzelDecorative,
+  crimson,
+} from "@/lib/client/styles/fonts";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -60,23 +27,55 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
+  const session = await getServerSession();
   console.log("session", session);
   return (
     <html
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
     >
-      <GlobalFeaturesProvider>
-        <body>
-          <Modal />
-
-          <Header />
-          <div className="mt-[120px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
-          {children}
-          <Footer />
-        </body>
-      </GlobalFeaturesProvider>
+      <body>
+        <SessionProvider session={session}>
+          <GlobalFeaturesProvider>
+            <Modal />
+            <Header />
+            <div className="mt-[120px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
+            {children}
+            <Footer />
+          </GlobalFeaturesProvider>
+        </SessionProvider>
+      </body>
     </html>
   );
 }
+
+// const archivoBlack = Archivo_Black({
+//   weight: "400",
+//   subsets: ["latin"],
+//   display: "swap",
+//   variable: "--font-archivo-black",
+// });
+
+// const archivo = Archivo({
+//   weight: ["400", "500", "600", "700", "800"],
+//   subsets: ["latin"],
+//   // display: "swap",
+
+//   variable: "--font-archivo",
+// });
+
+// const cinzelDecorative = Cinzel_Decorative({
+//   weight: "400",
+//   subsets: ["latin"],
+//   display: "swap",
+
+//   variable: "--font-cinzel-decorative",
+// });
+
+// const crimson = Crimson_Text({
+//   weight: ["400"],
+//   subsets: ["latin"],
+//   display: "swap",
+
+//   variable: "--font-crimson",
+// });
