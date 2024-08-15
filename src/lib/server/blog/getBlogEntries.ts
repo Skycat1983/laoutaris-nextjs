@@ -1,4 +1,4 @@
-import { BlogModel } from "@/lib/models";
+import { BlogModel } from "@/lib/server/models";
 
 export const getLatestBlogEntries = async () => {
   const blogEntries = await BlogModel.find().sort({ createdAt: 1 }).limit(3);

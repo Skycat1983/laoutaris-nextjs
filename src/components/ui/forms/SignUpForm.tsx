@@ -1,11 +1,14 @@
 "use client";
 
-import { RegistrationResponse, processRegistration } from "@/app/actions";
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
-import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInForm";
 import ModalMessage from "@/components/atoms/ModalMessage";
+import {
+  RegistrationResponse,
+  processRegistration,
+} from "@/lib/server/user/actions/processRegistration";
 
 const initialState: RegistrationResponse = {
   type: "validation",

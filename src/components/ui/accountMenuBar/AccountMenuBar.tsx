@@ -15,7 +15,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/shadcn/menubar";
-import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
 import {
   ChevronDown,
   Heart,

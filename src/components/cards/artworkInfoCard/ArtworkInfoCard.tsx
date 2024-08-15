@@ -2,7 +2,7 @@ import FrameInfo from "./FrameInfo";
 import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 
 const ArtworkInfoCard = (artwork: IFrontendArtwork) => {
   const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {

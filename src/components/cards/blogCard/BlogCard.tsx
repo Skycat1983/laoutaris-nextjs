@@ -1,4 +1,4 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
+import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
 import Link from "next/link";
 
 interface BlogCardProps {

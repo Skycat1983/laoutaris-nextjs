@@ -1,4 +1,4 @@
-import { ArticleModel, IArticleContent } from "@/lib/models";
+import { ArticleModel, IArticleContent } from "@/lib/server/models";
 
 export const getDefaultBiography = async (section: string) => {
   console.log("getting first section item for", section);

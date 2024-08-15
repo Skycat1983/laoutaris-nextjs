@@ -1,10 +1,8 @@
-import { SignUpFormData } from "@/app/actions";
-import { encrypt } from "@/lib/auth";
-import { IUser, UserModel } from "@/lib/models";
-import { ISignupData } from "@/lib/types/userTypes";
+import { UserModel } from "@/lib/server/models";
 import { encryptPassword } from "@/utils/bcrypt";
 import { getErrorMessage } from "@/utils/getErrorMessage";
-// import { encryptPassword } from "@/utils/bcrypt";
+import { SignUpFormData } from "../actions/processRegistration";
+
 interface RegisterUserSuccess {
   success: true;
   message: string;

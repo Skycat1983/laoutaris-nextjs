@@ -1,11 +1,14 @@
 "use client";
 
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
-import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
-import { LoginProcessResponse, processLogin } from "@/app/actions";
 import ModalMessage from "@/components/atoms/ModalMessage";
+import {
+  LoginProcessResponse,
+  processLogin,
+} from "@/lib/server/user/actions/processLogin";
 
 const initialState: LoginProcessResponse = {
   type: "validation",

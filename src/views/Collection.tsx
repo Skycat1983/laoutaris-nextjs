@@ -4,7 +4,7 @@ import ArtworkImage from "@/components/animations/ArtworkImage";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
 import Pagination from "@/components/ui/pagination/Pagination";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 

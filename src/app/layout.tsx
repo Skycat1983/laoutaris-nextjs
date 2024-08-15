@@ -15,7 +15,7 @@ import {
 import Footer from "@/components/ui/footer/Footer";
 
 import Header from "@/components/ui/header/Header";
-import { GlobalFeaturesProvider } from "@/lib/contexts/GlobalFeaturesContext";
+import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
 import Modal from "@/components/ui/modal/Modal";
 
 const archivoBlack = Archivo_Black({

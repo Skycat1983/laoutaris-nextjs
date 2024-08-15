@@ -1,4 +1,4 @@
-import { ArticleModel } from "@/lib/models";
+import { ArticleModel } from "@/lib/server/models";
 
 export const getBiographySection = async (section: string) => {
   console.log("getting section content for", section);
