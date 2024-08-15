@@ -11,7 +11,7 @@ interface ValidationResult<T> {
   formValidationErrors: Partial<Record<keyof T, string>>;
 }
 
-export const validateSignup = (
+export const validateRegistrationData = (
   email: string,
   password: string,
   username: string
@@ -37,12 +37,10 @@ type LoginFormData = {
   password: string;
 };
 
-export const validateLogin = (
-  formData: FormData
+export const validateLoginData = (
+  email: string,
+  password: string
 ): ValidationResult<LoginFormData> => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
   const validationResult = LoginFormSchema.safeParse({
     email,
     password,
@@ -54,7 +52,6 @@ export const validateLogin = (
     );
     return { formValidationErrors };
   }
-
   return { formValidationErrors: {} };
 };
 

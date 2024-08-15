@@ -5,8 +5,7 @@ import { ISignupData } from "@/lib/types/userTypes";
 import { encryptPassword } from "@/utils/bcrypt";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 // import { encryptPassword } from "@/utils/bcrypt";
-
-interface CreateUserSuccess {
+interface RegisterUserSuccess {
   success: true;
   message: string;
   user: {
@@ -16,18 +15,18 @@ interface CreateUserSuccess {
   };
 }
 
-interface CreateUserError {
+interface RegisterUserError {
   success: false;
   error: string;
 }
 
-type CreateUserResponse = CreateUserSuccess | CreateUserError;
+type RegisterUserResponse = RegisterUserSuccess | RegisterUserError;
 
-export const createUser = async ({
+export const registerUser = async ({
   email,
   username,
   password,
-}: SignUpFormData): Promise<CreateUserResponse> => {
+}: SignUpFormData): Promise<RegisterUserResponse> => {
   try {
     console.log("email, username, password", email, username, password);
 
@@ -58,7 +57,7 @@ export const createUser = async ({
       },
     };
   } catch (error) {
-    console.log("Error creating user:", error);
+    console.log("Error registering user:", error);
     const errorMessage = getErrorMessage(error);
 
     // Return error response

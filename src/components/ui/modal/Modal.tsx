@@ -20,7 +20,6 @@ import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 
 import { Dialog, DialogPanel, Transition } from "@headlessui/react";
 import { useEffect } from "react";
-import SignUpForm from "../forms/SignUpForm";
 
 function Modal() {
   const { isOpen, openModal, closeModal, setModalContent, modalContent } =

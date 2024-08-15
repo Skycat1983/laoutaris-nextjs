@@ -4,23 +4,20 @@ import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
-import { signIn, signUp } from "@/app/actions";
+import { LoginProcessResponse, processLogin } from "@/app/actions";
+import ModalMessage from "@/components/atoms/ModalMessage";
 
-const initialState = {
+const initialState: LoginProcessResponse = {
+  type: "validation",
   formValidationErrors: { email: "", password: "" },
-  authError: null,
-  user: null,
 };
 
 const SignInForm = () => {
   const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(signIn, initialState);
+  const [state, formAction] = useFormState(processLogin, initialState);
 
-  console.log("state :>> ", state);
-
-  if (state.authError) {
-    const stringifiedError = JSON.stringify(state.authError);
-    console.warn(stringifiedError);
+  if (state?.type === "success") {
+    setModalContent(<ModalMessage message="Login successful." />);
   }
 
   return (
@@ -36,7 +33,7 @@ const SignInForm = () => {
             name="email"
             id="email"
           />
-          {state?.formValidationErrors && (
+          {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.email}
             </p>
@@ -49,12 +46,12 @@ const SignInForm = () => {
             name="password"
             id="password"
           />
-          {state?.formValidationErrors && (
+          {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.password}
             </p>
           )}
-          {state?.authError && (
+          {state?.type === "auth" && (
             <p aria-live="polite" className="bg-red-100">
               {JSON.stringify(state.authError)}
             </p>

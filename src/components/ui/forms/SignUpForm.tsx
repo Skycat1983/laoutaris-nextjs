@@ -1,21 +1,26 @@
 "use client";
 
-import { SignupResponse, signUpAction } from "@/app/actions";
+import { RegistrationResponse, processRegistration } from "@/app/actions";
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInForm";
+import ModalMessage from "@/components/atoms/ModalMessage";
 
-const initialState: SignupResponse = {
+const initialState: RegistrationResponse = {
   type: "validation",
   formValidationErrors: { email: "", password: "", username: "" },
 };
 
 const SignUpForm = () => {
   const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(signUpAction, initialState);
+  const [state, formAction] = useFormState(processRegistration, initialState);
 
-  console.log("state", state);
+  if (state?.type === "success") {
+    setModalContent(
+      <ModalMessage message="Sign up successful. Please login to continue" />
+    );
+  }
 
   return (
     <>

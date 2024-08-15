@@ -1,9 +1,8 @@
 "use server";
 
-import { SignupFormSchema } from "@/lib/definitions";
-import { createUser } from "@/lib/server/user/createUser";
-import { loginUser } from "@/lib/server/user/loginUser";
-import { validateSignup } from "@/lib/validate";
+import { registerUser } from "@/lib/server/user/registerUser";
+import { authenticateUser } from "@/lib/server/user/authenticateUser";
+import { validateLoginData, validateRegistrationData } from "@/lib/validate";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import dbConnect from "@/utils/mongodb";
 
@@ -13,7 +12,7 @@ export interface SignUpFormData {
   username: string;
 }
 
-interface ValidationErrorResult {
+interface RegistrationValidationErrorResult {
   type: "validation";
   formValidationErrors: Partial<Record<keyof SignUpFormData, string>>;
 }
@@ -28,15 +27,15 @@ interface SuccessResult {
   user: { _id: string; email: string; username: string };
 }
 
-export type SignupResponse =
-  | ValidationErrorResult
+export type RegistrationResponse =
+  | RegistrationValidationErrorResult
   | AuthErrorResult
   | SuccessResult;
 
-export async function signUpAction(
-  state: SignupResponse,
+export async function processRegistration(
+  state: RegistrationResponse,
   formData: FormData
-): Promise<SignupResponse> {
+): Promise<RegistrationResponse> {
   "use server";
   await dbConnect();
 
@@ -44,9 +43,12 @@ export async function signUpAction(
   const password = formData.get("password") as string;
   const username = formData.get("username") as string;
 
-  const validationErrors = validateSignup(email, password, username);
+  const validationErrors = validateRegistrationData(email, password, username);
 
-  if (Object.keys(validationErrors.formValidationErrors).length > 0) {
+  const hasValidationErrors =
+    Object.keys(validationErrors.formValidationErrors).length > 0;
+
+  if (hasValidationErrors) {
     return {
       type: "validation",
       formValidationErrors: validationErrors.formValidationErrors,
@@ -54,10 +56,10 @@ export async function signUpAction(
   }
 
   try {
-    // Try to create the user
-    const result = await createUser({ email, username, password });
+    // Try to register the user
+    const result = await registerUser({ email, username, password });
 
-    // Handle the createUser result
+    // Handle the registerUser result
     if (result.success) {
       return {
         type: "success",
@@ -78,128 +80,102 @@ export async function signUpAction(
   }
 }
 
-// interface CreateUserResponse {
-//   formValidationErrors: SignUpFormValidationErrors;
-//   authError: string | null;
-//   user: "user" | null;
-// }
-
-// export async function signUp(
-//   prevState: any,
-//   formData: FormData
-// ): Promise<CreateUserResponse> {
-//   "use server";
-
-//   let email = formData.get("email") as string;
-//   const password = formData.get("password") as string;
-//   const username = formData.get("username") as string;
-
-//   const validationResult = SignupFormSchema.safeParse({
-//     email,
-//     password,
-//     username,
-//   });
-
-//   validationResult.success && (email = email as string);
-
-//   console.log("validation success");
-
-//   if (!validationResult.success) {
-//     const formValidationErrors: SignUpFormValidationErrors = {
-//       email: "",
-//       password: "",
-//       username: "",
-//     };
-
-//     const fieldErrors = validationResult.error.flatten().fieldErrors;
-//     if (fieldErrors.email) {
-//       formValidationErrors.email = fieldErrors.email[0];
-//     }
-//     if (fieldErrors.password) {
-//       formValidationErrors.password = fieldErrors.password[0];
-//     }
-//     console.log("field errors found");
-//     return { formValidationErrors, authError: null, user: null };
-//   }
-
-//   try {
-//     const result = await createUser({ email, password, username });
-//     console.log("result", result);
-//     return {
-//       formValidationErrors: { email: "", password: "", username: "" },
-//       authError: null,
-//       user: "user",
-//     };
-//   } catch (error) {
-//     return {
-//       formValidationErrors: { email: "", password: "", username: "" },
-//       authError: "auth error",
-//       user: null,
-//     };
-//   }
-// }
-
-interface LoginFormData {
+export interface LoginFormData {
   email: string;
   password: string;
 }
 
-interface LoginUserResponse {
-  formValidationErrors: LoginFormData;
+interface LoginValidationErrorResult {
+  type: "validation";
+  formValidationErrors: Partial<Record<keyof LoginFormData, string>>;
+}
+
+interface AuthErrorResult {
+  type: "auth";
+  authError: string;
+}
+
+interface SuccessResult {
+  type: "success";
+  user: { _id: string; email: string; username: string };
+}
+
+export type LoginProcessResponse =
+  | LoginValidationErrorResult
+  | AuthErrorResult
+  | SuccessResult;
+
+export async function processLogin(
+  prevState: LoginProcessResponse,
+  formData: FormData
+): Promise<LoginProcessResponse> {
+  "use server";
+  await dbConnect();
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const validationErrors = validateLoginData(email, password);
+
+  const hasValidationErrors =
+    Object.keys(validationErrors.formValidationErrors).length > 0;
+
+  if (hasValidationErrors) {
+    return {
+      type: "validation",
+      formValidationErrors: validationErrors.formValidationErrors,
+    };
+  }
+
+  try {
+    // Try to authenticate the user
+    const result = await authenticateUser({ email, password });
+
+    // Handle the authenticateUser result
+    if (result.success) {
+      return {
+        type: "success",
+        user: result.user,
+      };
+    } else {
+      return {
+        type: "auth",
+        authError: result.error,
+      };
+    }
+  } catch (error: any) {
+    console.error("Error during sign-in:", error);
+
+    const errorMessage =
+      error?.message || "An unexpected error occurred during sign-in.";
+
+    return {
+      type: "auth",
+      authError: errorMessage,
+    };
+  }
+}
+
+interface LogoutFormValidationErrors {
+  logout: string;
+}
+
+interface LogoutUserResponse {
+  formValidationErrors: LogoutFormValidationErrors;
   authError: string | null;
   user: "user" | null;
 }
 
-export async function signIn(
-  prevState: any,
-  formData: FormData
-): Promise<LoginUserResponse> {
+export async function processLogout(
+  prevState: any
+): Promise<LogoutUserResponse> {
   "use server";
-
-  let email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  const validationResult = SignupFormSchema.safeParse({
-    email,
-    password,
-  });
-
-  validationResult.success && (email = email as string);
-
-  console.log("validation success");
-
-  if (!validationResult.success) {
-    const formValidationErrors: LoginFormData = {
-      email: "",
-      password: "",
-    };
-
-    const fieldErrors = validationResult.error.flatten().fieldErrors;
-    if (fieldErrors.email) {
-      formValidationErrors.email = fieldErrors.email[0];
-    }
-    if (fieldErrors.password) {
-      formValidationErrors.password = fieldErrors.password[0];
-    }
-    console.log("field errors found");
-    return { formValidationErrors, authError: null, user: null };
-  }
-
-  try {
-    // const result = await loginUser({ email, password });
-    // console.log("result", result);
-    return {
-      formValidationErrors: { email: "", password: "" },
-      authError: null,
-      user: "user",
-    };
-  } catch (error) {
-    return {
-      formValidationErrors: { email: "", password: "" },
-      authError: "auth error",
-      user: null,
-    };
-  }
+  console.log("signing out");
+  return {
+    formValidationErrors: { logout: "" },
+    authError: null,
+    user: "user",
+  };
 }
 
 interface LogoutFormValidationErrors {
@@ -221,3 +197,172 @@ export async function logout(prevState: any): Promise<LogoutUserResponse> {
     user: "user",
   };
 }
+
+// export interface SignUpFormData {
+//   email: string;
+//   password: string;
+//   username: string;
+// }
+
+// interface SignUpValidationErrorResult {
+//   type: "validation";
+//   formValidationErrors: Partial<Record<keyof SignUpFormData, string>>;
+// }
+
+// interface AuthErrorResult {
+//   type: "auth";
+//   authError: string;
+// }
+
+// interface SuccessResult {
+//   type: "success";
+//   user: { _id: string; email: string; username: string };
+// }
+
+// export type SignupResponse =
+//   | SignUpValidationErrorResult
+//   | AuthErrorResult
+//   | SuccessResult;
+
+// export async function signUpAction(
+//   state: SignupResponse,
+//   formData: FormData
+// ): Promise<SignupResponse> {
+//   "use server";
+//   await dbConnect();
+
+//   const email = formData.get("email") as string;
+//   const password = formData.get("password") as string;
+//   const username = formData.get("username") as string;
+
+//   const validationErrors = validateSignup(email, password, username);
+
+//   const hasValidationErrors =
+//     Object.keys(validationErrors.formValidationErrors).length > 0;
+
+//   if (hasValidationErrors) {
+//     return {
+//       type: "validation",
+//       formValidationErrors: validationErrors.formValidationErrors,
+//     };
+//   }
+
+//   try {
+//     // Try to create the user
+//     const result = await createUser({ email, username, password });
+
+//     // Handle the createUser result
+//     if (result.success) {
+//       return {
+//         type: "success",
+//         user: result.user,
+//       };
+//     } else {
+//       return {
+//         type: "auth",
+//         authError: result.error,
+//       };
+//     }
+//   } catch (error) {
+//     const errorMessage = getErrorMessage(error);
+//     return {
+//       type: "auth",
+//       authError: errorMessage,
+//     };
+//   }
+// }
+
+// export interface LoginFormData {
+//   email: string;
+//   password: string;
+// }
+
+// interface LoginValidationErrorResult {
+//   type: "validation";
+//   formValidationErrors: Partial<Record<keyof LoginFormData, string>>;
+// }
+
+// interface AuthErrorResult {
+//   type: "auth";
+//   authError: string;
+// }
+
+// interface SuccessResult {
+//   type: "success";
+//   user: { _id: string; email: string; username: string };
+// }
+
+// export type LoginResponse =
+//   | LoginValidationErrorResult
+//   | AuthErrorResult
+//   | SuccessResult;
+// export async function signInAction(
+//   prevState: LoginResponse,
+//   formData: FormData
+// ): Promise<LoginResponse> {
+//   "use server";
+//   await dbConnect();
+
+//   const email = formData.get("email") as string;
+//   const password = formData.get("password") as string;
+
+//   const validationErrors = validateLogin(email, password);
+
+//   const hasValidationErrors =
+//     Object.keys(validationErrors.formValidationErrors).length > 0;
+
+//   if (hasValidationErrors) {
+//     return {
+//       type: "validation",
+//       formValidationErrors: validationErrors.formValidationErrors,
+//     };
+//   }
+
+//   try {
+//     // Try to create the user
+//     const result = await loginUser({ email, password });
+
+//     // Handle the createUser result
+//     if (result.success) {
+//       return {
+//         type: "success",
+//         user: result.user,
+//       };
+//     } else {
+//       return {
+//         type: "auth",
+//         authError: result.error,
+//       };
+//     }
+//   } catch (error: any) {
+//     console.error("Error during sign-in:", error);
+
+//     const errorMessage =
+//       error?.message || "An unexpected error occurred during sign-in.";
+
+//     return {
+//       type: "auth",
+//       authError: errorMessage,
+//     };
+//   }
+// }
+
+// interface LogoutFormValidationErrors {
+//   logout: string;
+// }
+
+// interface LogoutUserResponse {
+//   formValidationErrors: LogoutFormValidationErrors;
+//   authError: string | null;
+//   user: "user" | null;
+// }
+
+// export async function logout(prevState: any): Promise<LogoutUserResponse> {
+//   "use server";
+//   console.log("signing out");
+//   return {
+//     formValidationErrors: { logout: "" },
+//     authError: null,
+//     user: "user",
+//   };
+// }
