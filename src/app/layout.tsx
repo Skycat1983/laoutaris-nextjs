@@ -18,6 +18,7 @@ import {
   crimson,
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
+import { getProviders } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -35,6 +36,9 @@ export default async function RootLayout({
   const session = await getSession();
 
   console.log("regular session", session);
+
+  const providers = await getProviders();
+  console.log("Providers", providers);
   return (
     <html
       lang="en"
