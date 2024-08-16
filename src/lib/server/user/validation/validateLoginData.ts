@@ -13,23 +13,23 @@ interface ValidationResult<T> {
   formValidationErrors: Partial<Record<keyof T, string>>;
 }
 
-// export const validateLoginData = (
-//   email: string,
-//   password: string
-// ): ValidationResult<LoginFormData> => {
-//   const validationResult = LoginFormSchema.safeParse({
-//     email,
-//     password,
-//   });
+export const validateLogin = (
+  email: string,
+  password: string
+): ValidationResult<LoginFormData> => {
+  const validationResult = LoginFormSchema.safeParse({
+    email,
+    password,
+  });
 
-//   if (!validationResult.success) {
-//     const formValidationErrors = formatFieldErrors<LoginFormData>(
-//       validationResult.error
-//     );
-//     return { formValidationErrors };
-//   }
-//   return { formValidationErrors: {} };
-// };
+  if (!validationResult.success) {
+    const formValidationErrors = formatFieldErrors<LoginFormData>(
+      validationResult.error
+    );
+    return { formValidationErrors };
+  }
+  return { formValidationErrors: {} };
+};
 
 interface LoginFormData {
   usernameData: unknown;

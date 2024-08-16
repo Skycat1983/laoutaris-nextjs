@@ -1,7 +1,10 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import { validateLoginData } from "../validation/validateLoginData";
+import {
+  validateLogin,
+  validateLoginData,
+} from "../validation/validateLoginData";
 import {
   authenticateUser,
   authenticateUsername,
@@ -38,55 +41,57 @@ export type LoginProcessResponse =
   | AuthErrorResult
   | SuccessResult;
 
-// export async function processLogin(
-//   prevState: LoginProcessResponse,
-//   formData: FormData
-// ): Promise<LoginProcessResponse> {
-//   await dbConnect();
+export async function processLogin(
+  prevState: LoginProcessResponse,
+  formData: FormData
+): Promise<LoginProcessResponse> {
+  await dbConnect();
 
-//   const email = formData.get("email") as string;
-//   const password = formData.get("password") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-//   const validationErrors = validateLoginData(email, password);
+  const validationErrors = validateLogin(email, password);
 
-//   const hasValidationErrors =
-//     Object.keys(validationErrors.formValidationErrors).length > 0;
+  const hasValidationErrors =
+    Object.keys(validationErrors.formValidationErrors).length > 0;
 
-//   if (hasValidationErrors) {
-//     return {
-//       type: "validation",
-//       formValidationErrors: validationErrors.formValidationErrors,
-//     };
-//   }
+  if (hasValidationErrors) {
+    return {
+      type: "validation",
+      formValidationErrors: validationErrors.formValidationErrors as Partial<
+        Record<keyof LoginFormData, string>
+      >,
+    };
+  }
 
-//   try {
-//     // Try to authenticate the user
-//     const result = await authenticateUser({ email, password });
-//     // const result = await authenticateUsername({ email, password });
+  try {
+    // Try to authenticate the user
+    const result = await authenticateUser({ email, password });
+    // const result = await authenticateUsername({ email, password });
 
-//     // Handle the authenticateUser result
-//     if (result.success) {
-//       await createSession({ email, password });
+    // Handle the authenticateUser result
+    if (result.success) {
+      await createSession({ email, password });
 
-//       return {
-//         type: "success",
-//         user: result.user,
-//       };
-//     } else {
-//       return {
-//         type: "auth",
-//         authError: result.error,
-//       };
-//     }
-//   } catch (error: any) {
-//     console.error("Error during sign-in:", error);
+      return {
+        type: "success",
+        user: result.user,
+      };
+    } else {
+      return {
+        type: "auth",
+        authError: result.error,
+      };
+    }
+  } catch (error: any) {
+    console.error("Error during sign-in:", error);
 
-//     const errorMessage =
-//       error?.message || "An unexpected error occurred during sign-in.";
+    const errorMessage =
+      error?.message || "An unexpected error occurred during sign-in.";
 
-//     return {
-//       type: "auth",
-//       authError: errorMessage,
-//     };
-//   }
-// }
+    return {
+      type: "auth",
+      authError: errorMessage,
+    };
+  }
+}
