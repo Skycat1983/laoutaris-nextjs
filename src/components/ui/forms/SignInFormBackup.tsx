@@ -3,33 +3,52 @@
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
-import SignInForm from "./SignInFormBackup";
+import SignUpForm from "./SignUpForm";
 import ModalMessage from "@/components/atoms/ModalMessage";
 import {
-  RegistrationResponse,
-  processRegistration,
-} from "@/lib/server/user/actions/processRegistration";
+  LoginProcessResponse,
+  processLogin,
+} from "@/lib/server/user/actions/processLogin";
+import { signIn, useSession } from "next-auth/react";
+import { handler } from "@/app/api/auth/[...nextauth]/route";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-const initialState: RegistrationResponse = {
+const initialState: LoginProcessResponse = {
   type: "validation",
-  formValidationErrors: { email: "", password: "", username: "" },
+  formValidationErrors: { email: "", password: "" },
 };
 
-const SignUpForm = () => {
-  const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(processRegistration, initialState);
+// const handleLogin = {handler}
 
-  if (state?.type === "success") {
-    setModalContent(
-      <ModalMessage message="Sign up successful. Please login to continue" />
-    );
+const SignInForm = () => {
+  // const router = useRouter();
+  const { data: session } = useSession();
+
+  const { setModalContent } = useGlobalFeatures();
+  const [state, formAction] = useFormState(processLogin, initialState);
+
+  if (session) {
+    setModalContent(<ModalMessage message="Login successful." />);
   }
+
+  // useEffect(() => {
+  //   router.push("/login");
+
+  //   return () => {
+  //     //
+  //   };
+  // }, []);
+
+  // if (state?.type === "success") {
+  //   setModalContent(<ModalMessage message="Login successful." />);
+  // }
 
   return (
     <>
       <div className="bg-white w-1/2 p-12 mx-auto">
-        <h1 className="text-2xl py-4">Sign Up</h1>
-        <form action={formAction} className="flex flex-col gap-3">
+        <h1 className="text-2xl py-4">Sign In</h1>
+        <form action={() => signIn()} className="flex flex-col gap-3">
           <input
             type="text"
             placeholder="email"
@@ -56,41 +75,28 @@ const SignUpForm = () => {
               {state.formValidationErrors.password}
             </p>
           )}
-          <input
-            type="text"
-            placeholder="username"
-            className="w-full p-3 border border-gray-300 rounded-md"
-            autoComplete="new-username"
-            name="username"
-            id="username"
-          />
-          {state?.type === "validation" && (
-            <p aria-live="polite" className="bg-red-100">
-              {state.formValidationErrors.username}
-            </p>
-          )}
           {state?.type === "auth" && (
             <p aria-live="polite" className="bg-red-100">
               {JSON.stringify(state.authError)}
             </p>
           )}
-          <SubmitButton label={"Sign up"} />
+          <SubmitButton label={"Sign in"} />
         </form>
         <h2 className="text-lg py-4 text-[#000000BF]">
-          Alrealy got an account?{" "}
+          Not registered?{" "}
           <span
             className="text-blue-600 cursor-pointer"
             onClick={() => {
-              setModalContent(<SignInForm />);
+              setModalContent(<SignUpForm />);
             }}
           >
-            Sign in
+            Sign up
           </span>{" "}
-          instead
+          today!
         </h2>
       </div>
     </>
   );
 };
 
-export default SignUpForm;
+export default SignInForm;

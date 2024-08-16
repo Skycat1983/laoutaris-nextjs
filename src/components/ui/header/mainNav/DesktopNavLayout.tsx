@@ -14,7 +14,6 @@ const DesktopNavLayout = () => {
             <Logo />
           </Link>
         </nav>
-        {/* <div></div> */}
         <div className="flex flex-row gap-5 items-center">
           <nav className="flex flex-row items-center h-auto space-x-6 ">
             <div className="hidden md:flex flex-row items-center">
@@ -58,7 +57,9 @@ const DesktopNavLayout = () => {
               <h2 className="px-2 text-xl font-thin">|</h2>
             </div>
           </nav>
+
           <AccountMenuBar />
+
           {/* <User />
           <Heart />
           <ShoppingBasket /> */}

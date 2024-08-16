@@ -5,10 +5,8 @@ import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
 import ModalMessage from "@/components/atoms/ModalMessage";
-import {
-  LoginProcessResponse,
-  processLogin,
-} from "@/lib/server/user/actions/processLogin";
+import { LoginProcessResponse } from "@/lib/server/user/actions/processLogin";
+import { signIn, useSession } from "next-auth/react";
 
 const initialState: LoginProcessResponse = {
   type: "validation",
@@ -16,10 +14,12 @@ const initialState: LoginProcessResponse = {
 };
 
 const SignInForm = () => {
-  const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(processLogin, initialState);
+  const { data: session } = useSession();
 
-  if (state?.type === "success") {
+  const { setModalContent } = useGlobalFeatures();
+  const [state, formAction] = useFormState(() => signIn(), initialState);
+
+  if (session) {
     setModalContent(<ModalMessage message="Login successful." />);
   }
 
@@ -27,20 +27,20 @@ const SignInForm = () => {
     <>
       <div className="bg-white w-1/2 p-12 mx-auto">
         <h1 className="text-2xl py-4">Sign In</h1>
-        <form action={formAction} className="flex flex-col gap-3">
+        <form action={() => signIn()} className="flex flex-col gap-3">
           <input
             type="text"
-            placeholder="email"
+            placeholder="username"
             className="w-full p-3 border border-gray-300 rounded-md"
             autoComplete="off"
-            name="email"
-            id="email"
+            name="username"
+            id="username"
           />
-          {state?.type === "validation" && (
+          {/* {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.email}
             </p>
-          )}
+          )} */}
           <input
             type="password"
             placeholder="password"
@@ -49,16 +49,16 @@ const SignInForm = () => {
             name="password"
             id="password"
           />
-          {state?.type === "validation" && (
+          {/* {state?.type === "validation" && (
             <p aria-live="polite" className="bg-red-100">
               {state.formValidationErrors.password}
             </p>
-          )}
-          {state?.type === "auth" && (
+          )} */}
+          {/* {state?.type === "auth" && (
             <p aria-live="polite" className="bg-red-100">
               {JSON.stringify(state.authError)}
             </p>
-          )}
+          )} */}
           <SubmitButton label={"Sign in"} />
         </form>
         <h2 className="text-lg py-4 text-[#000000BF]">

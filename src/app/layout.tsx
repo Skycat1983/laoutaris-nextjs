@@ -30,22 +30,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const githubSession = await getServerSession();
-  console.log("githubSession", githubSession);
+  const session = await getServerSession();
+  console.log("session", session);
 
-  const session = await getSession();
-
-  console.log("regular session", session);
-
-  const providers = await getProviders();
-  console.log("Providers", providers);
   return (
     <html
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
     >
       <body>
-        <SessionContextProvider session={githubSession}>
+        <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
