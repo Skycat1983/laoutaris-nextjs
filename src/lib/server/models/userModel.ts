@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { ArtworkModel } from "./artworkModel";
 
 export interface IUser extends Document {
   email: string;
@@ -15,7 +16,7 @@ const userSchema = new mongoose.Schema<IUser>(
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
-    watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "artwork" }],
+    watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },
   { timestamps: true }
 );

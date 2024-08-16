@@ -1,10 +1,13 @@
 import FrameInfo from "./FrameInfo";
 import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
-
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 
-const ArtworkInfoCard = (artwork: IFrontendArtwork) => {
+interface ArtworkInfoCardProps extends IFrontendArtwork {
+  watchlisted: boolean;
+}
+
+const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
   const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {
     const temporaryFrameInfo = Object.fromEntries([
       ["height", displayedArtwork.image.pixelHeight * 1.5],
@@ -52,7 +55,9 @@ const ArtworkInfoCard = (artwork: IFrontendArtwork) => {
         you tell?", he'd respond wryly.
       </p>
       <div className="w-full flex flex-row gap-5">
-        <WatchlistButton label="Add to watchlist" />
+        <WatchlistButton
+          label={!watchlisted ? "Add to watchlist" : "Remove from watchlist"}
+        />
         {/* <WatchlistButton itemId={artwork._id} isWatchlisted={false} /> */}
         {/* <button
               className="p-2 border border-2 border-black bg-black w-2/3 rounded-full font-subheading text-white font-bold"

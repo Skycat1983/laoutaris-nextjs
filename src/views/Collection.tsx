@@ -9,18 +9,25 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 
 interface CollectionProps {
+  watchlist: string[];
   collection: {
     artworks: IFrontendArtwork[];
     // slug: string;
   };
 }
 
-const Collection: React.FC<CollectionProps> = ({ collection }) => {
+const Collection: React.FC<CollectionProps> = ({
+  collection,
+  watchlist = [],
+}) => {
   const [isShowing, setIsShowing] = useState(true);
-  const [displayedArtwork, setDisplayedArtwork] =
-    useState<IFrontendArtwork | null>(collection.artworks[0]);
+  const [displayedArtwork, setDisplayedArtwork] = useState<IFrontendArtwork>(
+    collection.artworks[0]
+  );
 
-  console.log("collection :>> ", collection);
+  // console.log("collection :>> ", collection);
+
+  console.log("userWatchlist :>> ", watchlist);
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -36,7 +43,22 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
     [collection.artworks]
   );
 
-  console.warn(collection);
+  const isWatchlisted = (watchlist: string[], id: string) => {
+    console.log("watchlist, id :>> ", watchlist, id);
+    return watchlist.includes(id);
+  };
+  console.warn("pre func call", watchlist, displayedArtwork._id);
+
+  // const onWatchlist = isWatchlisted(watchlist, displayedArtwork._id);
+
+  console.log(
+    "onWatchlist :>> ",
+    isWatchlisted(watchlist, displayedArtwork._id)
+  );
+
+  // console.warn(collection);
+
+  console.log("displayedArtwork :>> ", displayedArtwork);
   return (
     <div className="container mx-auto flex flex-col justify-start w-full  bg-black/10">
       <div className=" bg-blue-100 w-full grid gap-10 lg:grid-cols-2 lg:gap-0 ">
@@ -56,7 +78,10 @@ const Collection: React.FC<CollectionProps> = ({ collection }) => {
             </div>
             {/* card */}
             <div className="mx-auto flex justify-center w-2/3 lg:w-full lg:justify-end h-auto overflow-none bg-blue-100">
-              <ArtworkInfoCard {...displayedArtwork} />
+              <ArtworkInfoCard
+                watchlisted={isWatchlisted(watchlist, displayedArtwork._id)}
+                {...displayedArtwork}
+              />
             </div>
           </>
         )}

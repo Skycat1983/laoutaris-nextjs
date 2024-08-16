@@ -12,7 +12,7 @@ const initialState = {
 };
 
 const WatchlistButton = ({ label }: Props) => {
-  const [state, formAction] = useActionState(addToFavourites, initialState);
+  // const [state, formAction] = useActionState(addToFavourites, initialState);
   // const [buttonLabel, setButtonLabel] = useState(label);
   return (
     <>

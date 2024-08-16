@@ -1,14 +1,8 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import {
-  validateLogin,
-  validateLoginData,
-} from "../validation/validateLoginData";
-import {
-  authenticateUser,
-  authenticateUsername,
-} from "../data-fetching/authenticateUser";
+import { validateLogin } from "../validation/validateLoginData";
+import { authenticateUser } from "../data-fetching/authenticateUser";
 import { createSession } from "../session/session";
 
 export interface LoginFormData {
@@ -67,7 +61,6 @@ export async function processLogin(
   try {
     // Try to authenticate the user
     const result = await authenticateUser({ email, password });
-    // const result = await authenticateUsername({ email, password });
 
     // Handle the authenticateUser result
     if (result.success) {
