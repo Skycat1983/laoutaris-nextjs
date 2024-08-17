@@ -1,33 +1,34 @@
 import dbConnect from "@/utils/mongodb";
-import { getCollection } from "@/lib/server/artwork/getCollection";
-import Collection from "@/views/Collection";
+import { getCollection } from "@/lib/server/collection/getCollection";
+import CollectionView from "@/views/CollectionView";
 import { headers } from "next/headers";
+import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default async function Item({
+export default async function Collection({
   params,
 }: {
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  const sectionItem = await getCollection(params.collectionSlug);
-  // ! why should i do this here instead of just calling the function directly?
-  const { watchlist } = await fetch(
-    "http://localhost:3000/api/user/watchlist",
-    {
-      cache: "no-cache",
-      method: "GET",
-      headers: headers(),
-    }
-  ).then((res) => {
-    return res.json();
-  });
+  const session = await getServerSession(authOptions);
 
-  console.log("watchlist :>> ", watchlist);
+  const collection = await getCollection(params.collectionSlug);
+
+  let watchlist: string[] = [];
+
+  if (session?.user?.name) {
+    const watchlistResponse = await fetchUserWatchlist(session.user.name);
+    if (watchlistResponse.success) {
+      watchlist = watchlistResponse.data;
+    }
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-      {sectionItem && (
-        <Collection collection={sectionItem} watchlist={watchlist} />
+      {collection && (
+        <CollectionView collection={collection} watchlist={watchlist} />
       )}
     </main>
   );

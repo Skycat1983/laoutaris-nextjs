@@ -1,6 +1,6 @@
 "use client";
 
-import { addToFavourites } from "@/lib/server/artwork/actions/addToFavourites";
+import { addToFavourites } from "@/lib/server/collection/actions/addToFavourites";
 import React, { useActionState, useState } from "react";
 
 type Props = {

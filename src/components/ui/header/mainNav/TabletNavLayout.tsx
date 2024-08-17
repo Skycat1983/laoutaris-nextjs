@@ -31,7 +31,7 @@ const TabletNavLayout = () => {
         </div>
         {/* bottom row */}
         <div className="flex flex-row space-x-4 px-4">
-          <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
+          {/* <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
             <Link href="/artwork">
               <NavItem
                 label="Artwork"
@@ -76,7 +76,7 @@ const TabletNavLayout = () => {
                 activeClassName="font-face-default subheading-button-active"
               />
             </Link>
-          </nav>
+          </nav> */}
         </div>
       </div>
     </>

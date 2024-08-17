@@ -1,6 +1,6 @@
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getCollectionSection } from "@/lib/server/artwork/getCollectionSection";
+import { getCollectionSection } from "@/lib/server/collection/getCollectionSection";
 
 export default async function ArtworkLayout({
   children,

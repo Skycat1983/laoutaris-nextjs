@@ -16,7 +16,7 @@ interface CollectionProps {
   };
 }
 
-const Collection: React.FC<CollectionProps> = ({
+const CollectionView: React.FC<CollectionProps> = ({
   collection,
   watchlist = [],
 }) => {
@@ -108,7 +108,7 @@ const Collection: React.FC<CollectionProps> = ({
   );
 };
 
-export default Collection;
+export default CollectionView;
 
 // !
 //   return (

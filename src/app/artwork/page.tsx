@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import { getDefaultCollection } from "@/lib/server/artwork/getDefaultCollection";
+import { getDefaultCollection } from "@/lib/server/collection/getDefaultCollection";
 import { redirect } from "next/navigation";
 
 export default async function Artwork() {
