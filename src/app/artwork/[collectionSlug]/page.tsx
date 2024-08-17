@@ -1,10 +1,9 @@
 import dbConnect from "@/utils/mongodb";
-import { getCollection } from "@/lib/server/collection/getCollection";
 import CollectionView from "@/views/CollectionView";
-import { headers } from "next/headers";
 import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { fetchCollection } from "@/lib/server/collection/data-fetching/fetchCollection";
 
 export default async function Collection({
   params,
@@ -14,7 +13,9 @@ export default async function Collection({
   await dbConnect();
   const session = await getServerSession(authOptions);
 
-  const collection = await getCollection(params.collectionSlug);
+  // the collection is the main displayed content
+  const collectionResult = await fetchCollection(params.collectionSlug);
+  const collection = collectionResult.success ? collectionResult.data : null;
 
   let watchlist: string[] = [];
 

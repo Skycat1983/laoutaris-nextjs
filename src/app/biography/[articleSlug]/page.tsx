@@ -1,19 +1,19 @@
 import dbConnect from "@/utils/mongodb";
-import { getBiography } from "@/lib/server/biography/getBiography";
-import Article from "@/views/Article";
+import { fetchBiography } from "@/lib/server/biography/data-fetching/fetchBiography";
+import ArticleView from "@/views/ArticleView";
 
-export default async function Item({
+export default async function Article({
   params,
 }: {
   params: { articleSlug: string };
 }) {
   await dbConnect();
-  const sectionItem = await getBiography(params.articleSlug);
-  console.log("sectionItem :>> ", sectionItem);
+  const result = await fetchBiography(params.articleSlug);
+  const article = result.success ? result.data : null;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4">
-      {sectionItem && <Article article={sectionItem} />}
+      {article && <ArticleView article={article} />}
     </main>
   );
 }

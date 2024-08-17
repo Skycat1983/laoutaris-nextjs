@@ -15,8 +15,8 @@ import React from "react";
 const Breadcrumbs = () => {
   const pathname = usePathname();
   const segments = pathname.split("/").filter((item) => item !== "");
-  console.log("pathname :>> ", pathname);
-  console.log("segments :>> ", segments);
+  // console.log("pathname :>> ", pathname);
+  // console.log("segments :>> ", segments);
   return (
     <div className="pl-4">
       <Breadcrumb>

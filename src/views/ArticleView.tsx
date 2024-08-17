@@ -15,7 +15,7 @@ interface ArticleProps {
   };
 }
 
-const Article: React.FC<ArticleProps> = ({ article }) => {
+const ArticleView: React.FC<ArticleProps> = ({ article }) => {
   const [overlayShowing, setOverlayShowing] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -66,4 +66,4 @@ const Article: React.FC<ArticleProps> = ({ article }) => {
   );
 };
 
-export default Article;
+export default ArticleView;

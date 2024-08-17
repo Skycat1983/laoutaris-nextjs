@@ -39,7 +39,7 @@ import { AccountMenuItem } from "../navMenu/AccountMenuItem";
 export function AccountMenuBar() {
   const { data: session } = useSession();
 
-  console.log("session in Account menu bar", session);
+  // console.log("session in Account menu bar", session);
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
 
