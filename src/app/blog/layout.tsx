@@ -1,8 +1,5 @@
-import BlogSidebar from "@/components/ui/sidebar/BlogSidebar";
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getBlogAvailability } from "@/lib/server/blog/getBlogAvailability";
-import { fetchBlogAvailability } from "@/lib/server/blog/data-fetching/fetchBlogAvailability";
 
 export default async function BlogLayout({
   children,
