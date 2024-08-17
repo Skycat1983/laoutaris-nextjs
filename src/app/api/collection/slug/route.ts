@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   try {
     const rawContent = (await CollectionModel.findOne({ slug })
-      .populate("author")
+      .populate("artworks")
       .lean()) as IFrontendCollection;
 
     if (!rawContent) {
