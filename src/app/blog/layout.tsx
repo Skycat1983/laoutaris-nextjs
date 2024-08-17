@@ -2,6 +2,7 @@ import BlogSidebar from "@/components/ui/sidebar/BlogSidebar";
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
 import { getBlogAvailability } from "@/lib/server/blog/getBlogAvailability";
+import { fetchBlogAvailability } from "@/lib/server/blog/data-fetching/fetchBlogAvailability";
 
 export default async function BlogLayout({
   children,
@@ -9,6 +10,7 @@ export default async function BlogLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
+  // const blogAvailability = await fetchBlogAvailability();
   const blogEntryCountsByYearAndMonth = await getBlogAvailability();
 
   const sortRangeOptions = [
@@ -31,7 +33,7 @@ export default async function BlogLayout({
   return (
     <section>
       <div className="flex flex-col flex-grow">
-        <Subnav items={subNavLinks} stem={stem} />
+        <Subnav links={subNavLinks} stem={stem} />
         <div className="grid grid-cols-12">
           {/* main content area */}
           <div className="col-start-3 col-span-6">{children}</div>
