@@ -1,13 +1,14 @@
 import { headers } from "next/headers";
 
-export async function fetchCollectionLinks(
+export async function fetchBiographyLinks(
   section: string
 ): Promise<ApiResponse<SubnavLink[]>> {
   const result = await fetch(
-    `http://localhost:3000/api/collection/links?section=${encodeURIComponent(
+    `http://localhost:3000/api/biography/links?section=${encodeURIComponent(
       section
     )}`,
     {
+      // cache: "no-cache",
       method: "GET",
       headers: headers(),
     }

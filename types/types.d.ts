@@ -18,9 +18,7 @@ interface ApiErrorResponse extends BaseApiResponse {
 type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 //! routes
-// interface ApiRouteResponse<T> {
-//   success: boolean;
-//   data?: T;
-//   errorCode?: number;
-//   message?: string;
-// }
+interface SubnavLink {
+  title: string;
+  slug: string;
+}

@@ -1,7 +1,6 @@
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { getBiographySection } from "@/lib/server/biography/getBiographySection";
-import { getSectionContent } from "../../../unused/getSectionContent";
+import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 
 export default async function BiographyLayout({
   children,
@@ -9,21 +8,15 @@ export default async function BiographyLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  // const sectionContent = await getSectionContent("biography");
-  const sectionContent = await getBiographySection("biography");
   const stem = "biography";
 
-  const subNavLinks = sectionContent?.map((article) => ({
-    title: article.title,
-    slug: article.slug,
-  }))
-    ? sectionContent
-    : [];
+  const linksResult = await fetchBiographyLinks(stem);
 
-  console.log("articles :>> ", sectionContent);
+  const { data } = linksResult.success ? linksResult : { data: [] };
+
   return (
     <section>
-      <Subnav items={subNavLinks} stem={stem} />
+      {data && <Subnav links={data} stem={stem} />}
       {children}
     </section>
   );

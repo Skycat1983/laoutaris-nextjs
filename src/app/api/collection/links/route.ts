@@ -1,13 +1,7 @@
 import { CollectionModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
-import mongoose, { Document } from "mongoose";
 
-type CollectionLink = {
-  title: string;
-  slug: string;
-};
-
-function transformToCollectionLink(doc: any): CollectionLink {
+function transformToCollectionLink(doc: any): SubnavLink {
   return {
     title: doc.title,
     slug: doc.slug,
@@ -35,11 +29,11 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
     }
 
     // Transform the raw data to match CollectionLink[]
-    const collectionLinks: CollectionLink[] = rawCollectionLinks.map(
+    const collectionLinks: SubnavLink[] = rawCollectionLinks.map(
       transformToCollectionLink
     );
 
-    return NextResponse.json<ApiSuccessResponse<CollectionLink[]>>({
+    return NextResponse.json<ApiSuccessResponse<SubnavLink[]>>({
       success: true,
       data: collectionLinks,
     });
