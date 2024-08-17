@@ -2,7 +2,6 @@ import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
 import { BlogAvailability } from "@/lib/server/blog/blogTypes";
 import { BlogModel } from "@/lib/server/models";
 import { NextResponse } from "next/server";
-
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const section = searchParams.get("section");
@@ -21,7 +20,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   let query = {};
-  let sort = {};
+  let sort: Record<string, 1 | -1> = {};
 
   switch (section) {
     case "latest":
@@ -47,30 +46,31 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
   }
 
-  console.log("query", query);
-
   try {
     const blogEntries = (await BlogModel.find(query)
+      .sort(sort) // Apply the sort option here
       .populate("author")
       .lean()) as IFrontendBlogEntry[];
 
-    if (!blogEntries) {
+    if (!blogEntries || blogEntries.length === 0) {
       return NextResponse.json<ApiErrorResponse>(
         {
           success: false,
           errorCode: 404,
-          message: "Article not found",
+          message: "No blog entries found",
         },
         { status: 404 }
       );
     }
+
+    console.log("blogEntries", blogEntries);
 
     return NextResponse.json<ApiSuccessResponse<IFrontendBlogEntry[]>>({
       success: true,
       data: blogEntries,
     });
   } catch (error) {
-    console.error("Error fetching article", error);
+    console.error("Error fetching blog entries", error);
     return NextResponse.json<ApiErrorResponse>(
       {
         success: false,

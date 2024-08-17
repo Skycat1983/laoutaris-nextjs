@@ -8,7 +8,7 @@ export default async function OldestBlogs() {
   const result = await fetchBlogSection(stem);
 
   const blogEntries = result.success ? result.data : null;
-  console.log("blogEntries in featured page", blogEntries);
+  console.log("blogEntries in oldest page", blogEntries);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container ">

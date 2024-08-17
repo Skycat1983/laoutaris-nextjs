@@ -8,6 +8,7 @@ type BlogSectionProps = {
 };
 
 const BlogSectionView = ({ blogEntries }: BlogSectionProps) => {
+  // console.log("blogEntries", blogEntries);
   const dateToYear = (date: Date) => {
     return new Date(date).getFullYear();
   };
