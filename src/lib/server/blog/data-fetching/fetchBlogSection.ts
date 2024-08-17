@@ -1,11 +1,12 @@
+import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
+import { BlogSection } from "../blogTypes";
 import { headers } from "next/headers";
-import { BlogAvailability, BlogSection } from "../blogTypes";
 
-export async function fetchBlogAvailability(
+export async function fetchBlogSection(
   section: BlogSection
-): Promise<ApiResponse<BlogAvailability>> {
+): Promise<ApiResponse<IFrontendBlogEntry[]>> {
   const result = await fetch(
-    `http://localhost:3000/api/blog/availability?section=${encodeURIComponent(
+    `http://localhost:3000/api/blog/section?section=${encodeURIComponent(
       section
     )}`,
     {

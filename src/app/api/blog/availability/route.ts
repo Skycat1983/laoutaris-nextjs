@@ -52,11 +52,11 @@ export async function GET(request: Request): Promise<NextResponse> {
   console.log("query", query);
 
   try {
-    const blogEntries = (await BlogModel.find({ query })
+    const blogEntries = (await BlogModel.find(query)
       .populate("author")
       .lean()) as IFrontendBlogEntry[];
 
-    console.log("blogEntries in get availability", blogEntries);
+    // console.log("blogEntries in get availability", blogEntries);
 
     if (!blogEntries) {
       return NextResponse.json<ApiErrorResponse>(

@@ -10,17 +10,6 @@ export default async function BlogLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  // const blogAvailability = await fetchBlogAvailability();
-  const blogEntryCountsByYearAndMonth = await getBlogAvailability();
-
-  const sortRangeOptions = [
-    { label: "All posts", queryValue: "all" },
-    ...Object.keys(blogEntryCountsByYearAndMonth).map((year) => ({
-      label: year,
-      queryValue: year,
-    })),
-  ];
-  //   console.log("sortRangeOptions", sortRangeOptions);
 
   const stem = "blog";
   const subNavLinks: { title: string; slug: string }[] = [
@@ -34,21 +23,48 @@ export default async function BlogLayout({
     <section>
       <div className="flex flex-col flex-grow">
         <Subnav links={subNavLinks} stem={stem} />
-        <div className="grid grid-cols-12">
-          {/* main content area */}
-          <div className="col-start-3 col-span-6">{children}</div>
-          {/* sidebar */}
-          <div className="col-start-9 col-span-2 bg-slate/10 shadow mb-4">
-            <BlogSidebar
-              options={sortRangeOptions}
-              // updateSortRange={() => console.log("test")}
-            />
-          </div>
-        </div>
+        {children}
       </div>
     </section>
   );
 }
+
+{
+  /* <div className="grid grid-cols-12"> */
+}
+{
+  /* main content area */
+}
+{
+  /* {children} */
+}
+{
+  /* <div className="col-start-3 col-span-6">{children}</div> */
+}
+{
+  /* sidebar */
+}
+{
+  /* <div className="col-start-9 col-span-2 bg-slate/10 shadow mb-4">
+            <BlogSidebar options={sortRangeOptions} />
+          </div> */
+}
+{
+  /* </div> */
+}
+
+// const blogAvailability = await fetchBlogAvailability();
+// const blogEntryCountsByYearAndMonth = await getBlogAvailability();
+
+// console.log("blogEntryCountsByYearAndMonth", blogEntryCountsByYearAndMonth);
+
+// const sortRangeOptions = [
+//   { label: "All posts", queryValue: "all" },
+//   ...Object.keys(blogEntryCountsByYearAndMonth).map((year) => ({
+//     label: year,
+//     queryValue: year,
+//   })),
+// ];
 
 //   const sortByOptions: SortByOptions[] = [
 //     { label: "Latest", queryValue: "recent" },

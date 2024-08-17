@@ -2,13 +2,13 @@ import BlogSidebar from "@/components/ui/sidebar/BlogSidebar";
 import { fetchBlogAvailability } from "@/lib/server/blog/data-fetching/fetchBlogAvailability";
 import dbConnect from "@/utils/mongodb";
 
-export default async function FeaturedBlogsLayout({
+export default async function OldestBlogsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   await dbConnect();
-  const section = "featured";
+  const section = "oldest";
   const result = await fetchBlogAvailability(section);
 
   const data = result.success ? result.data : {};
