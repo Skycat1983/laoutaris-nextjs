@@ -1,35 +1,45 @@
 "use client";
 
-import { addToFavourites } from "@/lib/server/collection/actions/addToFavourites";
+import { addToWatchlist } from "@/lib/server/user/actions/addToWatchlist";
 import React, { useActionState, useState } from "react";
+import SubmitButton from "./SubmitButton";
+import { useFormState } from "react-dom";
 
-type Props = {
-  label: string;
+type WatchlistButtonProps = {
+  isWatchlisted: boolean;
+  artworkId: string;
+  // label: string;
 };
 
 const initialState = {
   message: "",
 };
 
-const WatchlistButton = ({ label }: Props) => {
-  // const [state, formAction] = useActionState(addToFavourites, initialState);
+const WatchlistButton = ({
+  isWatchlisted,
+  artworkId,
+}: WatchlistButtonProps) => {
+  const label = !isWatchlisted ? "Add to watchlist" : "Remove from watchlist";
+  const [state, formAction] = useFormState(addToWatchlist, initialState);
+  console.log("state frontend", state);
   // const [buttonLabel, setButtonLabel] = useState(label);
   return (
     <>
-      {/* <form action={formAction}> */}
-      {/* <label htmlFor="email">Email</label>
+      <form action={formAction}>
+        {/* <label htmlFor="email">Email</label>
         <input type="text" id="email" name="email" required /> */}
-      <button
-        className="p-2 border border-2 border-black bg-black w-2/3 rounded-full font-subheading text-white font-bold"
-        // onClick={async () => {
-        //   const updatedLikes = await addToFavourites();
-        //   setButtonLabel("Added to favourites");
-        // }}
-        type="submit"
-      >
-        {label}
-      </button>
-      {/* </form> */}
+        <input type="hidden" name="artworkId" value={artworkId} />
+        <SubmitButton
+          label={label}
+          className="p-2 border border-2 border-black bg-black w-2/3 rounded-full font-subheading text-white font-bold"
+        />
+        {/* <button
+          className="p-2 border border-2 border-black bg-black w-2/3 rounded-full font-subheading text-white font-bold"
+          type="submit"
+        >
+          {label}
+        </button> */}
+      </form>
     </>
   );
 };

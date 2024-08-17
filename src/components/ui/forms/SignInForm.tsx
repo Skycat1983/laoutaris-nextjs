@@ -12,6 +12,7 @@ const initialState: LoginProcessResponse = {
   type: "validation",
   formValidationErrors: { email: "", password: "" },
 };
+``;
 
 const SignInForm = () => {
   const { data: session } = useSession();

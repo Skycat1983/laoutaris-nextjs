@@ -8,16 +8,16 @@ interface ArtworkInfoCardProps extends IFrontendArtwork {
 }
 
 const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
-  const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {
-    const temporaryFrameInfo = Object.fromEntries([
-      ["height", displayedArtwork.image.pixelHeight * 1.5],
-      ["width", displayedArtwork.image.pixelWidth * 1.5],
-      ["material", "Wood"],
-      ["style", "Classical"],
-    ]);
+  // const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {
+  //   const temporaryFrameInfo = Object.fromEntries([
+  //     ["height", displayedArtwork.image.pixelHeight * 1.5],
+  //     ["width", displayedArtwork.image.pixelWidth * 1.5],
+  //     ["material", "Wood"],
+  //     ["style", "Classical"],
+  //   ]);
 
-    return temporaryFrameInfo;
-  };
+  //   return temporaryFrameInfo;
+  // };
 
   return (
     // <div className="flex flex-row justify-end items-start p-10 w-full">
@@ -37,8 +37,6 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
       <p className="font-archivo text-md font-light text-gray-500">
         {artwork.image.pixelHeight} x {artwork.image.pixelWidth}
       </p>
-      {/* <hr />
-      <FrameInfo info={generateTempFrameInfo(artwork)} label="Frame" /> */}
       <hr />
       <HexColorPalette
         colors={artwork.image.hexColors}
@@ -56,7 +54,9 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
       </p>
       <div className="w-full flex flex-row gap-5">
         <WatchlistButton
-          label={!watchlisted ? "Add to watchlist" : "Remove from watchlist"}
+          isWatchlisted={watchlisted}
+          artworkId={artwork._id}
+          // label={!watchlisted ? "Add to watchlist" : "Remove from watchlist"}
         />
         {/* <WatchlistButton itemId={artwork._id} isWatchlisted={false} /> */}
         {/* <button

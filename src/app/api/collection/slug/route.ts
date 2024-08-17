@@ -6,8 +6,6 @@ export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get("slug");
 
-  console.log("slug in GET biography slug", slug);
-
   if (!slug) {
     return NextResponse.json<ApiErrorResponse>(
       {

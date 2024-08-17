@@ -28,6 +28,50 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ watchlist });
 }
 
+export async function PATCH(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const username = session?.user?.name;
+
+  if (!username) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  const user = await UserModel.findOne({ username });
+
+  if (!user) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  let json;
+  try {
+    json = await req.json();
+  } catch (error) {
+    return NextResponse.json({ message: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const artworkId = json?.artworkId;
+
+  if (!artworkId) {
+    return NextResponse.json(
+      { message: "Artwork ID not provided" },
+      { status: 400 }
+    );
+  }
+
+  const watchlistIndex = user.watchlist.indexOf(artworkId);
+
+  if (watchlistIndex > -1) {
+    // If the artwork is already in the watchlist, remove it
+    user.watchlist.splice(watchlistIndex, 1);
+    await user.save();
+    return NextResponse.json({ message: "Artwork removed from watchlist" });
+  } else {
+    // If the artwork is not in the watchlist, add it
+    user.watchlist.push(artworkId);
+    await user.save();
+    return NextResponse.json({ message: "Artwork added to watchlist" });
+  }
+}
 // ! V2
 //! gettings the users watchlist
 // export async function GET() {
