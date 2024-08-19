@@ -11,6 +11,7 @@ CSS
 ## Perhaps, instead of forwarding to the default artwork collection, we might also want to get the default artworkId. this way we would forward to `artwork/[collection]/[artworkId]` instead of `artwork/[collection]`
 
 <!-- ? decide if we want url for individual artworks -->
+<!-- ! creates problems with the breadcrumbs -->
 
 ---
 

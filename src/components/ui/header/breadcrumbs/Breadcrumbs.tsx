@@ -7,16 +7,16 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/shadcn/breadcrumb";
-import { usePathname } from "next/navigation";
+import { useSelectedLayoutSegments } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 
 import React from "react";
 
 const Breadcrumbs = () => {
-  const pathname = usePathname();
-  const segments = pathname.split("/").filter((item) => item !== "");
-  // console.log("pathname :>> ", pathname);
-  // console.log("segments :>> ", segments);
+  const segments = useSelectedLayoutSegments();
+
+  // TODO: disabled the last link displayed in the breadcrumb
+
   return (
     <div className="pl-4">
       <Breadcrumb>
@@ -27,19 +27,24 @@ const Breadcrumbs = () => {
                 <HouseIcon className="bg-whitish" />
               </BreadcrumbLink>
             </BreadcrumbItem>
-            {segments.map((segment, index) => (
-              <React.Fragment key={index}>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbLink
-                    className="font-face-default subheading text-lg font-base"
-                    href={`/${segments.slice(0, index + 1).join("/")}`}
-                  >
-                    {segment}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              </React.Fragment>
-            ))}
+            {segments.map((segment, index) => {
+              const displaySegment = /^[0-9a-fA-F]{24}$/.test(segment)
+                ? "artworkId"
+                : segment;
+              return (
+                <React.Fragment key={index}>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink
+                      className="font-face-default subheading text-lg font-base"
+                      href={`/${segments.slice(0, index + 1).join("/")}`}
+                    >
+                      {displaySegment}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </React.Fragment>
+              );
+            })}
           </div>
         </BreadcrumbList>
       </Breadcrumb>

@@ -26,11 +26,13 @@ export default async function Collection({
     }
   }
 
+  // console.log("collectionResult", collectionResult);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-      {collection && (
+      {/* {collection && (
         <CollectionView collection={collection} watchlist={watchlist} />
-      )}
+      )} */}
     </main>
   );
 }

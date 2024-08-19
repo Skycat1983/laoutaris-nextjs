@@ -65,12 +65,7 @@ const Pagination = ({
               label="<"
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              googleIcon={
-                <ChevronLeft />
-                // <span className="material-symbols-outlined">
-                //   arrow_back_ios
-                // </span>
-              }
+              googleIcon={<ChevronLeft />}
             />
           )}
         </PaginationNavigationContainer>
@@ -88,7 +83,6 @@ const Pagination = ({
             </div>
             <ScrollBar orientation="horizontal" className="p-12" />
           </ScrollArea>
-          {/* <div className="h-24"></div> */}
 
           <PaginationIconsContainer>
             {pageNumbersToDisplay.map((page) => (
@@ -109,12 +103,7 @@ const Pagination = ({
                 onPageChange(Math.min(totalPages, currentPage + 1))
               }
               disabled={currentPage === totalPages}
-              googleIcon={
-                <ChevronRight />
-                // <span className="material-symbols-outlined">
-                //   arrow_forward_ios
-                // </span>
-              }
+              googleIcon={<ChevronRight />}
             />
           )}
           {showFirstLast && (

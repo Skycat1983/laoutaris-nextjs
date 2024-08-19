@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 export async function fetchCollection(
   slug: string
 ): Promise<ApiResponse<IFrontendCollection>> {
-  console.log("slug in fetch biography", slug);
+  console.log("slug in fetch collection", slug);
 
   const result = await fetch(
     `http://localhost:3000/api/collection/slug?slug=${encodeURIComponent(

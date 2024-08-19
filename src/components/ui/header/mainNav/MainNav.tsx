@@ -6,21 +6,30 @@ import DesktopNavLayout from "./DesktopNavLayout";
 import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
 import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 import dbConnect from "@/utils/mongodb";
+import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
 
 // ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
 
 const MainNav = async () => {
   await dbConnect();
 
-  //! Artwork
-  const artworkCollectionLinks = await fetchCollectionLinks("artwork");
-  const { data: availableCollectionLinks } = artworkCollectionLinks.success
-    ? artworkCollectionLinks
+  //! Collection
+  const collectionLinks = await fetchCollectionLinks("artwork");
+  const { data: availableCollectionLinks } = collectionLinks.success
+    ? collectionLinks
     : { data: [] };
   const defaultCollectionSublinkHref = availableCollectionLinks[0].slug;
+
+  //! Artwork
+  const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
+  const { data: availableArtworkLinks } = artworkLinks.success
+    ? artworkLinks
+    : { data: [] };
+  const defaultArtworkSublinkHref = availableArtworkLinks[0].id;
+
   const artworkNavlink = {
     label: "Artwork",
-    path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
+    path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
   };
 
   //! Biography

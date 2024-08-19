@@ -1,5 +1,7 @@
 "use server";
 
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 
@@ -9,7 +11,12 @@ export default async function Artwork({
   params: { artworkId: string };
 }) {
   await dbConnect();
-  // const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
+  const artworkResult = await fetchArtwork(params.artworkId);
+
+  console.log("artworkResult", artworkResult);
+
+  const example = "661fd1d940f59e26cc761f00";
 
   // // the collection is the main displayed content
   // const collectionResult = await fetchCollection(params.collectionSlug);
