@@ -10,9 +10,13 @@ export default async function ArtworkLayout({
   await dbConnect();
   const stem = "artwork";
 
-  const linksResult = await fetchCollectionLinks(stem);
+  const collectionLinksResult = await fetchCollectionLinks(stem);
 
-  const { data } = linksResult.success ? linksResult : { data: [] };
+  const { data } = collectionLinksResult.success
+    ? collectionLinksResult
+    : { data: [] };
+
+  console.log("data in Artwork Layout", data);
 
   return (
     <section>

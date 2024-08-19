@@ -18,18 +18,20 @@ const MainNav = async () => {
   const { data: availableCollectionLinks } = collectionLinks.success
     ? collectionLinks
     : { data: [] };
-  const defaultCollectionSublinkHref = availableCollectionLinks[0].slug;
+  const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
 
   //! Artwork
-  const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
-  const { data: availableArtworkLinks } = artworkLinks.success
-    ? artworkLinks
-    : { data: [] };
-  const defaultArtworkSublinkHref = availableArtworkLinks[0].id;
+  // const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
+  // const { data: availableArtworkLinks } = artworkLinks.success
+  //   ? artworkLinks
+  //   : { data: [] };
+  // const defaultArtworkSublinkHref = availableArtworkLinks[0].id;
 
   const artworkNavlink = {
     label: "Artwork",
-    path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
+    path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
+
+    // path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
   };
 
   //! Biography

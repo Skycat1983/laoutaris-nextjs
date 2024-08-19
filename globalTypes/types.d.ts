@@ -21,4 +21,9 @@ type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 interface SubnavLink {
   title: string;
   slug: string;
+  defaultRedirect?: string;
+}
+
+interface ExtendedSubnavLink extends SubnavLink {
+  defaultRedirect: string;
 }

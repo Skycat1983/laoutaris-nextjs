@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 
 interface NavItemProps {
   label: string;
@@ -9,9 +9,16 @@ interface NavItemProps {
 }
 
 const NavItem = ({ label, slug, activeClassName, className }: NavItemProps) => {
-  const pathname = usePathname();
-  const pathSegments = pathname.split("/");
-  const isActive = pathSegments.includes(slug);
+  const segments = useSelectedLayoutSegments();
+
+  // const pathname = usePathname();
+  const pathSegments = slug.split("/");
+  // const isActive = pathSegments.includes(slug);
+
+  console.log("segments", segments);
+  console.log("slug", slug);
+  // console.log("slug", slug);
+  const isActive = segments.includes(slug);
 
   return (
     <div className={isActive ? activeClassName : className}>
