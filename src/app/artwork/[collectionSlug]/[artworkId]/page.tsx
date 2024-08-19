@@ -16,8 +16,6 @@ export default async function Artwork({
 
   console.log("artworkResult", artworkResult);
 
-  const example = "661fd1d940f59e26cc761f00";
-
   // // the collection is the main displayed content
   // const collectionResult = await fetchCollection(params.collectionSlug);
   // const collection = collectionResult.success ? collectionResult.data : null;
@@ -32,10 +30,13 @@ export default async function Artwork({
   // }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
+    <>
+      <div></div>
+      {/* <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4"> */}
       {/* {collection && (
           <CollectionView collection={collection} watchlist={watchlist} />
         )} */}
-    </main>
+      {/* </main> */}
+    </>
   );
 }

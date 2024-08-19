@@ -20,7 +20,7 @@ export default async function CollectionLayout({
   // const { data } = linksResult.success ? linksResult : { data: [] };
 
   return (
-    <section>
+    <section className="bg-red-100">
       {children}
       {artworkLinks && (
         <ServerPagination
