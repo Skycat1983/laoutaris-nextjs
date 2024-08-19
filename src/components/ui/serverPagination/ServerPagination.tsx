@@ -59,6 +59,8 @@ const ServerPagination = ({
   const totalPages = artworkLinks.length;
   const idArray = artworkLinks.map((artworkLink) => artworkLink.id);
 
+  console.log("idArray", idArray);
+
   const nextPageId = (currentPageId: string, idArray: string[]) => {
     return idArray[idArray.indexOf(currentPageId) + 1];
   };
@@ -70,7 +72,7 @@ const ServerPagination = ({
     <>
       <div className="flex flex-row justify-center">
         <PaginationNavigationContainer>
-          <NextPage />
+          {/* <PrevPage idArray={idArray} /> */}
         </PaginationNavigationContainer>
         <PaginationNavigationContainer>
           {/* <div className="flex flex-col items-center justify-center h-auto"> */}
@@ -91,7 +93,7 @@ const ServerPagination = ({
           {/* </div> */}
         </PaginationNavigationContainer>
         <PaginationNavigationContainer>
-          <PrevPage />
+          {/* <NextPage /> */}
         </PaginationNavigationContainer>
       </div>
     </>

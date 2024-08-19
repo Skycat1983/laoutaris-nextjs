@@ -9,7 +9,7 @@ type Props = {
   onClick?: () => void;
 };
 
-const NextPage = ({}) => {
+const PrevPage = (idArray: string[]) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const segment = useSelectedLayoutSegment();
 
@@ -20,7 +20,7 @@ const NextPage = ({}) => {
   );
 };
 
-const PrevPage = ({}) => {
+const NextPage = (idArray: string[]) => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const segment = useSelectedLayoutSegment();
 

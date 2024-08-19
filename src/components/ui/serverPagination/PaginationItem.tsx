@@ -18,7 +18,7 @@ type PaginationItemProps = {
 const PaginationItem = ({ artworkLink }: PaginationItemProps) => {
   const segment = useSelectedLayoutSegment();
   const isActive = segment === artworkLink.id;
-  console.warn(segment);
+  // console.warn(segment);
   return (
     <div className="h-[400px]">
       <Image
