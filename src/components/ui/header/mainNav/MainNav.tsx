@@ -7,6 +7,8 @@ import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetc
 import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 import dbConnect from "@/utils/mongodb";
 
+// ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
+
 const MainNav = async () => {
   await dbConnect();
 
@@ -69,7 +71,7 @@ const MainNav = async () => {
         <MobileNavLayout />
       </div>
       <div className="hidden sm:block lg:hidden">
-        <TabletNavLayout />
+        <TabletNavLayout navLinks={navLinks} />
       </div>
       <div className="hidden lg:block">
         <DesktopNavLayout navLinks={navLinks} />

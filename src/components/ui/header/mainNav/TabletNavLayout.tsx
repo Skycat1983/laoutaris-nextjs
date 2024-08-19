@@ -1,16 +1,22 @@
 import React from "react";
 import Logo from "../../../atoms/Logo";
 import Link from "next/link";
-import { ChevronDown, Euro, Heart, ShoppingBasket, User } from "lucide-react";
-import NavItem from "@/components/atoms/buttons/NavItem";
 import { AccountMenuBar } from "../../accountMenuBar/AccountMenuBar";
+interface NavLink {
+  label: string;
+  path: string;
+}
 
-const TabletNavLayout = () => {
+interface DesktopNavLayoutProps {
+  navLinks: NavLink[];
+}
+
+const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
   return (
     <>
       <div className="w-full flex flex-col">
         {/* top row */}
-        <div className="bg-whitish w-full flex flex-row justify-between space-x-6 px-4 py-2 sm:py-8">
+        <div className="bg-blue-100 w-full flex flex-row justify-between space-x-6 px-4 sm:py-6">
           <nav className="flex flex-row items-center my-auto">
             <Link href="/">
               <Logo />
@@ -18,20 +24,48 @@ const TabletNavLayout = () => {
           </nav>
           <div className="flex flex-row gap-5 items-center">
             <AccountMenuBar />
+          </div>
+        </div>
+        {/* bottom row */}
+        <div className="flex flex-row items-center space-x-4 m-4 pl-8 bg-red-100">
+          <nav className="flex flex-row items-center h-auto space-x-6 ">
+            {navLinks.map((link, index) => (
+              <div key={index} className="hidden md:flex flex-row items-center">
+                <Link href={link.path}>
+                  <h2 className="font-face-default subheading">{link.label}</h2>
+                </Link>
+                {index < navLinks.length - 1 && (
+                  <div className="hidden md:flex items-center">
+                    <h2 className="px-2 pl-6 text-xl font-thin">|</h2>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="hidden md:flex items-center">
+              <h2 className="px-2 text-xl font-thin">|</h2>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </>
+  );
+};
 
-            {/* <User />
+export default TabletNavLayout;
+
+{
+  /* <User />
             <Heart />
             <ShoppingBasket />
 
             <div className="flex flex-row">
               <h1>DE</h1>
               <ChevronDown />
-            </div> */}
-          </div>
-        </div>
-        {/* bottom row */}
-        <div className="flex flex-row space-x-4 px-4">
-          {/* <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
+            </div> */
+}
+
+{
+  /* <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
             <Link href="/artwork">
               <NavItem
                 label="Artwork"
@@ -76,11 +110,5 @@ const TabletNavLayout = () => {
                 activeClassName="font-face-default subheading-button-active"
               />
             </Link>
-          </nav> */}
-        </div>
-      </div>
-    </>
-  );
-};
-
-export default TabletNavLayout;
+          </nav> */
+}
