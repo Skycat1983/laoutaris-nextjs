@@ -21,10 +21,10 @@ const Breadcrumbs = () => {
     <div className="pl-4">
       <Breadcrumb>
         <BreadcrumbList>
-          <div className="flex flex-row justify-center items-center gap-10">
+          <div className="flex flex-row justify-center items-center gap-2 lg:gap-10">
             <BreadcrumbItem>
               <BreadcrumbLink href="/">
-                <HouseIcon className="bg-whitish" />
+                <HouseIcon className="bg-whitish h-5 md:h-6 lg:h-8" />
               </BreadcrumbLink>
             </BreadcrumbItem>
             {segments.map((segment, index) => {
@@ -36,7 +36,7 @@ const Breadcrumbs = () => {
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     <BreadcrumbLink
-                      className="font-face-default subheading text-lg font-base"
+                      className="font-face-default subheading font-normal text-base lg:font-base lg:text-lg"
                       href={`/${segments.slice(0, index + 1).join("/")}`}
                     >
                       {displaySegment}

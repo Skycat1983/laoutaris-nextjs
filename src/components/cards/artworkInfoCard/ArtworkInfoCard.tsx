@@ -52,7 +52,7 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
         living room. As a child I remember asking him what it depicted. "Can't
         you tell?", he'd respond wryly.
       </p>
-      <div className="w-full flex flex-row gap-5">
+      <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5">
         <WatchlistButton
           isWatchlisted={watchlisted}
           artworkId={artwork._id}
@@ -68,7 +68,7 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
               Add to watchlist
             </button> */}
 
-        <button className="p-2 border border-2 border-black bg-whitish w-2/3 rounded-full font-subheading text-black font-bold">
+        <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
           Add to favourites
         </button>
       </div>

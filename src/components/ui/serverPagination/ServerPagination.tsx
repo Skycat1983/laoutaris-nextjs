@@ -70,28 +70,28 @@ const ServerPagination = ({
   };
   return (
     <>
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-row justify-center w-full">
         <PaginationNavigationContainer>
           {/* <PrevPage idArray={idArray} /> */}
         </PaginationNavigationContainer>
-        <PaginationNavigationContainer>
-          {/* <div className="flex flex-col items-center justify-center h-auto"> */}
-          <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
-            <div className="flex w-max space-x-4 h-auto">
-              {artworkLinks.map((artworkLink, i) => (
-                <ServerPaginationLinkWrapper
-                  key={i}
-                  artworkLink={artworkLink}
-                  collectionSlug={collectionSlug}
-                >
-                  <PaginationItem artworkLink={artworkLink} />
-                </ServerPaginationLinkWrapper>
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" className="p-12" />
-          </ScrollArea>
-          {/* </div> */}
-        </PaginationNavigationContainer>
+        {/* <PaginationNavigationContainer> */}
+        {/* <div className="flex flex-col items-center justify-center h-auto"> */}
+        <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
+          <div className="bg-green-100 flex w-max space-x-4 h-auto">
+            {artworkLinks.map((artworkLink, i) => (
+              <ServerPaginationLinkWrapper
+                key={i}
+                artworkLink={artworkLink}
+                collectionSlug={collectionSlug}
+              >
+                <PaginationItem artworkLink={artworkLink} />
+              </ServerPaginationLinkWrapper>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="p-12" />
+        </ScrollArea>
+        {/* </div> */}
+        {/* </PaginationNavigationContainer> */}
         <PaginationNavigationContainer>
           {/* <NextPage /> */}
         </PaginationNavigationContainer>

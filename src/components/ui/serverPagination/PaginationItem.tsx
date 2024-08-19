@@ -20,7 +20,7 @@ const PaginationItem = ({ artworkLink }: PaginationItemProps) => {
   const isActive = segment === artworkLink.id;
   // console.warn(segment);
   return (
-    <div className="h-[400px]">
+    <div className="h-[200px] lg:h-[400px]">
       <Image
         src={artworkLink.imageData.secure_url}
         alt="Untitled artwork"
