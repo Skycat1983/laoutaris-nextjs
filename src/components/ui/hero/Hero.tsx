@@ -12,7 +12,7 @@ import FamilyFavourites from "./FamilyFavourites";
 const Hero = () => {
   return (
     <Carousel
-      className="w-full h-auto p-4 bg-red-800/10 flex flex-col gap-0 justify-center items-center"
+      className="w-full h-auto p-4 bg-red-800/10 flex flex-col gap-0 justify-center items-center pt-[145px]"
       opts={{
         align: "end",
         loop: true,

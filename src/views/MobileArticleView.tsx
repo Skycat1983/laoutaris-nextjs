@@ -2,6 +2,7 @@
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import Link from "next/link";
 import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import { useRef, useState } from "react";
 
@@ -70,12 +71,40 @@ const MobileArticleView: React.FC<ArticleProps> = ({
       </div>
 
       <div className="flex flex-col justify-start items-start bg-slate-100/50 relative bottom-[200px]">
-        <article className="prose-xl text-left p-8 bg-white" ref={textRef}>
+        <article className="prose-xl text-left p-24 bg-white" ref={textRef}>
           <p className="m-2 leading-8 prose-lg">{article.text}</p>
         </article>
       </div>
-      {nextUrl && <button>Next</button>}
-      {prevUrl && <button>Previous</button>}
+
+      <div className="flex flex-row w-full justify-center items-center px-[80px] gap-5">
+        {prevUrl ? (
+          <Link href={prevUrl} className="bg-black text-white w-full">
+            <button className="bg-black text-white p-4 w-full">Previous</button>
+          </Link>
+        ) : (
+          <button
+            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
+            disabled
+          >
+            Previous
+          </button>
+        )}
+
+        {nextUrl ? (
+          <Link href={nextUrl} className="bg-black text-white w-full">
+            <button className="bg-black text-white p-4 w-full">Next</button>
+          </Link>
+        ) : (
+          <button
+            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
+            disabled
+          >
+            Next
+          </button>
+        )}
+      </div>
+      {/* {nextUrl && <button>Next</button>}
+      {prevUrl && <button>Previous</button>} */}
     </>
   );
 };

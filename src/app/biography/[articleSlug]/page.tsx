@@ -59,15 +59,15 @@ export default async function Article({
         )}
       </div>
 
-      <div className="hidden md:block">
-        {/* {article && (
+      {/* <div className="hidden md:block"> */}
+      {/* {article && (
         <MobileArticleView
           article={article}
           nextUrl={nextUrl}
           prevUrl={prevUrl}
         />
       )} */}
-      </div>
+      {/* </div> */}
 
       <div className="hidden lg:block">
         {article && <ArticleView article={article} />}
