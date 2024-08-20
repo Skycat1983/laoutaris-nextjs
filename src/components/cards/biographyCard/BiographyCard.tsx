@@ -23,12 +23,12 @@ const BiographyCard = ({ entry }: Props) => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="flex flex-col gap-8 p-4 py-8">
+        {/* <div className="flex flex-col gap-8 p-4 py-8">
           <h1 className="font-archivo text-2xl font-bold">{entry.title}</h1>
           <h2 className="font-archivo text-xl font-normal text-gray-500">
             {entry.subheading}
           </h2>
-        </div>
+        </div> */}
       </div>
     </Link>
   );

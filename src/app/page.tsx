@@ -1,3 +1,4 @@
+import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ArtworkSection from "@/components/sections/ArtworkSection";
 import BiographySection from "@/components/sections/BiographySection";
 import ProjectSection from "@/components/sections/ProjectSection";
@@ -11,12 +12,13 @@ export default function Home() {
         <div className="">
           <ArtworkSection />
         </div>
-        {/* <div className="">
+        <HorizontalDivider />
+        <div className="p-4">
           <ProjectSection />
-        </div> */}
-
-        {/* 
-        <BiographySection /> */}
+        </div>
+        <div className="p-4">
+          <BiographySection />
+        </div>
       </div>
     </main>
   );
