@@ -19,7 +19,7 @@ export default async function ArtworkLayout({
   console.log("data in Artwork Layout", data);
 
   return (
-    <section>
+    <section className="p-0 m-0">
       {data && <Subnav links={data} stem={stem} />}
       {children}
     </section>

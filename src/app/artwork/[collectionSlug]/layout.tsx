@@ -1,3 +1,4 @@
+import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
 import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
@@ -46,6 +47,12 @@ export default async function CollectionLayout({
         libero ab?
       </p>
       <div className="px-4 py-8">
+        <HorizontalDivider />
+      </div>
+      <div className="bg-slate-800/10 w-full">
+        <ArtistProfile />
+      </div>
+      <div className="px-4 py-4">
         <HorizontalDivider />
       </div>
     </section>

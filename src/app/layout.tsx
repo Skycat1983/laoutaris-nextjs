@@ -38,12 +38,12 @@ export default async function RootLayout({
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
     >
-      <body>
+      <body className="">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
-            <div className="mt-[120px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
+            <div className="mt-[140px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
             {children}
             <Footer />
           </GlobalFeaturesProvider>

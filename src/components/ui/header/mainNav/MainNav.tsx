@@ -30,7 +30,6 @@ const MainNav = async () => {
   const artworkNavlink = {
     label: "Artwork",
     path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
-
     // path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
   };
 
@@ -79,7 +78,7 @@ const MainNav = async () => {
   return (
     <nav>
       <div className="block sm:hidden">
-        <MobileNavLayout />
+        <MobileNavLayout navLinks={navLinks} />
       </div>
       <div className="hidden sm:block lg:hidden">
         <TabletNavLayout navLinks={navLinks} />

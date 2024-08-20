@@ -34,7 +34,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import ModalMessage from "@/components/atoms/ModalMessage";
 import { useRouter } from "next/router";
 import LoginForm from "@/app/login/LoginForm";
-import { AccountMenuItem } from "../navMenu/AccountMenuItem";
+import { AccountMenu } from "./accountMenu/AccountMenu";
 
 export function AccountMenuBar() {
   const { data: session } = useSession();
@@ -43,13 +43,101 @@ export function AccountMenuBar() {
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
 
+  const menubarTriggerClassname = "menubar-trigger p-2 lg:p-3";
+
   return (
     <>
       <div className="flex flex-row">
-        <AccountMenuItem />
+        <AccountMenu />
 
         <Menubar className="flex flex-row w-auto gap-0 my-auto items-center ">
-          {/* <MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger disabled className={menubarTriggerClassname}>
+              <Heart className="" />
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarItem>
+                Undo <MenubarShortcut>⌘Z</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem>
+                Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarSub>
+                <MenubarSubTrigger>Find</MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarItem>Search the web</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>Find...</MenubarItem>
+                  <MenubarItem>Find Next</MenubarItem>
+                  <MenubarItem>Find Previous</MenubarItem>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSeparator />
+              <MenubarItem>Cut</MenubarItem>
+              <MenubarItem>Copy</MenubarItem>
+              <MenubarItem>Paste</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <MenubarMenu>
+            <MenubarTrigger disabled className={menubarTriggerClassname}>
+              <ShoppingBasket />
+            </MenubarTrigger>
+            <MenubarContent>
+              <MenubarCheckboxItem>
+                Always Show Bookmarks Bar
+              </MenubarCheckboxItem>
+              <MenubarCheckboxItem checked>
+                Always Show Full URLs
+              </MenubarCheckboxItem>
+              <MenubarSeparator />
+              <MenubarItem inset>
+                Reload <MenubarShortcut>⌘R</MenubarShortcut>
+              </MenubarItem>
+              <MenubarItem disabled inset>
+                Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
+              </MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem inset>Toggle Fullscreen</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem inset>Hide Sidebar</MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+          <div className="hidden md:block">
+            <MenubarMenu>
+              <MenubarTrigger className={menubarTriggerClassname}>
+                <div className="flex flex-row pr-6 items-center">
+                  <h1>{selectedLanguage.toUpperCase()}</h1>
+                  <ChevronDown />
+                </div>
+              </MenubarTrigger>
+              <MenubarContent>
+                <MenubarRadioGroup
+                  value={selectedLanguage}
+                  onValueChange={setSelectedLanguage}
+                >
+                  <MenubarRadioItem value="de">DE</MenubarRadioItem>
+                  <MenubarRadioItem value="en">EN</MenubarRadioItem>
+                  <MenubarRadioItem value="fr">FR</MenubarRadioItem>
+                </MenubarRadioGroup>
+              </MenubarContent>
+            </MenubarMenu>
+          </div>
+        </Menubar>
+      </div>
+    </>
+  );
+}
+
+{
+  /* <MenubarSeparator />
+                <MenubarItem inset>Edit...</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem inset>Add Profile...</MenubarItem> */
+}
+
+{
+  /* <MenubarMenu>
           <MenubarTrigger>
             <User />
           </MenubarTrigger>
@@ -101,85 +189,5 @@ export function AccountMenuBar() {
               </MenubarShortcut>
             </MenubarItem>
           </MenubarContent>
-        </MenubarMenu> */}
-          <MenubarMenu>
-            <MenubarTrigger disabled className="menubar-trigger">
-              <Heart />
-            </MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>
-                Undo <MenubarShortcut>⌘Z</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>
-                Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-              </MenubarItem>
-              <MenubarSeparator />
-              <MenubarSub>
-                <MenubarSubTrigger>Find</MenubarSubTrigger>
-                <MenubarSubContent>
-                  <MenubarItem>Search the web</MenubarItem>
-                  <MenubarSeparator />
-                  <MenubarItem>Find...</MenubarItem>
-                  <MenubarItem>Find Next</MenubarItem>
-                  <MenubarItem>Find Previous</MenubarItem>
-                </MenubarSubContent>
-              </MenubarSub>
-              <MenubarSeparator />
-              <MenubarItem>Cut</MenubarItem>
-              <MenubarItem>Copy</MenubarItem>
-              <MenubarItem>Paste</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger disabled className="menubar-trigger">
-              <ShoppingBasket />
-            </MenubarTrigger>
-            <MenubarContent>
-              <MenubarCheckboxItem>
-                Always Show Bookmarks Bar
-              </MenubarCheckboxItem>
-              <MenubarCheckboxItem checked>
-                Always Show Full URLs
-              </MenubarCheckboxItem>
-              <MenubarSeparator />
-              <MenubarItem inset>
-                Reload <MenubarShortcut>⌘R</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem disabled inset>
-                Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
-              </MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem inset>Hide Sidebar</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <div className="hidden md:block">
-            <MenubarMenu>
-              <MenubarTrigger>
-                <div className="flex flex-row pr-6 items-center">
-                  <h1>{selectedLanguage.toUpperCase()}</h1>
-                  <ChevronDown />
-                </div>
-              </MenubarTrigger>
-              <MenubarContent>
-                <MenubarRadioGroup
-                  value={selectedLanguage}
-                  onValueChange={setSelectedLanguage}
-                >
-                  <MenubarRadioItem value="de">DE</MenubarRadioItem>
-                  <MenubarRadioItem value="en">EN</MenubarRadioItem>
-                  <MenubarRadioItem value="fr">FR</MenubarRadioItem>
-                </MenubarRadioGroup>
-                {/* <MenubarSeparator />
-          <MenubarItem inset>Edit...</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem inset>Add Profile...</MenubarItem> */}
-              </MenubarContent>
-            </MenubarMenu>
-          </div>
-        </Menubar>
-      </div>
-    </>
-  );
+        </MenubarMenu> */
 }

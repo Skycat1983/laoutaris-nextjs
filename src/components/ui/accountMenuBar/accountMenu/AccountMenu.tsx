@@ -21,7 +21,7 @@ import {
   ShoppingBasket,
   User,
 } from "lucide-react";
-import { MenubarSeparator, MenubarShortcut } from "../shadcn/menubar";
+import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -61,16 +61,16 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-export function AccountMenuItem() {
+export function AccountMenu() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="p-0 m-0">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
             <User />
           </NavigationMenuTrigger>
           <NavigationMenuContent className="">
-            <ul className=" md:w-[200px] lg:w-[200px]">
+            <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
               <li className="row-span-1">
                 <NavigationMenuLink asChild>
                   <a
