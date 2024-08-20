@@ -10,6 +10,7 @@ interface SubnavProps {
 }
 
 const Subnav = ({ links, stem }: SubnavProps) => {
+  console.log("links in subnav", links);
   const buildUrl = (link: SubnavLink, stem: string) => {
     if (link.defaultRedirect) {
       return `http://localhost:3000/${stem}/${link.slug}/${link.defaultRedirect}`;
@@ -18,7 +19,7 @@ const Subnav = ({ links, stem }: SubnavProps) => {
     }
   };
   return (
-    <div className="flex flex-row w-full justify-center mx-4">
+    <div className="relative z-[99] flex flex-row w-full justify-center mx-4 pt-[145px] md:pt-[230px] lg:pt-[150px]">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto bg-slate-100 ">
         <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
           {links.map((link, i) => (
@@ -27,14 +28,14 @@ const Subnav = ({ links, stem }: SubnavProps) => {
                 <NavItem
                   label={link.title}
                   slug={link.slug}
-                  className="font-face-default subheading-button"
-                  activeClassName="font-face-default subheading-button-active"
+                  className="z-[99] font-face-default subheading-button"
+                  activeClassName="z-[99] font-face-default subheading-button-active"
                 />
               </Link>
             </li>
           ))}
         </ul>
-        <ScrollBar orientation="horizontal" className="p-12" />
+        <ScrollBar orientation="horizontal" className="p-0" />
       </ScrollArea>
     </div>
   );

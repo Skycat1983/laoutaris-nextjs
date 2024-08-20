@@ -14,7 +14,7 @@ interface DesktopNavLayoutProps {
 const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
   return (
     <>
-      <div className="w-full flex flex-col">
+      <div className="w-full flex flex-col bg-blue-100 h-auto">
         {/* top row */}
         <div className="bg-blue-100 w-full flex flex-row justify-between space-x-6 px-4 sm:py-6">
           <nav className="flex flex-row items-center my-auto">
