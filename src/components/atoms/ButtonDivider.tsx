@@ -12,7 +12,7 @@ const ButtonDivider = ({ label, link }: Props) => {
         <div className="w-full border-t border-gray-300"></div>
       </div>
       <Link href={link}>
-        <button className="relative mx-auto z-1 bg-whitish px-[100px] py-3 border-2 border-black font-archivo font-bold text-xl">
+        <button className="relative mx-auto z-1 bg-white px-[100px] py-3 border-2 border-black font-archivo font-bold text-xl">
           {label}
         </button>
       </Link>

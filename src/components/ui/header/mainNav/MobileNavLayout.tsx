@@ -19,7 +19,9 @@ const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {
     <>
       <div className="flex flex-row max-w-full justify-between my-2">
         <div className="block flex my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
-          <Logo />
+          <Link href="/">
+            <Logo />
+          </Link>
         </div>
         <div className="block flex gap-4 my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
           <AccountMenuBar />
