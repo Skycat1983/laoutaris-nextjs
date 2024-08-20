@@ -17,7 +17,7 @@ interface MobileNavLayoutProps {
 const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {
   return (
     <>
-      <div className="flex flex-row w-full justify-between my-2">
+      <div className="flex flex-row max-w-full justify-between my-2">
         <div className="block flex my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
           <Logo />
         </div>

@@ -76,7 +76,7 @@ const MainNav = async () => {
 
   console.log("defaultBiographySublink", defaultBiographySublinkHref);
   return (
-    <nav>
+    <nav className="">
       <div className="block sm:hidden">
         <MobileNavLayout navLinks={navLinks} />
       </div>

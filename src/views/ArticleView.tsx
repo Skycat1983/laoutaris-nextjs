@@ -22,7 +22,7 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
 
   return (
     <>
-      <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
+      <div className="grid grid-cols-7 grid-rows-1 w-full h-full ">
         <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full z-1 relative">
           <div className="flex flex-row w-full p-10 justify-end relative sticky top-[200px]">
             <div>
@@ -49,7 +49,7 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
             />
           </div>
         </div>
-        <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start mx-[100px] mt-8">
+        <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start lg:mx-[100px] mt-8">
           <article className="prose-xl text-left" ref={textRef}>
             <h1 className="text-2xl font-bold font-archivoBlack my-5">
               {article.summary}

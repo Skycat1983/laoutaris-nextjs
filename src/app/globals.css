@@ -67,7 +67,7 @@
 
   html,
   body {
-    @apply h-full w-full m-0 p-0;
+    @apply h-full max-w-full m-0 p-0 overflow-x-hidden;
   }
 
   /* Optional: Reset margin/padding on all elements */

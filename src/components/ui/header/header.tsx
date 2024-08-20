@@ -7,7 +7,7 @@ import MainNav from "./mainNav/MainNav";
 const Header = () => {
   return (
     <>
-      <header className="fixed top-0 z-10 w-screen bg-white">
+      <header className="fixed top-0 z-10 w-full bg-white">
         <MainNav />
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">

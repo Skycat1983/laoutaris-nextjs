@@ -23,7 +23,7 @@ export default async function Artwork({
 
   return (
     <>
-      <div className="w-vw m-4">
+      <div className="max-w-full m-4">
         {artwork && (
           <Image
             src={artwork.image.secure_url}
@@ -33,7 +33,7 @@ export default async function Artwork({
           />
         )}
       </div>
-      <div className="w-vw m-4">
+      <div className="max-w-full m-4">
         {/* {artwork && <ArtworkInfoCard watchlisted={false} {...artwork} />}
          */}
         {artwork && <ArtInfoTabs {...artwork} />}

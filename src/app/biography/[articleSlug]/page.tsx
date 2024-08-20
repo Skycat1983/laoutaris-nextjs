@@ -49,14 +49,29 @@ export default async function Article({
 
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
-      {article && (
+      <div className="block md:hidden">
+        {article && (
+          <MobileArticleView
+            article={article}
+            nextUrl={nextUrl}
+            prevUrl={prevUrl}
+          />
+        )}
+      </div>
+
+      <div className="hidden md:block">
+        {/* {article && (
         <MobileArticleView
           article={article}
           nextUrl={nextUrl}
           prevUrl={prevUrl}
         />
-      )}
-      {/* {article && <ArticleView article={article} />} */}
+      )} */}
+      </div>
+
+      <div className="hidden lg:block">
+        {article && <ArticleView article={article} />}
+      </div>
     </main>
   );
 }

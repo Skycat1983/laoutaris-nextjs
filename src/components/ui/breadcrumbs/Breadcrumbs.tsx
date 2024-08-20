@@ -36,7 +36,7 @@ const Breadcrumbs = () => {
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     <BreadcrumbLink
-                      className="font-face-default subheading font-normal text-base lg:font-base lg:text-lg"
+                      className="font-face-default subheading font-normal text-base lg:font-semibold lg:text-lg"
                       href={`/${segments.slice(0, index + 1).join("/")}`}
                     >
                       {displaySegment}
