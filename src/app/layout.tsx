@@ -43,7 +43,7 @@ export default async function RootLayout({
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
-            {/* <div className="mt-[140px] sm:mt-[180px] md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div> */}
+            <div className="md:mt-[230px] lg:mt-[150px] h-[5px] w-full container"></div>
             {children}
             <Footer />
           </GlobalFeaturesProvider>

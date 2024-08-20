@@ -13,7 +13,7 @@ export default async function Article({
   const article = result.success ? result.data : null;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between lg:px-12 py-4">
+    <main className="flex flex-col items-center justify-between lg:px-12 py-4">
       {article && <MobileArticleView article={article} />}
       {/* {article && <ArticleView article={article} />} */}
     </main>
