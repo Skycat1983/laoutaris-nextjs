@@ -40,7 +40,7 @@ export function NavMenu({ navLinks }: NavMenuProps) {
         <Menu />
       </DrawerTrigger>
 
-      <DrawerContent>
+      <DrawerContent className="max-w-sm">
         <div className="mx-auto h-[98vh] w-full max-w-sm">
           <DrawerFooter className="w-full flex flex-row justify-between items-center bg-slate-800/10">
             <DrawerTitle className="">

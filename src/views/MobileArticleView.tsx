@@ -14,10 +14,16 @@ interface ArticleProps {
     text: string;
     overlayColour: string;
   };
+  nextUrl: string | null;
+  prevUrl: string | null;
 }
 
 // TODO: fix the issue with
-const MobileArticleView: React.FC<ArticleProps> = ({ article }) => {
+const MobileArticleView: React.FC<ArticleProps> = ({
+  article,
+  nextUrl,
+  prevUrl,
+}) => {
   const pathname = usePathname();
   console.log("pathname", pathname);
   const [overlayShowing, setOverlayShowing] = useState(true);
@@ -68,6 +74,8 @@ const MobileArticleView: React.FC<ArticleProps> = ({ article }) => {
           <p className="m-2 leading-8 prose-lg">{article.text}</p>
         </article>
       </div>
+      {nextUrl && <button>Next</button>}
+      {prevUrl && <button>Previous</button>}
     </>
   );
 };
