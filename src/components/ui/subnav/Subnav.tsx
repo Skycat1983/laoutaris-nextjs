@@ -19,7 +19,7 @@ const Subnav = ({ links, stem }: SubnavProps) => {
     }
   };
   return (
-    <div className="relative z-[99] flex flex-row w-full justify-center mx-4 pt-[145px] md:pt-[230px] lg:pt-[150px]">
+    <div className="relative  flex flex-row w-full justify-center mx-4 pt-[145px] md:pt-[230px] lg:pt-[150px]">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto bg-slate-100 ">
         <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
           {links.map((link, i) => (

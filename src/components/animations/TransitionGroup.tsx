@@ -74,7 +74,7 @@ const TransitionGroup: React.FC<TransitionGroupProps> = ({
           leaveTo="opacity-0 translate-x-[150px]"
         >
           <h1
-            className="text-6xl fontface-crimson font-thin"
+            className="text-4xl md:text-6xl fontface-crimson font-thin"
             style={{ color: textColour }}
           >
             {title}

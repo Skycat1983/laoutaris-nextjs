@@ -24,13 +24,9 @@ const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {
         <div className="block flex gap-4 my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
           <AccountMenuBar />
 
-          {/* <Search />
-          <ShoppingBasket />
-          <User /> */}
           <NavMenu navLinks={navLinks} />
         </div>
       </div>
-      {/* <div className="w-full bg-gray-100 h-[1px]"></div> */}
     </>
   );
 };
