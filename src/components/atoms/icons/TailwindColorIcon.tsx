@@ -16,6 +16,10 @@ const TailwindColorIcon = ({ color }: ColorProps) => {
     pink: "#ffc0cb",
     teal: "#008080",
     brown: "#a52a2a",
+    gray: "#808080",
+    lightblue: "#add8e6",
+    lime: "#00ff00",
+    olive: "#808000",
   };
   const colorHex = colorMap[color];
 

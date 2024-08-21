@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -15,33 +15,17 @@ import { Input } from "../shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { get } from "http";
 import { RadioGroup, RadioGroupItem } from "../shadcn/radio-group";
-import { Textarea } from "../textarea";
+import { Textarea } from "../shadcn/textarea";
+import { submitEnquiry } from "@/lib/server/user/actions/submitEnquiry";
+import { useFormState } from "react-dom";
 
-type Props = {
-  //   getUsername: () => void;
-  username: string | null;
-};
-
-// const getUsername = async () => {
-//   "use server";
-//   const session = await getServerSession(authOptions);
-//   if (session?.user?.name) {
-//     return session.user.name;
-//   } else {
-//     return null;
-//   }
-// };
 // ! https://www.youtube.com/watch?v=gQ2bVQPFS4U
-const EnquireForm = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<string | null>("");
+const EnquiryForm = () => {
   // TODO: get username from session.
 
   const formSchema = z.object({
-    username: z.string().min(2, {
+    name: z.string().min(2, {
       message: "Username must be at least 2 characters.",
     }),
     email: z.string().email({
@@ -57,7 +41,7 @@ const EnquireForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       enquiryType: "print",
       message: "",
@@ -65,31 +49,40 @@ const EnquireForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("email", values.email);
+    formData.append("enquiryType", values.enquiryType);
+    formData.append("message", values.message);
+
+    try {
+      await submitEnquiry(formData);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      console.log(errorMessage);
+    }
   }
 
   //! fields: username, email, message, radios (print, original, both), submit button
   return (
     <Form {...form}>
       <form
+        // action={formAction}
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 px-4 bg-slate-100"
       >
         <FormField
-          control={form.control}
-          name="username"
+          // control={form.control}
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Username" {...field} />
+                <Input placeholder="Name" {...field} />
               </FormControl>
-              <FormDescription className="hidden">
-                This is your public display name.
-              </FormDescription>
+              <FormDescription className="hidden">Your name.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -103,9 +96,7 @@ const EnquireForm = () => {
               <FormControl>
                 <Input placeholder="Email" {...field} />
               </FormControl>
-              <FormDescription className="hidden">
-                This is your public display name.
-              </FormDescription>
+              <FormDescription className="hidden">Your email</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -117,6 +108,7 @@ const EnquireForm = () => {
             <FormItem className="space-y-3">
               <FormLabel>Enquiry type</FormLabel>
               <FormControl>
+                {/* You can <span>@mention</span> other users and organizations. */}
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -142,10 +134,16 @@ const EnquireForm = () => {
                     <FormControl>
                       <RadioGroupItem value="both" />
                     </FormControl>
-                    <FormLabel className="font-normal">Either/both</FormLabel>
+                    <FormLabel className="font-normal">
+                      Either/both/other
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
+              <FormDescription className="hidden">
+                The type of enquiry you're making.
+              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
@@ -178,4 +176,13 @@ const EnquireForm = () => {
   );
 };
 
-export default EnquireForm;
+export default EnquiryForm;
+
+//   const defaultValues = {
+//   name: "",
+//   email: "",
+//   enquiryType: "print",
+//   message: "",
+// };
+
+// const [state, formAction] = useFormState(submitEnquiry, initialState)
