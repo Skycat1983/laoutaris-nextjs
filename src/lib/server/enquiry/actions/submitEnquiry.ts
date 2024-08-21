@@ -1,9 +1,9 @@
 "use server";
 
-import { z } from "zod";
-import { EnquiryModel } from "../../models";
 import { IFrontendEnquiry } from "@/lib/client/types/enquiryTypes";
 import { headers } from "next/headers";
+import { EnquiryModel, IEnquiryContent } from "../../models";
+import { replaceMongoId } from "@/utils/transformData";
 
 export async function submitEnquiry(
   formData: FormData
@@ -14,29 +14,45 @@ export async function submitEnquiry(
     const enquiryType = formData.get("enquiryType");
     const message = formData.get("message");
 
-    console.log(name, email, enquiryType, message);
+    console.log("Field values", { name, email, enquiryType, message });
 
     if (!name || !email || !enquiryType || !message) {
       throw new Error("All fields are required.");
     }
 
-    const result = await fetch("http://localhost:3000/api/enquiry", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...headers(),
-      },
-      body: JSON.stringify({ name, email, enquiryType, message }),
-    }).then((res) => res.json());
+    // ! Problems with POST request
+    // const result = await fetch("http://localhost:3000/api/enquiry", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     ...headers(),
+    //   },
+    //   body: JSON.stringify({ name, email, enquiryType, message }),
+    // }).then((res) => {
+    //   console.log("Response received:", res);
+    //   return res.json();
+    // });
+    // console.log("result in submitEnquiry", JSON.stringify(result, null, 2));
 
-    if (!result || !result.success) {
-      return {
-        success: false,
-        message: result.message || "Failed to submit enquiry.",
-      };
-    }
+    // if (!result || !result.success) {
+    //   return {
+    //     success: false,
+    //     message: result.message || "Failed to submit enquiry.",
+    //   };
+    // }
 
-    return { success: true, data: result.data };
+    const newEnquiry = await EnquiryModel.create({
+      name,
+      email,
+      enquiryType,
+      message,
+    });
+
+    const transformedEnquiry = replaceMongoId(newEnquiry.toObject());
+
+    console.log("newEnquiry created:", newEnquiry);
+
+    return { success: true, data: transformedEnquiry as IFrontendEnquiry };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An error occurred";

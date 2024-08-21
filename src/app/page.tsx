@@ -13,9 +13,9 @@ export default function Home() {
           <ArtworkSection />
         </div>
         <HorizontalDivider />
-        <div className="p-4">
+        {/* <div className="p-4">
           <ProjectSection />
-        </div>
+        </div> */}
         <div className="p-4">
           <BiographySection />
         </div>

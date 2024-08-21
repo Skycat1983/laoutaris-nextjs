@@ -56,7 +56,8 @@ const EnquiryForm = () => {
     formData.append("message", values.message);
 
     try {
-      await submitEnquiry(formData);
+      const result = await submitEnquiry(formData);
+      console.log("result of submit enquiry", result);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
