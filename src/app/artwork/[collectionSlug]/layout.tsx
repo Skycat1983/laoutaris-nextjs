@@ -1,5 +1,6 @@
 import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
 import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
 import dbConnect from "@/utils/mongodb";
@@ -51,6 +52,14 @@ export default async function CollectionLayout({
       </div>
       <div className="bg-slate-800/10 w-full">
         <ArtistProfile />
+      </div>
+      <div className="px-4 py-4">
+        <HorizontalDivider />
+      </div>
+      <div className="px-4">
+        <h1 className=" py-6 text-2xl font-bold">Subscribe for updates</h1>
+        {/* <HorizontalDivider /> */}
+        <SubscribeForm />
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />

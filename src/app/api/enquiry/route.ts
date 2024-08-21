@@ -2,6 +2,8 @@ import { IFrontendEnquiry } from "@/lib/client/types/enquiryTypes";
 import { EnquiryModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 
+// TODO: delete or use
+// ! currently unused as we handle all this in lib/server/enquiry
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const { name, email, enquiryType, message } = await request.json();

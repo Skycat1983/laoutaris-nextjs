@@ -1,3 +1,7 @@
+"use server";
+
+import { replaceMongoId } from "@/utils/transformData";
+import { SubscriberModel } from "../../models";
 import { fetchSubscriber } from "../data-fetching/fetchSubscriber";
 import { postSubscriber } from "../data-fetching/postSubscriber";
 import { IFrontendSubscriber } from "@/lib/client/types/subscriberTypes";
@@ -14,27 +18,39 @@ export async function submitSubscription(
       throw new Error("Name and email are required.");
     }
 
-    const existingSubscriber = await fetchSubscriber(email);
+    const existingSubscriber = await SubscriberModel.findOne({ email });
 
-    if (existingSubscriber.success) {
+    if (existingSubscriber) {
       throw new Error("You are already subscribed.");
     }
 
+    const newSubscriber = await SubscriberModel.create({ name, email });
+
+    const subscriber = replaceMongoId(newSubscriber.toObject());
+
+    console.log("subscriber :>> ", subscriber);
+
+    // ! failed attempts to fetch using route handler. problem with POST request
+    // const existingSubscriber = await fetchSubscriber(email);
+
+    // if (existingSubscriber.success) {
+    //   throw new Error("You are already subscribed.");
+    // }
+
     // Create and save the new subscriber
-    const newSubscriber = await postSubscriber(name, email);
+    // const newSubscriber = await postSubscriber(name, email);
 
-    if (!newSubscriber.success) {
-      return {
-        success: false,
-        message:
-          newSubscriber.message ||
-          "An error occurred while creating the subscriber.",
-      };
-    }
+    // if (!newSubscriber.success) {
+    //   return {
+    //     success: false,
+    //     message:
+    //       newSubscriber.message ||
+    //       "An error occurred while creating the subscriber.",
+    //   };
+    // }
 
-    return { success: true, data: newSubscriber.data };
+    return { success: true, data: subscriber as IFrontendSubscriber };
   } catch (error) {
-    // Log the error for debugging
     console.error("Error creating subscriber:", error);
     return {
       success: false,

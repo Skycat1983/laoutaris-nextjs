@@ -1,6 +1,5 @@
 import { IFrontendSubscriber } from "@/lib/client/types/subscriberTypes";
 import { SubscriberModel } from "@/lib/server/models";
-import { replaceMongoIdInArray } from "@/utils/transformData";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {

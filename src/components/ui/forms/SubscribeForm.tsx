@@ -16,7 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { submitSubscription } from "@/lib/server/subscriber/actions/submitSubscription";
 
-// Create a SubscribeForm component
+// TODO: this form does not reflect nor return the errors from submission as we do not make use of useFormState
+// TODO: add modal to show success message after submission
 const SubscribeForm = () => {
   // Define the schema using zod
   const formSchema = z.object({
@@ -44,7 +45,8 @@ const SubscribeForm = () => {
     formData.append("email", values.email);
 
     try {
-      await submitSubscription(formData);
+      const result = await submitSubscription(formData);
+      console.log("result of attempted subscription", result);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
