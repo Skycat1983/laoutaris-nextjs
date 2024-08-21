@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RadioGroup, RadioGroupItem } from "../shadcn/radio-group";
 import { Textarea } from "../shadcn/textarea";
-import { submitEnquiry } from "@/lib/server/user/actions/submitEnquiry";
+import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
 // ! https://www.youtube.com/watch?v=gQ2bVQPFS4U
 const EnquiryForm = () => {
