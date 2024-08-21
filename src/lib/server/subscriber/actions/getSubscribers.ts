@@ -1,5 +1,5 @@
 import { replaceMongoIdInArray } from "@/utils/transformData";
-import { SubscriberModel } from "../models";
+import { SubscriberModel } from "../../models";
 
 export async function getSubscribers() {
   try {
