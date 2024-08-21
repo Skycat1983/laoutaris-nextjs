@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from "@/components/ui/shadcn/drawer";
 import Link from "next/link";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import Logo from "@/components/atoms/Logo";

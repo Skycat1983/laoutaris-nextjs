@@ -1,5 +1,12 @@
+"use server";
+
 import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/shadcn/tabs";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import {
   CloudinaryColorPalette,
@@ -7,6 +14,18 @@ import {
 } from "@/components/cards/artworkInfoCard/ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import EnquireForm from "../forms/EnquireForm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+const getUsername = async () => {
+  const session = await getServerSession(authOptions);
+  if (session?.user?.name) {
+    return session.user.name;
+  } else {
+    return null;
+  }
+};
 
 const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";
@@ -49,7 +68,9 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
             {/* <hr /> */}
           </div>
         </TabsContent>
-        <TabsContent value="enquire">Change your password here.</TabsContent>
+        <TabsContent value="enquire">
+          <EnquireForm />
+        </TabsContent>
       </Tabs>
       <div className="px-4 py-8">
         <HorizontalDivider />
