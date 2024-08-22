@@ -38,7 +38,6 @@ const SubscribeForm = () => {
     },
   });
 
-  // Define a submit handler
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -54,7 +53,6 @@ const SubscribeForm = () => {
     }
   }
 
-  // Return the form JSX
   return (
     <Form {...form}>
       <form

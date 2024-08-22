@@ -20,13 +20,6 @@ const MainNav = async () => {
     : { data: [] };
   const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
 
-  //! Artwork
-  // const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
-  // const { data: availableArtworkLinks } = artworkLinks.success
-  //   ? artworkLinks
-  //   : { data: [] };
-  // const defaultArtworkSublinkHref = availableArtworkLinks[0].id;
-
   const artworkNavlink = {
     label: "Artwork",
     path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
@@ -91,3 +84,11 @@ const MainNav = async () => {
 };
 
 export default MainNav;
+
+//! Artwork
+// ? Unused as we now redirect to a default collection/artworkId page
+// const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
+// const { data: availableArtworkLinks } = artworkLinks.success
+//   ? artworkLinks
+//   : { data: [] };
+// const defaultArtworkSublinkHref = availableArtworkLinks[0].id;

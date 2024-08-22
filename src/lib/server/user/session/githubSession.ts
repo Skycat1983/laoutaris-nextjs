@@ -1,5 +1,6 @@
 "use server";
 
+// TODO: delete?
 import { getServerSession } from "next-auth";
 
 export async function getGithubSession() {

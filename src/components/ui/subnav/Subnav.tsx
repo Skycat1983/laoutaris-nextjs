@@ -10,7 +10,7 @@ interface SubnavProps {
 }
 
 const Subnav = ({ links, stem }: SubnavProps) => {
-  console.log("links in subnav", links);
+  // console.log("links in subnav", links);
   const buildUrl = (link: SubnavLink, stem: string) => {
     if (link.defaultRedirect) {
       return `http://localhost:3000/${stem}/${link.slug}/${link.defaultRedirect}`;

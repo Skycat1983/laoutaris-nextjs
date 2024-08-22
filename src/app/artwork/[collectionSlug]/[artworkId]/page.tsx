@@ -14,12 +14,12 @@ export default async function Artwork({
   params: { artworkId: string };
 }) {
   await dbConnect();
-  const session = await getServerSession(authOptions);
+  // const session = await getServerSession(authOptions);
   const artworkResult = await fetchArtwork(params.artworkId);
 
   const artwork = artworkResult.success ? artworkResult.data : null;
 
-  console.log("artwork", artwork);
+  // console.log("artwork", artwork);
 
   return (
     <>

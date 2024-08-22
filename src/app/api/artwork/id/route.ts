@@ -1,8 +1,11 @@
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { ArtworkModel } from "@/lib/server/models";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function GET(request: Request): Promise<NextResponse> {
+  const session = getServerSession(authOptions);
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 

@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema<IUser>(
   {
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },

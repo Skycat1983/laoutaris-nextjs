@@ -6,12 +6,16 @@ export default async function Artwork() {
   await dbConnect();
   const stem = "artwork";
 
-  const linksResult = await fetchCollectionLinks(stem);
+  const collectionLinks = await fetchCollectionLinks(stem);
+  const { data: availableCollectionLinks } = collectionLinks.success
+    ? collectionLinks
+    : { data: [] };
+  const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
 
-  const { data } = linksResult.success ? linksResult : { data: [] };
-
-  if (data.length >= 0) {
-    redirect(`/${stem}/${data[0].slug}`);
+  if (defaultCollectionSublinkHref) {
+    redirect(
+      `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
+    );
   }
 
   return (

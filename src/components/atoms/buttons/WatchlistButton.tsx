@@ -1,9 +1,9 @@
 "use client";
 
-import { addToWatchlist } from "@/lib/server/user/actions/addToWatchlist";
-import React, { useActionState, useState } from "react";
+import React from "react";
 import SubmitButton from "./SubmitButton";
 import { useFormState } from "react-dom";
+import { addArtworkToWatchlist } from "@/lib/server/user/actions/addArtworkToWatchlist";
 
 type WatchlistButtonProps = {
   isWatchlisted: boolean;
@@ -20,9 +20,8 @@ const WatchlistButton = ({
   artworkId,
 }: WatchlistButtonProps) => {
   const label = !isWatchlisted ? "Add to watchlist" : "Remove from watchlist";
-  const [state, formAction] = useFormState(addToWatchlist, initialState);
+  const [state, formAction] = useFormState(addArtworkToWatchlist, initialState);
   console.log("state frontend", state);
-  // const [buttonLabel, setButtonLabel] = useState(label);
   return (
     <>
       <form action={formAction} className="w-full">

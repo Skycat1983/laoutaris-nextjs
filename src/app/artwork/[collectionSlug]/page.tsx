@@ -1,9 +1,10 @@
 import dbConnect from "@/utils/mongodb";
-import CollectionView from "@/views/CollectionView";
 import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { fetchCollection } from "@/lib/server/collection/data-fetching/fetchCollection";
+import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
+import { redirect } from "next/navigation";
 
 export default async function Collection({
   params,
@@ -13,20 +14,19 @@ export default async function Collection({
   await dbConnect();
   const session = await getServerSession(authOptions);
 
-  // the collection is the main displayed content
-  const collectionResult = await fetchCollection(params.collectionSlug);
-  const collection = collectionResult.success ? collectionResult.data : null;
+  const stem = "artwork";
 
-  let watchlist: string[] = [];
+  const collectionLinks = await fetchCollectionLinks(stem);
+  const { data: availableCollectionLinks } = collectionLinks.success
+    ? collectionLinks
+    : { data: [] };
+  const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
 
-  if (session?.user?.name) {
-    const watchlistResponse = await fetchUserWatchlist(session.user.name);
-    if (watchlistResponse.success) {
-      watchlist = watchlistResponse.data;
-    }
+  if (defaultCollectionSublinkHref) {
+    redirect(
+      `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
+    );
   }
-
-  // console.log("collectionResult", collectionResult);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
@@ -36,3 +36,16 @@ export default async function Collection({
     </main>
   );
 }
+
+//? unused content below: we now redirect to a default collection/artworkId page
+// const collectionResult = await fetchCollection(params.collectionSlug);
+// const collection = collectionResult.success ? collectionResult.data : null;
+
+// let watchlist: string[] = [];
+
+// if (session?.user?.name) {
+//   const watchlistResponse = await fetchUserWatchlist(session.user.name);
+//   if (watchlistResponse.success) {
+//     watchlist = watchlistResponse.data;
+//   }
+// }
