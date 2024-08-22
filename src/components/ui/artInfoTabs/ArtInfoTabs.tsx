@@ -69,7 +69,7 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5">
+      <div className="w-full flex flex-col gap-3 sm:flex-row md:gap-5">
         <WatchlistButton
           isWatchlisted={isWatchlisted}
           artworkId={artwork._id}

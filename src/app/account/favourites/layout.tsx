@@ -63,9 +63,7 @@ export default async function CollectionLayout({
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <h1 className="px-4 py-6 text-2xl font-bold">
-        More from this collection
-      </h1>
+      <h1 className="px-4 py-6 text-2xl font-bold">More of your favourites</h1>
       {artworkLinks && (
         <ServerPagination
           stem="account"
@@ -76,14 +74,13 @@ export default async function CollectionLayout({
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <h1 className="px-4 py-6 text-2xl font-bold">About this collection</h1>
+      <h1 className="px-4 py-6 text-2xl font-bold">Your custom collection</h1>
       <p className="px-4 text-primary">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est quo eius
-        ipsa exercitationem deleniti eligendi sint nisi consequatur quaerat ut.
-        Nesciunt quaerat aliquam nobis alias libero repellendus ducimus. Ea
-        dolores aliquam soluta dolorem voluptatibus quasi impedit minus, beatae
-        quaerat id dignissimos veritatis, nemo laborum, vel molestiae et fuga
-        libero ab?
+        Artworks you have favourited will appear here. You can add and remove
+        artworks from your collection at any time. Meanwhile, your watchlist is
+        where you can keep track of artworks or prints you might be interested
+        in purchasing. We will notify you by email when any of these artworks
+        are available for sale.
       </p>
       <div className="px-4 py-8">
         <HorizontalDivider />

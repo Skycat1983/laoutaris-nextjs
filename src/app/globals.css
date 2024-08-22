@@ -100,7 +100,7 @@
 @layer utilities {
   .button-default {
     font-family: var(--font-archivo), sans-serif;
-    @apply font-bold font-[600] text-base;
+    @apply font-bold font-[600] text-base min-w-[220px];
   }
 
   .fontface-bold {
