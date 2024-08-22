@@ -28,18 +28,20 @@ export interface ArtworkLink {
 interface PaginationLinkWrapperProps {
   artworkLink: ArtworkLink;
   collectionSlug: string;
+  stem: string;
   children: React.ReactNode;
 }
 
 const ServerPaginationLinkWrapper = ({
   artworkLink,
   collectionSlug,
+  stem,
   children,
 }: PaginationLinkWrapperProps) => {
   return (
     <>
       <Link
-        href={`http://localhost:3000/artwork/${collectionSlug}/${artworkLink.id}`}
+        href={`http://localhost:3000/${stem}/${collectionSlug}/${artworkLink.id}`}
       >
         {children}
       </Link>
@@ -48,11 +50,13 @@ const ServerPaginationLinkWrapper = ({
 };
 
 interface ServerPaginationProps {
+  stem?: string;
   artworkLinks: ArtworkLink[];
   collectionSlug: string;
 }
 
 const ServerPagination = ({
+  stem = "artwork",
   artworkLinks,
   collectionSlug,
 }: ServerPaginationProps) => {
@@ -61,13 +65,6 @@ const ServerPagination = ({
 
   console.log("idArray", idArray);
 
-  const nextPageId = (currentPageId: string, idArray: string[]) => {
-    return idArray[idArray.indexOf(currentPageId) + 1];
-  };
-
-  const prevPageId = (currentPageId: string, idArray: string[]) => {
-    return idArray[idArray.indexOf(currentPageId) - 1];
-  };
   return (
     <>
       <div className="flex flex-row justify-center w-full">
@@ -83,6 +80,7 @@ const ServerPagination = ({
                 key={i}
                 artworkLink={artworkLink}
                 collectionSlug={collectionSlug}
+                stem={stem}
               >
                 <PaginationItem artworkLink={artworkLink} />
               </ServerPaginationLinkWrapper>
@@ -101,6 +99,14 @@ const ServerPagination = ({
 };
 
 export default ServerPagination;
+
+// const nextPageId = (currentPageId: string, idArray: string[]) => {
+//   return idArray[idArray.indexOf(currentPageId) + 1];
+// };
+
+// const prevPageId = (currentPageId: string, idArray: string[]) => {
+//   return idArray[idArray.indexOf(currentPageId) - 1];
+// };
 
 {
   /* {showPrevNext && (

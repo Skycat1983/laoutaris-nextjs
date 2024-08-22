@@ -18,21 +18,15 @@ interface ArtworkPaginationLink {
 }
 
 export default async function CollectionLayout({
-  params,
-
   children,
 }: {
   children: React.ReactNode;
-  params: { collectionSlug: string };
 }) {
-  // await dbConnect();
-  // console.log("collectionSlug", params.collectionSlug);
   const session = await getServerSession(authOptions);
   if (!session || !session.user || !session.user.email) {
     redirect("http://localhost:3000");
   }
 
-  // if (!!session && session.user && session.user.email) {
   const user = (await UserModel.findOne({ email: session.user.email })
     .populate("favourites")
     .lean()) as IFrontendUser;
@@ -43,7 +37,7 @@ export default async function CollectionLayout({
 
   const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
     return {
-      id: artwork.id,
+      id: artwork._id.toString(),
       imageData: {
         secure_url: artwork.image.secure_url,
         pixelHeight: artwork.image.pixelHeight,
@@ -56,7 +50,7 @@ export default async function CollectionLayout({
     convertToPaginationLink(artwork)
   );
 
-  console.log("user :>> ", user);
+  console.log("artworkLinks in favoiurites:>> ", artworkLinks);
   // } else {
   //   redirect("http://localhost:3000");
   // }
@@ -74,8 +68,9 @@ export default async function CollectionLayout({
       </h1>
       {artworkLinks && (
         <ServerPagination
+          stem="account"
           artworkLinks={artworkLinks}
-          collectionSlug={params.collectionSlug}
+          collectionSlug={"favourites"}
         />
       )}
       <div className="px-4 py-8">
