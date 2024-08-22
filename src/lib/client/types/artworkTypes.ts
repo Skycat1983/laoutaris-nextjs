@@ -7,7 +7,7 @@ export interface IFrontendArtwork {
   medium: string;
   surface: string;
   featured: boolean;
-  //   watcherlist: string[];
+  watcherlist: string[];
   __v: number;
 }
 

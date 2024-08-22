@@ -1,19 +1,21 @@
+import { Button } from "@/components/ui/shadcn/button";
 import { useFormStatus } from "react-dom";
 
 interface SubmitButtonProps {
   label: string;
-  className?: string;
 }
 
-function SubmitButton({
-  label,
-  className = "subheading-button-active",
-}: SubmitButtonProps) {
+function SubmitButton({ label }: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
-    <button disabled={pending} className={className}>
-      <span>{label}</span>
-    </button>
+    <Button
+      shape={"rounded"}
+      // variant={"outline"}
+      size={"full"}
+      disabled={pending}
+    >
+      {pending ? "Loading..." : label}
+    </Button>
   );
 }
 

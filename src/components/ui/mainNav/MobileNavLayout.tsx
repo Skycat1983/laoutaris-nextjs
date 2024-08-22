@@ -1,9 +1,9 @@
 import Link from "next/link";
 import React from "react";
 import { Menu, Search, ShoppingBasket, User } from "lucide-react";
-import Logo from "../../../atoms/Logo";
-import { AccountMenuBar } from "../../accountMenuBar/AccountMenuBar";
-import NavMenu from "../../accountMenuBar/navMenu/NavMenu";
+import Logo from "../../atoms/Logo";
+import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
+import NavMenu from "../accountMenuBar/navMenu/NavMenu";
 
 interface NavLink {
   label: string;

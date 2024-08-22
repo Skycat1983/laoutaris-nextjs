@@ -98,6 +98,11 @@
 @tailwind utilities;
 
 @layer utilities {
+  .button-default {
+    font-family: var(--font-archivo), sans-serif;
+    @apply font-bold font-[600] text-base;
+  }
+
   .fontface-bold {
     font-family: var(--font-archivo-black), sans-serif;
     @apply font-thin;

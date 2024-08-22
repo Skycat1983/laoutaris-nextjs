@@ -1,14 +1,14 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import { updateUserWatchlist } from "../data-fetching/updateUserWatchlist";
+import { updateUserWatchlist } from "./updateUserWatchlist";
 import { getServerSession } from "next-auth";
-import { fetchUserId } from "../data-fetching/fetchUserId";
 
 interface AddToFavouritesResponse {
   message: string;
 }
-
+// TODO: use or delete
+// ! UNUSED
 export async function addArtworkToWatchlist(
   prevState: any,
   formData: FormData

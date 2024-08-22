@@ -16,8 +16,6 @@ export default async function ArtworkLayout({
     ? collectionLinksResult
     : { data: [] };
 
-  console.log("data in Artwork Layout", data);
-
   return (
     <section className="p-0 m-0">
       {data && <Subnav links={data} stem={stem} />}

@@ -18,6 +18,9 @@ import EnquiryForm from "../forms/EnquiryForm";
 
 const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";
+  const isWatchlisted = !!artwork.watcherlist.length;
+  console.log("artwork :>> ", artwork);
+  console.log("isWatchlisted :>> ", isWatchlisted);
   return (
     <>
       <Tabs defaultValue="about" className="w-full p-0">
@@ -65,7 +68,10 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
         <HorizontalDivider />
       </div>
       <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5">
-        <WatchlistButton isWatchlisted={false} artworkId={artwork._id} />
+        <WatchlistButton
+          isWatchlisted={isWatchlisted}
+          artworkId={artwork._id}
+        />
 
         <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
           Add to favourites

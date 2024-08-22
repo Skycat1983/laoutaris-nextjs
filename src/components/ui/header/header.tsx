@@ -2,7 +2,7 @@
 
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import Searchbar from "../../atoms/inputs/Searchbar";
-import MainNav from "./mainNav/MainNav";
+import MainNav from "../mainNav/MainNav";
 
 const Header = () => {
   return (

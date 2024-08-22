@@ -67,7 +67,7 @@ const MainNav = async () => {
     shopNavlink,
   ];
 
-  console.log("defaultBiographySublink", defaultBiographySublinkHref);
+  // console.log("defaultBiographySublink", defaultBiographySublinkHref);
   return (
     <nav className="">
       <div className="block sm:hidden">
