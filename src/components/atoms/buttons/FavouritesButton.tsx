@@ -54,6 +54,8 @@ const FavouritesButton = ({
 
   const [state, formAction] = useFormState(updateUserFavourites, initialState);
 
+  console.log("state", state);
+
   const label = !state.isFavourited
     ? "Add to favourites"
     : "Remove from favourites";

@@ -10,6 +10,7 @@ export interface IFrontendUser {
   username: string;
   role: "user" | "admin";
   watchlist: string[];
+  favourites: string[];
   createdAt: Date;
   updatedAt: Date;
 }

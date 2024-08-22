@@ -75,7 +75,7 @@ export function AccountMenu() {
                 <NavigationMenuLink asChild>
                   <a
                     className="flex w-full items-center select-none justify-end rounded-md  from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md"
-                    href="api/auth/signin"
+                    href="http://localhost:3000/account"
                   >
                     <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                       Profile
