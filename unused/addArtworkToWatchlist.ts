@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import { updateUserWatchlist } from "./updateUserWatchlist";
+import { updateUserWatchlist } from "../src/lib/server/user/actions/updateUserWatchlist";
 import { getServerSession } from "next-auth";
 
 interface AddToFavouritesResponse {

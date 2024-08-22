@@ -38,6 +38,7 @@ export interface IArtwork extends Document {
   surface: "paper" | "canvas" | "wood" | "film";
   featured?: boolean;
   watcherlist?: mongoose.Schema.Types.ObjectId[];
+  favourited?: mongoose.Schema.Types.ObjectId[];
 }
 
 const artworkSchema = new mongoose.Schema(
@@ -98,6 +99,7 @@ const artworkSchema = new mongoose.Schema(
     },
     featured: { type: Boolean, default: false },
     watcherlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    favourited: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

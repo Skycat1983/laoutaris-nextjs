@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password: string;
   role: "user" | "admin";
   watchlist: mongoose.Schema.Types.ObjectId[];
+  favourites: mongoose.Schema.Types.ObjectId[];
 }
 
 // Create the user schema
@@ -17,6 +18,7 @@ const userSchema = new mongoose.Schema<IUser>(
     password: { type: String, required: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
+    favourites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },
   { timestamps: true }
 );

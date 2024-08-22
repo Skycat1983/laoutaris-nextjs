@@ -8,6 +8,7 @@ export interface IFrontendArtwork {
   surface: string;
   featured: boolean;
   watcherlist: string[];
+  favourited: string[];
   __v: number;
 }
 

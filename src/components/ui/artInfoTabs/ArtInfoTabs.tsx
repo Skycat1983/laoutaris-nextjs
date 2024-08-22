@@ -15,12 +15,14 @@ import {
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
+import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
 
 const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";
   const isWatchlisted = !!artwork.watcherlist.length;
+  const isFavourited = !!artwork.favourited.length;
   console.log("artwork :>> ", artwork);
-  console.log("isWatchlisted :>> ", isWatchlisted);
+  console.log("isFavourited :>> ", isFavourited);
   return (
     <>
       <Tabs defaultValue="about" className="w-full p-0">
@@ -72,10 +74,11 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
           isWatchlisted={isWatchlisted}
           artworkId={artwork._id}
         />
+        <FavouritesButton isFavourited={isFavourited} artworkId={artwork._id} />
 
-        <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
+        {/* <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
           Add to favourites
-        </button>
+        </button> */}
       </div>
     </>
   );

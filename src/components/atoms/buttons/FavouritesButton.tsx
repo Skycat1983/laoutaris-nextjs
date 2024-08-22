@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { updateUserWatchlist } from "@/lib/server/user/actions/updateUserWatchlist";
 import { Button } from "@/components/ui/shadcn/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -11,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavourites";
 
 interface SubmitButtonProps {
   label: string;
@@ -21,9 +21,9 @@ function SubmitButton({ label }: SubmitButtonProps) {
   return (
     <Button
       shape={"rounded"}
-      // variant={"outline"}
       size={"full"}
       disabled={pending}
+      variant={"outline"}
     >
       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {pending ? "Loading..." : label}
@@ -31,35 +31,32 @@ function SubmitButton({ label }: SubmitButtonProps) {
   );
 }
 
-type WatchlistButtonProps = {
-  isWatchlisted: boolean;
+type FavouritesButtonProps = {
+  isFavourited: boolean;
   artworkId: string;
 };
 
-export interface WatchlistButtonState {
+export interface FavouritesButtonState {
   success: boolean;
   message: string;
-  isWatchlisted: boolean;
+  isFavourited: boolean;
 }
-const WatchlistButton = ({
-  isWatchlisted,
+
+const FavouritesButton = ({
+  isFavourited,
   artworkId,
-}: WatchlistButtonProps) => {
-  const initialState: WatchlistButtonState = {
+}: FavouritesButtonProps) => {
+  const initialState: FavouritesButtonState = {
     success: false,
-    isWatchlisted: isWatchlisted,
+    isFavourited: isFavourited,
     message: "",
   };
 
-  // ? unable to use this hook for some reason
-  // const segments = useSelectedLayoutSegments();
-  // console.log("segments :>> ", segments);
+  const [state, formAction] = useFormState(updateUserFavourites, initialState);
 
-  const [state, formAction] = useFormState(updateUserWatchlist, initialState);
-
-  const label = !state.isWatchlisted
-    ? "Add to watchlist"
-    : "Remove from watchlist";
+  const label = !state.isFavourited
+    ? "Add to favourites"
+    : "Remove from favourites";
 
   return (
     <>
@@ -72,7 +69,7 @@ const WatchlistButton = ({
             </form>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Notify me when this item is on sale</p>
+            <p>Add this item to your favourites list</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -80,15 +77,4 @@ const WatchlistButton = ({
   );
 };
 
-export default WatchlistButton;
-
-//   return (
-//     <>
-//       <form action={formAction} className="w-full">
-//         <input type="hidden" name="artworkId" value={artworkId} />
-
-//         <SubmitButton label={label} />
-//       </form>
-//     </>
-//   );
-// };
+export default FavouritesButton;

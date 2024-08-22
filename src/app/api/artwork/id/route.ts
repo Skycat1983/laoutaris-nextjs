@@ -19,9 +19,9 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const rawContent = (await ArtworkModel.findOne({ _id: id })
-      // .populate("artworks")
-      .lean()) as IFrontendArtwork;
+    const rawContent = (await ArtworkModel.findOne({
+      _id: id,
+    }).lean()) as IFrontendArtwork;
 
     if (!rawContent) {
       return NextResponse.json<ApiErrorResponse>(
@@ -40,8 +40,12 @@ export async function GET(request: Request): Promise<NextResponse> {
       rawContent.watcherlist = rawContent.watcherlist.filter(
         (id) => id !== userId
       );
+      rawContent.favourited = rawContent.favourited.filter(
+        (id) => id !== userId
+      );
     } else {
       rawContent.watcherlist = [];
+      rawContent.favourited = [];
     }
 
     return NextResponse.json<ApiSuccessResponse<IFrontendArtwork>>({

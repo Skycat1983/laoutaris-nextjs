@@ -16,10 +16,9 @@ export default async function Artwork({
   await dbConnect();
   // const session = await getServerSession(authOptions);
   const artworkResult = await fetchArtwork(params.artworkId);
-
   const artwork = artworkResult.success ? artworkResult.data : null;
 
-  // console.log("artwork", artwork);
+  console.log("artwork [artworkId]", artwork);
 
   return (
     <>

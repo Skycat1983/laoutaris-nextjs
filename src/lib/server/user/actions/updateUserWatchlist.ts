@@ -10,9 +10,8 @@ export async function updateUserWatchlist(
   formData: FormData
 ): Promise<WatchlistButtonState> {
   const artworkId = formData.get("artworkId") as string;
-  const pathToRevalidate = formData.get("pathToRevalidate") as string;
 
-  await delay(2000); // Simulate delay for debugging purposes
+  await delay(1000);
 
   try {
     const userId = await getUserIdFromSession();
@@ -75,7 +74,13 @@ export async function updateUserWatchlist(
         ? "Added to watchlist"
         : "Removed from watchlist";
 
-      revalidatePath(`${process.env.NEXTAUTH_URL}/${pathToRevalidate}`);
+      // artworkStem
+      // TODO: fix this. otherwise updates not showing
+      // ! NOT WORKING. might be fixed with Suspense boundary
+      // revalidatePath(
+      //   "http://localhost:3000/artwork/[collectionSlug]/[artworkId]",
+      //   "page"
+      // );
       return {
         success: true,
         message: successMessage,
