@@ -26,7 +26,7 @@ const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
     // <div className="">
     <div className="bg-slate-100 flex flex-col text-left space-y-4 h-auto w-[400px]">
       {/* <div className="bg-slate-100/20 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]"> */}
-      <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
+      {/* <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1> */}
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
         {artwork.title}
       </h2>
@@ -51,11 +51,11 @@ const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
         label="Predominant colours"
       />
       <hr />
-      <p className="hidden lg:block py-4 font-archivo text-md font-light text-gray-700">
+      {/* <p className="hidden lg:block py-4 font-archivo text-md font-light text-gray-700">
         This picture used to hang on the wall as a focal point in Granddad's
         living room. As a child I remember asking him what it depicted. "Can't
         you tell?", he'd respond wryly.
-      </p>
+      </p> */}
       <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5 lg:flex-row">
         <WatchlistButton
           isWatchlisted={isWatchlisted}

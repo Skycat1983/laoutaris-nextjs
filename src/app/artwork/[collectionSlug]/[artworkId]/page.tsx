@@ -36,32 +36,29 @@ export default async function Artwork({
     <>
       <div
         className="
-        bg-blue-100 
-        grid 
-        grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
-        lg:grid-cols-2
-        gap-4 
-      "
+          bg-blue-100 
+          grid 
+          grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
+          lg:grid-cols-[1fr,1fr]
+          gap-4 
+        "
       >
-        {/* <div className="hidden lg:block"></div> */}
-        <div className="bg-red-100 m-4 max-h-[70vh] ">
+        <span className="bg-red-100 m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
           {artwork && (
             <Image
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}
               alt="Artwork"
-              className="object-contain max-h-full"
+              className="object-contain max-h-full w-auto"
             />
           )}
-        </div>
+        </span>
+
         <div className="bg-yellow-100 h-auto max-h-[70vh] flex flex-row justify-center items-center">
           {artwork && <ArtworkInfoCard {...artwork} />}
         </div>
-        {/* <div className="container bg-green-100 m-4">
-          {artwork && <ArtInfoTabs {...artwork} />}
-        </div> */}
-      </div>{" "}
+      </div>
     </>
   );
 }
