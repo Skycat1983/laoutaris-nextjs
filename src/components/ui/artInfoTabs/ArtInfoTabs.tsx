@@ -35,7 +35,7 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="about">
-          <div className="bg-slate-100 flex flex-col p-8 text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]">
+          <div className="bg-greyish flex flex-col p-8 text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]">
             <h2 className="font-archivo text-lg font-bold text-gray-500 italic">
               {artwork.title}
             </h2>

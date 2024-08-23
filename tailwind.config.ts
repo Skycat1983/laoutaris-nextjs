@@ -24,12 +24,13 @@ const config = {
       crimson: ["var(--font-crimson", "serif"],
     },
     extend: {
-      // fontFamily: {
-      //   archivo: ["var(--font-archivo)", "sans-serif"],
-      //   archivoBlack: ["var(--font-archivo-black)", "sans-serif"],
-      //   conzelDecorative: ["var(--font-cinzel-decorative)", "serif"],
-      // },
       colors: {
+        // greyish:
+        // ! my additions
+        greyish: "hsl(var(--custom-greyish))",
+        // whitish: "#f5f5f5",
+        // whitish: "hsl(var(--custom-whitish))",
+        // ---
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -90,3 +91,9 @@ const config = {
 } satisfies Config;
 
 export default config;
+
+// fontFamily: {
+//   archivo: ["var(--font-archivo)", "sans-serif"],
+//   archivoBlack: ["var(--font-archivo-black)", "sans-serif"],
+//   conzelDecorative: ["var(--font-cinzel-decorative)", "serif"],
+// },

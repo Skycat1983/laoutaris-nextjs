@@ -23,7 +23,7 @@ const Breadcrumbs = () => {
       <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
         <Breadcrumb>
           <BreadcrumbList>
-            <div className="flex flex-row justify-center items-center gap-2 lg:gap-10">
+            <div className="flex flex-row justify-center items-center gap-2 sm:gap-5 md:gap-5 lg:gap-10">
               <BreadcrumbItem>
                 <BreadcrumbLink href="/">
                   <HouseIcon className="bg-whitish h-5 md:h-6 lg:h-8" />
@@ -38,7 +38,7 @@ const Breadcrumbs = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbLink
-                        className="font-face-default subheading font-normal text-base flex-shrink-0 lg:font-semibold lg:text-lg"
+                        className="font-face-default subheading font-normal text-base flex-shrink-0 lg:font-medium lg:text-lg"
                         href={`/${segments.slice(0, index + 1).join("/")}`}
                       >
                         {displaySegment}
