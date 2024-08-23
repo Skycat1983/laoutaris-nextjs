@@ -60,7 +60,7 @@ export default async function Artwork({
           {artwork && <ArtworkInfoCard {...artwork} />}
         </div>
       </div>
-      {artwork && <CroppedImage artwork={artwork} />}
+      {/* {artwork && <CroppedImage artwork={artwork} />} */}
     </>
   );
 }
