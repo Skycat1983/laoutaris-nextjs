@@ -1,5 +1,6 @@
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { ArticleModel } from "@/lib/server/models";
+import { transformToFrontendArticle } from "@/utils/transformData";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -20,9 +21,9 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const rawContent = (await ArticleModel.findOne({ slug })
-      .populate("author")
-      .lean()) as IFrontendArticle;
+    const rawContent = await ArticleModel.findOne({ slug })
+      .populate("author, artwork")
+      .lean();
 
     if (!rawContent) {
       return NextResponse.json<ApiErrorResponse>(
@@ -35,9 +36,11 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
 
+    const transformedContent = transformToFrontendArticle(rawContent);
+
     return NextResponse.json<ApiSuccessResponse<IFrontendArticle>>({
       success: true,
-      data: rawContent,
+      data: transformedContent,
     });
   } catch (error) {
     console.error("Error fetching article", error);

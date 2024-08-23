@@ -2,19 +2,21 @@
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import Link from "next/link";
 import { usePathname, useSelectedLayoutSegment } from "next/navigation";
 import { useRef, useState } from "react";
 
 interface ArticleProps {
-  article: {
-    title: string;
-    subtitle: string;
-    imageUrl: string;
-    summary: string;
-    text: string;
-    overlayColour: string;
-  };
+  article: IFrontendArticle;
+  // article: {
+  //   title: string;
+  //   subtitle: string;
+  //   imageUrl: string;
+  //   summary: string;
+  //   text: string;
+  //   overlayColour: string;
+  // };
   nextUrl: string | null;
   prevUrl: string | null;
 }
@@ -51,7 +53,7 @@ const MobileArticleView: React.FC<ArticleProps> = ({
       <div
         className="bg-cover  bg-fixed h-[530px] "
         style={{
-          backgroundImage: `url(${article.imageUrl})`,
+          backgroundImage: `url(${article.artwork.image.secure_url})`,
           // backgroundPosition: "90% -100px",
           backgroundPosition: getBackgroundPosition(),
         }}

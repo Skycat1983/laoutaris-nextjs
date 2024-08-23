@@ -2,24 +2,18 @@
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { useRef, useState } from "react";
 
 interface ArticleProps {
-  article: {
-    title: string;
-    subtitle: string;
-    imageUrl: string;
-    summary: string;
-    text: string;
-    overlayColour: string;
-  };
+  article: IFrontendArticle;
 }
 
 const ArticleView: React.FC<ArticleProps> = ({ article }) => {
   const [overlayShowing, setOverlayShowing] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-
+  // TODO: change img to nextjs Image
   return (
     <>
       <div className="grid grid-cols-7 grid-rows-1 w-full h-full ">

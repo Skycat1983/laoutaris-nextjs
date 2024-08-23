@@ -8,6 +8,7 @@ export interface IArticleContent extends Document {
   text: string;
   author: mongoose.Schema.Types.ObjectId;
   imageUrl: string;
+  artwork: mongoose.Schema.Types.ObjectId;
   slug: string;
   section: "artwork" | "biography" | "project";
   overlayColour: "white" | "black";
@@ -21,6 +22,7 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
     summary: { type: String, required: true },
     text: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    artwork: { type: mongoose.Schema.Types.ObjectId, ref: "Artwork" },
     imageUrl: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     section: {

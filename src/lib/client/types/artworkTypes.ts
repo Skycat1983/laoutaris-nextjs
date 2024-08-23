@@ -9,7 +9,7 @@ export interface IFrontendArtwork {
   featured: boolean;
   watcherlist: string[];
   favourited: string[];
-  __v: number;
+  // __v: number;
 }
 
 export interface Image {

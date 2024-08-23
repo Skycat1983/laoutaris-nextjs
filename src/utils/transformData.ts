@@ -1,3 +1,7 @@
+import {
+  IFrontendArticle,
+  IFrontendReducedArticleArtwork,
+} from "@/lib/client/types/articleTypes";
 import { watch } from "fs";
 import { Document } from "mongoose";
 
@@ -20,3 +24,27 @@ export const filterWatchlerlist = <T extends { watcherlist: string[] }>(
     watcherlist: watcherlist.watcherlist.filter((id) => id !== userId),
   };
 };
+
+export function transformToFrontendArticle(rawContent: any): IFrontendArticle {
+  const { artwork, ...rest } = rawContent;
+
+  const transformedArtwork: IFrontendReducedArticleArtwork = {
+    _id: artwork._id,
+    title: artwork.title,
+    decade: artwork.decade,
+    artstyle: artwork.artstyle,
+    medium: artwork.medium,
+    surface: artwork.surface,
+    featured: artwork.featured,
+    image: {
+      secure_url: artwork.image.secure_url,
+      pixelHeight: artwork.image.pixelHeight,
+      pixelWidth: artwork.image.pixelWidth,
+    },
+  };
+
+  return {
+    ...rest,
+    artwork: transformedArtwork,
+  } as IFrontendArticle;
+}
