@@ -34,40 +34,36 @@ export default async function Artwork({
 
   return (
     <>
-      {/* Outer container takes the full width of the screen */}
-      <div className="grid md:grid-rows md:grid-rows-2 lg:grid-cols-3 lg:grid-rows-1 bg-red-100 p-4 h-auto px-16">
-        <div className="md:place-self-center lg:col-span-2 lg:place-self-end p-4  h-[70vh] w-auto bg-green-100 shrink-0 lg:mr-32">
+      <div
+        className="
+        bg-blue-100 
+        grid 
+        grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
+        lg:grid-cols-2
+        gap-4 
+      "
+      >
+        {/* <div className="hidden lg:block"></div> */}
+        <div className="bg-red-100 m-4 max-h-[70vh] ">
           {artwork && (
             <Image
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}
               alt="Artwork"
-              className="max-h-full w-auto object-contain"
+              className="object-contain max-h-full"
             />
           )}
         </div>
-
-        {/* Artwork card container */}
-        <div className="bg-yellow-100 h-auto max-h-[70vh] flex flex-row md:justify-center lg:justify-end w-full py-12">
+        <div className="bg-yellow-100 h-auto max-h-[70vh] flex flex-row justify-center items-center">
           {artwork && <ArtworkInfoCard {...artwork} />}
         </div>
-      </div>
+        {/* <div className="container bg-green-100 m-4">
+          {artwork && <ArtInfoTabs {...artwork} />}
+        </div> */}
+      </div>{" "}
     </>
   );
-}
-{
-  /* </div> */
-}
-{
-  /* <div className="lg:hidden max-w-1/4 m-4">
-          {artwork && <ArtInfoTabs {...artwork} />}
-        </div> */
-}
-{
-  /* <div className="hidden lg:block max-w-1/4 m-4">
-        {artwork && <ArtworkInfoCard {...artwork} />}
-        </div> */
 }
 
 // className="object-contain"
@@ -93,3 +89,26 @@ export default async function Artwork({
         </div>
       </div> */
 }
+
+// ! possibly fun on large screens
+
+// return (
+//   <>
+//     <div className="grid w-max md:grid-rows md:grid-rows-2 lg:grid-cols-3 lg:grid-rows-1 bg-red-100 p-4 h-auto lg:px-16">
+//       <div className="w-full md:place-self-center lg:col-span-2 lg:place-self-end p-4  h-[70vh] w-auto bg-green-100 shrink-0 lg:mr-32">
+//         {artwork && (
+//           <Image
+//             src={artwork.image.secure_url}
+//             width={artwork.image.pixelWidth}
+//             height={artwork.image.pixelHeight}
+//             alt="Artwork"
+//             className="max-h-full w-auto object-contain"
+//           />
+//         )}
+//       </div>
+//       <div className="bg-yellow-100 h-auto max-h-[70vh] flex flex-row md:justify-center lg:justify-end w-full pt-12">
+//         {artwork && <ArtworkInfoCard {...artwork} />}
+//       </div>
+//     </div>
+//   </>
+// );
