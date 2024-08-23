@@ -36,14 +36,14 @@ export default async function Artwork({
     <>
       <div
         className="
-          bg-blue-100 
+     
           grid 
           grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
           lg:grid-cols-[1fr,1fr]
           gap-4 
         "
       >
-        <span className="bg-red-100 m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
+        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
           {artwork && (
             <Image
               src={artwork.image.secure_url}
@@ -55,7 +55,7 @@ export default async function Artwork({
           )}
         </span>
 
-        <div className="bg-yellow-100 h-auto max-h-[70vh] flex flex-row justify-center items-center">
+        <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
           {artwork && <ArtworkInfoCard {...artwork} />}
         </div>
       </div>

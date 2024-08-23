@@ -24,9 +24,9 @@ const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
 
   return (
     // <div className="">
-    <div className="bg-slate-100 flex flex-col text-left space-y-4 h-auto w-[400px]">
+    <div className="bg-slate-800/5 p-24 flex flex-col text-left space-y-4 h-auto w-[500px]">
       {/* <div className="bg-slate-100/20 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]"> */}
-      {/* <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1> */}
+      <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
         {artwork.title}
       </h2>
