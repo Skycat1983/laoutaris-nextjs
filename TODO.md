@@ -16,3 +16,13 @@ CSS
 ---
 
 Layout vs template
+
+Early years:
+
+{
+"image.secure_url": "https://res.cloudinary.com/dzncmfirr/image/upload/v1713361077/artwork/mv4jqdtm2dki3cdkxmwe.jpg"
+}
+
+"\_id": {
+"$oid": "661fd0b540f59e26cc761e6a"
+},

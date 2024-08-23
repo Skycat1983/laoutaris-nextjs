@@ -2,6 +2,7 @@ import ButtonDivider from "../atoms/ButtonDivider";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import SectionHeading from "../atoms/SectionHeading";
 import BiographyCard from "../cards/biographyCard/BiographyCard";
+import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
 
 const BiographySection = () => {
   const biographyEntries = [
@@ -35,7 +36,28 @@ const BiographySection = () => {
 
   return (
     <>
-      <SectionHeading
+      <>
+        {/* <div className="flex flex-row justify-start items-start w-full bg-red-100"> */}
+        <SectionHeading
+          heading="Biography:"
+          subheading="Read my grandfather's story"
+        />
+        <HorizontalDivider />
+        <ScrollArea className="container whitespace-nowrap rounded-md h-auto bg-blue-100">
+          {/* <section className="grid grid-cols-4 grid-rows-2 w-max py-8 gap-5"> */}
+          {biographyEntries.map((artwork, index) => (
+            <div key={index} className="relative row-span-1 col-span-1 h-64">
+              <BiographyCard entry={artwork} key={index} />
+            </div>
+          ))}
+          {/* </section> */}
+          <ScrollBar orientation="horizontal" className="" />
+        </ScrollArea>
+
+        <ButtonDivider label="Read more" link="/biography" />
+        {/* </div> */}
+      </>
+      {/* <SectionHeading
         heading="Biography:"
         subheading="Read my grandfather's story"
       />
@@ -48,7 +70,7 @@ const BiographySection = () => {
           </div>
         ))}
       </section>
-      <ButtonDivider label="Read more" link="/biography" />
+      <ButtonDivider label="Read more" link="/biography" /> */}
     </>
   );
 };

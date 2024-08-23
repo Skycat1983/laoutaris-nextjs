@@ -29,6 +29,7 @@ export default async function Artwork({
             width={artwork.image.pixelWidth}
             height={artwork.image.pixelHeight}
             alt="Artwork"
+            className="contain"
           />
         )}
       </div>

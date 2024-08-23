@@ -1,7 +1,7 @@
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import ArtworkSection from "@/components/sections/ArtworkSection";
-import BiographySection from "@/components/sections/BiographySection";
-import ProjectSection from "@/components/sections/ProjectSection";
+import ArtworkSection from "@/components/homepageSections/ArtworkSection";
+import BiographySection from "@/components/homepageSections/BiographySection";
+import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
 
 export default function Home() {
