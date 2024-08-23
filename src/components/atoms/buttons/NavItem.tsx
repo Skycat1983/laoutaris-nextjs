@@ -10,7 +10,11 @@ interface NavItemProps {
 
 const NavItem = ({ label, slug, activeClassName, className }: NavItemProps) => {
   const segments = useSelectedLayoutSegments();
-  const isActive = segments.includes(slug);
+  console.log("segments :>> ", segments);
+  console.log("slug :>> ", slug);
+  console.log("label :>> ", label);
+  const isActive =
+    segments.includes(slug) || segments.includes(label.toLowerCase());
 
   return (
     <div

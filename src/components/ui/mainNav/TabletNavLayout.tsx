@@ -2,6 +2,8 @@ import React from "react";
 import Logo from "../../atoms/Logo";
 import Link from "next/link";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
+import NavItem from "@/components/atoms/buttons/NavItem";
+import { navLinkBorderColours } from "@/utils/consts";
 interface NavLink {
   label: string;
   path: string;
@@ -12,11 +14,18 @@ interface DesktopNavLayoutProps {
 }
 
 const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
+  if (navLinks.length > navLinkBorderColours.length) {
+    console.error(
+      `navLinks.length > navLinkBorderColours.length. navLinks.length = ${navLinks.length}, navLinkBorderColours.length = ${navLinkBorderColours.length}`
+    );
+  }
+
+  console.log("navLinks in tablet layout :>> ", navLinks);
   return (
     <>
-      <div className="w-full flex flex-col bg-blue-100 h-auto">
+      <div className="w-full flex flex-col h-auto">
         {/* top row */}
-        <div className="bg-blue-100 w-full flex flex-row justify-between space-x-6 px-4 sm:py-6">
+        <div className="w-full flex flex-row justify-between space-x-6 px-4 sm:py-6">
           <nav className="flex flex-row items-center my-auto">
             <Link href="/">
               <Logo />
@@ -27,15 +36,37 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
           </div>
         </div>
         {/* bottom row */}
-        <div className="flex flex-row items-center space-x-4 m-4 pl-8 bg-red-100">
-          <nav className="flex flex-row items-center h-auto space-x-6 ">
+        <div className="flex flex-row items-center space-x-4 mb-6 pl-8">
+          <nav className="flex flex-row items-center h-auto space-x-6">
             {navLinks.map((link, index) => (
-              <div key={index} className="hidden md:flex flex-row items-center">
+              <div key={index} className="hidden sm:flex flex-row items-center">
+                <Link href={link.path}>
+                  <NavItem
+                    label={link.label}
+                    slug={link.path}
+                    activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${navLinkBorderColours[index]}`}
+                    className="font-face-default subheading border-transparent"
+                  />
+                </Link>
+                {index + 1 < navLinks.length && (
+                  <div className="hidden sm:flex items-center">
+                    <h2 className="px-2 pl-6 text-xl font-thin">|</h2>
+                  </div>
+                )}
+              </div>
+            ))}
+            {/* <div className="hidden md:flex items-center">
+              <h2 className="px-2 text-xl font-thin">|</h2>
+            </div> */}
+          </nav>
+          {/* <nav className="flex flex-row items-center h-auto space-x-6 ">
+            {navLinks.map((link, index) => (
+              <div key={index} className="hidden sm:flex flex-row items-center">
                 <Link href={link.path}>
                   <h2 className="font-face-default subheading">{link.label}</h2>
                 </Link>
                 {index < navLinks.length - 1 && (
-                  <div className="hidden md:flex items-center">
+                  <div className="hidden sm:flex items-center">
                     <h2 className="px-2 pl-6 text-xl font-thin">|</h2>
                   </div>
                 )}
@@ -44,7 +75,7 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
             <div className="hidden md:flex items-center">
               <h2 className="px-2 text-xl font-thin">|</h2>
             </div>
-          </nav>
+          </nav> */}
         </div>
       </div>
     </>
