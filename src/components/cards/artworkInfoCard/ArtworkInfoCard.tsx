@@ -2,12 +2,15 @@ import FrameInfo from "./FrameInfo";
 import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
 
 interface ArtworkInfoCardProps extends IFrontendArtwork {
-  watchlisted: boolean;
+  // watchlisted: boolean;
 }
 
-const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
+const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
+  const isWatchlisted = !!artwork.watcherlist.length;
+  const isFavourited = !!artwork.favourited.length;
   // const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {
   //   const temporaryFrameInfo = Object.fromEntries([
   //     ["height", displayedArtwork.image.pixelHeight * 1.5],
@@ -20,8 +23,9 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
   // };
 
   return (
-    // <div className="flex flex-row justify-end items-start p-10 w-full">
-    <div className="bg-green-100 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]">
+    // <div className="">
+    <div className="bg-slate-100 flex flex-col text-left space-y-4 h-auto w-[400px]">
+      {/* <div className="bg-slate-100/20 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]"> */}
       <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
         {artwork.title}
@@ -47,32 +51,25 @@ const ArtworkInfoCard = ({ watchlisted, ...artwork }: ArtworkInfoCardProps) => {
         label="Predominant colours"
       />
       <hr />
-      <p className="py-4 font-archivo text-md font-light text-gray-700">
+      <p className="hidden lg:block py-4 font-archivo text-md font-light text-gray-700">
         This picture used to hang on the wall as a focal point in Granddad's
         living room. As a child I remember asking him what it depicted. "Can't
         you tell?", he'd respond wryly.
       </p>
-      <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5">
+      <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5 lg:flex-row">
         <WatchlistButton
-          isWatchlisted={watchlisted}
+          isWatchlisted={isWatchlisted}
           artworkId={artwork._id}
-          // label={!watchlisted ? "Add to watchlist" : "Remove from watchlist"}
         />
-        {/* <WatchlistButton itemId={artwork._id} isWatchlisted={false} /> */}
-        {/* <button
-              className="p-2 border border-2 border-black bg-black w-2/3 rounded-full font-subheading text-white font-bold"
-              onClick={() => {
-                handleAddToWatchList();
-              }}
-            >
-              Add to watchlist
-            </button> */}
+        <FavouritesButton isFavourited={isFavourited} artworkId={artwork._id} />
 
-        <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
+        {/* <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
           Add to favourites
-        </button>
+        </button> */}
       </div>
     </div>
+    // </div>
+
     // </div>
   );
 };

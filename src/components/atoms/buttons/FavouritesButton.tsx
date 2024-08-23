@@ -56,9 +56,7 @@ const FavouritesButton = ({
 
   console.log("state", state);
 
-  const label = !state.isFavourited
-    ? "Add to favourites"
-    : "Remove from favourites";
+  const label = !state.isFavourited ? "Favourite" : "Unfavourite";
 
   return (
     <>

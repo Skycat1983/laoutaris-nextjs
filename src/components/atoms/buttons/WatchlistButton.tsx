@@ -57,9 +57,7 @@ const WatchlistButton = ({
 
   const [state, formAction] = useFormState(updateUserWatchlist, initialState);
 
-  const label = !state.isWatchlisted
-    ? "Add to watchlist"
-    : "Remove from watchlist";
+  const label = !state.isWatchlisted ? "Watchlist" : "Remove";
 
   return (
     <>
