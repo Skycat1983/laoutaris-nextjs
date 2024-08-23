@@ -1,5 +1,7 @@
 "use server";
 
+import CroppedImage from "@/components/atoms/CroppedImage";
+import ZoomWrapper from "@/components/atoms/ZoomWrapper";
 import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
 import ArtInfoTabs from "@/components/ui/artInfoTabs/ArtInfoTabs";
 import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
@@ -36,21 +38,20 @@ export default async function Artwork({
     <>
       <div
         className="
-     
           grid 
           grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
           lg:grid-cols-[1fr,1fr]
-          gap-4 
+          gap-4
         "
       >
-        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
+        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end ">
           {artwork && (
             <Image
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}
               alt="Artwork"
-              className="object-contain max-h-full w-auto"
+              className="object-contain max-h-full w-auto shadow-2xl"
             />
           )}
         </span>
@@ -59,8 +60,23 @@ export default async function Artwork({
           {artwork && <ArtworkInfoCard {...artwork} />}
         </div>
       </div>
+      {artwork && <CroppedImage artwork={artwork} />}
     </>
   );
+}
+
+{
+  /* <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end ">
+            {artwork && (
+              <Image
+                src={artwork.image.secure_url}
+                width={artwork.image.pixelWidth}
+                height={artwork.image.pixelHeight}
+                alt="Artwork"
+                className="object-contain max-h-full w-auto shadow-2xl"
+              />
+            )}
+          </span> */
 }
 
 // className="object-contain"

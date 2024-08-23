@@ -57,7 +57,7 @@ const SubscribeForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 px-4 bg-slate-100"
+        className="space-y-4 px-4 bg-slate-100 px-16 py-16"
       >
         <FormField
           name="name"
