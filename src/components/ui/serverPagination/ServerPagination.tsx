@@ -74,7 +74,7 @@ const ServerPagination = ({
         {/* <PaginationNavigationContainer> */}
         {/* <div className="flex flex-col items-center justify-center h-auto"> */}
         <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
-          <div className="bg-green-100 flex w-max space-x-4 h-auto">
+          <div className="flex w-max space-x-4 h-auto">
             {artworkLinks.map((artworkLink, i) => (
               <ServerPaginationLinkWrapper
                 key={i}

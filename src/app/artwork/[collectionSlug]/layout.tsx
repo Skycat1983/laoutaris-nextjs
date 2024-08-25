@@ -38,7 +38,7 @@ export default async function CollectionLayout({
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <div className="flex flex-col w-full md:flex-row ">
+      <div className="flex flex-col w-full p-4 md:flex-row lg:px-24">
         <div className="flex flex-col">
           <h1 className="px-4 py-6 text-2xl font-bold">
             About this collection
@@ -50,6 +50,9 @@ export default async function CollectionLayout({
             ducimus. Ea dolores aliquam soluta dolorem voluptatibus quasi
             impedit minus, beatae quaerat id dignissimos veritatis, nemo
             laborum, vel molestiae et fuga libero ab?
+          </p>
+          <p className="px-4 text-primary py-8">
+            Add collection description + count
           </p>
         </div>
 

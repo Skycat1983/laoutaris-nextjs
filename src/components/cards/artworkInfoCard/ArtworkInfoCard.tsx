@@ -4,11 +4,7 @@ import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
 
-interface ArtworkInfoCardProps extends IFrontendArtwork {
-  // watchlisted: boolean;
-}
-
-const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
+const ArtworkInfoCard = ({ ...artwork }: IFrontendArtwork) => {
   const isWatchlisted = !!artwork.watcherlist.length;
   const isFavourited = !!artwork.favourited.length;
   // const generateTempFrameInfo = (displayedArtwork: IFrontendArtwork) => {
@@ -24,7 +20,7 @@ const ArtworkInfoCard = ({ ...artwork }: ArtworkInfoCardProps) => {
 
   return (
     // <div className="">
-    <div className="bg-zinc-600/5 p-24 flex flex-col text-left space-y-4 h-auto w-[500px] shadow">
+    <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-400/5 md:shadow">
       {/* <div className="bg-slate-100/20 flex flex-col text-left space-y-4 w-full md:px-10 md:mx-auto lg:w-[500px]"> */}
       <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
