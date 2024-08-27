@@ -33,20 +33,6 @@ export default async function Article({
   console.log("prev", prevLink);
   console.log("nextLink", nextLink);
 
-  // const nextLink = navLinks.find((link, index) => {
-  //   if (link.slug === params.articleSlug) {
-  //     return navLinks[index + 1];
-  //   }
-  // });
-
-  // console.log("nextLink", nextLink);
-
-  // const prevLink = navLinks.find((link, index) => {
-  //   if (link.slug === params.articleSlug) {
-  //     return navLinks[index - 1];
-  //   }
-  // });
-
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
       <div className="block md:hidden">
@@ -69,7 +55,7 @@ export default async function Article({
       )} */}
       {/* </div> */}
 
-      <div className="hidden lg:block">
+      <div className="hidden md:block">
         {article && <ArticleView article={article} />}
       </div>
     </main>

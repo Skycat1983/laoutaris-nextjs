@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   try {
     const rawContent = await ArticleModel.findOne({ slug })
-      .populate("author, artwork")
+      .populate("author artwork")
       .lean();
 
     if (!rawContent) {

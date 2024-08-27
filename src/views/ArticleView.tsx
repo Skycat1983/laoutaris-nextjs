@@ -43,7 +43,7 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
             />
           </div>
         </div>
-        <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start lg:mx-[100px] mt-8">
+        <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[70px] lg:mx-[100px] mt-8">
           <article className="prose-xl text-left" ref={textRef}>
             <h1 className="text-2xl font-bold font-archivoBlack my-5">
               {article.summary}
