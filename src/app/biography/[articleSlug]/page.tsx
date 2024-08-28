@@ -44,17 +44,6 @@ export default async function Article({
           />
         )}
       </div>
-
-      {/* <div className="hidden md:block"> */}
-      {/* {article && (
-        <MobileArticleView
-          article={article}
-          nextUrl={nextUrl}
-          prevUrl={prevUrl}
-        />
-      )} */}
-      {/* </div> */}
-
       <div className="hidden md:block">
         {article && <ArticleView article={article} />}
       </div>

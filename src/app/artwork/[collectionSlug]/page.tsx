@@ -36,16 +36,3 @@ export default async function Collection({
     </main>
   );
 }
-
-//? unused content below: we now redirect to a default collection/artworkId page
-// const collectionResult = await fetchCollection(params.collectionSlug);
-// const collection = collectionResult.success ? collectionResult.data : null;
-
-// let watchlist: string[] = [];
-
-// if (session?.user?.name) {
-//   const watchlistResponse = await fetchUserWatchlist(session.user.name);
-//   if (watchlistResponse.success) {
-//     watchlist = watchlistResponse.data;
-//   }
-// }
