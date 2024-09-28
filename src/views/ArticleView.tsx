@@ -49,7 +49,11 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
               {article.summary}
             </h1>
             <div className="h-[2px] w-full bg-gray-500 my-10"></div>
-            <p className="m-2 leading-8 prose-lg">{article.text}</p>
+            {article.text.split("\r\n\r\n").map((paragraph, index) => (
+              <p key={index} className="m-2 leading-8 prose-lg">
+                {paragraph}
+              </p>
+            ))}
           </article>
         </div>
       </div>
