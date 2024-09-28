@@ -1,4 +1,5 @@
 import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
+import Image from "next/image";
 import Link from "next/link";
 
 interface BlogCardProps {
@@ -28,6 +29,11 @@ const BlogCard = ({
         <div className="grid grid-cols-3 py-8">
           <div className="col-span-1">
             <img src={imageUrl} />
+            {/* <Image
+              src={imageUrl}
+              alt="Blog post cover"
+              className="w-full h-64 object-cover object-center"
+            /> */}
           </div>
 
           <div className="col-span-2">
