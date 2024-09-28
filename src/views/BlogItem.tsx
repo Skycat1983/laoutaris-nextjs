@@ -33,9 +33,11 @@ const BlogItem = ({
             <p>{new Date(displayDate).toLocaleDateString()}</p>
           </div>
 
-          <div className="prose lg:prose-xl max-w-none mt-4 text-left mt-12 m-12 2xl:mx-28 bg-red-100">
-            {text}
-          </div>
+          {text.split("\r\n\r\n").map((paragraph, index) => (
+            <p key={index} className="mx-12 my-4 leading-8 prose-lg">
+              {paragraph}
+            </p>
+          ))}
 
           <div className="mt-4 flex flex-row justify-center gap-5">
             <button className="text-white font-bold bg-blue-500 px-5 py-2 rounded hover:bg-blue-600">

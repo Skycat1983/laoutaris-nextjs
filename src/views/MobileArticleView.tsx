@@ -74,7 +74,11 @@ const MobileArticleView: React.FC<ArticleProps> = ({
 
       <div className="flex flex-col justify-start items-start bg-slate-100/50 relative bottom-[200px]">
         <article className="prose-xl text-left p-24 bg-white" ref={textRef}>
-          <p className="m-2 leading-8 prose-lg">{article.text}</p>
+          {article.text.split("\r\n\r\n").map((paragraph, index) => (
+            <p key={index} className="m-2 leading-8 prose-lg">
+              {paragraph}
+            </p>
+          ))}
         </article>
       </div>
 
@@ -105,62 +109,8 @@ const MobileArticleView: React.FC<ArticleProps> = ({
           </button>
         )}
       </div>
-      {/* {nextUrl && <button>Next</button>}
-      {prevUrl && <button>Previous</button>} */}
     </>
   );
 };
 
 export default MobileArticleView;
-
-{
-  /* <div className="h-[400px] overflow-hidden">
-        <div className="flex flex-col h-auto w-full justify-start items-center align-start bg-green-100">
-          <img
-            ref={imageRef}
-            className="my-bg w-full h-auto object-cover shadow-lg fixed"
-            src={article.imageUrl}
-            onLoad={() => setOverlayShowing(true)}
-          />
-        </div>
-      </div> */
-}
-
-{
-  /* <div className="flex flex-row w-full h-[200px] p-10 justify-center relative sticky bottom-[550px]">
-        {overlayShowing && (
-          <TransitionGroup
-            appear={true}
-            isShowing={true}
-            textColour={article.overlayColour}
-            title={article.title}
-            subtitle={article.subtitle}
-            author="Heron Laoutaris" // TODO: Replace with actual author
-          />
-        )}
-      </div> */
-}
-
-{
-  /* {overlayShowing && (
-          <TransitionGroup
-            appear={true}
-            isShowing={true}
-            textColour={article.overlayColour}
-            title={article.title}
-            subtitle={article.subtitle}
-            author="Heron Laoutaris" // TODO: Replace with actual author
-          />
-        )} */
-}
-
-{
-  /* <div className="flex flex-col h-auto w-full justify-start items-start align-start bg-green-100">
-        <img
-          ref={imageRef}
-          className="my-bg w-full h-auto object-cover shadow-lg"
-          src={article.imageUrl}
-          onLoad={() => setOverlayShowing(true)}
-        />
-      </div> */
-}

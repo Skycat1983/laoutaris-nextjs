@@ -23,13 +23,15 @@ export default async function BlogSectionLayout({
 
   return (
     <section>
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow p-4 md:p-10 lg:p-0">
         {/* <Subnav links={subNavLinks} stem={stem} /> */}
         <div className="grid grid-cols-12">
           {/* main content area */}
-          <div className="col-start-3 col-span-6">{children}</div>
+          <div className="col-start-1 col-span-8 xl:col-start-3 xl:col-span-6 bg-blue-100/50">
+            {children}
+          </div>
           {/* sidebar */}
-          <div className="col-start-9 col-span-2 bg-slate/10 shadow mb-4">
+          <div className="col-start-9 col-span-4 xl:col-start-9 xl:col-span-2 bg-slate-300/10 shadow mb-4">
             <BlogSidebar options={sortRangeOptions} />
           </div>
         </div>

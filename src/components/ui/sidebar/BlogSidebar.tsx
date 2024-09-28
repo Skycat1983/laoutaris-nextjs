@@ -48,7 +48,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
           />
         </div>
       </div>
-      <div className="py-4">
+      <div className="py-4 w-full">
         <SubnavButton title="Subscribe" slug="/" />
       </div>
 
@@ -79,8 +79,8 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
         Pick a year to narrow down the posts or choose 'All' to see everything.
       </p>
 
-      <div className="flex flex-col gap-3">
-        <Menu as="div" className="relative">
+      <div className="flex flex-col gap-3 w-full">
+        <Menu as="div" className="relative w-full">
           <MenuButton
             className={`px-4 py-4 text-left w-full bg-gray-100 rounded-md flex justify-between items-center ${
               activeOption ? "text-gray-700 font-bold" : "text-black font-bold"

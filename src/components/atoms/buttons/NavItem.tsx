@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
+import { useSelectedLayoutSegments } from "next/navigation";
 
 interface NavItemProps {
   label: string;
