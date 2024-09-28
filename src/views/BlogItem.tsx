@@ -33,7 +33,7 @@ const BlogItem = ({
             <p>{new Date(displayDate).toLocaleDateString()}</p>
           </div>
 
-          <div className="prose lg:prose-xl max-w-none mt-4 text-left m-28">
+          <div className="prose lg:prose-xl max-w-none mt-4 text-left mt-12 m-12 2xl:mx-28 bg-red-100">
             {text}
           </div>
 
