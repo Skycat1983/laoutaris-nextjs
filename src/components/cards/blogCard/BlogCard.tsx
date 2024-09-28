@@ -26,14 +26,16 @@ const BlogCard = ({
   return (
     <>
       <Link href={`/blog/${stem}/${slug}`}>
-        <div className="grid grid-cols-3 py-8">
+        <div className="grid grid-cols-3 py-8 bg-red-100">
           <div className="col-span-1">
-            <img src={imageUrl} />
-            {/* <Image
+            {/* <img src={imageUrl} /> */}
+            <Image
               src={imageUrl}
               alt="Blog post cover"
-              className="w-full h-64 object-cover object-center"
-            /> */}
+              height={500}
+              width={500}
+              className="w-full h-full object-cover object-center"
+            />
           </div>
 
           <div className="col-span-2">

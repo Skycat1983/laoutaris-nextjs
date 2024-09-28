@@ -6,6 +6,7 @@ function transformToCollectionLink(doc: any): SubnavLink {
     title: doc.title,
     slug: `${doc.slug}`,
     defaultRedirect: doc.artworks[0],
+    // text: doc.text,
   };
 }
 
@@ -15,7 +16,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
   try {
     const rawCollectionLinks = await CollectionModel.find({ section })
-      .select("title slug artworks")
+      .select("title slug artworks text")
       .lean();
 
     if (!rawCollectionLinks || rawCollectionLinks.length === 0) {

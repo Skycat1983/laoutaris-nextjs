@@ -22,6 +22,7 @@ interface SubnavLink {
   title: string;
   slug: string;
   defaultRedirect?: string;
+  // text: string;
 }
 
 interface ExtendedSubnavLink extends SubnavLink {

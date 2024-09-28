@@ -43,16 +43,21 @@ export default async function CollectionLayout({
           <h1 className="px-4 py-6 text-2xl font-bold">
             About this collection
           </h1>
-          <p className="px-4 text-primary">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est quo
-            eius ipsa exercitationem deleniti eligendi sint nisi consequatur
-            quaerat ut. Nesciunt quaerat aliquam nobis alias libero repellendus
-            ducimus. Ea dolores aliquam soluta dolorem voluptatibus quasi
-            impedit minus, beatae quaerat id dignissimos veritatis, nemo
-            laborum, vel molestiae et fuga libero ab?
-          </p>
+          {artworkLinks && (
+            <p className="px-4 text-primary">
+              {/* {artworkLinks.text} */}
+              {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est quo
+              eius ipsa exercitationem deleniti eligendi sint nisi consequatur
+              quaerat ut. Nesciunt quaerat aliquam nobis alias libero
+              repellendus ducimus. Ea dolores aliquam soluta dolorem
+              voluptatibus quasi impedit minus, beatae quaerat id dignissimos
+              veritatis, nemo laborum, vel molestiae et fuga libero ab? */}
+            </p>
+          )}
+
           <p className="px-4 text-primary py-8">
-            Add collection description + count
+            There are {artworkLinks && artworkLinks.length} pieces in this
+            collection.
           </p>
         </div>
 

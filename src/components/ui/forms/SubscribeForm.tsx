@@ -87,7 +87,9 @@ const SubscribeForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Subscribe</Button>
+        <Button type="submit" size={"full"}>
+          Subscribe
+        </Button>
       </form>
     </Form>
   );

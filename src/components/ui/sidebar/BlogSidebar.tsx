@@ -12,6 +12,7 @@ import {
 import { ChevronDownIcon, MessageCircleIcon } from "lucide-react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
+import SubscribeForm from "../forms/SubscribeForm";
 
 type SortRangeSidebarProps = {
   options: { label: string; queryValue: string }[];
@@ -32,25 +33,11 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
     <div id="subnav" className="w-full flex flex-col space-y-0 my-8 px-4 gap-1">
       {/* SUBSCRIBE */}
       <div>
-        <p className="font-extrabold">
+        <p className="font-extrabold p-4">
           Subscribe now to keep up to date with developments
         </p>
       </div>
-      <div className="flex flex-row border-b-2 border-black">
-        <div className="my-auto">
-          <MessageCircleIcon />
-        </div>
-        <div className="">
-          <input
-            type="text"
-            placeholder="Your email address"
-            className="bg-inherit py-4 px-4 outline-none"
-          />
-        </div>
-      </div>
-      <div className="py-4 w-full">
-        <SubnavButton title="Subscribe" slug="/" />
-      </div>
+      <SubscribeForm />
 
       <div className="py-8">
         <HorizontalDivider />
@@ -58,8 +45,8 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       {/* DIARY */}
 
-      <div className="bg-whitish p-10">
-        <h1 className="text-5xl font-archivo text-left py-8">Diary</h1>
+      <div className="bg-whitish p-4">
+        <h1 className="text-5xl font-archivo text-left py-8">Blog</h1>
 
         <p className="text-left text-lg ">
           I have been keeping a record/diary of my thoughts/progress for this
@@ -159,7 +146,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
       <h1 className="text-2xl font-archivo text-left py-4">Recent comments</h1>
       <div className="bg-whitish p-10 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl">
         {/* Recent comments */}
-        <div className="bg-whitish p-10">
+        <div className="bg-whitish p-4">
           <p className="text-left text-lg line-clamp-5 italic">
             <span className="font-bold">&quot;</span>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa
@@ -171,8 +158,6 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
             <span className="font-bold">&quot;</span>
           </p>
         </div>
-
-        {/* ...existing code... */}
       </div>
 
       <div className="py-8">

@@ -48,7 +48,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   try {
     const blogEntries = (await BlogModel.find(query)
-      .sort(sort) // Apply the sort option here
+      .sort(sort)
       .populate("author")
       .lean()) as IFrontendBlogEntry[];
 

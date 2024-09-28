@@ -13,7 +13,7 @@ export default async function BlogSection({
   const blogEntries = result.success ? result.data : null;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container ">
+    <main className="flex min-h-screen flex-col items-center justify-between md:px-12 py-4 container ">
       {blogEntries && <BlogSectionView blogEntries={blogEntries} />}
     </main>
   );
