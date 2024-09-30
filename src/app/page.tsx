@@ -3,23 +3,36 @@ import ArtworkSection from "@/components/homepageSections/ArtworkSection";
 import BiographySection from "@/components/homepageSections/BiographySection";
 import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
+import { ArticleModel } from "@/lib/server/models";
 
-export default function Home() {
+export default async function Home() {
+  const stem = "biography";
+  const biographyEntries = await ArticleModel.find({ section: stem })
+    .select("title subtitle imageUrl slug")
+    .lean();
+
+  console.log("biographyEntries HOME:>> ", biographyEntries);
+
   return (
     <main className="flex min-h-screen max-w-full flex-col items-center justify-start">
       <Hero />
-      <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container">
-        <div className="">
+      <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container bg-yellow-100">
+        <div className="bg-green-100">
           <ArtworkSection />
         </div>
+
         <HorizontalDivider />
-        {/* <div className="p-4">
-          <ProjectSection />
-        </div> */}
-        <div className="p-4">
-          <BiographySection />
+
+        <div className="">
+          <BiographySection biographyEntries={biographyEntries} />
         </div>
       </div>
     </main>
   );
+}
+
+{
+  /* <div className="p-4">
+          <ProjectSection />
+        </div> */
 }

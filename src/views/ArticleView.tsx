@@ -16,7 +16,7 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
   // TODO: change img to nextjs Image
   return (
     <>
-      <div className="grid grid-cols-7 grid-rows-1 w-full h-full bg-red-100">
+      <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
         <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full z-1 relative">
           <div className="flex flex-row w-full p-10 justify-end relative sticky top-[200px]">
             <div>
@@ -50,7 +50,7 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
             </h1>
             <div className="h-[2px] w-full bg-gray-500 my-10"></div>
             {article.text.split("\r\n\r\n").map((paragraph, index) => (
-              <p key={index} className="m-2 leading-8 prose-lg">
+              <p key={index} className="m-2 leading-8 prose-lg py-2">
                 {paragraph}
               </p>
             ))}

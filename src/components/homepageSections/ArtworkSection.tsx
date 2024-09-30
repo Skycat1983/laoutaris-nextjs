@@ -37,7 +37,7 @@ const ArtworkSection = () => {
       <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
       <HorizontalDivider />
 
-      <section className="p-4 grid grid-cols-1 grid-rows-6 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full py-8 gap-5">
+      <section className="p-4 grid grid-cols-1 grid-rows-6 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full py-8 gap-5 bg-red-100">
         {artworks.map((artwork, index) => (
           <div key={index} className="relative row-span-1 col-span-1 h-64">
             <img
