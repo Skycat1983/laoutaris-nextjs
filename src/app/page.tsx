@@ -3,15 +3,23 @@ import ArtworkSection from "@/components/homepageSections/ArtworkSection";
 import BiographySection from "@/components/homepageSections/BiographySection";
 import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
+import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
 import { ArticleModel } from "@/lib/server/models";
 
-export default async function Home() {
-  const stem = "biography";
-  const biographyEntries = await ArticleModel.find({ section: stem })
-    .select("title subtitle imageUrl slug")
-    .lean();
+interface BiographyEntry {
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+  slug: string;
+}
 
-  console.log("biographyEntries HOME:>> ", biographyEntries);
+export default async function Home() {
+  const biographyEntriesResponse = await fetchBiographyFields<BiographyEntry>(
+    "biography",
+    ["title", "subtitle", "imageUrl", "slug"]
+  );
+
+  console.log("biographyEntriesResponse HOME:>> ", biographyEntriesResponse);
 
   return (
     <main className="flex min-h-screen max-w-full flex-col items-center justify-start">
@@ -23,8 +31,14 @@ export default async function Home() {
 
         <HorizontalDivider />
 
-        <div className="">
-          <BiographySection biographyEntries={biographyEntries} />
+        <div>
+          {biographyEntriesResponse.success ? (
+            <BiographySection
+              biographyEntries={biographyEntriesResponse.data}
+            />
+          ) : (
+            <p>Error: {biographyEntriesResponse.message}</p>
+          )}
         </div>
       </div>
     </main>
@@ -36,3 +50,8 @@ export default async function Home() {
           <ProjectSection />
         </div> */
 }
+
+// const stem = "biography";
+// const biographyEntries = await ArticleModel.find({ section: stem })
+//   .select("title subtitle imageUrl slug")
+//   .lean();
