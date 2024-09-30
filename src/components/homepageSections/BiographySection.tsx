@@ -25,11 +25,11 @@ const BiographySection: React.FC<BiographySectionProps> = ({
         subheading="Read my grandfather's story"
       />
       <HorizontalDivider />
-      <ScrollArea className="container whitespace-nowrap rounded-md h-auto bg-blue-100">
-        <section className="p-4 flex w-max space-x-4 h-[500px]">
+      <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
+        <section className="p-4 flex w-max space-x-4 h-[500px] mx-auto">
           {biographyEntries.map((entry, index) => (
             <div key={index} className="flex flex-col">
-              <div className="relative h-[250px] w-[200px] overflow-hidden">
+              <div className="relative h-[300px] w-[250px] overflow-hidden">
                 <Image
                   src={entry.imageUrl}
                   alt={entry.title}
@@ -37,7 +37,7 @@ const BiographySection: React.FC<BiographySectionProps> = ({
                   style={{ objectFit: "cover" }}
                 />
               </div>
-              <div className="flex flex-col gap-4 p-4 w-[200px] whitespace-normal text-center pt-8">
+              <div className="flex flex-col gap-4 p-4 w-[250px] whitespace-normal text-center pt-8">
                 <h1 className="font-archivo text-2xl font-bold break-words">
                   {entry.title}
                 </h1>

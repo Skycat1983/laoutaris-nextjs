@@ -1,5 +1,7 @@
 import { headers } from "next/headers";
 
+// TODO: no longer needed as we can use fetchBiographyFields which is more generic
+
 export async function fetchBiographyLinks(
   section: string
 ): Promise<ApiResponse<SubnavLink[]>> {

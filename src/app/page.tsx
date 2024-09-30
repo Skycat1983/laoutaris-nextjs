@@ -4,7 +4,6 @@ import BiographySection from "@/components/homepageSections/BiographySection";
 import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
 import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
-import { ArticleModel } from "@/lib/server/models";
 
 interface BiographyEntry {
   title: string;
@@ -24,14 +23,14 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen max-w-full flex-col items-center justify-start">
       <Hero />
-      <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container bg-yellow-100">
+      <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container">
         <div className="bg-green-100">
           <ArtworkSection />
         </div>
 
         <HorizontalDivider />
 
-        <div>
+        <div className="w-full flex flex-col items-center justify-center">
           {biographyEntriesResponse.success ? (
             <BiographySection
               biographyEntries={biographyEntriesResponse.data}
@@ -50,8 +49,3 @@ export default async function Home() {
           <ProjectSection />
         </div> */
 }
-
-// const stem = "biography";
-// const biographyEntries = await ArticleModel.find({ section: stem })
-//   .select("title subtitle imageUrl slug")
-//   .lean();
