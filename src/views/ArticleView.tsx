@@ -2,14 +2,18 @@
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import { Button } from "@/components/ui/shadcn/button";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 interface ArticleProps {
   article: IFrontendArticle;
+  nextUrl: string | null;
+  prevUrl: string | null;
 }
 
-const ArticleView: React.FC<ArticleProps> = ({ article }) => {
+const ArticleView: React.FC<ArticleProps> = ({ article, nextUrl, prevUrl }) => {
   const [overlayShowing, setOverlayShowing] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -55,8 +59,33 @@ const ArticleView: React.FC<ArticleProps> = ({ article }) => {
               </p>
             ))}
           </article>
+          <div className="flex flex-row w-full justify-center items-center pt-[50px] gap-5">
+            {prevUrl ? (
+              <Link href={prevUrl} className="bg-black text-white w-full">
+                {/* <Button size={"full"} variant={"ghost"}>
+                  Prev
+                </Button> */}
+                <Button size={"full"}>Prev</Button>
+              </Link>
+            ) : (
+              <Button size={"full"} variant={"ghost"}>
+                Prev
+              </Button>
+            )}
+
+            {nextUrl ? (
+              <Link href={nextUrl} className="bg-black text-white w-full">
+                <Button size={"full"}>Next</Button>
+              </Link>
+            ) : (
+              <Button size={"full"} variant={"ghost"}>
+                Next
+              </Button>
+            )}
+          </div>
         </div>
       </div>
+
       <div className="p-10">
         <HorizontalDivider />
       </div>

@@ -45,7 +45,9 @@ export default async function Article({
         )}
       </div>
       <div className="hidden md:block">
-        {article && <ArticleView article={article} />}
+        {article && (
+          <ArticleView article={article} nextUrl={nextUrl} prevUrl={prevUrl} />
+        )}
       </div>
     </main>
   );
