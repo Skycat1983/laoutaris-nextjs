@@ -44,11 +44,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       );
     }
 
-    // console.log("collection in api/artwork/links:>> ", collection);
-
     const artworkLinks = transformToArtworkLink(collection);
-
-    // console.log("artworkLinks", artworkLinks);
 
     return NextResponse.json<
       ApiSuccessResponse<IFrontendArtworkPaginationLink[]>

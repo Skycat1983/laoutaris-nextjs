@@ -44,15 +44,7 @@ export default async function CollectionLayout({
             About this collection
           </h1>
           {artworkLinks && (
-            <p className="px-4 text-primary">
-              {/* {artworkLinks.text} */}
-              {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est quo
-              eius ipsa exercitationem deleniti eligendi sint nisi consequatur
-              quaerat ut. Nesciunt quaerat aliquam nobis alias libero
-              repellendus ducimus. Ea dolores aliquam soluta dolorem
-              voluptatibus quasi impedit minus, beatae quaerat id dignissimos
-              veritatis, nemo laborum, vel molestiae et fuga libero ab? */}
-            </p>
+            <p className="px-4 text-primary">{/* {artworkLinks.text} */}</p>
           )}
 
           <p className="px-4 text-primary py-8">

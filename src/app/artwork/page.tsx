@@ -1,6 +1,7 @@
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
 import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
+import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
 
 interface CollectionLink {
   title: string;

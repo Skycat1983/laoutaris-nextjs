@@ -17,25 +17,28 @@ interface Links {
   slug: string;
 }
 
+interface ArtworkLink extends Links {
+  artworks: string[];
+}
+
 const MainNav = async () => {
   await dbConnect();
 
-  // ! Collection
-  const collectionResponse = await fetchCollectionFields<Links>("artwork", [
-    "title",
-    "slug",
-  ]);
+  //! Artworks
+  const collectionResponse = await fetchCollectionFields<ArtworkLink>(
+    "artwork",
+    ["title", "slug", "artworks"]
+  );
   const { data: availableCollectionLinks } = collectionResponse.success
     ? collectionResponse
     : { data: [] };
 
-  // Create the default link for artwork
   const defaultCollectionSublinkHref =
-    availableCollectionLinks.length > 0
-      ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
+    availableCollectionLinks.length > 0 &&
+    availableCollectionLinks[0].artworks?.length > 0
+      ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].artworks[0]}`
       : "";
 
-  // Define navigation links using the fetched data
   const artworkNavlink = {
     label: "Artwork",
     path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
@@ -50,7 +53,6 @@ const MainNav = async () => {
     ? biographyResponse
     : { data: [] };
 
-  // Create the default link for biography
   const defaultBiographySublinkHref =
     availableBiographyLinks.length > 0 ? availableBiographyLinks[0].slug : "";
 
