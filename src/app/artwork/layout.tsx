@@ -21,8 +21,8 @@ export default async function ArtworkLayout({
   ]);
   const { data } = response.success ? response : { data: [] };
 
+  // ! old working code using fetchCollectionLinks
   // const collectionLinksResult = await fetchCollectionLinks(stem);
-
   // const { data } = collectionLinksResult.success
   //   ? collectionLinksResult
   //   : { data: [] };

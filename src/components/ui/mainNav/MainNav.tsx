@@ -7,31 +7,53 @@ import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetc
 import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 import dbConnect from "@/utils/mongodb";
 import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
+import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
+import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
 
 // ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
+
+interface Links {
+  title: string;
+  slug: string;
+}
 
 const MainNav = async () => {
   await dbConnect();
 
-  //! Collection
-  const collectionLinks = await fetchCollectionLinks("artwork");
-  const { data: availableCollectionLinks } = collectionLinks.success
-    ? collectionLinks
+  // ! Collection
+  const collectionResponse = await fetchCollectionFields<Links>("artwork", [
+    "title",
+    "slug",
+  ]);
+  const { data: availableCollectionLinks } = collectionResponse.success
+    ? collectionResponse
     : { data: [] };
-  const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
 
+  // Create the default link for artwork
+  const defaultCollectionSublinkHref =
+    availableCollectionLinks.length > 0
+      ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
+      : "";
+
+  // Define navigation links using the fetched data
   const artworkNavlink = {
     label: "Artwork",
     path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
-    // path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
   };
 
-  //! Biography
-  const biographyArticleLinks = await fetchBiographyLinks("biography");
-  const { data: availableBiographyLinks } = biographyArticleLinks.success
-    ? biographyArticleLinks
+  // ! Biography
+  const biographyResponse = await fetchBiographyFields<Links>("biography", [
+    "title",
+    "slug",
+  ]);
+  const { data: availableBiographyLinks } = biographyResponse.success
+    ? biographyResponse
     : { data: [] };
-  const defaultBiographySublinkHref = availableBiographyLinks[0].slug;
+
+  // Create the default link for biography
+  const defaultBiographySublinkHref =
+    availableBiographyLinks.length > 0 ? availableBiographyLinks[0].slug : "";
+
   const biographyNavlink = {
     label: "Biography",
     path: `http://localhost:3000/biography/${defaultBiographySublinkHref}`,
@@ -84,6 +106,30 @@ const MainNav = async () => {
 };
 
 export default MainNav;
+
+// //! Collection
+// const collectionLinks = await fetchCollectionLinks("artwork");
+// const { data: availableCollectionLinks } = collectionLinks.success
+//   ? collectionLinks
+//   : { data: [] };
+// const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
+
+// const artworkNavlink = {
+//   label: "Artwork",
+//   path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
+//   // path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
+// };
+
+// //! Biography
+// const biographyArticleLinks = await fetchBiographyLinks("biography");
+// const { data: availableBiographyLinks } = biographyArticleLinks.success
+//   ? biographyArticleLinks
+//   : { data: [] };
+// const defaultBiographySublinkHref = availableBiographyLinks[0].slug;
+// const biographyNavlink = {
+//   label: "Biography",
+//   path: `http://localhost:3000/biography/${defaultBiographySublinkHref}`,
+// };
 
 //! Artwork
 // ? Unused as we now redirect to a default collection/artworkId page
