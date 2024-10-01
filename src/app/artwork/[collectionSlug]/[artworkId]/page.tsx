@@ -3,6 +3,7 @@
 import ArtworkView from "@/components/atoms/ArtworkView";
 import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
 import dbConnect from "@/utils/mongodb";
+import ArtworkLayout from "../../layout";
 
 export default async function Artwork({
   params,
@@ -14,6 +15,7 @@ export default async function Artwork({
   const artwork = artworkResult.success ? artworkResult.data : null;
 
   return <>{artwork && <ArtworkView {...artwork} />}</>;
+  // return <>{artwork && <ArtworkLayout {...artwork} />}</>;
 }
 
 // ! IMPORTANT: of artworkView tsx
