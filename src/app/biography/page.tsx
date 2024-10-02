@@ -1,13 +1,18 @@
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
 import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
+import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
+
+interface RedirectLink {
+  slug: string;
+}
 
 export default async function Biography() {
   await dbConnect();
 
   const stem = "biography";
 
-  const linksResult = await fetchBiographyLinks(stem);
+  const linksResult = await fetchBiographyFields<RedirectLink>(stem, ["slug"]);
 
   const { data } = linksResult.success ? linksResult : { data: [] };
 

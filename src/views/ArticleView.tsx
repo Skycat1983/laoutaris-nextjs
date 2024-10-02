@@ -62,9 +62,6 @@ const ArticleView: React.FC<ArticleProps> = ({ article, nextUrl, prevUrl }) => {
           <div className="flex flex-row w-full justify-center items-center pt-[50px] gap-5">
             {prevUrl ? (
               <Link href={prevUrl} className="bg-black text-white w-full">
-                {/* <Button size={"full"} variant={"ghost"}>
-                  Prev
-                </Button> */}
                 <Button size={"full"}>Prev</Button>
               </Link>
             ) : (

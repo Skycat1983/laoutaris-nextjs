@@ -8,7 +8,7 @@ import CroppedImages from "../atoms/CroppedImages";
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
 
-const ArtworkView = (artwork: IFrontendArtwork) => {
+const ArtworkLayout = (artwork: IFrontendArtwork) => {
   //   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const { image } = artwork;
   const { secure_url, pixelHeight, pixelWidth } = image;
@@ -88,4 +88,4 @@ const ArtworkView = (artwork: IFrontendArtwork) => {
   );
 };
 
-export default ArtworkView;
+export default ArtworkLayout;
