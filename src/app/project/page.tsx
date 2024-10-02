@@ -1,7 +1,10 @@
+import { redirect } from "next/navigation";
+
 export default function Project() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>project</h1>
-    </main>
-  );
+  redirect(`${process.env.NEXTAUTH_URL}/project/about`);
+  // return (
+  //   <main className="flex  flex-col items-start justify-between px-24">
+  //     {/*  */}
+  //   </main>
+  // );
 }

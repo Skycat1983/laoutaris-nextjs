@@ -16,13 +16,10 @@ export default async function Artwork({
   const artworkResult = await fetchArtwork(params.artworkId);
   const artwork = artworkResult.success ? artworkResult.data : null;
 
+  //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
+
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
-  return (
-    <>
-      {/* <div className="w-[300px] h-[300px] fade-in bg-red-500"></div> */}
-      {artwork && <ArtworkLayout {...artwork} />}
-    </>
-  );
+  return <>{artwork && <ArtworkLayout {...artwork} />}</>;
 }
 
 // ! IMPORTANT: of artworkView tsx

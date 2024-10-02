@@ -37,7 +37,7 @@ const MobileArticleView: React.FC<ArticleProps> = ({
   return (
     <>
       <div
-        className="bg-cover  bg-fixed h-[530px] "
+        className="bg-cover  bg-fixed h-[530px] fade-in"
         style={{
           backgroundImage: `url(${article.artwork.image.secure_url})`,
           // backgroundPosition: "90% -100px",
@@ -57,7 +57,7 @@ const MobileArticleView: React.FC<ArticleProps> = ({
       </div>
 
       <div className="flex flex-col justify-start items-start bg-slate-100/50 relative bottom-[200px]">
-        <article className="prose-xl text-left p-24 bg-white">
+        <article className="prose-xl text-left p-24 bg-white fade-in">
           {article.text.split("\r\n\r\n").map((paragraph, index) => (
             <p key={index} className="m-2 leading-8 prose-lg">
               {paragraph}
