@@ -4,6 +4,8 @@ import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import CroppedImages from "../atoms/CroppedImages";
+import ArtworkLoading from "@/app/artwork/[collectionSlug]/[artworkId]/loading";
+import ArtworkInfoCardSkeleton from "../cards/artworkInfoCard/ArtworkInfoCardSkeleton";
 
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
@@ -52,10 +54,11 @@ const ArtworkLayout = (artwork: IFrontendArtwork) => {
       lg:gap-4
     "
       >
+        {/* ! ADD M4 back to this! */}
         <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end ">
+          {/* <ArtworkInfoCardSkeleton /> */}
           {artwork && (
             <Image
-              //   src={artworkImgUrlsArr[currentImageIndex]}
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}

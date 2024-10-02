@@ -3,6 +3,7 @@
 import ArtworkView from "@/components/atoms/ArtworkView";
 import ArtworkLayout from "@/components/layouts/ArtworkLayout";
 import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
+import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
 
 export default async function Artwork({
@@ -11,6 +12,7 @@ export default async function Artwork({
   params: { artworkId: string };
 }) {
   await dbConnect();
+  await delay(2000);
   const artworkResult = await fetchArtwork(params.artworkId);
   const artwork = artworkResult.success ? artworkResult.data : null;
 

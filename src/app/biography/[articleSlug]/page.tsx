@@ -11,7 +11,7 @@ export default async function Article({
   params: { articleSlug: string };
 }) {
   await dbConnect();
-  await delay(1000);
+  await delay(2000);
   const result = await fetchBiography(params.articleSlug);
   const article = result.success ? result.data : null;
 

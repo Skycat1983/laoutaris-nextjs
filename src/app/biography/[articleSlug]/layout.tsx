@@ -8,5 +8,5 @@ export default async function ArticleLayout({
 }) {
   await dbConnect();
 
-  return <section className="bg-red-100">{children}</section>;
+  return <section className="">{children}</section>;
 }
