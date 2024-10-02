@@ -12,12 +12,17 @@ export default async function Artwork({
   params: { artworkId: string };
 }) {
   await dbConnect();
-  await delay(2000);
+  // await delay(2000);
   const artworkResult = await fetchArtwork(params.artworkId);
   const artwork = artworkResult.success ? artworkResult.data : null;
 
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
-  return <>{artwork && <ArtworkLayout {...artwork} />}</>;
+  return (
+    <>
+      {/* <div className="w-[300px] h-[300px] fade-in bg-red-500"></div> */}
+      {artwork && <ArtworkLayout {...artwork} />}
+    </>
+  );
 }
 
 // ! IMPORTANT: of artworkView tsx

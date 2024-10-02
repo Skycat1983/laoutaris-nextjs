@@ -55,15 +55,14 @@ const ArtworkLayout = (artwork: IFrontendArtwork) => {
     "
       >
         {/* ! ADD M4 back to this! */}
-        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end ">
-          {/* <ArtworkInfoCardSkeleton /> */}
+        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
           {artwork && (
             <Image
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}
               alt="Artwork"
-              className="object-contain max-h-full w-auto shadow-2xl"
+              className="object-contain max-h-full w-auto shadow-2xl fade-in"
             />
           )}
         </span>
