@@ -3,6 +3,7 @@ import { fetchBiography } from "@/lib/server/biography/data-fetching/fetchBiogra
 import ArticleView from "@/views/ArticleView";
 import MobileArticleView from "@/views/MobileArticleView";
 import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
+import { delay } from "@/utils/debug";
 
 export default async function Article({
   params,
@@ -10,6 +11,7 @@ export default async function Article({
   params: { articleSlug: string };
 }) {
   await dbConnect();
+  await delay(1000);
   const result = await fetchBiography(params.articleSlug);
   const article = result.success ? result.data : null;
 

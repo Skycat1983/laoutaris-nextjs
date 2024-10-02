@@ -16,7 +16,6 @@ export default async function BiographyLayout({
   await dbConnect();
   const stem = "biography";
 
-  // const linksResult = await fetchBiographyLinks(stem);
   const linksResult = await fetchBiographyFields<SubnavLink>(stem, [
     "title slug",
   ]);
