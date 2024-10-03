@@ -27,7 +27,7 @@ export default async function BlogSectionLayout({
         {/* <Subnav links={subNavLinks} stem={stem} /> */}
         <div className="grid grid-cols-12">
           {/* main content area */}
-          <div className="col-start-1 col-span-12 md:col-start-1 md:col-span-8 lg:col-start-2 lg:col-span-7 2xl:col-start-3 2xl:col-span-6 bg-blue-100/50">
+          <div className="col-start-1 col-span-12 md:col-start-1 md:col-span-8 lg:col-start-2 lg:col-span-7 2xl:col-start-3 2xl:col-span-6 ">
             {children}
           </div>
           {/* sidebar */}

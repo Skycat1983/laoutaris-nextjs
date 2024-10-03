@@ -26,7 +26,7 @@ const BlogCard = ({
   return (
     <>
       <Link href={`/blog/${stem}/${slug}`}>
-        <div className="grid grid-cols-3 py-8 bg-red-100">
+        <div className="grid grid-cols-3 py-8 fade-in">
           <div className="col-span-1">
             {/* <img src={imageUrl} /> */}
             <Image

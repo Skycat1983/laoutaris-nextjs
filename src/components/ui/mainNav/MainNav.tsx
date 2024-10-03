@@ -3,10 +3,7 @@
 import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
-import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
-import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 import dbConnect from "@/utils/mongodb";
-import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
 import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
 import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
 

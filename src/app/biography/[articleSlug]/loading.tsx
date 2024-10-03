@@ -1,5 +1,4 @@
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import { Button } from "@/components/ui/shadcn/button";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import React from "react";
 
