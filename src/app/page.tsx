@@ -30,6 +30,10 @@ export default async function Home() {
 
         <HorizontalDivider />
 
+        <div className="p-4 w-full">
+          <ProjectSection />
+        </div>
+
         <div className="w-full flex flex-col items-center justify-center">
           {biographyEntriesResponse.success ? (
             <BiographySection
@@ -42,10 +46,4 @@ export default async function Home() {
       </div>
     </main>
   );
-}
-
-{
-  /* <div className="p-4">
-          <ProjectSection />
-        </div> */
 }

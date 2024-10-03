@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DimmedOverlay, RadialGradientOverlay } from "./Overlays";
+import { DimmedOverlay } from "./Overlays";
 
 const FamilyFavourites = () => {
   const slide = {
@@ -44,9 +44,43 @@ const FamilyFavourites = () => {
         src={image.url}
         height={slide.height}
         width={slide.width}
-        className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[250px] cover"
+        className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[250px] cover z-0"
         alt="Image of a landscape painting"
       />
+      <div
+        className="absolute top-0 left-0 w-full h-full grid grid-cols-12 z-0"
+        style={{ gridTemplateRows: "repeat(12, minmax(0, auto))" }}
+      >
+        <DimmedOverlay />
+
+        {image.heading && (
+          <h1
+            className={`${image.heading.className} col-span-4 row-start-1 row-end-2 z-0`}
+          >
+            {image.heading.text}
+          </h1>
+        )}
+        {image.subheading && (
+          <h2
+            className={`${image.subheading.className} col-span-4 row-start-2 row-end-3 z-0`}
+          >
+            {image.subheading.text}
+          </h2>
+        )}
+        {image.summary && (
+          <p
+            className={`${image.summary.className} col-span-4 row-start-3 row-end-4 z-0`}
+          >
+            {image.summary.text}
+          </p>
+        )}
+        <Link
+          href={image.link.path}
+          className={`${image.link.className} col-span-4 row-start-5 row-end-6 z-0`}
+        >
+          {image.link.text}
+        </Link>
+      </div>
     </div>
   );
 };
