@@ -1,3 +1,4 @@
+import Image from "next/image";
 import ButtonDivider from "../atoms/ButtonDivider";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import SectionHeading from "../atoms/SectionHeading";
@@ -37,12 +38,15 @@ const ArtworkSection = () => {
       <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
       <HorizontalDivider />
 
-      <section className="p-4 grid grid-cols-1 grid-rows-6 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full py-8 gap-5 bg-red-100">
+      <section className="p-4 grid grid-cols-1 grid-rows-6 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-6 lg:grid-rows-1 w-full py-8 gap-5 ">
         {artworks.map((artwork, index) => (
           <div key={index} className="relative row-span-1 col-span-1 h-64">
-            <img
+            <Image
               src={artwork.url}
               alt={artwork.label}
+              height={500}
+              width={500}
+              objectFit="cover"
               className="w-full h-full object-cover"
             />
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
@@ -57,6 +61,36 @@ const ArtworkSection = () => {
       <ButtonDivider label={"See more"} link="/artwork" />
     </>
   );
+
+  // ! old version with 6 entries
+  // return (
+  //   <>
+  //     <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
+  //     <HorizontalDivider />
+
+  //     <section className="p-4 grid grid-cols-1 grid-rows-6 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2 w-full py-8 gap-5 bg-red-100">
+  //       {artworks.map((artwork, index) => (
+  //         <div key={index} className="relative row-span-1 col-span-1 h-64">
+  //           <Image
+  //             src={artwork.url}
+  //             alt={artwork.label}
+  //             height={500}
+  //             width={500}
+  //             objectFit="cover"
+  //             className="w-full h-full object-cover"
+  //           />
+  //           <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
+  //           <div className="absolute inset-0 flex items-center justify-center">
+  //             <span className="text-white text-4xl font-fancy">
+  //               {artwork.label}
+  //             </span>
+  //           </div>
+  //         </div>
+  //       ))}
+  //     </section>
+  //     <ButtonDivider label={"See more"} link="/artwork" />
+  //   </>
+  // );
 };
 
 export default ArtworkSection;

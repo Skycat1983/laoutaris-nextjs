@@ -35,11 +35,11 @@ const BiographySection: React.FC<BiographySectionProps> = ({
       />
       <HorizontalDivider />
       <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
-        <section className="p-4 flex w-max space-x-4 h-[500px] mx-auto">
+        <section className="p-4 flex w-max space-x-4 h-[500px] mx-auto bg-red-100">
           {biographyEntries.map((entry, index) => (
             <BiographyLinkWrapper to={`/biography/${entry.slug}`} key={index}>
               <div key={index} className="flex flex-col">
-                <div className="relative h-[300px] w-[250px] overflow-hidden">
+                <div className="relative h-[300px] w-full overflow-hidden">
                   <Image
                     src={entry.imageUrl}
                     alt={entry.title}

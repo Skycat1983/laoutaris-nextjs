@@ -2,7 +2,6 @@ import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SkeletonH1 from "@/components/atoms/skeletons/SkeletonH1";
 import SkeletonH2 from "@/components/atoms/skeletons/SkeletonH2";
 import SkeletonP from "@/components/atoms/skeletons/SkeletonP";
-import BlogCardSkeleton from "@/components/cards/blogCard/BlogCardSkeleton";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 const BlogLoading = () => {
