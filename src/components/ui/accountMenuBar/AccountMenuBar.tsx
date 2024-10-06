@@ -33,7 +33,7 @@ import SignInForm from "../forms/SignInFormBackup";
 import { useSession, signIn, signOut } from "next-auth/react";
 import ModalMessage from "@/components/atoms/ModalMessage";
 import { useRouter } from "next/router";
-import LoginForm from "@/app/login/LoginForm";
+import LoginForm from "@/components/ui/forms/LoginForm";
 import { AccountMenu } from "./accountMenu/AccountMenu";
 
 export function AccountMenuBar() {

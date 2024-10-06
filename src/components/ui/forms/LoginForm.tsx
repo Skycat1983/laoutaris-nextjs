@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 // import { GET, handler } from "../api/auth/[...nextauth]/route";
 
+// TODO: is this unused? if yes remove
 const LoginButton = () => {
   const { pending } = useFormStatus();
 

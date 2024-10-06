@@ -18,7 +18,7 @@ export default async function Home() {
     ["title", "subtitle", "imageUrl", "slug"]
   );
 
-  console.log("biographyEntriesResponse HOME:>> ", biographyEntriesResponse);
+  // console.log("biographyEntriesResponse HOME:>> ", biographyEntriesResponse);
 
   return (
     <main className="flex min-h-screen max-w-full flex-col items-center justify-start">

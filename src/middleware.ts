@@ -1,8 +1,18 @@
 import { type NextRequest } from "next/server";
 import { refreshSession } from "./lib/server/user/session/session";
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 
 export const middleware = async (req: NextRequest) => {
-  return await refreshSession(req);
+  const session = await getServerSession();
+  console.log("session in middleware", session);
+  // return await refreshSession(req);
+  return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+};
+
+export const config = {
+  // matcher: ["/artwork", "/biography", "/project", "/blog"],
+  matcher: ["/account"],
 };
 
 // export async function middleware(request: NextRequest) {
@@ -15,11 +25,6 @@ export const middleware = async (req: NextRequest) => {
 
 //   return NextResponse.json({ message: "Hello, World!" });
 // }
-
-// export const config = {
-//   // matcher: ["/artwork", "/biography", "/project", "/blog"],
-//   matcher: ["/nonexistent"],
-// };
 
 // export function middleware(req: NextRequest, event: NextFetchEvent) {
 //   const { pathname } = req.nextUrl;
