@@ -3,17 +3,38 @@ import { refreshSession } from "./lib/server/user/session/session";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 
+import { getToken } from "next-auth/jwt";
+
 export const middleware = async (req: NextRequest) => {
-  const session = await getServerSession();
-  console.log("session in middleware", session);
-  // return await refreshSession(req);
-  return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+  // Retrieve the token from the request
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  console.log("token in middleware", token);
+
+  // If no token exists, redirect to sign-in
+  if (!token) {
+    return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+  }
+
+  // If token exists, allow the request to proceed
+  return NextResponse.next();
 };
 
 export const config = {
-  // matcher: ["/artwork", "/biography", "/project", "/blog"],
-  matcher: ["/account"],
+  matcher: ["/account/:path*"],
 };
+
+// export const middleware = async (req: NextRequest) => {
+//   const session = await getServerSession();
+//   console.log("session in middleware", session);
+//   // return await refreshSession(req);
+//   return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+// };
+
+// export const config = {
+//   // matcher: ["/artwork", "/biography", "/project", "/blog"],
+//   matcher: ["/account/:path*"],
+// };
 
 // export async function middleware(request: NextRequest) {
 //   // await dbConnect();
