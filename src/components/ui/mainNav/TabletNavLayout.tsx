@@ -20,7 +20,7 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
     );
   }
 
-  console.log("navLinks in tablet layout :>> ", navLinks);
+  // console.log("navLinks in tablet layout :>> ", navLinks);
   return (
     <>
       <div className="w-full flex flex-col h-auto">

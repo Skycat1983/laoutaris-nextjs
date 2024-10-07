@@ -36,10 +36,18 @@ import { useRouter } from "next/router";
 import LoginForm from "@/components/ui/forms/LoginForm";
 import { AccountMenu } from "./accountMenu/AccountMenu";
 
-export function AccountMenuBar() {
-  const { data: session } = useSession();
+interface UserSession {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
-  // console.log("session in Account menu bar", session);
+export function AccountMenuBar() {
+  const { data, status } = useSession();
+
+  //  the nullish coalescing operator (??)returns its right-hand side operand when its left-hand side operand is null or undefined, and otherwise returns its left-hand side operand.
+  const session: UserSession | null = data?.user ?? null;
+
   const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
 
@@ -48,7 +56,7 @@ export function AccountMenuBar() {
   return (
     <>
       <div className="flex flex-row">
-        <AccountMenu />
+        <AccountMenu session={session} />
 
         <Menubar className="flex flex-row w-auto gap-0 my-auto items-center ">
           <MenubarMenu>

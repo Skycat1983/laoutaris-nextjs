@@ -10,7 +10,6 @@ interface SubnavProps {
 }
 
 const Subnav = ({ links, stem }: SubnavProps) => {
-  // console.log("links in subnav", links);
   const buildUrl = (link: SubnavLink, stem: string) => {
     if (link.defaultRedirect) {
       return `http://localhost:3000/${stem}/${link.slug}/${link.defaultRedirect}`;
@@ -48,14 +47,3 @@ const Subnav = ({ links, stem }: SubnavProps) => {
 };
 
 export default Subnav;
-
-// const isExtended = (
-//   link: SubnavLink | ExtendedSubnavLink
-// ): link is ExtendedSubnavLink =>
-//   (link as ExtendedSubnavLink).defaultRedirect !== undefined;
-
-// const url = isExtended(links[0]) ? links[0].defaultRedirect : links[0].slug;
-
-// const buildUrl = (link: SubnavLink | ExtendedSubnavLink, stem: string) => {
-//     return isExtended(link) ? link.defaultRedirect : link.slug;
-// }

@@ -32,8 +32,8 @@ export default async function Article({
   const nextUrl = nextLink ? `/biography/${nextLink.slug}` : null;
   const prevUrl = prevLink ? `/biography/${prevLink.slug}` : null;
 
-  console.log("prev", prevLink);
-  console.log("nextLink", nextLink);
+  // console.log("prev", prevLink);
+  // console.log("nextLink", nextLink);
 
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">

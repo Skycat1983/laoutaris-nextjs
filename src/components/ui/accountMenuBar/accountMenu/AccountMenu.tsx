@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import * as React from "react";
 import Link from "next/link";
@@ -23,7 +23,17 @@ import {
 } from "lucide-react";
 import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
 
-export function AccountMenu() {
+interface UserSession {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
+interface AccountMenuProps {
+  session: null | UserSession;
+}
+
+export function AccountMenu({ session }: AccountMenuProps) {
   return (
     <NavigationMenu className="p-0 m-0">
       <NavigationMenuList>

@@ -6,6 +6,7 @@ import DesktopNavLayout from "./DesktopNavLayout";
 import dbConnect from "@/utils/mongodb";
 import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
 import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
+import { getServerSession } from "next-auth";
 
 // ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
 
@@ -20,6 +21,8 @@ interface ArtworkLink extends Links {
 
 const MainNav = async () => {
   await dbConnect();
+  const session = await getServerSession();
+  console.log("session in MAIN NAV:>> ", session);
 
   //! Artworks
   const collectionResponse = await fetchCollectionFields<ArtworkLink>(
