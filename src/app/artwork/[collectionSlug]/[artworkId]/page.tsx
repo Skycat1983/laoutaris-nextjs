@@ -6,7 +6,7 @@ import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
 
-export default async function Artwork({
+export default async function ArtworkId({
   params,
 }: {
   params: { artworkId: string };

@@ -17,6 +17,8 @@ const Subnav = ({ links, stem }: SubnavProps) => {
       return `http://localhost:3000/${stem}/${link.slug}`;
     }
   };
+
+  console.log("links in Subnav :>> ", links);
   return (
     // <div className="relative  flex flex-row w-full justify-center mx-4 pt-[145px] md:pt-[230px] lg:pt-[150px]">
 

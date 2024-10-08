@@ -1,12 +1,9 @@
 import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { fetchBiographyLinks } from "@/lib/server/biography/data-fetching/fetchBiographyLinks";
 import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 
-interface SubnavLink {
-  title: string;
-  slug: string;
-}
+type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
 
 export default async function BiographyLayout({
   children,
@@ -16,7 +13,7 @@ export default async function BiographyLayout({
   await dbConnect();
   const stem = "biography";
 
-  const linksResult = await fetchBiographyFields<SubnavLink>(stem, [
+  const linksResult = await fetchBiographyFields<ArticleRedirectLink>(stem, [
     "title slug",
   ]);
 
@@ -29,3 +26,30 @@ export default async function BiographyLayout({
     </section>
   );
 }
+
+// interface SubnavLink {
+//   title: string;
+//   slug: string;
+// }
+
+// export default async function BiographyLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   await dbConnect();
+//   const stem = "biography";
+
+//   const linksResult = await fetchBiographyFields<SubnavLink>(stem, [
+//     "title slug",
+//   ]);
+
+//   const { data } = linksResult.success ? linksResult : { data: [] };
+
+//   return (
+//     <section>
+//       {data && <Subnav links={data} stem={stem} />}
+//       {children}
+//     </section>
+//   );
+// }

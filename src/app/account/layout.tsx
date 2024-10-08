@@ -6,32 +6,41 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { IFrontendUser } from "@/lib/client/types/userTypes";
 
+type UserAccountFields = Pick<IFrontendUser, "favourites" | "watchlist">;
+
 export default async function AccountLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   await dbConnect();
+
+  // Get the user session
   const session = await getServerSession(authOptions);
-  if (!session || !session.user || !session.user.email) {
+
+  // If user is not authenticated, redirect to the homepage
+  if (!session?.user?.email) {
     redirect("http://localhost:3000");
   }
 
   const email = session.user.email;
 
-  const userResponse = await fetchUserFields<Partial<IFrontendUser>>(email, [
-    "favourites watchlist",
-  ]);
+  // Fetch user data using Pick for type safety
+  const userResponse: ApiResponse<UserAccountFields> =
+    await fetchUserFields<UserAccountFields>(email, [
+      "favourites",
+      "watchlist",
+    ]);
 
   let favouritesCount = 0;
   let watchlistCount = 0;
 
-  // check if the response is successful and data exists
+  // Check if the response is successful and data exists
   if (userResponse.success && userResponse.data) {
     favouritesCount = userResponse.data.favourites?.length || 0;
     watchlistCount = userResponse.data.watchlist?.length || 0;
   } else {
-    //!  handle the error case
+    //! Handle the error case
     console.error("Failed to fetch user data:", userResponse.message);
   }
 
