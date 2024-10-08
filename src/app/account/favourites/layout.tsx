@@ -17,7 +17,7 @@ interface ArtworkPaginationLink {
   };
 }
 
-export default async function CollectionLayout({
+export default async function FavouritesLayout({
   children,
 }: {
   children: React.ReactNode;

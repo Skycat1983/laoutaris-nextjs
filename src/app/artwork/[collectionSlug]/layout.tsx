@@ -14,7 +14,6 @@ export default async function CollectionLayout({
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  // console.log("collectionSlug", params.collectionSlug);
   const artworkLinksResult = await fetchArtworkLinks(params.collectionSlug);
   const artworkLinks = artworkLinksResult.success
     ? artworkLinksResult.data
