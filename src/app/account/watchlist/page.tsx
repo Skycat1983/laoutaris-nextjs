@@ -5,7 +5,7 @@ import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default async function Favourites() {
+export default async function Watchlist() {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
@@ -15,18 +15,18 @@ export default async function Favourites() {
 
   const response = await fetchUserFields<Partial<IFrontendUser>>(
     session.user.email,
-    ["favourites"]
+    ["watchlist"]
   );
-  const favourites: string[] | null = response.success
-    ? response.data.favourites || []
+  const watchlist: string[] | null = response.success
+    ? response.data.watchlist || []
     : null;
 
-  if (!favourites || favourites.length === 0) {
+  if (!watchlist || watchlist.length === 0) {
     //if no favourites, redirect to the account page
     redirect("http://localhost:3000/account");
   } else {
     // If favourites, redirect to the first favourite item's page
-    const firstFavouriteId = favourites[0];
-    redirect(`http://localhost:3000/account/favourites/${firstFavouriteId}`);
+    const firstWatchlistId = watchlist[0];
+    redirect(`http://localhost:3000/account/watchlist/${firstWatchlistId}`);
   }
 }

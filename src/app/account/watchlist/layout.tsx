@@ -17,7 +17,7 @@ interface ArtworkPaginationLink {
   };
 }
 
-export default async function FavouritesLayout({
+export default async function WatchlistLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ export default async function FavouritesLayout({
   }
 
   const user = (await UserModel.findOne({ email: session.user.email })
-    .populate("favourites")
+    .populate("watchlist")
     .lean()) as IFrontendUser;
 
   if (!user || !user.favourites) {
@@ -46,7 +46,7 @@ export default async function FavouritesLayout({
     };
   };
 
-  const artworkLinks = user.favourites.map((artwork) =>
+  const artworkLinks = user.watchlist.map((artwork) =>
     convertToPaginationLink(artwork)
   );
 
@@ -56,7 +56,7 @@ export default async function FavouritesLayout({
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <h1 className="px-4 py-6 text-2xl font-bold">More of your favourites</h1>
+      <h1 className="px-4 py-6 text-2xl font-bold">More from your watchlist</h1>
       {artworkLinks && (
         <ServerPagination
           stem="account"
@@ -67,13 +67,13 @@ export default async function FavouritesLayout({
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
-      <h1 className="px-4 py-6 text-2xl font-bold">Your custom collection</h1>
+      <h1 className="px-4 py-6 text-2xl font-bold">Your watchlist</h1>
       <p className="px-4 text-primary">
-        Artworks you have favourited will appear here. You can add and remove
-        artworks from your collection at any time. Meanwhile, your watchlist is
-        where you can keep track of artworks or prints you might be interested
-        in purchasing. We will notify you by email when any of these artworks
-        are available for sale.
+        Artworks you have watchlisted will appear here. You can add and remove
+        artworks from your collection at any time. The purpose of this
+        collection is as a place where you can keep track of artworks or prints
+        you might be interested in purchasing. We will notify you by email when
+        any of these artworks are available for sale.
       </p>
       <div className="px-4 py-8">
         <HorizontalDivider />
