@@ -16,7 +16,6 @@ interface SubNavBarProps {
 }
 
 const SubNavBar = ({ links }: SubNavBarProps) => {
-  console.log("links in Subnavbar :>> ", links);
   return (
     <>
       <div className="relative  flex flex-row w-full justify-center mx-4 ">

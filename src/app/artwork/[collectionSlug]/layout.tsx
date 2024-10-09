@@ -2,27 +2,51 @@ import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
 import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
+import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
 import dbConnect from "@/utils/mongodb";
+
+export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "medium">;
+export type SelectedCollectionFields = Pick<
+  IFrontendCollection,
+  "artworks" | "slug" | "title"
+>;
+export type CollectionArtwork = SelectedCollectionFields & {
+  artworks: SelectedArtworkFields[];
+};
 
 export default async function CollectionLayout({
   params,
-
   children,
 }: {
   children: React.ReactNode;
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  const artworkLinksResult = await fetchArtworkLinks(params.collectionSlug);
-  const artworkLinks = artworkLinksResult.success
-    ? artworkLinksResult.data
-    : null;
+  const collectionKey = "slug";
+  const collectionValue = params.collectionSlug;
+  const collectionFields = ["slug", "title"];
+  const artworkFields = ["medium", "image.pixelHeight", "image.pixelWidth"];
+  const response = await fetchCollectionArtwork<CollectionArtwork>(
+    collectionKey,
+    collectionValue,
+    collectionFields,
+    artworkFields
+  );
+
+  if (response.success) {
+    console.log(
+      "response in collectionLayout",
+      response.data.artworks[0].image
+    );
+  }
 
   return (
     <section className="">
       {children}
-      <div className="px-4 py-8">
+      {/* <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">
@@ -42,9 +66,6 @@ export default async function CollectionLayout({
           <h1 className="px-4 py-6 text-2xl font-bold">
             About this collection
           </h1>
-          {artworkLinks && (
-            <p className="px-4 text-primary">{/* {artworkLinks.text} */}</p>
-          )}
 
           <p className="px-4 text-primary py-8">
             There are {artworkLinks && artworkLinks.length} pieces in this
@@ -65,12 +86,18 @@ export default async function CollectionLayout({
       </div>
       <div className="px-4 w-full md:w-1/2 mx-auto">
         <h1 className=" py-6 text-2xl font-bold">Subscribe for updates</h1>
-        {/* <HorizontalDivider /> */}
         <SubscribeForm />
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div>
+      </div> */}
     </section>
   );
 }
+
+// const artworkLinksResult = await fetchArtworkLinks(params.collectionSlug);
+// const artworkLinks = artworkLinksResult.success
+//   ? artworkLinksResult.data
+//   : null;
+
+// console.log("artworkLinks in CollectionLayout", artworkLinks);

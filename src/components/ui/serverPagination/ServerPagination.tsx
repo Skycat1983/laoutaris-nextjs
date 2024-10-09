@@ -1,9 +1,7 @@
 "use server";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 import Link from "next/link";
-import Image from "next/image";
 import PaginationItem from "./PaginationItem";
-import { NextPage, PrevPage } from "./PaginationNavigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type PaginationContainerProps = {

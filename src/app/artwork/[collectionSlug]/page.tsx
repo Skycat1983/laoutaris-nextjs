@@ -1,12 +1,8 @@
 import dbConnect from "@/utils/mongodb";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
-import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
 import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
-import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { buildUrl } from "@/utils/buildUrl";
+import { redirect } from "next/navigation";
 
 type CollectionFields = Pick<IFrontendCollection, "artworks">;
 
@@ -43,7 +39,7 @@ export default async function Collection({
     // ensure firstArtwork is a string or can be converted to string
     if (typeof firstArtwork === "string") {
       const url = buildUrl([stem, collectionSlug, firstArtwork]);
-      // redirect(url);
+      redirect(url);
     } else {
       console.error("First artwork is not a valid string:", firstArtwork);
     }
@@ -51,9 +47,8 @@ export default async function Collection({
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-      {/* {collection && (
-        <CollectionView collection={collection} watchlist={watchlist} />
-      )} */}
+      <h1 className="text-3xl font-bold">Collection</h1>
+      <p className="mt-4">No collection available at the moment.</p>
     </main>
   );
 }

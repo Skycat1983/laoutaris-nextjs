@@ -2,7 +2,7 @@ import dbConnect from "@/utils/mongodb";
 import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { buildUrl } from "@/utils/buildUrl";
-import SubNavBar from "@/components/ui/subnav/SubNavbar";
+import SubNavBar from "@/components/ui/subnav/SubNavBar";
 
 type SubnavCollectionFields = Pick<
   IFrontendCollectionUnpopulated,

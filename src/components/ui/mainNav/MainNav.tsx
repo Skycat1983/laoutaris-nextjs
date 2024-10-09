@@ -5,8 +5,10 @@ import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
 import dbConnect from "@/utils/mongodb";
 import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
-import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
 import { getServerSession } from "next-auth";
+import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
+import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
+import { buildUrl } from "@/utils/buildUrl";
 
 // ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
 
@@ -15,8 +17,9 @@ interface Links {
   slug: string;
 }
 
-interface ArtworkLink extends Links {
-  artworks: string[];
+interface NavLink {
+  label: string;
+  path: string;
 }
 
 const MainNav = async () => {
@@ -25,23 +28,27 @@ const MainNav = async () => {
   console.log("session in MAIN NAV:>> ", session);
 
   //! Artworks
-  const collectionResponse = await fetchCollectionFields<ArtworkLink>(
-    "artwork",
-    ["title", "slug", "artworks"]
-  );
-  const { data: availableCollectionLinks } = collectionResponse.success
-    ? collectionResponse
-    : { data: [] };
+  const collectionKey = "section";
+  const collectionValue = "artwork";
+  const fields = ["title", "slug", "artworks"];
 
-  const defaultCollectionSublinkHref =
-    availableCollectionLinks.length > 0 &&
-    availableCollectionLinks[0].artworks?.length > 0
-      ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].artworks[0]}`
-      : "";
+  const collectionResponse =
+    await fetchCollections<IFrontendCollectionUnpopulated>(
+      collectionKey,
+      collectionValue,
+      fields
+    );
 
-  const artworkNavlink = {
+  const collections = collectionResponse.success ? collectionResponse.data : [];
+
+  const firstCollection = collections[0];
+  const collectionSlug = firstCollection.slug;
+  const artworkId = firstCollection.artworks[0];
+  const artworkPath = buildUrl(["artwork", collectionSlug, artworkId]);
+
+  const artworkNavlink: NavLink = {
     label: "Artwork",
-    path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
+    path: artworkPath,
   };
 
   // ! Biography
@@ -108,6 +115,26 @@ const MainNav = async () => {
 };
 
 export default MainNav;
+
+//! Artworks
+// const collectionResponse = await fetchCollectionFields<ArtworkLink>(
+//   "artwork",
+//   ["title", "slug", "artworks"]
+// );
+// const { data: availableCollectionLinks } = collectionResponse.success
+//   ? collectionResponse
+//   : { data: [] };
+
+// const defaultCollectionSublinkHref =
+//   availableCollectionLinks.length > 0 &&
+//   availableCollectionLinks[0].artworks?.length > 0
+//     ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].artworks[0]}`
+//     : "";
+
+// const artworkNavlink = {
+//   label: "Artwork",
+//   path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
+// };
 
 // //! Collection
 // const collectionLinks = await fetchCollectionLinks("artwork");

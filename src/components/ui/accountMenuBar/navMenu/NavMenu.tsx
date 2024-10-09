@@ -27,7 +27,7 @@ interface NavMenuProps {
 }
 
 export function NavMenu({ navLinks }: NavMenuProps) {
-  console.log("navLinks", navLinks);
+  // console.log("navLinks", navLinks);
 
   const accountNavLinks = [
     { label: "Sign Up", path: "http://localhost:3000/api/auth/signin" },

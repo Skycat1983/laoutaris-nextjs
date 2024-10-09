@@ -5,7 +5,7 @@ function transformToCollectionLink(doc: any): SubnavLink {
   return {
     title: doc.title,
     slug: `${doc.slug}`,
-    defaultRedirect: doc.artworks[0],
+    // defaultRedirect: doc.artworks[0],
     // text: doc.text,
   };
 }
