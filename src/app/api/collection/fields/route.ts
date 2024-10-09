@@ -1,4 +1,4 @@
-import { ArticleModel, CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
@@ -11,12 +11,12 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const fields = fieldsParam ? fieldsParam.replace(/,/g, " ") : defaultFields;
 
   try {
-    const articles = await CollectionModel.find({ section })
+    const collections = await CollectionModel.find({ section })
       .select(fields)
       .sort({ updatedAt: 1 })
       .lean();
 
-    if (!articles || articles.length === 0) {
+    if (!collections || collections.length === 0) {
       return NextResponse.json(
         {
           success: false,
@@ -29,7 +29,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: articles,
+      data: collections,
     });
   } catch (error) {
     console.error("Error fetching collections:", error);

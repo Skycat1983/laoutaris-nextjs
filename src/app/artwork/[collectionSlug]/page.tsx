@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
 import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
 import { fetchCollectionLinks } from "@/lib/server/collection/data-fetching/fetchCollectionLinks";
+import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
+import { buildUrl } from "@/utils/buildUrl";
 
-type CollectionFields = Pick<IFrontendCollection, "title" | "slug">;
+type CollectionFields = Pick<IFrontendCollection, "artworks">;
 
 export default async function Collection({
   params,
@@ -14,27 +16,37 @@ export default async function Collection({
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  const session = await getServerSession(authOptions);
-
   const stem = "artwork";
 
-  const response = await fetchCollectionFields<CollectionFields>(stem, [
-    "title",
-    "slug",
-  ]);
-  const { data: availableCollectionLinks } = response.success
-    ? response
-    : { data: [] };
+  const collectionSlug = params.collectionSlug;
+  const identifierKey = "slug";
+  const identifierValue = collectionSlug;
 
-  const defaultCollectionSublinkHref =
-    availableCollectionLinks.length > 0
-      ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
-      : null;
+  // fields to fetch from identified collection/s
+  const fields = ["artworks"];
 
-  if (defaultCollectionSublinkHref) {
-    redirect(
-      `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
-    );
+  const response = await fetchCollections<CollectionFields>(
+    identifierKey,
+    identifierValue,
+    fields
+  );
+  const { data } = response.success ? response : { data: [] };
+
+  //check if data exists and has at least one artwork
+  if (
+    data.length > 0 &&
+    Array.isArray(data[0].artworks) &&
+    data[0].artworks.length > 0
+  ) {
+    const firstArtwork = data[0].artworks[0];
+
+    // ensure firstArtwork is a string or can be converted to string
+    if (typeof firstArtwork === "string") {
+      const url = buildUrl([stem, collectionSlug, firstArtwork]);
+      // redirect(url);
+    } else {
+      console.error("First artwork is not a valid string:", firstArtwork);
+    }
   }
 
   return (
@@ -45,6 +57,17 @@ export default async function Collection({
     </main>
   );
 }
+
+// const defaultCollectionSublinkHref =
+//   availableCollectionLinks.length > 0
+//     ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
+//     : null;
+
+// if (defaultCollectionSublinkHref) {
+//   redirect(
+//     `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
+//   );
+// }
 
 // interface CollectionLink {
 //   title: string;

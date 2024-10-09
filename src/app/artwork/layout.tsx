@@ -1,9 +1,13 @@
-import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
-import { fetchCollectionFields } from "@/lib/server/collection/data-fetching/fetchCollectionFields";
-import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
+import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
+import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
+import { buildUrl } from "@/utils/buildUrl";
+import SubNavBar from "@/components/ui/subnav/SubNavbar";
 
-type CollectionFields = Pick<IFrontendCollection, "title" | "slug">;
+type SubnavCollectionFields = Pick<
+  IFrontendCollectionUnpopulated,
+  "title" | "slug" | "artworks"
+>;
 
 export default async function ArtworkLayout({
   children,
@@ -12,48 +16,26 @@ export default async function ArtworkLayout({
 }) {
   await dbConnect();
   const stem = "artwork";
-  const response = await fetchCollectionFields<CollectionFields>(stem, [
-    "title",
-    "slug",
-  ]);
+  const identifierKey = "section";
+  const identifierValue = "artwork";
+  const fields = ["title", "slug", "artworks"];
+  const response = await fetchCollections<SubnavCollectionFields>(
+    identifierKey,
+    identifierValue,
+    fields
+  );
   const { data } = response.success ? response : { data: [] };
+
+  const collectionLinks = data.map((link) => ({
+    title: link.title,
+    slug: link.slug,
+    url: buildUrl([stem, link.slug, link.artworks[0]]),
+  }));
 
   return (
     <section className="p-0 m-0">
-      {data && <Subnav links={data} stem={stem} />}
+      {data && <SubNavBar links={collectionLinks} />}
       {children}
     </section>
   );
 }
-
-// interface CollectionLink {
-//   title: string;
-//   slug: string;
-// }
-
-// export default async function ArtworkLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   await dbConnect();
-//   const stem = "artwork";
-//   const response = await fetchCollectionFields<CollectionLink>(stem, [
-//     "title",
-//     "slug",
-//   ]);
-//   const { data } = response.success ? response : { data: [] };
-
-//   return (
-//     <section className="p-0 m-0">
-//       {data && <Subnav links={data} stem={stem} />}
-//       {children}
-//     </section>
-//   );
-// }
-
-// ! old working code using fetchCollectionLinks
-// const collectionLinksResult = await fetchCollectionLinks(stem);
-// const { data } = collectionLinksResult.success
-//   ? collectionLinksResult
-//   : { data: [] };

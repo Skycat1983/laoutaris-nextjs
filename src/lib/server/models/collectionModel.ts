@@ -1,5 +1,4 @@
 import mongoose, { Document } from "mongoose";
-import { IContent } from "../../../../unused/experimental/baseContent";
 
 // Define the interface that includes both content and collection-specific fields
 export interface ICollectionContent extends Document {

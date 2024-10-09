@@ -1,6 +1,6 @@
 import { IFrontendArtwork } from "./artworkTypes";
 
-export interface IFrontendCollection {
+export interface IFrontendCollectionBase {
   title: string;
   subtitle: string;
   summary: string;
@@ -9,7 +9,20 @@ export interface IFrontendCollection {
   imageUrl: string;
   slug: string;
   section: "artwork" | "biography" | "project";
-  artworks: IFrontendArtwork[];
+  artworks: IFrontendArtwork[] | string[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IFrontendCollectionPopulated extends IFrontendCollectionBase {
+  artworks: IFrontendArtwork[];
+}
+
+export interface IFrontendCollectionUnpopulated
+  extends IFrontendCollectionBase {
+  artworks: string[];
+}
+
+export type IFrontendCollection =
+  | IFrontendCollectionPopulated
+  | IFrontendCollectionUnpopulated;
