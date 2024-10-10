@@ -1,26 +1,28 @@
 "use server";
 
+import dbConnect from "@/utils/mongodb";
+import { getServerSession } from "next-auth";
+import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
+import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
+import { buildUrl } from "@/utils/buildUrl";
 import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
-import dbConnect from "@/utils/mongodb";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
-import { getServerSession } from "next-auth";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
-import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
-import { buildUrl } from "@/utils/buildUrl";
 
 // ? the fetchs below ensure that the default sublink is always the first one in the list, ensuring that any changes to priority status our collections or articles will be reflected in the nav
-
-interface Links {
-  title: string;
-  slug: string;
-}
 
 interface NavLink {
   label: string;
   path: string;
 }
+
+type CollectionLink = Pick<
+  IFrontendCollectionUnpopulated,
+  "title" | "slug" | "artworks"
+>;
+type BiographyLink = Pick<IFrontendArticle, "slug">;
 
 const MainNav = async () => {
   await dbConnect();
@@ -28,16 +30,11 @@ const MainNav = async () => {
   console.log("session in MAIN NAV:>> ", session);
 
   //! Artworks
-  const collectionKey = "section";
-  const collectionValue = "artwork";
-  const fields = ["title", "slug", "artworks"];
-
-  const collectionResponse =
-    await fetchCollections<IFrontendCollectionUnpopulated>(
-      collectionKey,
-      collectionValue,
-      fields
-    );
+  const collectionResponse = await fetchCollections<CollectionLink>(
+    "section",
+    "artwork",
+    ["title", "slug", "artworks"]
+  );
 
   const collections = collectionResponse.success ? collectionResponse.data : [];
 
@@ -52,42 +49,41 @@ const MainNav = async () => {
   };
 
   // ! Biography
-  const biographyResponse = await fetchBiographyFields<Links>("biography", [
-    "title",
-    "slug",
-  ]);
-  const { data: availableBiographyLinks } = biographyResponse.success
-    ? biographyResponse
-    : { data: [] };
+  const biographyResponse = await fetchArticles<BiographyLink>(
+    "section",
+    "biography",
+    ["title", "slug"]
+  );
+  const biographies = biographyResponse.success ? biographyResponse.data : [];
 
-  const defaultBiographySublinkHref =
-    availableBiographyLinks.length > 0 ? availableBiographyLinks[0].slug : "";
+  const firstBiography = biographies[0];
+  const biographySlug = firstBiography.slug;
+  const biographyPath = buildUrl(["biography", biographySlug]);
 
-  const biographyNavlink = {
+  const biographyNavlink: NavLink = {
     label: "Biography",
-    path: `http://localhost:3000/biography/${defaultBiographySublinkHref}`,
+    path: biographyPath,
   };
 
   //! Blog
-  const defaultBlogSublink = "latest";
-  const blogNavlink = {
+  const blogPath = buildUrl(["blog", "latest"]);
+  const blogNavlink: NavLink = {
     label: "Blog",
-    path: `http://localhost:3000/blog/${defaultBlogSublink}`,
+    path: blogPath,
   };
 
   //! Project
-  const defaultProjectSublink = "";
-  const projectNavlink = {
+  const projectPath = buildUrl(["project", "about"]);
+  const projectNavlink: NavLink = {
     label: "Project",
-    path: `http://localhost:3000/project/${defaultProjectSublink}`,
+    path: projectPath,
   };
 
   // ! Shop
-
-  const defaultShopSublink = "";
-  const shopNavlink = {
+  const shopPath = buildUrl(["shop", "all"]);
+  const shopNavlink: NavLink = {
     label: "Shop",
-    path: `http://localhost:3000/shop/${defaultShopSublink}`,
+    path: shopPath,
   };
 
   const navLinks = [
@@ -98,7 +94,6 @@ const MainNav = async () => {
     shopNavlink,
   ];
 
-  // console.log("defaultBiographySublink", defaultBiographySublinkHref);
   return (
     <nav className="">
       <div className="block sm:hidden">
@@ -115,55 +110,3 @@ const MainNav = async () => {
 };
 
 export default MainNav;
-
-//! Artworks
-// const collectionResponse = await fetchCollectionFields<ArtworkLink>(
-//   "artwork",
-//   ["title", "slug", "artworks"]
-// );
-// const { data: availableCollectionLinks } = collectionResponse.success
-//   ? collectionResponse
-//   : { data: [] };
-
-// const defaultCollectionSublinkHref =
-//   availableCollectionLinks.length > 0 &&
-//   availableCollectionLinks[0].artworks?.length > 0
-//     ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].artworks[0]}`
-//     : "";
-
-// const artworkNavlink = {
-//   label: "Artwork",
-//   path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
-// };
-
-// //! Collection
-// const collectionLinks = await fetchCollectionLinks("artwork");
-// const { data: availableCollectionLinks } = collectionLinks.success
-//   ? collectionLinks
-//   : { data: [] };
-// const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
-
-// const artworkNavlink = {
-//   label: "Artwork",
-//   path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}`,
-//   // path: `http://localhost:3000/artwork/${defaultCollectionSublinkHref}/${defaultArtworkSublinkHref}`,
-// };
-
-// //! Biography
-// const biographyArticleLinks = await fetchBiographyLinks("biography");
-// const { data: availableBiographyLinks } = biographyArticleLinks.success
-//   ? biographyArticleLinks
-//   : { data: [] };
-// const defaultBiographySublinkHref = availableBiographyLinks[0].slug;
-// const biographyNavlink = {
-//   label: "Biography",
-//   path: `http://localhost:3000/biography/${defaultBiographySublinkHref}`,
-// };
-
-//! Artwork
-// ? Unused as we now redirect to a default collection/artworkId page
-// const artworkLinks = await fetchArtworkLinks(defaultCollectionSublinkHref);
-// const { data: availableArtworkLinks } = artworkLinks.success
-//   ? artworkLinks
-//   : { data: [] };
-// const defaultArtworkSublinkHref = availableArtworkLinks[0].id;
