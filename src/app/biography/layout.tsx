@@ -18,13 +18,14 @@
  *   TODO: Enhance error handling to provide more detailed feedback and possibly retry mechanisms.
  *
  * - **Dependencies:**
- *   Utilizes `fetchBiographyFields` to retrieve biography data from MongoDB and constructs URLs for navigation.
+ *   Utilizes `fetchArticles` to retrieve biography data from MongoDB and constructs URLs for navigation.
  *   Renders the `SubNavBar` component with the fetched biography links.
  */
 
+"use server";
 import dbConnect from "@/utils/mongodb";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 
 type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
@@ -37,9 +38,12 @@ export default async function BiographyLayout({
   await dbConnect();
   const stem = "biography";
 
-  const response = await fetchBiographyFields<ArticleRedirectLink>(stem, [
-    "title slug",
-  ]);
+  const response = await fetchArticles<ArticleRedirectLink>(
+    "section",
+    "biography",
+    ["title", "slug"]
+  );
+
   if (!response.success) {
     return (
       <section className="p-0 m-0">

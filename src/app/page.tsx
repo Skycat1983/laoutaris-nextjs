@@ -3,22 +3,20 @@ import ArtworkSection from "@/components/homepageSections/ArtworkSection";
 import BiographySection from "@/components/homepageSections/BiographySection";
 import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 
-interface BiographyEntry {
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  slug: string;
-}
+type BiographyFields = Pick<
+  IFrontendArticle,
+  "title" | "subtitle" | "imageUrl" | "slug"
+>;
 
 export default async function Home() {
-  const biographyEntriesResponse = await fetchBiographyFields<BiographyEntry>(
+  const biographyEntriesResponse = await fetchArticles<BiographyFields>(
+    "section",
     "biography",
-    ["title", "subtitle", "imageUrl", "slug"]
+    ["title", "slug", "imageUrl"]
   );
-
-  // console.log("biographyEntriesResponse HOME:>> ", biographyEntriesResponse);
 
   return (
     <main className="flex min-h-screen max-w-full flex-col items-center justify-start">

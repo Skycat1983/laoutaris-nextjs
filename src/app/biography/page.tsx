@@ -17,7 +17,7 @@
  *   TODO: Implement more robust error handling and fallback mechanisms.
  *
  * - **Dependencies:**
- *   Utilizes `fetchBiographyFields` to retrieve biography data from MongoDB and `buildUrl` for constructing redirect URLs.
+ *   Utilizes `fetchArticles` to retrieve biography data from MongoDB and `buildUrl` for constructing redirect URLs.
  *   Employs `redirect` from `next/navigation` to perform client-side navigation.
  *
  * - **Notes:**
@@ -26,19 +26,19 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { redirect } from "next/navigation";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { buildUrl } from "@/utils/buildUrl";
+import { redirect } from "next/navigation";
 
-type ArticleRedirectLink = Pick<IFrontendArticle, "slug">;
+type BiographyFields = Pick<IFrontendArticle, "slug">;
 
 export default async function Biography() {
   await dbConnect();
 
   const stem = "biography";
 
-  const response = await fetchBiographyFields<ArticleRedirectLink>(stem, [
+  const response = await fetchArticles<BiographyFields>("section", stem, [
     "slug",
   ]);
 
