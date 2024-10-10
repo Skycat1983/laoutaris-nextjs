@@ -1,12 +1,40 @@
+"use server";
+
+/**
+ * @fileoverview
+ * This Next.js page manages the `/artwork/collectionSlug` path.
+ *
+ * - **Purpose:**
+ *   The `/artwork/collection` route serves as an intermediary that should not be directly accessible via site links.
+ *   If a user navigates to this route with a valid `collectionSlug`, it automatically redirects them to the first artwork
+ *   within the specified collection, following the path pattern `/artwork/collection-slug/artworkId`.
+ *
+ * - **Project Structure:**
+ *   - **Path Pattern:** `/artwork/collection-slug/artworkId`
+ *   - **Behavior:**
+ *     Accessing `/artwork/collection-slug` forwards the user to `/artwork/collection-slug/artworkId` based on the first available artwork.
+ *
+ * - **Error Handling:**
+ *   If the specified collection does not exist or contains no artworks, it displays a user-friendly error message.
+ *   TODO: Implement more robust error handling and fallback mechanisms.
+ *
+ * - **Dependencies:**
+ *   Utilizes `fetchCollections` to retrieve collection data from MongoDB and `buildUrl` for constructing redirect URLs.
+ *   Employs `redirect` from `next/navigation` to perform client-side navigation.
+ */
+
 import dbConnect from "@/utils/mongodb";
-import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
+import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-type CollectionFields = Pick<IFrontendCollection, "artworks">;
+type CollectionFields = Pick<
+  IFrontendCollectionUnpopulated,
+  "artworks" | "slug"
+>;
 
-export default async function Collection({
+export default async function CollectionSlug({
   params,
 }: {
   params: { collectionSlug: string };
@@ -17,127 +45,27 @@ export default async function Collection({
   const collectionSlug = params.collectionSlug;
   const identifierKey = "slug";
   const identifierValue = collectionSlug;
-
-  // fields to fetch from identified collection/s
-  const fields = ["artworks"];
+  const fields = ["artworks", "slug"];
 
   const response = await fetchCollections<CollectionFields>(
     identifierKey,
     identifierValue,
     fields
   );
-  const { data } = response.success ? response : { data: [] };
 
-  //check if data exists and has at least one artwork
-  if (
-    data.length > 0 &&
-    Array.isArray(data[0].artworks) &&
-    data[0].artworks.length > 0
-  ) {
-    const firstArtwork = data[0].artworks[0];
-
-    // ensure firstArtwork is a string or can be converted to string
-    if (typeof firstArtwork === "string") {
-      const url = buildUrl([stem, collectionSlug, firstArtwork]);
-      redirect(url);
-    } else {
-      console.error("First artwork is not a valid string:", firstArtwork);
-    }
+  if (!response.success) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
+        <h1 className="text-3xl font-bold">Collection</h1>
+        <p className="mt-4">This collection is currently unavailable.</p>
+        <p className="mt-4">{response.message}</p>
+      </main>
+    );
   }
+  const { data } = response;
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-      <h1 className="text-3xl font-bold">Collection</h1>
-      <p className="mt-4">No collection available at the moment.</p>
-    </main>
-  );
+  const firstArtwork = data[0].artworks[0];
+
+  const url = buildUrl([stem, collectionSlug, firstArtwork]);
+  redirect(url);
 }
-
-// const defaultCollectionSublinkHref =
-//   availableCollectionLinks.length > 0
-//     ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
-//     : null;
-
-// if (defaultCollectionSublinkHref) {
-//   redirect(
-//     `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
-//   );
-// }
-
-// interface CollectionLink {
-//   title: string;
-//   slug: string;
-// }
-
-// export default async function Collection({
-//   params,
-// }: {
-//   params: { collectionSlug: string };
-// }) {
-//   await dbConnect();
-//   const session = await getServerSession(authOptions);
-
-//   const stem = "artwork";
-
-//   // Fetch collection fields using the new fetchCollectionFields function
-//   const response = await fetchCollectionFields<CollectionLink>(stem, [
-//     "title",
-//     "slug",
-//   ]);
-//   const { data: availableCollectionLinks } = response.success
-//     ? response
-//     : { data: [] };
-
-//   // Create the default sublink href
-//   const defaultCollectionSublinkHref =
-//     availableCollectionLinks.length > 0
-//       ? `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].slug}`
-//       : null;
-
-//   // Redirect if the defaultCollectionSublinkHref exists
-//   if (defaultCollectionSublinkHref) {
-//     redirect(
-//       `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
-//     );
-//   }
-
-//   return (
-//     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-//       {/* {collection && (
-//         <CollectionView collection={collection} watchlist={watchlist} />
-//       )} */}
-//     </main>
-//   );
-// }
-
-//! old working code using fetchCollectionLinks
-// export default async function Collection({
-//   params,
-// }: {
-//   params: { collectionSlug: string };
-// }) {
-//   await dbConnect();
-//   const session = await getServerSession(authOptions);
-
-//   const stem = "artwork";
-
-//   const collectionLinks = await fetchCollectionLinks(stem);
-//   const { data: availableCollectionLinks } = collectionLinks.success
-//     ? collectionLinks
-//     : { data: [] };
-//   const defaultCollectionSublinkHref = `${availableCollectionLinks[0].slug}/${availableCollectionLinks[0].defaultRedirect}`;
-
-//   if (defaultCollectionSublinkHref) {
-//     redirect(
-//       `${process.env.NEXTAUTH_URL}/${stem}/${defaultCollectionSublinkHref}`
-//     );
-//   }
-
-//   return (
-//     <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-//       {/* {collection && (
-//         <CollectionView collection={collection} watchlist={watchlist} />
-//       )} */}
-//     </main>
-//   );
-// }

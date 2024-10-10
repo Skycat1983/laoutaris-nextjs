@@ -1,12 +1,48 @@
+"use server";
+
+/**
+ * @fileoverview
+ * This Next.js layout component manages the `/artwork/collectionSlug` path.
+ *
+ * - **Purpose:**
+ *   The `CollectionSlugLayout` component fetches collection data from MongoDB based on the provided `collectionSlug`.
+ *   It renders pagination for artworks within the collection and displays additional collection-related information,
+ *   such as the total number of artworks and an artist profile. This layout ensures that users navigate seamlessly
+ *   through different artworks within the same collection.
+ *
+ * - **Project Structure:**
+ *   - **Path Pattern:** `/artwork/collectionSlug/artworkId`
+ *   - **Behavior:**
+ *     - **Direct Access:** While the `/artwork/collectionSlug` path is not intended to be directly accessible via site links,
+ *       if a user navigates to this route with a valid `collectionSlug`, the layout facilitates the rendering of nested
+ *       artwork pages.
+ *     - **Navigation:** Users can navigate between artworks within the same collection using the `ServerPagination` component.
+ *     - **Consistent Information:** Collection information remains constant as users navigate between different artworks.
+ *
+ * - **Error Handling:**
+ *   If fetching collection data fails, the component displays a fallback error message.
+ *   TODO: Enhance error handling to provide more detailed feedback and fallback UI elements.
+ *
+ * - **Dependencies:**
+ *   Utilizes `fetchCollectionArtwork` to retrieve collection data from MongoDB and `buildUrl` for constructing navigation URLs.
+ *   Renders the following components with the fetched data:
+ *     - `ServerPagination`: Handles pagination of artworks within the collection.
+ *     - `HorizontalDivider`: Visually separates different sections of the layout.
+ *     - `ArtistProfile`: Displays information about the artist.
+ *     - `SubscribeForm`: Provides a form for users to subscribe for updates.
+ *
+ * - **Notes:**
+ *   - Ensure that the `collectionSlug` corresponds to a valid collection in MongoDB to prevent unintended behavior.
+ *   - The layout assumes that each collection has at least one artwork; additional checks are implemented to handle empty collections.
+ */
+import dbConnect from "@/utils/mongodb";
+import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
 import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
-import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
-import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtworkLinks";
-import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
-import dbConnect from "@/utils/mongodb";
 
 export type SelectedCollectionFields = Pick<
   IFrontendCollection,
@@ -18,7 +54,7 @@ export type CollectionArtwork = SelectedCollectionFields & {
   artworks: SelectedArtworkFields[];
 };
 
-export default async function CollectionLayout({
+export default async function CollectionSlugLayout({
   params,
   children,
 }: {
@@ -96,10 +132,3 @@ export default async function CollectionLayout({
     </section>
   );
 }
-
-// const artworkLinksResult = await fetchArtworkLinks(params.collectionSlug);
-// const artworkLinks = artworkLinksResult.success
-//   ? artworkLinksResult.data
-//   : null;
-
-// console.log("artworkLinks in CollectionLayout", artworkLinks);
