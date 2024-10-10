@@ -2,10 +2,13 @@
 
 import ArtworkView from "@/components/atoms/ArtworkView";
 import ArtworkLayout from "@/components/layouts/ArtworkLayout";
-import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { fetchArtworks } from "@/lib/server/artwork/data-fetching/fetchArtworks";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
 
+//TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
+//? maybe this is better done with the fetchArtwork function
 export default async function ArtworkId({
   params,
 }: {
@@ -13,43 +16,22 @@ export default async function ArtworkId({
 }) {
   await dbConnect();
   // await delay(2000);
-  const artworkResult = await fetchArtwork(params.artworkId);
-  const artwork = artworkResult.success ? artworkResult.data : null;
+  const artworkKey = "_id";
+  const artworkValue = params.artworkId;
+  const response = await fetchArtworks<IFrontendArtwork>(
+    artworkKey,
+    artworkValue
+  );
 
-  //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
+  if (!response.success) {
+    return <div>Failed to fetch artwork</div>;
+  }
+  const { data: artwork } = response;
 
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
-  return <>{artwork && <ArtworkLayout {...artwork} />}</>;
-}
-
-// ! IMPORTANT: of artworkView tsx
-{
-  /* <div
-        className="
-          grid 
-          grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
-          gap-10
-          lg:grid-cols-[1fr,1fr]
-          lg:gap-4
-        "
-      >
-        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end ">
-          {artwork && (
-            <Image
-              src={artwork.image.secure_url}
-              width={artwork.image.pixelWidth}
-              height={artwork.image.pixelHeight}
-              alt="Artwork"
-              className="object-contain max-h-full w-auto shadow-2xl"
-            />
-          )}
-        </span>
-
-        <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
-          {artwork && <ArtworkInfoCard {...artwork} />}
-        </div>
-      </div>
-      <div className="flex flex-row max-w-full m-4 h-[200px]">
-        {artwork && <CroppedImage artwork={artwork} />}
-      </div> */
+  return (
+    <>
+      <ArtworkLayout {...artwork[0]} />
+    </>
+  );
 }

@@ -5,6 +5,8 @@ import { fetchArtwork } from "@/lib/server/artwork/data-fetching/fetchArtwork";
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
 
+//TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
+
 export default async function FavouritedArtwork({
   params,
 }: {
@@ -14,8 +16,6 @@ export default async function FavouritedArtwork({
   // await delay(2000);
   const artworkResult = await fetchArtwork(params.artworkId);
   const artwork = artworkResult.success ? artworkResult.data : null;
-
-  //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
   return <>{artwork && <ArtworkLayout {...artwork} />}</>;

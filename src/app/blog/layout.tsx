@@ -1,5 +1,6 @@
-import Subnav from "@/components/ui/subnav/Subnav";
 import dbConnect from "@/utils/mongodb";
+import { buildUrl } from "@/utils/buildUrl";
+import SubNavBar from "@/components/ui/subnav/SubNavBar";
 
 export default async function BlogLayout({
   children,
@@ -9,17 +10,17 @@ export default async function BlogLayout({
   await dbConnect();
 
   const stem = "blog";
-  const subNavLinks: { title: string; slug: string }[] = [
-    { title: "Latest", slug: "latest" },
-    { title: "Oldest", slug: "oldest" },
-    { title: "Featured", slug: "featured" },
-    { title: "Popular", slug: "popular" },
+  const subNavLinks: { title: string; slug: string; url: string }[] = [
+    { title: "Latest", slug: "latest", url: buildUrl([stem, "latest"]) },
+    { title: "Oldest", slug: "oldest", url: buildUrl([stem, "oldest"]) },
+    { title: "Featured", slug: "featured", url: buildUrl([stem, "featured"]) },
+    { title: "Popular", slug: "popular", url: buildUrl([stem, "popular"]) },
   ];
 
   return (
     <section>
       <div className="flex flex-col flex-grow">
-        <Subnav links={subNavLinks} stem={stem} />
+        <SubNavBar links={subNavLinks} />
         {children}
       </div>
     </section>
