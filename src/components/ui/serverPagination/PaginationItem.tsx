@@ -6,8 +6,8 @@ import { useSelectedLayoutSegment } from "next/navigation";
 
 type PaginationItemProps = {
   artworkLink: {
-    id: string;
-    imageData: {
+    _id: string;
+    image: {
       secure_url: string;
       pixelHeight: number;
       pixelWidth: number;
@@ -17,15 +17,15 @@ type PaginationItemProps = {
 
 const PaginationItem = ({ artworkLink }: PaginationItemProps) => {
   const segment = useSelectedLayoutSegment();
-  const isActive = segment === artworkLink.id;
+  const isActive = segment === artworkLink._id;
   // console.warn(segment);
   return (
     <div className="h-[200px] lg:h-[400px]">
       <Image
-        src={artworkLink.imageData.secure_url}
+        src={artworkLink.image.secure_url}
         alt="Untitled artwork"
-        height={artworkLink.imageData.pixelHeight}
-        width={artworkLink.imageData.pixelWidth}
+        height={artworkLink.image.pixelHeight}
+        width={artworkLink.image.pixelWidth}
         className="max-h-full w-auto max-w-[90vw] object-contain self-start"
       />
     </div>

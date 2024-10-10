@@ -1,33 +1,25 @@
-import { IFrontendCollectionPopulated } from "@/lib/client/types/collectionTypes";
-import { CollectionModel } from "@/lib/server/models";
 import dbConnect from "@/utils/mongodb";
 import { NextRequest, NextResponse } from "next/server";
-// pages/api/collection/artwork.ts
-
-const parseFields = (fieldsParam: string | null): string | undefined => {
-  return fieldsParam && fieldsParam.trim() !== ""
-    ? fieldsParam.replace(/,/g, " ")
-    : undefined;
-};
+import { parseFields } from "@/utils/parseFields";
+import { CollectionModel } from "@/lib/server/models";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   try {
-    // Connect to the database
     await dbConnect();
     console.log("Database connected successfully.");
 
     const { searchParams } = new URL(req.url);
-    const collectionKey = searchParams.get("collectionKey"); // Updated to match client
-    const collectionValue = searchParams.get("collectionValue"); // Updated to match client
+    const collectionKey = searchParams.get("collectionKey");
+    const collectionValue = searchParams.get("collectionValue");
     const fieldsParam = searchParams.get("collectionFields");
-    const populateFieldsParam = searchParams.get("artworkFields"); // e.g., "title slug image.pixelHeight"
+    const populateFieldsParam = searchParams.get("artworkFields");
 
-    // Log received query parameters
-    console.log("Received Query Parameters:");
-    console.log("collectionKey:", collectionKey);
-    console.log("collectionValue:", collectionValue);
-    console.log("fieldsParam:", fieldsParam);
-    console.log("populateFieldsParam:", populateFieldsParam);
+    //! Log received query parameters
+    // console.log("Received Query Parameters:");
+    // console.log("collectionKey:", collectionKey);
+    // console.log("collectionValue:", collectionValue);
+    // console.log("fieldsParam:", fieldsParam);
+    // console.log("populateFieldsParam:", populateFieldsParam);
 
     // Validate presence of collectionKey and collectionValue
     if (!collectionKey || !collectionValue) {
@@ -44,17 +36,14 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     // Process fields parameter for collection
     const collectionFields = parseFields(fieldsParam);
-    console.log("Parsed collectionFields:", collectionFields);
 
     // Process fields parameter for populated artworks
     const artworkFields = parseFields(populateFieldsParam);
-    console.log("Parsed artworkFields:", artworkFields);
 
     // Construct the query object dynamically
     const query: Record<string, string> = {
       [collectionKey]: collectionValue,
     };
-    console.log("Constructed Query Object:", query);
 
     // Build the Mongoose query to return an array of collections
     let mongooseQuery = CollectionModel.findOne(query)
@@ -71,7 +60,6 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     // Execute the query
     const collections = await mongooseQuery;
-    console.log("Fetched Collections:", collections);
 
     if (!collections || collections.length === 0) {
       console.error("No collections found matching the criteria.");
@@ -87,7 +75,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: collections, // Return as an array
+      data: collections,
     });
   } catch (error) {
     console.error("Error fetching collection artworks:", error);

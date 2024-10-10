@@ -15,8 +15,8 @@ const PaginationNavigationContainer = ({
 };
 
 export interface ArtworkLink {
-  id: string;
-  imageData: {
+  _id: string;
+  image: {
     secure_url: string;
     pixelHeight: number;
     pixelWidth: number;
@@ -39,7 +39,7 @@ const ServerPaginationLinkWrapper = ({
   return (
     <>
       <Link
-        href={`http://localhost:3000/${stem}/${collectionSlug}/${artworkLink.id}`}
+        href={`http://localhost:3000/${stem}/${collectionSlug}/${artworkLink._id}`}
       >
         {children}
       </Link>
@@ -59,7 +59,7 @@ const ServerPagination = ({
   collectionSlug,
 }: ServerPaginationProps) => {
   const totalPages = artworkLinks.length;
-  const idArray = artworkLinks.map((artworkLink) => artworkLink.id);
+  const idArray = artworkLinks.map((artworkLink) => artworkLink._id);
 
   console.log("idArray", idArray);
 

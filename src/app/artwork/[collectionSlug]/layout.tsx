@@ -8,11 +8,12 @@ import { fetchArtworkLinks } from "@/lib/server/artwork/data-fetching/fetchArtwo
 import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
 import dbConnect from "@/utils/mongodb";
 
-export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "medium">;
 export type SelectedCollectionFields = Pick<
   IFrontendCollection,
   "artworks" | "slug" | "title"
 >;
+export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+
 export type CollectionArtwork = SelectedCollectionFields & {
   artworks: SelectedArtworkFields[];
 };
@@ -28,7 +29,12 @@ export default async function CollectionLayout({
   const collectionKey = "slug";
   const collectionValue = params.collectionSlug;
   const collectionFields = ["slug", "title"];
-  const artworkFields = ["medium", "image.pixelHeight", "image.pixelWidth"];
+  const artworkFields = [
+    "_id",
+    "image.secure_url",
+    "image.pixelHeight",
+    "image.pixelWidth",
+  ];
   const response = await fetchCollectionArtwork<CollectionArtwork>(
     collectionKey,
     collectionValue,
@@ -36,28 +42,25 @@ export default async function CollectionLayout({
     artworkFields
   );
 
-  if (response.success) {
-    console.log(
-      "response in collectionLayout",
-      response.data.artworks[0].image
-    );
+  if (!response.success) {
+    return <div>Failed to fetch collection data</div>;
   }
+  console.log("response in collectionLayout", response.data);
+  const { data } = response;
 
   return (
     <section className="">
       {children}
-      {/* <div className="px-4 py-8">
+      <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">
         More from this collection
       </h1>
-      {artworkLinks && (
-        <ServerPagination
-          artworkLinks={artworkLinks}
-          collectionSlug={params.collectionSlug}
-        />
-      )}
+      <ServerPagination
+        artworkLinks={data.artworks}
+        collectionSlug={params.collectionSlug}
+      />
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
@@ -68,8 +71,7 @@ export default async function CollectionLayout({
           </h1>
 
           <p className="px-4 text-primary py-8">
-            There are {artworkLinks && artworkLinks.length} pieces in this
-            collection.
+            There are {data.artworks.length} pieces in this collection.
           </p>
         </div>
 
@@ -90,7 +92,7 @@ export default async function CollectionLayout({
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div> */}
+      </div>
     </section>
   );
 }
