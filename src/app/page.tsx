@@ -3,7 +3,7 @@ import ArtworkSection from "@/components/homepageSections/ArtworkSection";
 import BiographySection from "@/components/homepageSections/BiographySection";
 import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
+import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
 
 interface BiographyEntry {
   title: string;

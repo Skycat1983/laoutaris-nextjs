@@ -1,4 +1,4 @@
-import { CollectionModel, ICollectionContent } from "@/lib/server/models";
+import { ArticleModel } from "@/lib/server/models";
 import { parseFields } from "@/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -30,9 +30,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
     };
 
     // Build the Mongoose query
-    let mongooseQuery = CollectionModel.find(query)
-      .sort({ updatedAt: 1 })
-      .lean();
+    let mongooseQuery = ArticleModel.find(query).sort({ updatedAt: 1 }).lean();
 
     if (fields) {
       mongooseQuery = mongooseQuery.select(fields);
@@ -46,7 +44,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
         {
           success: false,
           errorCode: 404,
-          message: "Collections not found",
+          message: "Articles not found",
         },
         { status: 404 }
       );
@@ -57,7 +55,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       data: collections,
     });
   } catch (error) {
-    console.error("Error fetching collections:", error);
+    console.error("Error fetching artciles:", error);
     return NextResponse.json(
       {
         success: false,

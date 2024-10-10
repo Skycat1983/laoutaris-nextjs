@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export async function fetchCollections<T>(
+export async function fetchArticles<T>(
   identifierKey: string,
   identifierValue: string,
   fields?: string[]
@@ -16,7 +16,7 @@ export async function fetchCollections<T>(
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/collection?${queryParams.toString()}`,
+      `http://localhost:3000/api/article?${queryParams.toString()}`,
       {
         method: "GET",
         headers: headers(),
@@ -31,7 +31,7 @@ export async function fetchCollections<T>(
 
     return { success: true, data: result.data as T[] };
   } catch (error) {
-    console.error("Error fetching collection fields:", error);
-    return { success: false, message: "Failed to fetch collection fields" };
+    console.error("Error fetching article fields:", error);
+    return { success: false, message: "Failed to fetch article fields" };
   }
 }

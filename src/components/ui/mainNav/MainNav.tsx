@@ -4,7 +4,7 @@ import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
 import dbConnect from "@/utils/mongodb";
-import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFields";
+import { fetchBiographyFields } from "@/lib/server/biography/data-fetching/fetchBiographyFieldsOld";
 import { getServerSession } from "next-auth";
 import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
