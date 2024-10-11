@@ -1,3 +1,49 @@
+/**
+ * @fileoverview
+ * This Next.js layout component manages the `/account/favourites` path.
+ *
+ * - **Purpose:**
+ *   The `FavouritesLayout` component serves as the main layout for the `/account/favourites` section of the website.
+ *   It ensures that only authenticated users can access favourites-related pages by redirecting unauthenticated users to the homepage.
+ *   Upon successful authentication, it fetches the user's favourites from the database to facilitate pagination.
+ *   The component automatically redirects users to the first artwork in their favourites to prevent landing on a contentless page.
+ *
+ * - **Project Structure:**
+ *   - **Path Pattern:** `/account/favourites/[artworkId]`
+ *   - **Behavior:**
+ *     - **Authentication:**
+ *       Validates that the user is authenticated. If not, redirects to the homepage.
+ *     - **Data Fetching:**
+ *       Retrieves the authenticated user's favourites, including necessary artwork details such as `secure_url`, `width`, and `height` for image rendering.
+ *     - **Redirection:**
+ *       - If the favourites list is empty, redirects the user to the main account dashboard (`/account`).
+ *       - If the favourites list contains artworks, redirects the user to the first artwork's detailed page (`/account/favourites/artworkId`).
+ *
+ * - **Error Handling:**
+ *   If fetching user data fails or if there are no artworks in the favourites list, the component logs the error and redirects the user to the homepage or account dashboard accordingly.
+ *   TODO: Implement more granular error handling and user notifications to enhance the user experience during failures.
+ *
+ * - **Dependencies:**
+ *   Utilizes the following utilities and components:
+ *     - `fetchUserFavourites`: Retrieves the user's favourites from the database based on their email.
+ *     - `buildUrl`: Constructs URLs based on provided path segments.
+ *     - `getServerSession`: Retrieves the current user session for authentication purposes.
+ *     - `redirect`: Performs server-side navigation to specified URLs.
+ *     - `dbConnect`: Establishes a connection to the MongoDB database.
+ *     - `config`: Accesses configuration variables like `BASEURL`.
+ *     - `ArtistProfile`, `HorizontalDivider`, `ServerPagination`: Renders UI components with fetched data.
+ *
+ * - **Notes:**
+ *   - **Security:**
+ *     Ensures that only authenticated users can access the favourites, preventing unauthorized access.
+ *   - **Data Integrity:**
+ *     Assumes that each user has a unique favourites list associated with their email address.
+ *   - **Scalability:**
+ *     Designed to easily accommodate additional features or changes in the favourites structure by adjusting fetch parameters and navigation logic.
+ *   - **Performance:**
+ *     Efficiently fetches only the necessary fields (`secure_url`, `width`, `height`) to optimize image rendering performance with Next.js's `Image` component.
+ */
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";

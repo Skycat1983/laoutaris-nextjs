@@ -1,12 +1,56 @@
-import dbConnect from "@/utils/mongodb";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+/**
+ * @fileoverview
+ * This Next.js layout component manages the `/account` path, providing authenticated users with access to their dashboard, favourites, and watchlist.
+ *
+ * - **Purpose:**
+ *   The `AccountLayout` component serves as the main layout for the `/account` section of the website. It ensures that only authenticated users can access account-related pages by redirecting unauthenticated users to the homepage. Upon successful authentication, it fetches the user's favourites and watchlist from the database to dynamically generate sub-navigation links. These links allow users to navigate directly to their favourites or watchlist items, with the URLs pointing to the first available item in each category if they exist.
+ *
+ * - **Project Structure:**
+ *   - **Path Pattern:** `/account/[subpage]`
+ *   - **Behavior:**
+ *     - **Authentication:**
+ *       Checks if the user is authenticated. If not, redirects to the homepage.
+ *     - **Data Fetching:**
+ *       Retrieves the authenticated user's favourites and watchlist from the database.
+ *     - **Navigation:**
+ *       Constructs sub-navigation links based on the fetched data, automatically directing users to the first item in their favourites or watchlist if available.
+ *
+ * - **Error Handling:**
+ *   - **Authentication Failure:**
+ *     Redirects unauthenticated users to the homepage.
+ *   - **Data Fetching Failure:**
+ *     Logs errors to the console and redirects users to the homepage if fetching user data fails.
+ *   - **Empty Favourites or Watchlist:**
+ *     Disables the respective navigation links if the user has no favourites or watchlist items.
+ *   - **TODO:**
+ *     Enhance error handling to provide user-friendly messages and possibly retry mechanisms for transient failures.
+ *
+ * - **Dependencies:**
+ *   Utilizes the following utilities and components:
+ *     - `fetchUser`: Retrieves user data from the MongoDB User collection based on the user's email.
+ *     - `buildUrl`: Constructs URLs based on provided path segments.
+ *     - `getServerSession`: Retrieves the current user session to verify authentication.
+ *     - `SubNavBar`: Renders the sub-navigation bar with dynamically generated links.
+ *     - `dbConnect`: Establishes a connection to the MongoDB database.
+ *
+ * - **Notes:**
+ *   - **Data Integrity:**
+ *     Ensures that the `favourites` and `watchlist` arrays contain valid references before constructing URLs to prevent broken links.
+ *   - **Dynamic Navigation:**
+ *     Automatically updates the navigation links based on the user's current favourites and watchlist, reflecting any changes in real-time.
+ *   - **Scalability:**
+ *     Designed to easily accommodate additional sub-navigation links or user-specific data as the application grows.
+ */
 
-import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
+import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import config from "@/lib/config";
 import { IFrontendUserBase } from "@/lib/client/types/userTypes";
-import SubNavBar from "@/components/ui/subnav/SubNavBar";
+import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
+import { redirect } from "next/navigation";
+import SubNavBar from "@/components/ui/subnav/SubNavBar";
 
 type UserAccountSubnavOptions = Pick<
   IFrontendUserBase,
@@ -19,14 +63,14 @@ export default async function AccountLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
+  const { BASEURL } = config;
 
-  // Get the user session
   const session = await getServerSession(authOptions);
 
   // If user is not authenticated, redirect to the homepage
   if (!session?.user?.email) {
     console.log("failed to get session in account layout");
-    redirect("http://localhost:3000");
+    redirect(BASEURL);
   }
 
   const email = session.user.email;
@@ -39,21 +83,20 @@ export default async function AccountLayout({
 
   if (!response.success) {
     console.error("Failed to fetch user data:", response.message);
+    redirect(BASEURL);
   }
 
-  let favouritesCount = 0;
-  let watchlistCount = 0;
+  const favourites = response.data.favourites;
+  const watchlist = response.data.watchlist;
 
-  // Check if the response is successful and data exists
-  if (response.success && response.data) {
-    favouritesCount = response.data.favourites?.length || 0;
-    watchlistCount = response.data.watchlist?.length || 0;
-  } else {
-    //! Handle the error case
-    console.error("Failed to fetch user data:", response.message);
-  }
+  const favouritesCount = favourites.length;
+  const watchlistCount = watchlist.length;
 
-  // Define the sub-navigation links
+  // Determine the first favourite and watchlist items if available
+  const firstFavouriteSlug = favouritesCount > 0 ? favourites[0] : null;
+  const firstWatchlistSlug = watchlistCount > 0 ? watchlist[0] : null;
+
+  // Define the sub-navigation links with dynamic URLs
   const userLinks = [
     {
       title: "Dashboard",
@@ -63,13 +106,17 @@ export default async function AccountLayout({
     {
       title: "Favourites",
       slug: "favourites",
-      url: buildUrl(["account", "favourites"]),
+      url: firstFavouriteSlug
+        ? buildUrl(["account", "favourites", firstFavouriteSlug])
+        : buildUrl(["account", "favourites"]),
       disabled: favouritesCount === 0, // Disabled if no favourites
     },
     {
       title: "Watchlist",
       slug: "watchlist",
-      url: buildUrl(["account", "watchlist"]),
+      url: firstWatchlistSlug
+        ? buildUrl(["account", "watchlist", firstWatchlistSlug])
+        : buildUrl(["account", "watchlist"]),
       disabled: watchlistCount === 0, // Disabled if no watchlist items
     },
   ];
