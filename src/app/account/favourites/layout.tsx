@@ -77,13 +77,18 @@ export default async function FavouritesLayout({
   const userKey = "email";
   const userValue = session.user.email;
   const userFields = ["favourites"];
-  const favouritedArtworkFields = ["_id", "image.secure_url"];
+  const artworkFields = [
+    "_id",
+    "image.secure_url",
+    "image.pixelHeight",
+    "image.pixelWidth",
+  ];
 
   const response = await fetchUserFavourites<UserFavourites>(
     userKey,
     userValue,
     userFields,
-    favouritedArtworkFields
+    artworkFields
   );
 
   if (!response.success) {

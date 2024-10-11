@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export async function fetchUserWatchlist<T>(
+export async function fetchUserFavourite<T>(
   userKey: string,
   userValue: string,
   artworkId: string,
@@ -18,29 +18,30 @@ export async function fetchUserWatchlist<T>(
   }
 
   try {
+    // Make the GET request to the 'favourites' validation API route
     const response = await fetch(
-      `http://localhost:3000/api/user/watchlist?${queryParams.toString()}`,
+      `http://localhost:3000/api/user/favourite?${queryParams.toString()}`,
       {
         method: "GET",
         headers: headers(),
       }
     );
 
+    // Parse the JSON response
     const result = await response.json();
 
+    // Check if the response indicates success
     if (!result.success) {
       return {
         success: false,
-        message: result.message || "Failed to fetch user data",
+        message: result.message || "Failed to fetch data",
       };
     }
 
+    // Return the successful response with the fetched data
     return { success: true, data: result.data as T };
   } catch (error) {
-    console.error("Error fetching user watchlist artwork:", error);
-    return {
-      success: false,
-      message: "Failed to fetch user watchlist artwork",
-    };
+    console.error("Error fetching user favourite:", error);
+    return { success: false, message: "Failed to fetch user favourite" };
   }
 }

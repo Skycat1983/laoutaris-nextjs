@@ -1,16 +1,19 @@
 import { headers } from "next/headers";
 
-export async function fetchUserWatchlist<T>(
+export async function fetchUserWatchlists<T>(
   userKey: string,
   userValue: string,
-  artworkId: string,
+  userFields?: string[],
   artworkFields?: string[]
 ): Promise<ApiResponse<T>> {
   const queryParams = new URLSearchParams({
     userKey,
     userValue,
-    artworkId,
   });
+
+  if (userFields && userFields.length > 0) {
+    queryParams.append("userFields", userFields.join(","));
+  }
 
   // Append artworkFields if provided
   if (artworkFields && artworkFields.length > 0) {
@@ -19,7 +22,7 @@ export async function fetchUserWatchlist<T>(
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/user/watchlist?${queryParams.toString()}`,
+      `http://localhost:3000/api/user/watchlists?${queryParams.toString()}`,
       {
         method: "GET",
         headers: headers(),

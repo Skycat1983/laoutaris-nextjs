@@ -4,7 +4,7 @@ export async function fetchUserFavourites<T>(
   userKey: string,
   userValue: string,
   userFields?: string[],
-  favouritedArtworkFields?: string[]
+  artworkFields?: string[]
 ): Promise<ApiResponse<T>> {
   const queryParams = new URLSearchParams({
     userKey,
@@ -15,11 +15,8 @@ export async function fetchUserFavourites<T>(
     queryParams.append("userFields", userFields.join(","));
   }
 
-  if (favouritedArtworkFields && favouritedArtworkFields.length > 0) {
-    queryParams.append(
-      "favouritedArtworkFields",
-      favouritedArtworkFields.join(",")
-    );
+  if (artworkFields && artworkFields.length > 0) {
+    queryParams.append("favouritedArtworkFields", artworkFields.join(","));
   }
 
   try {
