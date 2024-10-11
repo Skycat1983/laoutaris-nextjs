@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { IFrontendUser } from "@/lib/client/types/userTypes";
-import { fetchUserFields } from "@/lib/server/user/data-fetching/fetchUserFields";
+import { fetchUserFields } from "@/lib/server/user/data-fetching/fetchUser";
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

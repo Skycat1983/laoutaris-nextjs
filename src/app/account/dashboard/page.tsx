@@ -1,8 +1,36 @@
-export default function UserDashboard() {
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { IFrontendUser } from "@/lib/client/types/userTypes";
+import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
+import { formatDate } from "@/utils/formatDate";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+
+export default async function UserDashboard() {
+  const session = await getServerSession(authOptions);
+
+  // If user is not authenticated, redirect to the homepage
+  if (!session?.user?.email) {
+    redirect("http://localhost:3000");
+  }
+
+  const email = session.user.email;
+
+  // Fetch user data using Pick for type safety
+  const response = await fetchUser<IFrontendUser>("email", email);
+
+  if (!response.success) {
+    redirect("http://localhost:3000");
+  }
+  const { data } = response;
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <ul>
         <li>User Profile: Display and update user's profile information.</li>
+        <p>Email: {data.email}</p>
+        <p>Username: {data.username}</p>
+        <p>Favourited artworks: {data.favourites.length}</p>
+        <p>Watchlist artworks: {data.watchlist.length}</p>
+        <p>Account created: {formatDate(data.createdAt)}</p>
         <li>
           Account Settings: Customize account settings, such as privacy and
           notifications.
