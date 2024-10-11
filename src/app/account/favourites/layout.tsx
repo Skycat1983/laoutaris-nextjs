@@ -28,11 +28,16 @@ export default async function FavouritesLayout({
     redirect(BASEURL);
   }
 
+  const userKey = "email";
+  const userValue = session.user.email;
+  const userFields = ["favourites"];
+  const favouritedArtworkFields = ["_id", "image.secure_url"];
+
   const response = await fetchUserFavourites<UserFavourites>(
-    "email",
-    session.user.email,
-    ["favourites"],
-    ["_id", "image.secure_url", "image.pixelHeight", "image.pixelWidth"]
+    userKey,
+    userValue,
+    userFields,
+    favouritedArtworkFields
   );
 
   if (!response.success) {
@@ -41,8 +46,6 @@ export default async function FavouritesLayout({
   }
 
   const { data } = response;
-
-  console.log("data.favourites :>> ", data.favourites);
 
   return (
     <section className="">
@@ -76,46 +79,9 @@ export default async function FavouritesLayout({
       <div className="px-4 py-4">
         <HorizontalDivider />
       </div>
-      <div className="px-4">
-        <h1 className=" py-6 text-2xl font-bold">Subscribe for updates</h1>
-        <SubscribeForm />
-      </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
       </div>
     </section>
   );
 }
-
-// interface ArtworkPaginationLink {
-//   id: string;
-//   imageData: {
-//     secure_url: string;
-//     pixelHeight: number;
-//     pixelWidth: number;
-//   };
-// }
-
-//! works
-// const user = (await UserModel.findOne({ email: session.user.email })
-//   .populate("favourites")
-//   .lean()) as IFrontendUser;
-
-// if (!user || !user.favourites) {
-//   redirect("http://localhost:3000");
-// }
-
-// const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
-//   return {
-//     id: artwork._id.toString(),
-//     imageData: {
-//       secure_url: artwork.image.secure_url,
-//       pixelHeight: artwork.image.pixelHeight,
-//       pixelWidth: artwork.image.pixelWidth,
-//     },
-//   };
-// };
-
-// const artworkLinks = user.favourites.map((artwork) =>
-//   convertToPaginationLink(artwork)
-// );

@@ -54,22 +54,20 @@ export default async function WatchlistLayout({
     redirect(BASEURL);
   }
 
-  console.log("response in watchlistLayout:>> ", response);
+  const { data } = response;
 
   return (
     <section className="">
       {children}
-      {/* <div className="px-4 py-8">
+      <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">More from your watchlist</h1>
-      {artworkLinks && (
-        <ServerPagination
-          stem="account"
-          artworkLinks={artworkLinks}
-          collectionSlug={"favourites"}
-        />
-      )}
+      <ServerPagination
+        stem="account"
+        artworkLinks={data.watchlist}
+        collectionSlug={"favourites"}
+      />
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
@@ -90,45 +88,9 @@ export default async function WatchlistLayout({
       <div className="px-4 py-4">
         <HorizontalDivider />
       </div>
-      <div className="px-4">
-        <h1 className=" py-6 text-2xl font-bold">Subscribe for updates</h1>
-        <SubscribeForm />
-      </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div> */}
+      </div>
     </section>
   );
 }
-
-// interface ArtworkPaginationLink {
-//   id: string;
-//   imageData: {
-//     secure_url: string;
-//     pixelHeight: number;
-//     pixelWidth: number;
-//   };
-// }
-
-// const user = (await UserModel.findOne({ email: session.user.email })
-//   .populate("watchlist")
-//   .lean()) as IFrontendUser;
-
-// if (!user || !user.favourites) {
-//   redirect("http://localhost:3000");
-// }
-
-// const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
-//   return {
-//     id: artwork._id.toString(),
-//     imageData: {
-//       secure_url: artwork.image.secure_url,
-//       pixelHeight: artwork.image.pixelHeight,
-//       pixelWidth: artwork.image.pixelWidth,
-//     },
-//   };
-// };
-
-// const artworkLinks = user.watchlist.map((artwork) =>
-//   convertToPaginationLink(artwork)
-// );
