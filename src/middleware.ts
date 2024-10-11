@@ -1,7 +1,6 @@
 import { type NextRequest } from "next/server";
 import { refreshSession } from "./lib/server/user/session/session";
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import { getToken } from "next-auth/jwt";
 

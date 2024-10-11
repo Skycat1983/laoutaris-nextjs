@@ -3,19 +3,22 @@ import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
-import { IFrontendUser } from "@/lib/client/types/userTypes";
-import { UserModel } from "@/lib/server/models";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import {
+  IFrontendUser,
+  IFrontendUserPopulatedWatchlist,
+  IFrontendUserType,
+} from "@/lib/client/types/userTypes";
+import config from "@/lib/config";
+import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-interface ArtworkPaginationLink {
-  id: string;
-  imageData: {
-    secure_url: string;
-    pixelHeight: number;
-    pixelWidth: number;
-  };
-}
+type SelectedUserFields = Pick<IFrontendUserType, "watchlist">;
+type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+type UserWatchlist = SelectedUserFields & {
+  watchlist: SelectedArtworkFields[];
+};
 
 export default async function WatchlistLayout({
   children,
@@ -23,37 +26,40 @@ export default async function WatchlistLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  const { BASEURL } = config;
+
   if (!session || !session.user || !session.user.email) {
-    redirect("http://localhost:3000");
+    redirect(BASEURL);
   }
 
-  const user = (await UserModel.findOne({ email: session.user.email })
-    .populate("watchlist")
-    .lean()) as IFrontendUser;
+  const userKey = "email";
+  const userValue = session.user.email;
+  const userFields = ["watchlist"];
+  const artworkFields = [
+    "_id",
+    "image.secure_url",
+    "image.pixelHeight",
+    "image.pixelWidth",
+  ];
 
-  if (!user || !user.favourites) {
-    redirect("http://localhost:3000");
-  }
-
-  const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
-    return {
-      id: artwork._id.toString(),
-      imageData: {
-        secure_url: artwork.image.secure_url,
-        pixelHeight: artwork.image.pixelHeight,
-        pixelWidth: artwork.image.pixelWidth,
-      },
-    };
-  };
-
-  const artworkLinks = user.watchlist.map((artwork) =>
-    convertToPaginationLink(artwork)
+  const response = await fetchUserWatchlist<UserWatchlist>(
+    userKey,
+    userValue,
+    userFields,
+    artworkFields
   );
+
+  if (!response.success) {
+    console.error("Failed to fetch user data:", response.message);
+    redirect(BASEURL);
+  }
+
+  console.log("response in watchlistLayout:>> ", response);
 
   return (
     <section className="">
       {children}
-      <div className="px-4 py-8">
+      {/* <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">More from your watchlist</h1>
@@ -90,7 +96,39 @@ export default async function WatchlistLayout({
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div>
+      </div> */}
     </section>
   );
 }
+
+// interface ArtworkPaginationLink {
+//   id: string;
+//   imageData: {
+//     secure_url: string;
+//     pixelHeight: number;
+//     pixelWidth: number;
+//   };
+// }
+
+// const user = (await UserModel.findOne({ email: session.user.email })
+//   .populate("watchlist")
+//   .lean()) as IFrontendUser;
+
+// if (!user || !user.favourites) {
+//   redirect("http://localhost:3000");
+// }
+
+// const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
+//   return {
+//     id: artwork._id.toString(),
+//     imageData: {
+//       secure_url: artwork.image.secure_url,
+//       pixelHeight: artwork.image.pixelHeight,
+//       pixelWidth: artwork.image.pixelWidth,
+//     },
+//   };
+// };
+
+// const artworkLinks = user.watchlist.map((artwork) =>
+//   convertToPaginationLink(artwork)
+// );

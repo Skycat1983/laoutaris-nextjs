@@ -3,19 +3,18 @@ import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
-import { IFrontendUser } from "@/lib/client/types/userTypes";
-import { UserModel } from "@/lib/server/models";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendUserPopulatedFavourites } from "@/lib/client/types/userTypes";
+import config from "@/lib/config";
+import { fetchUserFavourites } from "@/lib/server/user/data-fetching/fetchUserFavourites";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-interface ArtworkPaginationLink {
-  id: string;
-  imageData: {
-    secure_url: string;
-    pixelHeight: number;
-    pixelWidth: number;
-  };
-}
+type SelectedUserFields = Pick<IFrontendUserPopulatedFavourites, "favourites">;
+type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+type UserFavourites = SelectedUserFields & {
+  favourites: SelectedArtworkFields[];
+};
 
 export default async function FavouritesLayout({
   children,
@@ -23,32 +22,27 @@ export default async function FavouritesLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  const { BASEURL } = config;
+
   if (!session || !session.user || !session.user.email) {
-    redirect("http://localhost:3000");
+    redirect(BASEURL);
   }
 
-  const user = (await UserModel.findOne({ email: session.user.email })
-    .populate("favourites")
-    .lean()) as IFrontendUser;
-
-  if (!user || !user.favourites) {
-    redirect("http://localhost:3000");
-  }
-
-  const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
-    return {
-      id: artwork._id.toString(),
-      imageData: {
-        secure_url: artwork.image.secure_url,
-        pixelHeight: artwork.image.pixelHeight,
-        pixelWidth: artwork.image.pixelWidth,
-      },
-    };
-  };
-
-  const artworkLinks = user.favourites.map((artwork) =>
-    convertToPaginationLink(artwork)
+  const response = await fetchUserFavourites<UserFavourites>(
+    "email",
+    session.user.email,
+    ["favourites"],
+    ["_id", "image.secure_url", "image.pixelHeight", "image.pixelWidth"]
   );
+
+  if (!response.success) {
+    console.error("Failed to fetch user data:", response.message);
+    redirect(BASEURL);
+  }
+
+  const { data } = response;
+
+  console.log("data.favourites :>> ", data.favourites);
 
   return (
     <section className="">
@@ -57,13 +51,11 @@ export default async function FavouritesLayout({
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">More of your favourites</h1>
-      {artworkLinks && (
-        <ServerPagination
-          stem="account"
-          artworkLinks={artworkLinks}
-          collectionSlug={"favourites"}
-        />
-      )}
+      <ServerPagination
+        stem="account"
+        artworkLinks={data.favourites}
+        collectionSlug={"favourites"}
+      />
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
@@ -94,3 +86,36 @@ export default async function FavouritesLayout({
     </section>
   );
 }
+
+// interface ArtworkPaginationLink {
+//   id: string;
+//   imageData: {
+//     secure_url: string;
+//     pixelHeight: number;
+//     pixelWidth: number;
+//   };
+// }
+
+//! works
+// const user = (await UserModel.findOne({ email: session.user.email })
+//   .populate("favourites")
+//   .lean()) as IFrontendUser;
+
+// if (!user || !user.favourites) {
+//   redirect("http://localhost:3000");
+// }
+
+// const convertToPaginationLink = (artwork: any): ArtworkPaginationLink => {
+//   return {
+//     id: artwork._id.toString(),
+//     imageData: {
+//       secure_url: artwork.image.secure_url,
+//       pixelHeight: artwork.image.pixelHeight,
+//       pixelWidth: artwork.image.pixelWidth,
+//     },
+//   };
+// };
+
+// const artworkLinks = user.favourites.map((artwork) =>
+//   convertToPaginationLink(artwork)
+// );

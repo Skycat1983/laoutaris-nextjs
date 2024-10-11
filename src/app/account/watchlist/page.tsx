@@ -1,33 +1,45 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { IFrontendUser } from "@/lib/client/types/userTypes";
-import { fetchUserFields } from "@/lib/server/user/data-fetching/fetchUser";
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import config from "@/lib/config";
+import { IFrontendUser, IFrontendUserBase } from "@/lib/client/types/userTypes";
+import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
+import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-type UserWatchlistFields = Pick<IFrontendUser, "watchlist">;
+type UserWatchlistFields = Pick<IFrontendUserBase, "watchlist">;
 
 export default async function Watchlist() {
   await dbConnect();
   const session = await getServerSession(authOptions);
+  const { BASEURL } = config;
 
   if (!session?.user?.email) {
-    redirect("http://localhost:3000");
+    redirect(BASEURL);
   }
 
   const email = session.user.email;
 
-  const response = await fetchUserFields<UserWatchlistFields>(email, [
+  const response = await fetchUser<UserWatchlistFields>("email", email, [
     "watchlist",
   ]);
-  const watchlist: string[] | null = response.success
-    ? response.data.watchlist || []
-    : null;
+
+  if (!response.success) {
+    console.error(
+      "Failed to fetch user data in account/watchlist:",
+      response.message
+    );
+    redirect(BASEURL);
+  }
+
+  const watchlist = response.data.watchlist;
 
   if (!watchlist || watchlist.length === 0) {
-    redirect("http://localhost:3000/account");
+    const url = buildUrl(["account"]);
+    redirect(url);
   } else {
     const firstWatchlistId = watchlist[0];
-    redirect(`http://localhost:3000/account/watchlist/${firstWatchlistId}`);
+    const url = buildUrl(["account", "watchlist", firstWatchlistId]);
+    redirect(url);
   }
 }

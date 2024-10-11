@@ -4,11 +4,14 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { IFrontendUser } from "@/lib/client/types/userTypes";
+import { IFrontendUserBase } from "@/lib/client/types/userTypes";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { buildUrl } from "@/utils/buildUrl";
 
-type UserAccountSubnavOptions = Pick<IFrontendUser, "favourites" | "watchlist">;
+type UserAccountSubnavOptions = Pick<
+  IFrontendUserBase,
+  "favourites" | "watchlist"
+>;
 
 export default async function AccountLayout({
   children,
@@ -22,6 +25,7 @@ export default async function AccountLayout({
 
   // If user is not authenticated, redirect to the homepage
   if (!session?.user?.email) {
+    console.log("failed to get session in account layout");
     redirect("http://localhost:3000");
   }
 
