@@ -107,7 +107,7 @@ export default async function WatchlistLayout({
       <ServerPagination
         stem="account"
         artworkLinks={data.watchlist}
-        collectionSlug={"favourites"}
+        collectionSlug={"watchlist"}
       />
       <div className="px-4 py-8">
         <HorizontalDivider />
