@@ -11,14 +11,13 @@ const LogoutForm = () => {
   const redirectToHome = () => {
     router.push("http://localhost:3000/");
   };
-  const { setModalContent, openModal } = useGlobalFeatures();
+  const { openModal } = useGlobalFeatures();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
     setIsLoading(true);
     try {
       await signOut({ redirect: false });
-      setModalContent(<ModalMessage message="Logout successful." />);
       openModal(<ModalMessage message="Logout successful." />, redirectToHome);
     } catch (error) {
       console.error("Logout failed:", error);
