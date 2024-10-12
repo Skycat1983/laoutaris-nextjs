@@ -34,8 +34,8 @@ import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles"
 import { fetchArticleArtwork } from "@/lib/server/article/data-fetching/fetchArticleArtwork";
 import { delay } from "@/utils/debug";
 import { buildUrl } from "@/utils/buildUrl";
-import ArticleView from "@/views/ArticleView";
-import MobileArticleView from "@/views/MobileArticleView";
+import ArticleView from "@/components/views/ArticleView";
+import MobileArticleView from "@/components/views/MobileArticleView";
 
 type BiographyArticleLink = Pick<IFrontendArticle, "slug">;
 

@@ -1,5 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import BlogItem from "@/views/BlogItem";
+import BlogItem from "@/components/views/BlogItem";
 import { fetchBlogEntry } from "@/lib/server/blog/data-fetching/fetchBlogEntry";
 
 export default async function BlogEntry({

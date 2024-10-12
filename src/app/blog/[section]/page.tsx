@@ -2,7 +2,7 @@ import { BlogSection } from "@/lib/server/blog/blogTypes";
 import { fetchBlogSection } from "@/lib/server/blog/data-fetching/fetchBlogSection";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
-import BlogSectionView from "@/views/BlogSectionView";
+import BlogSectionView from "@/components/views/BlogSectionView";
 
 export default async function BlogSection({
   params,

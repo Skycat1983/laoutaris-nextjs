@@ -1,8 +1,8 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import { IFrontendReducedArticleArtwork } from "@/lib/client/types/articleTypes";
-import ArticleView from "@/views/ArticleView";
-import MobileArticleView from "@/views/MobileArticleView";
+import ArticleView from "@/components/views/ArticleView";
+import MobileArticleView from "@/components/views/MobileArticleView";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
