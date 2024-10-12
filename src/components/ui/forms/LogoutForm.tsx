@@ -2,42 +2,42 @@
 
 import ModalMessage from "@/components/atoms/ModalMessage";
 import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
-import {
-  LogoutProcessResponse,
-  processLogout,
-} from "@/lib/server/user/actions/processLogout";
-import { useFormState } from "react-dom";
-
-const initialState: LogoutProcessResponse = {
-  type: "auth",
-  authError: "",
-};
+import { signOut } from "next-auth/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const LogoutForm = () => {
-  const { setModalContent } = useGlobalFeatures();
-  const [state, formAction] = useFormState(processLogout, initialState);
+  const router = useRouter();
+  const redirectToHome = () => {
+    router.push("http://localhost:3000/");
+  };
+  const { setModalContent, openModal } = useGlobalFeatures();
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (state.type === "auth" && state.authError) {
-    setModalContent(
-      <ModalMessage message="Logout failed. Please try again later." />
-    );
-  }
-
-  if (state.type === "success") {
-    setModalContent(<ModalMessage message="Logout successful." />);
-  }
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await signOut({ redirect: false });
+      setModalContent(<ModalMessage message="Logout successful." />);
+      openModal(<ModalMessage message="Logout successful." />, redirectToHome);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      openModal(<ModalMessage message="Logout failed." />);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       <div className="bg-white w-1/2 p-12 mx-auto">
-        <form action={formAction} className="flex flex-col gap-3">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white rounded-md p-3"
-          >
-            Logout
-          </button>
-        </form>
+        <button
+          onClick={handleLogout}
+          disabled={isLoading}
+          className="bg-blue-600 text-white rounded-md p-3"
+        >
+          {isLoading ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </>
   );

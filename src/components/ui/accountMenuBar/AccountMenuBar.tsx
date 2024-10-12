@@ -56,7 +56,8 @@ export function AccountMenuBar() {
   return (
     <>
       <div className="flex flex-row">
-        <AccountMenu session={session} />
+        {/* <AccountMenu session={session} /> */}
+        <AccountMenu />
 
         <Menubar className="flex flex-row w-auto gap-0 my-auto items-center ">
           <MenubarMenu>

@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/shadcn/navigation-menu";
 import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
 import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
+import { processLogout } from "@/lib/server/user/actions/processLogout";
+import { signOut, useSession } from "next-auth/react";
 
 interface UserSession {
   name?: string | null;
@@ -24,7 +26,13 @@ interface AccountMenuProps {
   session: null | UserSession;
 }
 
-export function AccountMenu({ session }: AccountMenuProps) {
+// export function AccountMenu({ session }: AccountMenuProps) {
+export function AccountMenu() {
+  const { data, status, update } = useSession();
+  console.log("data", data);
+  console.log("status", status);
+  const session: UserSession | null = data?.user ?? null;
+
   const isDisabled = !session;
   return (
     <NavigationMenu className="p-0 m-0">
@@ -129,10 +137,15 @@ export function AccountMenu({ session }: AccountMenuProps) {
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-accent hover:text-accent-foreground"
                     }`}
-                    href={isDisabled ? "#" : "/api/auth/logout"}
+                    // href={isDisabled ? "#" : "/api/auth/logout"}
                     onClick={(e) => {
                       if (isDisabled) {
                         e.preventDefault();
+                      }
+                      if (!isDisabled) {
+                        e.preventDefault();
+                        signOut();
+                        // await processLogout();
                       }
                     }}
                     aria-disabled={isDisabled}
@@ -148,8 +161,41 @@ export function AccountMenu({ session }: AccountMenuProps) {
                 </NavigationMenuLink>
               </li>
             </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
 
-            {/* <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
+
+{
+  /* <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
               <li className="row-span-1">
                 <NavigationMenuLink asChild>
                   <a
@@ -226,36 +272,5 @@ export function AccountMenu({ session }: AccountMenuProps) {
                   </a>
                 </NavigationMenuLink>
               </li>
-            </ul> */}
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  );
+            </ul> */
 }
-
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";

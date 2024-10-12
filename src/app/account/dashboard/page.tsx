@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import LogoutForm from "@/components/ui/forms/LogoutForm";
 import { IFrontendUser } from "@/lib/client/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { formatDate } from "@/utils/formatDate";
@@ -58,6 +59,7 @@ export default async function UserDashboard() {
           issues.
         </li>
       </ul>
+      <LogoutForm />
     </main>
   );
 }

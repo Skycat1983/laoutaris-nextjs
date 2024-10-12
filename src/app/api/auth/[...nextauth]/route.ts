@@ -4,11 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "@/lib/server/user/data-fetching/authenticateUser";
 
 export const authOptions = {
-  // pages: {
-  //   signIn: "/login",
-  //   signUp: "/register",
-  //   // error: "/auth/error", // Error code passed in query string as ?error=
-  // },
   providers: [
     CredentialsProvider({
       name: "your email",
@@ -34,6 +29,12 @@ export const authOptions = {
       clientSecret: process.env.GITHUB_SECRET ?? "",
     }),
   ],
+  // pages: {
+  // signIn: "api/auth/",
+  // signUp: "/register",
+  // signOut: "api/auth/signout",
+  // error: "/auth/error", // Error code passed in query string as ?error=
+  // },
 };
 
 export const handler = NextAuth(authOptions);
