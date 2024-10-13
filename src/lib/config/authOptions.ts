@@ -30,32 +30,30 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("AuthOptions signIn Callback - user:", user);
-      console.log("AuthOptions signIn Callback - account:", account);
-      console.log("AuthOptions signIn Callback - profile:", profile);
-      console.log("AuthOptions signIn Callback - email:", email);
-      console.log("AuthOptions signIn Callback - credentials:", credentials);
+      //   console.log("AuthOptions signIn Callback - user:", user);
+      //   console.log("AuthOptions signIn Callback - account:", account);
+      //   console.log("AuthOptions signIn Callback - profile:", profile);
+      //   console.log("AuthOptions signIn Callback - email:", email);
+      //   console.log("AuthOptions signIn Callback - credentials:", credentials);
 
-      const isAllowedToSignIn = true; // Replace with your actual logic
+      const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
       } else {
-        // Return false to display a default error message
         return false;
-        // Or you can return a URL to redirect to:
         // return '/unauthorized'
       }
     },
     //The redirect callback is called anytime the user is redirected to a callback URL (e.g. on signin or signout).
     // TODO: when the
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
-      console.log("Redirect URL in authOptions:", url);
-      console.log("Base URL in authOptions:", baseUrl);
       // Parse the URL to determine the action
       const urlObj = new URL(url, baseUrl);
       const path = urlObj.pathname;
-      console.log("urlObj in authOptions:", urlObj);
-      console.log("path in authOptions:", path);
+      //   console.log("Redirect URL in authOptions:", url);
+      //   console.log("Base URL in authOptions:", baseUrl);
+      //   console.log("urlObj in authOptions:", urlObj);
+      //   console.log("path in authOptions:", path);
 
       // Determine if it's a sign-in callback
       if (path === "/api/auth/signin") {
@@ -74,9 +72,15 @@ export const authOptions = {
 
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
     async jwt({ token, user, account, profile, isNewUser }) {
+      //   console.log("AuthOptions jwt Callback - token:", token);
+      //   console.log("AuthOptions jwt Callback - user:", user);
+      //   console.log("AuthOptions jwt Callback - account:", account);
       return token;
     },
     async session({ session, user, token }) {
+      //   console.log("session in authOptions", session);
+      //   console.log("user in authOptions", user);
+      //   console.log("token in authOptions", token);
       return session;
     },
   },
