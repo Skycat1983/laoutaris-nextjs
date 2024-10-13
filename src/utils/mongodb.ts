@@ -16,13 +16,13 @@ async function dbConnect() {
 
     try {
       await mongoose.connect(MONGO_URL);
-      console.log("connected");
+      // console.log("connected");
     } catch (error) {
       console.log("error connecting:>> ", error);
       //
     }
   } else {
-    console.log("already connected");
+    // console.log("already connected");
   }
 }
 

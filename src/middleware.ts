@@ -8,7 +8,7 @@ export const middleware = async (req: NextRequest) => {
   // Retrieve the token from the request
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  console.log("token in middleware", token);
+  // console.log("token in middleware", token);
 
   // If no token exists, redirect to sign-in
   if (!token) {

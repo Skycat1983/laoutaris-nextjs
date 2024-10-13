@@ -1,0 +1,90 @@
+import GitHubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
+
+export const authOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "your email",
+      credentials: {
+        // email: { label: "Email", type: "email", name: "email", id: "email" },
+        username: {
+          label: "Username",
+          type: "text",
+          name: "username",
+          id: "username",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+          name: "password",
+          id: "password",
+        },
+      },
+      authorize: authorizeUser,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID ?? "",
+      clientSecret: process.env.GITHUB_SECRET ?? "",
+    }),
+  ],
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("AuthOptions signIn Callback - user:", user);
+      console.log("AuthOptions signIn Callback - account:", account);
+      console.log("AuthOptions signIn Callback - profile:", profile);
+      console.log("AuthOptions signIn Callback - email:", email);
+      console.log("AuthOptions signIn Callback - credentials:", credentials);
+
+      const isAllowedToSignIn = true; // Replace with your actual logic
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
+    //The redirect callback is called anytime the user is redirected to a callback URL (e.g. on signin or signout).
+    // TODO: when the
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      console.log("Redirect URL in authOptions:", url);
+      console.log("Base URL in authOptions:", baseUrl);
+      // Parse the URL to determine the action
+      const urlObj = new URL(url, baseUrl);
+      const path = urlObj.pathname;
+      console.log("urlObj in authOptions:", urlObj);
+      console.log("path in authOptions:", path);
+
+      // Determine if it's a sign-in callback
+      if (path === "/api/auth/signin") {
+        // Redirect to dashboard after sign-in
+        return `${baseUrl}/dashboard`;
+      }
+
+      // Determine if it's a sign-out callback
+      if (path === "/api/auth/signout") {
+        return `${baseUrl}`;
+      }
+
+      // Default behavior: allow the redirect
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+
+    //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
+    async jwt({ token, user, account, profile, isNewUser }) {
+      return token;
+    },
+    async session({ session, user, token }) {
+      return session;
+    },
+  },
+};
+
+// pages: {
+// signIn: "api/auth/",
+// signUp: "/register",
+// signOut: "api/auth/signout",
+// error: "/auth/error", // Error code passed in query string as ?error=
+// },

@@ -104,7 +104,7 @@ export const authorizeUser = async (
   const usernameData = credentials?.username as unknown;
   const passwordData = credentials?.password as unknown;
 
-  console.log("userNameData :>> ", usernameData, passwordData);
+  // console.log("userNameData :>> ", usernameData, passwordData);
 
   const validatedData = validateLoginData({ usernameData, passwordData });
 
@@ -116,10 +116,10 @@ export const authorizeUser = async (
 
   const { username, password } = validatedData;
 
-  console.log("username, password validatexcd data:>> ", username, password);
+  // console.log("username, password validatexcd data:>> ", username, password);
 
   const result = await authenticateUsername({ username, password });
-  console.log("result :>> ", result);
+  // console.log("result :>> ", result);
   //? changed to return username as 'name' for consistency with github signin session
   if (result.success) {
     return {
@@ -131,31 +131,3 @@ export const authorizeUser = async (
 
   return null;
 };
-
-// ! with email
-// export const authorizeUser = async (
-//   credentials: Record<"email" | "password", string> | undefined,
-//   req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
-// ) => {
-//   // Connect to the database
-//   await dbConnect();
-
-//   // Extract email and password from the credentials
-//   const email = credentials?.email as string;
-//   const password = credentials?.password as string;
-
-//   // Use your authenticateUser function
-//   const result = await authenticateUser({ email, password });
-
-//   // If the user is authenticated successfully, return the user object
-//   if (result.success) {
-//     return {
-//       id: result.user._id,
-//       email: result.user.email,
-//       username: result.user.username,
-//     };
-//   }
-
-//   // If authentication fails, return null
-//   return null;
-// };

@@ -67,7 +67,6 @@ type BiographyLink = Pick<IFrontendArticle, "slug">;
 const MainNav = async () => {
   await dbConnect();
   const session = await getServerSession();
-  console.log("session in MAIN NAV:>> ", session);
 
   //! Artworks
   const collectionResponse = await fetchCollections<CollectionLink>(

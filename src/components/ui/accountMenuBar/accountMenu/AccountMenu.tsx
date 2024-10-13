@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/shadcn/navigation-menu";
 import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
 import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
-import { processLogout } from "@/lib/server/user/actions/processLogout";
 import { signOut, useSession } from "next-auth/react";
+import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/atoms/ModalMessage";
+import { usePathname, useRouter } from "next/navigation";
 
 interface UserSession {
   name?: string | null;
@@ -22,18 +24,35 @@ interface UserSession {
   image?: string | null;
 }
 
-interface AccountMenuProps {
-  session: null | UserSession;
-}
-
-// export function AccountMenu({ session }: AccountMenuProps) {
 export function AccountMenu() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { openModal } = useGlobalFeatures();
+  const [isLoading, setIsLoading] = React.useState(false);
   const { data, status, update } = useSession();
-  console.log("data", data);
-  console.log("status", status);
   const session: UserSession | null = data?.user ?? null;
 
-  const isDisabled = !session;
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await signOut({ redirect: false });
+      // Check if the current path starts with '/account'
+      if (pathname.startsWith("/account")) {
+        openModal(<ModalMessage message="Logout successful." />, () =>
+          router.push("/")
+        );
+      } else {
+        openModal(<ModalMessage message="Logout successful." />);
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      openModal(<ModalMessage message="Logout failed." />);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const isDisabled = !session || isLoading;
   return (
     <NavigationMenu className="p-0 m-0">
       <NavigationMenuList>
@@ -144,7 +163,8 @@ export function AccountMenu() {
                       }
                       if (!isDisabled) {
                         e.preventDefault();
-                        signOut();
+                        handleLogout();
+                        // signOut();
                         // await processLogout();
                       }
                     }}
