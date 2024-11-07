@@ -21,7 +21,7 @@ export default async function Home() {
   console.log("biographyEntriesResponse", biographyEntriesResponse);
 
   return (
-    <main className="flex min-h-screen max-w-full flex-col items-center justify-start">
+    <main className="flex  max-w-full flex-col items-center justify-start">
       <Hero />
       <div className="flex flex-col items-center justify-center gap-[1px] py-[100px] container">
         <div className="">

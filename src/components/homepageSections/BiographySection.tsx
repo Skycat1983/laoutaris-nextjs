@@ -34,33 +34,33 @@ const BiographySection: React.FC<BiographySectionProps> = ({
         subheading="Read my grandfather's story"
       />
       <HorizontalDivider />
-      <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
-        <section className="p-4 flex w-max space-x-4 h-[500px] mx-auto bg-red-100">
-          {biographyEntries.map((entry, index) => (
-            <BiographyLinkWrapper to={`/biography/${entry.slug}`} key={index}>
-              <div key={index} className="flex flex-col">
-                <div className="relative h-[300px] w-full overflow-hidden">
-                  <Image
-                    src={entry.imageUrl}
-                    alt={entry.title}
-                    fill
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-                <div className="flex flex-col gap-4 p-4 w-[250px] whitespace-normal text-center pt-8">
-                  <h1 className="font-archivo text-2xl font-bold break-words">
-                    {entry.title}
-                  </h1>
-                  <h2 className="font-archivo text-xl font-normal text-gray-500 break-words">
-                    {entry.subtitle}
-                  </h2>
-                </div>
+      {/* <ScrollArea className="container whitespace-nowrap rounded-md h-64"> */}
+      <section className="p-4 flex w-max space-x-4 h-[500px] mx-auto bg-red-100">
+        {biographyEntries.map((entry, index) => (
+          <BiographyLinkWrapper to={`/biography/${entry.slug}`} key={index}>
+            <div key={index} className="flex flex-col">
+              <div className="relative h-[300px] w-full overflow-hidden">
+                <Image
+                  src={entry.imageUrl}
+                  alt={entry.title}
+                  fill
+                  style={{ objectFit: "cover" }}
+                />
               </div>
-            </BiographyLinkWrapper>
-          ))}
-        </section>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+              <div className="flex flex-col gap-4 p-4 w-[250px] whitespace-normal text-center pt-8">
+                <h1 className="font-archivo text-2xl font-bold break-words">
+                  {entry.title}
+                </h1>
+                <h2 className="font-archivo text-xl font-normal text-gray-500 break-words">
+                  {entry.subtitle}
+                </h2>
+              </div>
+            </div>
+          </BiographyLinkWrapper>
+        ))}
+      </section>
+      {/* <ScrollBar orientation="horizontal" /> */}
+      {/* </ScrollArea> */}
 
       <ButtonDivider label="Read more" link="/biography" />
     </>

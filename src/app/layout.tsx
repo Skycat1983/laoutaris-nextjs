@@ -18,7 +18,8 @@ import {
   crimson,
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+// import { authOptions } from "@/lib/config/authOptions";
+import { handler } from "./api/auth/[...nextauth]/route";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -30,7 +31,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(handler);
   // console.log("session", session);
 
   return (
