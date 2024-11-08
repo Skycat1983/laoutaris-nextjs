@@ -4,6 +4,9 @@ import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import client from "../mongo";
 
+// ! important
+// https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
+
 export const authOptions = {
   adapter: MongoDBAdapter(client),
   providers: [
