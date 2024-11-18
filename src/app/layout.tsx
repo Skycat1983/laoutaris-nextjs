@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { getSession } from "@/lib/server/user/session/session";
 import { getServerSession } from "next-auth";
-
 import React from "react";
 import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
-import SessionProvider, {
-  SessionContextProvider,
-} from "@/lib/client/contexts/SessionProvider";
+import { SessionContextProvider } from "@/lib/client/contexts/SessionProvider";
 
 import Header from "@/components/ui/header/Header";
 import Modal from "@/components/ui/modal/Modal";
@@ -18,7 +14,6 @@ import {
   crimson,
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
-// import { authOptions } from "@/lib/config/authOptions";
 import { handler } from "./api/auth/[...nextauth]/route";
 
 export const metadata: Metadata = {
@@ -32,7 +27,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(handler);
-  // console.log("session", session);
 
   return (
     <html
