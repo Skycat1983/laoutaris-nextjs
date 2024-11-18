@@ -1,7 +1,7 @@
 "use client";
 
 import ModalMessage from "@/components/atoms/ModalMessage";
-import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

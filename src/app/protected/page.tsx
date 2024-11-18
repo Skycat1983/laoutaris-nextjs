@@ -1,4 +1,4 @@
-import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/dist/server/api-utils";
 

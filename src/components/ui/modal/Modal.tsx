@@ -1,6 +1,6 @@
 "use client";
 
-import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 /**
  * `ModalWrapper` is a component that renders a modal dialog using the `@headlessui/react` library.
  *

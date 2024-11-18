@@ -14,7 +14,7 @@ import {
 import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
 import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
 import { signOut, useSession } from "next-auth/react";
-import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/atoms/ModalMessage";
 import { usePathname, useRouter } from "next/navigation";
 

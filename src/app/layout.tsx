@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
-import { GlobalFeaturesProvider } from "@/lib/client/contexts/GlobalFeaturesContext";
-import { SessionContextProvider } from "@/lib/client/contexts/SessionProvider";
+import { GlobalFeaturesProvider } from "@/contexts/GlobalFeaturesContext";
+import { SessionContextProvider } from "@/contexts/SessionProvider";
 
 import Header from "@/components/ui/header/Header";
 import Modal from "@/components/ui/modal/Modal";

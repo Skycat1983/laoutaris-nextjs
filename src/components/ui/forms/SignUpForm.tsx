@@ -1,7 +1,7 @@
 "use client";
 
 import SubmitButton from "@/components/atoms/buttons/SubmitButton";
-import { useGlobalFeatures } from "@/lib/client/contexts/GlobalFeaturesContext";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInFormBackup";
 import ModalMessage from "@/components/atoms/ModalMessage";
