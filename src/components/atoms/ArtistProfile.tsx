@@ -56,34 +56,3 @@ const ArtistProfile = () => {
 };
 
 export default ArtistProfile;
-
-// const ArtistProfile = () => {
-//   return (
-//     <div>
-//       <p>
-//         Joseph Laoutaris was a passionate and eccentric artist who dedicated his
-//         life to painting in isolation. Critically acclaimed in the 1950s, he was
-//         invited by Victor Musgrave to exhibit at Gallery One, while Lillian
-//         Browse offered him a one-man show at the prestigious Rowland, Browse and
-//         Delbanco Gallery in London.
-//       </p>
-//       <p>
-//         Further invitations followed, most notably from Bryan Robertson during
-//         his tenure as director of the Whitechapel Gallery. However, deeply
-//         uncomfortable in the company of others and rejecting emerging artistic
-//         trends, Joseph shunned all opportunities to promote his work. Instead,
-//         he chose to live as a hermit, tirelessly working from within his London
-//         apartment.
-//       </p>
-//       <p>
-//         Joseph cared not for fame, money, or approval. Instead, he focused on
-//         refining his technique, alone and in secret, supported by his wife, who
-//         tragically took her own life 17 years ago. Joseph Laoutaris passed away
-//         in 2022, leaving behind a legacy defined by his unwavering dedication to
-//         his art.
-//       </p>
-//     </div>
-//   );
-// };
-
-// export default ArtistProfile;

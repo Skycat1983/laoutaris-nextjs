@@ -33,21 +33,6 @@ export const GlobalFeaturesProvider = ({
   // const [activeSession, setActiveSession] = useState(false);
   const modal = useModal();
 
-  // useEffect(() => {
-  //   const session = async () => {
-  //     const session = await getSession();
-  //     if (session) {
-  //       setActiveSession(true);
-  //     }
-  //   };
-  //   session();
-  //   // first
-
-  //   return () => {
-  //     // second
-  //   };
-  // }, []);
-
   return (
     <GlobalFeaturesContext.Provider
       value={{
