@@ -3,13 +3,14 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import client from "../mongo";
+import clientPromise from "../mongo";
+import { Adapter } from "next-auth/adapters";
 
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
 
 export const authOptions = {
-  adapter: MongoDBAdapter(client),
+  adapter: MongoDBAdapter(clientPromise) as Adapter,
   providers: [
     CredentialsProvider({
       name: "your email",
@@ -39,12 +40,27 @@ export const authOptions = {
     }),
   ],
   callbacks: {
+    async createUser(user) {
+      // Map the OAuth user data to your custom schema
+      const customUser = {
+        username: user.name,
+        image: user.image,
+        favorites: [],
+        watchlist: [],
+      };
+      // Save the custom user to your MongoDB
+      const savedUser = await clientPromise
+        .db()
+        .collection("users")
+        .insertOne(customUser);
+      return savedUser.ops[0];
+    },
     async signIn({ user, account, profile, email, credentials }) {
-      //   console.log("AuthOptions signIn Callback - user:", user);
-      //   console.log("AuthOptions signIn Callback - account:", account);
-      //   console.log("AuthOptions signIn Callback - profile:", profile);
-      //   console.log("AuthOptions signIn Callback - email:", email);
-      //   console.log("AuthOptions signIn Callback - credentials:", credentials);
+      console.log("AuthOptions signIn Callback - user:", user);
+      console.log("AuthOptions signIn Callback - account:", account);
+      console.log("AuthOptions signIn Callback - profile:", profile);
+      console.log("AuthOptions signIn Callback - email:", email);
+      console.log("AuthOptions signIn Callback - credentials:", credentials);
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
