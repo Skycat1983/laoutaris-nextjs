@@ -42,12 +42,12 @@
 
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import config from "@/lib/config";
 import { IFrontendUserBase } from "@/lib/client/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/config/authOptions";
 
 type UserWatchlistFields = Pick<IFrontendUserBase, "watchlist">;
 

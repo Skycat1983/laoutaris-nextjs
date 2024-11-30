@@ -44,7 +44,6 @@
  *     Efficiently fetches only the necessary fields (`secure_url`, `width`, `height`) to optimize image rendering performance with Next.js's `Image` component.
  */
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
@@ -52,6 +51,7 @@ import ServerPagination from "@/components/ui/serverPagination/ServerPagination"
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { IFrontendUserPopulatedFavourites } from "@/lib/client/types/userTypes";
 import config from "@/lib/config";
+import { authOptions } from "@/lib/config/authOptions";
 import { fetchUserFavourites } from "@/lib/server/user/data-fetching/fetchUserFavourites";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

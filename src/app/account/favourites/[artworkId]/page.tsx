@@ -91,11 +91,11 @@ import ArtworkLayout from "@/components/layouts/ArtworkLayout";
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import config from "@/lib/config";
 import { redirect } from "next/navigation";
 import { fetchUserFavourite } from "@/lib/server/user/data-fetching/fetchUserFavourite";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { authOptions } from "@/lib/config/authOptions";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 

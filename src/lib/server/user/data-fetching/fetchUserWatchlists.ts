@@ -15,7 +15,6 @@ export async function fetchUserWatchlists<T>(
     queryParams.append("userFields", userFields.join(","));
   }
 
-  // Append artworkFields if provided
   if (artworkFields && artworkFields.length > 0) {
     queryParams.append("artworkFields", artworkFields.join(","));
   }

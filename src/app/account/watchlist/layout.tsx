@@ -45,7 +45,6 @@
  */
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import config from "@/lib/config";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { IFrontendUserType } from "@/lib/client/types/userTypes";
@@ -54,6 +53,7 @@ import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
 import { fetchUserWatchlists } from "@/lib/server/user/data-fetching/fetchUserWatchlists";
+import { authOptions } from "@/lib/config/authOptions";
 
 type SelectedUserFields = Pick<IFrontendUserType, "watchlist">;
 type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
