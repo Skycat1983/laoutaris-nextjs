@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const MONGO_URL = process.env.MONGO_URI as string;
 
-console.log("MONGO_URL :>> ", MONGO_URL);
+// console.log("MONGO_URL :>> ", MONGO_URL);
 
 if (!MONGO_URL) {
   throw new Error(

@@ -40,21 +40,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async createUser(user) {
-      // Map the OAuth user data to your custom schema
-      const customUser = {
-        username: user.name,
-        image: user.image,
-        favorites: [],
-        watchlist: [],
-      };
-      // Save the custom user to your MongoDB
-      const savedUser = await clientPromise
-        .db()
-        .collection("users")
-        .insertOne(customUser);
-      return savedUser.ops[0];
-    },
+    //! used to determine if a user is allowed to sign in. NOT for reformatting the user object
     async signIn({ user, account, profile, email, credentials }) {
       console.log("AuthOptions signIn Callback - user:", user);
       console.log("AuthOptions signIn Callback - account:", account);
@@ -69,7 +55,23 @@ export const authOptions = {
         // return '/unauthorized'
       }
     },
-    //The redirect callback is called anytime the user is redirected to a callback URL (e.g. on signin or signout).
+    // async createUser(user) {
+    //   console.log("TESTING: createUser in authOptions");
+    //   // Map the OAuth user data to your custom schema
+    //   const customUser = {
+    //     username: user.name,
+    //     image: user.image,
+    //     favorites: [],
+    //     watchlist: [],
+    //   };
+    //   // Save the custom user to your MongoDB
+    //   // const savedUser = await clientPromise
+    //   //   .db()
+    //   //   .collection("users")
+    //   //   .insertOne(customUser);
+    //   // return savedUser.ops[0];
+    // },
+    //! The redirect callback is called anytime the user is redirected to a callback URL (e.g. on signin or signout).
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       // Parse the URL to determine the action
       const urlObj = new URL(url, baseUrl);
@@ -95,9 +97,10 @@ export const authOptions = {
     },
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
     async jwt({ token, user, account, profile, isNewUser }) {
-      //   console.log("AuthOptions jwt Callback - token:", token);
-      //   console.log("AuthOptions jwt Callback - user:", user);
-      //   console.log("AuthOptions jwt Callback - account:", account);
+      // !
+      console.log("AuthOptions jwtCallback - token:", token);
+      console.log("AuthOptions jwtCallback - user:", user);
+      console.log("AuthOptions jwtCallback - account:", account);
       return token;
     },
     async session({ session, user, token }) {
@@ -114,4 +117,21 @@ export const authOptions = {
 // signUp: "/register",
 // signOut: "api/auth/signout",
 // error: "/auth/error", // Error code passed in query string as ?error=
+// },
+
+// async createUser(user) {
+//   console.log("TESTING: createUser in authOptions");
+//   // Map the OAuth user data to your custom schema
+//   const customUser = {
+//     username: user.name,
+//     image: user.image,
+//     favorites: [],
+//     watchlist: [],
+//   };
+//   // Save the custom user to your MongoDB
+//   // const savedUser = await clientPromise
+//   //   .db()
+//   //   .collection("users")
+//   //   .insertOne(customUser);
+//   // return savedUser.ops[0];
 // },
