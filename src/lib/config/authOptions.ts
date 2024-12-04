@@ -9,8 +9,45 @@ import { Adapter } from "next-auth/adapters";
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
 
+// this is necessary to ensure data integrity. otherwise the user object created by the adapter will not have the custom fields
+//! important: first time sign in is fine, second time sign in (so actual sign in, not create user), fails
+const CustomMongoDBAdapter = (client) => {
+  const baseAdapter = MongoDBAdapter(client);
+
+  return {
+    ...baseAdapter,
+    async createUser(profile) {
+      console.log("Custom createUser called:", profile);
+
+      const customUser = {
+        ...profile,
+        role: "user",
+        watchlist: [],
+        favourites: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      if (!baseAdapter.createUser) {
+        throw new Error("createUser is not implemented by the base adapter");
+      }
+
+      const user = await baseAdapter.createUser(customUser);
+
+      if (!user) {
+        return null;
+      }
+
+      console.log("Custom user created:", user);
+      return user;
+    },
+  };
+};
+
 export const authOptions = {
-  adapter: MongoDBAdapter(clientPromise) as Adapter,
+  // adapter: MongoDBAdapter(clientPromise) as Adapter,
+  adapter: CustomMongoDBAdapter(clientPromise) as Adapter,
+
   providers: [
     CredentialsProvider({
       name: "your email",
@@ -55,22 +92,7 @@ export const authOptions = {
         // return '/unauthorized'
       }
     },
-    // async createUser(user) {
-    //   console.log("TESTING: createUser in authOptions");
-    //   // Map the OAuth user data to your custom schema
-    //   const customUser = {
-    //     username: user.name,
-    //     image: user.image,
-    //     favorites: [],
-    //     watchlist: [],
-    //   };
-    //   // Save the custom user to your MongoDB
-    //   // const savedUser = await clientPromise
-    //   //   .db()
-    //   //   .collection("users")
-    //   //   .insertOne(customUser);
-    //   // return savedUser.ops[0];
-    // },
+
     //! The redirect callback is called anytime the user is redirected to a callback URL (e.g. on signin or signout).
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       // Parse the URL to determine the action
@@ -111,6 +133,23 @@ export const authOptions = {
     },
   },
 };
+
+// async createUser(user) {
+//   console.log("TESTING: createUser in authOptions");
+//   // Map the OAuth user data to your custom schema
+//   const customUser = {
+//     username: user.name,
+//     image: user.image,
+//     favorites: [],
+//     watchlist: [],
+//   };
+//   // Save the custom user to your MongoDB
+//   // const savedUser = await clientPromise
+//   //   .db()
+//   //   .collection("users")
+//   //   .insertOne(customUser);
+//   // return savedUser.ops[0];
+// },
 
 // pages: {
 // signIn: "api/auth/",
