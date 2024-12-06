@@ -21,6 +21,7 @@ const CustomMongoDBAdapter = (client) => {
 
       const customUser = {
         ...profile,
+        username: profile.name,
         role: "user",
         watchlist: [],
         favourites: [],
@@ -47,7 +48,9 @@ const CustomMongoDBAdapter = (client) => {
 export const authOptions = {
   // adapter: MongoDBAdapter(clientPromise) as Adapter,
   adapter: CustomMongoDBAdapter(clientPromise) as Adapter,
-
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     CredentialsProvider({
       name: "your email",
@@ -126,9 +129,9 @@ export const authOptions = {
       return token;
     },
     async session({ session, user, token }) {
-      //   console.log("session in authOptions", session);
-      //   console.log("user in authOptions", user);
-      //   console.log("token in authOptions", token);
+      console.log("session in authOptions", session);
+      console.log("user in authOptions", user);
+      console.log("token in authOptions", token);
       return session;
     },
   },
