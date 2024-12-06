@@ -1,6 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import LogoutForm from "@/components/ui/forms/LogoutForm";
 import { IFrontendUser } from "@/lib/client/types/userTypes";
+import { authOptions } from "@/lib/config/authOptions";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { formatDate } from "@/utils/formatDate";
 import { getServerSession } from "next-auth";

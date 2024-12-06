@@ -5,6 +5,7 @@ import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "../mongo";
 import { Adapter } from "next-auth/adapters";
+import { SessionStrategy } from "next-auth";
 
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
@@ -49,7 +50,7 @@ export const authOptions = {
   // adapter: MongoDBAdapter(clientPromise) as Adapter,
   adapter: CustomMongoDBAdapter(clientPromise) as Adapter,
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
   },
   providers: [
     CredentialsProvider({
@@ -82,11 +83,11 @@ export const authOptions = {
   callbacks: {
     //! used to determine if a user is allowed to sign in. NOT for reformatting the user object
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("AuthOptions signIn Callback - user:", user);
-      console.log("AuthOptions signIn Callback - account:", account);
-      console.log("AuthOptions signIn Callback - profile:", profile);
-      console.log("AuthOptions signIn Callback - email:", email);
-      console.log("AuthOptions signIn Callback - credentials:", credentials);
+      // console.log("AuthOptions signIn Callback - user:", user);
+      // console.log("AuthOptions signIn Callback - account:", account);
+      // console.log("AuthOptions signIn Callback - profile:", profile);
+      // console.log("AuthOptions signIn Callback - email:", email);
+      // console.log("AuthOptions signIn Callback - credentials:", credentials);
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
@@ -123,15 +124,15 @@ export const authOptions = {
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
     async jwt({ token, user, account, profile, isNewUser }) {
       // !
-      console.log("AuthOptions jwtCallback - token:", token);
-      console.log("AuthOptions jwtCallback - user:", user);
-      console.log("AuthOptions jwtCallback - account:", account);
+      // console.log("AuthOptions jwtCallback - token:", token);
+      // console.log("AuthOptions jwtCallback - user:", user);
+      // console.log("AuthOptions jwtCallback - account:", account);
       return token;
     },
     async session({ session, user, token }) {
-      console.log("session in authOptions", session);
-      console.log("user in authOptions", user);
-      console.log("token in authOptions", token);
+      // console.log("session in authOptions", session);
+      // console.log("user in authOptions", user);
+      // console.log("token in authOptions", token);
       return session;
     },
   },

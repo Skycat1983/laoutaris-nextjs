@@ -28,6 +28,8 @@ export default async function ArtworkId({
   }
   const { data: artwork } = response;
 
+  console.log("data", artwork);
+
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
   return (
     <>
