@@ -2,10 +2,17 @@ import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
+import { authOptions } from "@/lib/config/authOptions";
+import { getServerSession } from "next-auth";
 
-const ArtworkInfoCard = ({ ...artwork }: IFrontendArtwork) => {
-  const isWatchlisted = !!artwork.watcherlist.length;
-  const isFavourited = !!artwork.favourited.length;
+const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
+  const session = await getServerSession(authOptions);
+  console.log("session in ArtworkInfoCard", session);
+  const isWatchlisted = !!artwork.watcherlist.includes(session?.user?.id);
+  const isFavourited = !!artwork.favourited.includes(session?.user?.id);
+
+  console.log("isWatchlisted", isWatchlisted);
+  console.log("isFavourited", isFavourited);
 
   // console.log("in ArtworkInfoCard", artwork);
 

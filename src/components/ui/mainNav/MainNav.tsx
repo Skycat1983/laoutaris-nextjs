@@ -52,6 +52,7 @@ import { buildUrl } from "@/utils/buildUrl";
 import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
+import { authOptions } from "@/lib/config/authOptions";
 
 interface NavLink {
   label: string;
@@ -66,7 +67,7 @@ type BiographyLink = Pick<IFrontendArticle, "slug">;
 
 const MainNav = async () => {
   await dbConnect();
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   //! Artworks
   const collectionResponse = await fetchCollections<CollectionLink>(

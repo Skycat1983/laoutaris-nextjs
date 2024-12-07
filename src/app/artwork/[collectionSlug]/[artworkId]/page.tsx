@@ -3,6 +3,7 @@
 import ArtworkView from "@/components/atoms/ArtworkView";
 import ArtworkLayout from "@/components/layouts/ArtworkLayout";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { authOptions } from "@/lib/config/authOptions";
 import { fetchArtworks } from "@/lib/server/artwork/data-fetching/fetchArtworks";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
@@ -16,8 +17,8 @@ export default async function ArtworkId({
   params: { artworkId: string };
 }) {
   await dbConnect();
-  const session = await getServerSession();
-  console.log("session in ArtworkId", session);
+  // const session = await getServerSession(authOptions);
+  // console.log("session in ArtworkId", session);
   // await delay(2000);
   const artworkKey = "_id";
   const artworkValue = params.artworkId;
@@ -33,8 +34,6 @@ export default async function ArtworkId({
 
   // console.trace();
   // console.log("artworkId", artwork);
-
-  // const sanitizedWatcherList
 
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
   return (
