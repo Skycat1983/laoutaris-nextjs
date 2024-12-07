@@ -15,6 +15,7 @@ import {
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
 import { handler } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/config/authOptions";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +27,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(handler);
+  const session = await getServerSession(authOptions);
+  console.log("session in top level layout.tsx", session);
 
   return (
     <html

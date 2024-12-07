@@ -6,6 +6,7 @@ import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { fetchArtworks } from "@/lib/server/artwork/data-fetching/fetchArtworks";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
+import { getServerSession } from "next-auth";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 //? maybe this is better done with the fetchArtwork function
@@ -15,6 +16,8 @@ export default async function ArtworkId({
   params: { artworkId: string };
 }) {
   await dbConnect();
+  const session = await getServerSession();
+  console.log("session in ArtworkId", session);
   // await delay(2000);
   const artworkKey = "_id";
   const artworkValue = params.artworkId;
@@ -28,7 +31,10 @@ export default async function ArtworkId({
   }
   const { data: artwork } = response;
 
-  console.log("data", artwork);
+  // console.trace();
+  // console.log("artworkId", artwork);
+
+  // const sanitizedWatcherList
 
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
   return (

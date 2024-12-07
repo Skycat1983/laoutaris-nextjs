@@ -7,7 +7,7 @@ const ArtworkInfoCard = ({ ...artwork }: IFrontendArtwork) => {
   const isWatchlisted = !!artwork.watcherlist.length;
   const isFavourited = !!artwork.favourited.length;
 
-  console.log("artwork", artwork);
+  // console.log("in ArtworkInfoCard", artwork);
 
   return (
     <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">

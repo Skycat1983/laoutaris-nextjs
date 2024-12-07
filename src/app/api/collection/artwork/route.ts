@@ -44,14 +44,13 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       .lean()
       .populate({
         path: "artworks",
-        select: artworkFields || "", // Select specified fields or all if not specified
+        select: artworkFields || "", // selectr specified fields or all if not specified
       });
 
     if (collectionFields) {
       mongooseQuery = mongooseQuery.select(collectionFields);
     }
 
-    // Execute the query
     const collections = await mongooseQuery;
 
     if (!collections || collections.length === 0) {

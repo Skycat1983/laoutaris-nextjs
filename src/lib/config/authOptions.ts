@@ -83,11 +83,6 @@ export const authOptions = {
   callbacks: {
     //! used to determine if a user is allowed to sign in. NOT for reformatting the user object
     async signIn({ user, account, profile, email, credentials }) {
-      // console.log("AuthOptions signIn Callback - user:", user);
-      // console.log("AuthOptions signIn Callback - account:", account);
-      // console.log("AuthOptions signIn Callback - profile:", profile);
-      // console.log("AuthOptions signIn Callback - email:", email);
-      // console.log("AuthOptions signIn Callback - credentials:", credentials);
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
@@ -102,11 +97,6 @@ export const authOptions = {
       // Parse the URL to determine the action
       const urlObj = new URL(url, baseUrl);
       const path = urlObj.pathname;
-      //   console.log("Redirect URL in authOptions:", url);
-      //   console.log("Base URL in authOptions:", baseUrl);
-      //   console.log("urlObj in authOptions:", urlObj);
-      //   console.log("path in authOptions:", path);
-
       // Determine if it's a sign-in callback
       if (path === "/api/auth/signin") {
         // Redirect to dashboard after sign-in
@@ -117,64 +107,23 @@ export const authOptions = {
       if (path === "/api/auth/signout") {
         return `${baseUrl}`;
       }
-
       // Default behavior: allow the redirect
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
     async jwt({ token, user, account, profile, isNewUser }) {
       // !
-      // console.log("AuthOptions jwtCallback - token:", token);
-      // console.log("AuthOptions jwtCallback - user:", user);
-      // console.log("AuthOptions jwtCallback - account:", account);
+      if (user) {
+        token.id = user.id;
+      }
+      // console.log("token in jwt authOptions", token);
+
       return token;
     },
     async session({ session, user, token }) {
-      // console.log("session in authOptions", session);
-      // console.log("user in authOptions", user);
-      // console.log("token in authOptions", token);
+      session.user.id = token.id;
+      // console.log("session in session authOptions", session);
       return session;
     },
   },
 };
-
-// async createUser(user) {
-//   console.log("TESTING: createUser in authOptions");
-//   // Map the OAuth user data to your custom schema
-//   const customUser = {
-//     username: user.name,
-//     image: user.image,
-//     favorites: [],
-//     watchlist: [],
-//   };
-//   // Save the custom user to your MongoDB
-//   // const savedUser = await clientPromise
-//   //   .db()
-//   //   .collection("users")
-//   //   .insertOne(customUser);
-//   // return savedUser.ops[0];
-// },
-
-// pages: {
-// signIn: "api/auth/",
-// signUp: "/register",
-// signOut: "api/auth/signout",
-// error: "/auth/error", // Error code passed in query string as ?error=
-// },
-
-// async createUser(user) {
-//   console.log("TESTING: createUser in authOptions");
-//   // Map the OAuth user data to your custom schema
-//   const customUser = {
-//     username: user.name,
-//     image: user.image,
-//     favorites: [],
-//     watchlist: [],
-//   };
-//   // Save the custom user to your MongoDB
-//   // const savedUser = await clientPromise
-//   //   .db()
-//   //   .collection("users")
-//   //   .insertOne(customUser);
-//   // return savedUser.ops[0];
-// },
