@@ -11,6 +11,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavourites";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import Modal from "@/components/ui/modal/Modal";
+import ModalMessage from "../ModalMessage";
 
 interface SubmitButtonProps {
   label: string;
@@ -32,6 +35,7 @@ function SubmitButton({ label }: SubmitButtonProps) {
 }
 
 type FavouritesButtonProps = {
+  isLoggedIn: boolean;
   isFavourited: boolean;
   artworkId: string;
 };
@@ -41,8 +45,8 @@ export interface FavouritesButtonState {
   message: string;
   isFavourited: boolean;
 }
-
 const FavouritesButton = ({
+  isLoggedIn,
   isFavourited,
   artworkId,
 }: FavouritesButtonProps) => {
@@ -52,29 +56,121 @@ const FavouritesButton = ({
     message: "",
   };
 
+  const { openModal } = useGlobalFeatures();
+
   const [state, formAction] = useFormState(updateUserFavourites, initialState);
 
-  console.log("state", state);
+  const handleUnauthenticatedAction = () => {
+    openModal(<ModalMessage message="You need to be logged in to do this" />);
+  };
 
   const label = !state.isFavourited ? "Favourite" : "Unfavourite";
 
-  return (
-    <>
+  if (isLoggedIn) {
+    return (
+      <>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <form action={formAction} className="w-full">
+                <input type="hidden" name="artworkId" value={artworkId} />
+                <SubmitButton label={label} />
+              </form>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add this item to your favourites list</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </>
+    );
+  } else {
+    return (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <form action={formAction} className="w-full">
+            <div
+              className="w-full"
+              onClick={() => {
+                handleUnauthenticatedAction();
+              }}
+            >
               <input type="hidden" name="artworkId" value={artworkId} />
               <SubmitButton label={label} />
-            </form>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
             <p>Add this item to your favourites list</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </>
-  );
+    );
+  }
 };
 
 export default FavouritesButton;
+
+// const FavouritesButton = ({
+//   isLoggedIn,
+//   isFavourited,
+//   artworkId,
+// }: FavouritesButtonProps) => {
+//   const initialState: FavouritesButtonState = {
+//     success: false,
+//     isFavourited: isFavourited,
+//     message: "",
+//   };
+
+//   const { openModal } = useGlobalFeatures();
+
+//   const [state, formAction] = useFormState(updateUserFavourites, initialState);
+
+//   const handleUnauthenticatedAction = () => {
+//     openModal(<ModalMessage message="You need to be logged in to do this" />);
+//   };
+
+//   const label = !state.isFavourited ? "Favourite" : "Unfavourite";
+
+//   if (isLoggedIn) {
+//     return (
+//       <>
+//         <TooltipProvider>
+//           <Tooltip>
+//             <TooltipTrigger asChild>
+//               <form action={formAction} className="w-full">
+//                 <input type="hidden" name="artworkId" value={artworkId} />
+//                 <SubmitButton label={label} />
+//               </form>
+//             </TooltipTrigger>
+//             <TooltipContent>
+//               <p>Add this item to your favourites list</p>
+//             </TooltipContent>
+//           </Tooltip>
+//         </TooltipProvider>
+//       </>
+//     );
+//   } else {
+//     return (
+//       <TooltipProvider>
+//         <Tooltip>
+//           <TooltipTrigger asChild>
+//             <div
+//               className="w-full"
+//               onClick={() => {
+//                 handleUnauthenticatedAction();
+//               }}
+//             >
+//               <input type="hidden" name="artworkId" value={artworkId} />
+//               <SubmitButton label={label} />
+//             </div>
+//           </TooltipTrigger>
+//           <TooltipContent>
+//             <p>Add this item to your favourites list</p>
+//           </TooltipContent>
+//         </Tooltip>
+//       </TooltipProvider>
+//     );
+//   }
+// };
+
+// export default FavouritesButton;

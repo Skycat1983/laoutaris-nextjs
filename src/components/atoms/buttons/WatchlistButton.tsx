@@ -11,6 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "../ModalMessage";
 
 interface SubmitButtonProps {
   label: string;
@@ -32,6 +34,7 @@ function SubmitButton({ label }: SubmitButtonProps) {
 }
 
 type WatchlistButtonProps = {
+  isLoggedIn: boolean;
   isWatchlisted: boolean;
   artworkId: string;
 };
@@ -42,6 +45,7 @@ export interface WatchlistButtonState {
   isWatchlisted: boolean;
 }
 const WatchlistButton = ({
+  isLoggedIn,
   isWatchlisted,
   artworkId,
 }: WatchlistButtonProps) => {
@@ -51,42 +55,64 @@ const WatchlistButton = ({
     message: "",
   };
 
-  // ? unable to use this hook for some reason
-  // const segments = useSelectedLayoutSegments();
-  // console.log("segments :>> ", segments);
+  const { openModal } = useGlobalFeatures();
 
   const [state, formAction] = useFormState(updateUserWatchlist, initialState);
 
-  const label = !state.isWatchlisted ? "Watchlist" : "Remove";
+  const handleUnauthenticatedAction = () => {
+    openModal(<ModalMessage message="You need to be logged in to do this" />);
+  };
 
-  return (
-    <>
+  const label = !state.isWatchlisted ? "Watchlist" : "Unwatch";
+
+  if (isLoggedIn) {
+    return (
+      <>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <form action={formAction} className="w-full">
+                <input type="hidden" name="artworkId" value={artworkId} />
+                <SubmitButton label={label} />
+              </form>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>
+                {state.isWatchlisted
+                  ? "Remove this item from your watchlist"
+                  : "Add this item to your watchlist"}
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </>
+    );
+  } else {
+    return (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <form action={formAction} className="w-full">
+            <div
+              className="w-full"
+              onClick={() => {
+                handleUnauthenticatedAction();
+              }}
+            >
               <input type="hidden" name="artworkId" value={artworkId} />
               <SubmitButton label={label} />
-            </form>
+            </div>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Notify me when this item is on sale</p>
+            <p>
+              {isWatchlisted
+                ? "Remove this item from your watchlist"
+                : "Add this item to your watchlist"}
+            </p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </>
-  );
+    );
+  }
 };
 
 export default WatchlistButton;
-
-//   return (
-//     <>
-//       <form action={formAction} className="w-full">
-//         <input type="hidden" name="artworkId" value={artworkId} />
-
-//         <SubmitButton label={label} />
-//       </form>
-//     </>
-//   );
-// };

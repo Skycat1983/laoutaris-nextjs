@@ -4,15 +4,22 @@ import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/atoms/ModalMessage";
 
 const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
   const session = await getServerSession(authOptions);
   console.log("session in ArtworkInfoCard", session);
+  const isLoggedIn = !!session?.user;
   const isWatchlisted = !!artwork.watcherlist.includes(session?.user?.id);
   const isFavourited = !!artwork.favourited.includes(session?.user?.id);
 
   console.log("isWatchlisted", isWatchlisted);
   console.log("isFavourited", isFavourited);
+
+  // const handleUnauthenticatedAction = () => {
+  //   openModal(<ModalMessage message="You need to be logged in to do this" />);
+  // };
 
   // console.log("in ArtworkInfoCard", artwork);
 
@@ -47,8 +54,13 @@ const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
         <WatchlistButton
           isWatchlisted={isWatchlisted}
           artworkId={artwork._id}
+          isLoggedIn={isLoggedIn}
         />
-        <FavouritesButton isFavourited={isFavourited} artworkId={artwork._id} />
+        <FavouritesButton
+          isLoggedIn={isLoggedIn}
+          isFavourited={isFavourited}
+          artworkId={artwork._id}
+        />
       </div>
     </div>
   );
