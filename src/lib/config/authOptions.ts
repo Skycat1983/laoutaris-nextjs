@@ -6,45 +6,10 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "../mongo";
 import { Adapter } from "next-auth/adapters";
 import { SessionStrategy } from "next-auth";
+import { CustomMongoDBAdapter } from "../mongo/adapter";
 
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
-
-// this is necessary to ensure data integrity. otherwise the user object created by the adapter will not have the custom fields
-//! important: first time sign in is fine, second time sign in (so actual sign in, not create user), fails
-const CustomMongoDBAdapter = (client) => {
-  const baseAdapter = MongoDBAdapter(client);
-
-  return {
-    ...baseAdapter,
-    async createUser(profile) {
-      console.log("Custom createUser called:", profile);
-
-      const customUser = {
-        ...profile,
-        username: profile.name,
-        role: "user",
-        watchlist: [],
-        favourites: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      if (!baseAdapter.createUser) {
-        throw new Error("createUser is not implemented by the base adapter");
-      }
-
-      const user = await baseAdapter.createUser(customUser);
-
-      if (!user) {
-        return null;
-      }
-
-      console.log("Custom user created:", user);
-      return user;
-    },
-  };
-};
 
 export const authOptions = {
   // adapter: MongoDBAdapter(clientPromise) as Adapter,
@@ -111,19 +76,27 @@ export const authOptions = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
+    //? here can customise the token contents
     async jwt({ token, user, account, profile, isNewUser }) {
-      // !
+      // like a keycard that is given to the user to access the building
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
+      console.log("jwt in authOptions", isNewUser);
       // console.log("token in jwt authOptions", token);
 
       return token;
     },
+    //? here can customise the session contents
+    //! this is not stored. It is only used to create the session object that is returned to the client
     async session({ session, user, token }) {
+      // like the building's security system that checks the keycard
       session.user.id = token.id;
-      // console.log("session in session authOptions", session);
+      session.user.role = token.role;
+      console.log("session in authOptions", session);
       return session;
     },
   },
 };
+// session is created from the jwt.

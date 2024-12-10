@@ -9,19 +9,13 @@ import ModalMessage from "@/components/atoms/ModalMessage";
 
 const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
   const session = await getServerSession(authOptions);
-  console.log("session in ArtworkInfoCard", session);
+  // console.log("session in ArtworkInfoCard", session);
   const isLoggedIn = !!session?.user;
   const isWatchlisted = !!artwork.watcherlist.includes(session?.user?.id);
   const isFavourited = !!artwork.favourited.includes(session?.user?.id);
 
-  console.log("isWatchlisted", isWatchlisted);
-  console.log("isFavourited", isFavourited);
-
-  // const handleUnauthenticatedAction = () => {
-  //   openModal(<ModalMessage message="You need to be logged in to do this" />);
-  // };
-
-  // console.log("in ArtworkInfoCard", artwork);
+  // console.log("isWatchlisted", isWatchlisted);
+  // console.log("isFavourited", isFavourited);
 
   return (
     <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">
