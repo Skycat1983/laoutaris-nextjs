@@ -81,10 +81,10 @@ const MainNav = async () => {
   const firstCollection = collections[0];
   const collectionSlug = firstCollection.slug;
   const artworkId = firstCollection.artworks[0];
-  const artworkPath = buildUrl(["artwork", collectionSlug, artworkId]);
+  const artworkPath = buildUrl(["collections", collectionSlug, artworkId]);
 
   const artworkNavlink: NavLink = {
-    label: "Artwork",
+    label: "Collections",
     path: artworkPath,
   };
 

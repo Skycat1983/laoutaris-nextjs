@@ -29,7 +29,7 @@ type CollectionFields = Pick<
   "title" | "slug" | "artworks"
 >;
 
-export default async function Artwork() {
+export default async function Collections() {
   await dbConnect();
   const stem = "artwork";
   const identifierKey = "section";

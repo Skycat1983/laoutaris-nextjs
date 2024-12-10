@@ -40,7 +40,7 @@ export default async function CollectionSlug({
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  const stem = "artwork";
+  const stem = "collections";
 
   const collectionSlug = params.collectionSlug;
   const identifierKey = "slug";

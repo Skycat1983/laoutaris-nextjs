@@ -4,7 +4,7 @@ import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import CroppedImages from "../atoms/CroppedImages";
-import ArtworkLoading from "@/app/artwork/[collectionSlug]/[artworkId]/loading";
+import ArtworkLoading from "@/app/collections/[collectionSlug]/[artworkId]/loading";
 import ArtworkInfoCardSkeleton from "../cards/artworkInfoCard/ArtworkInfoCardSkeleton";
 
 // TODO: refactor the image zooming logic

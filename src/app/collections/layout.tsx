@@ -30,13 +30,13 @@ type SubnavCollectionFields = Pick<
   "title" | "slug" | "artworks"
 >;
 
-export default async function ArtworkLayout({
+export default async function CollectionsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   await dbConnect();
-  const stem = "artwork";
+  const stem = "collections";
   const identifierKey = "section";
   const identifierValue = "artwork";
   const fields = ["title", "slug", "artworks"];

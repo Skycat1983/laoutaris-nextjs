@@ -54,7 +54,7 @@ interface ServerPaginationProps {
 }
 
 const ServerPagination = ({
-  stem = "artwork",
+  stem = "collections",
   artworkLinks,
   collectionSlug,
 }: ServerPaginationProps) => {
