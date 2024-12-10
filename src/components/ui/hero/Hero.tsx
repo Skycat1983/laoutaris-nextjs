@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Carousel,
@@ -8,6 +10,7 @@ import {
 } from "@/components/ui/hero/carousel";
 import LargeScaleWorks from "./LargeScaleWorks";
 import FamilyFavourites from "./FamilyFavourites";
+import TestSlide from "./TestSlide";
 
 const Hero = () => {
   return (
@@ -20,7 +23,8 @@ const Hero = () => {
     >
       <CarouselContent className="">
         <CarouselItem className="">
-          <LargeScaleWorks />
+          <TestSlide />
+          {/* <LargeScaleWorks /> */}
         </CarouselItem>
 
         <CarouselItem className="">
