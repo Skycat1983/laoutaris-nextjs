@@ -13,25 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "../ModalMessage";
-
-interface SubmitButtonProps {
-  label: string;
-}
-
-function SubmitButton({ label }: SubmitButtonProps) {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      shape={"rounded"}
-      // variant={"outline"}
-      size={"full"}
-      disabled={pending}
-    >
-      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {pending ? "Loading..." : label}
-    </Button>
-  );
-}
+import SubmitButton from "./SubmitButton";
 
 type WatchlistButtonProps = {
   isLoggedIn: boolean;
@@ -116,3 +98,22 @@ const WatchlistButton = ({
 };
 
 export default WatchlistButton;
+
+// interface SubmitButtonProps {
+//   label: string;
+// }
+
+// function SubmitButton({ label }: SubmitButtonProps) {
+//   const { pending } = useFormStatus();
+//   return (
+//     <Button
+//       shape={"rounded"}
+//       // variant={"outline"}
+//       size={"full"}
+//       disabled={pending}
+//     >
+//       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+//       {pending ? "Loading..." : label}
+//     </Button>
+//   );
+// }

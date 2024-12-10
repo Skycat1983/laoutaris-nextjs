@@ -14,25 +14,7 @@ import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavour
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import Modal from "@/components/ui/modal/Modal";
 import ModalMessage from "../ModalMessage";
-
-interface SubmitButtonProps {
-  label: string;
-}
-
-function SubmitButton({ label }: SubmitButtonProps) {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      shape={"rounded"}
-      size={"full"}
-      disabled={pending}
-      variant={"outline"}
-    >
-      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {pending ? "Loading..." : label}
-    </Button>
-  );
-}
+import SubmitButton from "./SubmitButton";
 
 type FavouritesButtonProps = {
   isLoggedIn: boolean;
@@ -74,7 +56,7 @@ const FavouritesButton = ({
             <TooltipTrigger asChild>
               <form action={formAction} className="w-full">
                 <input type="hidden" name="artworkId" value={artworkId} />
-                <SubmitButton label={label} />
+                <SubmitButton label={label} variant={"outline"} />
               </form>
             </TooltipTrigger>
             <TooltipContent>
@@ -96,7 +78,7 @@ const FavouritesButton = ({
               }}
             >
               <input type="hidden" name="artworkId" value={artworkId} />
-              <SubmitButton label={label} />
+              <SubmitButton label={label} variant={"outline"} />
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -109,6 +91,25 @@ const FavouritesButton = ({
 };
 
 export default FavouritesButton;
+
+// interface SubmitButtonProps {
+//   label: string;
+// }
+
+// function SubmitButton({ label }: SubmitButtonProps) {
+//   const { pending } = useFormStatus();
+//   return (
+//     <Button
+//       shape={"rounded"}
+//       size={"full"}
+//       disabled={pending}
+//       variant={"outline"}
+//     >
+//       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+//       {pending ? "Loading..." : label}
+//     </Button>
+//   );
+// }
 
 // const FavouritesButton = ({
 //   isLoggedIn,
