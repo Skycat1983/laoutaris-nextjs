@@ -6,6 +6,7 @@ import {
   Playfair_Display,
   Cormorant,
   Crimson_Text,
+  Cormorant_Garamond,
 } from "next/font/google";
 
 const archivoBlack = Archivo_Black({
@@ -39,4 +40,12 @@ const crimson = Crimson_Text({
   variable: "--font-crimson",
 });
 
-export { archivoBlack, archivo, cinzelDecorative, crimson };
+const cormorant = Cormorant({
+  weight: ["400"],
+  subsets: ["latin"],
+  display: "swap",
+
+  variable: "--font-cormorant",
+});
+
+export { archivoBlack, archivo, cinzelDecorative, crimson, cormorant };

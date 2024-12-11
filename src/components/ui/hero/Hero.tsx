@@ -24,8 +24,8 @@ const Hero = () => {
     >
       <CarouselContent className="">
         <CarouselItem className="">
-          <Slide1 />
-          {/* <LargeScaleWorks /> */}
+          {/* <Slide1 /> */}
+          <LargeScaleWorks />
         </CarouselItem>
 
         <CarouselItem className="">

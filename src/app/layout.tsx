@@ -12,6 +12,7 @@ import {
   archivoBlack,
   cinzelDecorative,
   crimson,
+  cormorant,
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
 import { handler } from "./api/auth/[...nextauth]/route";
@@ -32,14 +33,14 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable}`}
+      className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable} ${cormorant.variable}`}
     >
       <body className="">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
-            <div className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] h-[5px] w-full container"></div>
+            {/* <div className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] h-[5px] w-full container"></div> */}
             {children}
             <Footer />
           </GlobalFeaturesProvider>

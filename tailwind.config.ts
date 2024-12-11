@@ -22,9 +22,12 @@ const config = {
       archivoBlack: ["var(--font-archivo-black)", "sans-serif"],
       cinzelDecorative: ["var(--font-cinzel-decorative)", "serif"],
       crimson: ["var(--font-crimson", "serif"],
+      cormorant: ["var(--font-cormorant)", "serif"],
     },
     extend: {
       colors: {
+        slate: "#262626",
+        whitish: "#f5f5f5",
         // greyish:
         // ! my additions
         greyish: "hsl(var(--custom-greyish))",
