@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { CldImage } from "next-cloudinary";
 
+// ? USUSED?
+
 export interface IHeroSlide {
   image: HeroContent;
   backgroundAdjustments: HeroBackground;

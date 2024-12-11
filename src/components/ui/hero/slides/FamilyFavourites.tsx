@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DimmedOverlay } from "./Overlays";
+import { DimmedOverlay } from "../Overlays";
 
 const FamilyFavourites = () => {
   const slide = {
