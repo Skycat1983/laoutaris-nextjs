@@ -3,11 +3,12 @@ import HorizontalDivider from "../atoms/HorizontalDivider";
 import YoutubeEmbedding from "../atoms/YoutubeEmbedding";
 import ButtonDivider from "../atoms/ButtonDivider";
 
+//! this version causes problems with empty space appearing below footer
 const ProjectSection = () => {
   return (
     <>
       <SectionHeading heading="Project:" subheading="Watch the documentary" />
-      <div className="w-screen bg-gray-100 absolute left-0 h-[80%] xl:h-[520px] z-negative shadow-md"></div>
+      {/* <div className="w-screen bg-gray-100 absolute left-0 h-[80%] xl:h-[520px] z-negative shadow-md"></div> */}
 
       <section className="relative my-10 bg-gray-100">
         <HorizontalDivider />
