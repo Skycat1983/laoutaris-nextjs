@@ -36,7 +36,7 @@ export default async function RootLayout({
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable} ${cormorant.variable}`}
     >
       {/* <body> */}
-      <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px]">
+      <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px] bg-whitish">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />

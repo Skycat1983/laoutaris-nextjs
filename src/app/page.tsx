@@ -21,7 +21,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
-      <div className="grid grid-cols-12 gap-4">
+      <div className="grid grid-cols-12 gap-4 py-32">
         <div className="col-span-1 lg:col-span-2"></div>
 
         <div className="col-span-10 lg:col-span-8 flex flex-col gap-24 ">
