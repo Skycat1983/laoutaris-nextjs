@@ -3,6 +3,7 @@
 interface BaseApiResponse {
   success: boolean;
   message?: string;
+  statusCode?: number;
 }
 
 interface ApiSuccessResponse<T> extends BaseApiResponse {

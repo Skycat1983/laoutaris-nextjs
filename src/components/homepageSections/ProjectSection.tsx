@@ -10,7 +10,10 @@ const ProjectSection = () => {
       <SectionHeading heading="Project:" subheading="Watch the documentary" />
       {/* <div className="w-screen bg-gray-100 absolute left-0 h-[80%] xl:h-[520px] z-negative shadow-md"></div> */}
 
-      <section className="relative my-10 bg-gray-100">
+      <section
+        data-testid="project-content"
+        className="relative my-10 bg-gray-100"
+      >
         <HorizontalDivider />
 
         <div className="grid grid-cols-2 lg:grid-cols-3 items-center h-full">

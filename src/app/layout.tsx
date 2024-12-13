@@ -3,8 +3,6 @@ import { getServerSession } from "next-auth";
 import React from "react";
 import { GlobalFeaturesProvider } from "@/contexts/GlobalFeaturesContext";
 import { SessionContextProvider } from "@/contexts/SessionProvider";
-
-import Header from "@/components/ui/header/Header";
 import Modal from "@/components/ui/modal/Modal";
 import Footer from "@/components/ui/footer/Footer";
 import {
@@ -17,6 +15,7 @@ import {
 import "./globals.css";
 import { handler } from "./api/auth/[...nextauth]/route";
 import { authOptions } from "@/lib/config/authOptions";
+import Header from "@/components/ui/header/header";
 
 export const metadata: Metadata = {
   title: "Create Next App",
