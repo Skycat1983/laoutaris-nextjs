@@ -14,36 +14,6 @@ type BiographyFields = Pick<
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 
-// export default async function Home() {
-//   const url = `http://localhost:3000/api/test`;
-//   const response = await fetch(url, {
-//     method: "GET",
-//     headers: headers(),
-//   });
-
-//   if (!response.ok) {
-//     throw new Error("Network response was not ok");
-//   }
-
-//   console.log("response", response);
-//   const data = await response.json();
-//   console.log("data", data);
-//   return (
-//     <>
-//       <div className="grid grid-cols-12 gap-4 py-32">
-//         <div className="col-span-1 lg:col-span-2"></div>
-
-//         <div className="col-span-10 lg:col-span-8 flex flex-col gap-24">
-//           <div data-testid="biography-content">BiographyContent</div>
-//         </div>
-//         <div className="col-span-1 lg:col-span-2"></div>
-//       </div>
-//     </>
-//   );
-// }
-
-// const response = await fetchTest();
-
 //! DO NOT DELETE
 export default async function Home() {
   const biographyEntriesResponse = await fetchArticles<BiographyFields>(
@@ -83,6 +53,36 @@ export default async function Home() {
     </>
   );
 }
+
+// export default async function Home() {
+//   const url = `http://localhost:3000/api/test`;
+//   const response = await fetch(url, {
+//     method: "GET",
+//     headers: headers(),
+//   });
+
+//   if (!response.ok) {
+//     throw new Error("Network response was not ok");
+//   }
+
+//   console.log("response", response);
+//   const data = await response.json();
+//   console.log("data", data);
+//   return (
+//     <>
+//       <div className="grid grid-cols-12 gap-4 py-32">
+//         <div className="col-span-1 lg:col-span-2"></div>
+
+//         <div className="col-span-10 lg:col-span-8 flex flex-col gap-24">
+//           <div data-testid="biography-content">BiographyContent</div>
+//         </div>
+//         <div className="col-span-1 lg:col-span-2"></div>
+//       </div>
+//     </>
+//   );
+// }
+
+// const response = await fetchTest();
 
 {
   /* <div
