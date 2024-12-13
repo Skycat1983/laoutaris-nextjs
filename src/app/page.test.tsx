@@ -69,17 +69,3 @@ describe("Home Page", () => {
     // expect(biographyContent).toHaveTextContent("BiographyContent");
   });
 });
-
-// describe("BiographySection", () => {
-//   it("renders the biography entries correctly", () => {
-//     render(<BiographySection biographyEntries={mockBiographyEntries} />);
-
-//     // Check for rendered titles
-//     expect(screen.getByText("Early Years")).toBeInTheDocument();
-//     expect(screen.getByText("Later Years")).toBeInTheDocument();
-
-//     // Check for the section itself
-//     const biographyContent = screen.getByTestId("biography-content");
-//     expect(biographyContent).toBeInTheDocument();
-//   });
-// });
