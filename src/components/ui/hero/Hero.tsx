@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/hero/carousel";
 import LargeScaleWorks from "./LargeScaleWorks";
 import FamilyFavourites from "./slides/FamilyFavourites";
-import TestSlide from "./slides/Slide1";
-import Slide1 from "./slides/Slide1";
 
 const Hero = () => {
   return (
@@ -24,7 +22,6 @@ const Hero = () => {
     >
       <CarouselContent className="">
         <CarouselItem className="">
-          {/* <Slide1 /> */}
           <LargeScaleWorks />
         </CarouselItem>
 

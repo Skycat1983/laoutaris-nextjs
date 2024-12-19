@@ -55,11 +55,19 @@ jest.mock("../lib/server/article/data-fetching/fetchArticles", () => ({
   })),
 }));
 
+jest.mock("@/components/ui/hero/Hero", () => ({
+  __esModule: true,
+  default: () => <div data-testid="mock-hero">Mock Hero</div>,
+}));
+
 // ! V1 works
 describe("Home Page", () => {
   it("renders the page layout with the correct structure", async () => {
     // Render the asynchronous component
     render(await Home());
+
+    const heroContent = screen.getByTestId("mock-hero");
+    expect(heroContent).toBeInTheDocument();
 
     // Check for biography content
     const artworkContent = screen.getByTestId("artwork-content");

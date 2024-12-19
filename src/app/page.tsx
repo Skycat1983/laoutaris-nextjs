@@ -14,7 +14,6 @@ type BiographyFields = Pick<
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 
-//! DO NOT DELETE
 export default async function Home() {
   const biographyEntriesResponse = await fetchArticles<BiographyFields>(
     "section",
@@ -26,7 +25,7 @@ export default async function Home() {
 
   return (
     <>
-      {/* <Hero /> */}
+      <Hero />
       <div className="grid grid-cols-12 gap-4 py-32">
         <div className="col-span-1 lg:col-span-2"></div>
 
