@@ -6,6 +6,7 @@ import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "../lib/server/article/data-fetching/fetchArticles";
 import { fetchTest } from "@/lib/server/article/data-fetching/fetchTest";
 import { headers } from "next/headers";
+import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 
 type BiographyFields = Pick<
   IFrontendArticle,
@@ -46,6 +47,23 @@ export default async function Home() {
               <p>Error: {biographyEntriesResponse.message}</p>
             )}
           </div>
+          <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
+            <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8">
+              <div>
+                <h1 className="text-4xl font-cormorant">Stay up to date</h1>
+              </div>
+              <div>
+                <h1>Subscribe to our newsletter</h1>
+              </div>
+            </div>
+
+            <div className="bg-slate-100 border col-start-7 col-end-12">
+              <SubscribeForm />
+            </div>
+          </div>
+          {/* <div className="bg-slate-100 border col-start-6 col-end-12">
+            <SubscribeForm />
+          </div> */}
         </div>
         <div className="col-span-1 lg:col-span-2"></div>
       </div>
