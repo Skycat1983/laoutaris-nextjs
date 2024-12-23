@@ -16,14 +16,10 @@ import {
 import Link from "next/link";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import Logo from "@/components/atoms/Logo";
-
-interface NavLink {
-  label: string;
-  path: string;
-}
+import { NavBarLink } from "../../navBar/NavBar";
 
 interface NavMenuProps {
-  navLinks: NavLink[];
+  navLinks: NavBarLink[];
 }
 
 export function NavMenu({ navLinks }: NavMenuProps) {
@@ -60,13 +56,21 @@ export function NavMenu({ navLinks }: NavMenuProps) {
 
           {navLinks.map((link, index) => (
             <div key={index} className="md:flex flex-row items-center px-4">
-              <Link href={link.path}>
+              {!link.disabled ? (
+                <Link href={link.path}>
+                  <DrawerClose asChild>
+                    <h2 className="font-face-default subheading text-primary">
+                      {link.label}
+                    </h2>
+                  </DrawerClose>
+                </Link>
+              ) : (
                 <DrawerClose asChild>
-                  <h2 className="font-face-default subheading text-primary">
+                  <h2 className="font-face-default subheading text-gray-400">
                     {link.label}
                   </h2>
                 </DrawerClose>
-              </Link>
+              )}
               {index < navLinks.length - 1 && (
                 <div className="py-6">{/* <HorizontalDivider /> */}</div>
               )}

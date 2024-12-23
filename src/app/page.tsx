@@ -61,9 +61,6 @@ export default async function Home() {
               <SubscribeForm />
             </div>
           </div>
-          {/* <div className="bg-slate-100 border col-start-6 col-end-12">
-            <SubscribeForm />
-          </div> */}
         </div>
         <div className="col-span-1 lg:col-span-2"></div>
       </div>

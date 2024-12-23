@@ -4,14 +4,10 @@ import { Menu, Search, ShoppingBasket, User } from "lucide-react";
 import Logo from "../../atoms/Logo";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
 import NavMenu from "../accountMenuBar/navMenu/NavMenu";
-
-interface NavLink {
-  label: string;
-  path: string;
-}
+import { NavBarLink } from "./NavBar";
 
 interface MobileNavLayoutProps {
-  navLinks: NavLink[];
+  navLinks: NavBarLink[];
 }
 
 const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {

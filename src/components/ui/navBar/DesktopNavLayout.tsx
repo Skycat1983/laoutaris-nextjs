@@ -5,13 +5,10 @@ import Link from "next/link";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
 import NavItem from "@/components/atoms/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
-interface NavLink {
-  label: string;
-  path: string;
-}
+import { NavBarLink } from "./NavBar";
 
 interface DesktopNavLayoutProps {
-  navLinks: NavLink[];
+  navLinks: NavBarLink[];
 }
 
 const DesktopNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
@@ -28,14 +25,24 @@ const DesktopNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
           <nav className="flex flex-row items-center h-auto space-x-6">
             {navLinks.map((link, index) => (
               <div key={index} className="hidden sm:flex flex-row items-center">
-                <Link href={link.path}>
+                {!link.disabled ? (
+                  <Link href={link.path}>
+                    <NavItem
+                      label={link.label}
+                      slug={link.path}
+                      activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${navLinkBorderColours[index]}`}
+                      className="font-face-default subheading border-transparent"
+                    />
+                  </Link>
+                ) : (
                   <NavItem
                     label={link.label}
                     slug={link.path}
+                    className="font-face-default subheading border-transparent cursor-not-allowed text-gray-400"
                     activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${navLinkBorderColours[index]}`}
-                    className="font-face-default subheading border-transparent"
                   />
-                </Link>
+                )}
+
                 {index + 1 < navLinks.length && (
                   <div className="hidden sm:flex items-center">
                     <h2 className="px-2 pl-6 text-xl font-thin">|</h2>

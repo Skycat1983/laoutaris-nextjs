@@ -2,13 +2,13 @@
 
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import Searchbar from "../../atoms/inputs/Searchbar";
-import MainNav from "../mainNav/MainNav";
+import NavBar from "../navBar/NavBar";
 
 const Header = () => {
   return (
     <>
       <header className="fixed top-0 z-10 w-full bg-white">
-        <MainNav />
+        <NavBar />
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">
           <hr className="flex flex-row flex-grow" />

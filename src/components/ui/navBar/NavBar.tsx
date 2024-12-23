@@ -54,9 +54,10 @@ import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
 import { authOptions } from "@/lib/config/authOptions";
 
-interface NavLink {
+export interface NavBarLink {
   label: string;
   path: string;
+  disabled?: boolean;
 }
 
 type CollectionLink = Pick<
@@ -65,7 +66,7 @@ type CollectionLink = Pick<
 >;
 type BiographyLink = Pick<IFrontendArticle, "slug">;
 
-const MainNav = async () => {
+const NavBar = async () => {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
@@ -83,7 +84,7 @@ const MainNav = async () => {
   const artworkId = firstCollection.artworks[0];
   const artworkPath = buildUrl(["collections", collectionSlug, artworkId]);
 
-  const artworkNavlink: NavLink = {
+  const artworkNavlink: NavBarLink = {
     label: "Collections",
     path: artworkPath,
   };
@@ -100,30 +101,31 @@ const MainNav = async () => {
   const biographySlug = firstBiography.slug;
   const biographyPath = buildUrl(["biography", biographySlug]);
 
-  const biographyNavlink: NavLink = {
+  const biographyNavlink: NavBarLink = {
     label: "Biography",
     path: biographyPath,
   };
 
   //! Blog
   const blogPath = buildUrl(["blog", "latest"]);
-  const blogNavlink: NavLink = {
+  const blogNavlink: NavBarLink = {
     label: "Blog",
     path: blogPath,
   };
 
   //! Project
   const projectPath = buildUrl(["project", "about"]);
-  const projectNavlink: NavLink = {
+  const projectNavlink: NavBarLink = {
     label: "Project",
     path: projectPath,
   };
 
   // ! Shop
-  const shopPath = buildUrl(["shop", "all"]);
-  const shopNavlink: NavLink = {
+  const shopPath = buildUrl(["shop"]);
+  const shopNavlink: NavBarLink = {
     label: "Shop",
     path: shopPath,
+    disabled: true,
   };
 
   const navLinks = [
@@ -149,4 +151,4 @@ const MainNav = async () => {
   );
 };
 
-export default MainNav;
+export default NavBar;
