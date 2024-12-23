@@ -67,8 +67,8 @@ export function AccountMenu() {
                   <a
                     className={`flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
                       isDisabled
-                        ? "opacity-50 cursor-not-allowed"
-                        : "from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
+                        ? "opacity-50 cursor-not-allowed bg-whitish"
+                        : "from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground"
                     }`}
                     href={isDisabled ? "#" : "/account"}
                     onClick={(e) => {

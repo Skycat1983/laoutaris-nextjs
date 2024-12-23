@@ -20,7 +20,7 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
   // console.log("navLinks in tablet layout :>> ", navLinks);
   return (
     <>
-      <div className="w-full flex flex-col h-auto">
+      <div className="w-full flex flex-col h-auto bg-whitish">
         {/* top row */}
         <div className="w-full flex flex-row justify-between space-x-6 px-4 sm:py-6">
           <nav className="flex flex-row items-center my-auto">

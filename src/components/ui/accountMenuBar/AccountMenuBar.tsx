@@ -55,11 +55,11 @@ export function AccountMenuBar() {
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-row bg-whitish">
         {/* <AccountMenu session={session} /> */}
         <AccountMenu />
 
-        <Menubar className="flex flex-row w-auto gap-0 my-auto items-center ">
+        <Menubar className="flex flex-row w-auto gap-0 my-auto items-center bg-whitish">
           <MenubarMenu>
             <MenubarTrigger disabled className={menubarTriggerClassname}>
               <Heart className="" />
