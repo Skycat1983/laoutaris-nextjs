@@ -4,10 +4,7 @@ import ProjectSection from "@/components/homepageSections/ProjectSection";
 import Hero from "@/components/ui/hero/Hero";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "../lib/server/article/data-fetching/fetchArticles";
-import { fetchTest } from "@/lib/server/article/data-fetching/fetchTest";
-import { headers } from "next/headers";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
-import SidebarLayout from "@/components/layouts/ContentLayout";
 import ContentLayout from "@/components/layouts/ContentLayout";
 
 type BiographyFields = Pick<

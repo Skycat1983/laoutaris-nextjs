@@ -2,7 +2,6 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import clientPromise from "../mongo";
 import { Adapter } from "next-auth/adapters";
 import { SessionStrategy } from "next-auth";
@@ -12,7 +11,6 @@ import { CustomMongoDBAdapter } from "../mongo/adapter";
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
 
 export const authOptions = {
-  // adapter: MongoDBAdapter(clientPromise) as Adapter,
   adapter: CustomMongoDBAdapter(clientPromise) as Adapter,
   session: {
     strategy: "jwt" as SessionStrategy,

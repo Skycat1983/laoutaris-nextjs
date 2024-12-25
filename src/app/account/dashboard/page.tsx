@@ -9,10 +9,11 @@ import { redirect } from "next/navigation";
 export default async function UserDashboard() {
   const session = await getServerSession(authOptions);
 
-  // If user is not authenticated, redirect to the homepage
   if (!session?.user?.email) {
     redirect("http://localhost:3000");
   }
+
+  console.log("session i dashboard", session);
 
   const email = session.user.email;
 
