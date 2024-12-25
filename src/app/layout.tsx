@@ -16,6 +16,7 @@ import "./globals.css";
 import { handler } from "./api/auth/[...nextauth]/route";
 import { authOptions } from "@/lib/config/authOptions";
 import Header from "@/components/ui/header/header";
+import { Sidebar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -34,13 +35,11 @@ export default async function RootLayout({
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable} ${cormorant.variable}`}
     >
-      {/* <body> */}
       <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px] bg-whitish">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
-            {/* <div className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] h-[5px] w-full container"></div> */}
             {children}
             <Footer />
           </GlobalFeaturesProvider>
@@ -48,6 +47,10 @@ export default async function RootLayout({
       </body>
     </html>
   );
+}
+
+{
+  /* <div className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] h-[5px] w-full container"></div> */
 }
 
 // user: {
