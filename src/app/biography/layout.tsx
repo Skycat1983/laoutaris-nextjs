@@ -27,8 +27,15 @@ import dbConnect from "@/utils/mongodb";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
+import React, { Suspense } from "react";
+import { delay } from "@/utils/debug";
+import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
+import { Sub } from "@radix-ui/react-menubar";
+import dynamic from "next/dynamic";
 
 type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
+
+// const SubNavBar = React.lazy(() => import("@/components/ui/subnav/SubNavBar"));
 
 export default async function BiographyLayout({
   children,
@@ -36,6 +43,7 @@ export default async function BiographyLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
+  await delay(3000);
   const stem = "biography";
 
   const response = await fetchArticles<ArticleRedirectLink>(
@@ -63,8 +71,14 @@ export default async function BiographyLayout({
 
   return (
     <section>
-      <SubNavBar links={links} />
+      <Suspense fallback={<SubNavSkeleton />}>
+        <SubNavBar links={links} />
+      </Suspense>
       {children}
     </section>
   );
+}
+
+{
+  /* <SubNavSkeleton /> */
 }

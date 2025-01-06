@@ -3,6 +3,7 @@
 import NavItem from "@/components/atoms/buttons/NavItem";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
+import { delay } from "@/utils/debug";
 
 interface SubNavBarLink {
   title: string;
@@ -15,7 +16,8 @@ interface SubNavBarProps {
   links: SubNavBarLink[];
 }
 
-const SubNavBar = ({ links }: SubNavBarProps) => {
+const SubNavBar = async ({ links }: SubNavBarProps) => {
+  await delay(3000);
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
