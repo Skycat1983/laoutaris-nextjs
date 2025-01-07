@@ -81,7 +81,6 @@ export default async function CollectionSlugLayout({
   if (!response.success) {
     return <div>Failed to fetch collection data</div>;
   }
-  // console.log("response in collectionLayout", response.data);
   const { data } = response;
 
   return (

@@ -67,28 +67,3 @@ export default clientPromise;
 // // Export a module-scoped MongoClient. By doing this in a
 // // separate module, the client can be shared across functions.
 // export default client as MongoClient;
-
-//! old version before mongodb adapter added
-// const URI = process.env.MONGO_URI;
-// const options = {};
-
-// if (!URI) {
-//   throw new Error(
-//     "Please define the MONGO_URI environment variable inside .env.local"
-//   );
-// }
-
-// let client = new MongoClient(URI, options);
-// let clientPromise: Promise<MongoClient>;
-
-// if (process.env.NODE_ENV !== "production") {
-//   if (!global.mongoClientPromise) {
-//     global.mongoClientPromise = client.connect();
-//   }
-
-//   clientPromise = global._mongoClientPromise;
-// } else {
-//   clientPromise = client.connect();
-// }
-
-// export default clientPromise;

@@ -1,8 +1,6 @@
 import dbConnect from "@/utils/mongodb";
 import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import { Content } from "next/font/google";
-import ContentLayout from "@/components/layouts/ContentLayout";
 
 export default async function BlogLayout({
   children,
@@ -21,11 +19,8 @@ export default async function BlogLayout({
 
   return (
     <section className="flex flex-col flex-grow">
-      {/* <div className="flex flex-col flex-grow"> */}
       <SubNavBar links={subNavLinks} />
       {children}
-      {/* <ContentLayout>{children}</ContentLayout> */}
-      {/* </div> */}
     </section>
   );
 }

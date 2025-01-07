@@ -1,11 +1,9 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import Link from "next/link";
-import { usePathname, useSelectedLayoutSegment } from "next/navigation";
-import { useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface ArticleProps {
   article: IFrontendArticle;

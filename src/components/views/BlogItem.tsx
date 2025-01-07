@@ -27,7 +27,6 @@ const BlogItem = ({
             <h1 className="text-3xl font-special p-8">{title}</h1>
           </div>
 
-          {/* <p className="text-xl text-gray-500 m-4">{subtitle}</p> */}
           <div className="flex justify-center items-center text-gray-500 text-sm">
             <p>By Heron Laoutaris</p> <p className="mx-2">|</p>
             <p>{new Date(displayDate).toLocaleDateString()}</p>
