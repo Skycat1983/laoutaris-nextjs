@@ -33,9 +33,11 @@ import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
 import { Sub } from "@radix-ui/react-menubar";
 import dynamic from "next/dynamic";
 
-type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
-
 // const SubNavBar = React.lazy(() => import("@/components/ui/subnav/SubNavBar"));
+
+// TODO: maybe pass the fetchFunc to the subnav so that we can impleme4nt Suspense (at moment page is rendered after fetch complete, so no suspense/skeletonn possible)
+
+type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
 
 export default async function BiographyLayout({
   children,
@@ -46,11 +48,11 @@ export default async function BiographyLayout({
   await delay(3000);
   const stem = "biography";
 
-  const response = await fetchArticles<ArticleRedirectLink>(
-    "section",
-    "biography",
-    ["title", "slug"]
-  );
+  const response: ApiResponse<ArticleRedirectLink[]> =
+    await fetchArticles<ArticleRedirectLink>("section", "biography", [
+      "title",
+      "slug",
+    ]);
 
   if (!response.success) {
     return (
