@@ -27,9 +27,6 @@ const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
             {label}
           </p>
           <ChevronDown className="w-6 h-6" />
-          {/* <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
-            expand_more
-          </span> */}
         </div>
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">
@@ -66,10 +63,6 @@ const CloudinaryColorPalette: React.FC<CloudinaryColorPaletteProps> = ({
             {label}
           </p>
           <ChevronDown className="w-6 h-6" />
-
-          {/* <span className="mr-2 ui-open:rotate-180 material-symbols-outlined ">
-            expand_more
-          </span> */}
         </div>
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">

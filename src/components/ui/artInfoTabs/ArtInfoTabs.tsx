@@ -71,6 +71,7 @@ const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
       </div>
       <div className="w-full flex flex-col gap-3 sm:flex-row md:gap-5">
         <WatchlistButton
+          // isLoggedIn={true}
           isWatchlisted={isWatchlisted}
           artworkId={artwork._id}
         />
