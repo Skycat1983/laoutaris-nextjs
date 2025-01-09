@@ -14,9 +14,6 @@ const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
   const isWatchlisted = !!artwork.watcherlist.includes(session?.user?.id);
   const isFavourited = !!artwork.favourited.includes(session?.user?.id);
 
-  // console.log("isWatchlisted", isWatchlisted);
-  // console.log("isFavourited", isFavourited);
-
   return (
     <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">
       <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>

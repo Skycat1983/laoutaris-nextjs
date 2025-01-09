@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+// i want to refactor my code so that data is no longer fetched in the layout file. instead we should fetch in the subnav component.
 
 export async function fetchCollections<T>(
   identifierKey: string,

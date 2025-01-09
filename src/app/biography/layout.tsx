@@ -73,9 +73,9 @@ export default async function BiographyLayout({
 
   return (
     <section>
-      <Suspense fallback={<SubNavSkeleton />}>
-        <SubNavBar links={links} />
-      </Suspense>
+      {/* <Suspense fallback={<SubNavSkeleton />}> */}
+      <SubNavBar links={links} />
+      {/* </Suspense> */}
       {children}
     </section>
   );
