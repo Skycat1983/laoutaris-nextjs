@@ -1,18 +1,11 @@
-import ArticleSkeleton from "@/components/views/ArticleSkeleton";
+import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import React from "react";
 
-const ArticleLoading = () => {
+const ArticleSkeleton = () => {
   return (
     <>
-      <ArticleSkeleton />
-    </>
-  );
-};
-
-export default ArticleLoading;
-
-{
-  /* <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
+      <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
         <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full place-start z-negative">
           <Skeleton className="flex flex-col h-full justify-start items-start align-start ml-10 mt-8 h-[1000px]" />
         </div>
@@ -33,5 +26,9 @@ export default ArticleLoading;
       </div>
       <div className="p-10">
         <HorizontalDivider />
-      </div> */
-}
+      </div>
+    </>
+  );
+};
+
+export default ArticleSkeleton;
