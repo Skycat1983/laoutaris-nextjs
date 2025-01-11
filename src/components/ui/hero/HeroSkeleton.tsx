@@ -1,7 +1,6 @@
 // "use client";
 
 import { Skeleton } from "../shadcn/skeleton";
-import { CarouselNext, CarouselPrevious } from "./carousel";
 
 const HeroSkeleton = () => {
   return (

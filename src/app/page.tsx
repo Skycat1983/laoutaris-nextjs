@@ -17,13 +17,13 @@ type BiographyFields = Pick<
 
 export default async function Home() {
   await delay(2000);
-  // const biographyEntriesResponse = await fetchArticles<BiographyFields>(
-  //   "section",
-  //   "biography",
-  //   ["title", "subtitle", "slug", "imageUrl"]
-  // );
+  const biographyEntriesResponse = await fetchArticles<BiographyFields>(
+    "section",
+    "biography",
+    ["title", "subtitle", "slug", "imageUrl"]
+  );
 
-  // console.log("biographyEntriesResponse", biographyEntriesResponse);
+  console.log("biographyEntriesResponse", biographyEntriesResponse);
 
   return (
     <>
@@ -37,7 +37,7 @@ export default async function Home() {
           <HomeProjectSection />
         </div>
 
-        {/* <div className="w-full flex flex-col items-center justify-center">
+        <div className="w-full flex flex-col items-center justify-center">
           {biographyEntriesResponse.success ? (
             <HomeBiographySection
               biographyEntries={biographyEntriesResponse.data}
@@ -45,7 +45,7 @@ export default async function Home() {
           ) : (
             <p>Error: {biographyEntriesResponse.message}</p>
           )}
-        </div> */}
+        </div>
         <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
           <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8 text-center bg-slate/10">
             <div>
