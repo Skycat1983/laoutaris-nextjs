@@ -4,7 +4,7 @@ import YoutubeEmbedding from "../atoms/YoutubeEmbedding";
 import ButtonDivider from "../atoms/ButtonDivider";
 
 //! this version causes problems with empty space appearing below footer
-const ProjectSection = () => {
+const HomeProjectSection = () => {
   return (
     <>
       <SectionHeading heading="Project:" subheading="Watch the documentary" />
@@ -45,4 +45,4 @@ const ProjectSection = () => {
   );
 };
 
-export default ProjectSection;
+export default HomeProjectSection;

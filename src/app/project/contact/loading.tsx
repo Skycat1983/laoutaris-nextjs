@@ -1,4 +1,4 @@
-import ArticleSkeleton from "@/components/views/ArticleSkeleton";
+import ArticleSkeleton from "@/components/skeletons/ArticleViewSkeleton";
 
 const ContactLoading = () => {
   return (

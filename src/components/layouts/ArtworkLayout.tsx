@@ -5,7 +5,7 @@ import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import CroppedImages from "../atoms/CroppedImages";
 import ArtworkLoading from "@/app/collections/[collectionSlug]/[artworkId]/loading";
-import ArtworkInfoCardSkeleton from "../cards/artworkInfoCard/ArtworkInfoCardSkeleton";
+import ArtworkInfoCardSkeleton from "../skeletons/ArtworkInfoCardSkeleton";
 
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.

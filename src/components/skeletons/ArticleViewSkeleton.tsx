@@ -2,7 +2,7 @@ import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import React from "react";
 
-const ArticleSkeleton = () => {
+const ArticleViewSkeleton = () => {
   return (
     <>
       <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
@@ -31,4 +31,4 @@ const ArticleSkeleton = () => {
   );
 };
 
-export default ArticleSkeleton;
+export default ArticleViewSkeleton;

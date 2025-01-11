@@ -1,10 +1,10 @@
-import ArticleSkeleton from "@/components/views/ArticleSkeleton";
+import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
 import React from "react";
 
 const ArticleLoading = () => {
   return (
     <>
-      <ArticleSkeleton />
+      <ArticleViewSkeleton />
     </>
   );
 };

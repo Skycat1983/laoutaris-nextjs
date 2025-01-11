@@ -24,7 +24,7 @@ const BiographyLinkWrapper: React.FC<{ to: string; children: ReactNode }> = ({
   return <Link href={to}>{children}</Link>;
 };
 
-const BiographySection: React.FC<BiographySectionProps> = ({
+const HomeBiographySection: React.FC<BiographySectionProps> = ({
   biographyEntries,
 }) => {
   return (
@@ -70,7 +70,7 @@ const BiographySection: React.FC<BiographySectionProps> = ({
   );
 };
 
-export default BiographySection;
+export default HomeBiographySection;
 
 // const BiographySection: React.FC<BiographySectionProps> = ({
 //   biographyEntries,
