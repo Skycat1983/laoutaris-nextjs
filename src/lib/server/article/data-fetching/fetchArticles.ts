@@ -66,7 +66,7 @@ export async function fetchArticles<T>(
   identifierKey: string,
   identifierValue: string,
   fields?: string[]
-): Promise<ApiResponse<T[]>> {
+): Promise<ApiResponse<T>> {
   const queryParams = new URLSearchParams({
     identifierKey,
     identifierValue,
@@ -97,7 +97,7 @@ export async function fetchArticles<T>(
 
     return {
       success: true,
-      data: result.data as T[],
+      data: result.data as T,
       statusCode: response.status,
     };
   } catch (error) {

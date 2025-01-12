@@ -7,6 +7,8 @@ import { delay } from "@/utils/debug";
 import HomeArtworkSection from "@/components/homepageSections/HomeArtworkSection";
 import HomeBiographySection from "@/components/homepageSections/HomeBiographySection";
 import HomeProjectSection from "@/components/homepageSections/HomeProjectSection";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 type BiographyFields = Pick<
   IFrontendArticle,
@@ -16,37 +18,45 @@ type BiographyFields = Pick<
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 
 export default async function Home() {
-  await delay(2000);
-  const biographyEntriesResponse = await fetchArticles<BiographyFields>(
-    "section",
-    "biography",
-    ["title", "subtitle", "slug", "imageUrl"]
-  );
+  // await delay(2000);
+  // const biographyEntriesResponse = await fetchArticles<BiographyFields>(
+  //   "section",
+  //   "biography",
+  //   ["title", "subtitle", "slug", "imageUrl"]
+  // );
 
-  console.log("biographyEntriesResponse", biographyEntriesResponse);
+  // console.log("biographyEntriesResponse", biographyEntriesResponse);
 
   return (
     <>
-      <Hero />
+      {/* <Hero /> */}
       <ContentLayout>
-        <div className="">
+        {/* <div className="">
           <HomeArtworkSection />
         </div>
 
         <div className="p-4 w-full">
           <HomeProjectSection />
-        </div>
+        </div> */}
 
         <div className="w-full flex flex-col items-center justify-center">
-          {biographyEntriesResponse.success ? (
-            <HomeBiographySection
-              biographyEntries={biographyEntriesResponse.data}
-            />
-          ) : (
-            <p>Error: {biographyEntriesResponse.message}</p>
-          )}
+          {/* <HomeBiographySection /> */}
+
+          <Suspense
+            fallback={
+              <div className="flex space-x-4">
+                <Skeleton className="h-[300px] w-[250px]" />
+                <Skeleton className="h-[300px] w-[250px]" />
+                <Skeleton className="h-[300px] w-[250px]" />
+                <Skeleton className="h-[300px] w-[250px]" />
+                <Skeleton className="h-[300px] w-[250px]" />
+              </div>
+            }
+          >
+            <HomeBiographySection />
+          </Suspense>
         </div>
-        <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
+        {/* <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
           <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8 text-center bg-slate/10">
             <div>
               <h1 className="text-4xl font-cormorant">Stay up to date</h1>
@@ -59,8 +69,18 @@ export default async function Home() {
           <div className="bg-slate-100 border col-start-7 col-end-12">
             <SubscribeForm />
           </div>
-        </div>
+        </div> */}
       </ContentLayout>
     </>
   );
+}
+
+{
+  /* {biographyEntriesResponse.success ? (
+            <HomeBiographySection
+              biographyEntries={biographyEntriesResponse.data}
+            />
+          ) : (
+            <p>Error: {biographyEntriesResponse.message}</p>
+          )} */
 }
