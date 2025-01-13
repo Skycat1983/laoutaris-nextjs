@@ -14,7 +14,7 @@ import HomeSubscribeSection from "@/components/homepageSections/HomeSubscribeSec
 export default async function Home() {
   return (
     <>
-      {/* <Hero /> */}
+      <Hero />
       <ContentLayout>
         <Suspense fallback={<HomeArtworkSectionSkeleton />}>
           <HomeArtworkSection />

@@ -15,7 +15,7 @@ type BiographyEntry = Pick<
 >;
 
 const HomeBiographySection: React.FC = async () => {
-  await delay(5000);
+  await delay(2000);
 
   const biographyEntriesResponse = await fetchArticles<BiographyEntry[]>(
     "section",

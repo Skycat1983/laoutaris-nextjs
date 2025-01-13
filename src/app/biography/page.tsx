@@ -31,14 +31,14 @@ import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles"
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-type BiographyFields = Pick<IFrontendArticle, "slug">;
+type ArticleSlug = Pick<IFrontendArticle, "slug">;
 
 export default async function Biography() {
   await dbConnect();
 
   const stem = "biography";
 
-  const response = await fetchArticles<BiographyFields>("section", stem, [
+  const response = await fetchArticles<ArticleSlug[]>("section", stem, [
     "slug",
   ]);
 
