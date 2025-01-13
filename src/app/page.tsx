@@ -9,24 +9,14 @@ import HomeBiographySection from "@/components/homepageSections/HomeBiographySec
 import HomeProjectSection from "@/components/homepageSections/HomeProjectSection";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
+import HomeBiographySectionSkeleton from "@/components/skeletons/HomeBiographySectionSkeleton";
 
 type BiographyFields = Pick<
   IFrontendArticle,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
 
-// https://blog.arcjet.com/testing-next-js-app-router-api-routes/
-
 export default async function Home() {
-  // await delay(2000);
-  // const biographyEntriesResponse = await fetchArticles<BiographyFields>(
-  //   "section",
-  //   "biography",
-  //   ["title", "subtitle", "slug", "imageUrl"]
-  // );
-
-  // console.log("biographyEntriesResponse", biographyEntriesResponse);
-
   return (
     <>
       {/* <Hero /> */}
@@ -40,19 +30,7 @@ export default async function Home() {
         </div> */}
 
         <div className="w-full flex flex-col items-center justify-center">
-          {/* <HomeBiographySection /> */}
-
-          <Suspense
-            fallback={
-              <div className="flex space-x-4">
-                <Skeleton className="h-[300px] w-[250px]" />
-                <Skeleton className="h-[300px] w-[250px]" />
-                <Skeleton className="h-[300px] w-[250px]" />
-                <Skeleton className="h-[300px] w-[250px]" />
-                <Skeleton className="h-[300px] w-[250px]" />
-              </div>
-            }
-          >
+          <Suspense fallback={<HomeBiographySectionSkeleton />}>
             <HomeBiographySection />
           </Suspense>
         </div>
@@ -74,6 +52,25 @@ export default async function Home() {
     </>
   );
 }
+
+// <div className="flex space-x-4">
+//   <Skeleton className="h-[300px] w-[250px]" />
+//   <Skeleton className="h-[300px] w-[250px]" />
+//   <Skeleton className="h-[300px] w-[250px]" />
+//   <Skeleton className="h-[300px] w-[250px]" />
+//   <Skeleton className="h-[300px] w-[250px]" />
+// </div>
+
+// https://blog.arcjet.com/testing-next-js-app-router-api-routes/
+
+// await delay(2000);
+// const biographyEntriesResponse = await fetchArticles<BiographyFields>(
+//   "section",
+//   "biography",
+//   ["title", "subtitle", "slug", "imageUrl"]
+// );
+
+// console.log("biographyEntriesResponse", biographyEntriesResponse);
 
 {
   /* {biographyEntriesResponse.success ? (
