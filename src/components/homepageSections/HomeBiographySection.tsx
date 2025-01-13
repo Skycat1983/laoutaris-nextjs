@@ -33,7 +33,7 @@ const HomeBiographySection: React.FC = async () => {
 
   console.log("biographyEntries", biographyEntries);
   return (
-    <>
+    <div className="w-full flex flex-col items-center justify-center">
       <SectionHeading
         heading="Biography:"
         subheading="Read my grandfather's story"
@@ -52,7 +52,7 @@ const HomeBiographySection: React.FC = async () => {
       </ScrollArea>
 
       <ButtonDivider label="Read more" link="/biography" />
-    </>
+    </div>
   );
 };
 

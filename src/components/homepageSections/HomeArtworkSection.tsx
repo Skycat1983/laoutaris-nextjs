@@ -38,7 +38,7 @@ const HomeArtworkSection = async () => {
   ];
 
   return (
-    <>
+    <div>
       <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
       <HorizontalDivider />
 
@@ -65,7 +65,7 @@ const HomeArtworkSection = async () => {
         ))}
       </section>
       <ButtonDivider label={"See more"} link="/artwork" />
-    </>
+    </div>
   );
 };
 

@@ -13,10 +13,8 @@ import {
   cormorant,
 } from "@/lib/client/styles/fonts";
 import "./globals.css";
-import { handler } from "./api/auth/[...nextauth]/route";
 import { authOptions } from "@/lib/config/authOptions";
 import Header from "@/components/ui/header/header";
-import { Sidebar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -49,10 +47,6 @@ export default async function RootLayout({
   );
 }
 
-{
-  /* <div className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] h-[5px] w-full container"></div> */
-}
-
 // user: {
 //   name: 'Heron',
 //   email: 'hlaoutaris@gmail.com',
@@ -65,34 +59,3 @@ export default async function RootLayout({
 //   iat: 1723736523,
 //   exp: 1723736533
 // }
-
-// const archivoBlack = Archivo_Black({
-//   weight: "400",
-//   subsets: ["latin"],
-//   display: "swap",
-//   variable: "--font-archivo-black",
-// });
-
-// const archivo = Archivo({
-//   weight: ["400", "500", "600", "700", "800"],
-//   subsets: ["latin"],
-//   // display: "swap",
-
-//   variable: "--font-archivo",
-// });
-
-// const cinzelDecorative = Cinzel_Decorative({
-//   weight: "400",
-//   subsets: ["latin"],
-//   display: "swap",
-
-//   variable: "--font-cinzel-decorative",
-// });
-
-// const crimson = Crimson_Text({
-//   weight: ["400"],
-//   subsets: ["latin"],
-//   display: "swap",
-
-//   variable: "--font-crimson",
-// });

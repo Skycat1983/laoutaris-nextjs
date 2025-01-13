@@ -6,7 +6,7 @@ import { ScrollArea } from "../ui/shadcn/scroll-area";
 
 const HomeBiographySectionSkeleton = () => {
   return (
-    <>
+    <div className="w-full flex flex-col items-center justify-center">
       <SectionHeadingSkeleton />
       <HorizontalDivider />
       <ScrollArea className="container whitespace-nowrap rounded-md h-[500px]">
@@ -19,7 +19,7 @@ const HomeBiographySectionSkeleton = () => {
         </section>
       </ScrollArea>
       <HorizontalDivider />
-    </>
+    </div>
   );
 };
 

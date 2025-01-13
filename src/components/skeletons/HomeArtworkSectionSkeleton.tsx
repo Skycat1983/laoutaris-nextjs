@@ -6,7 +6,7 @@ import { Skeleton } from "../ui/shadcn/skeleton";
 const HomeArtworkSectionSkeleton = () => {
   const arr = Array.from({ length: 6 }, (_, i) => i);
   return (
-    <>
+    <div>
       <SectionHeadingSkeleton />
       <HorizontalDivider />
 
@@ -18,7 +18,7 @@ const HomeArtworkSectionSkeleton = () => {
         ))}
       </section>
       <HorizontalDivider />
-    </>
+    </div>
   );
 };
 
