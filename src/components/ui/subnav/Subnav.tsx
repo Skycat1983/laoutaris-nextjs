@@ -25,8 +25,6 @@ interface SubNavBarProps<T> {
   fields?: string[];
 }
 
-// subnav component. receives a fetchFunction as prop. this fetchFunction takes identifier key (string), idenfifier value (string), and fields (string[]) as arguments and returns a promise of type T.
-
 const SubNav = async <T extends SubNavBarLink>({
   fetcher,
   identifierKey,
@@ -42,7 +40,7 @@ const SubNav = async <T extends SubNavBarLink>({
   const links: SubNavBarLink[] = response.data.map((item) => ({
     title: item.title,
     slug: item.slug,
-    url: buildUrl(["collections", item.slug]), // Adjust `buildUrl` logic as needed.
+    url: buildUrl(["collections", item.slug]),
   }));
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
@@ -51,7 +49,6 @@ const SubNav = async <T extends SubNavBarLink>({
           {links.map((link, i) => (
             <li key={i}>
               {link.disabled ? (
-                // Render NavItem without Link when disabled
                 <NavItem
                   label={link.title}
                   slug={link.slug}
@@ -60,7 +57,6 @@ const SubNav = async <T extends SubNavBarLink>({
                   activeClassName="z-[99] font-face-default subheading-button-active disabled-active"
                 />
               ) : (
-                // Render NavItem wrapped with Link when not disabled
                 <Link href={link.url}>
                   <NavItem
                     label={link.title}
@@ -81,47 +77,3 @@ const SubNav = async <T extends SubNavBarLink>({
 };
 
 export default SubNav;
-
-// "use server";
-
-// import NavItem from "@/components/atoms/buttons/NavItem";
-// import Link from "next/link";
-// import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-
-// interface SubnavProps {
-//   stem: string;
-//   links: SubnavLink[];
-// }
-
-// const Subnav = ({ links, stem }: SubnavProps) => {
-//   const buildUrl = (link: SubnavLink, stem: string) => {
-//     return `http://localhost:3000/${stem}/${link.slug}`;
-//   };
-
-//   console.log("links in Subnav :>> ", links);
-//   return (
-//     <>
-//       <div className="relative  flex flex-row w-full justify-center mx-4 ">
-//         <ScrollArea className="whitespace-nowrap rounded-md h-auto ">
-//           <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
-//             {links.map((link, i) => (
-//               <li key={i}>
-//                 <Link href={buildUrl(link, stem)}>
-//                   <NavItem
-//                     label={link.title}
-//                     slug={link.slug}
-//                     className="z-[99] font-face-default subheading-button"
-//                     activeClassName="z-[99] font-face-default subheading-button-active"
-//                   />
-//                 </Link>
-//               </li>
-//             ))}
-//           </ul>
-//           <ScrollBar orientation="horizontal" className="p-0" />
-//         </ScrollArea>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Subnav;

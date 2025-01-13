@@ -26,7 +26,7 @@ import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
 import { Suspense } from "react";
-import SubNav from "@/components/ui/subnav/Subnav";
+import SubNav from "@/components/ui/subnav/SubNav";
 import { delay } from "@/utils/debug";
 
 type SubnavCollectionFields = Pick<

@@ -26,12 +26,10 @@
 import dbConnect from "@/utils/mongodb";
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
-import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import React, { Suspense } from "react";
 import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
-import { Sub } from "@radix-ui/react-menubar";
-import dynamic from "next/dynamic";
+import SubNav from "@/components/ui/subnav/SubNav";
 
 // const SubNavBar = React.lazy(() => import("@/components/ui/subnav/SubNavBar"));
 
@@ -48,37 +46,51 @@ export default async function BiographyLayout({
   await delay(3000);
   const stem = "biography";
 
-  const response: ApiResponse<ArticleRedirectLink[]> =
-    await fetchArticles<ArticleRedirectLink>("section", "biography", [
-      "title",
-      "slug",
-    ]);
-
-  if (!response.success) {
-    return (
-      <section className="p-0 m-0">
-        <p className="mt-4">{response.message}</p>
-        {children}
-      </section>
-    );
-  }
-
-  const { data } = response;
-
-  const links = data.map((link) => ({
-    title: link.title,
-    slug: link.slug,
-    url: `/${stem}/${link.slug}`,
-  }));
+  const identifierKey = "section";
+  const identifierValue = "biography";
+  const fields = ["title", "slug"];
+  const fetcher = fetchArticles;
 
   return (
     <section>
-      {/* <Suspense fallback={<SubNavSkeleton />}> */}
-      <SubNavBar links={links} />
-      {/* </Suspense> */}
+      <Suspense fallback={<SubNavSkeleton />}>
+        <SubNav
+          fetcher={fetcher}
+          identifierKey={identifierKey}
+          identifierValue={identifierValue}
+          fields={fields}
+        />
+      </Suspense>
       {children}
     </section>
   );
+}
+
+// const response: ApiResponse<ArticleRedirectLink[]> =
+//   await fetchArticles<ArticleRedirectLink>("section", "biography", [
+//     "title",
+//     "slug",
+//   ]);
+
+// if (!response.success) {
+//   return (
+//     <section className="p-0 m-0">
+//       <p className="mt-4">{response.message}</p>
+//       {children}
+//     </section>
+//   );
+// }
+
+// const { data } = response;
+
+// const links = data.map((link) => ({
+//   title: link.title,
+//   slug: link.slug,
+//   url: `/${stem}/${link.slug}`,
+// }));
+
+{
+  /* <SubNavBar links={links} /> */
 }
 
 {
