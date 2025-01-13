@@ -3,7 +3,12 @@
 import NavItem from "@/components/atoms/buttons/NavItem";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-import { buildUrl } from "@/utils/buildUrl";
+
+type FetchFunction<T> = (
+  identifierKey: string,
+  identifierValue: string,
+  fields?: string[]
+) => Promise<ApiResponse<T[]>>;
 
 interface SubNavBarLink {
   title: string;
@@ -12,17 +17,12 @@ interface SubNavBarLink {
   disabled?: boolean;
 }
 
-type FetchFunction<T> = (
-  identifierKey: string,
-  identifierValue: string,
-  fields?: string[]
-) => Promise<ApiResponse<T[]>>;
-
-interface SubNavBarProps<T> {
+interface SubNavBarProps<T extends SubNavBarLink> {
   fetcher: FetchFunction<T>;
   identifierKey: string;
   identifierValue: string;
   fields?: string[];
+  linkResolver: (item: T) => SubNavBarLink;
 }
 
 const SubNav = async <T extends SubNavBarLink>({
@@ -30,6 +30,7 @@ const SubNav = async <T extends SubNavBarLink>({
   identifierKey,
   identifierValue,
   fields,
+  linkResolver,
 }: SubNavBarProps<T>) => {
   const response = await fetcher(identifierKey, identifierValue, fields);
 
@@ -37,11 +38,8 @@ const SubNav = async <T extends SubNavBarLink>({
     return <p>{response.message}</p>;
   }
 
-  const links: SubNavBarLink[] = response.data.map((item) => ({
-    title: item.title,
-    slug: item.slug,
-    url: buildUrl(["collections", item.slug]),
-  }));
+  const links = response.data.map(linkResolver);
+
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
@@ -77,3 +75,9 @@ const SubNav = async <T extends SubNavBarLink>({
 };
 
 export default SubNav;
+
+// const links: SubNavBarLink[] = response.data.map((item) => ({
+//   title: item.title,
+//   slug: item.slug,
+//   url: buildUrl(["collections", item.slug]),
+// }));

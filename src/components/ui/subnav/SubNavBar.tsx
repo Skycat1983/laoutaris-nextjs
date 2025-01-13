@@ -1,21 +1,25 @@
-"use client";
+"use server";
 
 import NavItem from "@/components/atoms/buttons/NavItem";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
+import { delay } from "@/utils/debug";
 
-interface SubNavBarLink {
+export interface SubNavBarLink {
   title: string;
   slug: string;
   url: string;
   disabled?: boolean;
 }
 
-interface SubNavBarProps {
-  links: SubNavBarLink[];
+interface SubNavProps {
+  fetchLinks: () => Promise<SubNavBarLink[]>;
 }
 
-const SubNavBar = ({ links }: SubNavBarProps) => {
+const SubNavBar = async ({ fetchLinks }: SubNavProps) => {
+  await delay(1000);
+  const links = await fetchLinks();
+
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
@@ -23,7 +27,6 @@ const SubNavBar = ({ links }: SubNavBarProps) => {
           {links.map((link, i) => (
             <li key={i}>
               {link.disabled ? (
-                // Render NavItem without Link when disabled
                 <NavItem
                   label={link.title}
                   slug={link.slug}
@@ -32,7 +35,6 @@ const SubNavBar = ({ links }: SubNavBarProps) => {
                   activeClassName="z-[99] font-face-default subheading-button-active disabled-active"
                 />
               ) : (
-                // Render NavItem wrapped with Link when not disabled
                 <Link href={link.url}>
                   <NavItem
                     label={link.title}
@@ -59,7 +61,84 @@ export default SubNavBar;
 // import NavItem from "@/components/atoms/buttons/NavItem";
 // import Link from "next/link";
 // import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-// import { delay } from "@/utils/debug";
+
+// type FetchFunction<T> = (
+//   identifierKey: string,
+//   identifierValue: string,
+//   fields?: string[]
+// ) => Promise<ApiResponse<SubNavBarLink[]>>;
+
+// interface SubNavBarLink {
+//   title: string;
+//   slug: string;
+//   url: string;
+//   disabled?: boolean;
+// }
+
+// interface SubNavBarProps<T extends SubNavBarLink> {
+//   fetcher: FetchFunction<T>;
+//   identifierKey: string;
+//   identifierValue: string;
+//   fields?: string[];
+//   linkResolver: (item: T) => SubNavBarLink;
+// }
+
+// const SubNavBar = async <T extends SubNavBarLink>({
+//   fetcher,
+//   identifierKey,
+//   identifierValue,
+//   fields,
+//   linkResolver,
+// }: SubNavBarProps<T>) => {
+//   const response = await fetcher(identifierKey, identifierValue, fields);
+
+//   if (!response.success) {
+//     return <p>{response.message}</p>;
+//   }
+
+//   const links = response.data.map(linkResolver);
+
+//   return (
+//     <div className="relative flex flex-row w-full justify-center mx-4">
+//       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
+//         <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
+//           {links.map((link, i) => (
+//             <li key={i}>
+//               {link.disabled ? (
+//                 <NavItem
+//                   label={link.title}
+//                   slug={link.slug}
+//                   disabled={true}
+//                   className="z-[99] font-face-default subheading-button disabled"
+//                   activeClassName="z-[99] font-face-default subheading-button-active disabled-active"
+//                 />
+//               ) : (
+//                 <Link href={link.url}>
+//                   <NavItem
+//                     label={link.title}
+//                     slug={link.slug}
+//                     disabled={false}
+//                     className="z-[99] font-face-default subheading-button"
+//                     activeClassName="z-[99] font-face-default subheading-button-active"
+//                   />
+//                 </Link>
+//               )}
+//             </li>
+//           ))}
+//         </ul>
+//         <ScrollBar orientation="horizontal" className="p-0" />
+//       </ScrollArea>
+//     </div>
+//   );
+// };
+
+// export default SubNavBar;
+
+// "use client";
+
+// import NavItem from "@/components/atoms/buttons/NavItem";
+// import Link from "next/link";
+// import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 
 // interface SubNavBarLink {
 //   title: string;
@@ -72,8 +151,7 @@ export default SubNavBar;
 //   links: SubNavBarLink[];
 // }
 
-// const SubNavBar = async ({ links }: SubNavBarProps) => {
-//   await delay(3000);
+// const SubNavBar = ({ links }: SubNavBarProps) => {
 //   return (
 //     <div className="relative flex flex-row w-full justify-center mx-4">
 //       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
@@ -81,7 +159,6 @@ export default SubNavBar;
 //           {links.map((link, i) => (
 //             <li key={i}>
 //               {link.disabled ? (
-//                 // Render NavItem without Link when disabled
 //                 <NavItem
 //                   label={link.title}
 //                   slug={link.slug}
@@ -90,7 +167,6 @@ export default SubNavBar;
 //                   activeClassName="z-[99] font-face-default subheading-button-active disabled-active"
 //                 />
 //               ) : (
-//                 // Render NavItem wrapped with Link when not disabled
 //                 <Link href={link.url}>
 //                   <NavItem
 //                     label={link.title}

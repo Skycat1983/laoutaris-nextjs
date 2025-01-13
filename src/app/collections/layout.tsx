@@ -28,62 +28,81 @@ import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
 import { Suspense } from "react";
 import SubNav from "@/components/ui/subnav/SubNav";
 import { delay } from "@/utils/debug";
+import { collectionToSubNavLink } from "@/utils/resolvers";
+import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";
 
 type SubnavCollectionFields = Pick<
   IFrontendCollectionUnpopulated,
   "title" | "slug" | "artworks"
 >;
 
-export default async function CollectionsLayout({
+interface SubNavBarLink {
+  title: string;
+  slug: string;
+  url: string;
+  disabled?: boolean;
+}
+
+export default function CollectionsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await dbConnect();
-  await delay(3000);
-  const stem = "collections";
-  const identifierKey = "section";
-  const identifierValue = "artwork";
-  const fields = ["title", "slug", "artworks"];
-  const response = await fetchCollections<SubnavCollectionFields>(
-    identifierKey,
-    identifierValue,
-    fields
-  );
-  if (!response.success) {
-    return (
-      <section className="p-0 m-0">
-        <p className="mt-4">{response.message}</p>
-        {children}
-      </section>
-    );
-  }
-  const { data } = response;
+  const resolver = collectionToSubNavLink;
 
-  const links = data.map((link) => ({
-    title: link.title,
-    slug: link.slug,
-    url: buildUrl([stem, link.slug, link.artworks[0]]),
-  }));
+  const fetchLinks = fetchAndResolve(
+    fetchCollections,
+    "section",
+    "artwork",
+    ["title", "slug", "artworks"],
+    resolver
+  );
 
   return (
-    <section className="p-0 m-0">
+    <section>
       <Suspense fallback={<SubNavSkeleton />}>
-        <SubNav
-          fetcher={fetchCollections}
-          identifierKey="section"
-          identifierValue="artwork"
-          fields={fields}
-        />
+        <SubNavBar fetchLinks={fetchLinks} />
       </Suspense>
-
-      {/* <Suspense fallback={<SubNavSkeleton />}>
-        <SubNavBar links={links} />
-      </Suspense> */}
       {children}
     </section>
   );
 }
+
+// const resolver = (item: SubnavCollectionFields): SubNavBarLink => ({
+//   title: item.title,
+//   slug: item.slug,
+//   url: buildUrl(["collections", item.slug, item.artworks[0]]),
+// });
+
+// const createFetchLinks = (
+//   identifierKey: string,
+//   identifierValue: string,
+//   fields: string[]
+// ): (() => Promise<SubNavBarLink[]>) => {
+//   return async () => {
+//     const response = await fetchCollections<SubnavCollectionFields>(
+//       identifierKey,
+//       identifierValue,
+//       fields
+//     );
+
+//     if (response.success) {
+//       return response.data.map((item) => ({
+//         title: item.title,
+//         slug: item.slug,
+//         url: buildUrl(["collections", item.slug, item.artworks[0]]),
+//       }));
+//     }
+//     throw new Error("Failed to fetch links");
+//   };
+// };
+
+// interface SubNavBarLink {
+//   title: string;
+//   slug: string;
+//   url: string;
+//   disabled?: boolean;
+// }
 
 // type SubnavCollectionFields = Pick<
 //   IFrontendCollectionUnpopulated,
@@ -100,33 +119,50 @@ export default async function CollectionsLayout({
 //   const identifierKey = "section";
 //   const identifierValue = "artwork";
 //   const fields = ["title", "slug", "artworks"];
-//   const response = await fetchCollections<SubnavCollectionFields>(
-//     identifierKey,
-//     identifierValue,
-//     fields
-//   );
-//   if (!response.success) {
-//     return (
-//       <section className="p-0 m-0">
-//         <p className="mt-4">{response.message}</p>
-//         {children}
-//       </section>
-//     );
-//   }
-//   const { data } = response;
-
-//   const links = data.map((link) => ({
-//     title: link.title,
-//     slug: link.slug,
-//     url: buildUrl([stem, link.slug, link.artworks[0]]),
-//   }));
+//   const fetcher = fetchCollections;
+//   const linkResolver = (item: SubnavCollectionFields): SubNavBarLink => ({
+//     title: item.title,
+//     slug: item.slug,
+//     url: buildUrl([stem, item.slug, item.artworks[0]]),
+//   });
 
 //   return (
 //     <section className="p-0 m-0">
 //       <Suspense fallback={<SubNavSkeleton />}>
-//         <SubNavBar links={links} />
+//         <SubNav
+//           fetcher={fetcher}
+//           identifierKey={identifierKey}
+//           identifierValue={identifierValue}
+//           fields={fields}
+//           linkResolver={linkResolver}
+//         />
 //       </Suspense>
 //       {children}
 //     </section>
 //   );
 // }
+
+{
+  /* <SubNav links={links} /> */
+}
+
+// const response = await fetchCollections<SubnavCollectionFields>(
+//   identifierKey,
+//   identifierValue,
+//   fields
+// );
+// if (!response.success) {
+//   return (
+//     <section className="p-0 m-0">
+//       <p className="mt-4">{response.message}</p>
+//       {children}
+//     </section>
+//   );
+// }
+// const { data } = response;
+
+// const links = data.map((link) => ({
+//   title: link.title,
+//   slug: link.slug,
+//   url: buildUrl([stem, link.slug, link.artworks[0]]),
+// }));

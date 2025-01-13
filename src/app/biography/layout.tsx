@@ -24,18 +24,15 @@
 
 "use server";
 import dbConnect from "@/utils/mongodb";
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import React, { Suspense } from "react";
 import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
-import SubNav from "@/components/ui/subnav/SubNav";
-
-// const SubNavBar = React.lazy(() => import("@/components/ui/subnav/SubNavBar"));
-
-// TODO: maybe pass the fetchFunc to the subnav so that we can impleme4nt Suspense (at moment page is rendered after fetch complete, so no suspense/skeletonn possible)
-
-type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
+import { buildUrl } from "@/utils/buildUrl";
+import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import SubNavBar from "@/components/ui/subnav/SubNavBar";
+import { articleToSubNavLink } from "@/utils/resolvers";
+import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";
 
 export default async function BiographyLayout({
   children,
@@ -43,28 +40,51 @@ export default async function BiographyLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  await delay(3000);
-  const stem = "biography";
+  await delay(2000);
+  const resolver = articleToSubNavLink;
 
-  const identifierKey = "section";
-  const identifierValue = "biography";
-  const fields = ["title", "slug"];
-  const fetcher = fetchArticles;
+  const fetchLinks = fetchAndResolve(
+    fetchArticles,
+    "section",
+    "biography",
+    ["title", "slug"],
+    resolver
+  );
 
   return (
     <section>
       <Suspense fallback={<SubNavSkeleton />}>
-        <SubNav
-          fetcher={fetcher}
-          identifierKey={identifierKey}
-          identifierValue={identifierValue}
-          fields={fields}
-        />
+        <SubNavBar fetchLinks={fetchLinks} />
       </Suspense>
       {children}
     </section>
   );
 }
+
+// const resolver = (item: SubNavArticleFields): SubNavBarLink => ({
+//   title: item.title,
+//   slug: item.slug,
+//   url: buildUrl(["biography", item.slug]),
+// });
+
+// interface SubNavBarLink {
+//   title: string;
+//   slug: string;
+//   url: string;
+//   disabled?: boolean;
+// }
+
+// type SubNavArticleFields = Pick<IFrontendArticle, "title" | "slug">;
+
+{
+  /* <SubNav
+          fetcher={fetcher}
+          identifierKey={identifierKey}
+          identifierValue={identifierValue}
+          fields={fields}
+        /> */
+}
+// type ArticleRedirectLink = Pick<IFrontendArticle, "title" | "slug">;
 
 // const response: ApiResponse<ArticleRedirectLink[]> =
 //   await fetchArticles<ArticleRedirectLink>("section", "biography", [
