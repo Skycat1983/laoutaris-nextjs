@@ -10,6 +10,7 @@ import HomeProjectSection from "@/components/homepageSections/HomeProjectSection
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import HomeBiographySectionSkeleton from "@/components/skeletons/HomeBiographySectionSkeleton";
+import HomeArtworkSectionSkeleton from "@/components/skeletons/HomeArtworkSectionSkeleton";
 
 type BiographyFields = Pick<
   IFrontendArticle,
@@ -21,19 +22,21 @@ export default async function Home() {
     <>
       {/* <Hero /> */}
       <ContentLayout>
-        {/* <div className="">
-          <HomeArtworkSection />
+        <div className="">
+          <Suspense fallback={<HomeArtworkSectionSkeleton />}>
+            <HomeArtworkSection />
+          </Suspense>
         </div>
 
-        <div className="p-4 w-full">
+        {/* <div className="p-4 w-full">
           <HomeProjectSection />
         </div> */}
-
-        <div className="w-full flex flex-col items-center justify-center">
+        {/* DONE HomeBiographySection */}
+        {/* <div className="w-full flex flex-col items-center justify-center">
           <Suspense fallback={<HomeBiographySectionSkeleton />}>
             <HomeBiographySection />
           </Suspense>
-        </div>
+        </div> */}
         {/* <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
           <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8 text-center bg-slate/10">
             <div>

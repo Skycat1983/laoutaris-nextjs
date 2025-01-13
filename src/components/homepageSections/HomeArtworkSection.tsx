@@ -1,9 +1,13 @@
+"use server";
+
 import Image from "next/image";
 import ButtonDivider from "../atoms/ButtonDivider";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import SectionHeading from "../atoms/SectionHeading";
+import { delay } from "@/utils/debug";
 
-const HomeArtworkSection = () => {
+const HomeArtworkSection = async () => {
+  await delay(2000);
   const artworks = [
     {
       label: "Latest",
@@ -49,7 +53,6 @@ const HomeArtworkSection = () => {
               alt={artwork.label}
               height={500}
               width={500}
-              // objectFit="cover"
               className="w-full h-full object-cover"
             />
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50"></div>
