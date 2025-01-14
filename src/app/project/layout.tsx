@@ -33,7 +33,7 @@ export default async function ProjectLayout({
   };
 
   return (
-    <section className="p-0 m-0">
+    <section>
       <SubNavBar fetchLinks={fetchLinks} />
       {children}
     </section>

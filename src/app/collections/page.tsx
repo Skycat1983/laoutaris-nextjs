@@ -36,7 +36,7 @@ export default async function Collections() {
   const identifierValue = "artwork";
   const fields = ["title", "slug", "artworks"];
 
-  const response = await fetchCollections<CollectionFields>(
+  const response = await fetchCollections<CollectionFields[]>(
     identifierKey,
     identifierValue,
     fields

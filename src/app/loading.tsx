@@ -5,7 +5,7 @@ const Loading = () => {
   return (
     <div className="flex items-center justify-center h-screen w-screen">
       <Spinner size="large">
-        <h1 className="text-xl p-8 pb-48 ">Loading...</h1>
+        <h1 className="text-xl p-4 pb-48 ">Loading...</h1>
       </Spinner>
     </div>
   );
