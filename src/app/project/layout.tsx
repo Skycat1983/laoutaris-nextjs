@@ -1,6 +1,6 @@
-import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import Subnav from "@/possibly_unused/SubNav";
 import dbConnect from "@/utils/mongodb";
+import { buildUrl } from "@/utils/buildUrl";
+import SubNavBar, { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
 
 export default async function ProjectLayout({
   children,
@@ -10,23 +10,31 @@ export default async function ProjectLayout({
   await dbConnect();
   const stem = "project";
 
-  const data = [
-    { title: "About", slug: "about" },
-    { title: "Aims", slug: "aims" },
-    { title: "Timeline", slug: "timeline" },
-    { title: "Film", slug: "film" },
-    { title: "Contact", slug: "contact" },
+  const subNavLinks: SubNavBarLink[] = [
+    { title: "About", slug: "about", url: buildUrl([stem, "about"]) },
+    {
+      title: "Aims",
+      slug: "aims",
+      url: buildUrl([stem, "aims"]),
+      disabled: true,
+    },
+    {
+      title: "Timeline",
+      slug: "timeline",
+      url: buildUrl([stem, "timeline"]),
+      disabled: true,
+    },
+    { title: "Film", slug: "film", url: buildUrl([stem, "film"]) },
+    { title: "Contact", slug: "contact", url: buildUrl([stem, "contact"]) },
   ];
 
-  const links = data.map((link) => ({
-    title: link.title,
-    slug: link.slug,
-    url: `/${stem}/${link.slug}`,
-  }));
+  const fetchLinks = async () => {
+    return subNavLinks;
+  };
 
   return (
     <section className="p-0 m-0">
-      {data && <SubNavBar links={links} />}
+      <SubNavBar fetchLinks={fetchLinks} />
       {children}
     </section>
   );

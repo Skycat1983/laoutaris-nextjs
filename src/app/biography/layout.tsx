@@ -32,7 +32,7 @@ import dbConnect from "@/utils/mongodb";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import React, { Suspense } from "react";
 import { delay } from "@/utils/debug";
-import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
+import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { articleToSubNavLink } from "@/utils/resolvers";
 import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";

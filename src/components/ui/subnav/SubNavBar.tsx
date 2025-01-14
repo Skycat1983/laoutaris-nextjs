@@ -30,7 +30,7 @@ const SubNavBar = async ({ fetchLinks }: SubNavProps) => {
                 <NavItem
                   label={link.title}
                   slug={link.slug}
-                  disabled={false}
+                  disabled={link.disabled}
                   className="z-[99] font-face-default subheading-button"
                   activeClassName="z-[99] font-face-default subheading-button-active"
                 />

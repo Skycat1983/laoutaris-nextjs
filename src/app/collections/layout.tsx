@@ -24,7 +24,7 @@ import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTyp
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
+import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { Suspense } from "react";
 import SubNav from "@/possibly_unused/SubNav";
 import { delay } from "@/utils/debug";

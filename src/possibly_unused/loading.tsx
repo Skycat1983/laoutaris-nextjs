@@ -1,4 +1,4 @@
-import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
+import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 
 const Loading = () => {
   return <SubNavSkeleton />;

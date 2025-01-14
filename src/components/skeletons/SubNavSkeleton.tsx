@@ -1,6 +1,6 @@
 import React from "react";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-import { Skeleton } from "../shadcn/skeleton";
+import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
+import { Skeleton } from "../ui/shadcn/skeleton";
 
 const SubNavSkeleton = () => {
   const skeletonClassName = "z-[99] w-36 h-14";
