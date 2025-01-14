@@ -1,5 +1,5 @@
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import Subnav from "@/components/ui/subnav/SubNav";
+import Subnav from "@/possibly_unused/SubNav";
 import dbConnect from "@/utils/mongodb";
 
 export default async function ProjectLayout({

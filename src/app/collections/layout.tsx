@@ -26,7 +26,7 @@ import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import SubNavSkeleton from "@/components/ui/subnav/SubNavSkeleton";
 import { Suspense } from "react";
-import SubNav from "@/components/ui/subnav/SubNav";
+import SubNav from "@/possibly_unused/SubNav";
 import { delay } from "@/utils/debug";
 import { collectionToSubNavLink } from "@/utils/resolvers";
 import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";
