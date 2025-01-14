@@ -8,6 +8,7 @@ import HomeBiographySectionSkeleton from "@/components/skeletons/HomeBiographySe
 import HomeArtworkSectionSkeleton from "@/components/skeletons/HomeArtworkSectionSkeleton";
 import HomeProjectSectionSkeleton from "@/components/skeletons/HomeProjectSectionSkeleton";
 import HomeSubscribeSection from "@/components/homepageSections/HomeSubscribeSection";
+import { Spinner } from "@/components/atoms/Spinner";
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 

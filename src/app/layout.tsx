@@ -33,6 +33,9 @@ export default async function RootLayout({
       lang="en"
       className={`${archivoBlack.variable} ${archivo.variable} ${cinzelDecorative.variable} ${crimson.variable} ${cormorant.variable}`}
     >
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px] bg-whitish">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
