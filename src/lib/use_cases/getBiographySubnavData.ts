@@ -11,7 +11,6 @@ export const getBiographySubNavData = async (): Promise<SubNavBarLink[]> => {
 
   const identifierKey = "section";
   const identifierValue = "biography";
-
   const identifierFields = ["title", "slug"];
 
   const fetchLinks = fetchAndResolve<SubNavArticleFields, SubNavBarLink>(

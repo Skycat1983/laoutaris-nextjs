@@ -30,11 +30,13 @@ import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
+import { getBiographySubNavData } from "@/lib/use_cases/getBiographySubnavData";
 
 type ArticleSlug = Pick<IFrontendArticle, "slug">;
 
 export default async function Biography() {
   await dbConnect();
+  const subnavData = await getBiographySubNavData();
 
   const stem = "biography";
 
@@ -42,7 +44,7 @@ export default async function Biography() {
     "slug",
   ]);
 
-  if (!response.success) {
+  if (!response.success || !response.data || response.data.length === 0) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <h1>Biography Section</h1>
@@ -53,7 +55,7 @@ export default async function Biography() {
   }
 
   const { data } = response;
-  const url = buildUrl([stem, data[0].slug]);
+  const url = subnavData[0].link_to;
 
   redirect(url);
 }
