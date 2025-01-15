@@ -26,36 +26,37 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
-import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
-import { buildUrl } from "@/utils/buildUrl";
+import { getBiographyDefaultRedirect } from "@/lib/use_cases/getBiographyRedirect";
 import { redirect } from "next/navigation";
-import { getBiographySubNavData } from "@/lib/use_cases/getBiographySubnavData";
-
-type ArticleSlug = Pick<IFrontendArticle, "slug">;
 
 export default async function Biography() {
   await dbConnect();
-  const subnavData = await getBiographySubNavData();
-
-  const stem = "biography";
-
-  const response = await fetchArticles<ArticleSlug[]>("section", stem, [
-    "slug",
-  ]);
-
-  if (!response.success || !response.data || response.data.length === 0) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1>Biography Section</h1>
-        <p>Failed to fetch biography data.</p>
-        <p>{response.message}</p>
-      </main>
-    );
-  }
-
-  const { data } = response;
-  const url = subnavData[0].link_to;
-
-  redirect(url);
+  // return getBiographyDefaultRedirect();
+  const defaultRedirect = await getBiographyDefaultRedirect();
+  redirect(defaultRedirect);
 }
+
+// type ArticleSlug = Pick<IFrontendArticle, "slug">;
+
+// const subnavData = await getBiographySubNavData();
+
+// const stem = "biography";
+
+// const response = await fetchArticles<ArticleSlug[]>("section", stem, [
+//   "slug",
+// ]);
+
+// if (!response.success || !response.data || response.data.length === 0) {
+//   return (
+//     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+//       <h1>Biography Section</h1>
+//       <p>Failed to fetch biography data.</p>
+//       <p>{response.message}</p>
+//     </main>
+//   );
+// }
+
+// const { data } = response;
+// const url = subnavData[0].link_to;
+
+// redirect(url);

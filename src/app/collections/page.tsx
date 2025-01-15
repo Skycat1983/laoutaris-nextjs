@@ -17,21 +17,22 @@
  *   Utilizes `fetchCollections` to retrieve collection data and `buildUrl` for constructing redirect URLs.
  */
 
-import { redirect } from "next/navigation";
-import { getCollectionSubNavData } from "@/lib/use_cases/getCollectionSubnavData";
+import { getCollectionRedirect } from "@/lib/use_cases/getCollectionRedirect";
 
 export default async function Collections() {
-  const subNavData = await getCollectionSubNavData();
-
-  if (!subNavData || subNavData.length === 0) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
-        <h1 className="text-3xl font-bold">Artwork</h1>
-        <p className="mt-4">No artworks are available at the moment.</p>
-      </main>
-    );
-  }
-
-  const redirectUrl = subNavData[0].link_to;
-  redirect(redirectUrl);
+  return getCollectionRedirect();
 }
+
+// const subNavData = await getCollectionSubNavData();
+
+// if (!subNavData || subNavData.length === 0) {
+//   return (
+//     <main className="flex min-h-screen flex-col items-center justify-center p-24">
+//       <h1 className="text-3xl font-bold">Artwork</h1>
+//       <p className="mt-4">No artworks are available at the moment.</p>
+//     </main>
+//   );
+// }
+
+// const redirectUrl = subNavData[0].link_to;
+// redirect(redirectUrl);
