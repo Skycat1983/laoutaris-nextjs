@@ -47,7 +47,7 @@ export default async function CollectionSlug({
   const identifierValue = collectionSlug;
   const fields = ["artworks", "slug"];
 
-  const response = await fetchCollections<CollectionFields>(
+  const response = await fetchCollections<CollectionFields[]>(
     identifierKey,
     identifierValue,
     fields
@@ -69,3 +69,46 @@ export default async function CollectionSlug({
   const url = buildUrl([stem, collectionSlug, firstArtwork]);
   redirect(url);
 }
+
+//! old working code
+
+// type CollectionFields = Pick<
+//   IFrontendCollectionUnpopulated,
+//   "artworks" | "slug"
+// >;
+
+// export default async function CollectionSlug({
+//   params,
+// }: {
+//   params: { collectionSlug: string };
+// }) {
+//   await dbConnect();
+//   const stem = "collections";
+
+//   const collectionSlug = params.collectionSlug;
+//   const identifierKey = "slug";
+//   const identifierValue = collectionSlug;
+//   const fields = ["artworks", "slug"];
+
+//   const response = await fetchCollections<CollectionFields[]>(
+//     identifierKey,
+//     identifierValue,
+//     fields
+//   );
+
+//   if (!response.success) {
+//     return (
+//       <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
+//         <h1 className="text-3xl font-bold">Collection</h1>
+//         <p className="mt-4">This collection is currently unavailable.</p>
+//         <p className="mt-4">{response.message}</p>
+//       </main>
+//     );
+//   }
+//   const { data } = response;
+
+//   const firstArtwork = data[0].artworks[0];
+
+//   const url = buildUrl([stem, collectionSlug, firstArtwork]);
+//   redirect(url);
+// }
