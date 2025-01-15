@@ -21,63 +21,35 @@ import { title } from "process";
 - In order to achieve this without creating two SubNav components- one for each route- instead I would pass the fetch/resolve functions to the Subav as props.
 - To improve the code further, I created a higher-order function that takes the fetch/resolve functions as arguments and returns a function that can be passed to the SubNav component as props.
 */
-type SubNavArticleFields = Pick<IFrontendArticle, "title" | "slug">;
+// type SubNavArticleFields = Pick<IFrontendArticle, "title" | "slug">;
 
-export const articleToSubNavLink = (
-  item: SubNavArticleFields
-): SubNavBarLink => ({
-  title: item.title,
-  slug: item.slug,
-  url: buildUrl(["biography", item.slug]),
-});
+// export const articleToSubNavLink = (
+//   item: SubNavArticleFields
+// ): SubNavBarLink => ({
+//   title: item.title,
+//   slug: item.slug,
+//   url: buildUrl(["biography", item.slug]),
+// });
 
-type SubNavCollectionFields = Pick<
-  IFrontendCollectionUnpopulated,
-  "title" | "slug" | "artworks"
->;
+// type SubNavCollectionFields = Pick<
+//   IFrontendCollectionUnpopulated,
+//   "title" | "slug" | "artworks"
+// >;
 
-export const collectionToSubNavLink = (
-  item: SubNavCollectionFields
-): SubNavBarLink => ({
-  title: item.title,
-  slug: item.slug,
-  url: buildUrl(["collections", item.slug, item.artworks[0]]),
-});
+// export const collectionToSubNavLink = (
+//   item: SubNavCollectionFields
+// ): SubNavBarLink => ({
+//   title: item.title,
+//   slug: item.slug,
+//   url: buildUrl(["collections", item.slug, item.artworks[0]]),
+// });
 
-export type SelectedCollectionFields = Pick<
-  IFrontendCollection,
-  "artworks" | "slug" | "title"
->;
-export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
-
-export type CollectionArtwork = SelectedCollectionFields & {
-  artworks: SelectedArtworkFields[];
-};
-
-export interface PaginationArtworkLink {
-  secure_url: string;
-  height: number;
-  width: number;
-  link_to: string;
-}
-
-export const collectionArtworkToPaginationLink = (
-  item: CollectionArtwork
-): PaginationArtworkLink[] => {
-  console.log("CollectionArtwork item:", item);
-  return item.artworks.map((artwork) => ({
-    secure_url: artwork.image.secure_url,
-    height: artwork.image.pixelHeight,
-    width: artwork.image.pixelWidth,
-    link_to: buildUrl(["collections", item.slug, artwork._id]),
-  }));
-  // return {
-  //   secure_url: item.artworks[0].image.secure_url,
-  //   height: item.artworks[0].image.pixelHeight,
-  //   width: item.artworks[0].image.pixelWidth,
-  //   url: buildUrl(["collections", item.slug, item.artworks[0]._id]),
-  // };
-};
+// return {
+//   secure_url: item.artworks[0].image.secure_url,
+//   height: item.artworks[0].image.pixelHeight,
+//   width: item.artworks[0].image.pixelWidth,
+//   url: buildUrl(["collections", item.slug, item.artworks[0]._id]),
+// };
 
 // type PaginationItemProps = {
 //   artworkLink: {

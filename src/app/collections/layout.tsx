@@ -19,44 +19,17 @@
  *   Renders the `SubNavBar` component with the fetched collection links.
  */
 
-import dbConnect from "@/utils/mongodb";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
-import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
-import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { Suspense } from "react";
-import SubNav from "@/possibly_unused/SubNav";
-import { delay } from "@/utils/debug";
-import { collectionToSubNavLink } from "@/utils/resolvers";
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
-
-type SubnavCollectionFields = Pick<
-  IFrontendCollectionUnpopulated,
-  "title" | "slug" | "artworks"
->;
-
-interface SubNavBarLink {
-  title: string;
-  slug: string;
-  url: string;
-  disabled?: boolean;
-}
+import { getCollectionSubNavData } from "@/lib/use_cases/getCollectionSubnavData";
 
 export default function CollectionsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const resolver = collectionToSubNavLink;
-
-  const fetchLinks = fetchAndResolve(
-    fetchCollections,
-    "section",
-    "artwork",
-    ["title", "slug", "artworks"],
-    resolver
-  );
+  const fetchLinks = getCollectionSubNavData;
 
   return (
     <section>
@@ -67,6 +40,16 @@ export default function CollectionsLayout({
     </section>
   );
 }
+
+// const resolver = collectionToSubNavLink;
+
+// const fetchLinks = fetchAndResolve(
+//   fetchCollections,
+//   "section",
+//   "artwork",
+//   ["title", "slug", "artworks"],
+//   resolver
+// );
 
 // const resolver = (item: SubnavCollectionFields): SubNavBarLink => ({
 //   title: item.title,

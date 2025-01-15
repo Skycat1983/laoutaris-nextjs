@@ -1,13 +1,8 @@
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
-import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
 import { delay } from "@/utils/debug";
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
-import {
-  PaginationArtworkLink,
-  collectionArtworkToPaginationLink,
-} from "@/utils/resolvers";
 import React from "react";
+import PaginationItem, { PaginationArtworkLink } from "./PaginationItem";
 
 export type SelectedCollectionFields = Pick<
   IFrontendCollection,
@@ -20,71 +15,29 @@ export type CollectionArtwork = SelectedCollectionFields & {
 };
 
 interface PaginationProps {
-  collectionSlug: string;
+  getData: () => Promise<PaginationArtworkLink[]>;
 }
 
-//! v1 with resolver
-const Pagination = async ({ collectionSlug }: PaginationProps) => {
-  await delay(1000);
+const Pagination = async ({ getData }: PaginationProps) => {
+  await delay(2000);
 
-  const fetcher = fetchCollectionArtwork;
-  const collectionKey = "slug";
-  const collectionValue = collectionSlug;
-  const collectionFields = ["slug", "title"];
-
-  const artworkFields = [
-    "_id",
-    "image.secure_url",
-    "image.pixelHeight",
-    "image.pixelWidth",
-  ];
-  const resolver = collectionArtworkToPaginationLink;
-
-  const fetchLinks = fetchAndResolve<
-    CollectionArtwork,
-    PaginationArtworkLink[]
-  >(
-    fetcher,
-    collectionKey,
-    collectionValue,
-    collectionFields,
-    resolver,
-    artworkFields
-  );
-
-  const paginationData = await fetchLinks();
+  const paginationData = await getData();
 
   console.log("paginationData", paginationData);
 
-  return <div>Pagination</div>;
+  return (
+    <>
+      {paginationData.map((artworkLink) => (
+        <PaginationItem
+          key={artworkLink.link_to}
+          secure_url={artworkLink.secure_url}
+          height={artworkLink.height}
+          width={artworkLink.width}
+          link_to={artworkLink.link_to}
+        />
+      ))}
+    </>
+  );
 };
 
 export { Pagination };
-
-// const Pagination = async ({ collectionSlug }: PaginationProps) => {
-//   await delay(1000);
-//   const collectionKey = "slug";
-//   const collectionValue = collectionSlug;
-//   const collectionFields = ["slug", "title"];
-
-//   const artworkFields = [
-//     "_id",
-//     "image.secure_url",
-//     "image.pixelHeight",
-//     "image.pixelWidth",
-//   ];
-//   const response = await fetchCollectionArtwork(
-//     collectionKey,
-//     collectionValue,
-//     collectionFields,
-//     artworkFields
-//   );
-
-//   console.log("response in Pagination", response);
-
-//   const artworkLinks = response.data.artworks;
-
-//   return <div>
-
-//   </div>;
-// };

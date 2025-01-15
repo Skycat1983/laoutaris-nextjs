@@ -45,6 +45,7 @@ import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
 import { Pagination } from "@/components/ui/pagination/Pagination";
 import { Suspense } from "react";
+import { getCollectionArtworkPagination } from "@/lib/use_cases/getCollectionArtworkPagination";
 
 export type SelectedCollectionFields = Pick<
   IFrontendCollection,
@@ -65,45 +66,27 @@ export default async function CollectionSlugLayout({
 }) {
   await dbConnect();
   const collectionSlug = params.collectionSlug;
-  const collectionKey = "slug";
-  const collectionValue = params.collectionSlug;
-  const collectionFields = ["slug", "title"];
-  const artworkFields = [
-    "_id",
-    "image.secure_url",
-    "image.pixelHeight",
-    "image.pixelWidth",
-  ];
-  const response = await fetchCollectionArtwork<CollectionArtwork>(
-    collectionKey,
-    collectionValue,
-    collectionFields,
-    artworkFields
-  );
-
-  console.log("response in collectionLayout", response);
-
-  if (!response.success) {
-    return <div>Failed to fetch collection data</div>;
-  }
-  const { data } = response;
+  const fetchCollectionData = () =>
+    getCollectionArtworkPagination(collectionSlug);
 
   return (
     <section className="">
-      {children}
+      {/* {children} */}
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">
         More from this collection
       </h1>
+
+      <Suspense fallback={<div className="w-64 h-64 bg-red-400">HELLO</div>}>
+        <Pagination getData={fetchCollectionData} />
+      </Suspense>
+
       {/* <ServerPagination
         artworkLinks={data.artworks}
         collectionSlug={params.collectionSlug}
       /> */}
-      <Suspense fallback={<div className="w-64 h-64 bg-red-400">HELLO</div>}>
-        <Pagination collectionSlug={collectionSlug} />
-      </Suspense>
 
       <div className="px-4 py-8">
         <HorizontalDivider />
@@ -114,9 +97,9 @@ export default async function CollectionSlugLayout({
             About this collection
           </h1>
 
-          <p className="px-4 text-primary py-8">
+          {/* <p className="px-4 text-primary py-8">
             There are {data.artworks.length} pieces in this collection.
-          </p>
+          </p> */}
         </div>
 
         <div className="px-4 py-8 md:hidden">
@@ -140,3 +123,26 @@ export default async function CollectionSlugLayout({
     </section>
   );
 }
+
+// const collectionKey = "slug";
+// const collectionValue = params.collectionSlug;
+// const collectionFields = ["slug", "title"];
+// const artworkFields = [
+//   "_id",
+//   "image.secure_url",
+//   "image.pixelHeight",
+//   "image.pixelWidth",
+// ];
+// const response = await fetchCollectionArtwork<CollectionArtwork>(
+//   collectionKey,
+//   collectionValue,
+//   collectionFields,
+//   artworkFields
+// );
+
+// console.log("response in collectionLayout", response);
+
+// if (!response.success) {
+//   return <div>Failed to fetch collection data</div>;
+// }
+// const { data } = response;

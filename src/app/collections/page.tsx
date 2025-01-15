@@ -12,7 +12,6 @@
  *
  * - **Error Handling:**
  *   If no collections or artworks are available, it displays a message.
- *   TODO: Implement user-friendly error messages or fallback UI.
  *
  * - **Dependencies:**
  *   Utilizes `fetchCollections` to retrieve collection data and `buildUrl` for constructing redirect URLs.
