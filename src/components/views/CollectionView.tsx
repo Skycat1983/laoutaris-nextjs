@@ -2,7 +2,7 @@
 
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
-import Pagination from "@/components/ui/pagination/Pagination";
+import Pagination from "@/components/ui/headlessPagination/Pagination";
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import Image from "next/image";
 import { useCallback, useState } from "react";

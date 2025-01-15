@@ -1,7 +1,13 @@
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { buildUrl } from "./buildUrl";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
+import {
+  IFrontendCollection,
+  IFrontendCollectionPopulated,
+  IFrontendCollectionUnpopulated,
+} from "@/lib/client/types/collectionTypes";
 import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
+import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { title } from "process";
 /*
  These resolver functions are used to convert the data from the backend to the frontend
  This is useful when the backend data is different from the frontend data
@@ -17,11 +23,6 @@ import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
 */
 type SubNavArticleFields = Pick<IFrontendArticle, "title" | "slug">;
 
-type SubNavCollectionFields = Pick<
-  IFrontendCollectionUnpopulated,
-  "title" | "slug" | "artworks"
->;
-
 export const articleToSubNavLink = (
   item: SubNavArticleFields
 ): SubNavBarLink => ({
@@ -30,6 +31,11 @@ export const articleToSubNavLink = (
   url: buildUrl(["biography", item.slug]),
 });
 
+type SubNavCollectionFields = Pick<
+  IFrontendCollectionUnpopulated,
+  "title" | "slug" | "artworks"
+>;
+
 export const collectionToSubNavLink = (
   item: SubNavCollectionFields
 ): SubNavBarLink => ({
@@ -37,3 +43,54 @@ export const collectionToSubNavLink = (
   slug: item.slug,
   url: buildUrl(["collections", item.slug, item.artworks[0]]),
 });
+
+export type SelectedCollectionFields = Pick<
+  IFrontendCollection,
+  "artworks" | "slug" | "title"
+>;
+export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+
+export type CollectionArtwork = SelectedCollectionFields & {
+  artworks: SelectedArtworkFields[];
+};
+
+export interface PaginationArtworkLink {
+  secure_url: string;
+  height: number;
+  width: number;
+  link_to: string;
+}
+
+export const collectionArtworkToPaginationLink = (
+  item: CollectionArtwork
+): PaginationArtworkLink[] => {
+  console.log("CollectionArtwork item:", item);
+  return item.artworks.map((artwork) => ({
+    secure_url: artwork.image.secure_url,
+    height: artwork.image.pixelHeight,
+    width: artwork.image.pixelWidth,
+    link_to: buildUrl(["collections", item.slug, artwork._id]),
+  }));
+  // return {
+  //   secure_url: item.artworks[0].image.secure_url,
+  //   height: item.artworks[0].image.pixelHeight,
+  //   width: item.artworks[0].image.pixelWidth,
+  //   url: buildUrl(["collections", item.slug, item.artworks[0]._id]),
+  // };
+};
+
+// type PaginationItemProps = {
+//   artworkLink: {
+//     _id: string;
+//     image: {
+//       secure_url: string;
+//       pixelHeight: number;
+//       pixelWidth: number;
+//     };
+//   };
+// };
+
+// type PaginationCollectionArtworkFields = Pick<
+//   IFrontendCollectionPopulated,
+//   "section" | "slug" | "artworks"
+// >;

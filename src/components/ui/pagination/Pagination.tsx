@@ -1,137 +1,90 @@
 import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
-import { usePagination } from "./usePagination";
-import NavigationButton from "./PaginationButton";
-import PaginationCard from "./PaginationCard";
-import { PaginationIcon, PaginationIconsContainer } from "./PaginationIcon";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IFrontendCollection } from "@/lib/client/types/collectionTypes";
+import { fetchCollectionArtwork } from "@/lib/server/collection/data-fetching/fetchCollectionArtwork";
+import { delay } from "@/utils/debug";
+import { fetchAndResolve } from "@/utils/fetchAndResolve";
+import {
+  PaginationArtworkLink,
+  collectionArtworkToPaginationLink,
+} from "@/utils/resolvers";
+import React from "react";
 
-type PaginationContainerProps = {
-  children: React.ReactNode;
-};
+export type SelectedCollectionFields = Pick<
+  IFrontendCollection,
+  "artworks" | "slug" | "title"
+>;
+export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
 
-const PaginationContainer = ({ children }: PaginationContainerProps) => {
-  return <div className="flex flex-row justify-center">{children}</div>;
-};
-
-const PaginationNavigationContainer = ({
-  children,
-}: PaginationContainerProps) => {
-  return <div className="flex items-center px-4">{children}</div>;
+export type CollectionArtwork = SelectedCollectionFields & {
+  artworks: SelectedArtworkFields[];
 };
 
 interface PaginationProps {
-  totalPages: number;
-  handlePageChange: (page: number) => void;
-  pageRangeDisplayed: number;
-  showFirstLast: boolean;
-  showPrevNext: boolean;
-  paginationItems: IFrontendArtwork[];
-  initialPage?: number;
+  collectionSlug: string;
 }
-const Pagination = ({
-  totalPages,
-  handlePageChange,
-  pageRangeDisplayed,
-  initialPage,
-  showFirstLast = false,
-  showPrevNext = false,
-  paginationItems,
-}: PaginationProps) => {
-  const { currentPage, onPageChange, pageNumbersToDisplay } = usePagination({
-    initialPage,
-    totalPages,
-    handlePageChange,
-    pageRangeDisplayed,
-  });
 
-  return (
-    <>
-      <div className="flex flex-row justify-center">
-        <PaginationNavigationContainer>
-          {showFirstLast && (
-            <NavigationButton
-              label="<<"
-              onClick={() => onPageChange(1)}
-              disabled={currentPage === 1}
-              googleIcon={
-                <span className="material-symbols-outlined">first_page</span>
-              }
-            />
-          )}
-          {showPrevNext && (
-            <NavigationButton
-              label="<"
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              googleIcon={<ChevronLeft />}
-            />
-          )}
-        </PaginationNavigationContainer>
-        <div className="flex flex-col items-center justify-center h-auto">
-          <ScrollArea className="container whitespace-nowrap rounded-md h-auto">
-            <div className="flex w-max space-x-4 h-auto">
-              {pageNumbersToDisplay.map((page, i) => (
-                <PaginationCard
-                  key={page}
-                  isActive={currentPage === page}
-                  onClick={() => onPageChange(page)}
-                  item={paginationItems[page - 1]}
-                />
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" className="p-12" />
-          </ScrollArea>
+//! v1 with resolver
+const Pagination = async ({ collectionSlug }: PaginationProps) => {
+  await delay(1000);
 
-          <PaginationIconsContainer>
-            {pageNumbersToDisplay.map((page) => (
-              <PaginationIcon
-                key={page}
-                isActive={currentPage === page}
-                onClick={() => onPageChange(page)}
-              />
-            ))}
-          </PaginationIconsContainer>
-        </div>
+  const fetcher = fetchCollectionArtwork;
+  const collectionKey = "slug";
+  const collectionValue = collectionSlug;
+  const collectionFields = ["slug", "title"];
 
-        <PaginationNavigationContainer>
-          {showPrevNext && (
-            <NavigationButton
-              label=">"
-              onClick={() =>
-                onPageChange(Math.min(totalPages, currentPage + 1))
-              }
-              disabled={currentPage === totalPages}
-              googleIcon={<ChevronRight />}
-            />
-          )}
-          {showFirstLast && (
-            <NavigationButton
-              label=">>"
-              onClick={() => onPageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              googleIcon={
-                <span className="material-symbols-outlined">last_page</span>
-              }
-            />
-          )}
-        </PaginationNavigationContainer>
-      </div>
-    </>
+  const artworkFields = [
+    "_id",
+    "image.secure_url",
+    "image.pixelHeight",
+    "image.pixelWidth",
+  ];
+  const resolver = collectionArtworkToPaginationLink;
+
+  const fetchLinks = fetchAndResolve<
+    CollectionArtwork,
+    PaginationArtworkLink[]
+  >(
+    fetcher,
+    collectionKey,
+    collectionValue,
+    collectionFields,
+    resolver,
+    artworkFields
   );
+
+  const paginationData = await fetchLinks();
+
+  console.log("paginationData", paginationData);
+
+  return <div>Pagination</div>;
 };
 
-export default Pagination;
+export { Pagination };
 
-// <figure key={i} className="w-full">
-//   <div className="overflow-hidden rounded-md">
-//     <Image
-//       src={paginationItems[page - 1].image.secure_url}
-//       alt={`ENTER SOMETHING`}
-//       className="aspect-[3/4] h-fit w-fit object-cover"
-//       width={300}
-//       height={400}
-//     />
-//   </div>
-// </figure>
+// const Pagination = async ({ collectionSlug }: PaginationProps) => {
+//   await delay(1000);
+//   const collectionKey = "slug";
+//   const collectionValue = collectionSlug;
+//   const collectionFields = ["slug", "title"];
+
+//   const artworkFields = [
+//     "_id",
+//     "image.secure_url",
+//     "image.pixelHeight",
+//     "image.pixelWidth",
+//   ];
+//   const response = await fetchCollectionArtwork(
+//     collectionKey,
+//     collectionValue,
+//     collectionFields,
+//     artworkFields
+//   );
+
+//   console.log("response in Pagination", response);
+
+//   const artworkLinks = response.data.artworks;
+
+//   return <div>
+
+//   </div>;
+// };

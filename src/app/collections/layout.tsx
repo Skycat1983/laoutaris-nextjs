@@ -29,7 +29,7 @@ import { Suspense } from "react";
 import SubNav from "@/possibly_unused/SubNav";
 import { delay } from "@/utils/debug";
 import { collectionToSubNavLink } from "@/utils/resolvers";
-import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";
+import { fetchAndResolve } from "@/utils/fetchAndResolve";
 
 type SubnavCollectionFields = Pick<
   IFrontendCollectionUnpopulated,

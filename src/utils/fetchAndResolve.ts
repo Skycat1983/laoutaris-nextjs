@@ -63,7 +63,8 @@
 type Fetcher<T> = (
   identifierKey: string,
   identifierValue: string,
-  fields?: string[]
+  identifierFields?: string[],
+  populatedFields?: string[]
 ) => Promise<ApiResponse<T>>;
 
 type Resolver<RawDataType, ResolvedType> = (item: RawDataType) => ResolvedType;
@@ -72,11 +73,17 @@ export const fetchAndResolve = <RawDataType, ResolvedType>(
   fetcher: Fetcher<RawDataType>,
   identifierKey: string,
   identifierValue: string,
-  fields: string[],
-  resolver: Resolver<RawDataType, ResolvedType>
+  identifierFields: string[],
+  resolver: Resolver<RawDataType, ResolvedType>,
+  populatedFields?: string[]
 ): (() => Promise<ResolvedType[]>) => {
   return async () => {
-    const response = await fetcher(identifierKey, identifierValue, fields);
+    const response = await fetcher(
+      identifierKey,
+      identifierValue,
+      identifierFields,
+      populatedFields
+    );
 
     if (response.success) {
       const dataArray = Array.isArray(response.data)

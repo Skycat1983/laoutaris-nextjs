@@ -43,6 +43,8 @@ import ArtistProfile from "@/components/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
+import { Pagination } from "@/components/ui/pagination/Pagination";
+import { Suspense } from "react";
 
 export type SelectedCollectionFields = Pick<
   IFrontendCollection,
@@ -62,6 +64,7 @@ export default async function CollectionSlugLayout({
   params: { collectionSlug: string };
 }) {
   await dbConnect();
+  const collectionSlug = params.collectionSlug;
   const collectionKey = "slug";
   const collectionValue = params.collectionSlug;
   const collectionFields = ["slug", "title"];
@@ -78,6 +81,8 @@ export default async function CollectionSlugLayout({
     artworkFields
   );
 
+  console.log("response in collectionLayout", response);
+
   if (!response.success) {
     return <div>Failed to fetch collection data</div>;
   }
@@ -92,10 +97,14 @@ export default async function CollectionSlugLayout({
       <h1 className="px-4 py-6 text-2xl font-bold">
         More from this collection
       </h1>
-      <ServerPagination
+      {/* <ServerPagination
         artworkLinks={data.artworks}
         collectionSlug={params.collectionSlug}
-      />
+      /> */}
+      <Suspense fallback={<div className="w-64 h-64 bg-red-400">HELLO</div>}>
+        <Pagination collectionSlug={collectionSlug} />
+      </Suspense>
+
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>

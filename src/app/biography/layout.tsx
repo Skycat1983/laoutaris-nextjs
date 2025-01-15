@@ -35,7 +35,7 @@ import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { articleToSubNavLink } from "@/utils/resolvers";
-import { fetchAndResolve } from "@/possibly_unused/fetchAndResolve";
+import { fetchAndResolve } from "@/utils/fetchAndResolve";
 
 export default async function BiographyLayout({
   children,
