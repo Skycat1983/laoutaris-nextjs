@@ -17,42 +17,21 @@
  *   Utilizes `fetchCollections` to retrieve collection data and `buildUrl` for constructing redirect URLs.
  */
 
-import dbConnect from "@/utils/mongodb";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
-import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
-import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
-
-type CollectionFields = Pick<
-  IFrontendCollectionUnpopulated,
-  "title" | "slug" | "artworks"
->;
+import { getCollectionSubNavData } from "@/lib/use_cases/getCollectionSubnavData";
 
 export default async function Collections() {
-  await dbConnect();
-  const stem = "artwork";
-  const identifierKey = "section";
-  const identifierValue = "artwork";
-  const fields = ["title", "slug", "artworks"];
+  const subNavData = await getCollectionSubNavData();
 
-  const response = await fetchCollections<CollectionFields[]>(
-    identifierKey,
-    identifierValue,
-    fields
-  );
-
-  if (!response.success) {
+  if (!subNavData || subNavData.length === 0) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center p-24">
         <h1 className="text-3xl font-bold">Artwork</h1>
         <p className="mt-4">No artworks are available at the moment.</p>
-        <p className="mt-4">{response.message}</p>
       </main>
     );
   }
 
-  const { data } = response;
-
-  const redirectUrl = buildUrl([stem, data[0].slug, data[0].artworks[0]]);
+  const redirectUrl = subNavData[0].link_to;
   redirect(redirectUrl);
 }

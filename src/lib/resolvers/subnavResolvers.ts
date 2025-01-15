@@ -5,7 +5,7 @@ import { IFrontendArticle } from "../client/types/articleTypes";
 export interface SubNavBarLink {
   title: string;
   slug: string;
-  url: string;
+  link_to: string;
   disabled?: boolean;
 }
 
@@ -16,7 +16,7 @@ export const articleToSubNavLink = (
 ): SubNavBarLink => ({
   title: item.title,
   slug: item.slug,
-  url: buildUrl(["biography", item.slug]),
+  link_to: buildUrl(["biography", item.slug]),
 });
 
 export type SubNavCollectionFields = Pick<
@@ -29,5 +29,5 @@ export const collectionToSubNavLink = (
 ): SubNavBarLink => ({
   title: item.title,
   slug: item.slug,
-  url: buildUrl(["collections", item.slug, item.artworks[0]]),
+  link_to: buildUrl(["collections", item.slug, item.artworks[0]]),
 });

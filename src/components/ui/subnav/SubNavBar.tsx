@@ -20,7 +20,7 @@ const SubNavBar = async ({ fetchLinks }: SubNavProps) => {
         <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
           {links.map((link, i) => (
             <li key={i}>
-              <Link href={link.url}>
+              <Link href={link.link_to}>
                 <NavItem
                   label={link.title}
                   slug={link.slug}

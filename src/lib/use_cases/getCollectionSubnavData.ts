@@ -6,6 +6,8 @@ import {
 } from "../resolvers/subnavResolvers";
 import { fetchCollections } from "../server/collection/data-fetching/fetchCollections";
 
+// TODO: change the section from "artwork" to "collection"
+
 export const getCollectionSubNavData = async (): Promise<SubNavBarLink[]> => {
   const fetcher = fetchCollections;
 

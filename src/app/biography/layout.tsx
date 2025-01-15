@@ -16,12 +16,6 @@
  *   - `/biography`: Root path for the biography section.
  *   - `/biography/:slug`: Displays content for a specific biography article, with navigable links to other articles.
  *
- * - **Dependencies:**
- *   - `fetchAndResolve`: Fetches and transforms raw data.
- *   - `articleToSubNavLink`: Maps article data to navigation links.
- *   - `SubNavBar`: Renders the navigable links.
- *   - `SubNavSkeleton`: Displays a skeleton loader during data fetching.
- *
  * - **Error Handling:**
  *   Displays a fallback loader (`SubNavSkeleton`) while fetching data. Errors during data fetching will
  *   throw exceptions, ensuring clear failure states (future enhancements could include retry mechanisms).
@@ -29,13 +23,11 @@
 
 "use server";
 import dbConnect from "@/utils/mongodb";
-import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import React, { Suspense } from "react";
 import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import { articleToSubNavLink } from "@/utils/resolvers";
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
+import { getBiographySubNavData } from "@/lib/use_cases/getBiographySubnavData";
 
 export default async function BiographyLayout({
   children,
@@ -44,15 +36,7 @@ export default async function BiographyLayout({
 }) {
   await dbConnect();
   await delay(2000);
-  const resolver = articleToSubNavLink;
-
-  const fetchLinks = fetchAndResolve(
-    fetchArticles,
-    "section",
-    "biography",
-    ["title", "slug"],
-    resolver
-  );
+  const fetchLinks = getBiographySubNavData;
 
   return (
     <section>
