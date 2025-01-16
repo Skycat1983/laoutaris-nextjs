@@ -3,42 +3,22 @@ import {
   IFrontendArtwork,
   PredominantColors,
 } from "../client/types/artworkTypes";
+import {
+  FrontendArticleFull,
+  FrontendArtworkFull,
+} from "../client/types/populatedTypes";
 
-export interface IArticlePopulatedArtwork {
-  title: string;
-  subtitle: string;
-  summary: string;
-  text: string;
-  author: any;
-  imageUrl: string;
-  slug: string;
-  section: "artwork" | "biography" | "project";
-  overlayColour: "white" | "black";
-  artwork: IArticleArtworkFields;
-}
+type SelectedArticleFields = Pick<FrontendArticleFull, "author">;
 
-export interface ArtworkImage {
-  predominantColors: PredominantColors;
-  secure_url: string;
-  public_id: string;
-  bytes: number;
-  pixelHeight: number;
-  pixelWidth: number;
-  format: string;
-  hexColors: HexColor[];
-}
-
-export type IArticleArtworkFields = Omit<
-  IFrontendArtwork,
-  "watcherlist" | "favourited" | "image"
-> & {
-  image: IArticleArtworkImageFields;
-};
-
-export type IArticleArtworkImageFields = Pick<
-  ArtworkImage,
-  "secure_url" | "pixelHeight" | "pixelWidth"
+type SelectedArtworkFields = Omit<
+  FrontendArtworkFull,
+  "watcherlist" | "favourited"
 >;
+
+type TransitoryArticleArtwork = {
+  article: SelectedArticleFields;
+  artwork: SelectedArtworkFields;
+};
 
 // export const articleArtworkResolver = ({
 // testing
