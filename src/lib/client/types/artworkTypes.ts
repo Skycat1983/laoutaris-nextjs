@@ -13,12 +13,9 @@ export interface FrontendArtworkFull {
   favourited: FrontendUserFull[];
 }
 
-//! OLD TYPES BELOW:
-//* TRYING WITH FULL USER TYPE
-
-export interface IFrontendArtwork {
-  image: ArtworkImage;
+export interface FrontendArtworkMinimal {
   _id: string;
+  image: ArtworkImage;
   title: string;
   decade: number;
   artstyle: string;
@@ -27,7 +24,32 @@ export interface IFrontendArtwork {
   featured: boolean;
   watcherlist: string[];
   favourited: string[];
-  // __v: number;
+}
+
+export interface FrontendArtworkWithWatcherlist {
+  _id: string;
+  image: ArtworkImage;
+  title: string;
+  decade: number;
+  artstyle: string;
+  medium: string;
+  surface: string;
+  featured: boolean;
+  watcherlist: FrontendUserFull[];
+  favourited: string[];
+}
+
+export interface FrontendArtworkWithFavourited {
+  _id: string;
+  image: ArtworkImage;
+  title: string;
+  decade: number;
+  artstyle: string;
+  medium: string;
+  surface: string;
+  featured: boolean;
+  watcherlist: string[];
+  favourited: FrontendUserFull[];
 }
 
 export interface ArtworkImage {
@@ -63,3 +85,19 @@ export interface HexColor {
   percentage: number;
   _id: string;
 }
+
+// //! OLD TYPES BELOW:
+// //* TRYING WITH FULL USER TYPE
+
+// export interface IFrontendArtwork {
+//   image: ArtworkImage;
+//   _id: string;
+//   title: string;
+//   decade: number;
+//   artstyle: string;
+//   medium: string;
+//   surface: string;
+//   featured: boolean;
+//   watcherlist: string[];
+//   favourited: string[];
+// }

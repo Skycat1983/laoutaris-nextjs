@@ -4,7 +4,7 @@ import {
   PaginationArtworkLink,
   CollectionArtworkToPaginationBridge,
   collectionArtworkToPaginationLink,
-} from "../resolvers/paginationResolvers";
+} from "../resolvers/collectionArtworkToPaginationLink";
 
 export const getCollectionArtworkPagination = async (
   collectionSlug: string

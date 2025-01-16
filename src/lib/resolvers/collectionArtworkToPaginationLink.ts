@@ -22,13 +22,13 @@ export interface PaginationArtworkLink {
 }
 
 export const collectionArtworkToPaginationLink = (
-  collection: CollectionArtworkToPaginationBridge
+  collectionPopulated: CollectionArtworkToPaginationBridge
 ): PaginationArtworkLink[] => {
   // console.log("CollectionArtwork:", collection);
-  return collection.artworks.map((artwork) => ({
+  return collectionPopulated.artworks.map((artwork) => ({
     secure_url: artwork.image.secure_url,
     height: artwork.image.pixelHeight,
     width: artwork.image.pixelWidth,
-    link_to: buildUrl(["collections", collection.slug, artwork._id]),
+    link_to: buildUrl(["collections", collectionPopulated.slug, artwork._id]),
   }));
 };
