@@ -1,62 +1,39 @@
 /**
  * @fileoverview
- * This Next.js page manages the `/biography` path.
+ * This Next.js page manages the `/biography` route.
  *
  * - **Purpose:**
- *   The `/biography` route serves as an entry point without direct content.
- *   When accessed, it automatically redirects users to the first available biography article
- *   within the specified collection, following the path pattern `/biography/articleSlug`.
+ *   The `/biography` route serves as an entry point for the Biography section without displaying direct content.
+ *   Users accessing this route are automatically redirected to the first available biography article.
  *
- * - **Project Structure:**
+ * - **Behavior:**
  *   - **Path Pattern:** `/biography/articleSlug`
- *   - **Behavior:**
- *     Accessing `/biography` redirects the user to `/biography/first-article-slug` based on the first available biography.
+ *   - When the `/biography` route is accessed, the page:
+ *     1. Connects to the database.
+ *     2. Fetches the path of the first available biography article using `getBiographyDefaultPath`.
+ *     3. Redirects the user to `/biography/<first-article-slug>`.
  *
  * - **Error Handling:**
- *   If fetching biography data fails or no biographies are available, it displays a user-friendly error message.
- *   TODO: Implement more robust error handling and fallback mechanisms.
+ *   - If no biography articles are available or the fetch operation fails, an error is thrown.
+ *   - Error handling is managed via Next.js's global or route-specific `error.tsx` fallback.
+ *   - TODO: Enhance error handling to provide more descriptive fallback UI or logging.
  *
  * - **Dependencies:**
- *   Utilizes `fetchArticles` to retrieve biography data from MongoDB and `buildUrl` for constructing redirect URLs.
- *   Employs `redirect` from `next/navigation` to perform client-side navigation.
+ *   - `dbConnect`: Ensures a connection to MongoDB.
+ *   - `redirect`: Performs a server-side redirect using Next.js's `next/navigation`.
+ *   - `getBiographyDefaultPath`: Retrieves the path of the first biography article.
  *
  * - **Notes:**
- *   - Ensure that biography articles exist in the database to prevent unintended redirects and rendering issues.
- *   - The layout assumes that each biography has at least one article; additional checks are implemented to handle empty collections.
+ *   - Ensure that biography articles exist in the database to prevent errors.
+ *   - This implementation relies on `getBiographyDefaultPath` to abstract the logic for fetching the default path.
  */
 
 import dbConnect from "@/utils/mongodb";
-import { getBiographyDefaultRedirect } from "@/lib/use_cases/getBiographyRedirect";
 import { redirect } from "next/navigation";
+import { getBiographyDefaultPath } from "@/lib/use_cases/getBiographyDefaultPath";
 
 export default async function Biography() {
   await dbConnect();
-  // return getBiographyDefaultRedirect();
-  const defaultRedirect = await getBiographyDefaultRedirect();
+  const defaultRedirect = await getBiographyDefaultPath();
   redirect(defaultRedirect);
 }
-
-// type ArticleSlug = Pick<IFrontendArticle, "slug">;
-
-// const subnavData = await getBiographySubNavData();
-
-// const stem = "biography";
-
-// const response = await fetchArticles<ArticleSlug[]>("section", stem, [
-//   "slug",
-// ]);
-
-// if (!response.success || !response.data || response.data.length === 0) {
-//   return (
-//     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-//       <h1>Biography Section</h1>
-//       <p>Failed to fetch biography data.</p>
-//       <p>{response.message}</p>
-//     </main>
-//   );
-// }
-
-// const { data } = response;
-// const url = subnavData[0].link_to;
-
-// redirect(url);

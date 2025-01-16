@@ -31,7 +31,7 @@ const HomeBiographySection: React.FC = async () => {
 
   const biographyEntries = biographyEntriesResponse.data;
 
-  console.log("biographyEntries", biographyEntries);
+  // console.log("biographyEntries", biographyEntries);
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <SectionHeading
