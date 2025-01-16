@@ -1,3 +1,21 @@
+import { FrontendUserFull } from "./userTypes";
+
+export interface FrontendArtworkFull {
+  _id: string;
+  image: ArtworkImage;
+  title: string;
+  decade: number;
+  artstyle: string;
+  medium: string;
+  surface: string;
+  featured: boolean;
+  watcherlist: FrontendUserFull[];
+  favourited: FrontendUserFull[];
+}
+
+//! OLD TYPES BELOW:
+//* TRYING WITH FULL USER TYPE
+
 export interface IFrontendArtwork {
   image: ArtworkImage;
   _id: string;

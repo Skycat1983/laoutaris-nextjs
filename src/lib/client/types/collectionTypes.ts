@@ -1,28 +1,46 @@
 import { IFrontendArtwork } from "./artworkTypes";
 
-export interface IFrontendCollectionBase {
-  title: string;
-  subtitle: string;
-  summary: string;
-  text: string;
-  author: string;
-  imageUrl: string;
-  slug: string;
-  section: "artwork" | "biography" | "project";
-  artworks: IFrontendArtwork[] | string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+// export interface FrontendCollectionFull {
+//   _id: string;
+//   title: string;
+//   subtitle: string;
+//   summary: string;
+//   text: string;
+//   author: string;
+//   imageUrl: string;
+//   slug: string;
+//   section: "artwork" | "biography" | "project";
+//   artworks: FrontendArtworkFull[];
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
-export interface IFrontendCollectionPopulated extends IFrontendCollectionBase {
-  artworks: IFrontendArtwork[];
-}
+//! OLD TYPES BELOW:
+//* TRYING WITH FULL USER TYPE
 
-export interface IFrontendCollectionUnpopulated
-  extends IFrontendCollectionBase {
-  artworks: string[];
-}
+// export interface IFrontendCollectionBase {
+//   title: string;
+//   subtitle: string;
+//   summary: string;
+//   text: string;
+//   author: string;
+//   imageUrl: string;
+//   slug: string;
+//   section: "artwork" | "biography" | "project";
+//   artworks: IFrontendArtwork[] | string[];
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
-export type IFrontendCollection =
-  | IFrontendCollectionPopulated
-  | IFrontendCollectionUnpopulated;
+// export interface IFrontendCollectionPopulated extends IFrontendCollectionBase {
+//   artworks: IFrontendArtwork[];
+// }
+
+// export interface IFrontendCollectionUnpopulated
+//   extends IFrontendCollectionBase {
+//   artworks: string[];
+// }
+
+// export type IFrontendCollection =
+//   | IFrontendCollectionPopulated
+//   | IFrontendCollectionUnpopulated;

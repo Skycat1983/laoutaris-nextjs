@@ -1,7 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-// Define the interface that includes both content and article-specific fields
-export interface IArticleContent extends Document {
+export interface DBArticle extends Document {
   title: string;
   subtitle: string;
   summary: string;
@@ -14,8 +13,7 @@ export interface IArticleContent extends Document {
   overlayColour: "white" | "black";
 }
 
-// Combine the schemas into one
-const articleContentSchema = new mongoose.Schema<IArticleContent>(
+const articleContentSchema = new mongoose.Schema<DBArticle>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -44,6 +42,6 @@ const articleContentSchema = new mongoose.Schema<IArticleContent>(
 
 const ArticleModel =
   mongoose.models.Article ||
-  mongoose.model<IArticleContent>("Article", articleContentSchema);
+  mongoose.model<DBArticle>("Article", articleContentSchema);
 
 export { ArticleModel };

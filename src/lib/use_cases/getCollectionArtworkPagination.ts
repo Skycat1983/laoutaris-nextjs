@@ -1,8 +1,8 @@
 import { fetchCollectionArtwork } from "../server/collection/data-fetching/fetchCollectionArtwork";
 import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import {
-  CollectionArtwork,
   PaginationArtworkLink,
+  CollectionArtworkToPaginationBridge,
   collectionArtworkToPaginationLink,
 } from "../resolvers/paginationResolvers";
 
@@ -22,7 +22,7 @@ export const getCollectionArtworkPagination = async (
   const resolver = collectionArtworkToPaginationLink;
 
   const fetchLinks = fetchAndResolve<
-    CollectionArtwork,
+    CollectionArtworkToPaginationBridge,
     PaginationArtworkLink[]
   >(
     fetcher,

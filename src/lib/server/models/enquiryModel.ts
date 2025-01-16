@@ -1,13 +1,13 @@
 import mongoose, { Document } from "mongoose";
 
-export interface IEnquiryContent extends Document {
+export interface DBEnquiry extends Document {
   name: string;
   email: string;
   enquiryType: "print" | "original" | "both";
   message: string;
 }
 
-const enquiryContentSchema = new mongoose.Schema<IEnquiryContent>(
+const enquiryContentSchema = new mongoose.Schema<DBEnquiry>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -26,6 +26,6 @@ const enquiryContentSchema = new mongoose.Schema<IEnquiryContent>(
 
 const EnquiryModel =
   mongoose.models.Enquiry ||
-  mongoose.model<IEnquiryContent>("Enquiry", enquiryContentSchema);
+  mongoose.model<DBEnquiry>("Enquiry", enquiryContentSchema);
 
 export { EnquiryModel };

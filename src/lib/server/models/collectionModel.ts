@@ -1,7 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-// Define the interface that includes both content and collection-specific fields
-export interface ICollectionContent extends Document {
+export interface DBCollection extends Document {
   title: string;
   subtitle: string;
   summary: string;
@@ -15,8 +14,7 @@ export interface ICollectionContent extends Document {
   updatedAt: Date;
 }
 
-// Combine the schemas into one
-const collectionSchema = new mongoose.Schema<ICollectionContent>(
+const collectionSchema = new mongoose.Schema<DBCollection>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -37,13 +35,13 @@ const collectionSchema = new mongoose.Schema<ICollectionContent>(
     artworks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },
   {
-    collection: "collections", // Specify the collection name
-    timestamps: true, // Automatically include createdAt and updatedAt
+    collection: "collections",
+    timestamps: true,
   }
 );
 
 const CollectionModel =
   mongoose.models.Collection ||
-  mongoose.model<ICollectionContent>("Collection", collectionSchema);
+  mongoose.model<DBCollection>("Collection", collectionSchema);
 
 export { CollectionModel };

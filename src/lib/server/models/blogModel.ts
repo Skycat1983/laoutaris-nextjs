@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
-export interface IBlogEntry extends Document {
+export interface DBBlogEntry extends Document {
   title: string;
   subtitle: string;
   summary: string;
@@ -13,7 +13,7 @@ export interface IBlogEntry extends Document {
   tags: string[];
 }
 
-const blogSchema = new mongoose.Schema<IBlogEntry>({
+const blogSchema = new mongoose.Schema<DBBlogEntry>({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
   summary: { type: String, required: true },
@@ -27,7 +27,7 @@ const blogSchema = new mongoose.Schema<IBlogEntry>({
 });
 
 const BlogModel =
-  mongoose.models.Blog || mongoose.model<IBlogEntry>("Blog", blogSchema);
+  mongoose.models.Blog || mongoose.model<DBBlogEntry>("Blog", blogSchema);
 
 export { BlogModel };
 

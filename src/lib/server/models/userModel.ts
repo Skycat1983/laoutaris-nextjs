@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 import { ArtworkModel } from "./artworkModel";
 
-export interface IUser extends Document {
+export interface DBUser extends Document {
   email: string;
   username: string;
   password: string;
@@ -11,7 +11,7 @@ export interface IUser extends Document {
 }
 
 // Create the user schema
-const userSchema = new mongoose.Schema<IUser>(
+const userSchema = new mongoose.Schema<DBUser>(
   {
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema<IUser>(
 
 // Create the User model using the discriminator
 export const UserModel =
-  mongoose.models.User || mongoose.model<IUser>("User", userSchema);
+  mongoose.models.User || mongoose.model<DBUser>("User", userSchema);
 
 //! with descriminator
 // export interface IUser extends IBaseUser {

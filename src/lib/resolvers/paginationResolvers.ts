@@ -1,14 +1,16 @@
+import {
+  FrontendArtworkFull,
+  FrontendCollectionFull,
+} from "../client/types/populatedTypes";
 import { buildUrl } from "@/utils/buildUrl";
-import { IFrontendCollection } from "../client/types/collectionTypes";
-import { IFrontendArtwork } from "../client/types/artworkTypes";
 
-export type SelectedCollectionFields = Pick<
-  IFrontendCollection,
+type SelectedCollectionFields = Pick<
+  FrontendCollectionFull,
   "artworks" | "slug" | "title"
 >;
-export type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+type SelectedArtworkFields = Pick<FrontendArtworkFull, "image" | "_id">;
 
-export type CollectionArtwork = SelectedCollectionFields & {
+export type CollectionArtworkToPaginationBridge = SelectedCollectionFields & {
   artworks: SelectedArtworkFields[];
 };
 
@@ -20,9 +22,9 @@ export interface PaginationArtworkLink {
 }
 
 export const collectionArtworkToPaginationLink = (
-  collection: CollectionArtwork
+  collection: CollectionArtworkToPaginationBridge
 ): PaginationArtworkLink[] => {
-  console.log("CollectionArtwork:", collection);
+  // console.log("CollectionArtwork:", collection);
   return collection.artworks.map((artwork) => ({
     secure_url: artwork.image.secure_url,
     height: artwork.image.pixelHeight,
