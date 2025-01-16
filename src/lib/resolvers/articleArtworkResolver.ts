@@ -35,10 +35,10 @@ export type IArticleArtworkFields = Omit<
   image: IArticleArtworkImageFields;
 };
 
-// picking the specific fields from Image that you need
 export type IArticleArtworkImageFields = Pick<
   ArtworkImage,
   "secure_url" | "pixelHeight" | "pixelWidth"
 >;
 
 // export const articleArtworkResolver = ({
+// testing
