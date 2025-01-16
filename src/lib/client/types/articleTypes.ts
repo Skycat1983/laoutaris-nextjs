@@ -1,4 +1,4 @@
-import { IFrontendArtwork, Image } from "./artworkTypes";
+import { IFrontendArtwork, ArtworkImage } from "./artworkTypes";
 
 export interface IFrontendArticle {
   title: string;
@@ -13,9 +13,6 @@ export interface IFrontendArticle {
   artwork: IFrontendReducedArticleArtwork;
 }
 
-// picking the specific fields from Image that you need
-type ReducedImage = Pick<Image, "secure_url" | "pixelHeight" | "pixelWidth">;
-
 // omiting the fields from Image that we don't need
 export type IFrontendReducedArticleArtwork = Omit<
   IFrontendArtwork,
@@ -23,3 +20,9 @@ export type IFrontendReducedArticleArtwork = Omit<
 > & {
   image: ReducedImage;
 };
+
+// picking the specific fields from Image that you need
+type ReducedImage = Pick<
+  ArtworkImage,
+  "secure_url" | "pixelHeight" | "pixelWidth"
+>;

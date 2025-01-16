@@ -1,24 +1,36 @@
 /**
  * @fileoverview
- * Layout component for the `/biography` path in a Next.js application.
+ * Layout component for the `/biography` route in a Next.js application.
  *
  * - **Purpose:**
- *   Fetches and transforms biography article data into navigation links for the `SubNavBar` component,
- *   allowing users to explore various biography articles within a consistent layout.
+ *   Provides a consistent layout for the Biography section, including a sub-navigation bar (`SubNavBar`)
+ *   for exploring available biography articles and rendering child components for specific articles.
  *
- * - **Key Features:**
- *   1. Connects to the database and fetches biography articles using `fetchArticles`.
- *   2. Transforms article data into `SubNavBar` links using the `articleToSubNavLink` resolver.
- *   3. Displays navigation links via the `SubNavBar` component with a `Suspense` fallback for loading states.
- *   4. Renders child components for specific biography article pages.
+ * - **Behavior:**
+ *   1. Establishes a database connection using `dbConnect`.
+ *   2. Fetches and transforms biography data into navigation links via `getBiographySubNavData`.
+ *   3. Displays navigation links using the `SubNavBar` component, with a `SubNavSkeleton` fallback during data loading.
+ *   4. Renders child components corresponding to specific biography article pages.
  *
  * - **Path Structure:**
- *   - `/biography`: Root path for the biography section.
- *   - `/biography/:slug`: Displays content for a specific biography article, with navigable links to other articles.
+ *   - `/biography`: Root path for the Biography section.
+ *   - `/biography/:slug`: Displays content for a specific biography article.
+ *
+ * - **Key Features:**
+ *   - **Dynamic Navigation:** Links to all available biography articles are dynamically generated.
+ *   - **Suspense Support:** Uses React's `Suspense` to handle loading states for navigation data.
+ *   - **Modularity:** Delegates data fetching to `getBiographySubNavData` for improved maintainability and reusability.
  *
  * - **Error Handling:**
- *   Displays a fallback loader (`SubNavSkeleton`) while fetching data. Errors during data fetching will
- *   throw exceptions, ensuring clear failure states (future enhancements could include retry mechanisms).
+ *   - Displays a skeleton loader (`SubNavSkeleton`) during data fetching.
+ *   - Relies on Next.js error boundaries (`error.tsx`) for handling unhandled exceptions.
+ *   - TODO: Implement enhanced error recovery mechanisms, such as retries or more granular fallback UIs.
+ *
+ * - **Dependencies:**
+ *   - `dbConnect`: Ensures a connection to MongoDB.
+ *   - `getBiographySubNavData`: Abstracts the logic for fetching and transforming biography navigation data.
+ *   - `SubNavBar`: Renders navigable links to other biography articles.
+ *   - `SubNavSkeleton`: Provides a fallback UI for loading states.
  */
 
 "use server";

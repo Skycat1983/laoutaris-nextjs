@@ -1,5 +1,5 @@
-import { getCollectionSubNavData } from "./getCollectionSubnavData";
-import { redirectToDefault } from "./redirectToDefault";
+import { getCollectionSubNavData } from "../lib/use_cases/getCollectionSubnavData";
+import { redirectToDefault } from "../lib/use_cases/redirectToDefault";
 
 export const getCollectionRedirect = async () => {
   return redirectToDefault(

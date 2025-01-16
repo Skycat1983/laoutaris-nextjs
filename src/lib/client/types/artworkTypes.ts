@@ -1,5 +1,5 @@
 export interface IFrontendArtwork {
-  image: Image;
+  image: ArtworkImage;
   _id: string;
   title: string;
   decade: number;
@@ -12,7 +12,7 @@ export interface IFrontendArtwork {
   // __v: number;
 }
 
-export interface Image {
+export interface ArtworkImage {
   predominantColors: PredominantColors;
   secure_url: string;
   public_id: string;
