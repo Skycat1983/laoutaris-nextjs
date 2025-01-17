@@ -14,7 +14,7 @@ type TransformedArtworkFields = Omit<SelectedArtworkFields, "image"> & {
   image: SelectedArtworkImageFields;
 };
 
-export type BiographyArticleViewWithArtworkTooltip = Omit<
+export type ArticleViewWithArtworkTooltip = Omit<
   FrontendArticleWithArtwork,
   "artwork"
 > & {
@@ -23,7 +23,7 @@ export type BiographyArticleViewWithArtworkTooltip = Omit<
 
 export const articleToView = (
   article: FrontendArticleWithArtwork
-): BiographyArticleViewWithArtworkTooltip => {
+): ArticleViewWithArtworkTooltip => {
   const { watcherlist, favourited, ...restArtwork } = article.artwork;
   const { secure_url, pixelHeight, pixelWidth } = article.artwork.image;
 

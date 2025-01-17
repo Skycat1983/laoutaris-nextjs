@@ -1,4 +1,3 @@
-import { buildQueries } from "@testing-library/react";
 import { FrontendArticleUnpopulated } from "../client/types/articleTypes";
 import { buildUrl } from "@/utils/buildUrl";
 
@@ -9,7 +8,7 @@ export interface PrevNextLinks {
   next: string | null;
 }
 
-// needed to create closure to pass in currentSlug because fetchAndResolve doesn't allow for additional arguments
+//* needed to create closure to pass in currentSlug because fetchAndResolve doesn't allow for additional arguments
 export const createPrevNextResolver = (currentSlug: string) => {
   return (articles: SelectedArticleField[]): PrevNextLinks => {
     return articlesToPrevNext(currentSlug, articles);
@@ -17,7 +16,6 @@ export const createPrevNextResolver = (currentSlug: string) => {
 };
 
 //? findIndex allows us to search for an element in an array using a custom condition (callback function).
-
 const articlesToPrevNext = (
   currentSlug: string,
   articles: SelectedArticleField[]

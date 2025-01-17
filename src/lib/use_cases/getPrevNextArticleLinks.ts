@@ -19,11 +19,13 @@ export const getPrevNextArticleLinks = async ({
   const fetcher = fetchArticles;
   const resolver = createPrevNextResolver(currentSlug);
 
-  return fetchAndResolve<SelectedArticleField[], PrevNextLinks>(
+  const [links] = await fetchAndResolve<SelectedArticleField[], PrevNextLinks>(
     fetcher,
     identifierKey,
     identifierValue,
     fields,
     resolver
   )();
+
+  return links;
 };

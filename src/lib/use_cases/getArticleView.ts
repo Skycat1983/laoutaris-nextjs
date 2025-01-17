@@ -11,7 +11,7 @@ export const getArticleView = async ({ slug }: { slug: string }) => {
   const identifierKey = "slug";
   const identifierValue = slug;
 
-  // empty array means all fields
+  // empty array = all fields
   const articleFields: string[] = [];
 
   const artworkFields: string[] = [
@@ -22,7 +22,7 @@ export const getArticleView = async ({ slug }: { slug: string }) => {
 
   const resolver = articleToView;
 
-  return fetchAndResolve<
+  const [articleDetails] = await fetchAndResolve<
     FrontendArticleWithArtwork,
     BiographyArticleViewWithArtworkTooltip
   >(
@@ -33,4 +33,18 @@ export const getArticleView = async ({ slug }: { slug: string }) => {
     resolver,
     artworkFields
   )();
+
+  return articleDetails;
+
+  // return fetchAndResolve<
+  //   FrontendArticleWithArtwork,
+  //   BiographyArticleViewWithArtworkTooltip
+  // >(
+  //   fetcher,
+  //   identifierKey,
+  //   identifierValue,
+  //   articleFields,
+  //   resolver,
+  //   artworkFields
+  // )();
 };
