@@ -1,10 +1,10 @@
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import {
   PrevNextLinks,
   SelectedArticleField,
   createPrevNextResolver,
 } from "../resolvers/articlesToPrevNext";
 import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
+import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
 export const getPrevNextArticleLinks = async ({
   segment,
@@ -17,9 +17,9 @@ export const getPrevNextArticleLinks = async ({
   const identifierValue = segment;
   const fields = ["slug"];
   const fetcher = fetchArticles;
-  const resolver = createPrevNextResolver(slug);
+  const resolver = createPrevNextResolver(segment, slug);
 
-  const [links] = await fetchAndResolve<SelectedArticleField[], PrevNextLinks>(
+  const links = await fetchAndResolveArr<SelectedArticleField, PrevNextLinks>(
     fetcher,
     identifierKey,
     identifierValue,

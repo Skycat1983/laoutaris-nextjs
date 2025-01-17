@@ -45,10 +45,11 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
     relativeLinks,
   ]);
 
+  console.log("currentArticle, prevNext", currentArticle, prevNext);
+
   const { prev, next } = prevNext;
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
-      {/* Render MobileArticleView for mobile devices */}
       <div className="block md:hidden">
         <MobileArticleView
           article={currentArticle}
@@ -57,7 +58,6 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
         />
       </div>
 
-      {/* Render ArticleView for desktop devices */}
       <div className="hidden md:block">
         <DesktopArticleView
           article={currentArticle}

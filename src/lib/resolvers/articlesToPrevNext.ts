@@ -9,31 +9,34 @@ export interface PrevNextLinks {
 }
 
 //* needed to create closure to pass in currentSlug because fetchAndResolve doesn't allow for additional arguments
-export const createPrevNextResolver = (currentSlug: string) => {
+export const createPrevNextResolver = (segment: string, slug: string) => {
   return (articles: SelectedArticleField[]): PrevNextLinks => {
-    return articlesToPrevNext(currentSlug, articles);
+    return articlesToPrevNext(segment, slug, articles);
   };
 };
 
 //? findIndex allows us to search for an element in an array using a custom condition (callback function).
 const articlesToPrevNext = (
-  currentSlug: string,
+  segment: string,
+  slug: string,
   articles: SelectedArticleField[]
 ): PrevNextLinks => {
-  console.log("currentSlug", currentSlug);
+  console.log("currentSlug", slug);
   console.log("articles", articles);
   const articleCount = articles.length;
-  const currentIndex = articles.findIndex(
-    (article) => article.slug === currentSlug
-  );
+  const currentIndex = articles.findIndex((article) => article.slug === slug);
 
   if (currentIndex === -1) {
     //? findIndex returns -1 if the element is not found
-    throw new Error(`Current slug "${currentSlug}" not found in articles`);
+    throw new Error(`Current slug "${slug}" not found in articles`);
   }
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < articleCount - 1;
-  const prevUrl = hasPrev ? buildUrl([articles[currentIndex - 1].slug]) : null;
-  const nextUrl = hasNext ? buildUrl([articles[currentIndex + 1].slug]) : null;
+  const prevUrl = hasPrev
+    ? buildUrl([segment, articles[currentIndex - 1].slug])
+    : null;
+  const nextUrl = hasNext
+    ? buildUrl([segment, articles[currentIndex + 1].slug])
+    : null;
   return { prev: prevUrl, next: nextUrl };
 };

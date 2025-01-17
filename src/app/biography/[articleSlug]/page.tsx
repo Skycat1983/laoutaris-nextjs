@@ -18,14 +18,9 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { delay } from "@/utils/debug";
-import { getArticleView } from "@/lib/use_cases/getArticleView";
-import { getPrevNextArticleLinks } from "@/lib/use_cases/getPrevNextArticleLinks";
-import { PrevNextLinks } from "@/lib/resolvers/articlesToPrevNext";
-import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
-import ArticleView from "@/components/views/ArticleView";
 import { Suspense } from "react";
 import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
+import ArticleView from "@/components/views/ArticleView";
 
 export default async function Article({
   params,
