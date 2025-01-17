@@ -19,12 +19,11 @@
 
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
-import ArticleView from "@/components/views/ArticleView";
-import MobileArticleView from "@/components/views/MobileArticleView";
 import { getArticleView } from "@/lib/use_cases/getArticleView";
 import { getPrevNextArticleLinks } from "@/lib/use_cases/getPrevNextArticleLinks";
 import { PrevNextLinks } from "@/lib/resolvers/articlesToPrevNext";
 import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
+import ArticleView from "@/components/views/ArticleView";
 
 export default async function Article({
   params,
@@ -34,36 +33,25 @@ export default async function Article({
   await dbConnect();
   await delay(2000);
   const slug = params.articleSlug;
-  const section = "biography";
-  const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
-    { slug }
-  );
-  const prevNextLinks: Promise<PrevNextLinks> = getPrevNextArticleLinks({
-    currentSlug: slug,
-    section,
-  });
-  const [currentArticle, biographyLinks] = await Promise.all([
-    articleDetails,
-    prevNextLinks,
-  ]);
-
-  const { prev, next } = biographyLinks;
 
   return (
-    <main className="flex flex-col items-center justify-between lg:px-12 py-4">
-      {/* Render MobileArticleView for mobile devices */}
-      <div className="block md:hidden">
-        <MobileArticleView
-          article={currentArticle}
-          nextUrl={next}
-          prevUrl={prev}
-        />
-      </div>
-
-      {/* Render ArticleView for desktop devices */}
-      <div className="hidden md:block">
-        <ArticleView article={currentArticle} nextUrl={next} prevUrl={prev} />
-      </div>
-    </main>
+    <>
+      <ArticleView segment="biography" slug={slug} />
+    </>
   );
 }
+
+// const section = "biography";
+// const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
+//   { slug }
+// );
+// const prevNextLinks: Promise<PrevNextLinks> = getPrevNextArticleLinks({
+//   currentSlug: slug,
+//   section,
+// });
+// const [currentArticle, biographyLinks] = await Promise.all([
+//   articleDetails,
+//   prevNextLinks,
+// ]);
+
+// const { prev, next } = biographyLinks;

@@ -7,17 +7,17 @@ import {
 import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
 
 export const getPrevNextArticleLinks = async ({
-  currentSlug,
-  section,
+  segment,
+  slug,
 }: {
-  currentSlug: string;
-  section: string;
+  segment: string;
+  slug: string;
 }) => {
   const identifierKey = "section";
-  const identifierValue = section;
+  const identifierValue = segment;
   const fields = ["slug"];
   const fetcher = fetchArticles;
-  const resolver = createPrevNextResolver(currentSlug);
+  const resolver = createPrevNextResolver(slug);
 
   const [links] = await fetchAndResolve<SelectedArticleField[], PrevNextLinks>(
     fetcher,
