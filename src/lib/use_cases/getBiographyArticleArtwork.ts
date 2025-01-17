@@ -1,26 +1,21 @@
-import { FrontendArticleFull } from "../client/types/articleTypes";
-import { FrontendArtworkFull } from "../client/types/artworkTypes";
+import { fetchAndResolve } from "@/utils/fetchAndResolve";
+import { FrontendArticleWithArtwork } from "../client/types/articleTypes";
+import {
+  BiographyArticleViewWithArtworkTooltip,
+  articleToView,
+} from "../resolvers/articleToView";
 import { fetchArticleArtwork } from "../server/article/data-fetching/fetchArticleArtwork";
-
-type SelectedArticleFields = Pick<FrontendArticleFull, "author">;
-
-type SelectedArtworkFields = Omit<
-  FrontendArtworkFull,
-  "watcherlist" | "favourited"
->;
-
-type BiographyArticleArtworkView = SelectedArticleFields & {
-  artwork: SelectedArtworkFields;
-};
 
 export const getBiographyArticleArtwork = async ({
   slug,
 }: {
   slug: string;
 }) => {
+  const fetcher = fetchArticleArtwork;
   const identifierKey = "slug";
   const identifierValue = slug;
 
+  // empty array means all fields
   const articleFields: string[] = [];
 
   const artworkFields: string[] = [
@@ -29,10 +24,17 @@ export const getBiographyArticleArtwork = async ({
     "image.pixelWidth",
   ];
 
-  return fetchArticleArtwork<BiographyArticleArtworkView>(
+  const resolver = articleToView;
+
+  return fetchAndResolve<
+    FrontendArticleWithArtwork,
+    BiographyArticleViewWithArtworkTooltip
+  >(
+    fetcher,
     identifierKey,
     identifierValue,
     articleFields,
+    resolver,
     artworkFields
-  );
+  )();
 };

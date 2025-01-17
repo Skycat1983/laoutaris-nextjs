@@ -1,5 +1,5 @@
 import { IFrontendArticle } from "@/lib/client/types/articleTypes";
-import { buildUrl } from "./buildUrl";
+import { buildUrl } from "../utils/buildUrl";
 import {
   IFrontendCollection,
   IFrontendCollectionPopulated,

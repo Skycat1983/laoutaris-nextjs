@@ -13,7 +13,7 @@ export interface FrontendArtworkFull {
   favourited: FrontendUserFull[];
 }
 
-export interface FrontendArtworkMinimal {
+export interface FrontendArtworkUnpopulated {
   _id: string;
   image: ArtworkImage;
   title: string;
