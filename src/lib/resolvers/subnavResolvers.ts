@@ -1,8 +1,6 @@
 import { buildUrl } from "@/utils/buildUrl";
-import {
-  FrontendArticleFull,
-  FrontendCollectionFull,
-} from "../client/types/populatedTypes";
+import { FrontendArticleMinimal } from "../client/types/articleTypes";
+import { FrontendCollectionMinimal } from "../client/types/collectionTypes";
 
 export interface SubNavBarLink {
   title: string;
@@ -11,7 +9,10 @@ export interface SubNavBarLink {
   disabled?: boolean;
 }
 
-export type SubNavArticleFields = Pick<FrontendArticleFull, "title" | "slug">;
+export type SubNavArticleFields = Pick<
+  FrontendArticleMinimal,
+  "title" | "slug"
+>;
 
 export const articleToSubNavLink = (
   item: SubNavArticleFields
@@ -22,7 +23,7 @@ export const articleToSubNavLink = (
 });
 
 export type SubNavCollectionFields = Pick<
-  FrontendCollectionFull,
+  FrontendCollectionMinimal,
   "title" | "slug" | "artworks"
 >;
 

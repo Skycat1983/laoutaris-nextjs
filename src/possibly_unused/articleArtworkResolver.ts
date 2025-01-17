@@ -1,7 +1,4 @@
-import {
-  FrontendArticleFull,
-  FrontendArtworkFull,
-} from "../lib/client/types/populatedTypes";
+import { FrontendArticleFull, FrontendArtworkFull } from "./populatedTypes";
 
 type SelectedArticleFields = Pick<FrontendArticleFull, "author">;
 

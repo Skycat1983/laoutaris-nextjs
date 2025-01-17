@@ -1,5 +1,5 @@
 import { buildUrl } from "@/utils/buildUrl";
-import { FrontendArticleFull } from "../client/types/populatedTypes";
+import { FrontendArticleMinimal } from "../client/types/articleTypes";
 
 export interface SubNavBarLink {
   title: string;
@@ -8,7 +8,10 @@ export interface SubNavBarLink {
   disabled?: boolean;
 }
 
-export type SubNavArticleFields = Pick<FrontendArticleFull, "title" | "slug">;
+export type SubNavArticleFields = Pick<
+  FrontendArticleMinimal,
+  "title" | "slug"
+>;
 
 export const articleToSubNavLink = (
   item: SubNavArticleFields

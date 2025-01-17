@@ -1,8 +1,6 @@
+import { FrontendArticleFull } from "../client/types/articleTypes";
+import { FrontendArtworkFull } from "../client/types/artworkTypes";
 import { fetchArticleArtwork } from "../server/article/data-fetching/fetchArticleArtwork";
-import {
-  FrontendArticleFull,
-  FrontendArtworkFull,
-} from "../client/types/populatedTypes";
 
 type SelectedArticleFields = Pick<FrontendArticleFull, "author">;
 

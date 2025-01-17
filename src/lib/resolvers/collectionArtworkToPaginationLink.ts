@@ -1,8 +1,6 @@
-import {
-  FrontendArtworkFull,
-  FrontendCollectionFull,
-} from "../client/types/populatedTypes";
 import { buildUrl } from "@/utils/buildUrl";
+import { FrontendCollectionFull } from "../client/types/collectionTypes";
+import { FrontendArtworkFull } from "../client/types/artworkTypes";
 
 type SelectedCollectionFields = Pick<
   FrontendCollectionFull,
