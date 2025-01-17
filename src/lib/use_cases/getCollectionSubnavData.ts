@@ -1,10 +1,10 @@
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import {
   SubNavBarLink,
   SubNavCollectionFields,
   collectionToSubNavLink,
 } from "../resolvers/subnavResolvers";
 import { fetchCollections } from "../server/collection/data-fetching/fetchCollections";
+import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
 // TODO: change the section from "artwork" to "collection"
 
@@ -16,12 +16,16 @@ export const getCollectionSubNavData = async (): Promise<SubNavBarLink[]> => {
 
   const identifierFields = ["title", "slug", "artworks"];
 
-  const fetchLinks = fetchAndResolve<SubNavCollectionFields, SubNavBarLink>(
+  const fetchLinks = fetchAndResolveArr<
+    SubNavCollectionFields,
+    SubNavBarLink[]
+  >(
     fetcher,
     identifierKey,
     identifierValue,
     identifierFields,
-    collectionToSubNavLink
+    (collections: SubNavCollectionFields[]) =>
+      collections.map(collectionToSubNavLink)
   );
 
   return await fetchLinks();

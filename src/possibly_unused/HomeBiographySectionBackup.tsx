@@ -1,10 +1,10 @@
 import Image from "next/image";
-import ButtonDivider from "../atoms/ButtonDivider";
-import HorizontalDivider from "../atoms/HorizontalDivider";
-import SectionHeading from "../atoms/SectionHeading";
+import ButtonDivider from "../components/atoms/ButtonDivider";
+import HorizontalDivider from "../components/atoms/HorizontalDivider";
+import SectionHeading from "../components/atoms/SectionHeading";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../components/ui/shadcn/scroll-area";
 
 interface BiographyEntry {
   title: string;

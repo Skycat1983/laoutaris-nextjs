@@ -1,10 +1,10 @@
 import { fetchCollectionArtwork } from "../server/collection/data-fetching/fetchCollectionArtwork";
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import {
   PaginationArtworkLink,
   CollectionArtworkToPaginationBridge,
   collectionArtworkToPaginationLink,
 } from "../resolvers/collectionArtworkToPaginationLink";
+import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 
 export const getCollectionArtworkPagination = async (
   collectionSlug: string
@@ -19,9 +19,8 @@ export const getCollectionArtworkPagination = async (
     "image.pixelHeight",
     "image.pixelWidth",
   ];
-  const resolver = collectionArtworkToPaginationLink;
 
-  const fetchLinks = fetchAndResolve<
+  const fetchLinks = fetchAndResolveObj<
     CollectionArtworkToPaginationBridge,
     PaginationArtworkLink[]
   >(
@@ -29,9 +28,9 @@ export const getCollectionArtworkPagination = async (
     collectionKey,
     collectionValue,
     collectionFields,
-    resolver,
+    collectionArtworkToPaginationLink,
     artworkFields
   );
 
-  return (await fetchLinks()).flat();
+  return await fetchLinks();
 };

@@ -1,10 +1,10 @@
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import {
   SubNavArticleFields,
   SubNavBarLink,
   articleToSubNavLink,
 } from "../resolvers/subnavResolvers";
 import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
+import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
 export const getBiographySubNavData = async (): Promise<SubNavBarLink[]> => {
   const fetcher = fetchArticles;
@@ -13,12 +13,12 @@ export const getBiographySubNavData = async (): Promise<SubNavBarLink[]> => {
   const identifierValue = "biography";
   const identifierFields = ["title", "slug"];
 
-  const fetchLinks = fetchAndResolve<SubNavArticleFields, SubNavBarLink>(
+  const fetchLinks = fetchAndResolveArr<SubNavArticleFields, SubNavBarLink[]>(
     fetcher,
     identifierKey,
     identifierValue,
     identifierFields,
-    articleToSubNavLink
+    (articles: SubNavArticleFields[]) => articles.map(articleToSubNavLink)
   );
 
   return await fetchLinks();
