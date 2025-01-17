@@ -57,7 +57,11 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
 
       {/* Render ArticleView for desktop devices */}
       <div className="hidden md:block">
-        <DesktopArticleView article={currentArticle} next={next} prev={prev} />
+        <DesktopArticleView
+          article={currentArticle}
+          nextArticle={next}
+          prevArticle={prev}
+        />
       </div>
     </main>
   );
