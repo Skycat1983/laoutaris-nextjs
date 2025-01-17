@@ -29,15 +29,15 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { fetchArticleArtwork } from "@/lib/server/article/data-fetching/fetchArticleArtwork";
 import { delay } from "@/utils/debug";
 import { buildUrl } from "@/utils/buildUrl";
 import ArticleView from "@/components/views/ArticleView";
 import MobileArticleView from "@/components/views/MobileArticleView";
+import { getArticleView } from "@/lib/use_cases/getArticleView";
 
-type BiographyArticleLink = Pick<IFrontendArticle, "slug">;
+// type BiographyArticleLink = Pick<IFrontendArticle, "slug">;
 
 export default async function Article({
   params,
@@ -46,16 +46,19 @@ export default async function Article({
 }) {
   await dbConnect();
   await delay(2000);
-  const currentArticleSlug = params.articleSlug;
+  const slug = params.articleSlug;
   const stem = "biography";
 
+  const thisArticle = getArticleView({ slug });
+  // const
+
   // Define the fetch parameters for the current article and all biography links
-  const currentArticleFetch = fetchArticleArtwork<IFrontendArticle>(
-    "slug",
-    currentArticleSlug,
-    [],
-    ["image.secure_url", "image.pixelHeight", "image.pixelWidth"]
-  );
+  // const currentArticleFetch = fetchArticleArtwork<IFrontendArticle>(
+  //   "slug",
+  //   slug,
+  //   [],
+  //   ["image.secure_url", "image.pixelHeight", "image.pixelWidth"]
+  // );
 
   const biographyLinksFetch = fetchArticles<BiographyArticleLink>(
     "section",

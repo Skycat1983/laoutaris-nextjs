@@ -1,6 +1,6 @@
 import { buildUrl } from "@/utils/buildUrl";
-import { FrontendArticleMinimal } from "../client/types/articleTypes";
 import { FrontendCollectionMinimal } from "../client/types/collectionTypes";
+import { FrontendArticleUnpopulated } from "../client/types/articleTypes";
 
 export interface SubNavBarLink {
   title: string;
@@ -10,7 +10,7 @@ export interface SubNavBarLink {
 }
 
 export type SubNavArticleFields = Pick<
-  FrontendArticleMinimal,
+  FrontendArticleUnpopulated,
   "title" | "slug"
 >;
 

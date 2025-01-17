@@ -15,7 +15,7 @@ export interface FrontendArticleFull {
   artwork: FrontendArtworkFull;
 }
 
-export interface FrontendArticleMinimal {
+export interface FrontendArticleUnpopulated {
   _id: string;
   title: string;
   subtitle: string;
