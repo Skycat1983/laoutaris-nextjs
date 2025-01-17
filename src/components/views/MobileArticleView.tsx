@@ -1,15 +1,18 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface ArticleProps {
-  article: IFrontendArticle;
+  article: ArticleViewWithArtworkTooltip;
   nextUrl: string | null;
   prevUrl: string | null;
 }
+
+// i would like to make this more readable. let's focus on the prev and next buttons. perhaps instead of using ternary making the comp longer we might make a reusable component that wwill receive all that is necesary to function.
+
 const MobileArticleView: React.FC<ArticleProps> = ({
   article,
   nextUrl,

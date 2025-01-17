@@ -56,12 +56,6 @@
 
 import { headers } from "next/headers";
 
-interface fetchArticlesParams {
-  identifierKey: string;
-  identifierValue: string;
-  fields?: string[];
-}
-
 export async function fetchArticles<T>(
   identifierKey: string,
   identifierValue: string,
@@ -86,6 +80,9 @@ export async function fetchArticles<T>(
     );
 
     const result = await response.json();
+
+    console.log("fields", fields);
+    console.log("result", result);
 
     if (!result.success) {
       return {

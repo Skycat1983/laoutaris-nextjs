@@ -1,7 +1,7 @@
 import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import { FrontendArticleWithArtwork } from "../client/types/articleTypes";
 import {
-  BiographyArticleViewWithArtworkTooltip,
+  ArticleViewWithArtworkTooltip,
   articleToView,
 } from "../resolvers/articleToView";
 import { fetchArticleArtwork } from "../server/article/data-fetching/fetchArticleArtwork";
@@ -24,7 +24,7 @@ export const getArticleView = async ({ slug }: { slug: string }) => {
 
   const [articleDetails] = await fetchAndResolve<
     FrontendArticleWithArtwork,
-    BiographyArticleViewWithArtworkTooltip
+    ArticleViewWithArtworkTooltip
   >(
     fetcher,
     identifierKey,
@@ -35,16 +35,4 @@ export const getArticleView = async ({ slug }: { slug: string }) => {
   )();
 
   return articleDetails;
-
-  // return fetchAndResolve<
-  //   FrontendArticleWithArtwork,
-  //   BiographyArticleViewWithArtworkTooltip
-  // >(
-  //   fetcher,
-  //   identifierKey,
-  //   identifierValue,
-  //   articleFields,
-  //   resolver,
-  //   artworkFields
-  // )();
 };

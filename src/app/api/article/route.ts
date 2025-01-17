@@ -21,25 +21,22 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       );
     }
 
-    // Process fields parameter
     const fields = parseFields(fieldsParam);
 
-    // Construct the query object dynamically
     const query: Record<string, string> = {
       [identifierKey]: identifierValue,
     };
 
-    // Build the Mongoose query
     let mongooseQuery = ArticleModel.find(query).sort({ updatedAt: 1 }).lean();
 
     if (fields) {
       mongooseQuery = mongooseQuery.select(fields);
     }
 
-    // Execute the query
-    const collections = await mongooseQuery;
+    const articles = await mongooseQuery;
+    // console.log("articles in api/article route.ts", articles);
 
-    if (!collections.length) {
+    if (!articles.length) {
       return NextResponse.json(
         {
           success: false,
@@ -52,7 +49,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: collections,
+      data: articles,
     });
   } catch (error) {
     console.error("Error fetching artciles:", error);

@@ -20,6 +20,8 @@ const articlesToPrevNext = (
   currentSlug: string,
   articles: SelectedArticleField[]
 ): PrevNextLinks => {
+  console.log("currentSlug", currentSlug);
+  console.log("articles", articles);
   const articleCount = articles.length;
   const currentIndex = articles.findIndex(
     (article) => article.slug === currentSlug

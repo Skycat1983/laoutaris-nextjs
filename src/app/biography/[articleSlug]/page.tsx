@@ -24,6 +24,8 @@ import { getPrevNextArticleLinks } from "@/lib/use_cases/getPrevNextArticleLinks
 import { PrevNextLinks } from "@/lib/resolvers/articlesToPrevNext";
 import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
 import ArticleView from "@/components/views/ArticleView";
+import { Suspense } from "react";
+import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
 
 export default async function Article({
   params,
@@ -31,27 +33,13 @@ export default async function Article({
   params: { articleSlug: string };
 }) {
   await dbConnect();
-  await delay(2000);
   const slug = params.articleSlug;
 
   return (
     <>
-      <ArticleView segment="biography" slug={slug} />
+      <Suspense fallback={<ArticleViewSkeleton />}>
+        <ArticleView segment="biography" slug={slug} />
+      </Suspense>
     </>
   );
 }
-
-// const section = "biography";
-// const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
-//   { slug }
-// );
-// const prevNextLinks: Promise<PrevNextLinks> = getPrevNextArticleLinks({
-//   currentSlug: slug,
-//   section,
-// });
-// const [currentArticle, biographyLinks] = await Promise.all([
-//   articleDetails,
-//   prevNextLinks,
-// ]);
-
-// const { prev, next } = biographyLinks;

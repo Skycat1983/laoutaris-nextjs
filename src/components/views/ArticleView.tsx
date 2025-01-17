@@ -24,6 +24,7 @@ import { getPrevNextArticleLinks } from "@/lib/use_cases/getPrevNextArticleLinks
 import React from "react";
 import MobileArticleView from "./MobileArticleView";
 import DesktopArticleView from "./DesktopArticleView";
+import { delay } from "@/utils/debug";
 
 type ArticleViewProps = {
   segment: string;
@@ -31,6 +32,7 @@ type ArticleViewProps = {
 };
 
 const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
+  await delay(2000);
   const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
     { slug }
   );

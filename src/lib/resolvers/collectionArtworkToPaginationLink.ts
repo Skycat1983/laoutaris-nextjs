@@ -22,7 +22,6 @@ export interface PaginationArtworkLink {
 export const collectionArtworkToPaginationLink = (
   collectionPopulated: CollectionArtworkToPaginationBridge
 ): PaginationArtworkLink[] => {
-  // console.log("CollectionArtwork:", collection);
   return collectionPopulated.artworks.map((artwork) => ({
     secure_url: artwork.image.secure_url,
     height: artwork.image.pixelHeight,
