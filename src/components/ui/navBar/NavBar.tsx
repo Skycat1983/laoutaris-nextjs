@@ -44,8 +44,8 @@
 
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
+import { IFrontendCollectionUnpopulated } from "@/lib/types/collectionTypes";
+import { IFrontendArticle } from "@/lib/types/articleTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { buildUrl } from "@/utils/buildUrl";

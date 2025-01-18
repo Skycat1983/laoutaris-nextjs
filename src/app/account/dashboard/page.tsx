@@ -1,5 +1,5 @@
 import LogoutForm from "@/components/ui/forms/LogoutForm";
-import { IFrontendUser } from "@/lib/client/types/userTypes";
+import { IFrontendUser } from "@/lib/types/userTypes";
 import { authOptions } from "@/lib/config/authOptions";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { formatDate } from "@/utils/formatDate";

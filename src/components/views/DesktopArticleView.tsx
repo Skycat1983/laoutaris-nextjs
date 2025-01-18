@@ -1,5 +1,5 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 import { Button } from "@/components/ui/shadcn/button";
 import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
 import Image from "next/image";

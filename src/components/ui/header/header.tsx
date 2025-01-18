@@ -1,7 +1,7 @@
 "use server";
 
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import Searchbar from "../../atoms/inputs/Searchbar";
+import Searchbar from "../atoms/inputs/Searchbar";
 import NavBar from "../navBar/NavBar";
 
 const Header = () => {

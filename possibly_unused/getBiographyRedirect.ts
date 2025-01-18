@@ -1,5 +1,5 @@
-import { getBiographySubNavData } from "../lib/use_cases/getBiographySubnavData";
-import { redirectToDefault } from "../lib/use_cases/redirectToDefault";
+import { getBiographySubNavData } from "../src/lib/use_cases/getBiographySubnavData";
+import { redirectToDefault } from "../src/lib/use_cases/redirectToDefault";
 
 export const getBiographyDefaultRedirect = async () => {
   return redirectToDefault(

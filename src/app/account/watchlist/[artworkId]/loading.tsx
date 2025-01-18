@@ -1,4 +1,4 @@
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 import ArtworkInfoCardSkeleton from "@/components/skeletons/ArtworkInfoCardSkeleton";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 

@@ -1,7 +1,7 @@
-import SectionHeading from "../atoms/SectionHeading";
-import HorizontalDivider from "../atoms/HorizontalDivider";
-import YoutubeEmbedding from "../atoms/YoutubeEmbedding";
-import ButtonDivider from "../atoms/ButtonDivider";
+import SectionHeading from "../ui/atoms/SectionHeading";
+import HorizontalDivider from "../ui/atoms/HorizontalDivider";
+import YoutubeEmbedding from "../ui/atoms/YoutubeEmbedding";
+import ButtonDivider from "../ui/atoms/ButtonDivider";
 import { delay } from "@/utils/debug";
 
 const HomeProjectSection = async () => {

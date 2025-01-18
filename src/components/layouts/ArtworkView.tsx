@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React from "react";
-import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
-import HorizontalDivider from "../atoms/HorizontalDivider";
-import CroppedImages from "../atoms/CroppedImages";
+import ArtworkInfoCard from "../ui/cards/artworkInfoCard/ArtworkInfoCard";
+import HorizontalDivider from "../ui/atoms/HorizontalDivider";
+import CroppedImages from "../ui/atoms/CroppedImages";
 import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
 
 // TODO: refactor the image zooming logic

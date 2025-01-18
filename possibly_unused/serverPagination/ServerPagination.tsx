@@ -1,5 +1,8 @@
 "use server";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
+import {
+  ScrollArea,
+  ScrollBar,
+} from "../../src/components/ui/shadcn/scroll-area";
 import Link from "next/link";
 import PaginationItem from "./PaginationItem";
 import { ChevronLeft, ChevronRight } from "lucide-react";

@@ -1,4 +1,4 @@
-import { IFrontendEnquiry } from "@/lib/client/types/enquiryTypes";
+import { IFrontendEnquiry } from "@/lib/types/enquiryTypes";
 import { EnquiryModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -1,5 +1,5 @@
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
-import { IFrontendUserPopulatedWatchlist } from "@/lib/client/types/userTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { IFrontendUserPopulatedWatchlist } from "@/lib/types/userTypes";
 import { UserModel } from "@/lib/server/models";
 import dbConnect from "@/utils/mongodb";
 import { parseFields } from "@/utils/parseFields";

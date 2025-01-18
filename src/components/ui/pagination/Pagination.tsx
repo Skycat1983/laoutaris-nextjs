@@ -1,8 +1,8 @@
 import { delay } from "@/utils/debug";
 import React from "react";
 import PaginationItem, { PaginationArtworkLink } from "./PaginationItem";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import ArtistProfile from "@/components/atoms/ArtistProfile";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
 import SubscribeForm from "../forms/SubscribeForm";
 
 interface PaginationProps {
@@ -13,8 +13,6 @@ const Pagination = async ({ getData }: PaginationProps) => {
   await delay(2000);
 
   const paginationData = await getData();
-
-  console.log("paginationData :>> ", paginationData);
 
   return (
     <>

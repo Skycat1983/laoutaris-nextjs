@@ -7,15 +7,15 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/shadcn/tabs";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import {
   CloudinaryColorPalette,
   HexColorPalette,
-} from "@/components/cards/artworkInfoCard/ColorPallette";
-import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
+} from "@/components/ui/cards/artworkInfoCard/ColorPallette";
+import WatchlistButton from "@/components/ui/atoms/buttons/WatchlistButton";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
-import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
+import FavouritesButton from "@/components/ui/atoms/buttons/FavouritesButton";
 
 const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";

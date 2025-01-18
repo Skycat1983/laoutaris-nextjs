@@ -14,8 +14,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/shadcn/drawer";
 import Link from "next/link";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import Logo from "@/components/atoms/Logo";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import Logo from "@/components/ui/atoms/Logo";
 import { NavBarLink } from "../../navBar/NavBar";
 
 interface NavMenuProps {

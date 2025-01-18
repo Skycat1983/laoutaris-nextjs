@@ -1,6 +1,6 @@
 "use server";
 
-import NavItem from "@/components/atoms/buttons/NavItem";
+import NavItem from "@/components/ui/atoms/buttons/NavItem";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 import { delay } from "@/utils/debug";

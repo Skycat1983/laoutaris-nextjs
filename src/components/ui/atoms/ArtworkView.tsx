@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React from "react";
 import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import HorizontalDivider from "./HorizontalDivider";
 import CroppedImages from "./CroppedImages";
 import ZoomWrapper from "./ZoomWrapper";

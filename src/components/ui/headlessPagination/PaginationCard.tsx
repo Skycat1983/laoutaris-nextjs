@@ -1,4 +1,4 @@
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 
 type PageItemProps = {
   isActive: boolean;

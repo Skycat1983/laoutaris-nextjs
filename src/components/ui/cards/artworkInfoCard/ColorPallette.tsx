@@ -1,5 +1,5 @@
-import HexColorIcon from "@/components/atoms/icons/HexColorIcon";
-import TailwindColorIcon from "@/components/atoms/icons/TailwindColorIcon";
+import HexColorIcon from "@/components/ui/atoms/icons/HexColorIcon";
+import TailwindColorIcon from "@/components/ui/atoms/icons/TailwindColorIcon";
 import {
   Disclosure,
   DisclosureButton,

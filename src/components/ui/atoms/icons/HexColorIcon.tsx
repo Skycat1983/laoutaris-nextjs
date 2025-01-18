@@ -1,4 +1,4 @@
-import { HexColor } from "@/components/cards/artworkInfoCard/ColorPallette";
+import { HexColor } from "@/components/ui/cards/artworkInfoCard/ColorPallette";
 
 const HexColorIcon = ({ hexColor }: { hexColor: HexColor }) => {
   return (

@@ -1,4 +1,4 @@
-import { IFrontendSubscriber } from "@/lib/client/types/subscriberTypes";
+import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
 import { SubscriberModel } from "@/lib/server/models";
 import { NextResponse } from "next/server";
 

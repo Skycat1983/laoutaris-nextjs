@@ -43,7 +43,7 @@
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendUserBase } from "@/lib/client/types/userTypes";
+import { IFrontendUserBase } from "@/lib/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";

@@ -1,9 +1,9 @@
 "use client";
 
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import ArtworkInfoCard from "@/components/cards/artworkInfoCard/ArtworkInfoCard";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import ArtworkInfoCard from "@/components/ui/cards/artworkInfoCard/ArtworkInfoCard";
 import Pagination from "@/components/ui/headlessPagination/Pagination";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 

@@ -1,6 +1,6 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import { IFrontendReducedArticleArtwork } from "@/lib/client/types/articleTypes";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import { IFrontendReducedArticleArtwork } from "@/lib/types/articleTypes";
 import ArticleView from "@/components/views/DesktopArticleView";
 import MobileArticleView from "@/components/views/MobileArticleView";
 import Image from "next/image";

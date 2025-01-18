@@ -46,12 +46,12 @@
 
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
-import { IFrontendUserType } from "@/lib/client/types/userTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { IFrontendUserType } from "@/lib/types/userTypes";
 import { redirect } from "next/navigation";
-import ArtistProfile from "@/components/atoms/ArtistProfile";
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import ServerPagination from "@/components/ui/serverPagination/ServerPagination";
+import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import ServerPagination from "../../../../possibly_unused/serverPagination/ServerPagination";
 import { fetchUserWatchlists } from "@/lib/server/user/data-fetching/fetchUserWatchlists";
 import { authOptions } from "@/lib/config/authOptions";
 

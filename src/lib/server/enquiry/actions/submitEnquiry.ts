@@ -1,6 +1,6 @@
 "use server";
 
-import { IFrontendEnquiry } from "@/lib/client/types/enquiryTypes";
+import { IFrontendEnquiry } from "@/lib/types/enquiryTypes";
 import { headers } from "next/headers";
 import { EnquiryModel, IEnquiryContent } from "../../models";
 import { replaceMongoId } from "@/utils/transformData";

@@ -93,7 +93,7 @@ import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
 import { redirect } from "next/navigation";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
 import { authOptions } from "@/lib/config/authOptions";
 

@@ -1,9 +1,9 @@
 "use server";
 
-import Logo from "../../atoms/Logo";
+import Logo from "../atoms/Logo";
 import Link from "next/link";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
-import NavItem from "@/components/atoms/buttons/NavItem";
+import NavItem from "@/components/ui/atoms/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
 import { NavBarLink } from "./NavBar";
 

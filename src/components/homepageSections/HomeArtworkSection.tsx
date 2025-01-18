@@ -1,9 +1,9 @@
 "use server";
 
 import Image from "next/image";
-import ButtonDivider from "../atoms/ButtonDivider";
-import HorizontalDivider from "../atoms/HorizontalDivider";
-import SectionHeading from "../atoms/SectionHeading";
+import ButtonDivider from "../ui/atoms/ButtonDivider";
+import HorizontalDivider from "../ui/atoms/HorizontalDivider";
+import SectionHeading from "../ui/atoms/SectionHeading";
 import { delay } from "@/utils/debug";
 
 const HomeArtworkSection = async () => {

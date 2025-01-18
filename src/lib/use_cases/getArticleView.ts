@@ -1,4 +1,4 @@
-import { FrontendArticleWithArtwork } from "../client/types/articleTypes";
+import { FrontendArticleWithArtwork } from "../types/articleTypes";
 import {
   ArticleViewWithArtworkTooltip,
   articleToView,

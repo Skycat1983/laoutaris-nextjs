@@ -1,10 +1,10 @@
 "use server";
 
-import ButtonDivider from "../atoms/ButtonDivider";
-import HorizontalDivider from "../atoms/HorizontalDivider";
-import SectionHeading from "../atoms/SectionHeading";
+import ButtonDivider from "../ui/atoms/ButtonDivider";
+import HorizontalDivider from "../ui/atoms/HorizontalDivider";
+import SectionHeading from "../ui/atoms/SectionHeading";
 import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
-import BiographyCard from "../cards/biographyCard/BiographyCard";
+import BiographyCard from "../ui/cards/biographyCard/BiographyCard";
 import { delay } from "@/utils/debug";
 import { getHomepageBiographySectionData } from "@/lib/use_cases/getHomepageBiographySectionData";
 

@@ -1,4 +1,4 @@
-import { FrontendArticleUnpopulated } from "../client/types/articleTypes";
+import { FrontendArticleUnpopulated } from "../types/articleTypes";
 import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
 
 type HomeBiographySectionCardData = Pick<

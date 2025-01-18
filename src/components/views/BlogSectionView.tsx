@@ -1,6 +1,6 @@
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import BlogCard from "@/components/cards/blogCard/BlogCard";
-import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import BlogCard from "@/components/ui/cards/blogCard/BlogCard";
+import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import React from "react";
 
 type BlogSectionProps = {

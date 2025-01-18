@@ -1,5 +1,5 @@
 import React from "react";
-import HorizontalDivider from "../atoms/HorizontalDivider";
+import HorizontalDivider from "../ui/atoms/HorizontalDivider";
 import SectionHeadingSkeleton from "./SectionHeadingSkeleton";
 import { Skeleton } from "../ui/shadcn/skeleton";
 

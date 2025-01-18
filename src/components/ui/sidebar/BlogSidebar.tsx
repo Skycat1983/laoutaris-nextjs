@@ -1,7 +1,7 @@
 "use client";
 
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import SubnavButton from "@/components/atoms/buttons/SubnavButton";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import SubnavButton from "@/components/ui/atoms/buttons/SubnavButton";
 import {
   Button,
   Menu,

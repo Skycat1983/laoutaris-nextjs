@@ -4,7 +4,7 @@ import { replaceMongoId } from "@/utils/transformData";
 import { SubscriberModel } from "../../models";
 import { fetchSubscriber } from "../data-fetching/fetchSubscriber";
 import { postSubscriber } from "../data-fetching/postSubscriber";
-import { IFrontendSubscriber } from "@/lib/client/types/subscriberTypes";
+import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
 
 export async function submitSubscription(
   formData: FormData

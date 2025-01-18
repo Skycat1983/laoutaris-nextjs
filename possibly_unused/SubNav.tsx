@@ -1,8 +1,8 @@
 "use server";
 
-import NavItem from "@/components/atoms/buttons/NavItem";
+import NavItem from "@/components/ui/atoms/buttons/NavItem";
 import Link from "next/link";
-import { ScrollArea, ScrollBar } from "../components/ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../src/components/ui/shadcn/scroll-area";
 
 type FetchFunction<T> = (
   identifierKey: string,

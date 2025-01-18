@@ -1,6 +1,6 @@
 import { buildUrl } from "@/utils/buildUrl";
-import { FrontendCollectionMinimal } from "../client/types/collectionTypes";
-import { FrontendArticleUnpopulated } from "../client/types/articleTypes";
+import { FrontendCollectionMinimal } from "../types/collectionTypes";
+import { FrontendArticleUnpopulated } from "../types/articleTypes";
 
 export interface SubNavBarLink {
   title: string;

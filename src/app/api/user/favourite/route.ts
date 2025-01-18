@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/utils/mongodb";
 import { parseFields } from "@/utils/parseFields";
 import { UserModel } from "@/lib/server/models";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
-import { IFrontendUserPopulatedFavourites } from "@/lib/client/types/userTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { IFrontendUserPopulatedFavourites } from "@/lib/types/userTypes";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   try {

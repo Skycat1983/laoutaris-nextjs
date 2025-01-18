@@ -1,4 +1,4 @@
-import { FrontendArtworkUnpopulated } from "../client/types/artworkTypes";
+import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
 
 export type SanitizedArtwork = Omit<
   FrontendArtworkUnpopulated,

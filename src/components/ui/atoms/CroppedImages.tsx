@@ -1,7 +1,7 @@
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import Image from "next/image";
 import React from "react";
-import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 type CroppedImagesProps = {
   displayedImageIndex: number;
   artworkImgUrlsArr: string[];

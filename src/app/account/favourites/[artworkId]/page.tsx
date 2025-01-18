@@ -94,7 +94,7 @@ import { getServerSession } from "next-auth";
 import config from "@/lib/config";
 import { redirect } from "next/navigation";
 import { fetchUserFavourite } from "@/lib/server/user/data-fetching/fetchUserFavourite";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { authOptions } from "@/lib/config/authOptions";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions

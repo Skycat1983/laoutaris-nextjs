@@ -1,10 +1,10 @@
 "use client";
 
-import SubmitButton from "@/components/atoms/buttons/SubmitButton";
+import SubmitButton from "@/components/ui/atoms/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
-import ModalMessage from "@/components/atoms/ModalMessage";
+import ModalMessage from "@/components/ui/atoms/ModalMessage";
 import { LoginProcessResponse } from "@/lib/server/user/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
 

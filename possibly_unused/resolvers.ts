@@ -1,12 +1,12 @@
-import { IFrontendArticle } from "@/lib/client/types/articleTypes";
-import { buildUrl } from "../utils/buildUrl";
+import { IFrontendArticle } from "@/lib/types/articleTypes";
+import { buildUrl } from "../src/utils/buildUrl";
 import {
   IFrontendCollection,
   IFrontendCollectionPopulated,
   IFrontendCollectionUnpopulated,
-} from "@/lib/client/types/collectionTypes";
+} from "@/lib/types/collectionTypes";
 import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { title } from "process";
 /*
  These resolver functions are used to convert the data from the backend to the frontend

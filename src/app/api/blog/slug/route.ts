@@ -1,4 +1,4 @@
-import { IFrontendBlogEntry } from "@/lib/client/types/blogTypes";
+import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import { BlogModel } from "@/lib/server/models";
 import { NextResponse } from "next/server";
 

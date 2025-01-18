@@ -1,4 +1,4 @@
-import { ArtworkImage } from "../lib/client/types/artworkTypes";
+import { ArtworkImage } from "../src/lib/types/artworkTypes";
 // ! UNUSED
 // export interface FrontendUserFull {
 //   _id: string;

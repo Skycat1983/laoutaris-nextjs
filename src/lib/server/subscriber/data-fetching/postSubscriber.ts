@@ -1,4 +1,4 @@
-import { IFrontendSubscriber } from "@/lib/client/types/subscriberTypes";
+import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
 import { headers } from "next/headers";
 
 export async function postSubscriber(

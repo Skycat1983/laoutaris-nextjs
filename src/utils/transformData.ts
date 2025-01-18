@@ -1,7 +1,7 @@
 import {
   IFrontendArticle,
   IFrontendReducedArticleArtwork,
-} from "@/lib/client/types/articleTypes";
+} from "@/lib/types/articleTypes";
 import { watch } from "fs";
 import { Document } from "mongoose";
 

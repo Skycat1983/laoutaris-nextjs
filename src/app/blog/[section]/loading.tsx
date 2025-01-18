@@ -1,7 +1,7 @@
-import HorizontalDivider from "@/components/atoms/HorizontalDivider";
-import SkeletonH1 from "@/components/atoms/skeletons/SkeletonH1";
-import SkeletonH2 from "@/components/atoms/skeletons/SkeletonH2";
-import SkeletonP from "@/components/atoms/skeletons/SkeletonP";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import SkeletonH1 from "@/components/ui/atoms/skeletons/SkeletonH1";
+import SkeletonH2 from "@/components/ui/atoms/skeletons/SkeletonH2";
+import SkeletonP from "@/components/ui/atoms/skeletons/SkeletonP";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 const BlogLoading = () => {

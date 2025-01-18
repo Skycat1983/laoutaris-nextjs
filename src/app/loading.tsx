@@ -1,4 +1,4 @@
-import { Spinner } from "@/components/atoms/Spinner";
+import { Spinner } from "@/components/ui/atoms/Spinner";
 import React from "react";
 
 const Loading = () => {
