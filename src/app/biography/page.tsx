@@ -34,6 +34,6 @@ import { getBiographyDefaultPath } from "@/lib/use_cases/getBiographyDefaultPath
 
 export default async function Biography() {
   await dbConnect();
-  const defaultRedirect = await getBiographyDefaultPath();
-  redirect(defaultRedirect);
+  const defaultRedirectPath = await getBiographyDefaultPath();
+  redirect(defaultRedirectPath);
 }

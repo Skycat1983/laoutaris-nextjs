@@ -2,7 +2,7 @@
 
 import ArtworkView from "@/components/atoms/ArtworkView";
 import ArtworkLayout from "@/components/layouts/ArtworkLayout";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
+import { FrontendArtworkUnpopulated } from "@/lib/client/types/artworkTypes";
 import { authOptions } from "@/lib/config/authOptions";
 import { fetchArtworks } from "@/lib/server/artwork/data-fetching/fetchArtworks";
 import { delay } from "@/utils/debug";
@@ -22,7 +22,7 @@ export default async function ArtworkId({
   // await delay(2000);
   const artworkKey = "_id";
   const artworkValue = params.artworkId;
-  const response = await fetchArtworks<IFrontendArtwork>(
+  const response = await fetchArtworks<FrontendArtworkUnpopulated>(
     artworkKey,
     artworkValue
   );
@@ -38,6 +38,7 @@ export default async function ArtworkId({
   // return <>{artwork && <ArtworkView {...artwork} />}</>;
   return (
     <>
+      <h1>ARTWORK!!!!!!!!</h1>
       <ArtworkLayout {...artwork[0]} />
     </>
   );

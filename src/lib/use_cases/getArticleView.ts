@@ -1,4 +1,3 @@
-import { fetchAndResolve } from "@/utils/fetchAndResolve";
 import { FrontendArticleWithArtwork } from "../client/types/articleTypes";
 import {
   ArticleViewWithArtworkTooltip,
@@ -7,12 +6,16 @@ import {
 import { fetchArticleArtwork } from "../server/article/data-fetching/fetchArticleArtwork";
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 
-export const getArticleView = async ({ slug }: { slug: string }) => {
+export const getArticleView = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<ArticleViewWithArtworkTooltip> => {
   const fetcher = fetchArticleArtwork;
   const identifierKey = "slug";
   const identifierValue = slug;
 
-  // empty array = all fields
+  //* empty array = all fields
   const articleFields: string[] = [];
 
   const artworkFields: string[] = [

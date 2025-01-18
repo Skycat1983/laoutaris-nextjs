@@ -22,17 +22,9 @@
  *   Utilizes `fetchCollections` to retrieve collection data from MongoDB and `buildUrl` for constructing redirect URLs.
  *   Employs `redirect` from `next/navigation` to perform client-side navigation.
  */
-
+import { getCollectionSlugDefaultPath } from "@/lib/use_cases/getCollectionSlugDefaultPath";
 import dbConnect from "@/utils/mongodb";
-import { IFrontendCollectionUnpopulated } from "@/lib/client/types/collectionTypes";
-import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
-import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
-
-type CollectionFields = Pick<
-  IFrontendCollectionUnpopulated,
-  "artworks" | "slug"
->;
 
 export default async function CollectionSlug({
   params,
@@ -40,75 +32,8 @@ export default async function CollectionSlug({
   params: { collectionSlug: string };
 }) {
   await dbConnect();
-  const stem = "collections";
-
-  const collectionSlug = params.collectionSlug;
-  const identifierKey = "slug";
-  const identifierValue = collectionSlug;
-  const fields = ["artworks", "slug"];
-
-  const response = await fetchCollections<CollectionFields[]>(
-    identifierKey,
-    identifierValue,
-    fields
-  );
-
-  if (!response.success) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-        <h1 className="text-3xl font-bold">Collection</h1>
-        <p className="mt-4">This collection is currently unavailable.</p>
-        <p className="mt-4">{response.message}</p>
-      </main>
-    );
-  }
-  const { data } = response;
-
-  const firstArtwork = data[0].artworks[0];
-
-  const url = buildUrl([stem, collectionSlug, firstArtwork]);
-  redirect(url);
+  const slug = params.collectionSlug;
+  const defaultRedirectPath = await getCollectionSlugDefaultPath(slug);
+  console.log("defaultRedirectPath in CollectionSlug", defaultRedirectPath);
+  redirect(defaultRedirectPath);
 }
-
-//! old working code
-
-// type CollectionFields = Pick<
-//   IFrontendCollectionUnpopulated,
-//   "artworks" | "slug"
-// >;
-
-// export default async function CollectionSlug({
-//   params,
-// }: {
-//   params: { collectionSlug: string };
-// }) {
-//   await dbConnect();
-//   const stem = "collections";
-
-//   const collectionSlug = params.collectionSlug;
-//   const identifierKey = "slug";
-//   const identifierValue = collectionSlug;
-//   const fields = ["artworks", "slug"];
-
-//   const response = await fetchCollections<CollectionFields[]>(
-//     identifierKey,
-//     identifierValue,
-//     fields
-//   );
-
-//   if (!response.success) {
-//     return (
-//       <main className="flex min-h-screen flex-col items-center justify-between px-8 lg:px-24 py-4">
-//         <h1 className="text-3xl font-bold">Collection</h1>
-//         <p className="mt-4">This collection is currently unavailable.</p>
-//         <p className="mt-4">{response.message}</p>
-//       </main>
-//     );
-//   }
-//   const { data } = response;
-
-//   const firstArtwork = data[0].artworks[0];
-
-//   const url = buildUrl([stem, collectionSlug, firstArtwork]);
-//   redirect(url);
-// }
