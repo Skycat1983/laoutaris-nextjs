@@ -1,18 +1,13 @@
 import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
 import WatchlistButton from "@/components/atoms/buttons/WatchlistButton";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import FavouritesButton from "@/components/atoms/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
-import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import ModalMessage from "@/components/atoms/ModalMessage";
+import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
 
-const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
+const ArtworkInfoCard = async ({ ...artwork }: SanitizedArtwork) => {
   const session = await getServerSession(authOptions);
-  // console.log("session in ArtworkInfoCard", session);
   const isLoggedIn = !!session?.user;
-  const isWatchlisted = !!artwork.watcherlist.includes(session?.user?.id);
-  const isFavourited = !!artwork.favourited.includes(session?.user?.id);
 
   return (
     <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">
@@ -43,13 +38,13 @@ const ArtworkInfoCard = async ({ ...artwork }: IFrontendArtwork) => {
       <hr />
       <div className="w-full flex flex-col gap-3 md:flex-row md:gap-5 lg:flex-row">
         <WatchlistButton
-          isWatchlisted={isWatchlisted}
+          isWatchlisted={artwork.isWatchlisted}
           artworkId={artwork._id}
           isLoggedIn={isLoggedIn}
         />
         <FavouritesButton
           isLoggedIn={isLoggedIn}
-          isFavourited={isFavourited}
+          isFavourited={artwork.isFavourited}
           artworkId={artwork._id}
         />
       </div>

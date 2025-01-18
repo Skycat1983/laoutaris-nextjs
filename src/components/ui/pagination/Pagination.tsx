@@ -14,6 +14,8 @@ const Pagination = async ({ getData }: PaginationProps) => {
 
   const paginationData = await getData();
 
+  console.log("paginationData :>> ", paginationData);
+
   return (
     <>
       <div className="px-4 py-8">
@@ -22,17 +24,19 @@ const Pagination = async ({ getData }: PaginationProps) => {
       <h1 className="px-4 py-6 text-2xl font-bold">
         More from this collection
       </h1>
-      {paginationData.map((artworkLink) => (
-        <PaginationItem
-          key={artworkLink.link_to}
-          secure_url={artworkLink.secure_url}
-          height={artworkLink.height}
-          width={artworkLink.width}
-          link_to={artworkLink.link_to}
-        />
-      ))}
-
-      <div className="px-4 py-8">
+      <div className="flex items-center pl-4">
+        {paginationData.map((artworkLink) => (
+          <PaginationItem
+            key={artworkLink.link_to}
+            secure_url={artworkLink.secure_url}
+            height={artworkLink.height}
+            width={artworkLink.width}
+            link_to={artworkLink.link_to}
+          />
+        ))}
+      </div>
+      ;
+      {/* <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <div className="flex flex-col w-full p-4 md:flex-row lg:px-24">
@@ -63,22 +67,9 @@ const Pagination = async ({ getData }: PaginationProps) => {
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div>
+      </div> */}
     </>
   );
 };
 
 export { Pagination };
-
-// export type SelectedCollectionFields = Pick<
-//   FrontendCollectionFull,
-//   "artworks" | "slug" | "title"
-// >;
-// export type SelectedArtworkFields = Pick<
-//   FrontendArtworkUnpopulated,
-//   "image" | "_id"
-// >;
-
-// export type CollectionArtwork = SelectedCollectionFields & {
-//   artworks: SelectedArtworkFields[];
-// };

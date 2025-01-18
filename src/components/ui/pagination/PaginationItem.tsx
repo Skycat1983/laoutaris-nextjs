@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 export interface PaginationArtworkLink {
@@ -20,15 +21,17 @@ const PaginationItem = ({
   //   const isActive = segment === artworkLink._id;
   // console.warn(segment);
   return (
-    <div className="h-[200px] lg:h-[400px]">
-      <Image
-        src={secure_url}
-        alt="Untitled artwork"
-        height={height}
-        width={width}
-        className="max-h-full w-auto max-w-[90vw] object-contain self-start"
-      />
-    </div>
+    <Link href={link_to}>
+      <div className="h-[200px] lg:h-[400px]">
+        <Image
+          src={secure_url}
+          alt="Untitled artwork"
+          height={height}
+          width={width}
+          className="max-h-full w-auto max-w-[90vw] object-contain self-start"
+        />
+      </div>
+    </Link>
   );
 };
 

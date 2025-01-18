@@ -1,44 +1,42 @@
 import Image from "next/image";
 import React from "react";
 import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import HorizontalDivider from "../atoms/HorizontalDivider";
 import CroppedImages from "../atoms/CroppedImages";
-import ArtworkLoading from "@/app/collections/[collectionSlug]/[artworkId]/loading";
-import ArtworkInfoCardSkeleton from "../skeletons/ArtworkInfoCardSkeleton";
+import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
 
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
 
-const ArtworkLayout = (artwork: IFrontendArtwork) => {
+const ArtworkView = (artwork: SanitizedArtwork) => {
   //   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-  const { image } = artwork;
-  const { secure_url, pixelHeight, pixelWidth } = image;
+  // const { image } = artwork;
+  // const { secure_url, pixelHeight, pixelWidth } = image;
 
-  const zoomFactor = 0.5;
-  const croppedWidth = Math.floor(pixelWidth * zoomFactor);
-  const croppedHeight = Math.floor(pixelHeight * zoomFactor);
+  // const zoomFactor = 0.5;
+  // const croppedWidth = Math.floor(pixelWidth * zoomFactor);
+  // const croppedHeight = Math.floor(pixelHeight * zoomFactor);
 
-  const compassValues = [
-    "g_north_west",
-    "g_north",
-    "g_north_east",
-    "g_east",
-    "g_center",
-    "g_west",
-    "g_south_west",
-    "g_south",
-    "g_south_east",
-  ];
+  // const compassValues = [
+  //   "g_north_west",
+  //   "g_north",
+  //   "g_north_east",
+  //   "g_east",
+  //   "g_center",
+  //   "g_west",
+  //   "g_south_west",
+  //   "g_south",
+  //   "g_south_east",
+  // ];
 
-  const croppedUrls = compassValues.map((compassValue) =>
-    secure_url.replace(
-      "/upload/",
-      `/upload/c_crop,${compassValue},w_${croppedWidth},h_${croppedHeight}/c_scale,w_${pixelWidth},h_${pixelHeight}/`
-    )
-  );
+  // const croppedUrls = compassValues.map((compassValue) =>
+  //   secure_url.replace(
+  //     "/upload/",
+  //     `/upload/c_crop,${compassValue},w_${croppedWidth},h_${croppedHeight}/c_scale,w_${pixelWidth},h_${pixelHeight}/`
+  //   )
+  // );
 
-  const artworkImgUrlsArr = [secure_url, ...croppedUrls];
+  // const artworkImgUrlsArr = [secure_url, ...croppedUrls];
 
   //   const updateDisplayedImage = React.useCallback((index: number) => {
   //     setCurrentImageIndex((prevIndex) => index);
@@ -54,7 +52,6 @@ const ArtworkLayout = (artwork: IFrontendArtwork) => {
       lg:gap-4
     "
       >
-        {/* ! ADD M4 back to this! */}
         <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
           {artwork && (
             <Image
@@ -90,4 +87,4 @@ const ArtworkLayout = (artwork: IFrontendArtwork) => {
   );
 };
 
-export default ArtworkLayout;
+export default ArtworkView;

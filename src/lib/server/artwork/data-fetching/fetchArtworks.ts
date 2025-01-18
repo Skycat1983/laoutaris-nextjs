@@ -4,7 +4,7 @@ export async function fetchArtworks<T>(
   identifierKey: string,
   identifierValue: string,
   fields?: string[]
-): Promise<ApiResponse<T>> {
+): Promise<ApiResponse<T[]>> {
   const queryParams = new URLSearchParams({
     identifierKey,
     identifierValue,
@@ -29,7 +29,7 @@ export async function fetchArtworks<T>(
       return { success: false, message: result.message };
     }
 
-    return { success: true, data: result.data as T };
+    return { success: true, data: result.data as T[] };
   } catch (error) {
     console.error("Error fetching artwork fields:", error);
     return { success: false, message: "Failed to fetch artwork fields" };

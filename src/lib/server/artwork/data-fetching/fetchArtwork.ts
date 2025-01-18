@@ -1,25 +1,78 @@
-import { IFrontendArtwork } from "@/lib/client/types/artworkTypes";
 import { headers } from "next/headers";
 
-// TODO: caching issue ? i want to cache the artwork but not the watchlist
-// ! middleware could be the solution
-export async function fetchArtwork(
-  id: string
-): Promise<ApiResponse<IFrontendArtwork>> {
-  const result = await fetch(
-    `http://localhost:3000/api/artwork/id?id=${encodeURIComponent(id)}`,
-    {
-      // cache: "no-cache",
-      method: "GET",
-      headers: headers(),
-    }
-  ).then((res) => res.json());
+export async function fetchArtwork<T>(
+  identifierKey: string,
+  identifierValue: string,
+  fields?: string[]
+): Promise<ApiResponse<T>> {
+  const queryParams = new URLSearchParams({
+    identifierKey,
+    identifierValue,
+    single: "true",
+  });
 
-  // console.log("result", result);
-
-  if (!result || !result.success) {
-    return { success: false, message: "Artwork not found" };
+  if (fields && fields.length > 0) {
+    queryParams.append("fields", fields.join(","));
   }
 
-  return { success: true, data: result.data };
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/artwork?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      return { success: false, message: result.message };
+    }
+
+    return { success: true, data: result.data as T };
+  } catch (error) {
+    console.error("Error fetching artwork:", error);
+    return { success: false, message: "Failed to fetch artwork" };
+  }
 }
+
+// export async function fetchArtwork<T>(
+//   identifierKey: string,
+//   identifierValue: string,
+//   fields?: string[]
+// ): Promise<ApiResponse<T>> {
+//   const queryParams = new URLSearchParams({
+//     identifierKey,
+//     identifierValue,
+//   });
+
+//   if (fields && fields.length > 0) {
+//     queryParams.append("fields", fields.join(","));
+//   }
+
+//   try {
+//     const response = await fetch(
+//       `http://localhost:3000/api/artwork?${queryParams.toString()}`,
+//       {
+//         method: "GET",
+//         headers: headers(),
+//       }
+//     );
+
+//     const result = await response.json();
+
+//     if (!result.success) {
+//       return { success: false, message: result.message };
+//     }
+
+//     if (result.data.length === 0) {
+//       return { success: false, message: "Artwork not found" };
+//     }
+
+//     return { success: true, data: result.data[0] as T };
+//   } catch (error) {
+//     console.error("Error fetching artwork:", error);
+//     return { success: false, message: "Failed to fetch artwork" };
+//   }
+// }

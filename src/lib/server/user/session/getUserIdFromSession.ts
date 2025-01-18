@@ -1,8 +1,8 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { UserModel } from "../../models";
 import { getServerSession } from "next-auth";
 import { type } from "os";
 import { createUserFromSession } from "./createUserFromSession";
+import { authOptions } from "@/lib/config/authOptions";
 
 type UserIdentifier = string | null;
 

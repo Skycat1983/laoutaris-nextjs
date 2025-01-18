@@ -41,6 +41,8 @@ import { getCollectionArtworkPagination } from "@/lib/use_cases/getCollectionArt
 import { PaginationArtworkLink } from "@/lib/resolvers/collectionArtworkToPaginationLink";
 import { Pagination } from "@/components/ui/pagination/Pagination";
 
+// Does this need to be here? For what reason is the pagination here and not in the page?
+
 export default async function CollectionSlugLayout({
   params,
   children,
