@@ -6,9 +6,7 @@ import { PaginationArtworkLink } from "@/lib/resolvers/collectionArtworkToPagina
 
 const PaginationLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex items-center justify-center pl-4 gap-10">
-      {children}
-    </div>
+    <div className="flex items-start justify-start pl-4 gap-8">{children}</div>
   );
 };
 

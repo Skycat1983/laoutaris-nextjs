@@ -1,6 +1,6 @@
 "use server";
 
-import ArtworkView from "@/components/layouts/ArtworkView";
+import ArtworkView from "@/components/views/ArtworkView";
 import { authOptions } from "@/lib/config/authOptions";
 import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
 import { getArtworkView } from "@/lib/use_cases/getArtworkView";

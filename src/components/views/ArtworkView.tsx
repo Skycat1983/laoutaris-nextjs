@@ -1,5 +1,7 @@
+// "use client";
+// import { useCallback, useState } from "react";
+
 import Image from "next/image";
-import React from "react";
 import ArtworkInfoCard from "../ui/cards/artworkInfoCard/ArtworkInfoCard";
 import HorizontalDivider from "../ui/atoms/HorizontalDivider";
 import CroppedImages from "../ui/atoms/CroppedImages";
@@ -9,7 +11,7 @@ import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
 // ! NOTE: the page will load faster if we fetch one at a time.
 
 const ArtworkView = (artwork: SanitizedArtwork) => {
-  //   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
   // const { image } = artwork;
   // const { secure_url, pixelHeight, pixelWidth } = image;
 
@@ -38,9 +40,9 @@ const ArtworkView = (artwork: SanitizedArtwork) => {
 
   // const artworkImgUrlsArr = [secure_url, ...croppedUrls];
 
-  //   const updateDisplayedImage = React.useCallback((index: number) => {
-  //     setCurrentImageIndex((prevIndex) => index);
-  //   }, []);
+  // const updateDisplayedImage = useCallback((index: number) => {
+  //   setCurrentImageIndex((prevIndex) => index);
+  // }, []);
   return (
     <>
       <div
@@ -71,8 +73,8 @@ const ArtworkView = (artwork: SanitizedArtwork) => {
       <div className="p-6">
         <HorizontalDivider />
       </div>
-
-      {/* <div className="flex flex-row max-w-full  h-[200px] justify-center px-4">
+      {/* 
+      <div className="flex flex-row max-w-full  h-[200px] justify-center px-4">
         {artwork && (
           <CroppedImages
             displayedImageIndex={currentImageIndex}

@@ -1,4 +1,3 @@
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import Image from "next/image";
 import React from "react";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";

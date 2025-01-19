@@ -87,7 +87,7 @@
  */
 "use server";
 
-import ArtworkLayout from "@/components/layouts/ArtworkView";
+import ArtworkLayout from "@/components/views/ArtworkView";
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";

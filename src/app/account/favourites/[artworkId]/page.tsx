@@ -87,7 +87,7 @@
  *   - **Error Resilience:** Implements comprehensive error handling to maintain application stability under various failure conditions.
  */
 
-import ArtworkLayout from "@/components/layouts/ArtworkView";
+import ArtworkLayout from "@/components/views/ArtworkView";
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";
