@@ -23,6 +23,7 @@ import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { Suspense } from "react";
 import { getCollectionSubNavData } from "@/lib/use_cases/getCollectionSubnavData";
+import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 
 export default function CollectionsLayout({
   children,
@@ -33,6 +34,12 @@ export default function CollectionsLayout({
 
   return (
     <section>
+      <div className="px-4 py-8">
+        <HorizontalDivider />
+      </div>
+      <h1 className="px-4 py-6 text-2xl font-bold">
+        More from this collection
+      </h1>
       <Suspense fallback={<SubNavSkeleton />}>
         <SubNavBar fetchLinks={fetchLinks} />
       </Suspense>

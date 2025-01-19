@@ -11,7 +11,7 @@ import {
   cinzelDecorative,
   crimson,
   cormorant,
-} from "@/lib/client/styles/fonts";
+} from "@/lib/styles/fonts";
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
 import Header from "@/components/ui/header/header";
@@ -49,16 +49,3 @@ export default async function RootLayout({
     </html>
   );
 }
-
-// user: {
-//   name: 'Heron',
-//   email: 'hlaoutaris@gmail.com',
-//   image: 'https://avatars.githubusercontent.com/u/106820512?v=4'
-// }
-
-// regular session {
-//   user: { email: 'testing91@testing.com', password: 'testing91' },
-//   expires: '2024-08-15T15:42:13.592Z',
-//   iat: 1723736523,
-//   exp: 1723736533
-// }

@@ -39,7 +39,10 @@ import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
 import { getCollectionArtworkPagination } from "@/lib/use_cases/getCollectionArtworkPagination";
 import { PaginationArtworkLink } from "@/lib/resolvers/collectionArtworkToPaginationLink";
-import { Pagination } from "@/components/ui/pagination/Pagination";
+import {
+  Pagination,
+  PaginationSkeleton,
+} from "@/components/ui/pagination/Pagination";
 
 // Does this need to be here? For what reason is the pagination here and not in the page?
 
@@ -58,9 +61,41 @@ export default async function CollectionSlugLayout({
   return (
     <section className="">
       {children}
-      <Suspense fallback={<div className="w-64 h-64 bg-red-400">HELLO</div>}>
+      <Suspense fallback={<PaginationSkeleton />}>
         <Pagination getData={fetchAndResolve} />
       </Suspense>
+      {/* <div className="px-4 py-8">
+        <HorizontalDivider />
+      </div>
+      <div className="flex flex-col w-full p-4 md:flex-row lg:px-24">
+        <div className="flex flex-col">
+          <h1 className="px-4 py-6 text-2xl font-bold">
+            About this collection
+          </h1>
+
+          <p className="px-4 text-primary py-8">
+            There are {paginationData.length} pieces in this collection.
+          </p>
+        </div>
+
+        <div className="px-4 py-8 md:hidden">
+          <HorizontalDivider />
+        </div>
+        <div className="bg-slate-800/10 w-full flex flex-col w-full">
+          <ArtistProfile />
+        </div>
+      </div>
+
+      <div className="px-4 py-4">
+        <HorizontalDivider />
+      </div>
+      <div className="px-4 w-full md:w-1/2 mx-auto">
+        <h1 className=" py-6 text-2xl font-bold">Subscribe for updates</h1>
+        <SubscribeForm />
+      </div>
+      <div className="px-4 py-4">
+        <HorizontalDivider />
+      </div> */}
     </section>
   );
 }

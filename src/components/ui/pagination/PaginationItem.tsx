@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
+import { Skeleton } from "../shadcn/skeleton";
 
-export interface PaginationArtworkLink {
+interface PaginationArtworkLink {
   secure_url: string;
   height: number;
   width: number;
@@ -18,11 +19,13 @@ const PaginationItem = ({
   link_to,
 }: PaginationArtworkLink) => {
   const segment = useSelectedLayoutSegment();
-  //   const isActive = segment === artworkLink._id;
-  // console.warn(segment);
+  const _id = link_to.split("/").pop();
+
+  const isActive = segment === _id;
+  if (isActive) console.warn("active", segment);
   return (
     <Link href={link_to}>
-      <div className="h-[200px] lg:h-[400px]">
+      <div className="h-[200px] lg:h-[400px] w-[100px]">
         <Image
           src={secure_url}
           alt="Untitled artwork"
