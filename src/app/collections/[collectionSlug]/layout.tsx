@@ -43,8 +43,8 @@ import {
   Pagination,
   PaginationSkeleton,
 } from "@/components/ui/pagination/Pagination";
-
-// Does this need to be here? For what reason is the pagination here and not in the page?
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
+import SectionHeading from "@/components/ui/common/SectionHeading";
 
 export default async function CollectionSlugLayout({
   params,
@@ -61,10 +61,19 @@ export default async function CollectionSlugLayout({
   return (
     <section className="">
       {children}
+      {/* <h1 className="px-4 py-6 text-2xl font-bold">
+        More from this collection
+      </h1> */}
+
       <Suspense fallback={<PaginationSkeleton />}>
         <Pagination getData={fetchAndResolve} />
       </Suspense>
-      {/* <div className="px-4 py-8">
+    </section>
+  );
+}
+
+{
+  /* <div className="px-4 py-8">
         <HorizontalDivider />
       </div>
       <div className="flex flex-col w-full p-4 md:flex-row lg:px-24">
@@ -95,7 +104,11 @@ export default async function CollectionSlugLayout({
       </div>
       <div className="px-4 py-4">
         <HorizontalDivider />
-      </div> */}
-    </section>
-  );
+      </div> */
+}
+
+{
+  /* <div className="px-4 py-8">
+        <HorizontalDivider />
+      </div> */
 }

@@ -34,6 +34,5 @@ export default async function CollectionSlug({
   await dbConnect();
   const slug = params.collectionSlug;
   const defaultRedirectPath = await getCollectionSlugDefaultExtensionPath(slug);
-  console.log("defaultRedirectPath in CollectionSlug", defaultRedirectPath);
   redirect(defaultRedirectPath);
 }

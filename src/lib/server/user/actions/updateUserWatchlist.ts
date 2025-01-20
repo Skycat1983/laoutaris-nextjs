@@ -3,7 +3,7 @@
 import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../../models";
 import { delay } from "@/utils/debug";
-import { WatchlistButtonState } from "@/components/ui/atoms/buttons/WatchlistButton";
+import { WatchlistButtonState } from "@/components/ui/common/buttons/WatchlistButton";
 import { revalidatePath } from "next/cache";
 export async function updateUserWatchlist(
   prevState: WatchlistButtonState,

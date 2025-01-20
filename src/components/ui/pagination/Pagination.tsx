@@ -3,6 +3,8 @@ import React, { ReactNode } from "react";
 import PaginationItem from "./PaginationItem";
 import { Skeleton } from "../shadcn/skeleton";
 import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
+import SectionHeading from "../common/SectionHeading";
+import CollectionInfo from "../common/CollectionInfo";
 
 const PaginationLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -32,6 +34,10 @@ const Pagination = async ({ getData }: PaginationProps) => {
 
   return (
     <>
+      <CollectionInfo
+        heading="More from this collection"
+        subheading={`${paginationData.length} pieces`}
+      />
       <PaginationLayout>
         {paginationData.map((artworkLink) => (
           <PaginationItem

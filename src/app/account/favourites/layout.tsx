@@ -44,8 +44,8 @@
  *     Efficiently fetches only the necessary fields (`secure_url`, `width`, `height`) to optimize image rendering performance with Next.js's `Image` component.
  */
 
-import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import ArtistProfile from "@/components/ui/common/ArtistProfile";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import config from "@/lib/config";
 import { authOptions } from "@/lib/config/authOptions";

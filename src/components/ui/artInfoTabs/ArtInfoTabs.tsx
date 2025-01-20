@@ -12,10 +12,10 @@ import {
   CloudinaryColorPalette,
   HexColorPalette,
 } from "@/components/ui/cards/artworkInfoCard/ColorPallette";
-import WatchlistButton from "@/components/ui/atoms/buttons/WatchlistButton";
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import WatchlistButton from "@/components/ui/common/buttons/WatchlistButton";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
-import FavouritesButton from "@/components/ui/atoms/buttons/FavouritesButton";
+import FavouritesButton from "@/components/ui/common/buttons/FavouritesButton";
 
 const ArtInfoTabs = ({ ...artwork }: IFrontendArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";

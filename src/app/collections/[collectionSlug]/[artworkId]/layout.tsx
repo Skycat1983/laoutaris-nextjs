@@ -1,9 +1,9 @@
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import ArtworkInfoCardSkeleton from "@/components/skeletons/ArtworkInfoCardSkeleton";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import { Suspense } from "react";
 
-const ArtworkLoading = ({ children }: { children: React.ReactNode }) => {
+const ArtworkViewLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Suspense
@@ -38,7 +38,7 @@ const ArtworkLoading = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default ArtworkLoading;
+export default ArtworkViewLayout;
 
 {
   /* <div className="flex flex-row max-w-full  h-[200px] justify-center px-4">

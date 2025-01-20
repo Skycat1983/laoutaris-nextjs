@@ -4,7 +4,7 @@ import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../../models";
 import { delay } from "@/utils/debug";
 import { revalidatePath } from "next/cache";
-import { FavouritesButtonState } from "@/components/ui/atoms/buttons/FavouritesButton";
+import { FavouritesButtonState } from "@/components/ui/common/buttons/FavouritesButton";
 
 export async function updateUserFavourites(
   prevState: FavouritesButtonState,

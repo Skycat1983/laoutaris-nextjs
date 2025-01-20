@@ -1,4 +1,4 @@
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 const DesktopSkeleton = () => {

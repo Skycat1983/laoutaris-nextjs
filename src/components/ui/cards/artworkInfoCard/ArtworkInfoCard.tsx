@@ -1,6 +1,6 @@
 import { CloudinaryColorPalette, HexColorPalette } from "./ColorPallette";
-import WatchlistButton from "@/components/ui/atoms/buttons/WatchlistButton";
-import FavouritesButton from "@/components/ui/atoms/buttons/FavouritesButton";
+import WatchlistButton from "@/components/ui/common/buttons/WatchlistButton";
+import FavouritesButton from "@/components/ui/common/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";

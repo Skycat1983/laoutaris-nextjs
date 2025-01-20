@@ -1,5 +1,5 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import ContactForm from "@/components/ui/forms/ContactForm";
 import EnquiryForm from "@/components/ui/forms/EnquiryForm";
 import Image from "next/image";

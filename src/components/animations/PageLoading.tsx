@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner } from "../ui/atoms/Spinner";
+import { Spinner } from "../ui/common/Spinner";
 
 const PageLoading = () => {
   return (

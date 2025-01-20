@@ -46,8 +46,8 @@
 
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import ArtistProfile from "@/components/ui/common/ArtistProfile";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import { fetchUserWatchlists } from "@/lib/server/user/data-fetching/fetchUserWatchlists";
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";

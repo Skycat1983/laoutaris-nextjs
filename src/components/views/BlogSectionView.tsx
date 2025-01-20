@@ -1,4 +1,4 @@
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import BlogCard from "@/components/ui/cards/blogCard/BlogCard";
 import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import React from "react";

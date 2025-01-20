@@ -1,6 +1,6 @@
 "use client";
 
-import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import ArtworkInfoCard from "@/components/ui/cards/artworkInfoCard/ArtworkInfoCard";
 import Pagination from "@/components/ui/headlessPagination/Pagination";
 import { IFrontendArtwork } from "@/lib/types/artworkTypes";

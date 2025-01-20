@@ -1,8 +1,8 @@
 import React from "react";
-import Logo from "../atoms/Logo";
+import Logo from "../common/Logo";
 import Link from "next/link";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
-import NavItem from "@/components/ui/atoms/buttons/NavItem";
+import NavItem from "@/components/ui/common/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
 import { NavBarLink } from "./NavBar";
 

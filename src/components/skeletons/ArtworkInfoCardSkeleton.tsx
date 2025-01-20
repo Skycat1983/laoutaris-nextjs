@@ -1,5 +1,5 @@
-import SkeletonH1 from "@/components/ui/atoms/skeletons/SkeletonH1";
-import SkeletonH2 from "@/components/ui/atoms/skeletons/SkeletonH2";
+import SkeletonH1 from "@/components/ui/common/skeletons/SkeletonH1";
+import SkeletonH2 from "@/components/ui/common/skeletons/SkeletonH2";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 const ArtworkInfoCardSkeleton = () => {

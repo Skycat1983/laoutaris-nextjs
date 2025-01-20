@@ -3,8 +3,8 @@
 
 import Image from "next/image";
 import ArtworkInfoCard from "../ui/cards/artworkInfoCard/ArtworkInfoCard";
-import HorizontalDivider from "../ui/atoms/HorizontalDivider";
-import CroppedImages from "../ui/atoms/CroppedImages";
+import HorizontalDivider from "../ui/common/HorizontalDivider";
+import CroppedImages from "../ui/common/CroppedImages";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 
 // TODO: refactor the image zooming logic

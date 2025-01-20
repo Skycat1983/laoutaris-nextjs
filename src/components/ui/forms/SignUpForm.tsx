@@ -1,10 +1,10 @@
 "use client";
 
-import SubmitButton from "@/components/ui/atoms/buttons/SubmitButton";
+import SubmitButton from "@/components/ui/common/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInFormBackup";
-import ModalMessage from "@/components/ui/atoms/ModalMessage";
+import ModalMessage from "@/components/ui/common/ModalMessage";
 import {
   RegistrationResponse,
   processRegistration,
