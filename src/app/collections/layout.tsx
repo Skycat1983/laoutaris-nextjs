@@ -28,6 +28,7 @@ export default function CollectionsLayout({
   children,
 }: {
   children: React.ReactNode;
+  params: any;
 }) {
   const fetchLinks = getCollectionSubNavData;
 

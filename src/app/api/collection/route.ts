@@ -1,4 +1,4 @@
-import { CollectionModel, ICollectionContent } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/server/models";
 import { parseFields } from "@/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -38,7 +38,6 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       mongooseQuery = mongooseQuery.select(fields);
     }
 
-    // Execute the query
     const collections = await mongooseQuery;
 
     if (!collections.length) {
