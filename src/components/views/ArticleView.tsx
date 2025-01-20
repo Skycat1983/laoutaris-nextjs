@@ -17,14 +17,11 @@
  * @returns {JSX.Element} The rendered article page.
  */
 
-import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
-import { PrevNextLinks } from "@/lib/server/article/resolvers/articlesToPrevNext";
-import { getArticleView } from "@/lib/server/article/use_cases/getArticleView";
-import { getArticlePrevNextLinks } from "@/lib/server/article/use_cases/getArticlePrevNextArticleLinks";
 import React from "react";
 import MobileArticleView from "./MobileArticleView";
 import DesktopArticleView from "./DesktopArticleView";
 import { delay } from "@/utils/debug";
+import { getArticlePageData } from "@/lib/server/article/use_cases/getArticlePageData";
 
 type ArticleViewProps = {
   segment: string;
@@ -33,34 +30,18 @@ type ArticleViewProps = {
 
 const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
   await delay(2000);
-  const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
-    { slug }
-  );
-  const relativeLinks: Promise<PrevNextLinks> = getArticlePrevNextLinks({
-    segment,
-    slug,
-  });
-  const [currentArticle, prevNext] = await Promise.all([
-    articleDetails,
-    relativeLinks,
-  ]);
+  const { article, navigation } = await getArticlePageData({ segment, slug });
 
-  // console.log("currentArticle, prevNext", currentArticle, prevNext);
-
-  const { prev, next } = prevNext;
+  const { prev, next } = navigation;
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
       <div className="block md:hidden">
-        <MobileArticleView
-          article={currentArticle}
-          nextUrl={next}
-          prevUrl={prev}
-        />
+        <MobileArticleView article={article} nextUrl={next} prevUrl={prev} />
       </div>
 
       <div className="hidden md:block">
         <DesktopArticleView
-          article={currentArticle}
+          article={article}
           nextArticle={next}
           prevArticle={prev}
         />

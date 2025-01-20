@@ -1,16 +1,18 @@
 import { FrontendArticleWithArtwork } from "../../../types/articleTypes";
 import {
-  ArticleViewWithArtworkTooltip,
+  FrontendArticleWithArtworkTooltip,
   articleToView,
 } from "../resolvers/articleToView";
 import { fetchArticleArtwork } from "../data-fetching/fetchArticleArtwork";
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 
-export const getArticleView = async ({
+export const getArticle = async ({
+  segment,
   slug,
 }: {
+  segment: string;
   slug: string;
-}): Promise<ArticleViewWithArtworkTooltip> => {
+}): Promise<FrontendArticleWithArtworkTooltip> => {
   const fetcher = fetchArticleArtwork;
   const identifierKey = "slug";
   const identifierValue = slug;
@@ -28,7 +30,7 @@ export const getArticleView = async ({
 
   const articleDetails = await fetchAndResolveObj<
     FrontendArticleWithArtwork,
-    ArticleViewWithArtworkTooltip
+    FrontendArticleWithArtworkTooltip
   >(
     fetcher,
     identifierKey,
@@ -37,6 +39,12 @@ export const getArticleView = async ({
     resolver,
     artworkFields
   )();
+
+  if (articleDetails.section !== segment) {
+    throw new Error(
+      `Article with slug "${slug}" does not belong to the "${segment}" section.`
+    );
+  }
 
   return articleDetails;
 };

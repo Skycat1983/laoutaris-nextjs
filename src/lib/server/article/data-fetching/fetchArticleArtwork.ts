@@ -61,15 +61,19 @@
 
 import { headers } from "next/headers";
 
+// TODO: add section to query params
+
 export async function fetchArticleArtwork<T>(
   articleKey: string,
   articleValue: string,
+  // section: string,
   articleFields?: string[],
   artworkFields?: string[]
 ): Promise<ApiResponse<T>> {
   const queryParams = new URLSearchParams({
     articleKey,
     articleValue,
+    // section,
   });
 
   if (articleFields && articleFields.length > 0) {
