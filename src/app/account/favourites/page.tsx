@@ -43,13 +43,13 @@
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendUserBase } from "@/lib/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/config/authOptions";
+import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 
-type UserFavouritesResponse = Pick<IFrontendUserBase, "favourites">;
+// type UserFavouritesResponse = Pick<IFrontendUserBase, "favourites">;
 
 export default async function Favourites() {
   await dbConnect();
@@ -63,7 +63,7 @@ export default async function Favourites() {
 
   const email = session.user.email;
 
-  const response = await fetchUser<UserFavouritesResponse>("email", email, [
+  const response = await fetchUser<FrontendUserWithFavourites>("email", email, [
     "favourites",
   ]);
 

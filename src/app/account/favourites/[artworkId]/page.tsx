@@ -87,15 +87,13 @@
  *   - **Error Resilience:** Implements comprehensive error handling to maintain application stability under various failure conditions.
  */
 
-import ArtworkLayout from "@/components/views/ArtworkView";
 import dbConnect from "@/utils/mongodb";
-import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
 import { redirect } from "next/navigation";
 import { fetchUserFavourite } from "@/lib/server/user/data-fetching/fetchUserFavourite";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { authOptions } from "@/lib/config/authOptions";
+import { FrontendArtworkWithFavourited } from "@/lib/types/artworkTypes";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 
@@ -119,7 +117,7 @@ export default async function FavouritedArtwork({
   const artworkId = params.artworkId;
   // const userFields = ["favourites"];
 
-  const response = await fetchUserFavourite<IFrontendArtwork>(
+  const response = await fetchUserFavourite<FrontendArtworkWithFavourited>(
     userKey,
     userValue,
     artworkId
@@ -136,8 +134,9 @@ export default async function FavouritedArtwork({
 
   return (
     <>
+      <h1> placeholder</h1>
       {/* <ArtworkView {...artwork} /> */}
-      <ArtworkLayout {...artwork} />
+      {/* <ArtworkLayout {...artwork} /> */}
     </>
   );
 }

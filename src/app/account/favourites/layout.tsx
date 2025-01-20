@@ -47,20 +47,18 @@
 import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 import SubscribeForm from "@/components/ui/forms/SubscribeForm";
-import ServerPagination from "../../../../possibly_unused/serverPagination/ServerPagination";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
-import { IFrontendUserPopulatedFavourites } from "@/lib/types/userTypes";
 import config from "@/lib/config";
 import { authOptions } from "@/lib/config/authOptions";
 import { fetchUserFavourites } from "@/lib/server/user/data-fetching/fetchUserFavourites";
+import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-type SelectedUserFields = Pick<IFrontendUserPopulatedFavourites, "favourites">;
-type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
-type UserFavourites = SelectedUserFields & {
-  favourites: SelectedArtworkFields[];
-};
+// type SelectedUserFields = Pick<FrontendUserPopulatedFavourites, "favourites">;
+// type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+// type UserFavourites = SelectedUserFields & {
+//   favourites: SelectedArtworkFields[];
+// };
 
 export default async function FavouritesLayout({
   children,
@@ -84,7 +82,7 @@ export default async function FavouritesLayout({
     "image.pixelWidth",
   ];
 
-  const response = await fetchUserFavourites<UserFavourites>(
+  const response = await fetchUserFavourites<FrontendUserWithFavourites>(
     userKey,
     userValue,
     userFields,
@@ -105,11 +103,11 @@ export default async function FavouritesLayout({
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">More of your favourites</h1>
-      <ServerPagination
+      {/* <ServerPagination
         stem="account"
         artworkLinks={data.favourites}
         collectionSlug={"favourites"}
-      />
+      /> */}
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>

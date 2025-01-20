@@ -63,7 +63,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       <h1 className="text-2xl font-archivo text-left py-4">Years</h1>
       <p className="text-left pb-8 ">
-        Pick a year to narrow down the posts or choose 'All' to see everything.
+        Pick a year to narrow down the posts or choose All to see everything.
       </p>
 
       <div className="flex flex-col gap-3 w-full">

@@ -46,20 +46,18 @@
 
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
-import { IFrontendUserType } from "@/lib/types/userTypes";
-import { redirect } from "next/navigation";
 import ArtistProfile from "@/components/ui/atoms/ArtistProfile";
 import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
-import ServerPagination from "../../../../possibly_unused/serverPagination/ServerPagination";
 import { fetchUserWatchlists } from "@/lib/server/user/data-fetching/fetchUserWatchlists";
 import { authOptions } from "@/lib/config/authOptions";
+import { redirect } from "next/navigation";
+import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
 
-type SelectedUserFields = Pick<IFrontendUserType, "watchlist">;
-type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
-type UserWatchlist = SelectedUserFields & {
-  watchlist: SelectedArtworkFields[];
-};
+// type SelectedUserFields = Pick<IFrontendUserType, "watchlist">;
+// type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
+// type UserWatchlist = SelectedUserFields & {
+//   watchlist: SelectedArtworkFields[];
+// };
 
 export default async function WatchlistLayout({
   children,
@@ -83,7 +81,7 @@ export default async function WatchlistLayout({
     "image.pixelWidth",
   ];
 
-  const response = await fetchUserWatchlists<UserWatchlist>(
+  const response = await fetchUserWatchlists<FrontendUserWithWatcherlist>(
     userKey,
     userValue,
     userFields,
@@ -104,11 +102,11 @@ export default async function WatchlistLayout({
         <HorizontalDivider />
       </div>
       <h1 className="px-4 py-6 text-2xl font-bold">More from your watchlist</h1>
-      <ServerPagination
+      {/* <ServerPagination
         stem="account"
         artworkLinks={data.watchlist}
         collectionSlug={"watchlist"}
-      />
+      /> */}
       <div className="px-4 py-8">
         <HorizontalDivider />
       </div>

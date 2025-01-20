@@ -82,7 +82,7 @@ const ContactForm = () => {
                 />
               </FormControl>
               <FormDescription className="hidden">
-                We'll never share your email.
+                We&apos;ll never share your email.
               </FormDescription>
               <FormMessage />
             </FormItem>

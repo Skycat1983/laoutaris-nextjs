@@ -1,7 +1,7 @@
 import LogoutForm from "@/components/ui/forms/LogoutForm";
-import { IFrontendUser } from "@/lib/types/userTypes";
 import { authOptions } from "@/lib/config/authOptions";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
+import { FrontendUserFull } from "@/lib/types/userTypes";
 import { formatDate } from "@/utils/formatDate";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -18,7 +18,7 @@ export default async function UserDashboard() {
   const email = session.user.email;
 
   // Fetch user data using Pick for type safety
-  const response = await fetchUser<IFrontendUser>("email", email);
+  const response = await fetchUser<FrontendUserFull>("email", email);
 
   if (!response.success) {
     redirect("http://localhost:3000");
@@ -27,7 +27,9 @@ export default async function UserDashboard() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <ul>
-        <li>User Profile: Display and update user's profile information.</li>
+        <li>
+          User Profile: Display and update user&apos;s profile information.
+        </li>
         <p>Email: {data.email}</p>
         <p>Username: {data.username}</p>
         <p>Favourited artworks: {data.favourites.length}</p>
@@ -38,18 +40,20 @@ export default async function UserDashboard() {
           notifications.
         </li>
         <li>
-          Order History: Show a history of the user's orders or transactions.
+          Order History: Show a history of the user&apos;s orders or
+          transactions.
         </li>
         <li>
           Security: Update password, enable two-factor authentication, view
           active sessions.
         </li>
         <li>
-          Activity Log: Show a history of the user's activity on the platform.
+          Activity Log: Show a history of the user&apos;s activity on the
+          platform.
         </li>
         <li>
-          Subscription Details: Display user's subscription status and renewal
-          date.
+          Subscription Details: Display user&apos;s subscription status and
+          renewal date.
         </li>
         <li>
           Help and Support: Provide links to help resources, FAQs, or support

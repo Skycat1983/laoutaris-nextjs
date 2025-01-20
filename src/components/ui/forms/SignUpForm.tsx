@@ -8,7 +8,11 @@ import ModalMessage from "@/components/ui/atoms/ModalMessage";
 import {
   RegistrationResponse,
   processRegistration,
-} from "../../../../possibly_unused/processRegistration";
+} from "@/lib/processRegistration";
+// import {
+//   RegistrationResponse,
+//   processRegistration,
+// } from "../../../../possibly_unused/processRegistration";
 
 const initialState: RegistrationResponse = {
   type: "validation",

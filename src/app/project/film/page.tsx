@@ -42,11 +42,11 @@ export default function Film() {
       </section>
       <article className="prose-xl text-left p-24 bg-white">
         <h1 className="m-2 leading-8 prose-lg py-2">
-          Please excuse the poor quality picture. As you can probably tell, I'm
-          not a film maker. Consequently I had no access to decent equipment.
-          This was all filmed on an iPhone 5 and, as such, i'd not recommend
-          watching in full screen mode as the poor resolution becomes more
-          jarring.
+          Please excuse the poor quality picture. As you can probably tell,
+          I&apos;m not a film maker. Consequently I had no access to decent
+          equipment. This was all filmed on an iPhone 5 and, as such, i&apos;d
+          not recommend watching in full screen mode as the poor resolution
+          becomes more jarring.
         </h1>
       </article>
     </main>

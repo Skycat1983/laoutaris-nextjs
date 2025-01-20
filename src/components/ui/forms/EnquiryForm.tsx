@@ -141,7 +141,7 @@ const EnquiryForm = () => {
                 </RadioGroup>
               </FormControl>
               <FormDescription className="hidden">
-                The type of enquiry you're making.
+                The type of enquiry you&apos;re making.
               </FormDescription>
 
               <FormMessage />
@@ -162,7 +162,8 @@ const EnquiryForm = () => {
                 />
               </FormControl>
               <FormDescription className="hidden">
-                Any information you'd like to share with us about your enquiry.
+                Any information you&apos;d like to share with us about your
+                enquiry.
                 {/* You can <span>@mention</span> other users and organizations. */}
               </FormDescription>
               <FormMessage />

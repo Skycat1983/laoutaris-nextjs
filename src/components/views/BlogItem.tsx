@@ -1,4 +1,4 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
 import Image from "next/image";
 
 const BlogItem = ({
@@ -7,7 +7,7 @@ const BlogItem = ({
   text,
   imageUrl,
   displayDate,
-}: IFrontendBlogEntry) => {
+}: FrontendBlogEntryFull) => {
   return (
     <div className="w-full mx-auto">
       <div className="bg-white shadow-lg w-full rounded overflow-hidden">

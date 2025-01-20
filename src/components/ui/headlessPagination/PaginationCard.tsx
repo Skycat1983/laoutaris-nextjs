@@ -1,9 +1,9 @@
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
+import { FrontendArtworkFull } from "@/lib/types/artworkTypes";
 
 type PageItemProps = {
   isActive: boolean;
   onClick: () => void;
-  item: IFrontendArtwork;
+  item: FrontendArtworkFull;
 };
 
 const PaginationCard = ({ isActive, onClick, item }: PageItemProps) => {
