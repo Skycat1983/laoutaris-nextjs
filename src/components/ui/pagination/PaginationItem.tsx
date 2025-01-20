@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import { Skeleton } from "../shadcn/skeleton";
 
 interface PaginationArtworkLink {
   secure_url: string;
@@ -23,18 +22,36 @@ const PaginationItem = ({
 
   const isActive = segment === _id;
   if (isActive) console.warn("active", segment);
+
+  const containerClassname = isActive
+    ? "h-auto w-auto shadow-2xl"
+    : "h-auto w-auto";
+
+  const isPortrait = height > width;
+
+  const imageClassname = isPortrait
+    ? "h-auto max-w-[200px]  object-contain self-start"
+    : "h-auto max-w-[400px]  object-contain self-start";
   return (
     <Link href={link_to}>
-      <div className="h-auto w-[200px] ">
+      <div className={containerClassname}>
         <Image
           src={secure_url}
           alt="Untitled artwork"
           height={height}
           width={width}
-          className="h-auto max-w-[200px]  object-contain self-start"
+          className={imageClassname}
+          // className="h-auto max-w-[200px]  object-contain self-start"
         />
       </div>
-      {/* <div className="h-[200px] lg:h-[400px]">
+    </Link>
+  );
+};
+
+export default PaginationItem;
+
+{
+  /* <div className="h-[200px] lg:h-[400px]">
         <Image
           src={secure_url}
           alt="Untitled artwork"
@@ -42,9 +59,5 @@ const PaginationItem = ({
           width={width}
           className="max-h-full w-auto max-w-[90vw] object-contain self-start"
         />
-      </div> */}
-    </Link>
-  );
-};
-
-export default PaginationItem;
+      </div> */
+}
