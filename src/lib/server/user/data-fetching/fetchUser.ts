@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 export async function fetchUser<T>(
   identifierKey: string,
   identifierValue: string,
-  // email: string,
   fields?: string[]
 ): Promise<ApiResponse<T>> {
   const queryParams = new URLSearchParams({
