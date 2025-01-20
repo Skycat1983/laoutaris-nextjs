@@ -53,12 +53,6 @@ import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
 import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
 
-// type SelectedUserFields = Pick<IFrontendUserType, "watchlist">;
-// type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
-// type UserWatchlist = SelectedUserFields & {
-//   watchlist: SelectedArtworkFields[];
-// };
-
 export default async function WatchlistLayout({
   children,
 }: {

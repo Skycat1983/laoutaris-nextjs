@@ -49,8 +49,6 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/config/authOptions";
 import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 
-// type UserFavouritesResponse = Pick<IFrontendUserBase, "favourites">;
-
 export default async function Favourites() {
   await dbConnect();
   const { BASEURL } = config;
@@ -78,8 +76,8 @@ export default async function Favourites() {
   // if the response is successful and has favourites..
   if (response.data.favourites.length > 0) {
     const firstFavouriteId = response.data.favourites[0];
-    const url = buildUrl(["account", "favourites", firstFavouriteId]);
-    redirect(url);
+    // const url = buildUrl(["account", "favourites", firstFavouriteId]);
+    // redirect(url);
   } else {
     const url = buildUrl(["account"]);
     redirect(url);

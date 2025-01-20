@@ -1,6 +1,5 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
-import { BlogAvailability } from "@/lib/server/blog/blogTypes";
 import { BlogModel } from "@/lib/server/models";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { NextResponse } from "next/server";
 export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
@@ -50,7 +49,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     const blogEntries = (await BlogModel.find(query)
       .sort(sort)
       .populate("author")
-      .lean()) as IFrontendBlogEntry[];
+      .lean()) as FrontendBlogEntryUnpopulated[];
 
     if (!blogEntries || blogEntries.length === 0) {
       return NextResponse.json<ApiErrorResponse>(
@@ -65,7 +64,9 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     console.log("blogEntries", blogEntries);
 
-    return NextResponse.json<ApiSuccessResponse<IFrontendBlogEntry[]>>({
+    return NextResponse.json<
+      ApiSuccessResponse<FrontendBlogEntryUnpopulated[]>
+    >({
       success: true,
       data: blogEntries,
     });

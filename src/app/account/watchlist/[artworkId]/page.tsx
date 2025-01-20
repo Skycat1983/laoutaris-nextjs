@@ -87,15 +87,14 @@
  */
 "use server";
 
-import ArtworkLayout from "@/components/views/ArtworkView";
 import dbConnect from "@/utils/mongodb";
 import { delay } from "@/utils/debug";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
 import { redirect } from "next/navigation";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import { fetchUserWatchlist } from "@/lib/server/user/data-fetching/fetchUserWatchlist";
 import { authOptions } from "@/lib/config/authOptions";
+import { FrontendArtworkFull } from "@/lib/types/artworkTypes";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 
@@ -119,7 +118,7 @@ export default async function WatchedArtwork({
   const artworkId = params.artworkId;
   // const userFields = ["watchlist"];
 
-  const response = await fetchUserWatchlist<IFrontendArtwork>(
+  const response = await fetchUserWatchlist<FrontendArtworkFull>(
     userKey,
     userValue,
     artworkId
@@ -137,7 +136,7 @@ export default async function WatchedArtwork({
   return (
     <>
       {/* <ArtworkView {...artwork} /> */}
-      <ArtworkLayout {...artwork} />
+      {/* <ArtworkLayout {...artwork} /> */}
     </>
   );
 }

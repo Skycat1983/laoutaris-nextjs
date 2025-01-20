@@ -14,7 +14,7 @@ export interface FrontendBlogEntryFull {
   tags: string[];
 }
 
-export interface FrontendBlogEntryMinimal {
+export interface FrontendBlogEntryUnpopulated {
   _id: string;
   title: string;
   subtitle: string;

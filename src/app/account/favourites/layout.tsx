@@ -54,12 +54,6 @@ import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-// type SelectedUserFields = Pick<FrontendUserPopulatedFavourites, "favourites">;
-// type SelectedArtworkFields = Pick<IFrontendArtwork, "image" | "_id">;
-// type UserFavourites = SelectedUserFields & {
-//   favourites: SelectedArtworkFields[];
-// };
-
 export default async function FavouritesLayout({
   children,
 }: {

@@ -1,5 +1,5 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import { BlogModel } from "@/lib/server/models";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   try {
     const rawContent = (await BlogModel.findOne({ slug })
       .populate("author")
-      .lean()) as IFrontendBlogEntry;
+      .lean()) as FrontendBlogEntryUnpopulated;
 
     if (!rawContent) {
       return NextResponse.json<ApiErrorResponse>(
@@ -35,7 +35,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json<ApiSuccessResponse<IFrontendBlogEntry>>({
+    return NextResponse.json<ApiSuccessResponse<FrontendBlogEntryUnpopulated>>({
       success: true,
       data: rawContent,
     });

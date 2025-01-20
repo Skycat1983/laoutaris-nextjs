@@ -39,7 +39,7 @@ export interface FrontendUserWithFavourites {
   updatedAt: Date;
 }
 
-export interface FrontendUserMinimal {
+export interface FrontendUserUnpopulated {
   _id: string;
   email: string;
   //! removed to enforce security

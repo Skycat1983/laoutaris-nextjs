@@ -45,16 +45,16 @@
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendUserBase } from "@/lib/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { authOptions } from "@/lib/config/authOptions";
 import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
+import { FrontendUserUnpopulated } from "@/lib/types/userTypes";
 
 type UserAccountSubnavOptions = Pick<
-  IFrontendUserBase,
+  FrontendUserUnpopulated,
   "favourites" | "watchlist"
 >;
 
@@ -124,7 +124,7 @@ export default async function AccountLayout({
 
   return (
     <section className="p-0 m-0">
-      <SubNavBar fetchLinks={userLinks} />
+      {/* <SubNavBar fetchLinks={userLinks} /> */}
       {children}
     </section>
   );

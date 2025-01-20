@@ -11,7 +11,7 @@ const BlogItem = ({
   return (
     <div className="w-full mx-auto">
       <div className="bg-white shadow-lg w-full rounded overflow-hidden">
-        <img
+        <Image
           className="w-full h-64 object-cover object-center"
           src={imageUrl}
           alt="Blog post cover"

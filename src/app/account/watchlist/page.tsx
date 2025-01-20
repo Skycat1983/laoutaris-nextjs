@@ -43,13 +43,13 @@
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
 import config from "@/lib/config";
-import { IFrontendUserBase } from "@/lib/types/userTypes";
 import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
 import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/config/authOptions";
+import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
 
-type UserWatchlistFields = Pick<IFrontendUserBase, "watchlist">;
+type UserWatchlistFields = Pick<FrontendUserWithWatcherlist, "watchlist">;
 
 export default async function Watchlist() {
   await dbConnect();
@@ -81,7 +81,7 @@ export default async function Watchlist() {
     redirect(url);
   } else {
     const firstWatchlistId = watchlist[0];
-    const url = buildUrl(["account", "watchlist", firstWatchlistId]);
-    redirect(url);
+    // const url = buildUrl(["account", "watchlist", firstWatchlistId]);
+    // redirect(url);
   }
 }

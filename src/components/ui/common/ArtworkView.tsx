@@ -3,15 +3,14 @@
 import Image from "next/image";
 import React from "react";
 import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
 import HorizontalDivider from "./HorizontalDivider";
 import CroppedImages from "./CroppedImages";
-import ZoomWrapper from "./ZoomWrapper";
+import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
 
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
 
-const ArtworkView = (artwork: IFrontendArtwork) => {
+const ArtworkViewUnused = (artwork: FrontendArtworkUnpopulated) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
   const { image } = artwork;
   const { secure_url, pixelHeight, pixelWidth } = image;
@@ -68,7 +67,7 @@ const ArtworkView = (artwork: IFrontendArtwork) => {
         </span>
 
         <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
-          {artwork && <ArtworkInfoCard {...artwork} />}
+          {/* {artwork && <ArtworkInfoCard {...artwork} />} */}
         </div>
       </div>
       <div className="p-6">
@@ -90,7 +89,7 @@ const ArtworkView = (artwork: IFrontendArtwork) => {
   );
 };
 
-export default ArtworkView;
+export default ArtworkViewUnused;
 
 {
   /* <div

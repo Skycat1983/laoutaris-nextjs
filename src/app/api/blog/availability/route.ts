@@ -1,6 +1,6 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import { BlogAvailability } from "@/lib/server/blog/blogTypes";
 import { BlogModel } from "@/lib/server/models";
+import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -54,7 +54,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   try {
     const blogEntries = (await BlogModel.find(query)
       .populate("author")
-      .lean()) as IFrontendBlogEntry[];
+      .lean()) as FrontendBlogEntryFull[];
 
     // console.log("blogEntries in get availability", blogEntries);
 

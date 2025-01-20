@@ -1,6 +1,5 @@
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
-import { IFrontendUserPopulatedWatchlist } from "@/lib/types/userTypes";
 import { UserModel } from "@/lib/server/models";
+import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
 import dbConnect from "@/utils/mongodb";
 import { parseFields } from "@/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
@@ -41,7 +40,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
         match: { _id: artworkId },
         select: watchlistFields || "",
       })
-      .lean<IFrontendUserPopulatedWatchlist>();
+      .lean<FrontendUserWithWatcherlist>();
 
     console.log("populatedUser :>> ", populatedUser);
 
@@ -61,7 +60,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: watchedArtwork as IFrontendArtwork,
+      data: watchedArtwork,
     });
   } catch (error) {
     console.error("Error validating watchlist artwork:", error);

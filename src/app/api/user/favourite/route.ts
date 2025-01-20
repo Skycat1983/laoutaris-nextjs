@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/utils/mongodb";
 import { parseFields } from "@/utils/parseFields";
 import { UserModel } from "@/lib/server/models";
-import { IFrontendArtwork } from "@/lib/types/artworkTypes";
-import { IFrontendUserPopulatedFavourites } from "@/lib/types/userTypes";
+import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   try {
@@ -41,7 +40,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
         match: { _id: artworkId },
         select: favouritesFields || "",
       })
-      .lean<IFrontendUserPopulatedFavourites>();
+      .lean<FrontendUserWithFavourites>();
 
     console.log("populatedUser :>> ", populatedUser);
 
@@ -61,7 +60,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: favouritedArtwork as IFrontendArtwork,
+      data: favouritedArtwork,
     });
   } catch (error) {
     console.error("Error validating favourites artwork:", error);
