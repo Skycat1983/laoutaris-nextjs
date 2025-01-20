@@ -1,6 +1,9 @@
-import { ArtworkModel } from "@/lib/server/models";
+import { BlogModel } from "@/lib/server/models";
 import { parseFields } from "@/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
+
+// sortRange
+// sortBy
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   try {
@@ -30,21 +33,21 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
     };
 
     // Build the Mongoose query
-    let mongooseQuery = ArtworkModel.find(query).sort({ updatedAt: 1 }).lean();
+    let mongooseQuery = BlogModel.find(query).sort({ updatedAt: 1 }).lean();
 
     if (fields) {
       mongooseQuery = mongooseQuery.select(fields);
     }
 
     // Execute the query
-    const artwork = await mongooseQuery;
+    const blogEntries = await mongooseQuery;
 
-    if (!artwork.length) {
+    if (!blogEntries.length) {
       return NextResponse.json(
         {
           success: false,
           errorCode: 404,
-          message: "Artwork not found",
+          message: "Blog entries not found",
         },
         { status: 404 }
       );
@@ -52,7 +55,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     return NextResponse.json({
       success: true,
-      data: artwork,
+      data: blogEntries,
     });
   } catch (error) {
     console.error("Error fetching artwork:", error);

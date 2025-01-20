@@ -2,7 +2,7 @@ import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
 import { BlogSection } from "../blogTypes";
 import { headers } from "next/headers";
 
-export async function fetchBlogSection(
+export async function fetchBlogEntriesSortedBy(
   section: BlogSection
 ): Promise<ApiResponse<FrontendBlogEntryFull[]>> {
   const result = await fetch(

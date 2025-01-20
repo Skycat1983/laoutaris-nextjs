@@ -1,4 +1,4 @@
-import BlogSectionLayout from "@/components/layouts/BlogSectionLayout";
+import BlogSortedByLayout from "@/components/layouts/BlogSortedByLayout";
 
 export default async function layout({
   children,
@@ -7,7 +7,7 @@ export default async function layout({
 }) {
   return (
     <>
-      <BlogSectionLayout>{children}</BlogSectionLayout>
+      <BlogSortedByLayout>{children}</BlogSortedByLayout>
     </>
   );
 }
