@@ -1,12 +1,12 @@
-import { FrontendArticleUnpopulated } from "../types/articleTypes";
-import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
+import { FrontendArticleUnpopulated } from "../../../types/articleTypes";
+import { fetchArticles } from "../data-fetching/fetchArticles";
 
 type HomeBiographySectionCardData = Pick<
   FrontendArticleUnpopulated,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
 
-export const getHomepageBiographySectionData = async (): Promise<
+export const getHomepageArticleSectionData = async (): Promise<
   HomeBiographySectionCardData[]
 > => {
   const identifierKey = "section";

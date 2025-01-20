@@ -37,8 +37,8 @@
  */
 import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
-import { getCollectionArtworkPagination } from "@/lib/use_cases/getCollectionArtworkPagination";
-import { PaginationArtworkLink } from "@/lib/resolvers/collectionArtworkToPaginationLink";
+import { getCollectionArtworkPagination } from "@/lib/server/collection/use_cases/getCollectionArtworkPagination";
+import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
 import {
   Pagination,
   PaginationSkeleton,

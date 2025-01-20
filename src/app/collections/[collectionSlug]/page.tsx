@@ -1,5 +1,6 @@
 "use server";
 
+import { getCollectionSlugDefaultExtensionPath } from "@/lib/server/collection/use_cases/getCollectionSlugDefaultExtensionPath";
 /**
  * @fileoverview
  * This Next.js page manages the `/artwork/collectionSlug` path.
@@ -22,7 +23,6 @@
  *   Utilizes `fetchCollections` to retrieve collection data from MongoDB and `buildUrl` for constructing redirect URLs.
  *   Employs `redirect` from `next/navigation` to perform client-side navigation.
  */
-import { getCollectionSlugDefaultPath } from "@/lib/use_cases/getCollectionSlugDefaultPath";
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
 
@@ -33,7 +33,7 @@ export default async function CollectionSlug({
 }) {
   await dbConnect();
   const slug = params.collectionSlug;
-  const defaultRedirectPath = await getCollectionSlugDefaultPath(slug);
+  const defaultRedirectPath = await getCollectionSlugDefaultExtensionPath(slug);
   console.log("defaultRedirectPath in CollectionSlug", defaultRedirectPath);
   redirect(defaultRedirectPath);
 }

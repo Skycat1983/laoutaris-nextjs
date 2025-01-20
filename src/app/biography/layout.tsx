@@ -39,7 +39,7 @@ import React, { Suspense } from "react";
 import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
-import { getBiographySubNavData } from "@/lib/use_cases/getBiographySubnavData";
+import { getBiographySubNavData } from "@/lib/server/article/use_cases/getArticleSubnavData";
 
 export default async function BiographyLayout({
   children,

@@ -2,8 +2,8 @@ import {
   SubNavArticleFields,
   SubNavBarLink,
   articleToSubNavLink,
-} from "../resolvers/subnavResolvers";
-import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
+} from "../../../resolvers/subnavResolvers";
+import { fetchArticles } from "../data-fetching/fetchArticles";
 import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
 export const getBiographySubNavData = async (): Promise<SubNavBarLink[]> => {

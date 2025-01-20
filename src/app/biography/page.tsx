@@ -30,7 +30,7 @@
 
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
-import { getBiographyDefaultPath } from "@/lib/use_cases/getBiographyDefaultPath";
+import { getBiographyDefaultPath } from "@/lib/server/article/use_cases/getArticleDefaultPath";
 
 export default async function Biography() {
   await dbConnect();

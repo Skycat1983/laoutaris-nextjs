@@ -1,7 +1,7 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
+import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

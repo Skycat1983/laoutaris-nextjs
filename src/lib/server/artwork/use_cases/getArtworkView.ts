@@ -1,7 +1,7 @@
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 import { SanitizedArtwork, artworkToView } from "../resolvers/artworkToView";
-import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
-import { fetchArtwork } from "../server/artwork/data-fetching/fetchArtwork";
+import { FrontendArtworkUnpopulated } from "../../../types/artworkTypes";
+import { fetchArtwork } from "../data-fetching/fetchArtwork";
 
 export const getArtworkView = async ({
   artworkId,

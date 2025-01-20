@@ -1,4 +1,4 @@
-import { getBiographySubNavData } from "./getBiographySubnavData";
+import { getBiographySubNavData } from "./getArticleSubnavData";
 
 export const getBiographyDefaultPath = async (): Promise<string> => {
   const subNavData = await getBiographySubNavData();

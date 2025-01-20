@@ -22,7 +22,7 @@
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { Suspense } from "react";
-import { getCollectionSubNavData } from "@/lib/use_cases/getCollectionSubnavData";
+import { getCollectionSubNavData } from "@/lib/server/collection/use_cases/getCollectionSubnavData";
 import HorizontalDivider from "@/components/ui/atoms/HorizontalDivider";
 
 export default function CollectionsLayout({

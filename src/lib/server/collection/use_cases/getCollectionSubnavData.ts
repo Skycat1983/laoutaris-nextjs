@@ -2,8 +2,8 @@ import {
   SubNavBarLink,
   SubNavCollectionFields,
   collectionToSubNavLink,
-} from "../resolvers/subnavResolvers";
-import { fetchCollections } from "../server/collection/data-fetching/fetchCollections";
+} from "../../../resolvers/subnavResolvers";
+import { fetchCollections } from "../data-fetching/fetchCollections";
 import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
 // TODO: change the section from "artwork" to "collection"

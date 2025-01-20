@@ -17,7 +17,7 @@
  *   Utilizes `fetchCollections` to retrieve collection data and `buildUrl` for constructing redirect URLs.
  */
 
-import { getCollectionDefaultPath } from "@/lib/use_cases/getCollectionDefaultPath";
+import { getCollectionDefaultPath } from "@/lib/server/collection/use_cases/getCollectionDefaultPath";
 import { redirect } from "next/navigation";
 
 export default async function Collections() {

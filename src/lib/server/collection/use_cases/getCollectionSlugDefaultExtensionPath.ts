@@ -1,6 +1,6 @@
 import { getCollectionSubNavData } from "./getCollectionSubnavData";
 
-export const getCollectionSlugDefaultPath = async (
+export const getCollectionSlugDefaultExtensionPath = async (
   slug: string
 ): Promise<string> => {
   const subNavData = await getCollectionSubNavData();

@@ -2,7 +2,7 @@ import { delay } from "@/utils/debug";
 import React, { ReactNode } from "react";
 import PaginationItem from "./PaginationItem";
 import { Skeleton } from "../shadcn/skeleton";
-import { PaginationArtworkLink } from "@/lib/resolvers/collectionArtworkToPaginationLink";
+import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
 
 const PaginationLayout = ({ children }: { children: ReactNode }) => {
   return (

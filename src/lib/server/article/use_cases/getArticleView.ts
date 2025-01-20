@@ -1,9 +1,9 @@
-import { FrontendArticleWithArtwork } from "../types/articleTypes";
+import { FrontendArticleWithArtwork } from "../../../types/articleTypes";
 import {
   ArticleViewWithArtworkTooltip,
   articleToView,
 } from "../resolvers/articleToView";
-import { fetchArticleArtwork } from "../server/article/data-fetching/fetchArticleArtwork";
+import { fetchArticleArtwork } from "../data-fetching/fetchArticleArtwork";
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 
 export const getArticleView = async ({

@@ -5,7 +5,7 @@ import Image from "next/image";
 import ArtworkInfoCard from "../ui/cards/artworkInfoCard/ArtworkInfoCard";
 import HorizontalDivider from "../ui/atoms/HorizontalDivider";
 import CroppedImages from "../ui/atoms/CroppedImages";
-import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
+import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.

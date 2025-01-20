@@ -3,10 +3,10 @@ import {
   SelectedArticleField,
   createPrevNextResolver,
 } from "../resolvers/articlesToPrevNext";
-import { fetchArticles } from "../server/article/data-fetching/fetchArticles";
+import { fetchArticles } from "../data-fetching/fetchArticles";
 import { fetchAndResolveArr } from "@/utils/fetchAndResolveArr";
 
-export const getPrevNextArticleLinks = async ({
+export const getArticlePrevNextLinks = async ({
   segment,
   slug,
 }: {

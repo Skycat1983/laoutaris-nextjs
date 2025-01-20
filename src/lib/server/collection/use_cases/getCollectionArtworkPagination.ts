@@ -1,4 +1,4 @@
-import { fetchCollectionArtwork } from "../server/collection/data-fetching/fetchCollectionArtwork";
+import { fetchCollectionArtwork } from "../data-fetching/fetchCollectionArtwork";
 import {
   PaginationArtworkLink,
   CollectionArtworkToPaginationBridge,

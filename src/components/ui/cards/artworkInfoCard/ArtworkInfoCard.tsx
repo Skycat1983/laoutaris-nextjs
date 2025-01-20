@@ -3,7 +3,7 @@ import WatchlistButton from "@/components/ui/atoms/buttons/WatchlistButton";
 import FavouritesButton from "@/components/ui/atoms/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
-import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
+import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 
 const ArtworkInfoCard = async ({ ...artwork }: SanitizedArtwork) => {
   const session = await getServerSession(authOptions);

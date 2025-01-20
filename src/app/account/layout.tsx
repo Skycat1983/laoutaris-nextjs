@@ -51,6 +51,7 @@ import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { authOptions } from "@/lib/config/authOptions";
+import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
 
 type UserAccountSubnavOptions = Pick<
   IFrontendUserBase,
@@ -97,16 +98,16 @@ export default async function AccountLayout({
   const firstWatchlistSlug = watchlistCount > 0 ? watchlist[0] : null;
 
   // Define the sub-navigation links with dynamic URLs
-  const userLinks = [
+  const userLinks: SubNavBarLink[] = [
     {
       title: "Dashboard",
       slug: "dashboard",
-      url: buildUrl(["account", "dashboard"]),
+      link_to: buildUrl(["account", "dashboard"]),
     },
     {
       title: "Favourites",
       slug: "favourites",
-      url: firstFavouriteSlug
+      link_to: firstFavouriteSlug
         ? buildUrl(["account", "favourites", firstFavouriteSlug])
         : buildUrl(["account", "favourites"]),
       disabled: favouritesCount === 0, // Disabled if no favourites
@@ -114,7 +115,7 @@ export default async function AccountLayout({
     {
       title: "Watchlist",
       slug: "watchlist",
-      url: firstWatchlistSlug
+      link_to: firstWatchlistSlug
         ? buildUrl(["account", "watchlist", firstWatchlistSlug])
         : buildUrl(["account", "watchlist"]),
       disabled: watchlistCount === 0, // Disabled if no watchlist items
@@ -123,7 +124,7 @@ export default async function AccountLayout({
 
   return (
     <section className="p-0 m-0">
-      <SubNavBar links={userLinks} />
+      <SubNavBar fetchLinks={userLinks} />
       {children}
     </section>
   );

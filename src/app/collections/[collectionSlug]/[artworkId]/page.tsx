@@ -2,8 +2,8 @@
 
 import ArtworkView from "@/components/views/ArtworkView";
 import { authOptions } from "@/lib/config/authOptions";
-import { SanitizedArtwork } from "@/lib/resolvers/artworkToView";
-import { getArtworkView } from "@/lib/use_cases/getArtworkView";
+import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { getArtworkView } from "@/lib/server/artwork/use_cases/getArtworkView";
 import { delay } from "@/utils/debug";
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";

@@ -1,4 +1,4 @@
-import { FrontendArticleUnpopulated } from "../types/articleTypes";
+import { FrontendArticleUnpopulated } from "../../../types/articleTypes";
 import { buildUrl } from "@/utils/buildUrl";
 
 export type SelectedArticleField = Pick<FrontendArticleUnpopulated, "slug">;

@@ -17,10 +17,10 @@
  * @returns {JSX.Element} The rendered article page.
  */
 
-import { ArticleViewWithArtworkTooltip } from "@/lib/resolvers/articleToView";
-import { PrevNextLinks } from "@/lib/resolvers/articlesToPrevNext";
-import { getArticleView } from "@/lib/use_cases/getArticleView";
-import { getPrevNextArticleLinks } from "@/lib/use_cases/getPrevNextArticleLinks";
+import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
+import { PrevNextLinks } from "@/lib/server/article/resolvers/articlesToPrevNext";
+import { getArticleView } from "@/lib/server/article/use_cases/getArticleView";
+import { getPrevNextArticleLinks } from "@/lib/server/article/use_cases/getArticlePrevNextArticleLinks";
 import React from "react";
 import MobileArticleView from "./MobileArticleView";
 import DesktopArticleView from "./DesktopArticleView";
