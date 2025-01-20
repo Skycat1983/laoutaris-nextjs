@@ -20,7 +20,7 @@
 import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
 import { PrevNextLinks } from "@/lib/server/article/resolvers/articlesToPrevNext";
 import { getArticleView } from "@/lib/server/article/use_cases/getArticleView";
-import { getPrevNextArticleLinks } from "@/lib/server/article/use_cases/getArticlePrevNextArticleLinks";
+import { getArticlePrevNextLinks } from "@/lib/server/article/use_cases/getArticlePrevNextArticleLinks";
 import React from "react";
 import MobileArticleView from "./MobileArticleView";
 import DesktopArticleView from "./DesktopArticleView";
@@ -36,7 +36,7 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
   const articleDetails: Promise<ArticleViewWithArtworkTooltip> = getArticleView(
     { slug }
   );
-  const relativeLinks: Promise<PrevNextLinks> = getPrevNextArticleLinks({
+  const relativeLinks: Promise<PrevNextLinks> = getArticlePrevNextLinks({
     segment,
     slug,
   });
@@ -45,7 +45,7 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
     relativeLinks,
   ]);
 
-  console.log("currentArticle, prevNext", currentArticle, prevNext);
+  // console.log("currentArticle, prevNext", currentArticle, prevNext);
 
   const { prev, next } = prevNext;
   return (
