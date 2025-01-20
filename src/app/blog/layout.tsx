@@ -2,6 +2,7 @@ import dbConnect from "@/utils/mongodb";
 import { buildUrl } from "@/utils/buildUrl";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
+import { delay } from "@/utils/debug";
 
 export default async function BlogLayout({
   children,
@@ -28,6 +29,7 @@ export default async function BlogLayout({
   ];
 
   const fetchLinks = async () => {
+    await delay(2000);
     return subNavLinks;
   };
 

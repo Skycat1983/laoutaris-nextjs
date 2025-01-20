@@ -1,18 +1,18 @@
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import BlogCard from "@/components/ui/cards/blogCard/BlogCard";
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
 import React from "react";
+import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
 
 type BlogSectionProps = {
-  blogEntries: IFrontendBlogEntry[];
+  blogEntries: FrontendBlogEntryFull[];
 };
 
-const BlogSectionView = ({ blogEntries }: BlogSectionProps) => {
+const BlogEntriesView = ({ blogEntries }: BlogSectionProps) => {
   const dateToYear = (date: Date) => {
     return new Date(date).getFullYear();
   };
   return (
-    <>
+    <div>
       <div className="text-left flex w-full">
         <h1 className="text-4xl">{dateToYear(blogEntries[0].displayDate)}</h1>
       </div>
@@ -29,8 +29,8 @@ const BlogSectionView = ({ blogEntries }: BlogSectionProps) => {
           Load more...
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
-export default BlogSectionView;
+export default BlogEntriesView;

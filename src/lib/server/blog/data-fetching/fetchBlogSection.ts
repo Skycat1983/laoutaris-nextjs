@@ -1,10 +1,10 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
 import { BlogSection } from "../blogTypes";
 import { headers } from "next/headers";
 
 export async function fetchBlogSection(
   section: BlogSection
-): Promise<ApiResponse<IFrontendBlogEntry[]>> {
+): Promise<ApiResponse<FrontendBlogEntryFull[]>> {
   const result = await fetch(
     `http://localhost:3000/api/blog/section?section=${encodeURIComponent(
       section

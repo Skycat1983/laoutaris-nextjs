@@ -1,10 +1,10 @@
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import SkeletonH1 from "@/components/ui/common/skeletons/SkeletonH1";
-import SkeletonH2 from "@/components/ui/common/skeletons/SkeletonH2";
-import SkeletonP from "@/components/ui/common/skeletons/SkeletonP";
-import { Skeleton } from "@/components/ui/shadcn/skeleton";
+import HorizontalDivider from "../ui/common/HorizontalDivider";
+import SkeletonH1 from "../ui/common/skeletons/SkeletonH1";
+import SkeletonH2 from "../ui/common/skeletons/SkeletonH2";
+import SkeletonP from "../ui/common/skeletons/SkeletonP";
+import { Skeleton } from "../ui/shadcn/skeleton";
 
-const BlogLoading = () => {
+const BlogViewSkeleton = () => {
   const array = Array(5);
   return (
     <main className="flex min-h-screen flex-col items-start justify-between md:px-12 py-4 container">
@@ -144,4 +144,4 @@ const BlogLoading = () => {
   );
 };
 
-export default BlogLoading;
+export default BlogViewSkeleton;
