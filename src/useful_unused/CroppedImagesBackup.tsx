@@ -1,22 +1,19 @@
-"use client";
-
 import Image from "next/image";
 import React from "react";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../components/ui/shadcn/scroll-area";
 type CroppedImagesProps = {
-  displayedImageIndex: number;
+  // displayedImageIndex: number;
   artworkImgUrlsArr: string[];
   pixelWidth: number;
   pixelHeight: number;
-  updateDisplayedImage: (index: number) => void;
+  // updateDisplayedImage: (index: number) => void;
 };
 
 const CroppedImages = ({
-  displayedImageIndex,
+  // displayedImageIndex,
   artworkImgUrlsArr,
   pixelHeight,
   pixelWidth,
-  updateDisplayedImage,
 }: // updateDisplayedImage,
 CroppedImagesProps) => {
   return (
@@ -30,7 +27,7 @@ CroppedImagesProps) => {
             height={pixelHeight}
             alt={"Untitled artwork"}
             className="object-contain max-h-full w-auto shadow-lg"
-            onClick={() => updateDisplayedImage(index)}
+            // onClick={() => updateDisplayedImage(index)}
           />
         ))}
       </div>

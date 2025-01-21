@@ -12,15 +12,10 @@ export type SanitizedArtwork = Omit<
 
 export const artworkToView = (
   artwork: FrontendArtworkUnpopulated,
-  currentUserId?: string
+  userId?: string | null
 ): SanitizedArtwork => {
-  const isFavourited = currentUserId
-    ? artwork.favourited.includes(currentUserId)
-    : false;
-
-  const isWatchlisted = currentUserId
-    ? artwork.watcherlist.includes(currentUserId)
-    : false;
+  const isFavourited = userId ? artwork.favourited.includes(userId) : false;
+  const isWatchlisted = userId ? artwork.watcherlist.includes(userId) : false;
 
   return {
     _id: artwork._id,

@@ -39,12 +39,8 @@ import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
 import { getCollectionArtworkPagination } from "@/lib/server/collection/use_cases/getCollectionArtworkPagination";
 import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
-import {
-  Pagination,
-  PaginationSkeleton,
-} from "@/components/ui/pagination/Pagination";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import SectionHeading from "@/components/ui/common/SectionHeading";
+import { Pagination } from "@/components/ui/pagination/Pagination";
+import PaginationSkeleton from "@/components/skeletons/PaginationSkeleton";
 
 export default async function CollectionSlugLayout({
   params,
@@ -61,15 +57,17 @@ export default async function CollectionSlugLayout({
   return (
     <section className="">
       {children}
-      {/* <h1 className="px-4 py-6 text-2xl font-bold">
-        More from this collection
-      </h1> */}
-
       <Suspense fallback={<PaginationSkeleton />}>
         <Pagination getData={fetchAndResolve} />
       </Suspense>
     </section>
   );
+}
+
+{
+  /* <h1 className="px-4 py-6 text-2xl font-bold">
+        More from this collection
+      </h1> */
 }
 
 {

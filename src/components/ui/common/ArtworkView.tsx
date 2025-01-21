@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import ArtworkInfoCard from "../cards/artworkInfoCard/ArtworkInfoCard";
 import HorizontalDivider from "./HorizontalDivider";
-import CroppedImages from "./CroppedImages";
+import CroppedImages from "../../../useful_unused/CroppedImagesBackup";
 import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
 
 // TODO: refactor the image zooming logic

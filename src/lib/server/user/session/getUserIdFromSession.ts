@@ -1,8 +1,11 @@
+"use server";
+
 import { UserModel } from "../../models";
 import { getServerSession } from "next-auth";
-import { type } from "os";
 import { createUserFromSession } from "./createUserFromSession";
 import { authOptions } from "@/lib/config/authOptions";
+
+//! in use
 
 type UserIdentifier = string | null;
 

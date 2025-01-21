@@ -40,7 +40,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
 
     const artwork = await mongooseQuery;
 
-    console.log("artwork", artwork);
+    // console.log("artwork", artwork);
 
     if (single === "true") {
       if (!artwork) {
