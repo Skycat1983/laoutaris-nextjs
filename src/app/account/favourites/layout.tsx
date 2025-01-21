@@ -50,6 +50,7 @@ import SubscribeForm from "@/components/ui/forms/SubscribeForm";
 import config from "@/lib/config";
 import { authOptions } from "@/lib/config/authOptions";
 import { fetchUserFavourites } from "@/lib/server/user/data-fetching/fetchUserFavourites";
+import { getUserFavourites } from "@/lib/server/user/use_cases/getUserFavourites";
 import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -59,36 +60,38 @@ export default async function FavouritesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-  const { BASEURL } = config;
+  // const session = await getServerSession(authOptions);
+  // const { BASEURL } = config;
 
-  if (!session || !session.user || !session.user.email) {
-    redirect(BASEURL);
-  }
+  // if (!session || !session.user || !session.user.email) {
+  //   redirect(BASEURL);
+  // }
 
-  const userKey = "email";
-  const userValue = session.user.email;
-  const userFields = ["favourites"];
-  const artworkFields = [
-    "_id",
-    "image.secure_url",
-    "image.pixelHeight",
-    "image.pixelWidth",
-  ];
+  // const userKey = "email";
+  // const userValue = session.user.email;
+  // const userFields = ["favourites"];
+  // const artworkFields = [
+  //   "_id",
+  //   "image.secure_url",
+  //   "image.pixelHeight",
+  //   "image.pixelWidth",
+  // ];
 
-  const response = await fetchUserFavourites<FrontendUserWithFavourites>(
-    userKey,
-    userValue,
-    userFields,
-    artworkFields
-  );
+  // const response = await fetchUserFavourites<FrontendUserWithFavourites>(
+  //   userKey,
+  //   userValue,
+  //   userFields,
+  //   artworkFields
+  // );
 
-  if (!response.success) {
-    console.error("Failed to fetch user data:", response.message);
-    redirect(BASEURL);
-  }
+  // if (!response.success) {
+  //   console.error("Failed to fetch user data:", response.message);
+  //   redirect(BASEURL);
+  // }
 
-  const { data } = response;
+  // const { data } = response;
+
+  const data = await getUserFavourites();
 
   return (
     <section className="">

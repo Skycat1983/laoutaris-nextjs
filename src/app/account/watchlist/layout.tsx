@@ -52,42 +52,45 @@ import { fetchUserWatchlists } from "@/lib/server/user/data-fetching/fetchUserWa
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
 import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
+import { getUserWatchlists } from "@/lib/server/user/use_cases/getUserWatchlists";
 
 export default async function WatchlistLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-  const { BASEURL } = config;
+  // const session = await getServerSession(authOptions);
+  // const { BASEURL } = config;
 
-  if (!session || !session.user || !session.user.email) {
-    redirect(BASEURL);
-  }
+  // if (!session || !session.user || !session.user.email) {
+  //   redirect(BASEURL);
+  // }
 
-  const userKey = "email";
-  const userValue = session.user.email;
-  const userFields = ["watchlist"];
-  const artworkFields = [
-    "_id",
-    "image.secure_url",
-    "image.pixelHeight",
-    "image.pixelWidth",
-  ];
+  // const userKey = "email";
+  // const userValue = session.user.email;
+  // const userFields = ["watchlist"];
+  // const artworkFields = [
+  //   "_id",
+  //   "image.secure_url",
+  //   "image.pixelHeight",
+  //   "image.pixelWidth",
+  // ];
 
-  const response = await fetchUserWatchlists<FrontendUserWithWatcherlist>(
-    userKey,
-    userValue,
-    userFields,
-    artworkFields
-  );
+  // const response = await fetchUserWatchlists<FrontendUserWithWatcherlist>(
+  //   userKey,
+  //   userValue,
+  //   userFields,
+  //   artworkFields
+  // );
 
-  if (!response.success) {
-    console.error("Failed to fetch user data:", response.message);
-    redirect(BASEURL);
-  }
+  // if (!response.success) {
+  //   console.error("Failed to fetch user data:", response.message);
+  //   redirect(BASEURL);
+  // }
 
-  const { data } = response;
+  // const { data } = response;
+
+  const data = await getUserWatchlists();
 
   return (
     <section className="">
