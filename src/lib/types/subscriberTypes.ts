@@ -1,4 +1,4 @@
-export interface IFrontendSubscriber {
+export interface FrontendSubscriber {
   id: string;
   name: string;
   email: string;

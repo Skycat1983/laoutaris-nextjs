@@ -60,24 +60,24 @@ export interface FrontendUserUnpopulated {
 //   password: string;
 //   username: string;
 //   role: "user" | "admin";
-//   watchlist: string[] | IFrontendArtwork[];
-//   favourites: string[] | IFrontendArtwork[];
+//   watchlist: string[] | FrontendArtwork[];
+//   favourites: string[] | FrontendArtwork[];
 //   createdAt: Date;
 //   updatedAt: Date;
 // }
 
 // export interface IFrontendUserPopulatedWatchlist extends IFrontendUser {
-//   watchlist: IFrontendArtwork[];
+//   watchlist: FrontendArtwork[];
 // }
 
 // export interface IFrontendUserPopulatedFavourites extends IFrontendUser {
-//   favourites: IFrontendArtwork[];
+//   favourites: FrontendArtwork[];
 // }
 
 // export interface IFrontendUserPopulatedWatchlistAndFavourites
 //   extends IFrontendUser {
-//   watchlist: IFrontendArtwork[];
-//   favourites: IFrontendArtwork[];
+//   watchlist: FrontendArtwork[];
+//   favourites: FrontendArtwork[];
 // }
 
 // export interface IFrontendUserBase {

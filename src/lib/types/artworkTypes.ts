@@ -1,5 +1,11 @@
 import { FrontendUserFull } from "./userTypes";
 
+export type FrontendArtwork =
+  | FrontendArtworkFull
+  | FrontendArtworkUnpopulated
+  | FrontendArtworkWithWatcherlist
+  | FrontendArtworkWithFavourited;
+
 export interface FrontendArtworkFull {
   _id: string;
   image: ArtworkImage;
@@ -85,19 +91,3 @@ export interface HexColor {
   percentage: number;
   _id: string;
 }
-
-// //! OLD TYPES BELOW:
-// //* TRYING WITH FULL USER TYPE
-
-// export interface IFrontendArtwork {
-//   image: ArtworkImage;
-//   _id: string;
-//   title: string;
-//   decade: number;
-//   artstyle: string;
-//   medium: string;
-//   surface: string;
-//   featured: boolean;
-//   watcherlist: string[];
-//   favourited: string[];
-// }

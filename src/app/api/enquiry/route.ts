@@ -1,4 +1,4 @@
-import { IFrontendEnquiry } from "@/lib/types/enquiryTypes";
+import { FrontendEnquiry } from "@/lib/types/enquiryTypes";
 import { EnquiryModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     console.log("newEnquiry in POST enquiry :>> ", newEnquiry);
 
-    return NextResponse.json<ApiSuccessResponse<IFrontendEnquiry>>({
+    return NextResponse.json<ApiSuccessResponse<FrontendEnquiry>>({
       success: true,
       data: newEnquiry,
     });

@@ -1,10 +1,10 @@
-import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
+import { FrontendSubscriber } from "@/lib/types/subscriberTypes";
 import { headers } from "next/headers";
 
 export async function postSubscriber(
   name: string,
   email: string
-): Promise<ApiResponse<IFrontendSubscriber>> {
+): Promise<ApiResponse<FrontendSubscriber>> {
   const result = await fetch("http://localhost:3000/api/subscriber", {
     method: "POST",
     headers: {

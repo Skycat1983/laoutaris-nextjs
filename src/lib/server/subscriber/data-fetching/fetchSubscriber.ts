@@ -1,9 +1,9 @@
-import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
+import { FrontendSubscriber } from "@/lib/types/subscriberTypes";
 import { headers } from "next/headers";
 
 export async function fetchSubscriber(
   email: string
-): Promise<ApiResponse<IFrontendSubscriber>> {
+): Promise<ApiResponse<FrontendSubscriber>> {
   const result = await fetch(
     `http://localhost:3000/api/subscriber/email?email=${encodeURIComponent(
       email

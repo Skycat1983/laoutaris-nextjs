@@ -1,13 +1,11 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import { IFrontendReducedArticleArtwork } from "@/lib/types/articleTypes";
 import ArticleView from "@/components/views/DesktopArticleView";
 import MobileArticleView from "@/components/views/MobileArticleView";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 
-export interface IFrontendPlaceholderArticle {
+export interface FrontendArticlePlaceholder {
   title: string;
   subtitle: string;
   summary: string;
@@ -25,7 +23,7 @@ export interface IFrontendPlaceholderArticle {
 }
 
 export default function About() {
-  const article: IFrontendPlaceholderArticle = {
+  const article: FrontendArticlePlaceholder = {
     title: "About",
     subtitle: "The Project",
     summary: "Shining a spotlight on the life and work of an unsung artist",
@@ -75,34 +73,6 @@ export default function About() {
             ))}
           </article>
         </div>
-
-        {/* <div className="flex flex-row w-full justify-center items-center px-[80px] gap-5">
-        {prevUrl ? (
-          <Link href={prevUrl} className="bg-black text-white w-full">
-            <button className="bg-black text-white p-4 w-full">Previous</button>
-          </Link>
-        ) : (
-          <button
-            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
-            disabled
-          >
-            Previous
-          </button>
-        )}
-
-        {nextUrl ? (
-          <Link href={nextUrl} className="bg-black text-white w-full">
-            <button className="bg-black text-white p-4 w-full">Next</button>
-          </Link>
-        ) : (
-          <button
-            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
-            disabled
-          >
-            Next
-          </button>
-        )}
-      </div> */}
       </div>
       <div className="hidden md:block">
         <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
@@ -147,26 +117,6 @@ export default function About() {
                 </p>
               ))}
             </article>
-            {/* <div className="flex flex-row w-full justify-center items-center pt-[50px] gap-5">
-            {prevUrl ? (
-              <Link href={prevUrl} className="bg-black text-white w-full">
-                <Button size={"full"}>Prev</Button>
-              </Link>
-            ) : (
-              <Button size={"full"} variant={"ghost"}>
-                Prev
-              </Button>
-            )}
-            {nextUrl ? (
-              <Link href={nextUrl} className="bg-black text-white w-full">
-                <Button size={"full"}>Next</Button>
-              </Link>
-            ) : (
-              <Button size={"full"} variant={"ghost"}>
-                Next
-              </Button>
-            )}
-          </div> */}
           </div>
         </div>
         <div className="p-10">

@@ -4,11 +4,11 @@ import { replaceMongoId } from "@/utils/transformData";
 import { SubscriberModel } from "../../models";
 import { fetchSubscriber } from "../data-fetching/fetchSubscriber";
 import { postSubscriber } from "../data-fetching/postSubscriber";
-import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
+import { FrontendSubscriber } from "@/lib/types/subscriberTypes";
 
 export async function submitSubscription(
   formData: FormData
-): Promise<ApiResponse<IFrontendSubscriber>> {
+): Promise<ApiResponse<FrontendSubscriber>> {
   try {
     const email = formData.get("email") as string;
     const name = formData.get("name") as string;
@@ -49,7 +49,7 @@ export async function submitSubscription(
     //   };
     // }
 
-    return { success: true, data: subscriber as IFrontendSubscriber };
+    return { success: true, data: subscriber as FrontendSubscriber };
   } catch (error) {
     console.error("Error creating subscriber:", error);
     return {

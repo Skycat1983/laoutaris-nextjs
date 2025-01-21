@@ -1,13 +1,13 @@
 "use server";
 
-import { IFrontendEnquiry } from "@/lib/types/enquiryTypes";
+import { FrontendEnquiry } from "@/lib/types/enquiryTypes";
 import { headers } from "next/headers";
-import { EnquiryModel, IEnquiryContent } from "../../models";
+import { EnquiryModel } from "../../models";
 import { replaceMongoId } from "@/utils/transformData";
 
 export async function submitEnquiry(
   formData: FormData
-): Promise<ApiResponse<IFrontendEnquiry>> {
+): Promise<ApiResponse<FrontendEnquiry>> {
   try {
     const name = formData.get("name");
     const email = formData.get("email");
@@ -52,7 +52,7 @@ export async function submitEnquiry(
 
     console.log("newEnquiry created:", newEnquiry);
 
-    return { success: true, data: transformedEnquiry as IFrontendEnquiry };
+    return { success: true, data: transformedEnquiry as FrontendEnquiry };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "An error occurred";
@@ -62,28 +62,3 @@ export async function submitEnquiry(
     };
   }
 }
-
-// const formSchema = z.object({
-//   name: z.string().min(2, {
-//     message: "Username must be at least 2 characters.",
-//   }),
-//   email: z.string().email({
-//     message: "Please enter a valid email address.",
-//   }),
-//   enquiryType: z.enum(["print", "original", "both"]),
-//   message: z.string().min(10, {
-//     message: "Message must be at least 10 characters.",
-//   }),
-// });
-//   const validatedFields = formSchema.safeParse({
-//     name: formData.get("name") as string,
-//     email: formData.get("email") as string,
-//     enquiryType: formData.get("enquiryType") as string,
-//     message: formData.get("message") as string,
-//   });
-
-//   if (!validatedFields.success) {
-//     return {
-//       errors: validatedFields.error.flatten().fieldErrors,
-//     };
-//   }

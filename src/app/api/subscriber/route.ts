@@ -1,4 +1,4 @@
-import { IFrontendSubscriber } from "@/lib/types/subscriberTypes";
+import { FrontendSubscriber } from "@/lib/types/subscriberTypes";
 import { SubscriberModel } from "@/lib/server/models";
 import { NextResponse } from "next/server";
 
@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   try {
     const rawContent = (await SubscriberModel.findOne({
       email,
-    }).lean()) as IFrontendSubscriber;
+    }).lean()) as FrontendSubscriber;
 
     if (!rawContent) {
       return NextResponse.json<ApiErrorResponse>(
@@ -35,7 +35,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json<ApiSuccessResponse<IFrontendSubscriber>>({
+    return NextResponse.json<ApiSuccessResponse<FrontendSubscriber>>({
       success: true,
       data: rawContent,
     });
@@ -82,7 +82,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const newSubscriber = await SubscriberModel.create({ name, email });
 
-    return NextResponse.json<ApiSuccessResponse<IFrontendSubscriber>>({
+    return NextResponse.json<ApiSuccessResponse<FrontendSubscriber>>({
       success: true,
       data: newSubscriber,
     });

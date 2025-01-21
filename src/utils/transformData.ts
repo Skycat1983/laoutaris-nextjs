@@ -1,8 +1,3 @@
-import {
-  IFrontendArticle,
-  IFrontendReducedArticleArtwork,
-} from "@/lib/types/articleTypes";
-import { watch } from "fs";
 import { Document } from "mongoose";
 
 export const replaceMongoId = <T extends { _id: any }>(
@@ -25,26 +20,26 @@ export const filterWatchlerlist = <T extends { watcherlist: string[] }>(
   };
 };
 
-export function transformToFrontendArticle(rawContent: any): IFrontendArticle {
-  const { artwork, ...rest } = rawContent;
+// export function transformToFrontendArticle(rawContent: any): FrontendArticleWithArtwork {
+//   const { artwork, ...rest } = rawContent;
 
-  const transformedArtwork: IFrontendReducedArticleArtwork = {
-    _id: artwork._id,
-    title: artwork.title,
-    decade: artwork.decade,
-    artstyle: artwork.artstyle,
-    medium: artwork.medium,
-    surface: artwork.surface,
-    featured: artwork.featured,
-    image: {
-      secure_url: artwork.image.secure_url,
-      pixelHeight: artwork.image.pixelHeight,
-      pixelWidth: artwork.image.pixelWidth,
-    },
-  };
+//   const transformedArtwork: FrontendArtworkUnpopulated = {
+//     _id: artwork._id,
+//     title: artwork.title,
+//     decade: artwork.decade,
+//     artstyle: artwork.artstyle,
+//     medium: artwork.medium,
+//     surface: artwork.surface,
+//     featured: artwork.featured,
+//     image: {
+//       secure_url: artwork.image.secure_url,
+//       pixelHeight: artwork.image.pixelHeight,
+//       pixelWidth: artwork.image.pixelWidth,
+//     },
+//   };
 
-  return {
-    ...rest,
-    artwork: transformedArtwork,
-  } as IFrontendArticle;
-}
+//   return {
+//     ...rest,
+//     artwork: transformedArtwork,
+//   } as FrontendArticleWithArtwork;
+// }

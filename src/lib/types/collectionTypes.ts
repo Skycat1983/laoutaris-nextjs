@@ -42,13 +42,13 @@ export interface FrontendCollectionMinimal {
 //   imageUrl: string;
 //   slug: string;
 //   section: "artwork" | "biography" | "project";
-//   artworks: IFrontendArtwork[] | string[];
+//   artworks: FrontendArtwork[] | string[];
 //   createdAt: Date;
 //   updatedAt: Date;
 // }
 
 // export interface IFrontendCollectionPopulated extends IFrontendCollectionBase {
-//   artworks: IFrontendArtwork[];
+//   artworks: FrontendArtwork[];
 // }
 
 // export interface IFrontendCollectionUnpopulated
