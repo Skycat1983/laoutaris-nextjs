@@ -1,10 +1,10 @@
-import { IFrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import Image from "next/image";
 import Link from "next/link";
 
 interface BlogCardProps {
   stem: string;
-  blogEntry: IFrontendBlogEntry;
+  blogEntry: FrontendBlogEntryUnpopulated;
 }
 
 const BlogCard = ({

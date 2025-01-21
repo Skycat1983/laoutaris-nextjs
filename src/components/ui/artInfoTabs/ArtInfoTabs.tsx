@@ -1,5 +1,7 @@
 "use server";
 
+//! unused
+
 import React from "react";
 import {
   Tabs,
@@ -7,22 +9,17 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/shadcn/tabs";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
 import {
   CloudinaryColorPalette,
   HexColorPalette,
 } from "@/components/ui/cards/artworkInfoCard/ColorPallette";
-import WatchlistButton from "@/components/ui/common/buttons/WatchlistButton";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
-import FavouritesButton from "@/components/ui/common/buttons/FavouritesButton";
+import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 
-const ArtInfoTabs = ({ ...artwork }: FrontendArtwork) => {
+const ArtInfoTabs = ({ ...artwork }: SanitizedArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";
-  const isWatchlisted = !!artwork.watcherlist.length;
-  const isFavourited = !!artwork.favourited.length;
-  console.log("artwork :>> ", artwork);
-  console.log("isFavourited :>> ", isFavourited);
+
   return (
     <>
       <Tabs defaultValue="about" className="w-full p-0">
@@ -70,12 +67,12 @@ const ArtInfoTabs = ({ ...artwork }: FrontendArtwork) => {
         <HorizontalDivider />
       </div>
       <div className="w-full flex flex-col gap-3 sm:flex-row md:gap-5">
-        <WatchlistButton
-          // isLoggedIn={true}
+        {/* <WatchlistButton
+          isLoggedIn={true}
           isWatchlisted={isWatchlisted}
           artworkId={artwork._id}
-        />
-        <FavouritesButton isFavourited={isFavourited} artworkId={artwork._id} />
+        /> */}
+        {/* <FavouritesButton isFavourited={isFavourited} artworkId={artwork._id} /> */}
 
         {/* <button className="p-2 border border-2 border-black bg-whitish w-full rounded-full font-subheading text-black font-bold">
           Add to favourites

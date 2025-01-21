@@ -44,8 +44,8 @@
 
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { IFrontendCollectionUnpopulated } from "@/lib/types/collectionTypes";
-import { IFrontendArticle } from "@/lib/types/articleTypes";
+import { FrontendCollectionUnpopulated } from "@/lib/types/collectionTypes";
+import { FrontendArticle } from "@/lib/types/articleTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { buildUrl } from "@/utils/buildUrl";
@@ -61,10 +61,10 @@ export interface NavBarLink {
 }
 
 type CollectionLink = Pick<
-  IFrontendCollectionUnpopulated,
+  FrontendCollectionUnpopulated,
   "title" | "slug" | "artworks"
 >;
-type BiographyLink = Pick<IFrontendArticle, "slug">;
+type BiographyLink = Pick<FrontendArticle, "slug">;
 
 const NavBar = async () => {
   await dbConnect();

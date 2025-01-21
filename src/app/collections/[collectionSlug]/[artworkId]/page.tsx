@@ -1,5 +1,6 @@
 "use server";
 
+import ArtInfoTabs from "@/components/ui/artInfoTabs/ArtInfoTabs";
 import ArtworkView from "@/components/views/ArtworkView";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 import { getArtworkView } from "@/lib/server/artwork/use_cases/getArtworkView";
@@ -23,6 +24,7 @@ export default async function ArtworkId({
   return (
     <>
       <ArtworkView {...artworkData} />
+      {/* <ArtInfoTabs {...artworkData} /> */}
     </>
   );
 }

@@ -28,7 +28,7 @@ export interface FrontendBlogEntryUnpopulated {
   tags: string[];
 }
 
-// export interface IFrontendBlogEntry {
+// export interface FrontendBlogEntry {
 //   title: string;
 //   subtitle: string;
 //   summary: string;

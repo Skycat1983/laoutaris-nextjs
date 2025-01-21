@@ -1,6 +1,12 @@
 import { FrontendArtworkFull } from "./artworkTypes";
 import { FrontendUserFull } from "./userTypes";
 
+export type FrontendArticle =
+  | FrontendArticleFull
+  | FrontendArticleUnpopulated
+  | FrontendArticleWithAuthor
+  | FrontendArticleWithArtwork;
+
 export interface FrontendArticleFull {
   _id: string;
   title: string;
