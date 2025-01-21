@@ -10,16 +10,11 @@ import {
   processLogin,
 } from "@/lib/server/user/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
-import { handler } from "@/app/api/auth/[...nextauth]/route";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const initialState: LoginProcessResponse = {
   type: "validation",
   formValidationErrors: { email: "", password: "" },
 };
-
-// const handleLogin = {handler}
 
 const SignInForm = () => {
   // const router = useRouter();

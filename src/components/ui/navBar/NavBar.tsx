@@ -44,7 +44,6 @@
 
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { FrontendCollectionUnpopulated } from "@/lib/types/collectionTypes";
 import { FrontendArticle } from "@/lib/types/articleTypes";
 import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
 import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
@@ -53,6 +52,8 @@ import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
 import { authOptions } from "@/lib/config/authOptions";
+import { getCollectionDefaultPath } from "@/lib/server/collection/use_cases/getCollectionDefaultPath";
+import { getBiographyDefaultPath } from "@/lib/server/article/use_cases/getArticleDefaultPath";
 
 export interface NavBarLink {
   label: string;
@@ -60,50 +61,20 @@ export interface NavBarLink {
   disabled?: boolean;
 }
 
-type CollectionLink = Pick<
-  FrontendCollectionUnpopulated,
-  "title" | "slug" | "artworks"
->;
-type BiographyLink = Pick<FrontendArticle, "slug">;
-
 const NavBar = async () => {
   await dbConnect();
   const session = await getServerSession(authOptions);
-
-  //! Artworks
-  const collectionResponse = await fetchCollections<CollectionLink>(
-    "section",
-    "artwork",
-    ["title", "slug", "artworks"]
-  );
-
-  const collections = collectionResponse.success ? collectionResponse.data : [];
-
-  const firstCollection = collections[0];
-  const collectionSlug = firstCollection.slug;
-  const artworkId = firstCollection.artworks[0];
-  const artworkPath = buildUrl(["collections", collectionSlug, artworkId]);
+  const collectionDefaultPath = await getCollectionDefaultPath();
+  const buigraphyDefaultPath = await getBiographyDefaultPath();
 
   const artworkNavlink: NavBarLink = {
     label: "Collections",
-    path: artworkPath,
+    path: collectionDefaultPath,
   };
-
-  // ! Biography
-  const biographyResponse = await fetchArticles<BiographyLink>(
-    "section",
-    "biography",
-    ["title", "slug"]
-  );
-  const biographies = biographyResponse.success ? biographyResponse.data : [];
-
-  const firstBiography = biographies[0];
-  const biographySlug = firstBiography.slug;
-  const biographyPath = buildUrl(["biography", biographySlug]);
 
   const biographyNavlink: NavBarLink = {
     label: "Biography",
-    path: biographyPath,
+    path: buigraphyDefaultPath,
   };
 
   //! Blog
@@ -152,3 +123,28 @@ const NavBar = async () => {
 };
 
 export default NavBar;
+
+//! Collections
+// const collectionResponse = await fetchCollections<CollectionLink>(
+//   "section",
+//   "artwork",
+//   ["title", "slug", "artworks"]
+// );
+
+// const collections = collectionResponse.success ? collectionResponse.data : [];
+
+// const firstCollection = collections[0];
+// const collectionSlug = firstCollection.slug;
+// const artworkId = firstCollection.artworks[0];
+// const artworkPath = buildUrl(["collections", collectionSlug, artworkId]);
+// ! Biography
+// const biographyResponse = await fetchArticles<BiographyLink>(
+//   "section",
+//   "biography",
+//   ["title", "slug"]
+// );
+// const biographies = biographyResponse.success ? biographyResponse.data : [];
+
+// const firstBiography = biographies[0];
+// const biographySlug = firstBiography.slug;
+// const biographyPath = buildUrl(["biography", biographySlug]);

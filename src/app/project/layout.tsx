@@ -1,6 +1,7 @@
 import dbConnect from "@/utils/mongodb";
 import { buildUrl } from "@/utils/buildUrl";
-import SubNavBar, { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
+import SubNavBar from "@/components/ui/subnav/SubNavBar";
+import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
 
 export default async function ProjectLayout({
   children,
@@ -11,21 +12,21 @@ export default async function ProjectLayout({
   const stem = "project";
 
   const subNavLinks: SubNavBarLink[] = [
-    { title: "About", slug: "about", url: buildUrl([stem, "about"]) },
+    { title: "About", slug: "about", link_to: buildUrl([stem, "about"]) },
     {
       title: "Aims",
       slug: "aims",
-      url: buildUrl([stem, "aims"]),
+      link_to: buildUrl([stem, "aims"]),
       disabled: true,
     },
     {
       title: "Timeline",
       slug: "timeline",
-      url: buildUrl([stem, "timeline"]),
+      link_to: buildUrl([stem, "timeline"]),
       disabled: true,
     },
-    { title: "Film", slug: "film", url: buildUrl([stem, "film"]) },
-    { title: "Contact", slug: "contact", url: buildUrl([stem, "contact"]) },
+    { title: "Film", slug: "film", link_to: buildUrl([stem, "film"]) },
+    { title: "Contact", slug: "contact", link_to: buildUrl([stem, "contact"]) },
   ];
 
   const fetchLinks = async () => {

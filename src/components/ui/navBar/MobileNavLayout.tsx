@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { Menu, Search, ShoppingBasket, User } from "lucide-react";
 import Logo from "../common/Logo";
 import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
 import NavMenu from "../accountMenuBar/navMenu/NavMenu";
