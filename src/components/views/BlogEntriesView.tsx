@@ -1,10 +1,10 @@
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import BlogCard from "@/components/ui/cards/blogCard/BlogCard";
 import React from "react";
-import { FrontendBlogEntryFull } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 
 type BlogSectionProps = {
-  blogEntries: FrontendBlogEntryFull[];
+  blogEntries: FrontendBlogEntryUnpopulated[];
 };
 
 const BlogEntriesView = ({ blogEntries }: BlogSectionProps) => {

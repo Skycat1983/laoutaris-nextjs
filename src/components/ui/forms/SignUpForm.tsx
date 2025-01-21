@@ -9,10 +9,6 @@ import {
   RegistrationResponse,
   processRegistration,
 } from "@/lib/processRegistration";
-// import {
-//   RegistrationResponse,
-//   processRegistration,
-// } from "../../../../possibly_unused/processRegistration";
 
 const initialState: RegistrationResponse = {
   type: "validation",

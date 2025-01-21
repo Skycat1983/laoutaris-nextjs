@@ -1,12 +1,12 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import { Button } from "@/components/ui/shadcn/button";
-import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
+import { FrontendArticleWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ArticleProps {
-  article: ArticleViewWithArtworkTooltip;
+  article: FrontendArticleWithArtworkTooltip;
   nextArticle: string | null;
   prevArticle: string | null;
 }

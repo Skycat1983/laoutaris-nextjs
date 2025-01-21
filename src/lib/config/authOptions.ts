@@ -4,11 +4,33 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
 import clientPromise from "../mongo";
 import { Adapter } from "next-auth/adapters";
-import { SessionStrategy } from "next-auth";
+import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";
 import { CustomMongoDBAdapter } from "../mongo/adapter";
+import { User, Account, Profile, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
+
+declare module "next-auth" {
+  interface User extends DefaultUser {
+    role?: string; // Add the role property
+  }
+
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      role?: string;
+    } & DefaultSession["user"];
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role?: string;
+  }
+}
 
 export const authOptions = {
   adapter: CustomMongoDBAdapter(clientPromise) as Adapter,
@@ -45,7 +67,19 @@ export const authOptions = {
   ],
   callbacks: {
     //! used to determine if a user is allowed to sign in. NOT for reformatting the user object
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({
+      user,
+      account,
+      profile,
+      email,
+      credentials,
+    }: {
+      user: User;
+      account: Account | null;
+      profile?: Profile;
+      email?: string;
+      credentials?: Record<string, unknown>;
+    }) {
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
         return true;
@@ -75,26 +109,34 @@ export const authOptions = {
     },
     //! the jwt() callback is invoked before the session() callback, so anything you add to the JSON Web Token will be immediately available in the session callback
     //? here can customise the token contents
-    async jwt({ token, user, account, profile, isNewUser }) {
-      // like a keycard that is given to the user to access the building
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      isNewUser,
+    }: {
+      token: JWT;
+      user?: User;
+      account?: Account | null;
+      profile?: Profile;
+      isNewUser?: boolean;
+    }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
-      console.log("jwt in authOptions", isNewUser);
+      // console.log("jwt in authOptions", isNewUser);
       // console.log("token in jwt authOptions", token);
 
       return token;
     },
     //? here can customise the session contents
     //! this is not stored. It is only used to create the session object that is returned to the client
-    async session({ session, user, token }) {
-      // like the building's security system that checks the keycard
+    async session({ session, token }: { session: Session; token: JWT }) {
       session.user.id = token.id;
       session.user.role = token.role;
-      console.log("session in authOptions", session);
       return session;
     },
   },
 };
-// session is created from the jwt.

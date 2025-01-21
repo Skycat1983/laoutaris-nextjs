@@ -1,12 +1,12 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { ArticleViewWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
+import { FrontendArticleWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface ArticleProps {
-  article: ArticleViewWithArtworkTooltip;
+  article: FrontendArticleWithArtworkTooltip;
   nextUrl: string | null;
   prevUrl: string | null;
 }

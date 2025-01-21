@@ -1,9 +1,9 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import { validateRegistrationData } from "../src/lib/server/user/validation/validateRegistrationData";
-import { registerUser } from "../src/lib/server/user/data-fetching/registerUser";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+import { validateRegistrationData } from "./server/user/validation/validateRegistrationData";
+import { registerUser } from "./server/user/data-fetching/registerUser";
 
 export interface SignUpFormData {
   email: string;

@@ -1,9 +1,9 @@
-import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { headers } from "next/headers";
 
 export async function fetchBlogEntry(
   slug: string
-): Promise<ApiResponse<FrontendBlogEntry>> {
+): Promise<ApiResponse<FrontendBlogEntryUnpopulated>> {
   console.log("slug in fetch biography", slug);
 
   const result = await fetch(

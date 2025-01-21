@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { IBaseUser } from "./baseUserModel";
-import { BaseUserModel } from "../../../../unused/user";
+import { DBUser, UserModel } from ".";
 
 // Define the interface for the Admin user
-export interface IAdmin extends IBaseUser {
+export interface IAdmin extends DBUser {
   biography: string;
   blogEntries: mongoose.Schema.Types.ObjectId[];
   role: "admin";
@@ -18,5 +17,5 @@ const adminSchema = new mongoose.Schema<IAdmin>({
 
 // Create the Admin model using the discriminator
 export const AdminModel =
-  BaseUserModel.discriminators?.["Admin"] ||
-  BaseUserModel.discriminator<IAdmin>("Admin", adminSchema);
+  UserModel.discriminators?.["Admin"] ||
+  UserModel.discriminator<IAdmin>("Admin", adminSchema);
