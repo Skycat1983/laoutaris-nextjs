@@ -27,6 +27,7 @@
  *   - Ensure that biography articles exist in the database to prevent errors.
  *   - This implementation relies on `getBiographyDefaultPath` to abstract the logic for fetching the default path.
  */
+// export const dynamic = "force-dynamic";
 
 import dbConnect from "@/utils/mongodb";
 import { redirect } from "next/navigation";
@@ -35,5 +36,5 @@ import { getBiographyDefaultPath } from "@/lib/server/article/use_cases/getArtic
 export default async function Biography() {
   await dbConnect();
   const defaultRedirectPath = await getBiographyDefaultPath();
-  redirect(defaultRedirectPath);
+  return redirect(defaultRedirectPath);
 }

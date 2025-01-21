@@ -81,9 +81,6 @@ export async function fetchArticles<T>(
 
     const result = await response.json();
 
-    // console.log("fields", fields);
-    // console.log("result", result);
-
     if (!result.success) {
       return {
         success: false,

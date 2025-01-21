@@ -28,7 +28,7 @@ export const getArticle = async ({
 
   const resolver = articleToView;
 
-  const articleDetails = await fetchAndResolveObj<
+  return fetchAndResolveObj<
     FrontendArticleWithArtwork,
     FrontendArticleWithArtworkTooltip
   >(
@@ -40,11 +40,23 @@ export const getArticle = async ({
     artworkFields
   )();
 
-  if (articleDetails.section !== segment) {
-    throw new Error(
-      `Article with slug "${slug}" does not belong to the "${segment}" section.`
-    );
-  }
+  // const articleDetails = await fetchAndResolveObj<
+  //   FrontendArticleWithArtwork,
+  //   FrontendArticleWithArtworkTooltip
+  // >(
+  //   fetcher,
+  //   identifierKey,
+  //   identifierValue,
+  //   articleFields,
+  //   resolver,
+  //   artworkFields
+  // )();
 
-  return articleDetails;
+  // if (articleDetails.section !== segment) {
+  //   throw new Error(
+  //     `Article with slug "${slug}" does not belong to the "${segment}" section.`
+  //   );
+  // }
+
+  // return articleDetails;
 };

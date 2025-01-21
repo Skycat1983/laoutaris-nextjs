@@ -1,7 +1,7 @@
+import { SignUpFormData } from "@/lib/processRegistration";
 import { UserModel } from "@/lib/server/models";
 import { encryptPassword } from "@/utils/bcrypt";
 import { getErrorMessage } from "@/utils/getErrorMessage";
-import { SignUpFormData } from "../../../../../possibly_unused/processRegistration";
 
 interface RegisterUserSuccess {
   success: true;

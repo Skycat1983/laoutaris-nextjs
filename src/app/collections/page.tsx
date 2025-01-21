@@ -22,5 +22,5 @@ import { redirect } from "next/navigation";
 
 export default async function Collections() {
   const defaultRedirectPath = await getCollectionDefaultPath();
-  redirect(defaultRedirectPath);
+  return redirect(defaultRedirectPath);
 }
