@@ -55,6 +55,10 @@
  */
 
 import { headers } from "next/headers";
+import { isStaticGenBailoutError } from "next/dist/client/components/static-generation-bailout";
+import { isNotFoundError } from "next/dist/client/components/not-found";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 
 export async function fetchArticles<T>(
   identifierKey: string,
@@ -95,6 +99,19 @@ export async function fetchArticles<T>(
       statusCode: response.status,
     };
   } catch (error) {
+    if (isDynamicServerError(error)) {
+      throw error;
+    }
+    if (isNotFoundError(error)) {
+      throw error;
+    }
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (isStaticGenBailoutError(error)) {
+      throw error;
+    }
+
     console.error("Error fetching article fields:", error);
     return {
       success: false,

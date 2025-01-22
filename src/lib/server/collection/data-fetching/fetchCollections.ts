@@ -1,4 +1,8 @@
 import { headers } from "next/headers";
+import { isStaticGenBailoutError } from "next/dist/client/components/static-generation-bailout";
+import { isNotFoundError } from "next/dist/client/components/not-found";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 
 export async function fetchCollections<T>(
   identifierKey: string,
@@ -31,6 +35,18 @@ export async function fetchCollections<T>(
 
     return { success: true, data: result.data as T };
   } catch (error) {
+    if (isDynamicServerError(error)) {
+      throw error;
+    }
+    if (isNotFoundError(error)) {
+      throw error;
+    }
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (isStaticGenBailoutError(error)) {
+      throw error;
+    }
     console.error("Error fetching collection fields:", error);
     return { success: false, message: "Failed to fetch collection fields" };
   }

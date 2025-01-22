@@ -36,7 +36,6 @@
 "use server";
 import dbConnect from "@/utils/mongodb";
 import React, { Suspense } from "react";
-import { delay } from "@/utils/debug";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { getBiographySubNavData } from "@/lib/server/article/use_cases/getArticleSubnavData";
@@ -48,12 +47,12 @@ export default async function BiographyLayout({
 }) {
   await dbConnect();
   // await delay(2000);
-  const fetchLinks = getBiographySubNavData;
+  // const fetchLinks = getBiographySubNavData;
 
   return (
     <section>
       <Suspense fallback={<SubNavSkeleton />}>
-        <SubNavBar fetchLinks={fetchLinks} />
+        <SubNavBar fetchLinks={getBiographySubNavData} />
       </Suspense>
       {children}
     </section>

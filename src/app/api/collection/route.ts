@@ -1,6 +1,10 @@
 import { CollectionModel } from "@/lib/server/models";
 import { parseFields } from "@/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
+import { isStaticGenBailoutError } from "next/dist/client/components/static-generation-bailout";
+import { isNotFoundError } from "next/dist/client/components/not-found";
+import { isRedirectError } from "next/dist/client/components/redirect";
+import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const { searchParams } = new URL(req.url);
@@ -8,7 +12,6 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const identifierValue = searchParams.get("identifierValue");
   const fieldsParam = searchParams.get("fields");
 
-  // Validate presence of identifierKey and identifierValue
   if (!identifierKey || !identifierValue) {
     return NextResponse.json(
       {
@@ -19,16 +22,14 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       { status: 400 }
     );
   }
-  // Process fields parameter
+
   const fields = parseFields(fieldsParam);
 
-  // Construct the query object dynamically
   const query: Record<string, string> = {
     [identifierKey]: identifierValue,
   };
 
   try {
-    // Build the Mongoose query
     let mongooseQuery = CollectionModel.find(query)
       .sort({ updatedAt: 1 })
       .lean();
@@ -55,6 +56,7 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
       data: collections,
     });
   } catch (error) {
+    // unstable_rethrow(error)
     console.error("Error fetching collections:", error);
     return NextResponse.json(
       {
