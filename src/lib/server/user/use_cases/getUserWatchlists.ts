@@ -7,8 +7,9 @@ export const getUserWatchlists = async () => {
   const identifierKey = "_id";
   const identifierValue = user_id as string;
   const userFields = ["watchlist"];
+  const artworkFields = ["title", "artist", "image"];
 
-  return fetchUserWatchlists(identifierKey, identifierValue, userFields);
+  return await fetchUserWatchlists(identifierKey, identifierValue, userFields);
 
   //   return fetchAndResolveObj(fetcher, identifierKey, identifierValue, userFields);
   //   const resolver =

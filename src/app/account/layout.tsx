@@ -129,3 +129,75 @@ export default async function AccountLayout({
     </section>
   );
 }
+
+// export default async function AccountLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   await dbConnect();
+//   const { BASEURL } = config;
+
+//   const session = await getServerSession(authOptions);
+
+//   // If user is not authenticated, redirect to the homepage
+//   if (!session?.user?.email) {
+//     console.log("failed to get session in account layout");
+//     redirect(BASEURL);
+//   }
+
+//   const email = session.user.email;
+
+//   // Fetch user data using Pick for type safety
+//   const response = await fetchUser<UserAccountSubnavOptions>("email", email, [
+//     "favourites",
+//     "watchlist",
+//   ]);
+
+//   if (!response.success) {
+//     console.error("Failed to fetch user data:", response.message);
+//     redirect(BASEURL);
+//   }
+
+//   const favourites = response.data.favourites;
+//   const watchlist = response.data.watchlist;
+
+//   const favouritesCount = favourites.length;
+//   const watchlistCount = watchlist.length;
+
+//   // Determine the first favourite and watchlist items if available
+//   const firstFavouriteSlug = favouritesCount > 0 ? favourites[0] : null;
+//   const firstWatchlistSlug = watchlistCount > 0 ? watchlist[0] : null;
+
+//   // Define the sub-navigation links with dynamic URLs
+//   const userLinks: SubNavBarLink[] = [
+//     {
+//       title: "Dashboard",
+//       slug: "dashboard",
+//       link_to: buildUrl(["account", "dashboard"]),
+//     },
+//     {
+//       title: "Favourites",
+//       slug: "favourites",
+//       link_to: firstFavouriteSlug
+//         ? buildUrl(["account", "favourites", firstFavouriteSlug])
+//         : buildUrl(["account", "favourites"]),
+//       disabled: favouritesCount === 0, // Disabled if no favourites
+//     },
+//     {
+//       title: "Watchlist",
+//       slug: "watchlist",
+//       link_to: firstWatchlistSlug
+//         ? buildUrl(["account", "watchlist", firstWatchlistSlug])
+//         : buildUrl(["account", "watchlist"]),
+//       disabled: watchlistCount === 0, // Disabled if no watchlist items
+//     },
+//   ];
+
+//   return (
+//     <section className="p-0 m-0">
+//       {/* <SubNavBar fetchLinks={userLinks} /> */}
+//       {children}
+//     </section>
+//   );
+// }

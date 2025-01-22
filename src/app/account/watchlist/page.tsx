@@ -41,47 +41,12 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { getServerSession } from "next-auth";
-import config from "@/lib/config";
-import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
-import { buildUrl } from "@/utils/buildUrl";
 import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/config/authOptions";
-import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
-
-type UserWatchlistFields = Pick<FrontendUserWithWatcherlist, "watchlist">;
+import { getUserWatchlistArtworkDefaultPath } from "@/lib/server/user/use_cases/getUserWatchlistArtworkDefaultPath";
 
 export default async function Watchlist() {
   await dbConnect();
-  const session = await getServerSession(authOptions);
-  const { BASEURL } = config;
-
-  if (!session?.user?.email) {
-    redirect(BASEURL);
-  }
-
-  const email = session.user.email;
-
-  const response = await fetchUser<UserWatchlistFields>("email", email, [
-    "watchlist",
-  ]);
-
-  if (!response.success) {
-    console.error(
-      "Failed to fetch user data in account/watchlist:",
-      response.message
-    );
-    redirect(BASEURL);
-  }
-
-  const watchlist = response.data.watchlist;
-
-  if (!watchlist || watchlist.length === 0) {
-    const url = buildUrl(["account"]);
-    redirect(url);
-  } else {
-    const firstWatchlistId = watchlist[0];
-    // const url = buildUrl(["account", "watchlist", firstWatchlistId]);
-    // redirect(url);
-  }
+  const defaultPath = await getUserWatchlistArtworkDefaultPath();
+  const url = defaultPath ? `${defaultPath}` : "/";
+  return redirect(url);
 }

@@ -13,8 +13,8 @@ export interface FrontendUserFull {
   // password: string;
   username: string;
   role: "user" | "admin";
-  watchlist: FrontendArtworkFull[];
-  favourites: FrontendArtworkFull[];
+  watchlist: FrontendArtworkFull[] | [];
+  favourites: FrontendArtworkFull[] | [];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,8 +26,8 @@ export interface FrontendUserWithWatcherlist {
   // password: string;
   username: string;
   role: "user" | "admin";
-  watchlist: FrontendArtworkFull[];
-  favourites: string[];
+  watchlist: FrontendArtworkFull[] | [];
+  favourites: string[] | [];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,8 +39,8 @@ export interface FrontendUserWithFavourites {
   // password: string;
   username: string;
   role: "user" | "admin";
-  watchlist: string[];
-  favourites: FrontendArtworkFull[];
+  watchlist: string[] | [];
+  favourites: FrontendArtworkFull[] | [];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -52,8 +52,8 @@ export interface FrontendUserUnpopulated {
   // password: string;
   username: string;
   role: "user" | "admin";
-  watchlist: string[];
-  favourites: string[];
+  watchlist: string[] | [];
+  favourites: string[] | [];
   createdAt: Date;
   updatedAt: Date;
 }
