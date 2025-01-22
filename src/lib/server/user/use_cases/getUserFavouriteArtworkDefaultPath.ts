@@ -1,5 +1,4 @@
 import { fetchUser } from "../data-fetching/fetchUser";
-import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import {
   FrontendUserFavourite,
@@ -7,25 +6,25 @@ import {
 } from "../resolvers/userFavouritesToDefaultRedirect";
 import { PotentialUrl } from "@/lib/types/commonTypes";
 
-export const getUserFavouriteArtworkDefaultPath = async () => {
-  const userId = await getUserIdFromSession();
-  if (!userId) {
-    throw new Error("Failed to get required userID from session");
-  }
+// TODO: this + getUserWatchlistArtworkDefaultPath can be refectored to single func
 
-  const fetcher = fetchUser;
-  const identifierKey = "_id";
-  const identifierValue = userId;
-  const fields = ["favourites"];
-  const resolver = userFavouritesToDefaultRedirect;
+export const getUserFavouriteArtworkDefaultPath =
+  async (): Promise<PotentialUrl> => {
+    const userId = await getUserIdFromSession();
+    if (!userId) {
+      throw new Error("Failed to get required userID from session");
+    }
+    const identifierKey = "_id";
+    const identifierValue = userId;
+    const fields = ["favourites"];
 
-  const result = fetchAndResolveObj<FrontendUserFavourite, PotentialUrl>(
-    fetcher,
-    identifierKey,
-    identifierValue,
-    fields,
-    resolver
-  );
+    const result = await fetchUser(identifierKey, identifierValue, fields);
 
-  return await result();
-};
+    if (!result.success) {
+      throw new Error("Failed to fetch user favourites");
+    }
+
+    const userFavourite = result.data as FrontendUserFavourite;
+
+    return userFavouritesToDefaultRedirect(userFavourite);
+  };

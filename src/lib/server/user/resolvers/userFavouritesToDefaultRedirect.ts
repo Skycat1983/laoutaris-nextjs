@@ -4,10 +4,6 @@ import { buildUrl } from "@/utils/buildUrl";
 
 export type FrontendUserFavourite = Pick<FrontendUserUnpopulated, "favourites">;
 
-// export interface DefaultUserFavouriteRedirectPath {
-//   defaultPath: string;
-// }
-
 export const userFavouritesToDefaultRedirect = (
   user: FrontendUserFavourite
 ): PotentialUrl => {

@@ -1,40 +1,22 @@
 import LogoutForm from "@/components/ui/forms/LogoutForm";
-import { authOptions } from "@/lib/config/authOptions";
-import { fetchUser } from "@/lib/server/user/data-fetching/fetchUser";
-import { FrontendUserFull } from "@/lib/types/userTypes";
+import { getUserDashboardData } from "@/lib/server/user/use_cases/getUserDashboardData";
 import { formatDate } from "@/utils/formatDate";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 
 export default async function UserDashboard() {
-  const session = await getServerSession(authOptions);
+  const { email, username, favourites, watchlist, createdAt } =
+    await getUserDashboardData();
 
-  if (!session?.user?.email) {
-    redirect("http://localhost:3000");
-  }
-
-  console.log("session i dashboard", session);
-
-  const email = session.user.email;
-
-  // Fetch user data using Pick for type safety
-  const response = await fetchUser<FrontendUserFull>("email", email);
-
-  if (!response.success) {
-    redirect("http://localhost:3000");
-  }
-  const { data } = response;
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <ul>
         <li>
           User Profile: Display and update user&apos;s profile information.
         </li>
-        <p>Email: {data.email}</p>
-        <p>Username: {data.username}</p>
-        <p>Favourited artworks: {data.favourites.length}</p>
-        <p>Watchlist artworks: {data.watchlist.length}</p>
-        <p>Account created: {formatDate(data.createdAt)}</p>
+        <p>Email: {email}</p>
+        <p>Username: {username}</p>
+        <p>Favourited artworks: {favourites.length}</p>
+        <p>Watchlist artworks: {watchlist.length}</p>
+        <p>Account created: {formatDate(createdAt)}</p>
         <li>
           Account Settings: Customize account settings, such as privacy and
           notifications.
@@ -68,3 +50,21 @@ export default async function UserDashboard() {
     </main>
   );
 }
+
+// const userId = await getUserIdFromSession();
+
+// if (!userId) {
+//   redirect("http://localhost:3000");
+// }
+
+// console.log("session i dashboard", session);
+
+// const email = session.user.email;
+
+// // Fetch user data using Pick for type safety
+// const response = await fetchUser<FrontendUserFull>("email", email);
+
+// if (!response.success) {
+//   redirect("http://localhost:3000");
+// }
+// const { data } = response;

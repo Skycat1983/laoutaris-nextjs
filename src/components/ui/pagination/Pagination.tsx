@@ -1,10 +1,15 @@
 import { delay } from "@/utils/debug";
 import React from "react";
 import PaginationItem from "./PaginationItem";
-import { Skeleton } from "../shadcn/skeleton";
-import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
 import CollectionInfo from "../common/CollectionInfo";
 import PaginationLayout from "@/components/layouts/PaginationLayout";
+
+export interface PaginationArtworkLink {
+  secure_url: string;
+  height: number;
+  width: number;
+  link_to: string;
+}
 
 interface PaginationProps {
   getData: () => Promise<PaginationArtworkLink[]>;

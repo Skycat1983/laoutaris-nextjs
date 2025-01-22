@@ -4,7 +4,13 @@ import NavItem from "@/components/ui/common/buttons/NavItem";
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 import { delay } from "@/utils/debug";
-import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
+
+export interface SubNavBarLink {
+  title: string;
+  slug: string;
+  link_to: string;
+  disabled?: boolean;
+}
 
 interface SubNavProps {
   fetchLinks: () => Promise<SubNavBarLink[]>;
