@@ -5,11 +5,11 @@ import { UserModel } from "@/lib/server/models";
 import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
+  const { searchParams } = new URL(req.url);
+
   try {
     await dbConnect();
-    console.log("Database connected successfully.");
 
-    const { searchParams } = new URL(req.url);
     const userKey = searchParams.get("userKey");
     const userValue = searchParams.get("userValue");
     const artworkId = searchParams.get("artworkId");

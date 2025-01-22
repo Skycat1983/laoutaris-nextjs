@@ -3,8 +3,9 @@ import { UserModel } from "@/lib/server/models";
 import { parseFields } from "@/utils/parseFields";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
+  const { searchParams } = new URL(req.url);
+
   try {
-    const { searchParams } = new URL(req.url);
     const identifierKey = searchParams.get("identifierKey");
     const identifierValue = searchParams.get("identifierValue");
     const fieldsParam = searchParams.get("fields");

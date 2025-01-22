@@ -5,11 +5,11 @@ import { parseFields } from "@/utils/parseFields";
 import dbConnect from "@/utils/mongodb";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
+  const { searchParams } = new URL(req.url);
+
   try {
     await dbConnect();
-    console.log("Database connected successfully.");
 
-    const { searchParams } = new URL(req.url);
     const userKey = searchParams.get("userKey");
     const userValue = searchParams.get("userValue");
     const userFieldsParam = searchParams.get("userFields");

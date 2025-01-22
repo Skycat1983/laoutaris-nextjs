@@ -4,11 +4,11 @@ import { parseFields } from "@/utils/parseFields";
 import { ArticleModel } from "@/lib/server/models";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
+  const { searchParams } = new URL(req.url);
+
   try {
     await dbConnect();
-    console.log("Database connected successfully.");
 
-    const { searchParams } = new URL(req.url);
     const articleKey = searchParams.get("articleKey");
     const articleValue = searchParams.get("articleValue");
     const fieldsParam = searchParams.get("articleFields");
