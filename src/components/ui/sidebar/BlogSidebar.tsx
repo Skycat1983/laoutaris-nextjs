@@ -2,17 +2,12 @@
 
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import SubnavButton from "@/components/ui/common/buttons/SubnavButton";
-import {
-  Button,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon, MessageCircleIcon } from "lucide-react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
 import SubscribeForm from "../forms/SubscribeForm";
+import Image from "next/image";
 
 type SortRangeSidebarProps = {
   options: { label: string; queryValue: string }[];
@@ -110,12 +105,21 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       <div className="flex flex-row items-center gap-3 mt-4">
         <div>
-          <img
+          <Image
+            className="h-[35px] rounded-full"
+            alt="Heron Laoutaris"
+            src={
+              "https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/heron_drr8t3.png"
+            }
+            height={35}
+            width={35}
+          />
+          {/* <img
             className="h-[35px] rounded-full"
             src={
               "https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/heron_drr8t3.png"
             }
-          />
+          /> */}
         </div>
         <div>
           <p className="text-gray-600 text-m py-2 font-bold ">
@@ -126,12 +130,22 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       <div className="flex flex-row items-center gap-3 mt-4">
         <div>
-          <img
+          <Image
+            className="h-[35px] rounded-full"
+            alt="Katina Laoutaris"
+            src={
+              "https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/mum_kmddm6.jpg"
+            }
+            height={35}
+            width={35}
+          />
+
+          {/* <img
             className="h-[35px] rounded-full"
             src={
               "https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/mum_kmddm6.jpg"
             }
-          />
+          /> */}
         </div>
         <div>
           <p className="text-gray-600 text-m py-2 font-bold ">
