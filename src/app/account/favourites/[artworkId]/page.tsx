@@ -88,12 +88,9 @@
  */
 
 import dbConnect from "@/utils/mongodb";
-import { getServerSession } from "next-auth";
-import config from "@/lib/config";
-import { redirect } from "next/navigation";
-import { fetchUserFavourite } from "@/lib/server/user/data-fetching/fetchUserFavourite";
-import { authOptions } from "@/lib/config/authOptions";
-import { FrontendArtworkWithFavourited } from "@/lib/types/artworkTypes";
+import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import ArtworkView from "@/components/views/ArtworkView";
+import { getArtworkView } from "@/lib/server/artwork/use_cases/getArtworkView";
 
 //TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 
@@ -104,39 +101,18 @@ export default async function FavouritedArtwork({
 }) {
   await dbConnect();
   // await delay(2000);
+  const { artworkId } = params;
+  const artworkData: SanitizedArtwork = await getArtworkView({
+    collectionSlug: "favourites",
+    artworkId,
+  });
 
-  const session = await getServerSession(authOptions);
-  const { BASEURL } = config;
-
-  if (!session || !session.user || !session.user.email) {
-    redirect(BASEURL);
-  }
-
-  const userKey = "email";
-  const userValue = session.user.email;
-  const artworkId = params.artworkId;
-  // const userFields = ["favourites"];
-
-  const response = await fetchUserFavourite<FrontendArtworkWithFavourited>(
-    userKey,
-    userValue,
-    artworkId
-  );
-
-  console.log("response in FavouritedArtwork:>> ", response);
-
-  if (!response.success) {
-    console.error("Failed to fetch user data:", response.message);
-    redirect(BASEURL);
-  }
-
-  const artwork = response.data;
+  console.log("params :>> ", params);
 
   return (
     <>
-      <h1> placeholder</h1>
-      {/* <ArtworkView {...artwork} /> */}
-      {/* <ArtworkLayout {...artwork} /> */}
+      <ArtworkView {...artworkData} />
+      {/* <ArtInfoTabs {...artworkData} /> */}
     </>
   );
 }
