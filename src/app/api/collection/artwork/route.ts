@@ -5,28 +5,25 @@ import { CollectionModel } from "@/lib/server/models";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const { searchParams } = new URL(req.url);
+  const collectionKey = searchParams.get("collectionKey");
+  const collectionValue = searchParams.get("collectionValue");
+  const fieldsParam = searchParams.get("collectionFields");
+  const populateFieldsParam = searchParams.get("artworkFields");
+
+  // Validate presence of collectionKey and collectionValue
+  if (!collectionKey || !collectionValue) {
+    console.error("Missing collectionKey or collectionValue.");
+    return NextResponse.json(
+      {
+        success: false,
+        errorCode: 400,
+        message: "Missing collectionKey or collectionValue",
+      },
+      { status: 400 }
+    );
+  }
 
   try {
-    await dbConnect();
-
-    const collectionKey = searchParams.get("collectionKey");
-    const collectionValue = searchParams.get("collectionValue");
-    const fieldsParam = searchParams.get("collectionFields");
-    const populateFieldsParam = searchParams.get("artworkFields");
-
-    // Validate presence of collectionKey and collectionValue
-    if (!collectionKey || !collectionValue) {
-      console.error("Missing collectionKey or collectionValue.");
-      return NextResponse.json(
-        {
-          success: false,
-          errorCode: 400,
-          message: "Missing collectionKey or collectionValue",
-        },
-        { status: 400 }
-      );
-    }
-
     // Process fields parameter for collection
     const collectionFields = parseFields(fieldsParam);
 
