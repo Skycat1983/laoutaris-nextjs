@@ -7,7 +7,7 @@ import SectionHeading from "../ui/common/SectionHeading";
 import { delay } from "@/utils/debug";
 
 const HomeArtworkSection = async () => {
-  await delay(2000);
+  // await delay(2000);
   const artworks = [
     {
       label: "Latest",

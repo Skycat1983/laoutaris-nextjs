@@ -9,7 +9,7 @@ import { delay } from "@/utils/debug";
 import { getHomepageArticleSectionData } from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
 
 const HomeBiographySection: React.FC = async () => {
-  await delay(2000);
+  // await delay(2000);
   const homeBiographaphySectionCardData = await getHomepageArticleSectionData();
 
   return (

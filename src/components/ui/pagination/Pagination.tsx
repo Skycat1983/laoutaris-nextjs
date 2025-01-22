@@ -16,7 +16,7 @@ interface PaginationProps {
 }
 
 const Pagination = async ({ getData }: PaginationProps) => {
-  await delay(2000);
+  // await delay(2000);
 
   const paginationData = await getData();
 

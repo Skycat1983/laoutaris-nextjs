@@ -29,7 +29,7 @@ export default async function BlogLayout({
   ];
 
   const fetchLinks = async () => {
-    await delay(2000);
+    // await delay(2000);
     return subNavLinks;
   };
 

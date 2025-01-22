@@ -29,7 +29,7 @@ type ArticleViewProps = {
 };
 
 const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
-  await delay(2000);
+  // await delay(2000);
   const { article, navigation } = await getArticlePageData({ segment, slug });
 
   const { prev, next } = navigation;

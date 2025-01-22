@@ -47,7 +47,7 @@ export default async function BiographyLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  await delay(2000);
+  // await delay(2000);
   const fetchLinks = getBiographySubNavData;
 
   return (

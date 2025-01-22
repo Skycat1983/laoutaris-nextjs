@@ -5,7 +5,7 @@ import ButtonDivider from "../ui/common/ButtonDivider";
 import { delay } from "@/utils/debug";
 
 const HomeProjectSection = async () => {
-  await delay(2000);
+  // await delay(2000);
   return (
     <div className="p-4 w-full">
       <SectionHeading heading="Project:" subheading="Watch the documentary" />
