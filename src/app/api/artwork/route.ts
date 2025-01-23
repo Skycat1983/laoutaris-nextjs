@@ -4,24 +4,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const { searchParams } = new URL(req.url);
+  const identifierKey = searchParams.get("identifierKey");
+  const identifierValue = searchParams.get("identifierValue");
+  const fieldsParam = searchParams.get("fields");
+  const single = searchParams.get("single");
+
+  if (!identifierKey || !identifierValue) {
+    return NextResponse.json(
+      {
+        success: false,
+        errorCode: 400,
+        message: "Missing identifierKey or identifierValue",
+      },
+      { status: 400 }
+    );
+  }
 
   try {
-    const identifierKey = searchParams.get("identifierKey");
-    const identifierValue = searchParams.get("identifierValue");
-    const fieldsParam = searchParams.get("fields");
-    const single = searchParams.get("single");
-
-    if (!identifierKey || !identifierValue) {
-      return NextResponse.json(
-        {
-          success: false,
-          errorCode: 400,
-          message: "Missing identifierKey or identifierValue",
-        },
-        { status: 400 }
-      );
-    }
-
     const fields = parseFields(fieldsParam);
 
     const query: Record<string, string> = {

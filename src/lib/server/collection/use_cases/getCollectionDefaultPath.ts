@@ -1,7 +1,8 @@
+import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
 import { getCollectionSubNavData } from "./getCollectionSubnavData";
 
 export const getCollectionDefaultPath = async (): Promise<string> => {
-  const subNavData = await getCollectionSubNavData();
+  const subNavData: SubNavBarLink[] = await getCollectionSubNavData();
 
   if (!subNavData || subNavData.length === 0) {
     throw new Error("No collection data is available at the moment.");

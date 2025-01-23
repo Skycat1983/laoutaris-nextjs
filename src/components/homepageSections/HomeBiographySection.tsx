@@ -5,12 +5,15 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeading from "../ui/common/SectionHeading";
 import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
 import BiographyCard from "../ui/cards/biographyCard/BiographyCard";
-import { delay } from "@/utils/debug";
-import { getHomepageArticleSectionData } from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
+import {
+  getHomepageArticleSectionData,
+  HomeBiographySectionCardData,
+} from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
 
 const HomeBiographySection: React.FC = async () => {
   // await delay(2000);
-  const homeBiographaphySectionCardData = await getHomepageArticleSectionData();
+  const homeBiographaphySectionCardData: HomeBiographySectionCardData[] =
+    await getHomepageArticleSectionData();
 
   return (
     <div className="w-full flex flex-col items-center justify-center">

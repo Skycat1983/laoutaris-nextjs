@@ -1,7 +1,7 @@
 import { FrontendArticleUnpopulated } from "../../../types/articleTypes";
 import { fetchArticles } from "../data-fetching/fetchArticles";
 
-type HomeBiographySectionCardData = Pick<
+export type HomeBiographySectionCardData = Pick<
   FrontendArticleUnpopulated,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
