@@ -7,10 +7,11 @@ interface AvatarUploaderProps {
   onUploadSuccess: (url: string) => void;
 }
 
-export function AvatarUploader({ onUploadSuccess }: AvatarUploaderProps) {
+export function ImageUploader({ onUploadSuccess }: AvatarUploaderProps) {
   return (
     <CldUploadWidget
       uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+      // cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
       signatureEndpoint="/api/sign-cloudinary-params"
       onSuccess={(result) => {
         if (typeof result.info === "object" && "secure_url" in result.info) {
@@ -18,6 +19,7 @@ export function AvatarUploader({ onUploadSuccess }: AvatarUploaderProps) {
         }
       }}
       options={{
+        cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
         singleUploadAutoClose: true,
       }}
     >
