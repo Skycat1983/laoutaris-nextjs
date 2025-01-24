@@ -1,17 +1,13 @@
 import { v2 as cloudinary } from "cloudinary";
 
-// Add debug logging
-console.log("API Key:", process.env.CLOUDINARY_API_KEY);
-console.log("API Secret:", process.env.CLOUDINARY_API_SECRET);
-console.log("Cloud Name:", process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
-
-if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-  throw new Error("Missing required Cloudinary environment variables");
-}
+// this route is used to sign the cloudinary params
+// it is called by the UploadButton component
+// we need to sign the params because the cloudinary widget needs to send the params to the server
+// it works by sending the params to the server and then signing them with the api secret
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
+  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 

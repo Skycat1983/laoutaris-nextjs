@@ -1,18 +1,21 @@
-import { ImageUploader } from "@/components/ui/inputs/ImageUploader";
+"use server";
+import UploadButton from "@/components/views/UploadButton";
 import React from "react";
 
 const page = () => {
-  async function uploadImage(url: string) {
-    "use server";
-    // await updateUser({ avatar: url });
-    // revalidatePath("/");
-  }
+  // console.log("running admin");
 
-  console.log("running admin");
+  // console.log("API Key in Admin:", process.env.CLOUDINARY_API_KEY);
+  // console.log("API Secret in Admin:", process.env.CLOUDINARY_API_SECRET);
+  // console.log(
+  //   "Cloud Name in Admin  :",
+  //   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+  // );
 
   return (
     <div className="h-screen">
-      <ImageUploader onUploadSuccess={uploadImage} />
+      {/* <ImageUploader onUploadSuccess={uploadImage} /> */}
+      <UploadButton />
     </div>
   );
 };
