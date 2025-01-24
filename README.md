@@ -1,86 +1,140 @@
-# Use Case Driven Architecture
+I'll help create a comprehensive README that documents your architecture. I'll include both a high-level overview and detailed explanations with an annotated directory structure.
 
-This project follows a **use-case-driven architecture**, which aims to provide a clear **separation of concerns** and a **modular structure** that scales well as the application grows. Each domain (e.g., `article`, `artwork`) is self-contained and organized into subfolders representing different aspects of data flow and business logic.
+````markdown:my-app/README.md
+# Next.js Clean Architecture Project
 
-## Key Architectural Concepts
+This project implements a clean, use-case driven architecture that emphasizes separation of concerns and maintainable code structure. The architecture is designed to handle complex data flows while keeping components simple and focused.
 
-1. **Separation of Concerns**
+## Architectural Overview
 
-   - Each domain (e.g., `article`, `artwork`) handles specific business logic without intermixing concerns.
-   - The structure is divided into layers, such as **data fetching**, **transformation**, and **actions**, to keep responsibilities isolated.
+The application follows a layered architecture where data flows through distinct layers:
 
-2. **Modularity**
+```plaintext
+UI Layer (Components) → Use Cases → Data Fetching → API Routes → Database
+     ↑                                                              |
+     └──────────────────────── Data Flow ───────────────────────────┘
+```
 
-   - Encapsulating domain logic in feature-specific folders allows for better **maintainability** and **scalability**.
-   - The architecture ensures that each feature operates independently while following the same structure.
+### Directory Structure
 
-3. **Reusability**
+```plaintext
+src/
+├── app/                          # Next.js App Router pages and layouts
+│   ├── api/                      # API routes organized by domain
+│   │   ├── artwork/             # Artwork-specific endpoints
+│   │   └── user/                # User-specific endpoints
+│   └── (routes)/                # Page routes and layouts
+├── components/
+│   ├── ui/                      # Reusable UI components
+│   │   └── inputs/             # Form inputs, buttons, etc.
+│   └── views/                   # Page-specific view components
+└── lib/
+    └── server/                  # Server-side business logic
+        ├── artwork/             # Domain: Artwork
+        │   ├── actions/         # Server actions (mutations)
+        │   ├── data-fetching/   # Data retrieval functions
+        │   ├── models/          # Data models and types
+        │   ├── resolvers/       # Data transformation logic
+        │   └── use_cases/       # Business logic orchestration
+        └── user/                # Domain: User (similar structure)
+```
 
-   - Functions are designed to be reused across different parts of the application.
-   - **Resolvers** handle transformations, and **use cases** serve as the primary orchestration layer.
+## Key Architectural Principles
 
-4. **Thin Controllers**
-   - API handlers are kept lightweight, delegating the actual logic to the **use case** layer.
-   - This improves maintainability and simplifies testing.
+### 1. Component-Data Separation
+- Pages/layouts are kept minimal, delegating to view components
+- View components receive data-fetching functions as props
+- Data fetching logic is isolated from UI components
 
-## Folder Structure Overview
+### 2. Use Case Pattern
+Located in `/lib/server/*/use_cases/`
+```typescript
+// Example use case structure
+export function useArtworkDetails(id: string) {
+  return {
+    getData: async () => {
+      const data = await fetchArtwork({
+        identifierKey: 'id',
+        identifierValue: id,
+        fields: ['title', 'image']
+      });
+      return transformArtworkData(data);
+    }
+  };
+}
+```
 
-The project's backend logic is organized under the `lib/server` directory, following a domain-driven design. Each domain contains well-defined layers:
+### 3. Data Fetching Layer
+Located in `/lib/server/*/data-fetching/`
+- Generic fetch functions organized by domain
+- Consistent parameter pattern:
+  - `identifierKey`: Field to query by
+  - `identifierValue`: Value to match
+  - `fields`: Properties to return
 
-```plainttext
-lib
-├── server
-│   ├── article                 # Responsible for managing articles and related logic
-│   │   ├── actions             # Mutations, side-effects (e.g., creating, updating, deleting an article)
-│   │   ├── data-fetching        # API fetch calls, database queries for retrieving raw data
-│   │   ├── models               # Database models (e.g., Mongoose or Prisma schema definitions)
-│   │   ├── resolvers            # Data transformation, formatting, and aggregation logic
-│   │   ├── use_cases            # High-level functions orchestrating data-fetching and resolving for the UI
-│   ├── artwork                  # Responsible for artwork-related business logic
-│   │   ├── actions
-│   │   ├── data-fetching
-│   │   ├── models
-│   │   ├── resolvers
-│   │   ├── use_cases
-│   ├── collection               # Logic for managing collections of artwork
-│   ├── blog                      # Handles blog-related logic and data operations
-│   ├── user                      # Manages user-specific logic and actions
+```typescript
+// Example data fetching structure
+export async function fetchArtwork({
+  identifierKey,
+  identifierValue,
+  fields
+}: FetchParams) {
+  const query = formatQuery(identifierKey, identifierValue, fields);
+  return await fetch(`/api/artwork?${query}`);
+}
+```
+
+### 4. API Route Structure
+Located in `/app/api/`
+- Routes follow pattern: `/api/[collection]/[populatedItem]`
+- Minimal logic in route handlers
+- Delegates to use cases for business logic
+
+```typescript
+// Example API route structure
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const data = await handleArtworkQuery(searchParams);
+  return Response.json(data);
+}
+```
+
+## Data Flow Example
+
+1. Component needs data:
+```typescript
+function ArtworkView({ getArtwork }: { getArtwork: () => Promise<Artwork> }) {
+  // Component receives data fetching function as prop
+}
+```
+
+2. Use case orchestrates the operation:
+```typescript
+// use_cases/getArtwork.ts
+const data = await fetchArtwork({ identifierKey, identifierValue, fields });
+return transformArtworkData(data);
+```
+
+3. Data fetcher makes the API call:
+```typescript
+// data-fetching/fetchArtwork.ts
+const response = await fetch(`/api/artwork?${queryString}`);
+```
+
+4. API route handles the request:
+```typescript
+// api/artwork/route.ts
+const data = await db.artwork.findUnique({ ... });
+```
+
+## Benefits of this Architecture
+
+1. **Maintainability**: Each layer has a single responsibility
+2. **Testability**: Business logic is isolated from UI
+3. **Scalability**: New features follow established patterns
+4. **Reusability**: Functions are composable and generic
+5. **Type Safety**: Full TypeScript support across layers
 
 ```
 
-<!-- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details. -->
+````
