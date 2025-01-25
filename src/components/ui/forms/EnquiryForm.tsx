@@ -21,6 +21,8 @@ import { RadioGroup, RadioGroupItem } from "../shadcn/radio-group";
 import { Textarea } from "../shadcn/textarea";
 import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
+// TODO: redo this form with shadcn/ui
+
 // ! https://www.youtube.com/watch?v=gQ2bVQPFS4U
 const EnquiryForm = () => {
   // TODO: get username from session.

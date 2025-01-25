@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// TODO: redo this form with shadcn/ui
 const LogoutForm = () => {
   const router = useRouter();
   const redirectToHome = () => {

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface IArtwork extends Document {
+export interface DBArtwork extends Document {
   title: string;
   decade:
     | "1950s"
@@ -18,10 +18,28 @@ export interface IArtwork extends Document {
     pixelHeight: number;
     pixelWidth: number;
     format: string;
-    hexColors: { color: string; percentage: number }[];
+    hexColors: [
+      {
+        color: String;
+        percentage: Number;
+        // _id: { type: String };
+      }
+    ];
     predominantColors: {
-      cloudinary: { color: string; percentage: number; _id: string }[];
-      google: { color: string; percentage: number; _id: string }[];
+      cloudinary: [
+        {
+          color: String;
+          percentage: Number;
+          // _id: { type: String };
+        }
+      ];
+      google: [
+        {
+          color: String;
+          percentage: Number;
+          // _id: { type: String };
+        }
+      ];
     };
   };
   artstyle: "abstract" | "semi-abstract" | "figurative";
@@ -105,4 +123,5 @@ const artworkSchema = new mongoose.Schema(
 );
 
 export const ArtworkModel =
-  mongoose.models.Artwork || mongoose.model<IArtwork>("Artwork", artworkSchema);
+  mongoose.models.Artwork ||
+  mongoose.model<DBArtwork>("Artwork", artworkSchema);

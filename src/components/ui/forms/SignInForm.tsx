@@ -8,6 +8,8 @@ import ModalMessage from "@/components/ui/common/ModalMessage";
 import { LoginProcessResponse } from "@/lib/server/user/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
 
+// TODO: redo this form with shadcn/ui
+
 const initialState: LoginProcessResponse = {
   type: "validation",
   formValidationErrors: { email: "", password: "" },

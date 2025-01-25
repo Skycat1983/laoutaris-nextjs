@@ -18,6 +18,8 @@ import { z } from "zod";
 import { Textarea } from "../shadcn/textarea";
 // import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
+// TODO: redo this form with shadcn/ui
+
 const ContactForm = () => {
   // Define the schema for form validation using Zod
   const contactFormSchema = z.object({

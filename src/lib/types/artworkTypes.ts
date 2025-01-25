@@ -23,7 +23,7 @@ export interface FrontendArtworkUnpopulated {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: number;
+  decade: string;
   artstyle: string;
   medium: string;
   surface: string;
@@ -36,7 +36,8 @@ export interface FrontendArtworkWithWatcherlist {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: number;
+  decade: string;
+
   artstyle: string;
   medium: string;
   surface: string;
@@ -49,7 +50,8 @@ export interface FrontendArtworkWithFavourited {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: number;
+  decade: string;
+
   artstyle: string;
   medium: string;
   surface: string;
@@ -77,17 +79,17 @@ export interface PredominantColors {
 export interface CloudinaryColor {
   color: string;
   percentage: number;
-  _id: string;
+  // _id: string;
 }
 
 export interface GoogleColor {
   color: string;
   percentage: number;
-  _id: string;
+  // _id: string;
 }
 
 export interface HexColor {
   color: string;
   percentage: number;
-  _id: string;
+  // _id: string;
 }

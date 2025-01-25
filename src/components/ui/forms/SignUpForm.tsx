@@ -10,6 +10,8 @@ import {
   processRegistration,
 } from "@/lib/processRegistration";
 
+// TODO: redo this form with shadcn/ui
+
 const initialState: RegistrationResponse = {
   type: "validation",
   formValidationErrors: { email: "", password: "", username: "" },
