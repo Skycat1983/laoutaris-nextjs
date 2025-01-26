@@ -22,12 +22,10 @@ import {
 } from "@/components/ui/shadcn/select";
 import { Input } from "@/components/ui/shadcn/input";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
-import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
+import { ArtworkImage } from "@/lib/types/artworkTypes";
 import Image from "next/image";
 import { useState } from "react";
 import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
-import { ArtworkImage } from "@/lib/types/artworkTypes";
-// TODO: maybe move schema to a separate file
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -77,27 +75,14 @@ export function CreateArtworkForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    console.log("CreateArtworkForm values", values);
 
     try {
-      // First handle the artwork upload with Cloudinary info
       await handleArtworkUpload({
         cloudinaryInfo: uploadInfo,
         formData: values,
       });
-
-      // Simulate other API operations
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          Math.random() > 0.3
-            ? resolve(true)
-            : reject(new Error("Random failure"));
-        }, 2000);
-      });
-
       form.reset();
       onSuccess();
-      console.log("Form submitted successfully");
     } catch (error) {
       console.error("Form submission failed:", error);
     } finally {
@@ -106,12 +91,9 @@ export function CreateArtworkForm({
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 w-full p-4 bg-green-100">
+    <div className="grid grid-cols-2 gap-4 w-full p-4">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="title"
@@ -290,14 +272,7 @@ export function CreateArtworkForm({
           />
 
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <span className="mr-2">Submitting...</span>
-                {/* You could add a loading spinner here */}
-              </>
-            ) : (
-              "Submit"
-            )}
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
         </form>
       </Form>

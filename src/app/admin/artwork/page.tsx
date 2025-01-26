@@ -7,9 +7,13 @@ import { CreateArtworkWithUpload } from "@/components/ui/forms/CreateArtworkWith
 export default function ArtworkPage() {
   return (
     <AdminContentLayout title="Artwork">
+      {/* <div className="h-[2000px] bg-blue-600">Read Artwork</div> */}
+
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
-        readComponent={<div>Read Artwork</div>}
+        readComponent={
+          <div className="h-[2000px] bg-blue-600">Read Artwork</div>
+        }
         updateComponent={<div>Update Artwork</div>}
         deleteComponent={<div>Delete Artwork</div>}
       />

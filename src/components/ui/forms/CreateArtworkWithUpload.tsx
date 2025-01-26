@@ -38,17 +38,15 @@ export function CreateArtworkWithUpload() {
           </div>
         </div>
       ) : (
-        <>
-          <div className="flex flex-col items-center gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
-            <div className="text-sm text-gray-500">
-              ✓ Image uploaded successfully
-            </div>
+        <div className="flex flex-col items-center gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+          <div className="text-sm text-gray-500">
+            ✓ Image uploaded successfully
           </div>
           <CreateArtworkForm
             uploadInfo={uploadInfo}
             onSuccess={handleFormSuccess}
           />
-        </>
+        </div>
       )}
     </div>
   );
