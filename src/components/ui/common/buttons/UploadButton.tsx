@@ -8,12 +8,17 @@ import {
 import { Button } from "../../shadcn/button";
 import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
 
-const UploadButton = () => {
+interface UploadButtonProps {
+  onUploadSuccess: (result: CloudinaryUploadWidgetResults) => void;
+}
+
+const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
   const handleUploadSuccess = async (result: CloudinaryUploadWidgetResults) => {
     console.log("Full upload result:", result);
     try {
       const response = await handleArtworkUpload(result);
       console.log("Artwork created:", response);
+      onUploadSuccess(result);
     } catch (error) {
       console.error("Upload handling failed:", error);
     }

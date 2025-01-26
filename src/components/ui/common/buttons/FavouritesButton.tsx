@@ -1,20 +1,18 @@
 "use client";
 
 import React from "react";
-import { useFormState, useFormStatus } from "react-dom";
-import { Button } from "@/components/ui/shadcn/button";
-import { Loader2 } from "lucide-react";
+import { useFormState } from "react-dom";
+
+import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavourites";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "../ModalMessage";
+import SubmitButton from "./SubmitButton";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavourites";
-import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import Modal from "@/components/ui/modal/Modal";
-import ModalMessage from "../ModalMessage";
-import SubmitButton from "./SubmitButton";
+} from "../../tooltip";
 
 type FavouritesButtonProps = {
   isLoggedIn: boolean;
