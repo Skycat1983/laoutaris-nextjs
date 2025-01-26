@@ -15,6 +15,7 @@ import {
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
 import Header from "@/components/ui/header/header";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,9 +24,9 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const session = await getServerSession(authOptions);
 
   return (
@@ -36,12 +37,13 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
+      {/* <body> */}
       <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px] bg-whitish">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
             <Header />
-            {children}
+            <main className="flex flex-col">{children}</main>
             <Footer />
           </GlobalFeaturesProvider>
         </SessionContextProvider>

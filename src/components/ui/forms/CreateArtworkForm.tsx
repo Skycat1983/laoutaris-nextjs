@@ -24,6 +24,10 @@ import { Input } from "@/components/ui/shadcn/input";
 import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
 import Image from "next/image";
+import { useState } from "react";
+import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
+import { ArtworkImage } from "@/lib/types/artworkTypes";
+// TODO: maybe move schema to a separate file
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -54,10 +58,15 @@ const formSchema = z.object({
 });
 
 interface CreateArtworkFormProps {
-  uploadInfo: CloudinaryUploadInfo;
+  uploadInfo: ArtworkImage;
+  onSuccess: () => void;
 }
 
-export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
+export function CreateArtworkForm({
+  uploadInfo,
+  onSuccess,
+}: CreateArtworkFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,15 +75,43 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Handle form submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    console.log("CreateArtworkForm values", values);
+
+    try {
+      // First handle the artwork upload with Cloudinary info
+      await handleArtworkUpload({
+        cloudinaryInfo: uploadInfo,
+        formData: values,
+      });
+
+      // Simulate other API operations
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          Math.random() > 0.3
+            ? resolve(true)
+            : reject(new Error("Random failure"));
+        }, 2000);
+      });
+
+      form.reset();
+      onSuccess();
+      console.log("Form submitted successfully");
+    } catch (error) {
+      console.error("Form submission failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 w-full p-4 bg-green-100">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full"
+        >
           <FormField
             control={form.control}
             name="title"
@@ -82,7 +119,11 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Untitled" {...field} />
+                  <Input
+                    placeholder="Untitled"
+                    {...field}
+                    disabled={isSubmitting}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -98,6 +139,7 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isSubmitting}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -135,6 +177,7 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isSubmitting}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -165,6 +208,7 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isSubmitting}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -203,6 +247,7 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  disabled={isSubmitting}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -231,6 +276,7 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
@@ -243,15 +289,24 @@ export function CreateArtworkForm({ uploadInfo }: CreateArtworkFormProps) {
             )}
           />
 
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <span className="mr-2">Submitting...</span>
+                {/* You could add a loading spinner here */}
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </form>
       </Form>
-      <div className="mx-auto">
+      <div className="flex justify-center">
         <Image
           src={uploadInfo.secure_url}
           alt="Uploaded artwork"
-          width={uploadInfo.width}
-          height={uploadInfo.height}
+          width={uploadInfo.pixelWidth}
+          height={uploadInfo.pixelHeight}
           className="object-contain rounded-lg"
         />
       </div>

@@ -61,14 +61,12 @@ export interface FrontendArtworkWithFavourited {
 }
 
 export interface ArtworkImage {
-  predominantColors: PredominantColors;
   secure_url: string;
   public_id: string;
-  bytes: number;
+  predominantColors: string[];
   pixelHeight: number;
   pixelWidth: number;
-  format: string;
-  hexColors: HexColor[];
+  hexColors: string[];
 }
 
 export interface PredominantColors {

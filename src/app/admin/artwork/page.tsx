@@ -4,7 +4,6 @@ import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
 import { CreateArtworkWithUpload } from "@/components/ui/forms/CreateArtworkWithUpload";
 // import { CreateArticleForm } from "@/components/forms/CreateArticleForm";
 // import other forms...
-
 export default function ArtworkPage() {
   return (
     <AdminContentLayout title="Artwork">

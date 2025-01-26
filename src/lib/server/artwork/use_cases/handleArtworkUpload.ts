@@ -1,37 +1,41 @@
-import { CloudinaryUploadWidgetResults } from "next-cloudinary";
-import { cloudinaryResponseToArtworkImageData } from "../resolvers/cloudinaryResponseToArtworkImageData";
-import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
+import {
+  ArtworkImage,
+  FrontendArtworkUnpopulated,
+} from "@/lib/types/artworkTypes";
 import { postArtwork } from "../../admin/data-fetching/postArtwork";
+import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
 
-export async function handleArtworkUpload(
-  result: CloudinaryUploadWidgetResults
-) {
-  if (!result.info || typeof result.info !== "object") {
-    throw new Error("Invalid upload result");
-  }
+interface ArtworkUploadParams {
+  cloudinaryInfo: ArtworkImage;
+  formData: {
+    title: string;
+    decade: string;
+    artstyle: string;
+    medium: string;
+    surface: string;
+    featured: boolean;
+  };
+}
 
-  // Transform Cloudinary response
-  const imageDetails = cloudinaryResponseToArtworkImageData(result.info);
-
-  // Dummy data for testing
-  const dummyArtworkData: Omit<
-    FrontendArtworkUnpopulated,
-    "_id" | "image" | "watcherlist" | "favourited"
-  > = {
-    title: "Test Artwork",
-    decade: "2020s", // String value from enum
-    artstyle: "abstract",
-    medium: "oil",
-    surface: "canvas",
-    featured: false,
+export async function handleArtworkUpload({
+  cloudinaryInfo,
+  formData,
+}: ArtworkUploadParams) {
+  const artworkData = {
+    title: formData.title,
+    decade: formData.decade,
+    artstyle: formData.artstyle,
+    medium: formData.medium,
+    surface: formData.surface,
+    featured: formData.featured,
   };
 
   // Combine image details with artwork data
   const completeArtworkData: Omit<FrontendArtworkUnpopulated, "_id"> = {
-    ...dummyArtworkData,
-    image: imageDetails,
-    watcherlist: [], // These will be handled by MongoDB defaults
-    favourited: [], // These will be handled by MongoDB defaults
+    ...artworkData,
+    image: cloudinaryInfo,
+    watcherlist: [],
+    favourited: [],
   };
 
   // Send to API via data fetching function
@@ -39,3 +43,15 @@ export async function handleArtworkUpload(
 }
 
 // cloudinaryResponseToArtworkImageData;
+// Dummy data for testing
+// const dummyArtworkData: Omit<
+//   FrontendArtworkUnpopulated,
+//   "_id" | "image" | "watcherlist" | "favourited"
+// > = {
+//   title: "Test Artwork",
+//   decade: "2020s", // String value from enum
+//   artstyle: "abstract",
+//   medium: "oil",
+//   surface: "canvas",
+//   featured: false,
+// };

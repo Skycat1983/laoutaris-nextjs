@@ -168,7 +168,7 @@ const DashboardLayout = (props: Props) => {
 
   return (
     <TabGroup>
-      <div className="grid grid-cols-5 h-screen">
+      <div className="grid grid-cols-5">
         <div className="col-span-1 shadow-xl">
           <TabList>
             <div className="flex flex-col text-left m-8 gap-5">

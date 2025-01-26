@@ -12,46 +12,15 @@ interface RawPredominantColor {
   1: number; // percentage
 }
 
-export function cloudinaryResponseToArtworkImageData(
-  info: CloudinaryUploadWidgetInfo
-): ArtworkImage {
-  // Cast predominant to the raw format we know it has
-  const predominant = info.predominant as {
-    google: RawPredominantColor[];
-    cloudinary: RawPredominantColor[];
-  };
-
+export function cloudinaryResponseToArtworkImageData(info: any): ArtworkImage {
   return {
     secure_url: info.secure_url,
     public_id: info.public_id,
-    bytes: info.bytes,
+    predominantColors:
+      info.colors?.map((c: { color: string }) => c.color) || [],
     pixelHeight: info.height,
     pixelWidth: info.width,
-    format: info.format,
-    hexColors:
-      (info.colors as [string, number][])?.map(
-        ([color, percentage]): HexColor => ({
-          color,
-          percentage,
-          //   _id: uuidv4(),
-        })
-      ) || [],
-    predominantColors: {
-      cloudinary: (predominant?.cloudinary || []).map(
-        (color): CloudinaryColor => ({
-          color: color[0],
-          percentage: color[1],
-          //   _id: uuidv4(),
-        })
-      ),
-      google: (predominant?.google || []).map(
-        (color): GoogleColor => ({
-          color: color[0],
-          percentage: color[1],
-          //   _id: uuidv4(),
-        })
-      ),
-    },
+    hexColors: info.colors?.map((c: { color: string }) => c.color) || [],
   };
 }
 
