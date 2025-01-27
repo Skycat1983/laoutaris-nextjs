@@ -13,7 +13,7 @@ interface AdminCrudTabsProps {
 }
 
 const baseTabClass =
-  "text-xl font-archivo px-8 text-gray-400 outline-none data-[selected]:border-b-4 data-[selected]:border-black data-[selected]:text-black p-4";
+  "relative text-xl font-archivo px-8 text-gray-400 outline-none p-4 border-b-4 border-transparent transition-colors data-[state=active]:border-b-4";
 
 export function AdminCrudTabs({
   createComponent,
@@ -25,28 +25,28 @@ export function AdminCrudTabs({
     <div>
       <Tabs defaultValue="create">
         <TabsList>
-          <div className="flex flex-row gap-10 border-b-2 border-greyish/50">
+          <div className="flex flex-row gap-10 border-greyish/50">
             <TabsTrigger
               value="create"
-              className={`${baseTabClass} data-[selected]:text-green-700 data-[selected]:border-green-700`}
+              className={`${baseTabClass} data-[state=active]:text-green-700 data-[state=active]:border-green-700`}
             >
               Create
             </TabsTrigger>
             <TabsTrigger
               value="read"
-              className={`${baseTabClass} data-[selected]:text-blue-400 data-[selected]:border-blue-400`}
+              className={`${baseTabClass} data-[state=active]:text-blue-400 data-[state=active]:border-blue-400`}
             >
               Read
             </TabsTrigger>
             <TabsTrigger
               value="update"
-              className={`${baseTabClass} data-[selected]:text-orange-400 data-[selected]:border-orange-400`}
+              className={`${baseTabClass} data-[state=active]:text-orange-400 data-[state=active]:border-orange-400`}
             >
               Update
             </TabsTrigger>
             <TabsTrigger
               value="delete"
-              className={`${baseTabClass} data-[selected]:text-red-700 data-[selected]:border-red-700`}
+              className={`${baseTabClass} data-[state=active]:text-red-700 data-[state=active]:border-red-700`}
             >
               Delete
             </TabsTrigger>

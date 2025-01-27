@@ -11,9 +11,7 @@ export default function ArtworkPage() {
     <AdminContentLayout title="Artwork" feedComponent={<ArtworkFeed />}>
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
-        readComponent={
-          <div className="h-[2000px] bg-blue-600">Read Artwork</div>
-        }
+        readComponent={<div className="h-[2000px] ">Read Artwork</div>}
         updateComponent={<div>Update Artwork</div>}
         deleteComponent={<DeleteArtwork />}
       />

@@ -6,9 +6,11 @@ export async function ArtworkFeed() {
   const artworkFeed = await getArtworkFeed();
 
   return (
-    <div className="w-full h-full bg-blue-100 hover:bg-whitish">
-      <h1 className="text-4xl font-archivo p-8 mt-8">Artwork Feed</h1>
-      <RefreshButton />
+    <div className="w-full h-full hover:bg-whitish border-l-2">
+      <div className="flex flex-row items-center pt-8 border-b-2">
+        <h1 className="text-4xl font-archivo font-semibold p-8">Feed</h1>
+        <RefreshButton />
+      </div>
 
       <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
         <div className="flex flex-col gap-5 items-center p-4">

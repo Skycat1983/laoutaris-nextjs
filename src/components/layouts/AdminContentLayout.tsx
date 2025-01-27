@@ -12,17 +12,16 @@ export async function AdminContentLayout({
   children,
   feedComponent,
 }: AdminContentLayoutProps) {
-  console.log("title in admin content layout", title);
-  const artworkFeed = await getArtworkFeed();
-  const articleFeed = await getArticleFeed();
-  console.log("artworkFeed", artworkFeed);
-  console.log("articleFeed", articleFeed);
+  // console.log("title in admin content layout", title);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4 bg-orange-100">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
       <div className="col-span-2 bg-greyish/10 hover:bg-whitish flex flex-col">
         <div className="flex flex-col p-4">
           <div className="flex flex-row">
-            <h1 className="text-4xl font-archivo p-8 mt-8">{title}</h1>
+            <h1 className="text-4xl font-archivo font-semibold p-8 mt-8">
+              {title}
+            </h1>
           </div>
           {children}
         </div>

@@ -7,7 +7,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-5 bg-purple-100 flex-1 min-h-screen">
+    <div className="grid grid-cols-5 flex-1 min-h-screen">
       <AdminSidebar />
       <AdminPageContainer>{children}</AdminPageContainer>
     </div>
