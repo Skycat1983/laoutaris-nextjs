@@ -60,15 +60,3 @@ export function AdminCrudTabs({
     </div>
   );
 }
-
-{
-  /* <TabList>
-                <div className="flex flex-row gap-10 border-b-2 border-greyish/50">
-                  {tabs.map((tab, i) => (
-                    <Tab key={i} as="div" className={tab.className}>
-                      {tab.label}
-                    </Tab>
-                  ))}
-                </div>
-              </TabList> */
-}

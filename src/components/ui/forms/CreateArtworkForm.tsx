@@ -263,7 +263,20 @@ export function CreateArtworkForm({
             </Button>
           </form>
         </Form>
-        {uploadInfo && (
+        {uploadInfo ? (
+          <Image
+            src={uploadInfo.secure_url}
+            alt="Uploaded artwork"
+            width={uploadInfo.pixelWidth}
+            height={uploadInfo.pixelHeight}
+            className="object-contain rounded-lg"
+          />
+        ) : (
+          <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+            <p className="text-gray-400">Image will appear here after upload</p>
+          </div>
+        )}
+        {/* {uploadInfo && (
           <div className="flex justify-center">
             <Image
               src={uploadInfo.secure_url}
@@ -273,7 +286,7 @@ export function CreateArtworkForm({
               className="object-contain rounded-lg"
             />
           </div>
-        )}
+        )} */}
       </div>
     </ScrollArea>
   );
