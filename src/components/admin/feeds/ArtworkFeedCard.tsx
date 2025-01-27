@@ -19,7 +19,7 @@ export function ArtworkFeedCard({ artwork }: ArtworkFeedCardProps) {
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group w-full p-12">
       <Image
         src={artwork.image.secure_url.replace(
           "/upload/",
@@ -27,8 +27,8 @@ export function ArtworkFeedCard({ artwork }: ArtworkFeedCardProps) {
         )}
         alt={artwork.title}
         width={200}
-        height={100}
-        className="w-full h-auto"
+        height={200}
+        className="w-full h-auto shadow-xl"
         loading="lazy"
       />
       <button

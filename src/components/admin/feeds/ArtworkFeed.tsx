@@ -13,7 +13,7 @@ export async function ArtworkFeed() {
       </div>
 
       <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
-        <div className="flex flex-col gap-5 items-center p-4">
+        <div className="flex flex-col gap-5 items-center p-4 gap-8">
           {artworkFeed.map((artwork) => (
             <ArtworkFeedCard key={artwork._id} artwork={artwork} />
           ))}
