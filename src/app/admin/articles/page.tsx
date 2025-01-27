@@ -1,7 +1,6 @@
 import React from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
-// import { CreateArticleForm } from "@/components/forms/CreateArticleForm";
 // import other forms...
 
 export default function ArticlesPage() {

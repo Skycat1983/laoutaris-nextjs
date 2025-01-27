@@ -4,10 +4,10 @@ import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
 import Searchbar from "../common/inputs/Searchbar";
 import NavBar from "../navBar/NavBar";
 
-const Header = () => {
+const Header = ({ className }: { className?: string }) => {
   return (
     <>
-      <header className="fixed top-0 z-10 w-full bg-white">
+      <header className={`fixed top-0 z-10 w-full bg-white ${className}`}>
         <NavBar />
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">

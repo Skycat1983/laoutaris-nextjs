@@ -37,13 +37,14 @@ export default async function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      {/* <body> */}
-      <body className="pt-[130px] sm:pt-[210px] md:pt-[200px] lg:pt-[140px] bg-whitish">
+      <body className="bg-whitish">
         <SessionContextProvider session={session}>
           <GlobalFeaturesProvider>
             <Modal />
-            <Header />
-            <main className="flex flex-col">{children}</main>
+            <Header className="fixed top-0 left-0 right-0 z-50" />
+            <main className="mt-[130px] sm:mt-[210px] md:mt-[200px] lg:mt-[140px] min-h-[calc(100vh-130px)] flex flex-col">
+              {children}
+            </main>
             <Footer />
           </GlobalFeaturesProvider>
         </SessionContextProvider>

@@ -13,11 +13,17 @@ export function CreateArtworkWithUpload() {
 
   const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
     try {
-      if (!result.info || typeof result.info !== "object") {
+      if (
+        !result.info ||
+        typeof result.info !== "object" ||
+        !result.info.colors
+      ) {
         throw new Error("Invalid upload result");
       }
 
-      const transformedInfo = cloudinaryResponseToArtworkImageData(result.info);
+      const transformedInfo = cloudinaryResponseToArtworkImageData(
+        result.info as CloudinaryUploadInfo
+      );
       setUploadInfo(transformedInfo);
     } catch (error) {
       console.error("Failed to process upload result:", error);
@@ -28,26 +34,26 @@ export function CreateArtworkWithUpload() {
     setUploadInfo(null);
   };
 
+  const label = uploadInfo
+    ? "✓ Image uploaded successfully"
+    : "Please upload an image to continue";
+
   return (
-    <div className="flex flex-col w-full bg-blue-100">
-      {!uploadInfo ? (
-        <div className="flex flex-col items-center gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
-          <UploadButton onUploadSuccess={handleUploadSuccess} />
-          <div className="text-center text-gray-500">
-            Please upload an image to continue
+    <>
+      <div className="flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+        {!uploadInfo && (
+          <div className="flex flex-row w-full justify-center">
+            <div className="w-[100px]">
+              <UploadButton onUploadSuccess={handleUploadSuccess} />
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
-          <div className="text-sm text-gray-500">
-            ✓ Image uploaded successfully
-          </div>
-          <CreateArtworkForm
-            uploadInfo={uploadInfo}
-            onSuccess={handleFormSuccess}
-          />
-        </div>
-      )}
-    </div>
+        )}
+        <div className="text-center text-gray-500">{label}</div>
+        <CreateArtworkForm
+          uploadInfo={uploadInfo}
+          onSuccess={handleFormSuccess}
+        />
+      </div>
+    </>
   );
 }

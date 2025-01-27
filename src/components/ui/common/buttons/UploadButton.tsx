@@ -14,6 +14,7 @@ interface UploadButtonProps {
 
 const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
   const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
+    console.log("result in UploadButton", result);
     onUploadSuccess(result);
   };
 

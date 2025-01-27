@@ -21,7 +21,7 @@ export function AdminSidebar() {
   const myh2 = "text-xl font-archivo px-8 bg-whitish";
 
   return (
-    <div className="col-span-1 shadow-xl">
+    <div className="col-span-1 shadow-xl ">
       <div className="flex flex-col text-left m-8 gap-5">
         {sidebarItems.map((item) => (
           <Link key={item.href} href={item.href}>
