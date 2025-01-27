@@ -76,6 +76,8 @@ const LargeScaleWorks = () => {
         width={slide.width}
         className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[210px] cover z-0"
         alt="Image of a large scale artwork"
+        quality={100}
+        priority={true}
       />
       <RadialGradientOverlay />
       <div

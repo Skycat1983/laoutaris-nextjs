@@ -27,34 +27,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
-
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  decade: z.enum([
-    "1950s",
-    "1960s",
-    "1970s",
-    "1980s",
-    "1990s",
-    "2000s",
-    "2010s",
-    "2020s",
-  ]),
-  artstyle: z.enum(["abstract", "semi-abstract", "figurative"]),
-  medium: z.enum([
-    "oil",
-    "acrylic",
-    "paint",
-    "watercolour",
-    "pastel",
-    "pencil",
-    "charcoal",
-    "ink",
-    "sand",
-  ]),
-  surface: z.enum(["paper", "canvas", "wood", "film"]),
-  featured: z.boolean().default(false),
-});
+import { CreateArtworkFormSchema } from "@/lib/server/schemas/formSchemas";
+import { revalidatePath } from "next/cache";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;
@@ -66,14 +40,14 @@ export function CreateArtworkForm({
   onSuccess,
 }: CreateArtworkFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof CreateArtworkFormSchema>>({
+    resolver: zodResolver(CreateArtworkFormSchema),
     defaultValues: {
       featured: false,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof CreateArtworkFormSchema>) {
     if (!uploadInfo) return;
     setIsSubmitting(true);
 
@@ -84,22 +58,21 @@ export function CreateArtworkForm({
       });
 
       console.log("response", response);
-
-      // Reset form with explicit undefined values (except featured)
+      // Revalidate the admin artwork page
+      revalidatePath("/admin/artwork");
+      onSuccess();
+    } catch (error) {
+      console.error("Form submission failed:", error);
+    } finally {
+      setIsSubmitting(false);
       form.reset({
-        title: undefined,
+        title: "",
         decade: undefined,
         artstyle: undefined,
         medium: undefined,
         surface: undefined,
         featured: false,
       });
-
-      onSuccess();
-    } catch (error) {
-      console.error("Form submission failed:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 

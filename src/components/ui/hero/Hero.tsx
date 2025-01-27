@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/hero/carousel";
 import LargeScaleWorks from "./LargeScaleWorks";
-import FamilyFavourites from "./slides/FamilyFavourites";
+import FamilyFavourites from "./FamilyFavourites";
 
 const Hero = () => {
   return (

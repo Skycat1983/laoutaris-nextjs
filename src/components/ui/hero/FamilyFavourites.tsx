@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { DimmedOverlay } from "../Overlays";
+import { DimmedOverlay } from "./Overlays";
 
 const FamilyFavourites = () => {
   const slide = {
@@ -46,6 +46,8 @@ const FamilyFavourites = () => {
         width={slide.width}
         className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[250px] cover z-0"
         alt="Image of a landscape painting"
+        quality={100}
+        priority={true}
       />
       <div
         className="absolute top-0 left-0 w-full h-full grid grid-cols-12 z-0"
