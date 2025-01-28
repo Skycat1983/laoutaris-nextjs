@@ -22,9 +22,9 @@ export function AdminCrudTabs({
   deleteComponent,
 }: AdminCrudTabsProps) {
   return (
-    <div>
+    <div className="">
       <Tabs defaultValue="create">
-        <TabsList>
+        <TabsList className="mb-10">
           <div className="flex flex-row gap-10 border-greyish/50">
             <TabsTrigger
               value="create"

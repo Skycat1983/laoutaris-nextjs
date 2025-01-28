@@ -23,19 +23,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { DatePicker } from "../shadcn/DatePicker";
 import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
-
-// const blogFormSchema = z.object({
-//   title: z.string().min(2, "Title must be at least 2 characters"),
-//   subtitle: z.string().min(2, "Subtitle must be at least 2 characters"),
-//   summary: z.string().min(10, "Summary must be at least 10 characters"),
-//   text: z.string().min(50, "Blog text must be at least 50 characters"),
-//   imageUrl: z.string().url("Please enter a valid URL"),
-//   tags: z.string().transform((str) => str.split(",").map((tag) => tag.trim())),
-//   featured: z.boolean().default(false),
-//   displayDate: z.date({
-//     required_error: "Please select a date",
-//   }),
-// });
+import { handleBlogUpload } from "@/lib/server/blog/use_cases/handleBlogUpload";
 
 export function CreateBlogForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +38,7 @@ export function CreateBlogForm() {
       summary: "",
       text: "",
       imageUrl: "",
-      tags: [],
+      //   tags: "",
       featured: false,
       displayDate: new Date(),
     },
@@ -59,30 +47,19 @@ export function CreateBlogForm() {
   async function onSubmit(values: z.infer<typeof CreateBlogFormSchema>) {
     try {
       setIsSubmitting(true);
+      console.log("2. About to call handleBlogUpload");
 
-      const response = await fetch("/api/admin/blog/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...values,
-          displayDate: new Date(),
-          slug: values.title.toLowerCase().replace(/\s+/g, "-"),
-        }),
+      const response = await handleBlogUpload({
+        formData: values,
       });
 
-      console.log("response in create blog form", response);
-
-      if (!response.ok) {
-        throw new Error("Failed to create blog");
-      }
-
+      console.log("3. Got response from handleBlogUpload:", response);
       form.reset();
       router.refresh();
     } catch (error) {
-      console.error("Error creating blog:", error);
+      console.error("4. Error in form submission:", error);
     } finally {
+      console.log("5. Submission process completed");
       setIsSubmitting(false);
     }
   }
@@ -94,10 +71,21 @@ export function CreateBlogForm() {
   };
 
   return (
-    <ScrollArea className="h-[calc(100vh-500px)]">
+    <ScrollArea className="h-[calc(100vh-100px)]">
       <div className="grid grid-cols-2 gap-4 w-full p-4">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(
+              (data) => {
+                console.log("Validation successful, calling onSubmit");
+                onSubmit(data);
+              },
+              (errors) => {
+                console.error("Validation errors:", errors);
+              }
+            )}
+            className="space-y-8"
+          >
             <FormField
               control={form.control}
               name="displayDate"
@@ -206,7 +194,7 @@ export function CreateBlogForm() {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="tags"
               render={({ field }) => (
@@ -224,7 +212,7 @@ export function CreateBlogForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               control={form.control}
@@ -247,7 +235,11 @@ export function CreateBlogForm() {
               )}
             />
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              onClick={() => console.log("Button clicked")}
+            >
               {isSubmitting ? "Creating..." : "Create Blog"}
             </Button>
           </form>

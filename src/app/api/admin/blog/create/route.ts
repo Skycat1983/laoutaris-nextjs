@@ -3,12 +3,14 @@ import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  console.log("1. Blog create route called");
   try {
     const body = await request.json();
 
     const validatedData = CreateBlogFormSchema.parse(body);
 
     const result = await createBlogEntry(validatedData);
+    console.log("result in create route", result);
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error in blog create route:", error);

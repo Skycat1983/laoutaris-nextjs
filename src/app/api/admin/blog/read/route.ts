@@ -4,10 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const blogs = await BlogModel.find({})
-      .sort({ createdAt: -1 })
+      .sort({ displayDate: -1 })
       .limit(5)
       .lean()
       .exec();
+
+    console.log("blogs", blogs);
 
     return NextResponse.json(blogs);
   } catch (error) {

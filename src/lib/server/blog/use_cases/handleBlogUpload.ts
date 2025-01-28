@@ -2,19 +2,19 @@ import { z } from "zod";
 import { CreateBlogFormSchema } from "../../schemas/formSchemas";
 import { postBlog } from "../../admin/data-fetching/postBlog";
 
-export async function handleBlogUpload(
-  formData: z.infer<typeof CreateBlogFormSchema>
-) {
-  const blogData = {
-    title: formData.title,
-    subtitle: formData.subtitle,
-    summary: formData.summary,
-    text: formData.text,
-    imageUrl: formData.imageUrl,
-    tags: formData.tags,
-    featured: formData.featured,
-    displayDate: formData.displayDate,
-  };
+interface BlogUploadParams {
+  formData: z.infer<typeof CreateBlogFormSchema>;
+}
 
-  return await postBlog({ blogData });
+export async function handleBlogUpload({ formData }: BlogUploadParams) {
+  console.log("6. handleBlogUpload called with:", formData);
+  try {
+    console.log("7. About to call postBlog");
+    const response = await postBlog({ blogData: formData });
+    console.log("8. Got response from postBlog:", response);
+    return response;
+  } catch (error) {
+    console.error("9. Error in handleBlogUpload:", error);
+    throw error;
+  }
 }

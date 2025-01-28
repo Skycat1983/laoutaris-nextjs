@@ -12,8 +12,8 @@ export interface DBBlogEntry extends Document {
   featured: boolean;
   pinned: boolean;
   tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const blogSchema = new mongoose.Schema<DBBlogEntry>(
@@ -35,7 +35,7 @@ const blogSchema = new mongoose.Schema<DBBlogEntry>(
     tags: [{ type: String }],
   },
   {
-    timestamps: true, // This adds createdAt and updatedAt automatically
+    timestamps: true,
   }
 );
 

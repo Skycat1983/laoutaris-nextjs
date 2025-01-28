@@ -22,6 +22,7 @@ export async function createBlogEntry(
 
     const newBlogEntry = new BlogModel(enrichedBlogData);
     await newBlogEntry.save();
+    console.log("Saved blog entry:", newBlogEntry);
     return { success: true, blogEntry: newBlogEntry };
   } catch (error) {
     console.error("Error creating blog entry:", error);
