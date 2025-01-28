@@ -24,7 +24,7 @@ const sidebarItems = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const myh2 =
-    "text-xl font-archivo font-medium px-6 bg-whitish subheading text-neutral-700";
+    "text-xl font-archivo font-medium px-2 bg-whitish subheading text-neutral-700 hidden lg:block md:px-4 lg:px-6";
 
   return (
     <div className="col-span-1 shadow-xl">

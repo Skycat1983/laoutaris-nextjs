@@ -15,7 +15,7 @@ export async function AdminContentLayout({
   // console.log("title in admin content layout", title);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-200/20">
       <div className="col-span-2 bg-greyish/10 hover:bg-whitish flex flex-col">
         <div className="flex flex-col p-4">
           <div className="flex flex-row">
@@ -26,7 +26,7 @@ export async function AdminContentLayout({
           {children}
         </div>
       </div>
-      <div className="hidden lg:block">{feedComponent}</div>
+      <div className="">{feedComponent}</div>
     </div>
   );
 }

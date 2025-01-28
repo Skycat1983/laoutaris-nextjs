@@ -90,7 +90,7 @@ export function CreateBlogForm() {
               control={form.control}
               name="displayDate"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Display Date</FormLabel>
                   <FormControl>
                     <DatePicker date={field.value} setDate={field.onChange} />
@@ -194,26 +194,6 @@ export function CreateBlogForm() {
               )}
             />
 
-            {/* <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tags</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter tags separated by commas"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Example: art, painting, modern, abstract
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
             <FormField
               control={form.control}
               name="featured"
@@ -252,10 +232,10 @@ export function CreateBlogForm() {
             alt="Blog post image"
             width={400}
             height={400}
-            className="object-contain rounded-lg"
+            className="object-contain rounded-lg hidden lg:block"
           />
         ) : (
-          <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+          <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hidden lg:block">
             <p className="text-gray-400">Image preview will appear here</p>
           </div>
         )}

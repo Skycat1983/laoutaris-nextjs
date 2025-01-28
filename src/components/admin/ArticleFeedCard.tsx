@@ -23,11 +23,12 @@ export function ArticleFeedCard({ article }: ArticleFeedCardProps) {
           className="w-full h-auto shadow-xl"
           loading="lazy"
         />
-        {/* Overlay with gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+        {/* overlay w gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 gap-2">
           <h2 className="text-white text-xl font-bold">{article.title}</h2>
-          <p className="text-white/80 text-sm">{article.subtitle}</p>
+          <p className="text-white/80 text-m">{article.subtitle}</p>
           <p className="text-white/80 text-sm">{article.summary}</p>
+          <p className="text-white/80 text-xs line-clamp-3">{article.text}</p>
         </div>
       </div>
       <button
