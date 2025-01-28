@@ -1,6 +1,7 @@
 import { BlogModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 
+// TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(request: NextRequest) {
   try {
     const blogs = await BlogModel.find({})

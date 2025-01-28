@@ -1,9 +1,10 @@
 import { getArtworkFeed } from "@/lib/server/admin/use_cases/getArtworkFeed";
 import { ArtworkFeedCard } from "./ArtworkFeedCard";
 import { RefreshButton } from "./RefreshButton";
+import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
 
 export async function ArtworkFeed() {
-  const artworkFeed = await getArtworkFeed();
+  const artworkFeed: FrontendArtworkUnpopulated[] = await getArtworkFeed();
 
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">

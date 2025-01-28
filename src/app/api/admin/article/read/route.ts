@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
     const articles = await ArticleModel.find({})
       .sort({ createdAt: -1 })
       .limit(5)
+      .populate("artwork")
       .lean();
 
     return NextResponse.json(articles);
