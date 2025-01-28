@@ -1,12 +1,20 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
 import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
-// import other forms...
+import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
 
-export default function ArticlesPage() {
+export default function AdminArticlesPage() {
+  console.log("artciles");
   return (
-    <AdminContentLayout title="Articles" feedComponent={<ArticleFeed />}>
+    <AdminContentLayout
+      title="Articles"
+      feedComponent={
+        <Suspense fallback={<FeedSkeleton />}>
+          <ArticleFeed />
+        </Suspense>
+      }
+    >
       <AdminCrudTabs
         createComponent={<div>Create Article</div>}
         readComponent={<div>Read Article</div>}

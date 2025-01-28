@@ -9,15 +9,16 @@ import BlogIcon from "@/components/ui/common/icons/BlogIcon";
 import LogoutIcon from "@/components/ui/common/icons/LogoutIcon";
 
 const sidebarItems = [
-  { label: "Users", icon: <User />, href: "/admin/users" },
   { label: "Articles", icon: <FileText />, href: "/admin/articles" },
   { label: "Artwork", icon: <ImageIcon />, href: "/admin/artwork" },
+  { label: "Blogs", icon: <BlogIcon />, href: "/admin/blogs" },
+
   {
     label: "Collections",
     icon: <CollectionIcon />,
     href: "/admin/collections",
   },
-  { label: "Blogs", icon: <BlogIcon />, href: "/admin/blogs" },
+  { label: "Users", icon: <User />, href: "/admin/users" },
 ];
 
 export function AdminSidebar() {

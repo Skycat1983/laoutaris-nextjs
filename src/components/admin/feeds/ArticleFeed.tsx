@@ -10,7 +10,6 @@ export async function ArticleFeed() {
         <h1 className="text-4xl font-archivo font-semibold p-8">Feed</h1>
         <RefreshButton />
       </div>
-      {/* Display article feed items */}
       {articleFeed.map((article) => (
         <div key={article._id}>
           <h2>{article.title}</h2>

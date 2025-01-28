@@ -276,17 +276,6 @@ export function CreateArtworkForm({
             <p className="text-gray-400">Image will appear here after upload</p>
           </div>
         )}
-        {/* {uploadInfo && (
-          <div className="flex justify-center">
-            <Image
-              src={uploadInfo.secure_url}
-              alt="Uploaded artwork"
-              width={uploadInfo.pixelWidth}
-              height={uploadInfo.pixelHeight}
-              className="object-contain rounded-lg"
-            />
-          </div>
-        )} */}
       </div>
     </ScrollArea>
   );
