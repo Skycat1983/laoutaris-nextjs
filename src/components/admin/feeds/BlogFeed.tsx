@@ -23,8 +23,3 @@ export async function BlogFeed() {
     </div>
   );
 }
-
-// <div key={i}>
-//   <h2>{blog.title}</h2>
-//   <p>{blog.subtitle}</p>
-// </div>
