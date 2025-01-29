@@ -13,3 +13,25 @@ DATA-FETCHING / ROUTES:
 STATUS CODES:
 
 - add them to the api responses.
+
+---
+
+DELETE ARTWORK / BLOG ENTRY / ARTICLE
+
+<!-- * different outcomes required for each -->
+
+ARTWORK:
+
+- the cloudinary image should be deleted
+
+ARTICLE:
+
+- the cloudinary image should NOT be deleted
+
+DELETE BLOG ENTRY
+
+<!-- ! factors to consider ! -->
+
+- the cloudinary image SOMETIMES should be deleted
+(the artwork image might be used elsewhere OR we might have added the image just for the blog entry)
+<!-- ? solution ? : use objectIds of artwork instead of url. this might require that artwork has a kv pair of isArtwork, to differentiate between assets that feature on app but not in collections/artwork searches -->
