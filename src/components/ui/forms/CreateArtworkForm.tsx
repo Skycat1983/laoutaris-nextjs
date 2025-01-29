@@ -78,7 +78,7 @@ export function CreateArtworkForm({
 
   return (
     <ScrollArea className="h-[calc(100vh-500px)]">
-      <div className="grid grid-cols-2 gap-4 w-full p-4">
+      <div className="grid grid-cols-1  gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -269,10 +269,10 @@ export function CreateArtworkForm({
             alt="Uploaded artwork"
             width={uploadInfo.pixelWidth}
             height={uploadInfo.pixelHeight}
-            className="object-contain rounded-lg"
+            className="object-contain w-full rounded-lg hidden lg:block"
           />
         ) : (
-          <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+          <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hidden lg:block">
             <p className="text-gray-400">Image will appear here after upload</p>
           </div>
         )}

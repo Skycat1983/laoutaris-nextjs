@@ -10,6 +10,9 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const identifierKey = searchParams.get("identifierKey");
   const identifierValue = searchParams.get("identifierValue");
   const fieldsParam = searchParams.get("fields");
+  const single = searchParams.get("single");
+
+  console.log("in GET /api/blog");
 
   // Validate presence of identifierKey and identifierValue
   if (!identifierKey || !identifierValue) {
@@ -32,8 +35,14 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
   };
 
   try {
-    // Build the Mongoose query
-    let mongooseQuery = BlogModel.find(query).sort({ updatedAt: 1 }).lean();
+    // let mongooseQuery = BlogModel.find(query).sort({ updatedAt: 1 }).lean();
+
+    let mongooseQuery =
+      single === "true"
+        ? BlogModel.findOne(query) //`findOne` when expecting a single result
+        : BlogModel.find(query); // `find` for multiple results
+
+    mongooseQuery = mongooseQuery.sort({ updatedAt: 1 }).lean();
 
     if (fields) {
       mongooseQuery = mongooseQuery.select(fields);
@@ -42,7 +51,9 @@ export const GET = async (req: NextRequest): Promise<NextResponse> => {
     // Execute the query
     const blogEntries = await mongooseQuery;
 
-    if (!blogEntries.length) {
+    console.log("blogEntries :>> ", blogEntries);
+
+    if (!blogEntries) {
       return NextResponse.json(
         {
           success: false,

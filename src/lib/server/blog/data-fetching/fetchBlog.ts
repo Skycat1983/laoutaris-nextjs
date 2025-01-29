@@ -1,6 +1,8 @@
+"use server";
+
 import { headers } from "next/headers";
 
-export async function fetchArtwork<T>(
+export async function fetchBlog<T>(
   identifierKey: string,
   identifierValue: string,
   fields?: string[]
@@ -15,14 +17,19 @@ export async function fetchArtwork<T>(
     queryParams.append("fields", fields.join(","));
   }
 
+  console.log("in fetchBlog :>> ");
+  console.log("queryParams :>> ", queryParams);
+
   try {
     const response = await fetch(
-      `http://localhost:3000/api/artwork?${queryParams.toString()}`,
+      `http://localhost:3000/api/blog?${queryParams.toString()}`,
       {
         method: "GET",
         headers: headers(),
       }
     );
+
+    console.log("response :>> ", response);
 
     const result = await response.json();
 
@@ -32,7 +39,7 @@ export async function fetchArtwork<T>(
 
     return { success: true, data: result.data as T };
   } catch (error) {
-    console.error("Error fetching artwork:", error);
-    return { success: false, message: "Failed to fetch artwork" };
+    console.error("Error fetching blog:", error);
+    return { success: false, message: "Failed to fetch blog" };
   }
 }

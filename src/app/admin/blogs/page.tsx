@@ -5,6 +5,7 @@ import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CreateBlogForm } from "@/components/ui/forms/CreateBlogForm";
 import { DeleteBlogEntry } from "@/components/admin/crud/DeleteBlogEntry";
+import { UpdateBlogEntry } from "@/components/admin/crud/UpdateBlogEntry";
 
 export default function AdminBlogsPage() {
   return (
@@ -19,7 +20,7 @@ export default function AdminBlogsPage() {
       <AdminCrudTabs
         createComponent={<CreateBlogForm />}
         readComponent={<div>Read Blog</div>}
-        updateComponent={<div>Update Blog</div>}
+        updateComponent={<UpdateBlogEntry />}
         deleteComponent={<DeleteBlogEntry />}
       />
     </AdminContentLayout>

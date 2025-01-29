@@ -51,7 +51,7 @@ export function AdminSidebar() {
             </Link>
           );
         })}
-        <div className="flex flex-row bg-white">
+        <div className="flex flex-row">
           <HorizontalDivider />
         </div>
         <div className="flex flex-row bg-whitish items-center cursor-pointer hover:bg-slate-50 p-2 rounded-full transition-all duration-200">

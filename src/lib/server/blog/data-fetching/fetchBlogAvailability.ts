@@ -9,7 +9,7 @@ export async function fetchBlogAvailability(
       section
     )}`,
     {
-      cache: "no-cache",
+      // cache: "no-cache",
       method: "GET",
       headers: headers(),
     }

@@ -1,78 +1,96 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Form,
-  FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormControl,
   FormMessage,
-} from "../shadcn/form";
-import { Input } from "../shadcn/input";
-import { Textarea } from "../shadcn/textarea";
-import { Checkbox } from "../shadcn/checkbox";
-import { Button } from "../shadcn/button";
+  FormDescription,
+} from "@/components/ui/shadcn/form";
+import { Input } from "@/components/ui/shadcn/input";
+import { Textarea } from "@/components/ui/shadcn/textarea";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { DatePicker } from "../shadcn/DatePicker";
-import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
-import { handleBlogUpload } from "@/lib/server/blog/use_cases/handleBlogUpload";
+import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 
-export function CreateBlogForm() {
+// Define the schema for updating a blog entry
+const updateBlogSchema = z.object({
+  displayDate: z.date(),
+  imageUrl: z.string().url("Invalid URL"),
+  title: z.string().min(1, "Title is required"),
+  subtitle: z.string().min(1, "Subtitle is required"),
+  summary: z.string().min(1, "Summary is required"),
+  text: z.string().min(1, "Blog content is required"),
+  featured: z.boolean(),
+  tags: z.array(z.string()).optional(),
+});
+
+type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;
+
+export const UpdateBlogForm = ({
+  blogInfo,
+}: {
+  blogInfo: FrontendBlogEntryUnpopulated;
+}) => {
+  const [imagePreview, setImagePreview] = useState(blogInfo.imageUrl);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof CreateBlogFormSchema>>({
-    resolver: zodResolver(CreateBlogFormSchema),
+  const form = useForm<UpdateBlogFormValues>({
+    resolver: zodResolver(updateBlogSchema),
     defaultValues: {
-      title: "",
-      subtitle: "",
-      summary: "",
-      text: "",
-      imageUrl: "",
-      //   tags: "",
-      featured: false,
-      displayDate: new Date(),
+      displayDate: new Date(blogInfo.displayDate),
+      imageUrl: blogInfo.imageUrl,
+      title: blogInfo.title,
+      subtitle: blogInfo.subtitle,
+      summary: blogInfo.summary,
+      text: blogInfo.text,
+      featured: blogInfo.featured,
+      tags: blogInfo.tags,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof CreateBlogFormSchema>) {
+  const handleImageUrlBlur = (url: string) => {
+    setImagePreview(url);
+  };
+
+  async function onSubmit(data: UpdateBlogFormValues) {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      console.log("2. About to call handleBlogUpload");
+      console.log("data in update blog form:>> ", data);
+      //! we need to implement the update blog entry API route
+      //   const response = await fetch(`/api/admin/blog/update?id=${blogInfo._id}`, {
+      //     method: "PUT", // or "PATCH"
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(data),
+      //   });
 
-      const response = await handleBlogUpload({
-        formData: values,
-      });
+      //   if (!response.ok) {
+      //     throw new Error("Failed to update blog entry");
+      //   }
 
-      console.log("3. Got response from handleBlogUpload:", response);
-      form.reset();
-      router.refresh();
+      //   const updatedBlog = await response.json();
+      //   console.log("Blog entry updated successfully:", updatedBlog);
     } catch (error) {
-      console.error("4. Error in form submission:", error);
+      console.error("Error updating blog entry:", error);
     } finally {
-      console.log("5. Submission process completed");
       setIsSubmitting(false);
     }
   }
 
-  const handleImageUrlBlur = (url: string) => {
-    if (url && url.match(/^https?:\/\/.+/)) {
-      setImagePreview(url);
-    }
-  };
-
   return (
     <ScrollArea className="h-[calc(100vh-100px)]">
-      <div className="grid grid-cols-1  gap-12 w-full lg:grid-cols-2 p-4">
+      <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(
@@ -215,12 +233,8 @@ export function CreateBlogForm() {
               )}
             />
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              onClick={() => console.log("Button clicked")}
-            >
-              {isSubmitting ? "Creating..." : "Create Blog"}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Updating..." : "Update Blog"}
             </Button>
           </form>
         </Form>
@@ -242,4 +256,4 @@ export function CreateBlogForm() {
       </div>
     </ScrollArea>
   );
-}
+};

@@ -2,8 +2,10 @@ import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { RefreshButton } from "./RefreshButton";
 import { getBlogFeed } from "@/lib/server/admin/use_cases/getBlogFeed";
 import { BlogFeedCard } from "./BlogFeedCard";
+import { delay } from "@/utils/debug";
 
 export async function BlogFeed() {
+  await delay(2000);
   const blogFeed: FrontendBlogEntryUnpopulated[] = await getBlogFeed();
 
   return (
