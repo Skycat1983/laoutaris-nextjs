@@ -9,9 +9,11 @@ export async function FeedSkeleton() {
 
       <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
         <div className="flex flex-col gap-5 items-center p-4 gap-8">
-          {Array(5).map((_, i) => (
-            <Skeleton key={i} className="w-full h-[200px]" />
-          ))}
+          {Array(5)
+            .fill(null)
+            .map((_, i) => {
+              return <Skeleton key={i} className="w-[250px] h-[300px]" />;
+            })}
         </div>
       </div>
     </div>

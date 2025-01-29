@@ -3,8 +3,10 @@ import { RefreshButton } from "./RefreshButton";
 import { BlogFeedCard } from "./BlogFeedCard";
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import { ArticleFeedCard } from "../ArticleFeedCard";
+import { delay } from "@/utils/debug";
 
 export async function ArticleFeed() {
+  await delay(2000);
   const articleFeed: FrontendArticleWithArtwork[] = await getArticleFeed();
 
   return (
