@@ -43,8 +43,7 @@ export function DeleteBlogEntry() {
         throw new Error("Failed to delete blog entry");
       }
 
-      // Revalidate the feed after successful deletion
-      //   await revalidateArtworkFeed();
+      // revalidate the feed after successful deletion
       form.reset();
       console.log("Blog entry deleted successfully");
     } catch (error) {
@@ -54,7 +53,7 @@ export function DeleteBlogEntry() {
 
   return (
     <div className="p-4 space-y-4">
-      <h2 className="text-2xl font-bold">Delete Blog Entry</h2>
+      {/* <h2 className="text-2xl font-bold">Delete Blog Entry</h2> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

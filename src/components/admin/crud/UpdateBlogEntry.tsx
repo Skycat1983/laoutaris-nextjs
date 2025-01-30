@@ -16,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
 import { UpdateBlogForm } from "@/components/ui/forms/UpdateBlogForm";
-import { getBlogById } from "@/lib/server/admin/use_cases/getBlogById";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -36,8 +35,8 @@ export const UpdateBlogEntry = () => {
     },
   });
 
+  // TODO: Where- if anywehre- could/should funcs like this be moved to?
   async function onSubmit(data: ReadFormValues) {
-    console.log("data :>> ", data);
     try {
       const response = await fetch(
         `/api/blog?identifierKey=_id&identifierValue=${encodeURIComponent(
@@ -65,91 +64,44 @@ export const UpdateBlogEntry = () => {
 
   return (
     <>
-      <div className="flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
-        {!blogInfo && (
-          <div className="flex flex-row w-full justify-center">
-            <div className="w-[100px]">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                  // action={}
-                >
-                  <FormField
-                    control={form.control}
-                    name="objectId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Object ID</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter Blog ID" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    variant="destructive"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting ? "Reading..." : "Find Blog"}
-                  </Button>
-                </form>
-              </Form>
-            </div>
-          </div>
-        )}
-        <div className="text-center text-gray-500">{label}</div>
-        {blogInfo && <UpdateBlogForm blogInfo={blogInfo} />}
-      </div>
+      {/* <div className="bg-red-100 flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg"> */}
+      {!blogInfo && (
+        // <div className="flex flex-row w-full justify-start">
+        <div className="p-4 space-y-4">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+              // action={}
+            >
+              <FormField
+                control={form.control}
+                name="objectId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Object ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter Blog ID" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? "Reading..." : "Find Blog"}
+              </Button>
+            </form>
+          </Form>
+        </div>
+        // </div>
+      )}
+      <div className="text-center text-gray-500">{label}</div>
+      {blogInfo && <UpdateBlogForm blogInfo={blogInfo} />}
+      {/* </div> */}
     </>
   );
 };
-
-// async function onSubmit(data: ReadFormValues) {
-//   console.log("data :>> ", data);
-//   try {
-//     const blogEntry = await getBlogById(data.objectId);
-
-//     setBlogInfo(blogEntry);
-//     console.log("Blog entry read successfully:", blogEntry);
-//   } catch (error) {
-//     console.error("Error reading blog entry:", error);
-//   }
-// }
-
-// Fetch the blog entry using the provided objectId
-// const response = await fetch(`/api/admin/blog/read?id=${data.objectId}`, {
-//   method: "GET",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// if (!response.ok) {
-//   throw new Error("Failed to read blog entry");
-// }
-
-// const blogEntry = await response.json();
-
-// useEffect(() => {
-
-//   if (!blogId) {
-//     return;
-//   }
-
-//   const blogEntry = getBlogById(blogId);
-
-//   if (!blogEntry) {
-//     return;
-//   }
-
-//   setBlogInfo(blogEntry);
-//   console.log("Blog entry read successfully:", blogEntry);
-//   // first
-
-//   return () => {
-//     // second
-//   }
-// }, [blogId])

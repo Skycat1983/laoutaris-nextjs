@@ -4,7 +4,8 @@ QUERY PARAMS SECURITY ISSUES:
 
 - Current structure unsafe. Potentially exposes sensitive data
 - More robust, typical REST AIP endpoint structure would be beneficial.
-- BUT our flexible query param based fetches can be used in admin routes
+- BUT our flexible query param based fetches can be used in admin routes.
+- IDENTIFIER KEY AND VALUE WERE POINTLESS. could have just been key=value
 
 PEROJECT STRUCTURE:
 
