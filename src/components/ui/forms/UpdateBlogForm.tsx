@@ -67,20 +67,23 @@ export const UpdateBlogForm = ({
     try {
       console.log("data in update blog form:>> ", data);
       //! we need to implement the update blog entry API route
-      //   const response = await fetch(`/api/admin/blog/update?id=${blogInfo._id}`, {
-      //     method: "PUT", // or "PATCH"
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(data),
-      //   });
+      const response = await fetch(
+        `/api/admin/blog/update?_id=${blogInfo._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-      //   if (!response.ok) {
-      //     throw new Error("Failed to update blog entry");
-      //   }
+      if (!response.ok) {
+        throw new Error("Failed to update blog entry");
+      }
 
-      //   const updatedBlog = await response.json();
-      //   console.log("Blog entry updated successfully:", updatedBlog);
+      const updatedBlog = await response.json();
+      console.log("Blog entry updated successfully:", updatedBlog);
     } catch (error) {
       console.error("Error updating blog entry:", error);
     } finally {

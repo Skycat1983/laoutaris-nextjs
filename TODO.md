@@ -1,3 +1,11 @@
+<!-- !  PRIORITY ! -->
+
+QUERY PARAMS SECURITY ISSUES:
+
+- Current structure unsafe. Potentially exposes sensitive data
+- More robust, typical REST AIP endpoint structure would be beneficial.
+- BUT our flexible query param based fetches can be used in admin routes
+
 PEROJECT STRUCTURE:
 
 - Flesh out the 'actions' folder of each server folder. The actions relate to direct database interactions and mutations.
