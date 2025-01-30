@@ -1,17 +1,12 @@
 import HexColorIcon from "@/components/ui/common/icons/HexColorIcon";
 import TailwindColorIcon from "@/components/ui/common/icons/TailwindColorIcon";
+import { CloudinaryColor, HexColor } from "@/lib/types/artworkTypes";
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
-
-export interface HexColor {
-  color: string;
-  percentage: number;
-  _id: string;
-}
 
 interface HexColorPaletteProps {
   colors: HexColor[];
@@ -31,20 +26,14 @@ const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">
         <div className="flex flex-row flex-wrap gap-2">
-          {colors.map((hexColor) => (
-            <HexColorIcon key={hexColor._id} hexColor={hexColor} />
+          {colors.map((hexColor, i) => (
+            <HexColorIcon key={i} hexColor={hexColor} />
           ))}
         </div>
       </DisclosurePanel>
     </Disclosure>
   );
 };
-
-export interface CloudinaryColor {
-  color: string;
-  percentage: number;
-  _id: string;
-}
 
 interface CloudinaryColorPaletteProps {
   colors: CloudinaryColor[];
@@ -67,11 +56,8 @@ const CloudinaryColorPalette: React.FC<CloudinaryColorPaletteProps> = ({
       </DisclosureButton>
       <DisclosurePanel className="text-gray-500">
         <div className="flex flex-row flex-wrap gap-2">
-          {colors.map((cloudinaryColor) => (
-            <TailwindColorIcon
-              key={cloudinaryColor._id}
-              color={cloudinaryColor.color}
-            />
+          {colors.map((cloudinaryColor, i) => (
+            <TailwindColorIcon key={i} color={cloudinaryColor.color} />
           ))}
         </div>
       </DisclosurePanel>
