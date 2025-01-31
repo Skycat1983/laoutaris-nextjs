@@ -9,6 +9,8 @@ export async function ArticleFeed() {
   await delay(2000);
   const articleFeed: FrontendArticleWithArtwork[] = await getArticleFeed();
 
+  console.log("articleFeed :>> ", articleFeed);
+
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">
       <div className="flex flex-row items-center pt-8 border-b-2">

@@ -1,3 +1,5 @@
+"use server";
+
 import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { fetchBlogFeed } from "../data-fetching/fetchBlogFeed";
 
