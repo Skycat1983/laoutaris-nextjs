@@ -15,7 +15,7 @@ export interface FrontendCollectionFull {
   updatedAt: Date;
 }
 
-export interface FrontendCollectionMinimal {
+export interface FrontendCollectionUnpopulated {
   _id: string;
   title: string;
   subtitle: string;

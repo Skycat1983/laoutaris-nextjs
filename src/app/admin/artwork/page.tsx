@@ -22,7 +22,7 @@ export default function AdminArtworkPage() {
     >
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
-        readComponent={<div className="h-[2000px]">Read Artwork</div>}
+        readComponent={<div>Read Artwork</div>}
         updateComponent={<UpdateArtwork />}
         deleteComponent={<DeleteArtwork />}
       />

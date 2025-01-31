@@ -53,9 +53,13 @@ export const UpdateArtwork = () => {
       setArtInfo(result.data);
       console.log("Artwork read successfully:", result.data);
     } catch (error) {
-      console.error("Error reading blog entry:", error);
+      console.error("Error reading artwork entry:", error);
     }
   }
+
+  const handleFormSuccess = () => {
+    setArtInfo(null);
+  };
 
   const label = artInfo
     ? "✓ Artwork located"
@@ -63,44 +67,49 @@ export const UpdateArtwork = () => {
 
   return (
     <>
-      {/* <div className="bg-red-100 flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg"> */}
-      {!artInfo && (
-        // <div className="flex flex-row w-full justify-start">
-        <div className="p-4 space-y-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-              // action={}
-            >
-              <FormField
-                control={form.control}
-                name="objectId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Object ID</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter Blog ID" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="submit"
-                variant="destructive"
-                disabled={form.formState.isSubmitting}
+      <div className="bg-red-100 flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+        {!artInfo && (
+          // <div className="flex flex-row w-full justify-start">
+          <div className="p-4 space-y-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+                // action={}
               >
-                {form.formState.isSubmitting ? "Reading..." : "Find Blog"}
-              </Button>
-            </form>
-          </Form>
-        </div>
-        // </div>
-      )}
-      <div className="text-center text-gray-500">{label}</div>
-      {artInfo && <UpdateArtworkForm artworkInfo={artInfo} />}
-      {/* </div> */}
+                <FormField
+                  control={form.control}
+                  name="objectId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Object ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter Artwork ID" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? "Reading..." : "Find Artwork"}
+                </Button>
+              </form>
+            </Form>
+          </div>
+          // </div>
+        )}
+        <div className="text-center text-gray-500">{label}</div>
+        {artInfo && (
+          <UpdateArtworkForm
+            artworkInfo={artInfo}
+            onSuccess={handleFormSuccess}
+          />
+        )}
+      </div>
     </>
   );
 };

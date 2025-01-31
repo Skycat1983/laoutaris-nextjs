@@ -47,10 +47,10 @@ export const middleware = async (req: NextRequest) => {
     console.log("Middleware: Token", token);
     if (!token) {
       console.log("Middleware: No token found, redirecting to homepage");
-      return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
     if (!isAdmin) {
-      console.log("Middleware: User is not admin, redirecting to home page");
+      console.log("Middleware: User is not admin, redirecting to homepage");
       return NextResponse.redirect(new URL("/", req.url));
     }
     console.log("Middleware: access permitted to /api/admin route");

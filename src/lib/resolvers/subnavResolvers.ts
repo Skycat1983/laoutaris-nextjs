@@ -1,5 +1,5 @@
 import { buildUrl } from "@/utils/buildUrl";
-import { FrontendCollectionMinimal } from "../types/collectionTypes";
+import { FrontendCollectionUnpopulated } from "../types/collectionTypes";
 import { FrontendArticleUnpopulated } from "../types/articleTypes";
 
 export interface SubNavBarLink {
@@ -23,7 +23,7 @@ export const articleToSubNavLink = (
 });
 
 export type SubNavCollectionFields = Pick<
-  FrontendCollectionMinimal,
+  FrontendCollectionUnpopulated,
   "title" | "slug" | "artworks"
 >;
 

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import {
   Form,
@@ -59,18 +58,19 @@ const updateArtworkSchema = z.object({
     required_error: "Surface is required",
   }),
   featured: z.boolean(),
-  imageUrl: z.string().url("Invalid URL"),
+  // imageUrl: z.string().url("Invalid URL"),
 });
 
 type UpdateArtworkFormValues = z.infer<typeof updateArtworkSchema>;
 
 interface UpdateArtworkFormProps {
   artworkInfo: FrontendArtworkUnpopulated; // Define this type based on your data structure
-  //   onSuccess: () => void;
+  onSuccess: () => void;
 }
 
 export const UpdateArtworkForm = ({
   artworkInfo,
+  onSuccess,
 }: //   onSuccess,
 UpdateArtworkFormProps) => {
   console.log("artworkInfo :>> ", artworkInfo);
@@ -102,29 +102,29 @@ UpdateArtworkFormProps) => {
     setIsSubmitting(true);
     try {
       console.log("Submitting updated artwork data:", data);
-      //   const response = await fetch(
-      //     `/api/admin/artwork/update?_id=${artworkInfo._id}`,
-      //     {
-      //       method: "PATCH",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(data),
-      //     }
-      //   );
+      const response = await fetch(
+        `/api/admin/artwork/update?_id=${artworkInfo._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-      //   if (!response.ok) {
-      //     throw new Error("Failed to update artwork entry");
-      //   }
+      if (!response.ok) {
+        throw new Error("Failed to update artwork entry");
+      }
 
-      //   const updatedArtwork = await response.json();
-      //   console.log("Artwork entry updated successfully:", updatedArtwork);
+      const updatedArtwork = await response.json();
+      console.log("Artwork entry updated successfully:", updatedArtwork);
 
       // Optionally revalidate or refresh data
-      //   router.refresh();
+      // router.refresh();
 
       // Call the onSuccess callback
-      //   onSuccess();
+      onSuccess();
     } catch (error) {
       console.error("Error updating artwork entry:", error);
     } finally {
@@ -133,7 +133,7 @@ UpdateArtworkFormProps) => {
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh-100px)]">
+    <ScrollArea className="h-[calc(100vh-500px)]">
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form
@@ -303,7 +303,7 @@ UpdateArtworkFormProps) => {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="imageUrl"
               render={({ field }) => (
@@ -326,7 +326,7 @@ UpdateArtworkFormProps) => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               control={form.control}
