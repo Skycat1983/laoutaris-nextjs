@@ -6,14 +6,39 @@ export type FrontendArtwork =
   | FrontendArtworkWithWatcherlist
   | FrontendArtworkWithFavourited;
 
+export type Decade =
+  | "1950s"
+  | "1960s"
+  | "1970s"
+  | "1980s"
+  | "1990s"
+  | "2000s"
+  | "2010s"
+  | "2020s";
+
+export type ArtStyle = "abstract" | "semi-abstract" | "figurative";
+
+export type Medium =
+  | "oil"
+  | "acrylic"
+  | "paint"
+  | "watercolour"
+  | "pastel"
+  | "pencil"
+  | "charcoal"
+  | "ink"
+  | "sand";
+
+export type Surface = "paper" | "canvas" | "wood" | "film";
+
 export interface FrontendArtworkFull {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: number;
-  artstyle: string;
-  medium: string;
-  surface: string;
+  decade: Decade;
+  artstyle: ArtStyle;
+  medium: Medium;
+  surface: Surface;
   featured: boolean;
   watcherlist: FrontendUserFull[];
   favourited: FrontendUserFull[];
@@ -23,10 +48,14 @@ export interface FrontendArtworkUnpopulated {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: string;
-  artstyle: string;
-  medium: string;
-  surface: string;
+  decade: Decade;
+  artstyle: ArtStyle;
+  medium: Medium;
+  surface: Surface;
+  // decade: string;
+  // artstyle: string;
+  // medium: string;
+  // surface: string;
   featured: boolean;
   watcherlist: string[];
   favourited: string[];
@@ -36,11 +65,15 @@ export interface FrontendArtworkWithWatcherlist {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: string;
+  decade: Decade;
+  artstyle: ArtStyle;
+  medium: Medium;
+  surface: Surface;
+  // decade: string;
 
-  artstyle: string;
-  medium: string;
-  surface: string;
+  // artstyle: string;
+  // medium: string;
+  // surface: string;
   featured: boolean;
   watcherlist: FrontendUserFull[];
   favourited: string[];
@@ -50,11 +83,14 @@ export interface FrontendArtworkWithFavourited {
   _id: string;
   image: ArtworkImage;
   title: string;
-  decade: string;
-
-  artstyle: string;
-  medium: string;
-  surface: string;
+  decade: Decade;
+  artstyle: ArtStyle;
+  medium: Medium;
+  surface: Surface;
+  // decade: string;
+  // artstyle: string;
+  // medium: string;
+  // surface: string;
   featured: boolean;
   watcherlist: string[];
   favourited: FrontendUserFull[];

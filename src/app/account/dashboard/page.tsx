@@ -50,21 +50,3 @@ export default async function UserDashboard() {
     </main>
   );
 }
-
-// const userId = await getUserIdFromSession();
-
-// if (!userId) {
-//   redirect("http://localhost:3000");
-// }
-
-// console.log("session i dashboard", session);
-
-// const email = session.user.email;
-
-// // Fetch user data using Pick for type safety
-// const response = await fetchUser<FrontendUserFull>("email", email);
-
-// if (!response.success) {
-//   redirect("http://localhost:3000");
-// }
-// const { data } = response;

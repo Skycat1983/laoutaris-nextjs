@@ -1,92 +1,5 @@
 "use server";
 
-/**
- * @fileoverview
- * This Next.js server-side component handles the `/account/favourites/[artworkId]` route.
- *
- * - **Purpose:**
- *   The `FavouritedArtwork` component is responsible for fetching and rendering a specific artwork
- *   from a user's favourites list. It ensures that only authenticated users can access their
- *   favourited artworks and provides a seamless experience by displaying the artwork using the
- *   `ArtworkLayout` component.
- *
- * - **Project Structure:**
- *   - **Path Pattern:** `/account/favourites/[artworkId]`
- *   - **Behavior:**
- *     1. **Database Connection:**
- *        Establishes a connection to the MongoDB database using the `dbConnect` utility.
- *     2. **Session Retrieval:**
- *        Utilizes `getServerSession` from `next-auth` to retrieve the current user's session.
- *     3. **Authentication Validation:**
- *        Checks if the user is authenticated by verifying the presence of a valid session and user email.
- *        - **Unauthenticated Users:** Redirects to the homepage (`BASEURL`) if the session is invalid or missing.
- *     4. **Artwork Fetching:**
- *        Calls the `fetchUserFavourite` function to retrieve the specific artwork (`artworkId`)
- *        from the authenticated user's favourites.
- *     5. **Error Handling:**
- *        - **Fetch Failure:** Logs an error and redirects to the homepage if fetching the artwork fails.
- *     6. **Rendering:**
- *        Passes the fetched artwork data to the `ArtworkLayout` component for rendering.
- *
- * - **Error Handling:**
- *   - **Missing Parameters:**
- *     Validates the presence of necessary query parameters (`userKey`, `userValue`, `artworkId`).
- *     Returns a 400 Bad Request error if any are missing.
- *   - **Authentication Failure:**
- *     Redirects unauthenticated users to the homepage to prevent unauthorized access.
- *   - **Artwork Fetch Failure:**
- *     Logs detailed error messages and redirects to the homepage if the artwork cannot be retrieved.
- *   - **Internal Server Errors:**
- *     Catches and logs unexpected errors, returning a 500 Internal Server Error response.
- *
- * - **Dependencies:**
- *   - **Components:**
- *     - `ArtworkLayout`: Renders the artwork details in a structured layout.
- *   - **Utilities:**
- *     - `dbConnect`: Establishes a connection to the MongoDB database.
- *     - `fetchUserFavourite`: Fetches a specific artwork from the user's favourites.
- *     - `parseFields`: Parses and formats the fields to be selected during population.
- *     - `delay` (commented out): Intended for debugging purposes to simulate network delays.
- *   - **Authentication:**
- *     - `getServerSession`: Retrieves the current user's session.
- *     - `authOptions`: Configuration options for authentication.
- *   - **Configuration:**
- *     - `config`: Accesses configuration variables like `BASEURL`.
- *   - **Next.js Utilities:**
- *     - `redirect`: Performs server-side redirection to specified URLs.
- *
- * - **Notes:**
- *   - **Security:**
- *     Ensures that only authenticated users can access their favourites, preventing unauthorized access to artwork details.
- *   - **Performance:**
- *     - Utilizes `lean()` for faster Mongoose queries by returning plain JavaScript objects instead of Mongoose documents.
- *     - The commented-out `delay` function can be used during development to simulate loading states.
- *   - **Scalability:**
- *     Designed to easily accommodate additional functionalities, such as caching artwork dimensions to optimize rendering in `loading.tsx`.
- *   - **Data Integrity:**
- *     Assumes that each user has a unique and correctly formatted favourites list associated with their email address.
- *   - **Developer Notes:**
- *     - **TODO:** Implement caching for artwork dimensions to enhance user experience by providing accurate skeleton loaders during data fetching.
- *     - **Logging:** Extensive logging is implemented to facilitate debugging and monitor the flow of data and authentication status.
- *
- * - **Usage Example:**
- *   When a user navigates to `/account/favourites/60d5ec49f8d2e4567890abcd`, the `FavouritedArtwork` component:
- *   1. Connects to the database.
- *   2. Retrieves and validates the user's session.
- *   3. Fetches the artwork with ID `60d5ec49f8d2e4567890abcd` from the user's favourites.
- *   4. Renders the artwork using the `ArtworkLayout` component.
- *
- * - **Testing Considerations:**
- *   - Ensure that the component correctly handles authenticated and unauthenticated states.
- *   - Verify that it accurately fetches and renders the specified artwork.
- *   - Test error scenarios, such as missing parameters or failed data fetching, to confirm proper redirection and error handling.
- *
- * - **Best Practices:**
- *   - **Separation of Concerns:** Keeps authentication, data fetching, and rendering logic distinct for maintainability.
- *   - **Reusability:** Leverages reusable components and utilities to streamline development and reduce code duplication.
- *   - **Error Resilience:** Implements comprehensive error handling to maintain application stability under various failure conditions.
- */
-
 import dbConnect from "@/utils/mongodb";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
 import ArtworkView from "@/components/views/ArtworkView";
@@ -100,7 +13,6 @@ export default async function FavouritedArtwork({
   params: { artworkId: string };
 }) {
   await dbConnect();
-  // await delay(2000);
   const { artworkId } = params;
   const artworkData: SanitizedArtwork = await getArtworkView({
     collectionSlug: "favourites",
@@ -112,7 +24,6 @@ export default async function FavouritedArtwork({
   return (
     <>
       <ArtworkView {...artworkData} />
-      {/* <ArtInfoTabs {...artworkData} /> */}
     </>
   );
 }

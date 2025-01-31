@@ -7,6 +7,7 @@ import { CreateArtworkWithUpload } from "@/components/ui/forms/CreateArtworkWith
 import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { DeleteArtwork } from "@/components/admin/crud/DeleteArtwork";
 import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
+import { UpdateArtwork } from "@/components/admin/crud/UpdateArtwork";
 
 export default function AdminArtworkPage() {
   console.log("server");
@@ -22,7 +23,7 @@ export default function AdminArtworkPage() {
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
         readComponent={<div className="h-[2000px]">Read Artwork</div>}
-        updateComponent={<div>Update Artwork</div>}
+        updateComponent={<UpdateArtwork />}
         deleteComponent={<DeleteArtwork />}
       />
     </AdminContentLayout>
