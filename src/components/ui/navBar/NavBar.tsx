@@ -44,9 +44,6 @@
 
 import dbConnect from "@/utils/mongodb";
 import { getServerSession } from "next-auth";
-import { FrontendArticle } from "@/lib/types/articleTypes";
-import { fetchCollections } from "@/lib/server/collection/data-fetching/fetchCollections";
-import { fetchArticles } from "@/lib/server/article/data-fetching/fetchArticles";
 import { buildUrl } from "@/utils/buildUrl";
 import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
@@ -67,11 +64,16 @@ const NavBar = async () => {
   const collectionDefaultPath = await getCollectionDefaultPath();
   const buigraphyDefaultPath = await getBiographyDefaultPath();
 
-  const artworkNavlink: NavBarLink = {
+  //! Artwork
+  // TODO: add this route
+
+  //! Collections
+  const collectionsNavlink: NavBarLink = {
     label: "Collections",
     path: collectionDefaultPath,
   };
 
+  //! Biography
   const biographyNavlink: NavBarLink = {
     label: "Biography",
     path: buigraphyDefaultPath,
@@ -100,7 +102,7 @@ const NavBar = async () => {
   };
 
   const navLinks = [
-    artworkNavlink,
+    collectionsNavlink,
     biographyNavlink,
     blogNavlink,
     projectNavlink,

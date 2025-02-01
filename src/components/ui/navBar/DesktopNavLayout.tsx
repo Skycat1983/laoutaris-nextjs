@@ -15,7 +15,7 @@ const DesktopNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
   return (
     <>
       {/* top row */}
-      <div className="bg-whitish w-full flex flex-row justify-between space-x-6 px-4 py-6">
+      <div className=" w-full flex flex-row justify-between space-x-6 px-4 py-6">
         <nav className="flex flex-row items-center my-auto">
           <Link href="/">
             <Logo />

@@ -55,11 +55,11 @@ export function AccountMenuBar() {
 
   return (
     <>
-      <div className="flex flex-row bg-whitish">
+      <div className="flex flex-row bg-whitish items-center justify-center">
         {/* <AccountMenu session={session} /> */}
         <AccountMenu />
 
-        <Menubar className="flex flex-row w-auto gap-0 my-auto items-center bg-whitish">
+        <Menubar className="flex flex-row w-auto gap-0 items-center bg-whitish">
           <MenubarMenu>
             <MenubarTrigger disabled className={menubarTriggerClassname}>
               <Heart className="" />
@@ -90,7 +90,9 @@ export function AccountMenuBar() {
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger disabled className={menubarTriggerClassname}>
-              <ShoppingBasket />
+              <div className="p-1 border-2 border-whitish hover:border-slate/50 rounded-full">
+                <ShoppingBasket />
+              </div>
             </MenubarTrigger>
             <MenubarContent>
               <MenubarCheckboxItem>

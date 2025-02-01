@@ -17,6 +17,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/ui/common/ModalMessage";
 import { usePathname, useRouter } from "next/navigation";
+import UserIcon from "../../common/icons/UserIcon";
 
 interface UserSession {
   name?: string | null;
@@ -54,12 +55,15 @@ export function AccountMenu() {
 
   const isDisabled = !session || isLoading;
   return (
-    <NavigationMenu className="p-0 m-0">
+    <NavigationMenu className="p-0 m-0 items-center">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>
-            <User />
+            <div className="p-1 -m-1 border-2 border-whitish hover:border-slate/50 rounded-full">
+              <UserIcon />
+            </div>
           </NavigationMenuTrigger>
+
           <NavigationMenuContent className="">
             <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
               <li className="row-span-1">
@@ -68,7 +72,7 @@ export function AccountMenu() {
                     className={`flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
                       isDisabled
                         ? "opacity-50 cursor-not-allowed bg-whitish"
-                        : "from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground"
+                        : "from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground bg-whitish"
                     }`}
                     href={isDisabled ? "#" : "/account"}
                     onClick={(e) => {
@@ -213,84 +217,3 @@ const ListItem = React.forwardRef<
   );
 });
 ListItem.displayName = "ListItem";
-
-{
-  /* <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
-              <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className={`flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed"
-                        : "from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
-                    }`}
-                    href={isDisabled ? "#" : "/account"}
-                    onClick={(e) => {
-                      if (isDisabled) {
-                        e.preventDefault();
-                      }
-                    }}
-                    aria-disabled={isDisabled}
-                    tabIndex={isDisabled ? -1 : 0}
-                  >
-                    <h1 className="relative flex items-center rounded-sm px-2 py-1.5 text-md outline-none">
-                      Profile
-                    </h1>
-                    <MenubarShortcut>
-                      <CircleUserIcon className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-              <MenubarSeparator />
-
-              <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex w-full items-center select-none justify-end rounded-md  from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md"
-                    href="http://localhost:3000/api/auth/signin"
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                      Sign in
-                    </h1>
-                    <MenubarShortcut>
-                      <LogIn className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-
-              <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex w-full items-center select-none justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md"
-                    href="http://localhost:3000/api/auth/signin"
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                      Sign up
-                    </h1>
-                    <MenubarShortcut>
-                      <Mail className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-              <MenubarSeparator />
-
-              <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex w-full items-center select-none justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md"
-                    href="api/auth/signin"
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                      Logout
-                    </h1>
-                    <MenubarShortcut>
-                      <CircleUserIcon className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-            </ul> */
-}
