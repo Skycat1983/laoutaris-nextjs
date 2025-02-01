@@ -20,9 +20,10 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const rawContent = (await BlogModel.findOne({ slug })
-      .populate("author")
-      .lean()) as FrontendBlogEntryUnpopulated;
+    const rawContent = await BlogModel.findOne({ slug })
+      // .populate("author")
+      .lean()
+      .exec();
 
     if (!rawContent) {
       return NextResponse.json<ApiErrorResponse>(
@@ -35,7 +36,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json<ApiSuccessResponse<FrontendBlogEntryUnpopulated>>({
+    return NextResponse.json({
       success: true,
       data: rawContent,
     });

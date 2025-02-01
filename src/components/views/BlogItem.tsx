@@ -18,6 +18,8 @@ const BlogItem = ({
           className="w-full h-64 object-cover object-center"
           src={imageUrl}
           alt="Blog post cover"
+          height={500}
+          width={1000}
         />
         {/* <Image
           src={imageUrl}
