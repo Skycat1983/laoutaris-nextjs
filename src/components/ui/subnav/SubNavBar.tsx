@@ -23,7 +23,7 @@ const SubNavBar = async ({ fetchLinks }: SubNavProps) => {
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto">
-        <ul className="w-max flex flex-row justify-center space-x-8 my-4 md:my-10">
+        <ul className="w-max flex flex-row justify-center space-x-8 my-6 md:my-6">
           {links.map((link, i) => (
             <li key={i}>
               <Link href={link.link_to}>
