@@ -21,9 +21,15 @@ export default async function HomepageView() {
         <Suspense fallback={<HomeArtworkSectionSkeleton />}>
           <HomeArtworkSection />
         </Suspense>
+      </ContentLayout>
+
+      <ContentLayout bg="bg-slate/5">
         <Suspense fallback={<HomeProjectSectionSkeleton />}>
           <HomeProjectSection />
         </Suspense>
+      </ContentLayout>
+
+      <ContentLayout>
         <Suspense fallback={<HomeBiographySectionSkeleton />}>
           <HomeBiographySection />
         </Suspense>
