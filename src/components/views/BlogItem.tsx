@@ -21,11 +21,6 @@ const BlogItem = ({
           height={500}
           width={1000}
         />
-        {/* <Image
-          src={imageUrl}
-          alt="Blog post cover"
-          className="w-full h-64 object-cover object-center"
-        /> */}
 
         <div className="p-4">
           <div className="flex justify-center items-center text-gray-500 text-sm">
@@ -43,7 +38,7 @@ const BlogItem = ({
             </p>
           ))}
 
-          <div className="mt-4 flex flex-row justify-center gap-5">
+          {/* <div className="mt-4 flex flex-row justify-center gap-5">
             <button className="text-white font-bold bg-blue-500 px-5 py-2 rounded hover:bg-blue-600">
               Like
             </button>
@@ -54,7 +49,7 @@ const BlogItem = ({
             <button className="text-white bg-black font-bold px-5 py-2 rounded hover:bg-blue-600">
               Share
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
