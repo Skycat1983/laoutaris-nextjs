@@ -10,8 +10,10 @@ const ArtworkInfoCard = async ({ ...artwork }: SanitizedArtwork) => {
   const isLoggedIn = !!session?.user;
 
   return (
-    <div className="  flex flex-col text-left space-y-4 h-auto w-[300px] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">
-      <h1 className="font-archivoBlack text-2xl">Joseph Laoutaris</h1>
+    <div className=" flex flex-col text-left space-y-4 h-auto w-[80vw] md:w-[500px] md:p-24 md:bg-zinc-200/5 md:shadow fade-in">
+      <h1 className="font-archivoBlack text-2xl hidden md:block">
+        Joseph Laoutaris
+      </h1>
       <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
         {artwork.title}
       </h2>
