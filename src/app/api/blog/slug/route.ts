@@ -1,5 +1,4 @@
 import { BlogModel } from "@/lib/server/models";
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {
