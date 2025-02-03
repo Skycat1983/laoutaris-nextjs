@@ -10,6 +10,7 @@ import { HomeProjectSection } from "../homepageSections/HomeProjectSection";
 import HomeBiographySectionSkeleton from "../skeletons/HomeBiographySectionSkeleton";
 import HomeBiographySection from "../homepageSections/HomeBiographySection";
 import HomeSubscribeSection from "../homepageSections/HomeSubscribeSection";
+import HomeBlogSection from "../homepageSections/HomeBlogSection";
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 
@@ -33,7 +34,19 @@ export default async function HomepageView() {
         <Suspense fallback={<HomeBiographySectionSkeleton />}>
           <HomeBiographySection />
         </Suspense>
-        <HomeSubscribeSection />
+      </ContentLayout>
+
+      <ContentLayout bg="bg-slate/5">
+        <Suspense fallback={<HomeProjectSectionSkeleton />}>
+          {/* <HomeProjectSection /> */}
+          <HomeSubscribeSection />
+        </Suspense>
+      </ContentLayout>
+
+      <ContentLayout bg="">
+        <Suspense fallback={<HomeProjectSectionSkeleton />}>
+          <HomeBlogSection />
+        </Suspense>
       </ContentLayout>
     </>
   );
