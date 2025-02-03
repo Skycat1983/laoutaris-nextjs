@@ -37,15 +37,14 @@ export const UpdateBlogEntry = () => {
 
   // TODO: Where- if anywehre- could/should funcs like this be moved to?
   async function onSubmit(data: ReadFormValues) {
+    console.log("data :>> ", data);
     try {
-      const response = await fetch(
-        `/api/blog?identifierKey=_id&identifierValue=${encodeURIComponent(
-          data.objectId
-        )}&single=true`
-      );
+      const url = `/api/blog/${encodeURIComponent(data.objectId)}`;
+      const response = await fetch(url);
 
       console.log("response :>> ", response);
       const result = await response.json();
+      console.log("result :>> ", result);
 
       if (!result.success) {
         throw new Error(result.message || "Failed to fetch blog");
