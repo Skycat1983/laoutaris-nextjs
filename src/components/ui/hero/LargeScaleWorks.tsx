@@ -69,7 +69,7 @@ const LargeScaleWorks = () => {
   const { image } = slide;
 
   return (
-    <div className="relative h-auto max-h-[700px] w-full overflow-hidden">
+    <div className="relative h-auto max-h-[700px] w-full overflow-hidden 2xl:max-h-[850px]">
       <Image
         src={image.url}
         height={slide.height}

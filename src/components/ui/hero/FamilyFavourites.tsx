@@ -37,9 +37,9 @@ const FamilyFavourites = () => {
     overlay: <DimmedOverlay />,
   };
   const { image, backgroundAdjustments, overlay } = slide;
-
+  //  <div className="relative h-auto max-h-[700px]  w-full overflow-hidden">
   return (
-    <div className="relative h-auto max-h-[700px]  w-full overflow-hidden">
+    <div className="relative h-auto max-h-[700px] w-full overflow-hidden 2xl:max-h-[850px]">
       <Image
         src={image.url}
         height={slide.height}
