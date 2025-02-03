@@ -15,7 +15,7 @@ const BlogItem = ({
     <div className="w-full mx-auto">
       <div className="bg-white shadow-lg w-full rounded overflow-hidden">
         <Image
-          className="w-full h-64 object-cover object-center"
+          className="w-full h-[500px] object-cover object-center"
           src={imageUrl}
           alt="Blog post cover"
           height={500}
@@ -37,19 +37,6 @@ const BlogItem = ({
               {paragraph}
             </p>
           ))}
-
-          {/* <div className="mt-4 flex flex-row justify-center gap-5">
-            <button className="text-white font-bold bg-blue-500 px-5 py-2 rounded hover:bg-blue-600">
-              Like
-            </button>
-
-            <button className="text-black bg-white border-2 border-black font-bold  px-5 py-2 rounded hover:bg-blue-600">
-              Comment
-            </button>
-            <button className="text-white bg-black font-bold px-5 py-2 rounded hover:bg-blue-600">
-              Share
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

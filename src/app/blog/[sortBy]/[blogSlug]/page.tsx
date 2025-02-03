@@ -13,7 +13,7 @@ export default async function BlogEntry({
   console.log("blogEntry :>> ", blogEntry);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container ">
+    <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container mx-auto">
       {blogEntry && <BlogItem {...blogEntry} />}
     </main>
   );

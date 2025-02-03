@@ -22,7 +22,7 @@ const BlogEntriesView = ({ blogEntries, sortby }: BlogSectionProps) => {
         <div className="col-span-1 lg:col-span-2"></div>
 
         <div className="col-span-10 lg:col-span-8 flex flex-col gap-24">
-          <section className="grid grid-cols-3 gap-10 bg-red-100">
+          <section className="grid grid-cols-3 gap-10 bg-slate/5 m-5">
             {blogEntries.map((blog, index) => (
               <Link key={index} href={`/blog/${sortby}/${blog.slug}`}>
                 <div className="relative group w-full">
@@ -40,6 +40,9 @@ const BlogEntriesView = ({ blogEntries, sortby }: BlogSectionProps) => {
                     />
                     {/* Overlay with gradient background */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                      <p className="text-white/80 text-sm bg-purple-500 p-1 w-min rounded">
+                        {dateToYear(blog.displayDate)}
+                      </p>
                       <h2 className="text-white text-2xl font-bold">
                         {blog.title}
                       </h2>

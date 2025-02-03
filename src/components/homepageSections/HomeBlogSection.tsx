@@ -27,7 +27,7 @@ const HomeBlogSection = async () => {
         className="p-4 grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-4 lg:grid-rows-1 w-full py-8 gap-5"
       >
         {blogEntries.map((blog, index) => (
-          <Link key={index} href={`/blog/${blog.slug}`}>
+          <Link key={index} href={`/blog/latest/${blog.slug}`}>
             <div className="relative group w-full">
               <div className="relative">
                 <Image
