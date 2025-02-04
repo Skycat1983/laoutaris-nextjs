@@ -15,9 +15,10 @@ import {
 interface DatePickerProps {
   date: Date;
   setDate: (date: Date) => void;
+  defaultMonth?: Date; // New optional prop to set the calendar’s starting month
 }
 
-export function DatePicker({ date, setDate }: DatePickerProps) {
+export function DatePicker({ date, setDate, defaultMonth }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -34,6 +35,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
+          defaultMonth={defaultMonth}
           mode="single"
           selected={date}
           onSelect={(date: Date | undefined) => date && setDate(date)}
@@ -43,3 +45,30 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
     </Popover>
   );
 }
+
+// export function DatePicker({ date, setDate }: DatePickerProps) {
+//   return (
+//     <Popover>
+//       <PopoverTrigger asChild>
+//         <Button
+//           variant={"outline"}
+//           className={cn(
+//             "w-[280px] justify-start text-left font-normal",
+//             !date && "text-muted-foreground"
+//           )}
+//         >
+//           <CalendarIcon className="mr-2 h-4 w-4" />
+//           {date ? format(date, "PPP") : <span>Pick a date</span>}
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent className="w-auto p-0">
+//         <Calendar
+//           mode="single"
+//           selected={date}
+//           onSelect={(date: Date | undefined) => date && setDate(date)}
+//           initialFocus
+//         />
+//       </PopoverContent>
+//     </Popover>
+//   );
+// }

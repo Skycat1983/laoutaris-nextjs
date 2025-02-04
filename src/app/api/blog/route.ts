@@ -18,10 +18,10 @@ export async function GET(req: Request) {
   // Apply sorting
   switch (sortby) {
     case "latest":
-      query = query.sort({ createdAt: -1 });
+      query = query.sort({ displayDate: -1 });
       break;
     case "oldest":
-      query = query.sort({ createdAt: 1 });
+      query = query.sort({ displayDate: 1 });
       break;
     // case "popular":
     //   query = query.sort({ views: -1 });

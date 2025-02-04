@@ -6,6 +6,7 @@ import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CreateBlogForm } from "@/components/ui/forms/CreateBlogForm";
 import { DeleteBlogEntry } from "@/components/admin/crud/DeleteBlogEntry";
 import { UpdateBlogEntry } from "@/components/admin/crud/UpdateBlogEntry";
+import ReadBlogForm from "@/components/ui/forms/ReadBlogForm";
 
 export default function AdminBlogsPage() {
   return (
@@ -19,7 +20,7 @@ export default function AdminBlogsPage() {
     >
       <AdminCrudTabs
         createComponent={<CreateBlogForm />}
-        readComponent={<div>Read Blog</div>}
+        readComponent={<ReadBlogForm />}
         updateComponent={<UpdateBlogEntry />}
         deleteComponent={<DeleteBlogEntry />}
       />
