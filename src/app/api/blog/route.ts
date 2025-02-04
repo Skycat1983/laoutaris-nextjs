@@ -9,8 +9,8 @@ export async function GET(req: Request) {
   const sortby = (searchParams.get("sortby") as SortByType) || "latest";
 
   const page = parseInt(searchParams.get("page") || "1", 10); // default to page 1
-  const limit = parseInt(searchParams.get("limit") || "5", 10); // default to 5 entries per request
-  const skip = (page - 1) * limit; // calculate how many entries to skip
+  const limit = parseInt(searchParams.get("limit") || "6", 10); // default to 5 entries per request
+  const skip = (page - 1) * limit; // calc how many entries to skip
 
   // Base query
   let query = BlogModel.find({}).skip(skip).limit(limit);
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     //   query = query.sort({ views: -1 });
     //   break;
     case "featured":
-      query = query.where({ featured: true });
+      query = query.where({ featured: true }).sort({ displayDate: -1 });
       break;
     default:
       return NextResponse.json(

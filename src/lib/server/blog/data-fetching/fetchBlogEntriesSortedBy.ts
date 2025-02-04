@@ -2,11 +2,21 @@ import { SortByType } from "@/app/api/blog/route";
 import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { headers } from "next/headers";
 
+interface BlogData {
+  page: number;
+  limit: number;
+  total: number;
+  results: FrontendBlogEntryUnpopulated[];
+}
+
 export async function fetchBlogEntriesSortedBy(
-  sortby: SortByType
-): Promise<ApiResponse<FrontendBlogEntryUnpopulated[]>> {
+  sortby: SortByType,
+  page: number
+): Promise<ApiResponse<BlogData>> {
   const result = await fetch(
-    `http://localhost:3000/api/blog?sortby=${encodeURIComponent(sortby)}`,
+    `http://localhost:3000/api/blog?sortby=${encodeURIComponent(
+      sortby
+    )}&page=${page}`,
     {
       cache: "no-cache",
       method: "GET",
@@ -18,5 +28,5 @@ export async function fetchBlogEntriesSortedBy(
     return { success: false, message: "No blog entries found" };
   }
 
-  return { success: true, data: result.results };
+  return { success: true, data: result };
 }
