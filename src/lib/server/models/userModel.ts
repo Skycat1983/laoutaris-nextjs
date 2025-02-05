@@ -6,6 +6,7 @@ export interface DBUser extends Document {
   username: string;
   password: string;
   role: "user" | "admin";
+  comments: mongoose.Schema.Types.ObjectId[];
   watchlist: mongoose.Schema.Types.ObjectId[];
   favourites: mongoose.Schema.Types.ObjectId[];
 }
@@ -17,6 +18,7 @@ const userSchema = new mongoose.Schema<DBUser>(
     username: { type: String, required: true, unique: true },
     password: { type: String, required: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
     favourites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },

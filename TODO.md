@@ -61,3 +61,7 @@ DELETE BLOG ENTRY
 - the cloudinary image SOMETIMES should be deleted
 (the artwork image might be used elsewhere OR we might have added the image just for the blog entry)
 <!-- ? solution ? : use objectIds of artwork instead of url. this might require that artwork has a kv pair of isArtwork, to differentiate between assets that feature on app but not in collections/artwork searches -->
+
+FRONTEND TYPES:
+
+- should i Omit from the DBdocument type to create the frontend types?

@@ -1,10 +1,24 @@
-import { FrontendUserFull } from "./userTypes";
+import { FrontendUser } from "./userTypes";
 
-export type FrontendArtwork =
-  | FrontendArtworkFull
-  | FrontendArtworkUnpopulated
-  | FrontendArtworkWithWatcherlist
-  | FrontendArtworkWithFavourited;
+interface BaseFrontendArtwork {
+  _id: string;
+  title: string;
+  image: ArtworkImage;
+  decade: Decade;
+  artstyle: ArtStyle;
+  medium: Medium;
+  surface: Surface;
+  featured: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type PopulatedField<T> = string | T;
+
+export interface FrontendArtwork extends BaseFrontendArtwork {
+  watcherlist: PopulatedField<FrontendUser>[];
+  favourited: PopulatedField<FrontendUser>[];
+}
 
 export type Decade =
   | "1950s"
@@ -52,10 +66,7 @@ export interface FrontendArtworkUnpopulated {
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
-  // decade: string;
-  // artstyle: string;
-  // medium: string;
-  // surface: string;
+
   featured: boolean;
   watcherlist: string[];
   favourited: string[];
@@ -69,11 +80,6 @@ export interface FrontendArtworkWithWatcherlist {
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
-  // decade: string;
-
-  // artstyle: string;
-  // medium: string;
-  // surface: string;
   featured: boolean;
   watcherlist: FrontendUserFull[];
   favourited: string[];
@@ -87,10 +93,7 @@ export interface FrontendArtworkWithFavourited {
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
-  // decade: string;
-  // artstyle: string;
-  // medium: string;
-  // surface: string;
+
   featured: boolean;
   watcherlist: string[];
   favourited: FrontendUserFull[];

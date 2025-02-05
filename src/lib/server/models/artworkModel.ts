@@ -55,6 +55,7 @@ export interface DBArtwork extends Document {
     | "sand";
   surface: "paper" | "canvas" | "wood" | "film";
   featured?: boolean;
+  collections: mongoose.Schema.Types.ObjectId[];
   watcherlist?: mongoose.Schema.Types.ObjectId[];
   favourited?: mongoose.Schema.Types.ObjectId[];
 }
@@ -115,6 +116,13 @@ const artworkSchema = new mongoose.Schema(
       enum: ["paper", "canvas", "wood", "film"],
       required: true,
     },
+    collections: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Collection",
+        required: true,
+      },
+    ],
     featured: { type: Boolean, default: false },
     watcherlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     favourited: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

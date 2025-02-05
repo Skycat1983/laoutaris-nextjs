@@ -16,7 +16,7 @@ const HomeBlogSection = async () => {
   }
   const blogEntries = response;
 
-  console.log("blogEntries :>> ", blogEntries);
+  // console.log("blogEntries :>> ", blogEntries);
   return (
     <div>
       <SectionHeading heading="Blog:" subheading="Recent posts" />

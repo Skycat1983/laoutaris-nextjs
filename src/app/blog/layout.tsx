@@ -35,7 +35,7 @@ export default async function BlogLayout({
 
   return (
     <section className="flex flex-col flex-grow">
-      <SubNavBar fetchLinks={fetchLinks} />
+      {/* <SubNavBar fetchLinks={fetchLinks} /> */}
       {children}
     </section>
   );

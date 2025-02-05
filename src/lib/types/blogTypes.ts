@@ -1,3 +1,4 @@
+import { FrontendCommentUnpopulated } from "./commentTypes";
 import { FrontendUserFull } from "./userTypes";
 
 export interface FrontendBlogEntryFull {
@@ -26,6 +27,21 @@ export interface FrontendBlogEntryWithAuthor {
   slug: string;
   displayDate: Date;
   featured: boolean;
+  tags: string[];
+}
+
+export interface FrontendBlogEntryWithComments {
+  _id: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  text: string;
+  author: FrontendUserFull;
+  imageUrl: string;
+  slug: string;
+  displayDate: Date;
+  featured: boolean;
+  comments: FrontendCommentUnpopulated[];
   tags: string[];
 }
 

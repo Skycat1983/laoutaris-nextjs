@@ -1,4 +1,24 @@
-import { FrontendArtworkFull } from "./artworkTypes";
+import { FrontendArtwork, FrontendArtworkFull } from "./artworkTypes";
+
+interface BaseFrontendCollection {
+  _id: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  text: string;
+  author: string;
+  imageUrl: string;
+  slug: string;
+  section: "artwork" | "biography" | "project";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type PopulatedField<T> = string | T;
+
+export interface FrontendCollection extends BaseFrontendCollection {
+  artworks: PopulatedField<FrontendArtwork>[];
+}
 
 export interface FrontendCollectionFull {
   _id: string;

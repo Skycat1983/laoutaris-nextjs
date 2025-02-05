@@ -1,30 +1,36 @@
-//! data fetching
-
+//! Generic API Response Types
 interface BaseApiResponse {
   success: boolean;
   message?: string;
   statusCode?: number;
 }
 
+interface PaginationMetadata {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages?: number;
+}
+
 interface ApiSuccessResponse<T> extends BaseApiResponse {
   success: true;
   data: T;
+  metadata?: PaginationMetadata;
 }
 
 interface ApiErrorResponse extends BaseApiResponse {
   success: false;
+  error: string;
   errorCode?: number;
 }
 
 type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
-//! routes
-interface SubnavLink {
-  title: string;
-  slug: string;
-  disabled?: boolean;
-}
+type CollectionListResponse = ApiResponse<FrontendCollection[]>;
+type SingleCollectionResponse = ApiResponse<FrontendCollection>;
 
-interface ExtendedSubnavLink extends SubnavLink {
-  defaultRedirect: string;
-}
+type PaginatedResponse<T> = ApiSuccessResponse<T> & {
+  metadata: PaginationMetadata;
+};
+
+type PaginatedCollectionResponse = PaginatedResponse<FrontendCollection[]>;
