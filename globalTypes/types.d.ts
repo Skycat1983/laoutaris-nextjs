@@ -34,3 +34,5 @@ type PaginatedResponse<T> = ApiSuccessResponse<T> & {
 };
 
 type PaginatedCollectionResponse = PaginatedResponse<FrontendCollection[]>;
+
+type PopulatedField<T> = string | T;

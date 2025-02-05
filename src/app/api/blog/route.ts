@@ -23,9 +23,9 @@ export async function GET(req: Request) {
     case "oldest":
       query = query.sort({ displayDate: 1 });
       break;
-    // case "popular":
-    //   query = query.sort({ views: -1 });
-    //   break;
+    case "popular":
+      query = query.sort({ views: -1 });
+      break;
     case "featured":
       query = query.where({ featured: true }).sort({ displayDate: -1 });
       break;

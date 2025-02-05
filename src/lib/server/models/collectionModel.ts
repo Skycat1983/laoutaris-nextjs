@@ -5,7 +5,7 @@ export interface DBCollection extends Document {
   subtitle: string;
   summary: string;
   text: string;
-  author: mongoose.Schema.Types.ObjectId;
+  // author: mongoose.Schema.Types.ObjectId;
   imageUrl: string;
   slug: string;
   section: "artwork" | "biography" | "project";
@@ -20,11 +20,11 @@ const collectionSchema = new mongoose.Schema<DBCollection>(
     subtitle: { type: String, required: true },
     summary: { type: String, required: true },
     text: { type: String, required: true },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
+    // author: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "user",
+    //   required: true,
+    // },
     imageUrl: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     section: {

@@ -1,5 +1,23 @@
-import { FrontendCommentUnpopulated } from "./commentTypes";
-import { FrontendUserFull } from "./userTypes";
+import { FrontendComment, FrontendCommentUnpopulated } from "./commentTypes";
+import { FrontendUser, FrontendUserFull } from "./userTypes";
+
+export interface BaseBlogEntry {
+  _id: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  text: string;
+  imageUrl: string;
+  slug: string;
+  displayDate: Date;
+  featured: boolean;
+  tags: string[];
+}
+
+export interface FrontendBlogEntry extends BaseBlogEntry {
+  author: PopulatedField<FrontendUser>;
+  comments: PopulatedField<FrontendComment>[];
+}
 
 export interface FrontendBlogEntryFull {
   _id: string;
