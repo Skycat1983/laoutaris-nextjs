@@ -3,9 +3,10 @@ import mongoose, { Document } from "mongoose";
 export interface DBComment extends Document {
   text: string;
   author: mongoose.Schema.Types.ObjectId;
-  post: mongoose.Schema.Types.ObjectId;
+  blogPost: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  displayDate: Date;
 }
 
 const commentSchema = new mongoose.Schema<DBComment>(
@@ -16,11 +17,12 @@ const commentSchema = new mongoose.Schema<DBComment>(
       ref: "User",
       required: true,
     },
-    post: {
+    blogPost: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Blog",
       required: true,
     },
+    displayDate: { type: Date, required: true },
   },
   {
     timestamps: true,

@@ -12,6 +12,7 @@ export interface DBBlogEntry extends Document {
   featured: boolean;
   pinned: boolean;
   tags: string[];
+  comments: mongoose.Schema.Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -32,6 +33,7 @@ const blogSchema = new mongoose.Schema<DBBlogEntry>(
     displayDate: { type: Date, required: true },
     featured: { type: Boolean, default: false },
     pinned: { type: Boolean, default: false },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     tags: [{ type: String }],
   },
   {
