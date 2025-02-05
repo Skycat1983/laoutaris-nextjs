@@ -1,7 +1,6 @@
 import React from "react";
 import SectionHeading from "../ui/common/SectionHeading";
 import HorizontalDivider from "../ui/common/HorizontalDivider";
-import { BlogModel } from "@/lib/server/models";
 import Image from "next/image";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import Link from "next/link";

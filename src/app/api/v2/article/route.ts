@@ -2,13 +2,7 @@ import { ArticleModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { FrontendArticle } from "@/lib/types/articleTypes";
 
-// Define possible field combinations
-type ArticleCardFields = Pick<
-  FrontendArticle,
-  "title" | "subtitle" | "slug" | "imageUrl"
->;
-
-type ArticleApiResponse = ApiResponse<ArticleCardFields[]>;
+type ArticleApiResponse = ApiResponse<FrontendArticle[]>;
 
 export const GET = async (
   req: NextRequest

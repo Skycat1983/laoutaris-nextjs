@@ -1,33 +1,32 @@
 import type { FrontendArticle } from "@/lib/types/articleTypes";
 import HomeBiographySection from "../homepageSections/HomeBiographySection";
-import { headers } from "next/headers";
+import { fetchArticles } from "@/lib/api/articleApi";
+import { transformToPick } from "@/lib/transforms/dataTransforms";
 
 export type BiographyCardData = Pick<
   FrontendArticle,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
 
-async function fetchBiographyArticles(): Promise<BiographyCardData[]> {
-  const selectedFields = ["title", "subtitle", "slug", "imageUrl"].join(",");
-  const response = await fetch(
-    `${process.env.BASEURL}/api/v2/article?section=biography&fields=${selectedFields}`,
-    {
-      method: "GET",
-      headers: headers(),
-    }
-  );
-
-  const result = await response.json();
-  if (!result.success) {
-    throw new Error("Failed to fetch biography articles");
-  }
-
-  return result.data;
-}
+const BIOGRAPHY_FETCH_CONFIG = {
+  section: "biography",
+  fields: ["title", "subtitle", "slug", "imageUrl"] as const,
+} as const;
 
 export async function HomeBiographySectionLoader() {
-  const biographyArticles = await fetchBiographyArticles();
-  // resolvers go here if/when needed
+  try {
+    const articles = await fetchArticles({
+      section: BIOGRAPHY_FETCH_CONFIG.section,
+      fields: BIOGRAPHY_FETCH_CONFIG.fields,
+    });
 
-  return <HomeBiographySection articles={biographyArticles} />;
+    const biographyCards = articles.map((article) =>
+      transformToPick(article, BIOGRAPHY_FETCH_CONFIG.fields)
+    );
+
+    return <HomeBiographySection articles={biographyCards} />;
+  } catch (error) {
+    console.error("Biography section loading failed:", error);
+    return null;
+  }
 }
