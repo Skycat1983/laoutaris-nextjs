@@ -1,4 +1,4 @@
-import { FrontendBlogEntryUnpopulated } from "./blogTypes";
+// import { FrontendBlogEntryUnpopulated } from "./blogTypes";
 import { FrontendUser } from "./userTypes";
 
 interface BaseFrontendComment {

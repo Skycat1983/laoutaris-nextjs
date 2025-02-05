@@ -9,12 +9,17 @@ import {
   getHomepageArticleSectionData,
   HomeBiographySectionCardData,
 } from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
+import { FrontendArticle } from "@/lib/types/articleTypes";
+import { headers } from "next/headers";
+import { BiographyCardData } from "../loaders/HomeBiographySectionLoader";
 
-const HomeBiographySection: React.FC = async () => {
-  // await delay(2000);
-  const homeBiographaphySectionCardData: HomeBiographySectionCardData[] =
-    await getHomepageArticleSectionData();
+interface HomeBiographySectionProps {
+  articles: BiographyCardData[];
+}
 
+const HomeBiographySection: React.FC<HomeBiographySectionProps> = ({
+  articles,
+}) => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <SectionHeading
@@ -27,13 +32,12 @@ const HomeBiographySection: React.FC = async () => {
           className="p-4 flex w-max space-x-4 h-[500px] mx-auto"
           data-testid="biography-content"
         >
-          {homeBiographaphySectionCardData.map((entry, index) => (
-            <BiographyCard entry={entry} key={index} />
+          {articles.map((article, index) => (
+            <BiographyCard entry={article} key={article.slug || index} />
           ))}
         </section>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-
       <ButtonDivider label="Read more" link="/biography" />
     </div>
   );

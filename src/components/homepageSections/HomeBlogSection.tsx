@@ -5,18 +5,13 @@ import { BlogModel } from "@/lib/server/models";
 import Image from "next/image";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import Link from "next/link";
+import { BlogCardData } from "../loaders/HomeBlogSectionLoader";
 
-const HomeBlogSection = async () => {
-  const response = await BlogModel.find({})
-    .sort({ updatedAt: 1 })
-    .limit(4)
-    .lean();
-  if (!response) {
-    return null;
-  }
-  const blogEntries = response;
+interface HomeBlogSectionProps {
+  blogs: BlogCardData[];
+}
 
-  // console.log("blogEntries :>> ", blogEntries);
+const HomeBlogSection: React.FC<HomeBlogSectionProps> = ({ blogs }) => {
   return (
     <div>
       <SectionHeading heading="Blog:" subheading="Recent posts" />
@@ -26,8 +21,8 @@ const HomeBlogSection = async () => {
         data-testid="artwork-content"
         className="p-4 grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-4 lg:grid-rows-1 w-full py-8 gap-5"
       >
-        {blogEntries.map((blog, index) => (
-          <Link key={index} href={`/blog/latest/${blog.slug}`}>
+        {blogs.map((blog) => (
+          <Link key={blog.slug} href={`/blog/latest/${blog.slug}`}>
             <div className="relative group w-full">
               <div className="relative">
                 <Image
