@@ -1,5 +1,4 @@
 import HomepageView from "@/components/views/HomepageView";
-import { headers } from "next/headers";
 
 // export const colleictionRouteTest = async () => {
 //   // Test different query combinations

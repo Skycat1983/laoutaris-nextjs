@@ -10,7 +10,6 @@ import { HomeProjectSection } from "../homepageSections/HomeProjectSection";
 import HomeBiographySectionSkeleton from "../skeletons/HomeBiographySectionSkeleton";
 import { HomeBiographySectionLoader } from "../loaders/HomeBiographySectionLoader";
 import HomeSubscribeSection from "../homepageSections/HomeSubscribeSection";
-import HomeBlogSection from "../homepageSections/HomeBlogSection";
 import BlogEntriesSkeleton from "../skeletons/BlogEntriesSkeleton";
 import { HomeBlogSectionLoader } from "../loaders/HomeBlogSectionLoader";
 

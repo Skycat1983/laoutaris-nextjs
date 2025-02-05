@@ -1,33 +1,40 @@
+import { transformToPick } from "@/lib/transforms/dataTransforms";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import HomeBlogSection from "../homepageSections/HomeBlogSection";
-import { headers } from "next/headers";
+import { fetchBlogEntries } from "@/lib/api/blogApi";
 
+// 1. Config Constants
+const BLOG_FETCH_CONFIG = {
+  sortby: "latest" as const,
+  limit: 4,
+  fields: ["title", "subtitle", "slug", "imageUrl"] as const,
+} as const;
+
+// 2. Type Definitions
 export type BlogCardData = Pick<
   FrontendBlogEntry,
-  "title" | "subtitle" | "imageUrl" | "slug"
+  (typeof BLOG_FETCH_CONFIG.fields)[number]
 >;
 
-async function fetchLatestBlogs(): Promise<BlogCardData[]> {
-  const selectedFields = ["title", "subtitle", "slug", "imageUrl"].join(",");
-  const response = await fetch(
-    `${process.env.BASEURL}/api/v2/blog?sortby=latest&limit=4&fields=${selectedFields}`,
-    {
-      method: "GET",
-      headers: headers(),
-    }
-  );
-
-  const result = await response.json();
-  if (!result.success) {
-    throw new Error("Failed to fetch latest blog entries");
-  }
-
-  return result.data;
-}
-
+// 3. Loader Function
 export async function HomeBlogSectionLoader() {
-  const blogs = await fetchLatestBlogs();
-  // resolvers go here if/when needed
+  try {
+    // Fetch data using API layer
+    const blogs = await fetchBlogEntries({
+      sortby: BLOG_FETCH_CONFIG.sortby,
+      limit: BLOG_FETCH_CONFIG.limit,
+      fields: BLOG_FETCH_CONFIG.fields,
+    });
 
-  return <HomeBlogSection blogs={blogs} />;
+    // Transform data using transform layer
+    const blogCards = blogs.data.map((blog) =>
+      transformToPick(blog, BLOG_FETCH_CONFIG.fields)
+    );
+
+    // Return component with transformed data
+    return <HomeBlogSection blogs={blogCards} />;
+  } catch (error) {
+    console.error("Blog section loading failed:", error);
+    return null;
+  }
 }

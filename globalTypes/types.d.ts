@@ -28,11 +28,13 @@ type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 type CollectionListResponse = ApiResponse<FrontendCollection[]>;
 type SingleCollectionResponse = ApiResponse<FrontendCollection>;
+type BlogListResponse = ApiResponse<FrontendBlogEntry[]>;
 
 type PaginatedResponse<T> = ApiSuccessResponse<T> & {
   metadata: PaginationMetadata;
 };
 
-type PaginatedCollectionResponse = PaginatedResponse<FrontendCollection[]>;
+// type PaginatedCollectionResponse = PaginatedResponse<FrontendCollection[]>;
+// type PaginatedBlogResponse = PaginatedResponse<FrontendBlogEntry[]>;
 
 type PopulatedField<T> = string | T;
