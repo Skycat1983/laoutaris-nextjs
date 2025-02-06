@@ -8,16 +8,14 @@ interface FetchBlogEntriesParams {
   page?: number;
 }
 
-interface BlogEntriesResponse {
-  data: FrontendBlogEntry[];
-  metadata: PaginationMetadata;
-}
 export async function fetchBlogEntries({
   sortby = "latest",
   fields,
   limit,
   page,
-}: FetchBlogEntriesParams = {}): Promise<BlogEntriesResponse> {
+}: FetchBlogEntriesParams = {}): Promise<
+  PaginatedResponse<FrontendBlogEntry[]>
+> {
   const params = new URLSearchParams();
 
   if (sortby) params.append("sortby", sortby);
@@ -30,13 +28,12 @@ export async function fetchBlogEntries({
     headers: headers(),
   });
 
-  const result = (await response.json()) as BlogListResponse;
-  if (!result.success || !result.metadata) {
+  const result = (await response.json()) as PaginatedResponse<
+    FrontendBlogEntry[]
+  >;
+  if (!result.success) {
     throw new Error("Failed to fetch blog entries");
   }
 
-  return {
-    data: result.data as FrontendBlogEntry[],
-    metadata: result.metadata,
-  };
+  return result;
 }

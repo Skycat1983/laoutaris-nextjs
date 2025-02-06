@@ -1,5 +1,8 @@
 import { CollectionModel } from "@/lib/server/models";
+import { FrontendCollection } from "@/lib/types/collectionTypes";
 import { NextRequest, NextResponse } from "next/server";
+
+type SingleCollectionResponse = ApiResponse<FrontendCollection>;
 
 export const GET = async (
   req: NextRequest,
@@ -16,7 +19,7 @@ export const GET = async (
           success: false,
           error: "Collection not found",
           statusCode: 404,
-        },
+        } satisfies ApiErrorResponse,
         { status: 404 }
       );
     }
@@ -32,7 +35,7 @@ export const GET = async (
         success: false,
         error: "Failed to fetch collection",
         statusCode: 500,
-      },
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }

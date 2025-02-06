@@ -40,7 +40,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    } satisfies PaginatedResponse<FrontendArticle[]>);
   } catch (error) {
     console.error("Article fetch error:", error);
     return NextResponse.json(
@@ -48,7 +48,7 @@ export const GET = async (
         success: false,
         error: "Failed to fetch articles",
         statusCode: 500,
-      },
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }

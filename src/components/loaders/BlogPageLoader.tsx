@@ -2,6 +2,7 @@ import { fetchBlogEntries } from "@/lib/api/blogApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import BlogEntriesView from "@/components/views/BlogEntriesView";
+import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 
 // 1. Config Constants
 const BLOG_ENTRIES_CONFIG = {
@@ -18,7 +19,6 @@ const BLOG_ENTRIES_CONFIG = {
 } as const;
 
 // 2. Type Definitions
-//? unused ?
 export type BlogEntryData = Pick<
   FrontendBlogEntry,
   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
@@ -29,24 +29,8 @@ interface BlogEntriesLoaderProps {
   page: number;
 }
 
-// 3. Transform Functions
-function transformPaginationData(
-  page: number,
-  limit: number,
-  total: number,
-  sortby: string
-) {
-  return {
-    prev: page > 1 ? `/blog/${sortby}?page=${page - 1}` : null,
-    next: page * limit < total ? `/blog/${sortby}?page=${page + 1}` : null,
-  };
-}
-
-// 4. Loader Function
-export async function BlogEntriesLoader({
-  sortby,
-  page,
-}: BlogEntriesLoaderProps) {
+// 3. Loader Function
+export async function BlogPageLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
     // Fetch data using API layer
     const { data: blogs, metadata } = await fetchBlogEntries({
@@ -56,17 +40,17 @@ export async function BlogEntriesLoader({
       fields: BLOG_ENTRIES_CONFIG.fields,
     });
 
-    // Transform blog entries
-    const transformedBlogs = blogs.map((blog) =>
+    // Transform blog entries with explicit typing
+    const transformedBlogs: BlogEntryData[] = blogs.map((blog) =>
       transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
     );
 
     // Transform pagination data
-    const { prev, next } = transformPaginationData(
+    const { prev, next } = transformToPaginationLinks(
       metadata.page,
       metadata.limit,
       metadata.total,
-      sortby
+      `/blog/${sortby}`
     );
 
     // Return component with transformed data

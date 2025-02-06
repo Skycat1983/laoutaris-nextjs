@@ -2,7 +2,7 @@ import { BlogModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 
-type BlogApiResponse = BlogListResponse;
+type BlogApiResponse = ApiResponse<FrontendBlogEntry[]>;
 type SortByType = "latest" | "oldest" | "popular" | "featured";
 
 export const GET = async (
@@ -34,14 +34,11 @@ export const GET = async (
         query.sort = { displayDate: -1 };
         break;
       default:
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Invalid sortby parameter",
-            statusCode: 400,
-          },
-          { status: 400 }
-        );
+        return NextResponse.json({
+          success: false,
+          error: "Invalid sortby parameter",
+          statusCode: 400,
+        } satisfies ApiErrorResponse);
     }
 
     const [blogs, total] = await Promise.all([
@@ -64,16 +61,13 @@ export const GET = async (
       success: true,
       data: blogs,
       metadata,
-    });
+    } satisfies PaginatedResponse<FrontendBlogEntry[]>);
   } catch (error) {
     console.error("Blog fetch error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch blog entries",
-        statusCode: 500,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      success: false,
+      error: "Failed to fetch blog entries",
+      statusCode: 500,
+    } satisfies ApiErrorResponse);
   }
 };

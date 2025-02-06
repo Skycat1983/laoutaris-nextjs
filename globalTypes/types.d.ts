@@ -24,14 +24,18 @@ interface ApiErrorResponse extends BaseApiResponse {
   errorCode?: number;
 }
 
+// Base API response type - can be either success with data or error
 type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
-// type CollectionListResponse = ApiResponse<FrontendCollection[]>;
-// type SingleCollectionResponse = ApiResponse<FrontendCollection>;
-type BlogListResponse = ApiResponse<FrontendBlogEntry[]>;
-
+// Extends ApiSuccessResponse to always include metadata - used for paginated lists
 type PaginatedResponse<T> = ApiSuccessResponse<T> & {
   metadata: PaginationMetadata;
 };
 
+// Utility type for fields that might be populated with full objects or remain as string IDs
 type PopulatedField<T> = string | T;
+
+// Specific response types for different endpoints
+// type BlogListResponse = ApiResponse<FrontendBlogEntry[]>; // Blog list endpoint - can be success with blog array or error
+// type CollectionListResponse = ApiResponse<FrontendCollection[]>; // Collection list endpoint - can be success with collection array or error
+// type SingleCollectionResponse = ApiResponse<FrontendCollection>; // Single collection endpoint - can be success with one collection or error

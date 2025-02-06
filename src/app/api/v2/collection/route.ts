@@ -37,7 +37,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    } satisfies PaginatedResponse<FrontendCollection[]>);
   } catch (error) {
     console.error("Collection fetch error:", error);
     return NextResponse.json(
@@ -45,7 +45,7 @@ export const GET = async (
         success: false,
         error: "Failed to fetch collections",
         statusCode: 500,
-      },
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }
