@@ -51,6 +51,7 @@ import DesktopNavLayout from "./DesktopNavLayout";
 import { authOptions } from "@/lib/config/authOptions";
 import { getCollectionDefaultPath } from "@/lib/server/collection/use_cases/getCollectionDefaultPath";
 import { getBiographyDefaultPath } from "@/lib/server/article/use_cases/getArticleDefaultPath";
+import { fetchArticleNavigation } from "@/lib/api/navigationApi";
 
 export interface NavBarLink {
   label: string;
@@ -58,11 +59,18 @@ export interface NavBarLink {
   disabled?: boolean;
 }
 
+const NavBarLoader = async () => {
+  const articleNavigation = await fetchArticleNavigation("biography");
+  console.log("articleNavigation", articleNavigation);
+};
+
 const NavBar = async () => {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  // const collectionDefaultPath = await getCollectionDefaultPath();
-  // const buigraphyDefaultPath = await getBiographyDefaultPath();
+  const collectionDefaultPath = await getCollectionDefaultPath();
+  const buigraphyDefaultPath = await getBiographyDefaultPath();
+  console.log("test");
+  NavBarLoader();
 
   //! Artwork
   // TODO: add this route

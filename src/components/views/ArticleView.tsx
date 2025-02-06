@@ -51,3 +51,28 @@ const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
 };
 
 export default ArticleView;
+
+//! old api version
+// const ArticleView = async ({ segment, slug }: ArticleViewProps) => {
+//   // await delay(2000);
+//   const { article, navigation } = await getArticlePageData({ segment, slug });
+
+//   const { prev, next } = navigation;
+//   return (
+//     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
+//       <div className="block md:hidden">
+//         <MobileArticleView article={article} nextUrl={next} prevUrl={prev} />
+//       </div>
+
+//       <div className="hidden md:block">
+//         <DesktopArticleView
+//           article={article}
+//           nextArticle={next}
+//           prevArticle={prev}
+//         />
+//       </div>
+//     </main>
+//   );
+// };
+
+// export default ArticleView;

@@ -1,3 +1,5 @@
+"use server";
+
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import HomeBlogSection from "../homepageSections/HomeBlogSection";

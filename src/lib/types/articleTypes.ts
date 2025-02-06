@@ -1,4 +1,4 @@
-import { FrontendArtworkFull } from "./artworkTypes";
+import { FrontendArtwork } from "./artworkTypes";
 import { FrontendUser } from "./userTypes";
 
 export type Section = "artwork" | "biography" | "project";
@@ -19,7 +19,12 @@ type PopulatedField<T> = string | T;
 
 export interface FrontendArticle extends BaseFrontendArticle {
   author: PopulatedField<FrontendUser>;
-  artwork: PopulatedField<FrontendArtworkFull>;
+  artwork: PopulatedField<FrontendArtwork>;
+}
+
+export interface FrontendArticleWithArtwork extends BaseFrontendArticle {
+  author: PopulatedField<FrontendUser>;
+  artwork: PopulatedField<FrontendArtwork>;
 }
 
 // export type FrontendArticle =

@@ -27,7 +27,7 @@ export const GET = async (
     return NextResponse.json({
       success: true,
       data: collection,
-    });
+    } satisfies ApiSuccessResponse<FrontendCollection>);
   } catch (error) {
     console.error("Collection fetch error:", error);
     return NextResponse.json(

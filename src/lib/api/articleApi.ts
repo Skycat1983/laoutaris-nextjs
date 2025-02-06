@@ -1,4 +1,8 @@
-import type { FrontendArticle, Section } from "@/lib/types/articleTypes";
+import type {
+  FrontendArticle,
+  FrontendArticleWithArtwork,
+  Section,
+} from "@/lib/types/articleTypes";
 import { headers } from "next/headers";
 
 interface FetchArticlesParams {
@@ -32,6 +36,41 @@ export async function fetchArticles({
   const result = (await response.json()) as ApiResponse<FrontendArticle[]>;
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch articles");
+  }
+
+  return result.data;
+}
+
+export async function fetchArticle(slug: string) {
+  const response = await fetch(
+    `${process.env.BASEURL}/api/v2/article/${slug}`,
+    {
+      method: "GET",
+      headers: headers(),
+    }
+  );
+
+  const result = (await response.json()) as ApiResponse<FrontendArticle>;
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch article");
+  }
+
+  return result.data;
+}
+
+export async function fetchArticleArtwork(slug: string) {
+  const response = await fetch(
+    `${process.env.BASEURL}/api/v2/article/${slug}/artwork`,
+    {
+      method: "GET",
+      headers: headers(),
+    }
+  );
+
+  const result =
+    (await response.json()) as ApiResponse<FrontendArticleWithArtwork>;
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch article artwork");
   }
 
   return result.data;

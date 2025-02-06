@@ -1,3 +1,5 @@
+"use server";
+
 import { fetchBlogEntries } from "@/lib/api/blogApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";

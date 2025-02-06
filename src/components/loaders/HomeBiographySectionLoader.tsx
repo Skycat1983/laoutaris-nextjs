@@ -1,3 +1,5 @@
+"use server";
+
 import type { FrontendArticle } from "@/lib/types/articleTypes";
 import HomeBiographySection from "../homepageSections/HomeBiographySection";
 import { fetchArticles } from "@/lib/api/articleApi";
