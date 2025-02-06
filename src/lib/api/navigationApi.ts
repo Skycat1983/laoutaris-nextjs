@@ -8,7 +8,7 @@ import {
   CollectionNavItemResponse,
 } from "../types/navigationTypes";
 
-export async function fetchArticleNavigation(
+export async function fetchArticleNavigationList(
   section: ValidSection
 ): Promise<ArticleNavItem[]> {
   const url = `${process.env.BASEURL}/api/v2/navigation/articles/${section}`;
@@ -37,9 +37,9 @@ export async function fetchArticleNavigation(
   }
 }
 
-export async function fetchCollectionNavigationList(): Promise<
-  CollectionNavItem[]
-> {
+export async function fetchCollectionNavigationList(
+  section: ValidSection
+): Promise<CollectionNavItem[]> {
   const url = `${process.env.BASEURL}/api/v2/navigation/collections`;
   console.log("Fetching from:", url);
 

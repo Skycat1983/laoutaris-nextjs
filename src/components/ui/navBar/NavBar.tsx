@@ -1,57 +1,13 @@
-/**
- * @fileoverview
- * This Next.js component manages the main navigation bar across the entire website.
- *
- * - **Purpose:**
- *   The `MainNav` component dynamically generates the primary navigation links for the website by fetching the first available
- *   entries from key sections such as Artwork and Biography. This ensures that each main navigation link (e.g., Artwork, Biography)
- *   automatically redirects users to the most relevant and up-to-date content (e.g., `/artwork/collectionSlug/artworkId` or `/biography/early-years`).
- *   By doing so, it prevents users from landing on contentless pages and streamlines navigation throughout the site.
- *
- * - **Project Structure:**
- *   - **Path Pattern:**
- *     - **Artwork:** `/artwork/collectionSlug/artworkId`
- *     - **Biography:** `/biography/articleSlug`
- *     - **Blog:** `/blog/latest`
- *     - **Project:** `/project/about`
- *     - **Shop:** `/shop/all`
- *   - **Behavior:**
- *     - **Dynamic Linking:** Fetches the first available collection or article from specified sections to set default navigation paths.
- *     - **Responsive Design:** Renders different navigation layouts (`MobileNavLayout`, `TabletNavLayout`, `DesktopNavLayout`) based on the device viewport.
- *
- * - **Error Handling:**
- *   TODO: Enhance error handling to include retry mechanisms or fallback navigation links.
- *
- * - **Dependencies:**
- *   Utilizes the following utilities and components:
- *     - `fetchCollections`: Retrieves collections from the MongoDB Collection collection based on specified criteria.
- *     - `fetchArticles`: Retrieves articles from the MongoDB Article collection based on specified criteria.
- *     - `buildUrl`: Constructs URLs based on provided path segments.
- *     - `MobileNavLayout`, `TabletNavLayout`, `DesktopNavLayout`: Render navigation layouts optimized for different device viewports.
- *     - `getServerSession`: Retrieves the current user session (authentication status).
- *
- * - **Notes:**
- *   - **Dynamic Content Prioritization:**
- *     By fetching and using the first entry in each section, any updates to the order or priority of collections/articles in the database
- *     will automatically reflect in the main navigation links.
- *   - **Data Integrity:**
- *     Ensures that each main navigation link points directly to existing and navigable content, enhancing user experience by avoiding dead ends.
- *   - **Scalability:**
- *     The component is designed to easily accommodate additional sections or changes in the website's structure by adjusting the fetch parameters and navigation link configurations.
- */
-
 "use server";
 
-import dbConnect from "@/utils/mongodb";
-import { getServerSession } from "next-auth";
 import { buildUrl } from "@/utils/buildUrl";
 import MobileNavLayout from "./MobileNavLayout";
 import TabletNavLayout from "./TabletNavLayout";
 import DesktopNavLayout from "./DesktopNavLayout";
-import { authOptions } from "@/lib/config/authOptions";
-import { getCollectionDefaultPath } from "@/lib/server/collection/use_cases/getCollectionDefaultPath";
-import { getBiographyDefaultPath } from "@/lib/server/article/use_cases/getArticleDefaultPath";
-import { fetchArticleNavigation } from "@/lib/api/navigationApi";
+import {
+  fetchArticleNavigationList,
+  fetchCollectionNavigationList,
+} from "@/lib/api/navigationApi";
 
 export interface NavBarLink {
   label: string;
@@ -59,62 +15,28 @@ export interface NavBarLink {
   disabled?: boolean;
 }
 
-const NavBarLoader = async () => {
-  const articleNavigation = await fetchArticleNavigation("biography");
-  console.log("articleNavigation", articleNavigation);
-};
-
 const NavBar = async () => {
-  await dbConnect();
-  const session = await getServerSession(authOptions);
-  const collectionDefaultPath = await getCollectionDefaultPath();
-  const buigraphyDefaultPath = await getBiographyDefaultPath();
-  console.log("test");
-  NavBarLoader();
+  const [articleNavigation, collectionNavigation] = await Promise.all([
+    fetchArticleNavigationList("biography"),
+    fetchCollectionNavigationList("collections"),
+  ]);
 
-  //! Artwork
-  // TODO: add this route
-
-  //! Collections
-  // const collectionsNavlink: NavBarLink = {
-  //   label: "Collections",
-  //   path: collectionDefaultPath,
-  // };
-
-  // //! Biography
-  // const biographyNavlink: NavBarLink = {
-  //   label: "Biography",
-  //   path: buigraphyDefaultPath,
-  // };
-
-  //! Blog
-  const blogPath = buildUrl(["blog", "latest"]);
-  const blogNavlink: NavBarLink = {
-    label: "Blog",
-    path: blogPath,
-  };
-
-  //! Project
-  const projectPath = buildUrl(["project", "about"]);
-  const projectNavlink: NavBarLink = {
-    label: "Project",
-    path: projectPath,
-  };
-
-  // ! Shop
-  const shopPath = buildUrl(["shop"]);
-  const shopNavlink: NavBarLink = {
-    label: "Shop",
-    path: shopPath,
-    disabled: true,
-  };
-
-  const navLinks = [
-    // collectionsNavlink,
-    // biographyNavlink,
-    blogNavlink,
-    projectNavlink,
-    shopNavlink,
+  const navLinks: NavBarLink[] = [
+    {
+      label: "Biography",
+      path: buildUrl(["biography", articleNavigation[0].slug]),
+    },
+    {
+      label: "Collections",
+      path: buildUrl([
+        "collections",
+        collectionNavigation[0].slug,
+        collectionNavigation[0].artworkId,
+      ]),
+    },
+    { label: "Blog", path: buildUrl(["blog", "latest"]) },
+    { label: "Project", path: buildUrl(["project", "about"]) },
+    { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
 
   return (
@@ -133,28 +55,3 @@ const NavBar = async () => {
 };
 
 export default NavBar;
-
-//! Collections
-// const collectionResponse = await fetchCollections<CollectionLink>(
-//   "section",
-//   "artwork",
-//   ["title", "slug", "artworks"]
-// );
-
-// const collections = collectionResponse.success ? collectionResponse.data : [];
-
-// const firstCollection = collections[0];
-// const collectionSlug = firstCollection.slug;
-// const artworkId = firstCollection.artworks[0];
-// const artworkPath = buildUrl(["collections", collectionSlug, artworkId]);
-// ! Biography
-// const biographyResponse = await fetchArticles<BiographyLink>(
-//   "section",
-//   "biography",
-//   ["title", "slug"]
-// );
-// const biographies = biographyResponse.success ? biographyResponse.data : [];
-
-// const firstBiography = biographies[0];
-// const biographySlug = firstBiography.slug;
-// const biographyPath = buildUrl(["biography", biographySlug]);

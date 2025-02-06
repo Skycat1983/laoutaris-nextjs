@@ -24,7 +24,7 @@ export interface FrontendArticle extends BaseFrontendArticle {
 
 export interface FrontendArticleWithArtwork extends BaseFrontendArticle {
   author: PopulatedField<FrontendUser>;
-  artwork: PopulatedField<FrontendArtwork>;
+  artwork: FrontendArtwork;
 }
 
 // export type FrontendArticle =

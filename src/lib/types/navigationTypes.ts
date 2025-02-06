@@ -11,7 +11,12 @@ export interface CollectionNavItem {
 }
 
 // Valid sections
-export const VALID_SECTIONS = ["biography", "artwork", "project"] as const;
+export const VALID_SECTIONS = [
+  "biography",
+  "artwork",
+  "project",
+  "collections",
+] as const;
 export type ValidSection = (typeof VALID_SECTIONS)[number];
 
 // API response types
