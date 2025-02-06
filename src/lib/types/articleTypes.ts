@@ -1,7 +1,7 @@
 import { FrontendArtworkFull } from "./artworkTypes";
 import { FrontendUser } from "./userTypes";
 
-type Section = "artwork" | "biography" | "project";
+export type Section = "artwork" | "biography" | "project";
 type OverlayColour = "white" | "black";
 interface BaseFrontendArticle {
   _id: string;

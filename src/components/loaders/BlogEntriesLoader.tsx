@@ -1,5 +1,5 @@
 import { fetchBlogEntries } from "@/lib/api/blogApi";
-import { transformToPick } from "@/lib/transforms/dataTransforms";
+import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import BlogEntriesView from "@/components/views/BlogEntriesView";
 
@@ -18,7 +18,8 @@ const BLOG_ENTRIES_CONFIG = {
 } as const;
 
 // 2. Type Definitions
-type BlogEntryData = Pick<
+//? unused ?
+export type BlogEntryData = Pick<
   FrontendBlogEntry,
   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
 >;

@@ -61,23 +61,23 @@ export interface NavBarLink {
 const NavBar = async () => {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  const collectionDefaultPath = await getCollectionDefaultPath();
-  const buigraphyDefaultPath = await getBiographyDefaultPath();
+  // const collectionDefaultPath = await getCollectionDefaultPath();
+  // const buigraphyDefaultPath = await getBiographyDefaultPath();
 
   //! Artwork
   // TODO: add this route
 
   //! Collections
-  const collectionsNavlink: NavBarLink = {
-    label: "Collections",
-    path: collectionDefaultPath,
-  };
+  // const collectionsNavlink: NavBarLink = {
+  //   label: "Collections",
+  //   path: collectionDefaultPath,
+  // };
 
-  //! Biography
-  const biographyNavlink: NavBarLink = {
-    label: "Biography",
-    path: buigraphyDefaultPath,
-  };
+  // //! Biography
+  // const biographyNavlink: NavBarLink = {
+  //   label: "Biography",
+  //   path: buigraphyDefaultPath,
+  // };
 
   //! Blog
   const blogPath = buildUrl(["blog", "latest"]);
@@ -102,8 +102,8 @@ const NavBar = async () => {
   };
 
   const navLinks = [
-    collectionsNavlink,
-    biographyNavlink,
+    // collectionsNavlink,
+    // biographyNavlink,
     blogNavlink,
     projectNavlink,
     shopNavlink,

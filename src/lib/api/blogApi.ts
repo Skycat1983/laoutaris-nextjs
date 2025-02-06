@@ -10,7 +10,7 @@ interface FetchBlogEntriesParams {
 
 interface BlogEntriesResponse {
   data: FrontendBlogEntry[];
-  metadata: PaginationMetadata; // Not optional
+  metadata: PaginationMetadata;
 }
 export async function fetchBlogEntries({
   sortby = "latest",

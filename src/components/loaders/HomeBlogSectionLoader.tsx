@@ -1,4 +1,4 @@
-import { transformToPick } from "@/lib/transforms/dataTransforms";
+import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import HomeBlogSection from "../homepageSections/HomeBlogSection";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
@@ -20,14 +20,16 @@ export type BlogCardData = Pick<
 export async function HomeBlogSectionLoader() {
   try {
     // Fetch data using API layer
-    const blogs = await fetchBlogEntries({
+    const response = await fetchBlogEntries({
       sortby: BLOG_FETCH_CONFIG.sortby,
       limit: BLOG_FETCH_CONFIG.limit,
       fields: BLOG_FETCH_CONFIG.fields,
     });
 
+    const blogs = response.data;
+
     // Transform data using transform layer
-    const blogCards = blogs.data.map((blog) =>
+    const blogCards = blogs.map((blog) =>
       transformToPick(blog, BLOG_FETCH_CONFIG.fields)
     );
 

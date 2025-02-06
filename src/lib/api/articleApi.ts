@@ -1,8 +1,8 @@
-import type { FrontendArticle } from "@/lib/types/articleTypes";
+import type { FrontendArticle, Section } from "@/lib/types/articleTypes";
 import { headers } from "next/headers";
 
 interface FetchArticlesParams {
-  section?: string;
+  section?: Section;
   fields?: readonly string[];
   limit?: number;
   page?: number;
