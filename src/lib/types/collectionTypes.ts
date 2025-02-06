@@ -6,7 +6,6 @@ interface BaseFrontendCollection {
   subtitle: string;
   summary: string;
   text: string;
-  // author: string;
   imageUrl: string;
   slug: string;
   section: "artwork" | "biography" | "project";
@@ -18,6 +17,10 @@ type PopulatedField<T> = string | T;
 
 export interface FrontendCollection extends BaseFrontendCollection {
   artworks: PopulatedField<FrontendArtwork>[];
+}
+
+export interface FrontendCollectionWithArtworks extends BaseFrontendCollection {
+  artworks: FrontendArtwork[];
 }
 
 export interface FrontendCollectionFull {

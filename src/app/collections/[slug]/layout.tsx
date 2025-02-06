@@ -2,28 +2,25 @@
 
 import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
-import { getCollectionArtworkPagination } from "@/lib/server/collection/use_cases/getCollectionArtworkPagination";
-import { PaginationArtworkLink } from "@/lib/server/collection/resolvers/collectionArtworkToPaginationLink";
-import { Pagination } from "@/components/ui/pagination/Pagination";
 import PaginationSkeleton from "@/components/skeletons/PaginationSkeleton";
+import { CollectionArtworksPaginationLoader } from "@/components/loaders/CollectionArtworksPaginationLoader";
 
 export default async function CollectionSlugLayout({
   params,
   children,
 }: {
   children: React.ReactNode;
-  params: { collectionSlug: string };
+  params: { slug: string };
 }) {
   await dbConnect();
-  const collectionSlug = params.collectionSlug;
-  const fetchAndResolve = (): Promise<PaginationArtworkLink[]> =>
-    getCollectionArtworkPagination(collectionSlug);
+  const { slug } = params;
 
   return (
     <section className="">
       {children}
+
       <Suspense fallback={<PaginationSkeleton />}>
-        <Pagination getData={fetchAndResolve} />
+        <CollectionArtworksPaginationLoader slug={slug} />
       </Suspense>
     </section>
   );

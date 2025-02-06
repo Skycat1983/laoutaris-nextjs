@@ -25,7 +25,8 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const article = transformMongooseDoc<FrontendArticle>(mongoArticle);
+    const article =
+      transformMongooseDoc<FrontendArticleWithArtwork>(mongoArticle);
 
     return NextResponse.json({
       success: true,

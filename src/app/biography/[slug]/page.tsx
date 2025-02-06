@@ -1,4 +1,3 @@
-import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
 import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/ArticleLoader";
@@ -6,11 +5,9 @@ import { ArticleLoader } from "@/components/loaders/ArticleLoader";
 export default async function Article({
   params,
 }: {
-  params: { articleSlug: string };
+  params: { slug: string };
 }) {
-  await dbConnect();
-  const slug = params.articleSlug;
-
+  const { slug } = params;
   return (
     <>
       <Suspense fallback={<ArticleViewSkeleton />}>

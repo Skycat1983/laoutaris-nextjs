@@ -6,6 +6,8 @@ import {
   CollectionNavItem,
   CollectionNavListResponse,
   CollectionNavItemResponse,
+  CollectionArtworksNavResponse,
+  ArtworkNavFields,
 } from "../types/navigationTypes";
 
 export async function fetchArticleNavigationList(
@@ -91,6 +93,36 @@ export async function fetchCollectionNavigationItem(
       );
     }
     return result.data;
+  } catch (error) {
+    console.error("Error parsing response:", error);
+    throw error;
+  }
+}
+
+export async function fetchCollectionArtworksNavigation(
+  slug: string
+): Promise<ArtworkNavFields[]> {
+  const url = `${process.env.BASEURL}/api/v2/navigation/collections/${slug}/artworks`;
+  console.log("Fetching from:", url);
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: headers(),
+    cache: "no-store",
+  });
+
+  console.log("Response status:", response.status);
+  const text = await response.text();
+  console.log("Response text:", text);
+
+  try {
+    const result = JSON.parse(text) as CollectionArtworksNavResponse;
+    if (!result.success) {
+      throw new Error(
+        result.error || "Failed to fetch collection artworks navigation"
+      );
+    }
+    return result.data.artworks;
   } catch (error) {
     console.error("Error parsing response:", error);
     throw error;
