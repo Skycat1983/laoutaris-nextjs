@@ -1,6 +1,8 @@
 import { BlogModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import dbConnect from "@/utils/mongodb";
 
 type BlogApiResponse = ApiResponse<FrontendBlogEntry[]>;
 type SortByType = "latest" | "oldest" | "popular" | "featured";
@@ -9,29 +11,38 @@ export const GET = async (
   req: NextRequest
 ): Promise<NextResponse<BlogApiResponse>> => {
   try {
-    const { searchParams } = new URL(req.url);
+    // Ensure DB connection
+    await dbConnect();
 
-    // Build query object
-    const query: any = {};
+    const { searchParams } = new URL(req.url);
+    console.log("Search params:", Object.fromEntries(searchParams));
+
+    // Check total blogs in collection first
+    const totalBlogs = await BlogModel.countDocuments({});
+    console.log("Total blogs in collection:", totalBlogs);
+
+    // Build filter query object (separate from sort)
+    const filterQuery: any = {};
+    const sortQuery: any = {};
+
     const sortby = (searchParams.get("sortby") as SortByType) || "latest";
-    const fields = searchParams.get("fields")?.split(",").join(" ") || "";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
-    // Apply sorting
+    // Apply sorting (separate from filter)
     switch (sortby) {
       case "latest":
-        query.sort = { displayDate: -1 };
+        sortQuery.displayDate = -1;
         break;
       case "oldest":
-        query.sort = { displayDate: 1 };
+        sortQuery.displayDate = 1;
         break;
       case "popular":
-        query.sort = { comments: -1 };
+        sortQuery.comments = -1;
         break;
       case "featured":
-        query.featured = true;
-        query.sort = { displayDate: -1 };
+        filterQuery.featured = true; // This goes in filter
+        sortQuery.displayDate = -1;
         break;
       default:
         return NextResponse.json({
@@ -41,14 +52,31 @@ export const GET = async (
         } satisfies ApiErrorResponse);
     }
 
-    const [blogs, total] = await Promise.all([
-      BlogModel.find(query)
-        .select(fields)
-        .sort(query.sort)
+    console.log("MongoDB query:", {
+      filter: filterQuery,
+      sort: sortQuery,
+      skip: (page - 1) * limit,
+      limit,
+    });
+
+    // Try a simple find first to verify query works
+    const simpleFind = await BlogModel.find({}).lean();
+    console.log("Simple find count:", simpleFind.length);
+
+    const [rawBlogs, total] = await Promise.all([
+      BlogModel.find(filterQuery) // Use filter query here
+        .sort(sortQuery) // Use sort query here
         .skip((page - 1) * limit)
-        .limit(limit),
-      BlogModel.countDocuments(query),
+        .limit(limit)
+        .lean(),
+      BlogModel.countDocuments(filterQuery), // Use same filter query for count
     ]);
+
+    console.log("Raw blogs count:", rawBlogs?.length);
+    console.log("First raw blog:", JSON.stringify(rawBlogs?.[0], null, 2));
+
+    // Transform mongoose docs
+    const blogs = transformMongooseDoc<FrontendBlogEntry[]>(rawBlogs);
 
     const metadata: PaginationMetadata = {
       page,
@@ -64,6 +92,10 @@ export const GET = async (
     } satisfies PaginatedResponse<FrontendBlogEntry[]>);
   } catch (error) {
     console.error("Blog fetch error:", error);
+    console.error(
+      "Error stack:",
+      error instanceof Error ? error.stack : "No stack trace"
+    );
     return NextResponse.json({
       success: false,
       error: "Failed to fetch blog entries",

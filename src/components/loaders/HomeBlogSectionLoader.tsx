@@ -20,6 +20,7 @@ export type BlogCardData = Pick<
 
 // 3. Loader Function
 export async function HomeBlogSectionLoader() {
+  console.log("HomeBlogSectionLoader");
   try {
     // Fetch data using API layer
     const response = await fetchBlogEntries({
@@ -28,12 +29,16 @@ export async function HomeBlogSectionLoader() {
       fields: BLOG_FETCH_CONFIG.fields,
     });
 
+    console.log("response in loader", response);
+
     const blogs = response.data;
 
     // Transform data using transform layer
     const blogCards = blogs.map((blog) =>
       transformToPick(blog, BLOG_FETCH_CONFIG.fields)
     );
+
+    console.log("blogCards", blogCards);
 
     // Return component with transformed data
     return <HomeBlogSection blogs={blogCards} />;

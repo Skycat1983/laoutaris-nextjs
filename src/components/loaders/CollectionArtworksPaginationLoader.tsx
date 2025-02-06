@@ -10,5 +10,5 @@ export async function CollectionArtworksPaginationLoader({
 }: CollectionArtworksPaginationLoaderProps) {
   const paginationArtwork = await fetchCollectionArtworksNavigation(slug);
 
-  return <Pagination items={paginationArtwork} />;
+  return <Pagination items={paginationArtwork} slug={slug} />;
 }

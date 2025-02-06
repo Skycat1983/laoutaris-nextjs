@@ -1,7 +1,10 @@
 import { CollectionModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+
 import { CollectionArtworkNav } from "@/lib/types/navigationTypes";
+
+// Define the shape we want using Pick
 
 type CollectionArtworksNavResponse = ApiResponse<CollectionArtworkNav>;
 

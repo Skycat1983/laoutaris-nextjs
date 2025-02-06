@@ -17,11 +17,11 @@ import { getUserIdFromSession } from "../../user/session/getUserIdFromSession";
 //* It makes more sense to channel the overhead of checking if the artwork belongs to the collection to the resolver, where it can be handled more efficiently when these unlikely requests are made, rather than on every legitimate request.
 //! Problem: We can't check what collection the artwork belongs to in the resolver because collections have artworks but artworks don't currently have collections
 export const getArtworkView = async ({
-  collectionSlug,
+  slug,
   artworkId,
 }: // userId,
 {
-  collectionSlug: string;
+  slug: string;
   artworkId: string;
   // userId?: string | null;
 }): Promise<SanitizedArtwork> => {
