@@ -1,11 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { RefreshIcon } from "@/components/ui/common/icons/RefreshIcon";
+import { useRouter } from "next/navigation";
+
+interface RefreshButtonProps {
+  onClick: () => void;
+}
 
 export function RefreshButton() {
   const router = useRouter();
-
   const handleRefresh = () => {
     console.log("Refresh clicked");
     router.refresh();

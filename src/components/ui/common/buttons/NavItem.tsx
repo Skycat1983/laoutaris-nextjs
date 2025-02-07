@@ -27,10 +27,10 @@ const NavItem = ({
     segments.includes(label.toLowerCase()) ||
     currentSortby === label.toLowerCase();
 
-  console.log("segments", segments);
-  console.log("currentSortby", currentSortby);
-  console.log("label", label.toLowerCase());
-  console.log("isActive", isActive);
+  // console.log("segments", segments);
+  // console.log("currentSortby", currentSortby);
+  // console.log("label", label.toLowerCase());
+  // console.log("isActive", isActive);
 
   const finalClassName = disabled
     ? `${className} cursor-not-allowed opacity-50`

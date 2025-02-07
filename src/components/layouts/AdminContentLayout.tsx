@@ -1,3 +1,5 @@
+"use client";
+
 import { getArticleFeed } from "@/lib/server/admin/use_cases/getArticleFeed";
 import { getArtworkFeed } from "@/lib/server/admin/use_cases/getArtworkFeed";
 

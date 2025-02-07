@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/ui/common/icons/CopyIcon";
 import copy_id from "@/utils/copy_id";
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 
 interface BlogFeedCardProps {
-  blog: FrontendBlogEntryUnpopulated;
+  blog: FrontendBlogEntry;
 }
 
 export function BlogFeedCard({ blog }: BlogFeedCardProps) {

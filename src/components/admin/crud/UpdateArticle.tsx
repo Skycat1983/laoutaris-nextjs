@@ -35,14 +35,11 @@ export const UpdateArticle = () => {
   async function onSubmit(data: ReadFormValues) {
     try {
       const response = await fetch(
-        `/api/article?identifierKey=_id&identifierValue=${encodeURIComponent(
-          data.objectId
-        )}&single=true`
+        `/api/v2/admin/article/read?_id=${encodeURIComponent(data.objectId)}`
       );
 
       const result = await response.json();
-
-      console.log("result", result);
+      console.log("Article fetch result:", result);
 
       if (!result.success) {
         throw new Error(result.message || "Failed to fetch article");

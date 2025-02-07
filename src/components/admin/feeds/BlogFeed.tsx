@@ -1,12 +1,12 @@
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
-import { RefreshButton } from "./RefreshButton";
 import { getBlogFeed } from "@/lib/server/admin/use_cases/getBlogFeed";
 import { BlogFeedCard } from "./BlogFeedCard";
 import { delay } from "@/utils/debug";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { RefreshButton } from "./RefreshButton";
 
 export async function BlogFeed() {
   await delay(2000);
-  const blogFeed: FrontendBlogEntryUnpopulated[] = await getBlogFeed();
+  const blogFeed: FrontendBlogEntry[] = await getBlogFeed();
 
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">

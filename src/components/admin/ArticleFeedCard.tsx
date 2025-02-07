@@ -10,13 +10,17 @@ interface ArticleFeedCardProps {
 }
 
 export function ArticleFeedCard({ article }: ArticleFeedCardProps) {
+  console.log("article", article);
   const handleCopyId = copy_id();
 
   return (
     <div className="relative group w-full p-12">
       <div className="relative">
         <Image
-          src={article.imageUrl.replace("/upload/", "/upload/w_300,q_auto/")}
+          src={article.artwork.image.secure_url.replace(
+            "/upload/",
+            "/upload/w_300,q_auto/"
+          )}
           alt={article.title}
           width={200}
           height={200}

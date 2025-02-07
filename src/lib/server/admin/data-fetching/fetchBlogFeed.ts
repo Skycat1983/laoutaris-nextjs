@@ -1,9 +1,9 @@
 "use server";
 
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import { headers } from "next/headers";
 
-export async function fetchBlogFeed(): Promise<FrontendBlogEntryUnpopulated[]> {
+export async function fetchBlogFeed(): Promise<FrontendBlogEntry[]> {
   const response = await fetch("http://localhost:3000/api/admin/blog/read", {
     method: "GET",
     headers: headers(),
