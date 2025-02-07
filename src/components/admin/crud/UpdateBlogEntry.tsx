@@ -1,6 +1,5 @@
 "use client";
 
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { useEffect, useState } from "react";
 import {
   Form,
@@ -16,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
 import { UpdateBlogForm } from "@/components/ui/forms/UpdateBlogForm";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -25,9 +25,7 @@ type ReadFormValues = z.infer<typeof readSchema>;
 
 export const UpdateBlogEntry = () => {
   // const [blogId, setBlogId] = useState<string | null>(null);
-  const [blogInfo, setBlogInfo] = useState<FrontendBlogEntryUnpopulated | null>(
-    null
-  );
+  const [blogInfo, setBlogInfo] = useState<FrontendBlogEntry | null>(null);
   const form = useForm<ReadFormValues>({
     resolver: zodResolver(readSchema),
     defaultValues: {

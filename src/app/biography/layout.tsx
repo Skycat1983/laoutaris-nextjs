@@ -1,5 +1,4 @@
 "use server";
-import dbConnect from "@/utils/mongodb";
 import React, { Suspense } from "react";
 import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { BiographySubnavLoader } from "../../components/loaders/BiographySubnavLoader";

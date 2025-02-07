@@ -7,7 +7,7 @@ interface PostBlogParams {
 
 export async function postBlog({ blogData }: PostBlogParams) {
   console.log("blogData in postBlog", blogData);
-  const response = await fetch(`/api/admin/blog/create`, {
+  const response = await fetch(`/api/v2/admin/blog/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

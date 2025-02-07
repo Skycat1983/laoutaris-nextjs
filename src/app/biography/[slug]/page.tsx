@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/ArticleLoader";
 
-export default async function Article({
+export default async function BiographySlugPage({
   params,
 }: {
   params: { slug: string };

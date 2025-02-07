@@ -20,7 +20,7 @@ import { redirect } from "next/navigation";
  *
  * @throws {Error} When no articles are found or API fails
  */
-export default async function Biography() {
+export default async function BiographyPage() {
   try {
     // Fetch the list of biography articles
     const articles = await fetchArticleNavigationList("biography");

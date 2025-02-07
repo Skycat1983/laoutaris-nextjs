@@ -17,7 +17,7 @@ import { HomeBlogSectionLoader } from "../loaders/HomeBlogSectionLoader";
 
 // TODO: Home Collection Section Loader
 
-export default async function HomepageView() {
+export default async function Home() {
   return (
     <>
       <Hero />
