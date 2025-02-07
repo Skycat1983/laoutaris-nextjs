@@ -9,11 +9,12 @@ import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import { BLOG_NAV_LINKS } from "@/constants/navigationLinks";
 import { dateToYear } from "@/utils/dateUtils";
 import { getYearColor } from "@/utils/colorUtils";
+import { BlogEntryData } from "../loaders/BlogListLoader";
 
 type BlogPageLink = string | null;
 
 type BlogSectionProps = {
-  blogEntries: FrontendBlogEntry[];
+  blogEntries: BlogEntryData[];
   sortby: string;
   next: BlogPageLink;
   prev: BlogPageLink;

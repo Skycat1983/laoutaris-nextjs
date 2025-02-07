@@ -33,6 +33,18 @@ const MobileArticleView: React.FC<ArticleProps> = ({
     }
   };
 
+  // Determine overlay styles based on overlay color
+  const overlayStyles =
+    article.overlayColour === "white"
+      ? {
+          container: "bg-black/30",
+          text: "text-white/90",
+        }
+      : {
+          container: "bg-white/30",
+          text: "text-black/90",
+        };
+
   return (
     <>
       <div
@@ -58,7 +70,46 @@ const MobileArticleView: React.FC<ArticleProps> = ({
       <div className="flex flex-col justify-start items-start bg-slate-100/50 relative bottom-[200px]">
         <article className="prose-xl text-left p-24 bg-white fade-in">
           {article.text.split("\r\n\r\n").map((paragraph, index) => (
-            <p key={index} className="m-2 leading-8 prose-lg">
+            <p
+              key={index}
+              className={`m-2 leading-8 prose-lg ${
+                index === 0 ? "drop-cap" : ""
+              }`}
+            >
+              {paragraph}
+            </p>
+          ))}
+        </article>
+        {/* INSERT HERE */}
+        <div
+          className="w-full bg-cover bg-fixed h-[400px] fade-in"
+          style={{
+            backgroundImage: `url(${article.artwork.image.secure_url})`,
+            backgroundPosition: "50% 50%", // Centered position for middle image
+          }}
+        >
+          {/* Overlay text container */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className={`text-center p-8 ${overlayStyles.container} backdrop-blur-sm w-full m-16`}
+            >
+              <p className={`${overlayStyles.text} text-xl italic`}>
+                `Here we will add a quote from the article. The quote should
+                ideally come from the center of the article. Perhaps it can
+                scroll into view parallax style.`
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <article className="prose-xl text-left p-24 bg-white fade-in">
+          {article.text.split("\r\n\r\n").map((paragraph, index) => (
+            <p
+              key={index}
+              className={`m-2 leading-8 prose-lg ${
+                index === 0 ? "drop-cap" : ""
+              }`}
+            >
               {paragraph}
             </p>
           ))}

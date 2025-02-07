@@ -10,14 +10,14 @@ import dbConnect from "@/utils/mongodb";
 export default async function ArtworkId({
   params,
 }: {
-  params: { collectionSlug: string; artworkId: string };
+  params: { slug: string; artworkId: string };
 }) {
   await dbConnect();
   await delay(2000);
-  const { collectionSlug, artworkId } = params;
+  const { slug, artworkId } = params;
 
   const artworkData: SanitizedArtwork = await getArtworkView({
-    collectionSlug,
+    slug,
     artworkId,
   });
 

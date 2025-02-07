@@ -19,8 +19,6 @@ export default async function BlogPage({
     | "featured";
   const page = parseInt(searchParams.page || "1", 10);
 
-  console.log("Page rendering with sortby:", sortby); // Debug log
-
   return (
     <Suspense fallback={<BlogEntriesSkeleton />}>
       <BlogListLoader sortby={sortby} page={page} />
