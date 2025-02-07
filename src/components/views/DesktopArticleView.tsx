@@ -2,11 +2,12 @@ import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import { Button } from "@/components/ui/shadcn/button";
 import { FrontendArticleWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
+import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ArticleProps {
-  article: FrontendArticleWithArtworkTooltip;
+  article: FrontendArticleWithArtwork;
   nextArticle: string | null;
   prevArticle: string | null;
 }
@@ -22,10 +23,10 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
         <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full place-start z-negative">
           <div className="flex flex-col h-full justify-start items-start align-start">
             <Image
-              src={article.imageUrl}
+              src={article.artwork.image.secure_url}
               alt={article.title}
-              width={1920}
-              height={1080}
+              width={article.artwork.image.pixelWidth}
+              height={article.artwork.image.pixelHeight}
               className="my-bg h-full object-cover shadow-lg fade-in z-0"
             />
           </div>
@@ -46,7 +47,10 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
         </div>
         <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
           <h1 className="text-5xl font-bold font-cormorant">Biography</h1>
-          <h1 className="text-neutral-500 italic text-2xl py-6">
+          {/* <h1 className="text-neutral-500 italic text-xl py-6 fontface-decorative">
+            <span>{article.summary}</span>
+          </h1> */}
+          <h1 className="text-neutral-500 italic text-xl py-6">
             <span>{article.summary}</span>
           </h1>
           {/* Author info */}

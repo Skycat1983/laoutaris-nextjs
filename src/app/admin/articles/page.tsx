@@ -3,6 +3,8 @@ import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
 import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
 import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
+import { UpdateArticle } from "@/components/admin/crud/UpdateArticle";
+import { CreateArticle } from "@/components/admin/crud/CreateArticle";
 
 export default function AdminArticlesPage() {
   console.log("artciles");
@@ -16,9 +18,9 @@ export default function AdminArticlesPage() {
       }
     >
       <AdminCrudTabs
-        createComponent={<div>Create Article</div>}
+        createComponent={<CreateArticle />}
         readComponent={<div>Read Article</div>}
-        updateComponent={<div>Update Article</div>}
+        updateComponent={<UpdateArticle />}
         deleteComponent={<div>Delete Article</div>}
       />
     </AdminContentLayout>
