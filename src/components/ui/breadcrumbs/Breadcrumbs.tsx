@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/shadcn/breadcrumb";
-import { useSelectedLayoutSegments } from "next/navigation";
+import { useSelectedLayoutSegments, useSearchParams } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 
 import React from "react";
@@ -15,8 +15,13 @@ import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 
 const Breadcrumbs = () => {
   const segments = useSelectedLayoutSegments();
+  const searchParams = useSearchParams();
 
-  // TODO: disabled the last link displayed in the breadcrumb
+  // Get sortby param if it exists
+  const sortby = searchParams.get("sortby");
+
+  // Create combined segments including search params
+  const allSegments = sortby ? [...segments, sortby] : segments;
 
   return (
     <div className="pl-4">
@@ -29,17 +34,25 @@ const Breadcrumbs = () => {
                   <HouseIcon className="bg-whitish h-5 md:h-6 lg:h-8" />
                 </BreadcrumbLink>
               </BreadcrumbItem>
-              {segments.map((segment, index) => {
+              {allSegments.map((segment, index) => {
+                // Handle different segment types
                 const displaySegment = /^[0-9a-fA-F]{24}$/.test(segment)
                   ? "artworkId"
                   : segment;
+
+                // Build href considering if it's a search param
+                const href =
+                  index === segments.length
+                    ? `/${segments.join("/")}?sortby=${segment}` // For sortby param
+                    : `/${segments.slice(0, index + 1).join("/")}`; // For regular segments
+
                 return (
                   <React.Fragment key={index}>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbLink
                         className="font-face-default subheading font-normal text-base flex-shrink-0 lg:font-medium lg:text-lg"
-                        href={`/${segments.slice(0, index + 1).join("/")}`}
+                        href={href}
                       >
                         {displaySegment}
                       </BreadcrumbLink>

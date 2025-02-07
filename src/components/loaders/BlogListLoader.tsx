@@ -3,7 +3,7 @@
 import { fetchBlogEntries } from "@/lib/api/blogApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import BlogEntriesView from "@/components/views/BlogEntriesView";
+import BlogListView from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 
 // 1. Config Constants
@@ -32,7 +32,7 @@ interface BlogEntriesLoaderProps {
 }
 
 // 3. Loader Function
-export async function BlogPageLoader({ sortby, page }: BlogEntriesLoaderProps) {
+export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
     // Fetch data using API layer
     const { data: blogs, metadata } = await fetchBlogEntries({
@@ -41,6 +41,8 @@ export async function BlogPageLoader({ sortby, page }: BlogEntriesLoaderProps) {
       limit: BLOG_ENTRIES_CONFIG.limit,
       fields: BLOG_ENTRIES_CONFIG.fields,
     });
+
+    // console.log("blogs in loader", blogs);
 
     // Transform blog entries with explicit typing
     const transformedBlogs: BlogEntryData[] = blogs.map((blog) =>
@@ -57,7 +59,7 @@ export async function BlogPageLoader({ sortby, page }: BlogEntriesLoaderProps) {
 
     // Return component with transformed data
     return (
-      <BlogEntriesView
+      <BlogListView
         blogEntries={transformedBlogs}
         sortby={sortby}
         next={next}

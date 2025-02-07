@@ -12,6 +12,7 @@ interface SubnavProps {
 }
 
 export function Subnav({ links }: SubnavProps) {
+  console.log("links", links);
   return (
     <div className="relative flex flex-row w-full justify-center mx-4">
       <ScrollArea className="whitespace-nowrap rounded-md h-auto">

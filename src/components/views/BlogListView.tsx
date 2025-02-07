@@ -7,6 +7,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/shadcn/button";
 import { NavigateNextIcon } from "../ui/common/icons/NavigateNextIcon";
+import { buildUrl } from "@/utils/buildUrl";
+import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
+import SubNavBar from "../ui/subnav/SubNavBar";
+import { Subnav } from "../ui/subnav/Subnav";
 
 type BlogPageLink = string | null;
 
@@ -17,7 +21,7 @@ type BlogSectionProps = {
   prev: BlogPageLink;
 };
 
-const BlogEntriesView = ({
+const BlogListView = ({
   blogEntries,
   sortby,
   next,
@@ -53,15 +57,43 @@ const BlogEntriesView = ({
         return "bg-gray-500";
     }
   };
+  const stem = "blog";
+
+  const subNavLinks: SubNavBarLink[] = [
+    {
+      title: "Latest",
+      slug: "latest",
+      link_to: buildUrl([stem], { sortby: "latest" }),
+    },
+    {
+      title: "Oldest",
+      slug: "oldest",
+      link_to: buildUrl([stem], { sortby: "oldest" }),
+    },
+    {
+      title: "Featured",
+      slug: "featured",
+      link_to: buildUrl([stem], { sortby: "featured" }),
+    },
+    {
+      title: "Popular",
+      slug: "popular",
+      link_to: buildUrl([stem], { sortby: "popular" }),
+      disabled: true,
+    },
+  ];
+
   return (
     <>
-      <div className={`grid grid-cols-12 gap-4 py-6`}>
+      <Subnav links={subNavLinks} />
+
+      <div className={`grid grid-cols-12 gap-4 py-0`}>
         <div className="col-span-1 xl:col-span-2"></div>
 
         <div className="col-span-10 xl:col-span-8 flex flex-col gap-24">
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 m-5">
             {blogEntries.map((blog, index) => (
-              <Link key={index} href={`/blog/${sortby}/${blog.slug}`}>
+              <Link key={index} href={`/blog/${blog.slug}`}>
                 <div className="relative group w-full">
                   <div className="relative">
                     <Image
@@ -128,4 +160,4 @@ const BlogEntriesView = ({
   );
 };
 
-export default BlogEntriesView;
+export default BlogListView;

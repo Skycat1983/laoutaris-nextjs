@@ -34,7 +34,7 @@ const NavBar = async () => {
         collectionNavigation[0].artworkId,
       ]),
     },
-    { label: "Blog", path: buildUrl(["blog", "latest"]) },
+    { label: "Blog", path: buildUrl(["blog"], { sortby: "latest" }) }, // Add query param
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];

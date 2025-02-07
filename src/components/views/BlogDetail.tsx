@@ -1,16 +1,13 @@
-import {
-  FrontendBlogEntryFull,
-  FrontendBlogEntryUnpopulated,
-} from "@/lib/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import Image from "next/image";
 
-const BlogItem = ({
+const BlogDetail = ({
   title,
   subtitle,
   text,
   imageUrl,
   displayDate,
-}: FrontendBlogEntryUnpopulated) => {
+}: FrontendBlogEntry) => {
   return (
     <div className="w-full mx-auto">
       <div className="bg-white shadow-lg w-full rounded overflow-hidden">
@@ -43,4 +40,4 @@ const BlogItem = ({
   );
 };
 
-export default BlogItem;
+export default BlogDetail;

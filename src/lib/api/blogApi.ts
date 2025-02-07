@@ -28,16 +28,34 @@ export async function fetchBlogEntries({
     headers: headers(),
   });
 
-  //   console.log("response in api", response);
-
   const result = (await response.json()) as PaginatedResponse<
     FrontendBlogEntry[]
   >;
 
-  console.log("result in api", result);
+  // console.log("result in api", result);
   if (!result.success) {
     throw new Error("Failed to fetch blog entries");
   }
 
   return result;
+}
+
+export async function fetchBlogDetail(
+  slug: string
+): Promise<FrontendBlogEntry> {
+  const response = await fetch(`${process.env.BASEURL}/api/v2/blog/${slug}`, {
+    method: "GET",
+    headers: headers(),
+    cache: "no-store",
+  });
+  // console.log("response", response);
+
+  const result = (await response.json()) as ApiResponse<FrontendBlogEntry>;
+  // console.log("result", result);
+
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch blog detail");
+  }
+
+  return result.data;
 }

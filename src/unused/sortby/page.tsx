@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import BlogEntriesSkeleton from "@/components/skeletons/BlogEntriesSkeleton";
-import { BlogPageLoader } from "@/components/loaders/BlogPageLoader";
+import { BlogListLoader } from "@/components/loaders/BlogListLoader";
 
 export default async function BlogSortBy({
   params,
@@ -13,7 +13,7 @@ export default async function BlogSortBy({
 
   return (
     <Suspense fallback={<BlogEntriesSkeleton />}>
-      <BlogPageLoader sortby={params.sortby} page={page} />
+      <BlogListLoader sortby={params.sortby} page={page} />
     </Suspense>
   );
 }

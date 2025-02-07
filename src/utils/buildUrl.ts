@@ -1,7 +1,17 @@
-export const buildUrl = (segments: string[]) => {
-  const base = process.env.BASEURL;
-  return `${base}/${segments.join("/")}`;
-};
+export function buildUrl(
+  segments: string[],
+  query?: Record<string, string>
+): string {
+  const path = `/${segments.join("/")}`;
+
+  if (!query) return path;
+
+  const queryString = Object.entries(query)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+
+  return `${path}?${queryString}`;
+}
 
 export const constructUrl = (segments: string[]) => {
   const base = process.env.BASEURL;
