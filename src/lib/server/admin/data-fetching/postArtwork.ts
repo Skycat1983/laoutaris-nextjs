@@ -1,11 +1,11 @@
-import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
+import { BaseArtwork } from "@/lib/server/models/artworkModel";
 
 interface PostArtworkParams {
-  artworkData: Omit<FrontendArtworkUnpopulated, "_id">;
+  artworkData: Omit<BaseArtwork, "collections" | "watcherlist" | "favourited">;
 }
 
 export async function postArtwork({ artworkData }: PostArtworkParams) {
-  const response = await fetch("/api/admin/artwork/create", {
+  const response = await fetch("/api/v2/admin/artwork/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

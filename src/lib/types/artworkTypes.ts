@@ -1,4 +1,5 @@
 import { FrontendUser } from "./userTypes";
+import { ColorInfo, PredominantColors } from "./colorTypes";
 
 interface BaseFrontendArtwork {
   _id: string;
@@ -102,12 +103,12 @@ export interface FrontendArtworkWithFavourited {
 export interface ArtworkImage {
   secure_url: string;
   public_id: string;
-  predominantColors: PredominantColors;
+  bytes: number;
   pixelHeight: number;
   pixelWidth: number;
-  hexColors: HexColor[];
   format: string;
-  bytes: number;
+  hexColors: ColorInfo[];
+  predominantColors: PredominantColors;
 }
 
 export interface PredominantColors {

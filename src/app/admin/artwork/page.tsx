@@ -1,4 +1,4 @@
-// "use server";
+"use server";
 
 import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
@@ -9,7 +9,7 @@ import { DeleteArtwork } from "@/components/admin/crud/DeleteArtwork";
 import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
 import { UpdateArtwork } from "@/components/admin/crud/UpdateArtwork";
 
-export default function AdminArtworkPage() {
+export default async function AdminArtworkPage() {
   console.log("server");
   return (
     <AdminContentLayout

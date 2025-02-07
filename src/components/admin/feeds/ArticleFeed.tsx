@@ -1,16 +1,13 @@
-import { getArticleFeed } from "@/lib/server/admin/use_cases/getArticleFeed";
 import { ArticleFeedCard } from "../ArticleFeedCard";
 import { delay } from "@/utils/debug";
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import { RefreshButton } from "./RefreshButton";
-import { fetchArticleFeed } from "@/lib/server/admin/data-fetching/fetchArticleFeed";
+import { fetchArticleFeed } from "@/lib/api/feedApi";
 
 export async function ArticleFeed() {
   await delay(2000);
   const { data } = await fetchArticleFeed();
-  console.log("data", data);
-  // const articles = data.articles;
-  // console.log("articles", articles);
+  console.log("data in ArticleFeed", data);
 
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">

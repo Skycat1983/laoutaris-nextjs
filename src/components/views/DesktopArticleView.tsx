@@ -47,7 +47,9 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
           </div>
         </div>
         <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
-          <h1 className="text-5xl font-bold font-cormorant">Biography</h1>
+          <h1 className="text-5xl font-bold font-cormorant">
+            Joseph Laoutaris
+          </h1>
           {/* <h1 className="text-neutral-500 italic text-xl py-6 fontface-decorative">
             <span>{article.summary}</span>
           </h1> */}

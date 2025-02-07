@@ -8,6 +8,7 @@ import { UpdateArticle } from "@/components/admin/crud/UpdateArticle";
 import { CreateArticle } from "@/components/admin/crud/CreateArticle";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
+import { DeleteArticle } from "@/components/admin/crud/DeleteArticle";
 
 export default async function AdminArticlesPage() {
   return (
@@ -23,7 +24,7 @@ export default async function AdminArticlesPage() {
         createComponent={<CreateArticle />}
         readComponent={<div>Read Article</div>}
         updateComponent={<UpdateArticle />}
-        deleteComponent={<div>Delete Article</div>}
+        deleteComponent={<DeleteArticle />}
       />
     </AdminContentLayout>
   );

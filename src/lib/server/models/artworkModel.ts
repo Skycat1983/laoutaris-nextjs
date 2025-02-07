@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
+import { ColorInfo, PredominantColors } from "@/lib/types/colorTypes";
 
-export interface DBArtwork extends Document {
+export interface BaseArtwork {
   title: string;
   decade:
     | "1950s"
@@ -18,29 +19,8 @@ export interface DBArtwork extends Document {
     pixelHeight: number;
     pixelWidth: number;
     format: string;
-    hexColors: [
-      {
-        color: String;
-        percentage: Number;
-        // _id: { type: String };
-      }
-    ];
-    predominantColors: {
-      cloudinary: [
-        {
-          color: String;
-          percentage: Number;
-          // _id: { type: String };
-        }
-      ];
-      google: [
-        {
-          color: String;
-          percentage: Number;
-          // _id: { type: String };
-        }
-      ];
-    };
+    hexColors: ColorInfo[];
+    predominantColors: PredominantColors;
   };
   artstyle: "abstract" | "semi-abstract" | "figurative";
   medium:
@@ -59,6 +39,8 @@ export interface DBArtwork extends Document {
   watcherlist?: mongoose.Schema.Types.ObjectId[];
   favourited?: mongoose.Schema.Types.ObjectId[];
 }
+
+export interface DBArtwork extends Document, BaseArtwork {}
 
 const artworkSchema = new mongoose.Schema(
   {

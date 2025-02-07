@@ -1,18 +1,15 @@
-import {
-  ArtworkImage,
-  FrontendArtworkUnpopulated,
-} from "@/lib/types/artworkTypes";
+import { ArtworkImage } from "@/lib/types/artworkTypes";
+import { DBArtwork, BaseArtwork } from "@/lib/server/models/artworkModel";
 import { postArtwork } from "../../admin/data-fetching/postArtwork";
-import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
 
 interface ArtworkUploadParams {
   cloudinaryInfo: ArtworkImage;
   formData: {
     title: string;
-    decade: string;
-    artstyle: string;
-    medium: string;
-    surface: string;
+    decade: DBArtwork["decade"];
+    artstyle: DBArtwork["artstyle"];
+    medium: DBArtwork["medium"];
+    surface: DBArtwork["surface"];
     featured: boolean;
   };
 }
@@ -21,24 +18,19 @@ export async function handleArtworkUpload({
   cloudinaryInfo,
   formData,
 }: ArtworkUploadParams) {
-  const artworkData = {
+  const completeArtworkData: Omit<
+    BaseArtwork,
+    "collections" | "watcherlist" | "favourited"
+  > = {
     title: formData.title,
     decade: formData.decade,
     artstyle: formData.artstyle,
     medium: formData.medium,
     surface: formData.surface,
     featured: formData.featured,
-  };
-
-  // Combine image details with artwork data
-  const completeArtworkData: Omit<FrontendArtworkUnpopulated, "_id"> = {
-    ...artworkData,
     image: cloudinaryInfo,
-    watcherlist: [],
-    favourited: [],
   };
 
-  // Send to API via data fetching function
   return await postArtwork({ artworkData: completeArtworkData });
 }
 

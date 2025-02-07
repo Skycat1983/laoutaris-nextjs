@@ -10,13 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
-// import { revalidateArtworkFeed } from "@/lib/server/actions/revalidateArtwork";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const deleteArticleSchema = z.object({
-  objectId: z.string().min(1, "Object ID is required"),
+  articleId: z.string().min(1, "Article ID is required"),
 });
 
 type DeleteArticleFormValues = z.infer<typeof deleteArticleSchema>;
@@ -25,18 +24,18 @@ export function DeleteArticle() {
   const form = useForm<DeleteArticleFormValues>({
     resolver: zodResolver(deleteArticleSchema),
     defaultValues: {
-      objectId: "",
+      articleId: "",
     },
   });
 
   async function onSubmit(data: DeleteArticleFormValues) {
     try {
-      const response = await fetch(`/api/admin/article/delete`, {
+      const response = await fetch(`/api/v2/admin/article/delete`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: data.objectId }),
+        body: JSON.stringify({ id: data.articleId }),
       });
 
       if (!response.ok) {
@@ -59,10 +58,10 @@ export function DeleteArticle() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="objectId"
+            name="articleId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Object ID</FormLabel>
+                <FormLabel>Article ID</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter article ID" {...field} />
                 </FormControl>
