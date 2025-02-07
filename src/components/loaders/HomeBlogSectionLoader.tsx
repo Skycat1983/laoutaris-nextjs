@@ -29,7 +29,7 @@ export async function HomeBlogSectionLoader() {
       fields: BLOG_FETCH_CONFIG.fields,
     });
 
-    console.log("response in loader", response);
+    // console.log("response in loader", response);
 
     const blogs = response.data;
 
@@ -38,7 +38,7 @@ export async function HomeBlogSectionLoader() {
       transformToPick(blog, BLOG_FETCH_CONFIG.fields)
     );
 
-    console.log("blogCards", blogCards);
+    // console.log("blogCards", blogCards);
 
     // Return component with transformed data
     return <HomeBlogSection blogs={blogCards} />;

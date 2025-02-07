@@ -69,16 +69,19 @@ const MobileArticleView: React.FC<ArticleProps> = ({
 
       <div className="flex flex-col justify-start items-start bg-slate-100/50 relative bottom-[200px]">
         <article className="prose-xl text-left p-24 bg-white fade-in">
-          {article.text.split("\r\n\r\n").map((paragraph, index) => (
-            <p
-              key={index}
-              className={`m-2 leading-8 prose-lg ${
-                index === 0 ? "drop-cap" : ""
-              }`}
-            >
-              {paragraph}
-            </p>
-          ))}
+          {article.text
+            .replace(/\r\n/g, "\n") // Normalize to \n
+            .split(/\n\n+/) // Split on blank lines
+            .map((paragraph, index) => (
+              <p
+                key={index}
+                className={`leading-8 prose-lg mb-6 ${
+                  index === 0 ? "drop-cap" : ""
+                }`}
+              >
+                {paragraph.trim()}
+              </p>
+            ))}
         </article>
         {/* INSERT HERE */}
         <div
@@ -103,16 +106,19 @@ const MobileArticleView: React.FC<ArticleProps> = ({
         </div>
 
         <article className="prose-xl text-left p-24 bg-white fade-in">
-          {article.text.split("\r\n\r\n").map((paragraph, index) => (
-            <p
-              key={index}
-              className={`m-2 leading-8 prose-lg ${
-                index === 0 ? "drop-cap" : ""
-              }`}
-            >
-              {paragraph}
-            </p>
-          ))}
+          {article.text
+            .replace(/\r\n/g, "\n") // Normalize to \n
+            .split(/\n\n+/) // Split on blank lines
+            .map((paragraph, index) => (
+              <p
+                key={index}
+                className={`leading-8 prose-lg mb-6 ${
+                  index === 0 ? "drop-cap" : ""
+                }`}
+              >
+                {paragraph.trim()}
+              </p>
+            ))}
         </article>
       </div>
 

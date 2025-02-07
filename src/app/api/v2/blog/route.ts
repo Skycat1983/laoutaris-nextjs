@@ -72,8 +72,8 @@ export const GET = async (
       BlogModel.countDocuments(filterQuery), // Use same filter query for count
     ]);
 
-    console.log("Raw blogs count:", rawBlogs?.length);
-    console.log("First raw blog:", JSON.stringify(rawBlogs?.[0], null, 2));
+    // console.log("Raw blogs count:", rawBlogs?.length);
+    // console.log("First raw blog:", JSON.stringify(rawBlogs?.[0], null, 2));
 
     // Transform mongoose docs
     const blogs = transformMongooseDoc<FrontendBlogEntry[]>(rawBlogs);

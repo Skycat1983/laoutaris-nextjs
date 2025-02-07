@@ -31,5 +31,7 @@ export async function ArticleLoader({ slug }: ArticleLoaderProps) {
         : null,
   };
 
+  console.log("article in loader", article);
+
   return <ArticleView article={article} navigation={navigation} />;
 }

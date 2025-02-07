@@ -17,6 +17,7 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
   nextArticle,
   prevArticle,
 }) => {
+  const paragraphs = article.text.replace(/\r\n/g, "\n").split(/\n\n+/);
   return (
     <>
       <div className="grid grid-cols-7 grid-rows-1 w-full h-full">
@@ -75,14 +76,14 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
             {/* Divider */}
             <div className="h-[2px] w-full bg-gray-500 my-10"></div>
             {/* Article text */}
-            {article.text.split("\r\n\r\n").map((paragraph, index) => (
+            {paragraphs.map((paragraph, index) => (
               <p
                 key={index}
                 className={`m-2 leading-8 prose-lg py-2 ${
                   index === 0 ? "drop-cap" : ""
                 }`}
               >
-                {paragraph}
+                {paragraph.trim()}
               </p>
             ))}
           </article>
