@@ -3,12 +3,12 @@ import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
 import NavItem from "../common/buttons/NavItem";
 
 interface SubnavProps {
-  links: {
+  links: ReadonlyArray<{
     title: string;
     slug: string;
     link_to: string;
     disabled?: boolean;
-  }[];
+  }>;
 }
 
 export function Subnav({ links }: SubnavProps) {

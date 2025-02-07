@@ -142,3 +142,26 @@
     }
   }
 }
+
+/*    
+ --font-cinzel-decorative : good but a bit OTT
+ */
+
+.drop-cap::first-letter {
+  initial-letter: 3;
+  -webkit-initial-letter: 3; /* Safari support */
+  margin-right: 0.5em;
+  font-family: var(--font-cormorant); /* Optional: use a different font */
+  color: #000; /* Optional: different color */
+  font-weight: 100;
+}
+
+/* Fallback for browsers that don't support initial-letter */
+@supports not (initial-letter: 3) {
+  .drop-cap::first-letter {
+    float: left;
+    font-size: 4em;
+    line-height: 0.8;
+    padding-right: 0.1em;
+  }
+}

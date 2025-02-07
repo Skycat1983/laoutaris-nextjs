@@ -1,21 +1,19 @@
 "use server";
 
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import React from "react";
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "../ui/shadcn/button";
 import { NavigateNextIcon } from "../ui/common/icons/NavigateNextIcon";
-import { buildUrl } from "@/utils/buildUrl";
-import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
-import SubNavBar from "../ui/subnav/SubNavBar";
 import { Subnav } from "../ui/subnav/Subnav";
+import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { BLOG_NAV_LINKS } from "@/constants/navigationLinks";
+import { dateToYear } from "@/utils/dateUtils";
+import { getYearColor } from "@/utils/colorUtils";
 
 type BlogPageLink = string | null;
 
 type BlogSectionProps = {
-  blogEntries: FrontendBlogEntryUnpopulated[];
+  blogEntries: FrontendBlogEntry[];
   sortby: string;
   next: BlogPageLink;
   prev: BlogPageLink;
@@ -27,65 +25,9 @@ const BlogListView = ({
   next,
   prev,
 }: BlogSectionProps) => {
-  const dateToYear = (date: Date) => {
-    return new Date(date).getFullYear();
-  };
-
-  const getYearColor = (year: number) => {
-    switch (year) {
-      case 2014:
-        return "bg-orange-400";
-      case 2015:
-        return "bg-indigo-500";
-      case 2016:
-        return "bg-green-700";
-      case 2017:
-        return "bg-yellow-500";
-      // case 2018:
-      //   return "bg-green-500";
-      // case 2019:
-      //   return "bg-coral-500";
-      // case 2020:
-      //   return "bg-pink-500";
-      case 2021:
-        return "bg-purple-500";
-      case 2022:
-        return "bg-blue-400";
-      case 2023:
-        return "bg-black";
-      default:
-        return "bg-gray-500";
-    }
-  };
-  const stem = "blog";
-
-  const subNavLinks: SubNavBarLink[] = [
-    {
-      title: "Latest",
-      slug: "latest",
-      link_to: buildUrl([stem], { sortby: "latest" }),
-    },
-    {
-      title: "Oldest",
-      slug: "oldest",
-      link_to: buildUrl([stem], { sortby: "oldest" }),
-    },
-    {
-      title: "Featured",
-      slug: "featured",
-      link_to: buildUrl([stem], { sortby: "featured" }),
-    },
-    {
-      title: "Popular",
-      slug: "popular",
-      link_to: buildUrl([stem], { sortby: "popular" }),
-      disabled: true,
-    },
-  ];
-
   return (
     <>
-      <Subnav links={subNavLinks} />
+      <Subnav links={BLOG_NAV_LINKS} />
 
       <div className={`grid grid-cols-12 gap-4 py-0`}>
         <div className="col-span-1 xl:col-span-2"></div>
