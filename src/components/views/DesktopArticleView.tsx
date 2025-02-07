@@ -45,11 +45,32 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
           </div>
         </div>
         <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
+          <h1 className="text-5xl font-bold font-cormorant">Biography</h1>
+          <h1 className="text-neutral-500 italic text-2xl py-6">
+            Artist: Joseph Laoutaris
+          </h1>
+          {/* Author info */}
+          <div className="flex flex-row w-full justify-start items-center">
+            <div className="h-16 w-16">
+              <Image
+                src="https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/heron_drr8t3.png"
+                alt="avatar"
+                width={100}
+                height={100}
+                className="rounded-full"
+              />
+            </div>
+            <div className="flex flex-col justify-start items-start ml-4">
+              <h1 className="text-2xl font-bold font-cormorant">
+                Heron Laoutaris
+              </h1>
+              <h2 className="text-neutral-500">Grandson</h2>
+            </div>
+          </div>
           <article className="prose-xl text-left fade-in">
-            <h1 className="text-2xl font-bold font-archivoBlack my-5">
-              {article.summary}
-            </h1>
+            {/* Divider */}
             <div className="h-[2px] w-full bg-gray-500 my-10"></div>
+            {/* Article text */}
             {article.text.split("\r\n\r\n").map((paragraph, index) => (
               <p
                 key={index}
