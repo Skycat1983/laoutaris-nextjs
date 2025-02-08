@@ -3,11 +3,13 @@ import { BlogFeedCard } from "./BlogFeedCard";
 import { delay } from "@/utils/debug";
 import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import { RefreshButton } from "./RefreshButton";
+import { fetchBlogFeed } from "@/lib/api/feedApi";
 
 export async function BlogFeed() {
   await delay(2000);
-  const blogFeed: FrontendBlogEntry[] = await getBlogFeed();
-
+  const { data }: PaginatedResponse<FrontendBlogEntry[]> =
+    await fetchBlogFeed();
+  //
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">
       <div className="flex flex-row items-center pt-8 border-b-2">
@@ -17,7 +19,7 @@ export async function BlogFeed() {
 
       <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
         <div className="flex flex-col gap-5 items-center p-4 gap-8">
-          {blogFeed.map((blog, i) => (
+          {data.map((blog, i) => (
             <BlogFeedCard blog={blog} key={i} />
           ))}
         </div>

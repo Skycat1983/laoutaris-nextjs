@@ -5,6 +5,7 @@ import { FrontendArticleWithArtworkTooltip } from "@/lib/server/article/resolver
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
+// import { ImQuotesLeft } from "react-icons/im";
 
 interface ArticleProps {
   article: FrontendArticleWithArtwork;

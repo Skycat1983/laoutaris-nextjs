@@ -138,8 +138,6 @@ export function CreateBlogForm() {
               )}
             />
 
-            {/* ... rest of your form fields ... */}
-
             <FormField
               control={form.control}
               name="imageUrl"

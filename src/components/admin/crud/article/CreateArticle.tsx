@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
 import { FrontendArtwork } from "@/lib/types/artworkTypes";
 import { CreateArticleForm } from "@/components/ui/forms/CreateArticleForm";
+import { readArtwork } from "@/lib/api/readApi";
 
 const readSchema = z.object({
   artworkId: z.string().min(1, "Artwork ID is required"),
@@ -34,20 +35,10 @@ export const CreateArticle = () => {
 
   async function onSubmit(data: ReadFormValues) {
     try {
-      const response = await fetch(
-        `/api/v2/admin/artwork/read?_id=${encodeURIComponent(data.artworkId)}`
-      );
-
-      const result = await response.json();
-      console.log("Artwork fetch result:", result);
-
-      if (!result.success) {
-        throw new Error(result.message || "Failed to fetch artwork");
-      }
-
+      const result = await readArtwork(data.artworkId);
       setArtworkInfo(result.data);
     } catch (error) {
-      console.error("Error reading artwork:", error);
+      console.error("Error in CreateArticle:", error);
     }
   }
 
