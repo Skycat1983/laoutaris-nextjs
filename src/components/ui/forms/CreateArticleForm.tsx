@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Image from "next/image";
 import {
   Form,
@@ -17,7 +16,10 @@ import {
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/button";
 import { FrontendArtwork } from "@/lib/types/artworkTypes";
-import { Section } from "@/lib/types/articleTypes";
+import {
+  createArticleSchema,
+  CreateArticleFormValues,
+} from "@/lib/types/articleTypes";
 import { ScrollArea } from "../shadcn/scroll-area";
 import {
   Select,
@@ -27,18 +29,7 @@ import {
   SelectValue,
 } from "../shadcn/select";
 import { Textarea } from "../shadcn/textarea";
-
-const createArticleSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  summary: z.string().min(10, "Summary must be at least 10 characters"),
-  text: z.string().min(50, "Article text must be at least 50 characters"),
-  imageUrl: z.string().url("Invalid URL"),
-  section: z.enum(["artwork", "biography", "project", "collections"] as const),
-  overlayColour: z.enum(["white", "black"] as const),
-});
-
-type CreateArticleFormValues = z.infer<typeof createArticleSchema>;
+import { postArticle } from "@/lib/api/postApi";
 
 interface CreateArticleFormProps {
   artworkInfo: FrontendArtwork;
@@ -61,34 +52,17 @@ export const CreateArticleForm = ({
       imageUrl: artworkInfo.image.secure_url,
       section: "artwork",
       overlayColour: "white",
+      artwork: artworkInfo._id,
     },
   });
 
   async function onSubmit(data: CreateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      console.log("data", data);
-
-      const response = await fetch("/api/v2/admin/article/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-          artwork: artworkInfo._id,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create article");
-      }
-
-      const result = await response.json();
-      console.log("Article created successfully:", result);
+      await postArticle(data);
       onSuccess();
     } catch (error) {
-      console.error("Error creating article:", error);
+      console.error("Error in CreateArticleForm:", error);
     } finally {
       setIsSubmitting(false);
     }

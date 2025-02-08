@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Image from "next/image";
 import {
   Form,
@@ -16,7 +15,11 @@ import {
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/button";
-import { FrontendArticle, Section } from "@/lib/types/articleTypes";
+import {
+  FrontendArticle,
+  FrontendArticleWithArtworkAndAuthor,
+  Section,
+} from "@/lib/types/articleTypes";
 import { ScrollArea } from "../shadcn/scroll-area";
 import {
   Select,
@@ -27,21 +30,15 @@ import {
 } from "../shadcn/select";
 import { Textarea } from "../shadcn/textarea";
 import { FrontendArtwork } from "@/lib/types/artworkTypes";
-
-const updateArticleSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  summary: z.string().min(10, "Summary must be at least 10 characters"),
-  text: z.string().min(50, "Article text must be at least 50 characters"),
-  imageUrl: z.string().url("Invalid URL"),
-  section: z.enum(["artwork", "biography", "project", "collections"] as const),
-  overlayColour: z.enum(["white", "black"] as const),
-});
-
-type UpdateArticleFormValues = z.infer<typeof updateArticleSchema>;
+import {
+  updateArticleSchema,
+  UpdateArticleFormValues,
+} from "@/lib/types/articleTypes";
+import { patchArticle } from "@/lib/api/patchApi";
+import { readArtwork } from "@/lib/api/readApi";
 
 interface UpdateArticleFormProps {
-  articleInfo: FrontendArticle;
+  articleInfo: FrontendArticleWithArtworkAndAuthor;
   onSuccess: () => void;
 }
 
@@ -65,14 +62,9 @@ export const UpdateArticleForm = ({
       imageUrl: articleInfo.imageUrl,
       section: articleInfo.section,
       overlayColour: articleInfo.overlayColour,
+      artwork: articleInfo.artwork._id,
     },
   });
-
-  const handleImageUrlBlur = (url: string) => {
-    if (url && url.match(/^https?:\/\/.+/)) {
-      setImagePreview(url);
-    }
-  };
 
   const handleFetchArtwork = async () => {
     const artworkId = artworkIdRef.current?.value;
@@ -80,17 +72,9 @@ export const UpdateArticleForm = ({
 
     setIsLoadingArtwork(true);
     try {
-      const response = await fetch(
-        `/api/v2/admin/artwork/read?_id=${encodeURIComponent(artworkId)}`
-      );
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.message || "Failed to fetch artwork");
-      }
-
-      setNewArtwork(result.data);
-      setImagePreview(result.data.image.secure_url);
+      const artwork: FrontendArtwork = await readArtwork(artworkId);
+      setNewArtwork(artwork);
+      setImagePreview(artwork.image.secure_url);
     } catch (error) {
       console.error("Error fetching artwork:", error);
     } finally {
@@ -101,29 +85,13 @@ export const UpdateArticleForm = ({
   async function onSubmit(data: UpdateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      const response = await fetch(
-        `/api/v2/admin/article/update?_id=${articleInfo._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...data,
-            artwork: newArtwork?._id || articleInfo.artwork,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update article");
-      }
-
-      const result = await response.json();
-      console.log("Article updated successfully:", result);
+      await patchArticle(articleInfo._id, {
+        ...data,
+        artwork: newArtwork?._id || articleInfo.artwork._id,
+      });
       onSuccess();
     } catch (error) {
-      console.error("Error updating article:", error);
+      console.error("Error in UpdateArticleForm:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -138,10 +106,7 @@ export const UpdateArticleForm = ({
             <div className="space-y-4 p-4 border rounded-lg">
               <h3 className="font-semibold">Associated Artwork</h3>
               <p className="text-sm text-gray-500">
-                Current Artwork:{" "}
-                {typeof articleInfo.artwork === "string"
-                  ? articleInfo.artwork
-                  : articleInfo.artwork.title}
+                Current Artwork: {articleInfo.artwork.title}
               </p>
               <div className="flex gap-2">
                 <Input ref={artworkIdRef} placeholder="Enter new artwork ID" />

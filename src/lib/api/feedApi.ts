@@ -11,17 +11,6 @@ interface PaginationParams {
   limit?: number;
 }
 
-// interface PaginatedResponse<T> {
-//   success: boolean;
-//   data: T;
-//   pagination: {
-//     total: number;
-//     page: number;
-//     pageSize: number;
-//     pageCount: number;
-//   };
-// }
-
 export async function fetchArticleFeed(
   params: PaginationParams = {}
 ): Promise<PaginatedResponse<FrontendArticleWithArtwork[]>> {

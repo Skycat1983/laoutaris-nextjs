@@ -1,5 +1,5 @@
 import { FrontendUser } from "./userTypes";
-import { ColorInfo, PredominantColors } from "./colorTypes";
+import { ColorInfo } from "./colorTypes";
 
 interface BaseFrontendArtwork {
   _id: string;
@@ -67,7 +67,6 @@ export interface FrontendArtworkUnpopulated {
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
-
   featured: boolean;
   watcherlist: string[];
   favourited: string[];
@@ -94,7 +93,6 @@ export interface FrontendArtworkWithFavourited {
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
-
   featured: boolean;
   watcherlist: string[];
   favourited: FrontendUserFull[];

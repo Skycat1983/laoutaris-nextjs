@@ -2,6 +2,7 @@ import type {
   FrontendArticle,
   FrontendArticleWithArtwork,
   Section,
+  CreateArticleFormValues,
 } from "@/lib/types/articleTypes";
 import { headers } from "next/headers";
 

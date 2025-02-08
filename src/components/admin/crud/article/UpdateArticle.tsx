@@ -14,8 +14,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
-import { FrontendArticle } from "@/lib/types/articleTypes";
+import {
+  FrontendArticle,
+  FrontendArticleWithArtworkAndAuthor,
+} from "@/lib/types/articleTypes";
 import { UpdateArticleForm } from "@/components/ui/forms/UpdateArticleForm";
+import { readArticle } from "@/lib/api/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -24,7 +28,8 @@ const readSchema = z.object({
 type ReadFormValues = z.infer<typeof readSchema>;
 
 export const UpdateArticle = () => {
-  const [articleInfo, setArticleInfo] = useState<FrontendArticle | null>(null);
+  const [articleInfo, setArticleInfo] =
+    useState<FrontendArticleWithArtworkAndAuthor | null>(null);
   const form = useForm<ReadFormValues>({
     resolver: zodResolver(readSchema),
     defaultValues: {
@@ -32,22 +37,14 @@ export const UpdateArticle = () => {
     },
   });
 
-  async function onSubmit(data: ReadFormValues) {
+  async function onSubmit(formData: ReadFormValues) {
     try {
-      const response = await fetch(
-        `/api/v2/admin/article/read?_id=${encodeURIComponent(data.objectId)}`
+      const article: FrontendArticleWithArtworkAndAuthor = await readArticle(
+        formData.objectId
       );
-
-      const result = await response.json();
-      console.log("Article fetch result:", result);
-
-      if (!result.success) {
-        throw new Error(result.message || "Failed to fetch article");
-      }
-
-      setArticleInfo(result.data);
+      setArticleInfo(article);
     } catch (error) {
-      console.error("Error reading article:", error);
+      console.error("Error in UpdateArticle:", error);
     }
   }
 

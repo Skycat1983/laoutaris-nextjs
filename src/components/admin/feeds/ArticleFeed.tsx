@@ -1,9 +1,6 @@
 import { ArticleFeedCard } from "../ArticleFeedCard";
 import { delay } from "@/utils/debug";
-import {
-  FrontendArticle,
-  FrontendArticleWithArtwork,
-} from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import { RefreshButton } from "./RefreshButton";
 import { fetchArticleFeed } from "@/lib/api/feedApi";
 
