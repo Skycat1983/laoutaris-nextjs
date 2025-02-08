@@ -15,7 +15,7 @@ import { HomeBlogSectionLoader } from "../loaders/HomeBlogSectionLoader";
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 
-// TODO: Home Collection Section Loader
+// TODO: HomeCollectionSectionLoader
 
 export default async function Home() {
   return (
