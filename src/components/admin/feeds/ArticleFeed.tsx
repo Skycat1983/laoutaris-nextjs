@@ -8,7 +8,7 @@ export async function ArticleFeed() {
   await delay(2000);
   const { data }: PaginatedResponse<FrontendArticleWithArtwork[]> =
     await fetchArticleFeed();
-  console.log("data in ArticleFeed", data);
+  // console.log("data in ArticleFeed", data);
 
   return (
     <div className="w-full h-full hover:bg-whitish border-l-2">

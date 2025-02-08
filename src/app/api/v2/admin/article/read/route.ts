@@ -1,18 +1,9 @@
 import { ArticleModel } from "@/lib/server/models";
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/config/authOptions";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
     const { searchParams } = new URL(request.url);
     const _id = searchParams.get("_id");
 
@@ -25,7 +16,9 @@ export async function GET(request: NextRequest) {
 
     const article = await ArticleModel.findById(_id)
       .populate("artwork")
-      .populate("author");
+      .populate("author")
+      .lean()
+      .exec();
 
     if (!article) {
       return NextResponse.json(
@@ -34,9 +27,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const transformedArticle = transformMongooseDoc(article);
+    console.log("API Response Structure:", {
+      success: true,
+      data: transformedArticle,
+    });
+
     return NextResponse.json({
       success: true,
-      data: article,
+      data: transformedArticle,
     });
   } catch (error) {
     console.error("Error reading article:", error);

@@ -10,7 +10,7 @@ interface ArticleFeedCardProps {
 }
 
 export function ArticleFeedCard({ article }: ArticleFeedCardProps) {
-  console.log("article", article);
+  // console.log("article", article);
   const handleCopyId = copy_id();
 
   return (

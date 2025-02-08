@@ -36,7 +36,7 @@ export const CreateArticle = () => {
   async function onSubmit(data: ReadFormValues) {
     try {
       const result = await readArtwork(data.artworkId);
-      setArtworkInfo(result.data);
+      setArtworkInfo(result);
     } catch (error) {
       console.error("Error in CreateArticle:", error);
     }

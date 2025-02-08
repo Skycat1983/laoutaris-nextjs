@@ -1,7 +1,4 @@
-import {
-  FrontendArticle,
-  FrontendArticleWithArtworkAndAuthor,
-} from "../types/articleTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "../types/articleTypes";
 import { FrontendArtwork } from "../types/artworkTypes";
 
 export const readArtwork = async (
@@ -9,13 +6,13 @@ export const readArtwork = async (
 ): Promise<FrontendArtwork> => {
   try {
     const response = await fetch(`/api/v2/admin/artwork/read?_id=${artworkId}`);
-    const data = await response.json();
+    const result: ApiResponse<FrontendArtwork> = await response.json();
 
-    if (!data.success) {
-      throw new Error(data.message || "Failed to fetch artwork");
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch artwork");
     }
 
-    return data;
+    return result.data;
   } catch (error) {
     throw new Error(
       `API Error: ${
@@ -28,22 +25,15 @@ export const readArtwork = async (
 export const readArticle = async (
   objectId: string
 ): Promise<FrontendArticleWithArtworkAndAuthor> => {
-  try {
-    const response = await fetch(
-      `/api/v2/admin/article/read?_id=${encodeURIComponent(objectId)}`
-    );
-    const data = await response.json();
+  const response = await fetch(
+    `/api/v2/admin/article/read?_id=${encodeURIComponent(objectId)}`
+  );
+  const result: ApiResponse<FrontendArticleWithArtworkAndAuthor> =
+    await response.json();
 
-    if (!data.success) {
-      throw new Error(data.message || "Failed to fetch article");
-    }
-
-    return data;
-  } catch (error) {
-    throw new Error(
-      `API Error: ${
-        error instanceof Error ? error.message : "Unknown error occurred"
-      }`
-    );
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch article");
   }
+
+  return result.data;
 };

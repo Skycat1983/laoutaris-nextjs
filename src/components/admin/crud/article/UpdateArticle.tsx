@@ -14,10 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
-import {
-  FrontendArticle,
-  FrontendArticleWithArtworkAndAuthor,
-} from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
 import { UpdateArticleForm } from "@/components/ui/forms/UpdateArticleForm";
 import { readArticle } from "@/lib/api/readApi";
 
@@ -38,6 +35,7 @@ export const UpdateArticle = () => {
   });
 
   async function onSubmit(formData: ReadFormValues) {
+    // console.log("formData", formData);
     try {
       const article: FrontendArticleWithArtworkAndAuthor = await readArticle(
         formData.objectId

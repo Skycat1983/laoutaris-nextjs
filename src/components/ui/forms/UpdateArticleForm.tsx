@@ -15,11 +15,7 @@ import {
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/button";
-import {
-  FrontendArticle,
-  FrontendArticleWithArtworkAndAuthor,
-  Section,
-} from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
 import { ScrollArea } from "../shadcn/scroll-area";
 import {
   Select,
@@ -46,6 +42,7 @@ export const UpdateArticleForm = ({
   articleInfo,
   onSuccess,
 }: UpdateArticleFormProps) => {
+  console.log("articleInfo", articleInfo);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(articleInfo.imageUrl);
   const [newArtwork, setNewArtwork] = useState<FrontendArtwork | null>(null);
