@@ -1,0 +1,160 @@
+---
+description: This blueprint outlines a pattern for building loader components in a Next.js project. 
+globs: loaders/**/!(*.test).tsx
+---
+# Loader Component Blueprint
+
+The following pattern separates concerns by isolating the API calls, data transformation, and presentation. It ensures type safety, centralized configuration, and consistent error handling.
+
+Note:
+
+**Imports Convention:**  
+All imports use the `@` alias to reference absolute paths in your project (e.g., `@/lib/api/...`).
+**Type locations**
+Most base types can be found at @/lib/types/[name]Types.ts
+
+
+# Loader Component Example 
+
+```typescript
+"use server";
+
+import React from "react";
+import { transformToPick } from "@/lib/transforms/dataTransforms";
+import HomeSection from "@/components/HomeSection";
+import { fetchResource } from "@/lib/api/resourceApi";
+
+// Config Constants
+const FETCH_CONFIG = {
+  fields: ["title", "subtitle", "slug", "imageUrl"] as const,
+  // ... other parameters like filters, pagination, etc.
+} as const;
+
+// Type Definitions
+export type HomeSectionData = Pick<
+  BaseType, // Replace with your actual base type
+  typeof FETCH_CONFIG.fields[number]
+>;
+
+// Loader Function
+export async function HomeSectionLoader() {
+  try {
+    // Fetch data using API layer
+    const rawData = await fetchResource({
+      fields: FETCH_CONFIG.fields,
+      // ... pass any additional config parameters
+    });
+
+    // Transform data using transform layer
+    const transformedData: HomeSectionData[] = rawData.map((item: any) =>
+      transformToPick(item, FETCH_CONFIG.fields)
+    );
+
+    // Return presentation component with transformed data
+    return <HomeSection data={transformedData} />;
+  } catch (error) {
+    console.error("HomeSection loading failed:", error);
+    return null;
+  }
+}
+
+```
+
+# Loader Component Usage
+
+Loaders are used inside React’s `Suspense` so that a fallback skeleton can display until the loader’s data is ready. For example:
+
+```tsx
+<Suspense fallback={<HomeArtworkSectionSkeleton />}>
+   <HomeArtworkSection />
+</Suspense>
+```
+
+# Loader Component Dependency Examples
+
+## API Layer (`@/lib/api/[resource]Api.ts`)
+
+The API layer handles the low-level details of constructing URLs, sending fetch requests, type-checking responses, and returning the data.
+
+```typescript
+interface FetchParams {
+  readonly fields?: readonly string[];
+  // ... other common params (pagination, filters)
+}
+
+export async function fetchResource(params: FetchParams): Promise<any> {
+  // Build URL parameters based on params
+  const url = buildUrlFromParams(params);
+  
+  // Make the fetch call with proper method, headers, and caching
+  const response = await fetch(url, {
+    method: "GET",
+    headers: getHeaders(),
+    cache: "no-store",
+  });
+  
+  // Validate and parse the response
+  const text = await response.text();
+  try {
+    const result = JSON.parse(text);
+    if (!result.success) {
+      throw new Error(result.error || "Fetch failed");
+    }
+    return result.data;
+  } catch (error) {
+    console.error("Error parsing API response:", error);
+    throw error;
+  }
+}```
+
+## Transform Layer (`@/lib/transforms/[resource]Api.ts`)
+
+```typescript
+import { Types } from "mongoose";
+
+type TransformOptions = {
+  stringifyIds?: boolean;
+  removeMongooseFields?: boolean;
+};
+
+export function transformMongooseDoc<T>(
+  doc: any,
+  options: TransformOptions = { stringifyIds: true, removeMongooseFields: true }
+): T {
+  if (!doc) return doc;
+
+  // Handle arrays
+  if (Array.isArray(doc)) {
+    return doc.map((item) => transformMongooseDoc<T>(item, options)) as T;
+  }
+
+  // Handle objects
+  if (typeof doc === "object") {
+    const transformed: any = {};
+
+    for (const [key, value] of Object.entries(doc)) {
+      // Skip Mongoose internal fields if specified
+      if (options.removeMongooseFields && key === "__v") continue;
+
+      // Transform ObjectIds to strings if specified
+      if (options.stringifyIds && value instanceof Types.ObjectId) {
+        transformed[key] = value.toString();
+        continue;
+      }
+
+      // Handle nested objects/arrays
+      if (typeof value === "object" && value !== null) {
+        transformed[key] = transformMongooseDoc(value, options);
+        continue;
+      }
+
+      transformed[key] = value;
+    }
+
+    return transformed as T;
+  }
+
+  return doc as T;
+}
+```
+

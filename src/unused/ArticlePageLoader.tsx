@@ -1,5 +1,5 @@
 import { fetchArticle, fetchArticleArtwork } from "@/lib/api/articleApi";
-import ArticleView from "../views/ArticleView";
+import ArticleView from "../components/views/ArticleView";
 import {
   FrontendArticle,
   FrontendArticleWithArtwork,

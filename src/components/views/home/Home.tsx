@@ -1,17 +1,17 @@
 "use server";
 
 import React, { Suspense } from "react";
-import Hero from "../ui/hero/Hero";
-import ContentLayout from "../layouts/ContentLayout";
-import HomeArtworkSectionSkeleton from "../skeletons/HomeArtworkSectionSkeleton";
-import HomeArtworkSection from "../homepageSections/HomeArtworkSection";
-import HomeProjectSectionSkeleton from "../skeletons/HomeProjectSectionSkeleton";
-import { HomeProjectSection } from "../homepageSections/HomeProjectSection";
-import HomeBiographySectionSkeleton from "../skeletons/HomeBiographySectionSkeleton";
-import { HomeBiographySectionLoader } from "../loaders/HomeBiographySectionLoader";
-import HomeSubscribeSection from "../homepageSections/HomeSubscribeSection";
-import BlogEntriesSkeleton from "../skeletons/BlogEntriesSkeleton";
-import { HomeBlogSectionLoader } from "../loaders/HomeBlogSectionLoader";
+import Hero from "../../ui/hero/Hero";
+import ContentLayout from "../../layouts/ContentLayout";
+import HomeArtworkSectionSkeleton from "../../skeletons/HomeArtworkSectionSkeleton";
+import HomeArtworkSection from "../../homepageSections/HomeArtworkSection";
+import HomeProjectSectionSkeleton from "../../skeletons/HomeProjectSectionSkeleton";
+import { HomeProjectSection } from "../../homepageSections/HomeProjectSection";
+import HomeBiographySectionSkeleton from "../../skeletons/HomeBiographySectionSkeleton";
+import { HomeBiographySectionLoader } from "../../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
+import HomeSubscribeSection from "../../homepageSections/HomeSubscribeSection";
+import BlogEntriesSkeleton from "../../skeletons/BlogEntriesSkeleton";
+import { HomeBlogSectionLoader } from "../../loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
 
 // https://blog.arcjet.com/testing-next-js-app-router-api-routes/
 

@@ -2,7 +2,7 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import HomeBlogSection from "../homepageSections/HomeBlogSection";
+import HomeBlogSection from "../../homepageSections/HomeBlogSection";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
 
 // 1. Config Constants

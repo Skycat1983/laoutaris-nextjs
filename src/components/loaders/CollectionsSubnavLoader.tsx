@@ -1,3 +1,5 @@
+"use server";
+
 import { Subnav } from "@/components/ui/subnav/Subnav";
 import { fetchCollectionNavigationList } from "@/lib/api/navigationApi";
 import { Section } from "@/lib/types/articleTypes";

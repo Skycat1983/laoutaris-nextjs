@@ -1,23 +1,23 @@
 "use server";
 
 import type { FrontendArticle } from "@/lib/types/articleTypes";
-import HomeBiographySection from "../homepageSections/HomeBiographySection";
+import HomeBiographySection from "../../homepageSections/HomeBiographySection";
 import { fetchArticles } from "@/lib/api/articleApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 
-// 1. Config Constants
+// Config Constants
 const BIOGRAPHY_FETCH_CONFIG = {
   section: "biography",
   fields: ["title", "subtitle", "slug", "imageUrl"] as const,
 } as const;
 
-// 2. Type Definitions
+// Type Definitions
 export type BiographyCardData = Pick<
   FrontendArticle,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
 
-// 3. Loader Function
+// Loader Function
 export async function HomeBiographySectionLoader() {
   try {
     // Fetch data using API layer

@@ -4,7 +4,7 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import Image from "next/image";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import Link from "next/link";
-import { BlogCardData } from "../loaders/HomeBlogSectionLoader";
+import { BlogCardData } from "../loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
 
 interface HomeBlogSectionProps {
   blogs: BlogCardData[];

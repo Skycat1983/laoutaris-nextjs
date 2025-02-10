@@ -14,7 +14,6 @@ export async function fetchArticleNavigationList(
   section: ValidSection
 ): Promise<ArticleNavItem[]> {
   const url = `${process.env.BASEURL}/api/v2/navigation/articles/${section}`;
-  //   console.log("Fetching from:", url);
 
   const response = await fetch(url, {
     method: "GET",

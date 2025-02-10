@@ -11,7 +11,7 @@ import {
 } from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
 import { FrontendArticle } from "@/lib/types/articleTypes";
 import { headers } from "next/headers";
-import { BiographyCardData } from "../loaders/HomeBiographySectionLoader";
+import { BiographyCardData } from "../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
 
 interface HomeBiographySectionProps {
   articles: BiographyCardData[];

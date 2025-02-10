@@ -1,4 +1,4 @@
-import Home from "@/components/views/Home";
+import Home from "@/components/views/home/Home";
 
 export default async function HomePage() {
   return (
