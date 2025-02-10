@@ -1,9 +1,9 @@
 ---
-description: How our backend resources are interrelated
+description: Document Types: the scope the population between our MongoDB documents
 globs: 
 ---
 
-# Your rule content
+# Document Types
 
 A description of how resources (articles, artwork, blogs, collections, users, comments.) are interrelated through fields that reference other collections, and how these relationships can be populated. In other words, how our data model is structured and how relationships between entities are established in our MongoDB schema.
 
@@ -13,3 +13,10 @@ A description of how resources (articles, artwork, blogs, collections, users, co
 - Comment: References a User (author) and links to a Blog.
 - Collection: Contains multiple Artworks.
 - User: Associated with comments (Comment), a watchlist (Artwork), and favourites (Artwork).
+
+[articleModel.ts](mdc:src/lib/server/models/articleModel.ts)
+[artworkModel.ts](mdc:src/lib/server/models/artworkModel.ts)
+[blogModel.ts](mdc:src/lib/server/models/blogModel.ts)
+[collectionModel.ts](mdc:src/lib/server/models/collectionModel.ts)
+[commentModel.ts](mdc:src/lib/server/models/commentModel.ts)
+[userModel.ts](mdc:src/lib/server/models/userModel.ts)

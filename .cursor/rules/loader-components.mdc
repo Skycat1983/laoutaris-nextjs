@@ -1,5 +1,5 @@
 ---
-description: This blueprint outlines a pattern for building loader components in a Next.js project. 
+description: This blueprint outlines our pattern for building loader components.
 globs: loaders/**/!(*.test).tsx
 ---
 # Loader Component Blueprint
@@ -21,7 +21,7 @@ Most base types can be found at @/lib/types/[name]Types.ts
 
 import React from "react";
 import { transformToPick } from "@/lib/transforms/dataTransforms";
-import HomeSection from "@/components/HomeSection";
+import Component from "@/components/example/Component";
 import { fetchResource } from "@/lib/api/resourceApi";
 
 // Config Constants
@@ -31,13 +31,13 @@ const FETCH_CONFIG = {
 } as const;
 
 // Type Definitions
-export type HomeSectionData = Pick<
+export type TransformedData = Pick<
   BaseType, // Replace with your actual base type
   typeof FETCH_CONFIG.fields[number]
 >;
 
 // Loader Function
-export async function HomeSectionLoader() {
+export async function ComponentLoader() {
   try {
     // Fetch data using API layer
     const rawData = await fetchResource({
@@ -46,29 +46,31 @@ export async function HomeSectionLoader() {
     });
 
     // Transform data using transform layer
-    const transformedData: HomeSectionData[] = rawData.map((item: any) =>
+    const transformedData: TransformedData[] = rawData.map((item: any) =>
       transformToPick(item, FETCH_CONFIG.fields)
     );
 
     // Return presentation component with transformed data
-    return <HomeSection data={transformedData} />;
+    return <Component data={transformedData} />;
   } catch (error) {
-    console.error("HomeSection loading failed:", error);
+    console.error("ComponentName loading failed:", error);
     return null;
   }
 }
 
 ```
 
-# Loader Component Usage
+## Loader Component Usage
 
 Loaders are used inside React’s `Suspense` so that a fallback skeleton can display until the loader’s data is ready. For example:
 
 ```tsx
-<Suspense fallback={<HomeArtworkSectionSkeleton />}>
-   <HomeArtworkSection />
+<Suspense fallback={<ComponentSkeleton />}>
+   <ComponentLoader />
 </Suspense>
 ```
+
+The above 
 
 # Loader Component Dependency Examples
 

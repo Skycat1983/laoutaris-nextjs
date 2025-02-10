@@ -1,5 +1,5 @@
 ---
-description: Guidelines for deciding resource location and retrieval based on RESTful naming conventions and data relationships.
+description: Guidelines for building/consuming restful endpoints
 globs: src/app/api/v2/**/*.ts
 ---
 # API Endpoint Blueprint
