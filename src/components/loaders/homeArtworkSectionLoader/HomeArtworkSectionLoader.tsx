@@ -1,7 +1,7 @@
 "use server";
 
 import { delay } from "@/utils/debug";
-import HomeArtworkSection from "../../contentSections/HomeArtworkSection";
+import { HomeArtworkSection } from "../../contentSections/homeArtworkSection/HomeArtworkSection";
 
 export async function HomeArtworkSectionLoader() {
   await delay(1000);
@@ -31,5 +31,7 @@ export async function HomeArtworkSectionLoader() {
       url: "https://res.cloudinary.com/dzncmfirr/image/upload/v1713982410/artwork/i9aejlyxcchyvamyhrvf.jpg",
     },
   ];
-  return <HomeArtworkSection artworks={artworks} />;
+  return (
+    <HomeArtworkSection artworks={artworks} data-testid="artwork-section" />
+  );
 }

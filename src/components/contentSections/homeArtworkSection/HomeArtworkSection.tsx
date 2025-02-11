@@ -1,9 +1,9 @@
 "use server";
 
 import Image from "next/image";
-import ButtonDivider from "../ui/common/ButtonDivider";
-import HorizontalDivider from "../ui/common/HorizontalDivider";
-import SectionHeading from "../ui/common/SectionHeading";
+import ButtonDivider from "../../ui/common/ButtonDivider";
+import HorizontalDivider from "../../ui/common/HorizontalDivider";
+import SectionHeading from "../../ui/common/SectionHeading";
 
 interface HomeArtworkSectionProps {
   artworks: {
@@ -12,7 +12,7 @@ interface HomeArtworkSectionProps {
   }[];
 }
 
-const HomeArtworkSection = ({ artworks }: HomeArtworkSectionProps) => {
+export function HomeArtworkSection({ artworks }: HomeArtworkSectionProps) {
   return (
     <div>
       <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
@@ -46,6 +46,4 @@ const HomeArtworkSection = ({ artworks }: HomeArtworkSectionProps) => {
       <ButtonDivider label={"See more"} link="/artwork" />
     </div>
   );
-};
-
-export default HomeArtworkSection;
+}
