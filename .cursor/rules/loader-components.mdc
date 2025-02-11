@@ -13,6 +13,16 @@ All imports use the `@` alias to reference absolute paths in your project (e.g.,
 **Type locations**
 Most base types can be found at @/lib/types/[name]Types.ts
 
+## Loader Component Usage
+
+Loaders are used inside React’s `Suspense` so that a fallback skeleton can display until the loader’s data is ready. For example:
+
+```tsx
+<Suspense fallback={<ComponentSkeleton />}>
+   <ComponentLoader />
+</Suspense>
+```
+
 
 # Loader Component Example 
 
@@ -60,17 +70,6 @@ export async function ComponentLoader() {
 
 ```
 
-## Loader Component Usage
-
-Loaders are used inside React’s `Suspense` so that a fallback skeleton can display until the loader’s data is ready. For example:
-
-```tsx
-<Suspense fallback={<ComponentSkeleton />}>
-   <ComponentLoader />
-</Suspense>
-```
-
-The above 
 
 # Loader Component Dependency Examples
 

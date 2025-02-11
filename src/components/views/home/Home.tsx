@@ -1,55 +1,63 @@
 "use server";
 
 import React, { Suspense } from "react";
-import Hero from "../../ui/hero/Hero";
-import ContentLayout from "../../layouts/ContentLayout";
-import HomeArtworkSectionSkeleton from "../../skeletons/HomeArtworkSectionSkeleton";
-import HomeArtworkSection from "../../homepageSections/HomeArtworkSection";
-import HomeProjectSectionSkeleton from "../../skeletons/HomeProjectSectionSkeleton";
-import { HomeProjectSection } from "../../homepageSections/HomeProjectSection";
-import HomeBiographySectionSkeleton from "../../skeletons/HomeBiographySectionSkeleton";
+
+// ! COMPONENTS
+import { Hero } from "../../ui/hero/Hero";
+import { ContentLayout } from "../../layouts/ContentLayout";
+
+// ! SKELETONS
+import { HomeProjectSectionSkeleton } from "../../skeletons/HomeProjectSectionSkeleton";
+import { HomeBiographySectionSkeleton } from "../../skeletons/HomeBiographySectionSkeleton";
+import { HomeSubscribeSectionSkeleton } from "@/components/skeletons/HomeSubscribeSkeleton";
+import { HomeArtworkSectionSkeleton } from "@/components/skeletons/HomeArtworkSectionSkeleton";
+import { BlogEntriesSkeleton } from "../../skeletons/BlogEntriesSkeleton";
+
+// ! LOADERS
 import { HomeBiographySectionLoader } from "../../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
-import HomeSubscribeSection from "../../homepageSections/HomeSubscribeSection";
-import BlogEntriesSkeleton from "../../skeletons/BlogEntriesSkeleton";
-import { HomeBlogSectionLoader } from "../../loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
+import { HomeSubscribeSectionLoader } from "@/components/loaders/homeSubscribeSectionLoader/HomeSubscribeSectionLoader";
+import { HomeProjectSectionLoader } from "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader";
+import { HomeArtworkSectionLoader } from "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader";
+import { HomeBlogSectionLoader } from "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
 
-// https://blog.arcjet.com/testing-next-js-app-router-api-routes/
-
-// TODO: HomeCollectionSectionLoader
-
-export default async function Home() {
+export async function Home() {
   return (
-    <>
-      <Hero />
-      <ContentLayout>
+    <div data-testid="home-container">
+      <Hero data-testid="home-hero" />
+
+      <ContentLayout data-testid="home-content-layout">
         <Suspense fallback={<HomeArtworkSectionSkeleton />}>
-          <HomeArtworkSection />
+          <HomeArtworkSectionLoader data-testid="home-artwork-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
         <Suspense fallback={<HomeProjectSectionSkeleton />}>
-          <HomeProjectSection />
+          <HomeProjectSectionLoader data-testid="home-project-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout>
         <Suspense fallback={<HomeBiographySectionSkeleton />}>
-          <HomeBiographySectionLoader />
+          <HomeBiographySectionLoader data-testid="home-biography-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
-        <Suspense fallback={<HomeProjectSectionSkeleton />}>
-          <HomeSubscribeSection />
+        <Suspense fallback={<HomeSubscribeSectionSkeleton />}>
+          <HomeSubscribeSectionLoader data-testid="home-subscribe-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="">
         <Suspense fallback={<BlogEntriesSkeleton />}>
-          <HomeBlogSectionLoader />
+          <HomeBlogSectionLoader data-testid="home-blog-section" />
         </Suspense>
       </ContentLayout>
-    </>
+    </div>
   );
 }
+
+// https://blog.arcjet.com/testing-next-js-app-router-api-routes/
+
+// TODO: HomeCollectionSectionLoader

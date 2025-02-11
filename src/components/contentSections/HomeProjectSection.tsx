@@ -4,7 +4,7 @@ import YoutubeEmbedding from "../ui/common/YoutubeEmbedding";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import { delay } from "@/utils/debug";
 
-const HomeProjectSection = async () => {
+const HomeProjectSection = () => {
   // await delay(2000);
   return (
     <div className="p-4 w-full">

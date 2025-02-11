@@ -4,7 +4,7 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeadingSkeleton from "./SectionHeadingSkeleton";
 import { ScrollArea } from "../ui/shadcn/scroll-area";
 
-const HomeBiographySectionSkeleton = () => {
+export function HomeBiographySectionSkeleton() {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <SectionHeadingSkeleton />
@@ -21,6 +21,4 @@ const HomeBiographySectionSkeleton = () => {
       <HorizontalDivider />
     </div>
   );
-};
-
-export default HomeBiographySectionSkeleton;
+}

@@ -3,7 +3,7 @@ import YoutubeEmbedding from "../ui/common/YoutubeEmbedding";
 import SkeletonH1 from "../ui/common/skeletons/SkeletonH1";
 import SectionHeadingSkeleton from "./SectionHeadingSkeleton";
 
-const HomeProjectSectionSkeleton = () => {
+export function HomeProjectSectionSkeleton() {
   return (
     <div className="p-4 w-full">
       <SectionHeadingSkeleton />
@@ -38,6 +38,4 @@ const HomeProjectSectionSkeleton = () => {
       <HorizontalDivider />
     </div>
   );
-};
-
-export default HomeProjectSectionSkeleton;
+}

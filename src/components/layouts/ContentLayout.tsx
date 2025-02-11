@@ -4,7 +4,7 @@ type Props = {
   bg?: string;
 };
 
-const ContentLayout = ({ children, bg }: Props) => {
+export function ContentLayout({ children, bg }: Props) {
   return (
     <>
       <div className={`grid grid-cols-12 gap-4 py-32 ${bg ? bg : ""}`}>
@@ -17,6 +17,4 @@ const ContentLayout = ({ children, bg }: Props) => {
       </div>
     </>
   );
-};
-
-export default ContentLayout;
+}

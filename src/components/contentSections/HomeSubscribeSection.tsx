@@ -1,7 +1,7 @@
 import React from "react";
 import SubscribeForm from "../ui/forms/SubscribeForm";
 
-const HomeSubscribeSection = () => {
+const HomeSubscribeSection = ({ isLoggedIn }: { isLoggedIn: boolean }) => {
   return (
     <div className="border border-black grid grid-cols-12 gap-4 bg-slate/5">
       <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8 text-center bg-slate/10">

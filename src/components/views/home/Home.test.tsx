@@ -1,65 +1,232 @@
 /// <reference types="@testing-library/jest-dom" />
+import React from "react";
 import { render, screen } from "@testing-library/react";
-import Home from "./Home";
+import { Home } from "./Home";
 
-// Mock all components used in Home
-jest.mock("../../ui/hero/Hero", () => ({
+// ! COMPONENTS
+jest.mock("@/components/ui/hero/Hero", () => ({
   __esModule: true,
-  default: () => <div data-testid="mock-hero">Hero Component</div>,
+  Hero: () => <div data-testid="mock-hero">Hero</div>,
 }));
 
-jest.mock("../../homepageSections/HomeArtworkSection", () => ({
+jest.mock("@/components/layouts/ContentLayout", () => ({
   __esModule: true,
-  default: () => <div data-testid="mock-artwork-section">Artwork Section</div>,
-}));
-
-jest.mock("../../loaders/HomeBiographySectionLoader", () => ({
-  __esModule: true,
-  default: () => (
-    <div data-testid="mock-biography-section">Biography Section</div>
+  ContentLayout: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
   ),
 }));
 
-// Mock other components used in Home
-jest.mock("../../layouts/ContentLayout", () => ({
+// ! SKELETONS
+jest.mock("@/components/skeletons/HomeArtworkSectionSkeleton", () => ({
   __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="mock-content-layout">{children}</div>
+  HomeArtworkSectionSkeleton: () => (
+    <div data-testid="artwork-skeleton">Skeleton</div>
   ),
 }));
 
-jest.mock("../../homepageSections/HomeSubscribeSection", () => ({
+jest.mock("@/components/skeletons/HomeProjectSectionSkeleton", () => ({
   __esModule: true,
-  default: () => (
-    <div data-testid="mock-subscribe-section">Subscribe Section</div>
+  HomeProjectSectionSkeleton: () => (
+    <div data-testid="project-skeleton">Skeleton</div>
   ),
 }));
 
-jest.mock("../../loaders/HomeBlogSectionLoader", () => ({
+jest.mock("@/components/skeletons/HomeSubscribeSkeleton", () => ({
   __esModule: true,
-  default: () => <div data-testid="mock-blog-section">Blog Section</div>,
+  HomeSubscribeSectionSkeleton: () => (
+    <div data-testid="subscribe-skeleton">Skeleton</div>
+  ),
 }));
 
-// Group related tests together
+jest.mock("@/components/skeletons/HomeBiographySectionSkeleton", () => ({
+  __esModule: true,
+  HomeBiographySectionSkeleton: () => (
+    <div data-testid="biography-skeleton">Skeleton</div>
+  ),
+}));
+
+jest.mock("@/components/skeletons/BlogEntriesSkeleton", () => ({
+  __esModule: true,
+  BlogEntriesSkeleton: () => (
+    <div data-testid="blog-entries-skeleton">Skeleton</div>
+  ),
+}));
+
+// ! LOADERS
+jest.mock(
+  "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader",
+  () => ({
+    __esModule: true,
+    HomeArtworkSectionLoader: () => (
+      <div data-testid="artwork-loader">Mock Artwork Loader</div>
+    ),
+  })
+);
+
+jest.mock(
+  "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader",
+  () => ({
+    __esModule: true,
+    HomeProjectSectionLoader: () => (
+      <div data-testid="project-loader">Mock Project Loader</div>
+    ),
+  })
+);
+
+jest.mock(
+  "@/components/loaders/homeBiographySectionLoader/HomeBiographySectionLoader",
+  () => ({
+    __esModule: true,
+    HomeBiographySectionLoader: () => (
+      <div data-testid="biography-loader">Mock Biography Loader</div>
+    ),
+  })
+);
+
+jest.mock(
+  "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader",
+  () => ({
+    __esModule: true,
+    HomeBlogSectionLoader: () => (
+      <div data-testid="blog-entries-loader">Mock Blog Entries Loader</div>
+    ),
+  })
+);
+
+jest.mock(
+  "@/components/loaders/homeSubscribeSectionLoader/HomeSubscribeSectionLoader",
+  () => ({
+    __esModule: true,
+    HomeSubscribeSectionLoader: () => (
+      <div data-testid="subscribe-loader">Mock Subscribe Loader</div>
+    ),
+  })
+);
+
 describe("Home Component", () => {
-  // Test that verifies Home renders without errors
   it("renders without crashing", async () => {
-    // Render the Home component in a test environment
-    render(await Home());
-    // If Home stops including Hero, this will fail because mock-hero won't be found\
-    expect(screen.getByTestId("mock-hero")).toBeInTheDocument();
-  });
+    // Because Home is an async server component, await its execution.
+    const HomeComponent = await Home();
+    render(HomeComponent);
 
-  // Test that verifies all required sections are present
-  it("contains all expected sections", async () => {
-    render(await Home());
-
-    // These will fail if Home stops rendering any of these sections
-    // Even though we're using mocks, the test verifies the structure of Home
+    // Assert that the hero is rendered.
     expect(screen.getByTestId("mock-hero")).toBeInTheDocument();
-    expect(screen.getByTestId("mock-artwork-section")).toBeInTheDocument();
-    expect(screen.getByTestId("mock-biography-section")).toBeInTheDocument();
-    expect(screen.getByTestId("mock-subscribe-section")).toBeInTheDocument();
-    expect(screen.getByTestId("mock-blog-section")).toBeInTheDocument();
+
+    // Assert that all mocked loaders are rendered.
+    expect(screen.getByTestId("artwork-loader")).toBeInTheDocument();
+    expect(screen.getByTestId("project-loader")).toBeInTheDocument();
+    expect(screen.getByTestId("biography-loader")).toBeInTheDocument();
+    expect(screen.getByTestId("subscribe-loader")).toBeInTheDocument();
+    expect(screen.getByTestId("blog-entries-loader")).toBeInTheDocument();
   });
 });
+
+// // Mock ALL async components and their loaders
+// /// <reference types="@testing-library/jest-dom" />
+// import React from "react";
+// import { render, screen } from "@testing-library/react";
+// import Home from "./Home";
+
+// // ! COMPONENTS
+// // Mock the Hero component
+// jest.mock("@/components/ui/hero/Hero", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="mock-hero">Hero</div>,
+// }));
+
+// // Mock ContentLayout so that it just renders its children
+// jest.mock("@/components/layouts/ContentLayout", () => ({
+//   __esModule: true,
+//   default: ({ children }: { children: React.ReactNode }) => (
+//     <div>{children}</div>
+//   ),
+// }));
+
+// // ! SKELETONS
+// // Mock the fallback skeleton
+// jest.mock("@/components/skeletons/HomeArtworkSectionSkeleton", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="artwork-skeleton">Skeleton</div>,
+// }));
+// jest.mock("@/components/skeletons/HomeProjectSectionSkeleton", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="project-skeleton">Skeleton</div>,
+// }));
+// jest.mock("@/components/skeletons/HomeSubscribeSkeleton", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="subscribe-skeleton">Skeleton</div>,
+// }));
+// jest.mock("@/components/skeletons/HomeBiographySectionSkeleton", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="biography-skeleton">Skeleton</div>,
+// }));
+// jest.mock("@/components/skeletons/BlogEntriesSkeleton", () => ({
+//   __esModule: true,
+//   default: () => <div data-testid="blog-entries-skeleton">Skeleton</div>,
+// }));
+
+// // ! LOADERS
+// // Mock the artwork loader
+// jest.mock(
+//   "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader",
+//   () => ({
+//     __esModule: true,
+//     default: () => <div data-testid="artwork-loader">Mock Artwork Loader</div>,
+//   })
+// );
+
+// // Mock the project loader
+// jest.mock(
+//   "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader",
+//   () => ({
+//     __esModule: true,
+//     default: () => <div data-testid="project-loader">Mock Project Loader</div>,
+//   })
+// );
+
+// // Mock the biography loader
+// jest.mock(
+//   "@/components/loaders/homeBiographySectionLoader/HomeBiographySectionLoader",
+//   () => ({
+//     __esModule: true,
+//     default: () => (
+//       <div data-testid="biography-loader">Mock Biography Loader</div>
+//     ),
+//   })
+// );
+
+// // Mock the blog entries loader
+// jest.mock(
+//   "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader",
+//   () => ({
+//     __esModule: true,
+//     default: () => (
+//       <div data-testid="blog-entries-loader">Mock Blog Entries Loader</div>
+//     ),
+//   })
+// );
+
+// // Mock the subscribe loader
+// jest.mock(
+//   "@/components/loaders/homeSubscribeSectionLoader/HomeSubscribeSectionLoader",
+//   () => ({
+//     __esModule: true,
+//     default: () => (
+//       <div data-testid="subscribe-loader">Mock Subscribe Loader</div>
+//     ),
+//   })
+// );
+
+// describe("Home Component", () => {
+//   it("renders without crashing", async () => {
+//     // Because Home is an async server component, await its execution.
+//     const HomeComponent = await Home();
+//     render(HomeComponent);
+
+//     // Assert that the hero is rendered.
+//     expect(screen.getByTestId("mock-hero")).toBeInTheDocument();
+
+//     // Assert that our mocked loader is rendered.
+//     expect(screen.getByTestId("artwork-loader")).toBeInTheDocument();
+//   });
+// });

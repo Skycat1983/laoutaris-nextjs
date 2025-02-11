@@ -14,9 +14,9 @@ A description of how resources (articles, artwork, blogs, collections, users, co
 - Collection: Contains multiple Artworks.
 - User: Associated with comments (Comment), a watchlist (Artwork), and favourites (Artwork).
 
-[articleModel.ts](mdc:src/lib/server/models/articleModel.ts)
+<!-- [articleModel.ts](mdc:src/lib/server/models/articleModel.ts)
 [artworkModel.ts](mdc:src/lib/server/models/artworkModel.ts)
 [blogModel.ts](mdc:src/lib/server/models/blogModel.ts)
 [collectionModel.ts](mdc:src/lib/server/models/collectionModel.ts)
 [commentModel.ts](mdc:src/lib/server/models/commentModel.ts)
-[userModel.ts](mdc:src/lib/server/models/userModel.ts)
+[userModel.ts](mdc:src/lib/server/models/userModel.ts) -->

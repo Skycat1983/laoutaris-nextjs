@@ -11,7 +11,7 @@ import {
 import LargeScaleWorks from "./LargeScaleWorks";
 import FamilyFavourites from "./FamilyFavourites";
 
-const Hero = () => {
+export function Hero() {
   return (
     <Carousel
       className="w-full h-auto p-4 bg-greyish flex flex-col gap-0 justify-center items-center pt-[20px]"
@@ -37,5 +37,4 @@ const Hero = () => {
       </div>
     </Carousel>
   );
-};
-export default Hero;
+}
