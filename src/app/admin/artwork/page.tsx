@@ -12,14 +12,7 @@ import { UpdateArtwork } from "@/components/admin/crud/UpdateArtwork";
 export default async function AdminArtworkPage() {
   console.log("server");
   return (
-    <AdminContentLayout
-      title="Artwork"
-      feedComponent={
-        <Suspense fallback={<FeedSkeleton />}>
-          <ArtworkFeed />
-        </Suspense>
-      }
-    >
+    <AdminContentLayout title="Artwork" feedComponent={<ArtworkFeed />}>
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
         readComponent={<div>Read Artwork</div>}

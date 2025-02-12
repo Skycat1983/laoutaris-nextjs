@@ -10,30 +10,30 @@ import { ContentLayout } from "../../layouts/ContentLayout";
 import { HomeProjectSectionSkeleton } from "../../skeletons/HomeProjectSectionSkeleton";
 import { HomeBiographySectionSkeleton } from "../../skeletons/HomeBiographySectionSkeleton";
 import { HomeSubscribeSectionSkeleton } from "@/components/skeletons/HomeSubscribeSkeleton";
-import { HomeArtworkSectionSkeleton } from "@/components/skeletons/HomeArtworkSectionSkeleton";
 import { BlogEntriesSkeleton } from "../../skeletons/BlogEntriesSkeleton";
 
 // ! LOADERS
 import { HomeBiographySectionLoader } from "../../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
 import { HomeSubscribeSectionLoader } from "@/components/loaders/homeSubscribeSectionLoader/HomeSubscribeSectionLoader";
 import { HomeProjectSectionLoader } from "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader";
-import { HomeArtworkSectionLoader } from "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader";
+// import { HomeArtworkSectionLoader } from "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader";
 import { HomeBlogSectionLoader } from "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
 import { HomeCollectionsSectionLoader } from "@/components/loaders/homeCollectionSectionLoader/HomeCollectionSectionLoader";
+import { HomeCollectionSectionSkeleton } from "@/components/skeletons/HomeCollectionSectionSkeleton";
 
 export async function Home() {
   return (
     <div data-testid="home-container">
       <Hero data-testid="home-hero" />
 
-      <ContentLayout data-testid="home-content-layout">
+      {/* <ContentLayout data-testid="home-content-layout">
         <Suspense fallback={<HomeArtworkSectionSkeleton />}>
           <HomeArtworkSectionLoader data-testid="home-artwork-section" />
         </Suspense>
-      </ContentLayout>
+      </ContentLayout> */}
 
       <ContentLayout data-testid="home-content-layout">
-        <Suspense fallback={<HomeArtworkSectionSkeleton />}>
+        <Suspense fallback={<HomeCollectionSectionSkeleton />}>
           <HomeCollectionsSectionLoader data-testid="home-collection-section" />
         </Suspense>
       </ContentLayout>

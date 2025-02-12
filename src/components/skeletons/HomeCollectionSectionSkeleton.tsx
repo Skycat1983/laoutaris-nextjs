@@ -3,7 +3,7 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeadingSkeleton from "./SectionHeadingSkeleton";
 import { Skeleton } from "../ui/shadcn/skeleton";
 
-export function HomeArtworkSectionSkeleton() {
+export function HomeCollectionSectionSkeleton() {
   const arr = Array.from({ length: 6 }, (_, i) => i);
   return (
     <div>

@@ -17,10 +17,17 @@ jest.mock("@/components/layouts/ContentLayout", () => ({
 }));
 
 // ! SKELETONS
-jest.mock("@/components/skeletons/HomeArtworkSectionSkeleton", () => ({
+// jest.mock("@/components/skeletons/HomeArtworkSectionSkeleton", () => ({
+//   __esModule: true,
+//   HomeArtworkSectionSkeleton: () => (
+//     <div data-testid="artwork-skeleton">Skeleton</div>
+//   ),
+// }));
+
+jest.mock("@/components/skeletons/HomeCollectionSectionSkeleton", () => ({
   __esModule: true,
-  HomeArtworkSectionSkeleton: () => (
-    <div data-testid="artwork-skeleton">Skeleton</div>
+  HomeCollectionSectionSkeleton: () => (
+    <div data-testid="collection-skeleton">Skeleton</div>
   ),
 }));
 
@@ -53,12 +60,22 @@ jest.mock("@/components/skeletons/BlogEntriesSkeleton", () => ({
 }));
 
 // ! LOADERS
+// jest.mock(
+//   "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader",
+//   () => ({
+//     __esModule: true,
+//     HomeArtworkSectionLoader: () => (
+//       <div data-testid="artwork-loader">Mock Artwork Loader</div>
+//     ),
+//   })
+// );
+
 jest.mock(
-  "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader",
+  "@/components/loaders/homeCollectionSectionLoader/HomeCollectionSectionLoader",
   () => ({
     __esModule: true,
-    HomeArtworkSectionLoader: () => (
-      <div data-testid="artwork-loader">Mock Artwork Loader</div>
+    HomeCollectionsSectionLoader: () => (
+      <div data-testid="collection-loader">Mock Collection Loader</div>
     ),
   })
 );
@@ -113,7 +130,8 @@ describe("Home Component", () => {
     expect(screen.getByTestId("mock-hero")).toBeInTheDocument();
 
     // Assert that all mocked loaders are rendered.
-    expect(screen.getByTestId("artwork-loader")).toBeInTheDocument();
+    // expect(screen.getByTestId("artwork-loader")).toBeInTheDocument();
+    expect(screen.getByTestId("collection-loader")).toBeInTheDocument();
     expect(screen.getByTestId("project-loader")).toBeInTheDocument();
     expect(screen.getByTestId("biography-loader")).toBeInTheDocument();
     expect(screen.getByTestId("subscribe-loader")).toBeInTheDocument();

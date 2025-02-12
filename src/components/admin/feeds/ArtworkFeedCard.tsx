@@ -5,14 +5,14 @@ import { CopyIcon } from "@/components/ui/common/icons/CopyIcon";
 import type { FrontendArtwork } from "@/lib/types/artworkTypes";
 
 interface ArtworkFeedCardProps {
-  artwork: FrontendArtwork;
+  item: FrontendArtwork;
 }
 
-export function ArtworkFeedCard({ artwork }: ArtworkFeedCardProps) {
+export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
   const handleCopyClick = async () => {
     try {
-      await navigator.clipboard.writeText(artwork._id);
-      console.log("Copied ID:", artwork._id);
+      await navigator.clipboard.writeText(item._id);
+      console.log("Copied ID:", item._id);
     } catch (err) {
       console.error("Failed to copy:", err);
     }
@@ -21,11 +21,8 @@ export function ArtworkFeedCard({ artwork }: ArtworkFeedCardProps) {
   return (
     <div className="relative group w-full p-12">
       <Image
-        src={artwork.image.secure_url.replace(
-          "/upload/",
-          "/upload/w_300,q_auto/"
-        )}
-        alt={artwork.title}
+        src={item.image.secure_url.replace("/upload/", "/upload/w_300,q_auto/")}
+        alt={item.title}
         width={200}
         height={200}
         className="w-full h-auto shadow-xl"

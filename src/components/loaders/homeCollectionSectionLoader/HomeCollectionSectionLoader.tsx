@@ -8,13 +8,13 @@ import { fetchCollections } from "@/lib/api/collectionApi";
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {
   section: "artwork",
-  fields: ["title", "slug", "imageUrl"] as const,
+  fields: ["title", "slug", "imageUrl", "artworks"] as const,
 } as const;
 
 // Type Definitions
 export type CollectionCardData = Pick<
   FrontendCollection,
-  "title" | "imageUrl" | "slug"
+  "title" | "imageUrl" | "slug" | "artworks"
 >;
 
 // Loader Function

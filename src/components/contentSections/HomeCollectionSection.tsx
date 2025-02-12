@@ -14,7 +14,10 @@ export function HomeCollectionSection({
 }: HomeCollectionSectionProps) {
   return (
     <div>
-      <SectionHeading heading="Artwork:" subheading="Browse his life's work" />
+      <SectionHeading
+        heading="Collections:"
+        subheading="Curated by the family"
+      />
       <HorizontalDivider />
 
       <section
@@ -23,8 +26,8 @@ export function HomeCollectionSection({
       >
         {collections.map((collection, index) => (
           <Link
-            key={collection.slug}
-            href={`/collections/${collection.slug}`}
+            key={index}
+            href={`/collections/${collection.slug}/${collection.artworks[0]}`}
             className="relative row-span-1 col-span-1 h-64 overflow-hidden group"
           >
             <Image
@@ -43,7 +46,7 @@ export function HomeCollectionSection({
           </Link>
         ))}
       </section>
-      <ButtonDivider label={"See more"} link="/artwork" />
+      <ButtonDivider label={"See more"} link="/collections" />
     </div>
   );
 }
