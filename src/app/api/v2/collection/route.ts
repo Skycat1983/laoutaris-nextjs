@@ -10,12 +10,14 @@ export const GET = async (
   try {
     const { searchParams } = new URL(req.url);
 
+    // Build query object
     const query: any = {};
-
-    const section = searchParams.get("section");
-    if (section) {
-      query.section = section;
+    if (searchParams.get("section")) {
+      query.section = searchParams.get("section");
     }
+
+    // Handle field selection
+    const fields = searchParams.get("fields")?.split(",").join(" ") || "";
 
     // Handle pagination
     const page = parseInt(searchParams.get("page") || "1");
@@ -23,6 +25,7 @@ export const GET = async (
 
     const [collections, total] = await Promise.all([
       CollectionModel.find(query)
+        .select(fields)
         .skip((page - 1) * limit)
         .limit(limit),
       CollectionModel.countDocuments(query),

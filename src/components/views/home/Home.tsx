@@ -19,6 +19,7 @@ import { HomeSubscribeSectionLoader } from "@/components/loaders/homeSubscribeSe
 import { HomeProjectSectionLoader } from "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader";
 import { HomeArtworkSectionLoader } from "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader";
 import { HomeBlogSectionLoader } from "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
+import { HomeCollectionsSectionLoader } from "@/components/loaders/homeCollectionSectionLoader/HomeCollectionSectionLoader";
 
 export async function Home() {
   return (
@@ -28,6 +29,12 @@ export async function Home() {
       <ContentLayout data-testid="home-content-layout">
         <Suspense fallback={<HomeArtworkSectionSkeleton />}>
           <HomeArtworkSectionLoader data-testid="home-artwork-section" />
+        </Suspense>
+      </ContentLayout>
+
+      <ContentLayout data-testid="home-content-layout">
+        <Suspense fallback={<HomeArtworkSectionSkeleton />}>
+          <HomeCollectionsSectionLoader data-testid="home-collection-section" />
         </Suspense>
       </ContentLayout>
 

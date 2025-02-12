@@ -21,7 +21,7 @@ export function HomeBlogSection({ blogs }: HomeBlogSectionProps) {
         className="p-4 grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-3 lg:grid-cols-4 lg:grid-rows-1 w-full py-8 gap-5"
       >
         {blogs.map((blog) => (
-          <Link key={blog.slug} href={`/blog/latest/${blog.slug}`}>
+          <Link key={blog.slug} href={`/blog/${blog.slug}`}>
             <div className="relative group w-full">
               <div className="relative">
                 <Image
