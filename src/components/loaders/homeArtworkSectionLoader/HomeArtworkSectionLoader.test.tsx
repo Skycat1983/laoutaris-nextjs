@@ -5,19 +5,15 @@ import { render, screen } from "@testing-library/react";
 import { HomeArtworkSectionLoader } from "./HomeArtworkSectionLoader";
 
 // Fix the mock to match the actual export
-jest.mock(
-  "@/components/contentSections/homeArtworkSection/HomeArtworkSection",
-  () => ({
-    // Match the named export exactly
-    HomeArtworkSection: ({ artworks }: { artworks: any[] }) => (
-      <div data-testid="artwork-section-mock">
-        {artworks.map((artwork) => (
-          <div key={artwork.label}>{artwork.label}</div>
-        ))}
-      </div>
-    ),
-  })
-);
+jest.mock("@/components/contentSections/HomeArtworkSection", () => ({
+  HomeArtworkSection: ({ artworks }: { artworks: any[] }) => (
+    <div data-testid="artwork-section-mock">
+      {artworks.map((artwork) => (
+        <div key={artwork.label}>{artwork.label}</div>
+      ))}
+    </div>
+  ),
+}));
 
 // Mock the delay utility
 jest.mock("@/utils/debug", () => ({

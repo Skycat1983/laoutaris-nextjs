@@ -1,25 +1,18 @@
-"use server";
+// "use server";
+// "use client";
 
 import ButtonDivider from "../ui/common/ButtonDivider";
 import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeading from "../ui/common/SectionHeading";
 import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
 import BiographyCard from "../ui/cards/biographyCard/BiographyCard";
-import {
-  getHomepageArticleSectionData,
-  HomeBiographySectionCardData,
-} from "@/lib/server/article/use_cases/getHomepageArticleSectionData";
-import { FrontendArticle } from "@/lib/types/articleTypes";
-import { headers } from "next/headers";
 import { BiographyCardData } from "../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
 
 interface HomeBiographySectionProps {
   articles: BiographyCardData[];
 }
 
-const HomeBiographySection: React.FC<HomeBiographySectionProps> = ({
-  articles,
-}) => {
+export function HomeBiographySection({ articles }: HomeBiographySectionProps) {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <SectionHeading
@@ -41,6 +34,4 @@ const HomeBiographySection: React.FC<HomeBiographySectionProps> = ({
       <ButtonDivider label="Read more" link="/biography" />
     </div>
   );
-};
-
-export default HomeBiographySection;
+}

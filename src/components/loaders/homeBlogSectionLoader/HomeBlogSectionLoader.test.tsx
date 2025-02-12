@@ -1,25 +1,25 @@
 import { render, screen } from "@testing-library/react";
 import { HomeBlogSectionLoader } from "./HomeBlogSectionLoader";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
+import { HomeBlogSection } from "@/components/contentSections/HomeBlogSection";
 
-// Mock the API call
+// Before imports, mock the modules
 jest.mock("@/lib/api/blogApi", () => ({
   fetchBlogEntries: jest.fn(),
 }));
 
-// Mock the HomeBlogSection component
+// Fix the HomeBlogSection mock to properly export the named function
 jest.mock("@/components/contentSections/HomeBlogSection", () => ({
-  __esModule: true,
-  default: ({ blogs }: { blogs: any[] }) => (
+  HomeBlogSection: jest.fn().mockImplementation(({ blogs }) => (
     <div data-testid="blog-section">
-      {blogs.map((blog) => (
+      {blogs.map((blog: any) => (
         <div key={blog.slug}>{blog.title}</div>
       ))}
     </div>
-  ),
+  )),
 }));
 
-describe.skip("HomeBlogSectionLoader", () => {
+describe("HomeBlogSectionLoader", () => {
   const mockBlogs = [
     {
       title: "Test Blog",
@@ -47,10 +47,16 @@ describe.skip("HomeBlogSectionLoader", () => {
   });
 
   it("handles errors gracefully", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
     (fetchBlogEntries as jest.Mock).mockRejectedValue(
       new Error("Fetch failed")
     );
     const { container } = render(await HomeBlogSectionLoader());
     expect(container.firstChild).toBeNull();
+
+    consoleSpy.mockRestore();
   });
 });

@@ -1,9 +1,7 @@
-"use server";
-
 import Image from "next/image";
-import ButtonDivider from "../../ui/common/ButtonDivider";
-import HorizontalDivider from "../../ui/common/HorizontalDivider";
-import SectionHeading from "../../ui/common/SectionHeading";
+import ButtonDivider from "@/components/ui/common/ButtonDivider";
+import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
+import SectionHeading from "@/components/ui/common/SectionHeading";
 
 interface HomeArtworkSectionProps {
   artworks: {

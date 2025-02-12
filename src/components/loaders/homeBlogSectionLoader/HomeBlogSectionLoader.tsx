@@ -2,7 +2,7 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import HomeBlogSection from "../../contentSections/HomeBlogSection";
+import { HomeBlogSection } from "../../contentSections/HomeBlogSection";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
 
 // 1. Config Constants
@@ -20,7 +20,6 @@ export type BlogCardData = Pick<
 
 // 3. Loader Function
 export async function HomeBlogSectionLoader() {
-  console.log("HomeBlogSectionLoader");
   try {
     // Fetch data using API layer
     const response = await fetchBlogEntries({

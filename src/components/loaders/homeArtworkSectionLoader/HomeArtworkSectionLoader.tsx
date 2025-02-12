@@ -1,7 +1,7 @@
 "use server";
 
 import { delay } from "@/utils/debug";
-import { HomeArtworkSection } from "../../contentSections/homeArtworkSection/HomeArtworkSection";
+import { HomeArtworkSection } from "@/components/contentSections/HomeArtworkSection";
 
 export async function HomeArtworkSectionLoader() {
   await delay(1000);
