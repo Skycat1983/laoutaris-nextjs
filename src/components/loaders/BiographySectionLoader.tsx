@@ -3,7 +3,7 @@
 import type { FrontendArticle } from "@/lib/types/articleTypes";
 import { fetchArticles } from "@/lib/api/articleApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import { BiographySection } from "@/components/experimental/home/BiographySection";
+import { BiographySection } from "@/components/sections/BiographySection";
 import { delay } from "@/utils/debug";
 
 // Config Constants

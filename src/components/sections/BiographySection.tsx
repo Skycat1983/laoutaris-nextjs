@@ -1,9 +1,12 @@
-import { FrontendArticle } from "@/lib/types/articleTypes";
-import { HomePageSection } from "../templates/HomePageSection";
+import { HomePageSection } from "../experimental/templates/HomePageSection";
 import { ReactNode } from "react";
 import { ScrollArea, ScrollBar } from "@/components/ui/shadcn/scroll-area";
-import { BiographyCard } from "@/components/ui/cards/BiographyCard";
-import { BiographyCardData } from "@/components/loaders/homeBiographySectionLoader/BiographySectionLoader";
+import {
+  BiographyCard,
+  BiographyCardSkeleton,
+} from "@/components/ui/cards/BiographyCard";
+import { BiographyCardData } from "@/components/loaders/BiographySectionLoader";
+import { SkeletonFactory } from "@/components/common/SkeletonFactory";
 
 interface BiographySectionProps {
   articles: BiographyCardData[];
@@ -40,3 +43,11 @@ export const BiographySection = ({ articles }: BiographySectionProps) => {
     </HomePageSection>
   );
 };
+
+export const BiographySectionSkeleton = () => (
+  <SkeletonFactory
+    Layout={BiographyScroll}
+    Card={BiographyCardSkeleton}
+    count={5}
+  />
+);

@@ -4,13 +4,13 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import Image from "next/image";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import Link from "next/link";
-import { BlogCardData } from "../loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
+import { BlogCardData } from "../loaders/BlogSectionLoader";
 
 interface HomeBlogSectionProps {
   blogs: BlogCardData[];
 }
 
-export function HomeBlogSection({ blogs }: HomeBlogSectionProps) {
+export function BlogSection({ blogs }: HomeBlogSectionProps) {
   return (
     <div>
       <SectionHeading heading="Blog:" subheading="Recent posts" />

@@ -2,8 +2,8 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import { HomeBlogSection } from "../../contentSections/HomeBlogSection";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
+import { BlogSection } from "../contentSections/BlogSection";
 
 // 1. Config Constants
 const BLOG_FETCH_CONFIG = {
@@ -19,7 +19,7 @@ export type BlogCardData = Pick<
 >;
 
 // 3. Loader Function
-export async function HomeBlogSectionLoader() {
+export async function BlogSectionLoader() {
   try {
     // Fetch data using API layer
     const response = await fetchBlogEntries({
@@ -40,7 +40,7 @@ export async function HomeBlogSectionLoader() {
     // console.log("blogCards", blogCards);
 
     // Return component with transformed data
-    return <HomeBlogSection blogs={blogCards} />;
+    return <BlogSection blogs={blogCards} />;
   } catch (error) {
     console.error("Blog section loading failed:", error);
     return null;

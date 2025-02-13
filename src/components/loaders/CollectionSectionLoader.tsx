@@ -3,7 +3,7 @@
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { FrontendCollection } from "@/lib/types/collectionTypes";
 import { fetchCollections } from "@/lib/api/collectionApi";
-import { CollectionSection } from "@/components/experimental/home/CollectionSection";
+import { CollectionSection } from "@/components/sections/CollectionSection";
 import { delay } from "@/utils/debug";
 
 // Config Constants

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { HomeArtworkSectionLoader } from "./HomeArtworkSectionLoader";
+import { HomeArtworkSectionLoader } from "../components/loaders/HomeArtworkSectionLoader";
 
 // Fix the mock to match the actual export
 jest.mock("@/components/contentSections/HomeArtworkSection", () => ({
