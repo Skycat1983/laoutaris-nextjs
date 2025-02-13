@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { RefreshButton } from "../admin/feeds/RefreshButton";
+import { RefreshButton } from "../ui/common/buttons/RefreshButton";
 
 // Type for the fetch function that returns data
 type FetchFn<T> = () => Promise<PaginatedResponse<T[]>>;

@@ -35,6 +35,14 @@ export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
       >
         <CopyIcon />
       </button>
+      <div className="absolute inset-12 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 gap-2">
+        <p className="text-white/80 text-m">{item.title}</p>
+
+        <h2 className="text-white text-xl font-bold">
+          {item.medium} on {item.surface}
+        </h2>
+        <p className="text-white/80 text-sm">{item.decade}</p>
+      </div>
     </div>
   );
 }

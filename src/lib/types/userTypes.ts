@@ -19,6 +19,31 @@ export interface FrontendUser extends BaseFrontendUser {
   watchlist: PopulatedField<FrontendArtwork>[];
   favourites: PopulatedField<FrontendArtwork>[];
 }
+
+export interface FrontendUserWithComments extends FrontendUser {
+  comments: PopulatedField<FrontendComment>[];
+  watchlist: string[];
+  favourites: string[];
+}
+
+export interface FrontendUserWithWatchlist extends FrontendUser {
+  comments: string[];
+  watchlist: FrontendArtwork[];
+  favourites: string[];
+}
+
+export interface FrontendUserWithFavourites extends FrontendUser {
+  comments: string[];
+  watchlist: string[];
+  favourites: FrontendArtwork[];
+}
+
+export interface FrontendUserUnpopulated extends BaseFrontendUser {
+  comments: string[];
+  watchlist: string[];
+  favourites: string[];
+}
+
 // export type FrontendUser = BaseFrontendUser & UserCommentsType;
 
 // export interface FrontendUserComments extends BaseFrontendUser {

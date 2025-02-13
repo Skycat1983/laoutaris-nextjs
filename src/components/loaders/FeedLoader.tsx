@@ -1,4 +1,4 @@
-import { RefreshButton } from "../admin/feeds/RefreshButton";
+import { RefreshButton } from "../ui/common/buttons/RefreshButton";
 
 export async function FeedLayout({ children }: { children: React.ReactNode }) {
   return (
