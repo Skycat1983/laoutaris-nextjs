@@ -1,7 +1,7 @@
 import Image from "next/image";
-import ArtworkInfoCard from "../ui/cards/artworkInfoCard/ArtworkInfoCard";
 import HorizontalDivider from "../ui/common/HorizontalDivider";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { ArtworkInfoCard } from "../ui/cards/ArtworkInfoCard";
 
 const ArtworkView = (artwork: SanitizedArtwork) => {
   return (

@@ -8,7 +8,7 @@ import {
   HexColorPalette,
 } from "@/components/ui/disclosures/ColorPallette";
 
-const ArtworkInfoCard = async ({ ...artwork }: SanitizedArtwork) => {
+export async function ArtworkInfoCard({ ...artwork }: SanitizedArtwork) {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session?.user;
 
@@ -55,6 +55,4 @@ const ArtworkInfoCard = async ({ ...artwork }: SanitizedArtwork) => {
       </div>
     </div>
   );
-};
-
-export default ArtworkInfoCard;
+}

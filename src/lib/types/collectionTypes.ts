@@ -50,6 +50,8 @@ export const updateCollectionSchema = z.object({
   summary: z.string().min(1, "Summary is required"),
   text: z.string().min(1, "Text content is required"),
   imageUrl: z.string().url("Must be a valid URL"),
+  artworksToAdd: z.array(z.string()).optional(),
+  artworksToRemove: z.array(z.string()).optional(),
 });
 
 export type UpdateCollectionFormValues = z.infer<typeof updateCollectionSchema>;

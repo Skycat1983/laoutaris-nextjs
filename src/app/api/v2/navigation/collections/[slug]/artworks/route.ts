@@ -16,7 +16,7 @@ export const GET = async (
     const { slug } = params;
 
     const rawCollection = await CollectionModel.findOne({
-      section: "artwork",
+      section: "collections",
       slug,
     })
       .select("artworks")

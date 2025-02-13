@@ -22,9 +22,9 @@ export async function fetchArticleNavigationList(
   });
 
   // Log status and response for debugging
-  console.log("Response status:", response.status);
+  // console.log("Response status:", response.status);
   const text = await response.text();
-  console.log("Response text:", text);
+  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as ArticleNavResponse;
@@ -51,7 +51,7 @@ export async function fetchCollectionNavigationList(
   });
 
   const text = await response.text();
-  console.log("Response text:", text);
+  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as CollectionNavListResponse;
@@ -79,9 +79,9 @@ export async function fetchCollectionNavigationItem(
     cache: "no-store",
   });
 
-  console.log("Response status:", response.status);
+  // console.log("Response status:", response.status);
   const text = await response.text();
-  console.log("Response text:", text);
+  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as CollectionNavItemResponse;
@@ -109,9 +109,9 @@ export async function fetchCollectionArtworksNavigation(
     cache: "no-store",
   });
 
-  console.log("Response status:", response.status);
+  // console.log("Response status:", response.status);
   const text = await response.text();
-  console.log("Response text:", text);
+  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as CollectionArtworksNavResponse;

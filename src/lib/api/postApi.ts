@@ -5,7 +5,6 @@ import {
 import {
   CreateCollectionFormValues,
   FrontendCollection,
-  FrontendCollectionUnpopulated,
 } from "../types/collectionTypes";
 
 export const postArticle = async (

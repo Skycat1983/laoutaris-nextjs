@@ -12,7 +12,7 @@ export const GET = async (
 ): Promise<NextResponse<CollectionNavListResponse>> => {
   try {
     // Fetch collections with just the fields we need
-    const collections = await CollectionModel.find({ section: "artwork" }) // Only artwork collections
+    const collections = await CollectionModel.find({ section: "collections" }) // Only artwork collections
       .select("title slug artworks")
       .sort({ updatedAt: 1 })
       .lean();

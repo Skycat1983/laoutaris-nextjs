@@ -4,32 +4,27 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const _id = searchParams.get("_id");
+    // Add query parameters for filtering, pagination, etc.
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const page = parseInt(searchParams.get("page") || "1");
+    const search = searchParams.get("search") || "";
 
-    if (!_id) {
-      return NextResponse.json(
-        { success: false, message: "Artwork ID is required" },
-        { status: 400 }
-      );
-    }
-
-    const artwork = await ArtworkModel.findById(_id);
-
-    if (!artwork) {
-      return NextResponse.json(
-        { success: false, message: "Artwork not found" },
-        { status: 404 }
-      );
-    }
+    const artworks = await ArtworkModel.find({
+      // Add search conditions if needed
+      ...(search ? { title: new RegExp(search, "i") } : {}),
+    })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,
-      data: artwork,
+      data: artworks,
     });
   } catch (error) {
-    console.error("Error reading artwork:", error);
+    console.error("Error reading artworks:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to read artwork" },
+      { success: false, message: "Failed to read artworks" },
       { status: 500 }
     );
   }
