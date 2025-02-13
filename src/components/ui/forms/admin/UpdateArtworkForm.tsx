@@ -15,16 +15,19 @@ import {
 import { Input } from "@/components/ui/shadcn/input";
 
 import { Button } from "@/components/ui/button";
-import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
-import { ScrollArea } from "../shadcn/scroll-area";
+import {
+  FrontendArtwork,
+  FrontendArtworkUnpopulated,
+} from "@/lib/types/artworkTypes";
+import { ScrollArea } from "../../shadcn/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../shadcn/select";
-import { Checkbox } from "../shadcn/checkbox";
+} from "../../shadcn/select";
+import { Checkbox } from "../../shadcn/checkbox";
 
 // Define the schema for updating artwork using Zod
 const updateArtworkSchema = z.object({
@@ -64,7 +67,7 @@ const updateArtworkSchema = z.object({
 type UpdateArtworkFormValues = z.infer<typeof updateArtworkSchema>;
 
 interface UpdateArtworkFormProps {
-  artworkInfo: FrontendArtworkUnpopulated; // Define this type based on your data structure
+  artworkInfo: FrontendArtwork; // Define this type based on your data structure
   onSuccess: () => void;
 }
 

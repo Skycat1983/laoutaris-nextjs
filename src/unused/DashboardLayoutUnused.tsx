@@ -5,7 +5,7 @@ import { FileText, Image as ImageIcon, User } from "lucide-react";
 import CollectionIcon from "../components/ui/common/icons/CollectionIcon";
 import BlogIcon from "../components/ui/common/icons/BlogIcon";
 import LogoutIcon from "../components/ui/common/icons/LogoutIcon";
-import { CreateArtworkForm } from "../components/ui/forms/CreateArtworkForm";
+import { CreateArtworkForm } from "../components/ui/forms/admin/CreateArtworkForm";
 
 type Props = {};
 

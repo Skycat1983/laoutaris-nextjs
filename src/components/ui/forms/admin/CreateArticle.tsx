@@ -14,80 +14,72 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
-import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
-import { UpdateArticleForm } from "@/components/ui/forms/UpdateArticleForm";
-import { readArticle } from "@/lib/api/readApi";
+import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import { CreateArticleForm } from "@/components/ui/forms/admin/CreateArticleForm";
+import { readArtwork } from "@/lib/api/readApi";
 
 const readSchema = z.object({
-  objectId: z.string().min(1, "Object ID is required"),
+  artworkId: z.string().min(1, "Artwork ID is required"),
 });
 
 type ReadFormValues = z.infer<typeof readSchema>;
 
-export const UpdateArticle = () => {
-  const [articleInfo, setArticleInfo] =
-    useState<FrontendArticleWithArtworkAndAuthor | null>(null);
+export const CreateArticle = () => {
+  const [artworkInfo, setArtworkInfo] = useState<FrontendArtwork | null>(null);
   const form = useForm<ReadFormValues>({
     resolver: zodResolver(readSchema),
     defaultValues: {
-      objectId: "",
+      artworkId: "",
     },
   });
 
-  async function onSubmit(formData: ReadFormValues) {
-    // console.log("formData", formData);
+  async function onSubmit(data: ReadFormValues) {
     try {
-      const article: FrontendArticleWithArtworkAndAuthor = await readArticle(
-        formData.objectId
-      );
-      setArticleInfo(article);
+      const result = await readArtwork(data.artworkId);
+      setArtworkInfo(result);
     } catch (error) {
-      console.error("Error in UpdateArticle:", error);
+      console.error("Error in CreateArticle:", error);
     }
   }
 
   const handleFormSuccess = () => {
-    setArticleInfo(null);
+    setArtworkInfo(null);
   };
 
-  const label = articleInfo
-    ? "✓ Article located"
-    : "Please enter Article ID to continue";
+  const label = artworkInfo
+    ? "✓ Artwork located"
+    : "Please enter Artwork ID to continue";
 
   return (
     <div className="flex flex-col items-around justify-start gap-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
-      {!articleInfo && (
+      {!artworkInfo && (
         <div className="p-4 space-y-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="objectId"
+                name="artworkId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Object ID</FormLabel>
+                    <FormLabel>Artwork ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Article ID" {...field} />
+                      <Input placeholder="Enter Artwork ID" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button
-                type="submit"
-                variant="destructive"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? "Reading..." : "Find Article"}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Finding..." : "Find Artwork"}
               </Button>
             </form>
           </Form>
         </div>
       )}
       <div className="text-center text-gray-500">{label}</div>
-      {articleInfo && (
-        <UpdateArticleForm
-          articleInfo={articleInfo}
+      {artworkInfo && (
+        <CreateArticleForm
+          artworkInfo={artworkInfo}
           onSuccess={handleFormSuccess}
         />
       )}

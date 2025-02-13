@@ -32,13 +32,6 @@ export function DeleteArticle() {
   async function onSubmit(data: DeleteArticleFormValues) {
     try {
       const response = await deleteArticle(data.articleId);
-
-      if (!response.success) {
-        throw new Error("Failed to delete article");
-      }
-
-      // Revalidate the feed after successful deletion
-      //   await revalidateArtworkFeed();
       form.reset();
       console.log("Article deleted successfully");
     } catch (error) {

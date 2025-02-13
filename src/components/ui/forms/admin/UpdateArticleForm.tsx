@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -15,54 +15,80 @@ import {
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/button";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
-import {
-  createArticleSchema,
-  CreateArticleFormValues,
-} from "@/lib/types/articleTypes";
-import { ScrollArea } from "../shadcn/scroll-area";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
+import { ScrollArea } from "../../shadcn/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../shadcn/select";
-import { Textarea } from "../shadcn/textarea";
-import { postArticle } from "@/lib/api/postApi";
+} from "../../shadcn/select";
+import { Textarea } from "../../shadcn/textarea";
+import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import {
+  updateArticleSchema,
+  UpdateArticleFormValues,
+} from "@/lib/types/articleTypes";
+import { patchArticle } from "@/lib/api/patchApi";
+import { readArtwork } from "@/lib/api/readApi";
 
-interface CreateArticleFormProps {
-  artworkInfo: FrontendArtwork;
+interface UpdateArticleFormProps {
+  articleInfo: FrontendArticleWithArtworkAndAuthor;
   onSuccess: () => void;
 }
 
-export const CreateArticleForm = ({
-  artworkInfo,
+export const UpdateArticleForm = ({
+  articleInfo,
   onSuccess,
-}: CreateArticleFormProps) => {
+}: UpdateArticleFormProps) => {
+  console.log("articleInfo", articleInfo);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState(articleInfo.imageUrl);
+  const [newArtwork, setNewArtwork] = useState<FrontendArtwork | null>(null);
+  const [isLoadingArtwork, setIsLoadingArtwork] = useState(false);
+  const artworkIdRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<CreateArticleFormValues>({
-    resolver: zodResolver(createArticleSchema),
+  const form = useForm<UpdateArticleFormValues>({
+    resolver: zodResolver(updateArticleSchema),
     defaultValues: {
-      title: "",
-      subtitle: "",
-      summary: "",
-      text: "",
-      imageUrl: artworkInfo.image.secure_url,
-      section: "artwork",
-      overlayColour: "white",
-      artwork: artworkInfo._id,
+      title: articleInfo.title,
+      subtitle: articleInfo.subtitle,
+      summary: articleInfo.summary,
+      text: articleInfo.text,
+      imageUrl: articleInfo.imageUrl,
+      section: articleInfo.section,
+      overlayColour: articleInfo.overlayColour,
+      artwork: articleInfo.artwork._id,
     },
   });
 
-  async function onSubmit(data: CreateArticleFormValues) {
+  const handleFetchArtwork = async () => {
+    const artworkId = artworkIdRef.current?.value;
+    if (!artworkId) return;
+
+    setIsLoadingArtwork(true);
+    try {
+      const artwork: FrontendArtwork = await readArtwork(artworkId);
+      setNewArtwork(artwork);
+      setImagePreview(artwork.image.secure_url);
+    } catch (error) {
+      console.error("Error fetching artwork:", error);
+    } finally {
+      setIsLoadingArtwork(false);
+    }
+  };
+
+  async function onSubmit(data: UpdateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      await postArticle(data);
+      await patchArticle(articleInfo._id, {
+        ...data,
+        artwork: newArtwork?._id || articleInfo.artwork._id,
+      });
       onSuccess();
     } catch (error) {
-      console.error("Error in CreateArticleForm:", error);
+      console.error("Error in UpdateArticleForm:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -73,6 +99,30 @@ export const CreateArticleForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* Artwork Selection Section */}
+            <div className="space-y-4 p-4 border rounded-lg">
+              <h3 className="font-semibold">Associated Artwork</h3>
+              <p className="text-sm text-gray-500">
+                Current Artwork: {articleInfo.artwork.title}
+              </p>
+              <div className="flex gap-2">
+                <Input ref={artworkIdRef} placeholder="Enter new artwork ID" />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleFetchArtwork}
+                  disabled={isLoadingArtwork}
+                >
+                  {isLoadingArtwork ? "Loading..." : "Fetch Artwork"}
+                </Button>
+              </div>
+              {newArtwork && (
+                <p className="text-sm text-green-600">
+                  ✓ New Artwork Selected: {newArtwork.title}
+                </p>
+              )}
+            </div>
+
             <FormField
               control={form.control}
               name="title"
@@ -80,7 +130,7 @@ export const CreateArticleForm = ({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter article title" {...field} />
+                    <Input placeholder="Enter title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -94,7 +144,7 @@ export const CreateArticleForm = ({
                 <FormItem>
                   <FormLabel>Subtitle</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter article subtitle" {...field} />
+                    <Input placeholder="Enter subtitle" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -199,24 +249,29 @@ export const CreateArticleForm = ({
             />
 
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Article"}
+              {isSubmitting ? "Updating..." : "Update Article"}
             </Button>
           </form>
         </Form>
 
-        {/* Artwork Preview */}
+        {/* Image Preview */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Selected Artwork</h3>
-          <Image
-            src={artworkInfo.image.secure_url}
-            alt={artworkInfo.title}
-            width={400}
-            height={400}
-            className="object-contain rounded-lg"
-          />
-          <p className="text-sm text-gray-500">
-            Artwork Title: {artworkInfo.title}
-          </p>
+          <h3 className="text-lg font-semibold">
+            {newArtwork ? "New Artwork Preview" : "Current Artwork"}
+          </h3>
+          {imagePreview ? (
+            <Image
+              src={imagePreview}
+              alt="Article preview"
+              width={400}
+              height={400}
+              className="object-contain rounded-lg"
+            />
+          ) : (
+            <div className="w-[400px] h-[400px] border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+              <p className="text-gray-400">Image preview will appear here</p>
+            </div>
+          )}
         </div>
       </div>
     </ScrollArea>

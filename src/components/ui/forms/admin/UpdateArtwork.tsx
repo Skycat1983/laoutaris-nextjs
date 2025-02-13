@@ -14,8 +14,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
-import { FrontendArtworkUnpopulated } from "@/lib/types/artworkTypes";
-import { UpdateArtworkForm } from "@/components/ui/forms/UpdateArtworkForm";
+import {
+  FrontendArtwork,
+  FrontendArtworkUnpopulated,
+} from "@/lib/types/artworkTypes";
+import { UpdateArtworkForm } from "@/components/ui/forms/admin/UpdateArtworkForm";
+import { readArtwork } from "@/lib/api/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -24,9 +28,7 @@ const readSchema = z.object({
 type ReadFormValues = z.infer<typeof readSchema>;
 
 export const UpdateArtwork = () => {
-  const [artInfo, setArtInfo] = useState<FrontendArtworkUnpopulated | null>(
-    null
-  );
+  const [artInfo, setArtInfo] = useState<FrontendArtwork | null>(null);
   const form = useForm<ReadFormValues>({
     resolver: zodResolver(readSchema),
     defaultValues: {
@@ -34,24 +36,17 @@ export const UpdateArtwork = () => {
     },
   });
 
-  // TODO: Where- if anywehre- could/should funcs like this be moved to?
   async function onSubmit(data: ReadFormValues) {
     try {
-      const response = await fetch(
-        `/api/artwork?identifierKey=_id&identifierValue=${encodeURIComponent(
-          data.objectId
-        )}&single=true`
-      );
+      const result = await readArtwork(data.objectId);
 
-      console.log("response :>> ", response);
-      const result = await response.json();
+      console.log("result", result);
 
-      if (!result.success) {
-        throw new Error(result.message || "Failed to fetch artwork");
+      if (!result) {
+        throw new Error("Failed to fetch artwork");
       }
 
-      setArtInfo(result.data);
-      console.log("Artwork read successfully:", result.data);
+      setArtInfo(result);
     } catch (error) {
       console.error("Error reading artwork entry:", error);
     }

@@ -6,7 +6,6 @@ import {
   CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
 import { Button } from "../../shadcn/button";
-import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
 
 interface UploadButtonProps {
   onUploadSuccess: (result: CloudinaryUploadWidgetResults) => void;
@@ -21,7 +20,7 @@ const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
   return (
     <CldUploadWidget
       uploadPreset="laoutaris_art"
-      signatureEndpoint="/api/admin/sign-cloudinary-params"
+      signatureEndpoint="/api/v2/admin/sign-cloudinary-params"
       options={{
         sources: ["local", "google_drive", "dropbox"],
         multiple: false,

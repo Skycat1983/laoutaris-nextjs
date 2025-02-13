@@ -1,15 +1,23 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
-import { CreateBlogForm } from "@/components/ui/forms/CreateBlogForm";
-import { DeleteBlogEntry } from "@/components/admin/crud/DeleteBlogEntry";
-import { UpdateBlogEntry } from "@/components/admin/crud/UpdateBlogEntry";
+import { CreateBlogForm } from "@/components/ui/forms/admin/CreateBlogForm";
+import { DeleteBlogEntry } from "@/components/ui/forms/admin/DeleteBlogEntry";
+import { UpdateBlogEntry } from "@/components/ui/forms/admin/UpdateBlogEntry";
 import ReadBlogForm from "@/components/ui/forms/ReadBlogForm";
+import { FeedSkeleton } from "@/components/generic/Feed";
 
 export default function AdminBlogsPage() {
   return (
-    <AdminContentLayout title="Blogs" feedComponent={<BlogFeed />}>
+    <AdminContentLayout
+      title="Blogs"
+      feedComponent={
+        <Suspense fallback={<FeedSkeleton />}>
+          <BlogFeed />
+        </Suspense>
+      }
+    >
       <AdminCrudTabs
         createComponent={<CreateBlogForm />}
         readComponent={<ReadBlogForm />}

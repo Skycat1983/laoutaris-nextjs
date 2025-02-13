@@ -1,4 +1,4 @@
-import { ArtworkModel } from "@/lib/server/models";
+import { ArticleModel } from "@/lib/server/models";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -8,23 +8,26 @@ export async function GET(
   try {
     const { id } = params;
 
-    const artwork = await ArtworkModel.findById(id).lean().exec();
+    const article = await ArticleModel.findById(id).populate([
+      "artwork",
+      "author",
+    ]);
 
-    if (!artwork) {
+    if (!article) {
       return NextResponse.json(
-        { success: false, message: "Artwork not found" },
+        { success: false, message: "Article not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      data: artwork,
+      data: article,
     });
   } catch (error) {
-    console.error("Error reading artwork:", error);
+    console.error("Error reading article:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to read artwork" },
+      { success: false, message: "Failed to read article" },
       { status: 500 }
     );
   }

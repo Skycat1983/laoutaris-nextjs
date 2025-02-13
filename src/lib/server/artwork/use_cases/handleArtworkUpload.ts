@@ -33,17 +33,3 @@ export async function handleArtworkUpload({
 
   return await postArtwork({ artworkData: completeArtworkData });
 }
-
-// cloudinaryResponseToArtworkImageData;
-// Dummy data for testing
-// const dummyArtworkData: Omit<
-//   FrontendArtworkUnpopulated,
-//   "_id" | "image" | "watcherlist" | "favourited"
-// > = {
-//   title: "Test Artwork",
-//   decade: "2020s", // String value from enum
-//   artstyle: "abstract",
-//   medium: "oil",
-//   surface: "canvas",
-//   featured: false,
-// };

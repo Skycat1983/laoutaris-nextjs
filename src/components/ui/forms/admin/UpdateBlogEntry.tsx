@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
-import { UpdateBlogForm } from "@/components/ui/forms/UpdateBlogForm";
+import { UpdateBlogForm } from "@/components/ui/forms/admin/UpdateBlogForm";
 import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 
 const readSchema = z.object({

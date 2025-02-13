@@ -3,16 +3,23 @@
 import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
-import { CreateArtworkWithUpload } from "@/components/ui/forms/CreateArtworkWithUpload";
+import { CreateArtworkWithUpload } from "@/components/ui/forms/admin/CreateArtworkWithUpload";
 import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
-import { DeleteArtwork } from "@/components/admin/crud/DeleteArtwork";
-import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
-import { UpdateArtwork } from "@/components/admin/crud/UpdateArtwork";
+import { DeleteArtwork } from "@/components/ui/forms/admin/DeleteArtwork";
+import { UpdateArtwork } from "@/components/ui/forms/admin/UpdateArtwork";
+import { FeedSkeleton } from "@/components/generic/Feed";
 
 export default async function AdminArtworkPage() {
   console.log("server");
   return (
-    <AdminContentLayout title="Artwork" feedComponent={<ArtworkFeed />}>
+    <AdminContentLayout
+      title="Artwork"
+      feedComponent={
+        <Suspense fallback={<FeedSkeleton />}>
+          <ArtworkFeed />
+        </Suspense>
+      }
+    >
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
         readComponent={<div>Read Artwork</div>}

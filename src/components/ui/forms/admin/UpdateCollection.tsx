@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/shadcn/input";
 import { Button } from "@/components/ui/shadcn/button";
 import { FrontendCollectionWithArtworks } from "@/lib/types/collectionTypes";
 import { readCollection } from "@/lib/api/readApi";
-import { UpdateCollectionForm } from "@/components/ui/forms/UpdateCollectionForm";
+import { UpdateCollectionForm } from "@/components/ui/forms/admin/UpdateCollectionForm";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

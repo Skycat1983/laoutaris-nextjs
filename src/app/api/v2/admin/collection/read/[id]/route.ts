@@ -1,14 +1,13 @@
 import { CollectionModel } from "@/lib/server/models";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
-
   try {
+    const { id } = params;
+
     const collection = await CollectionModel.findById(id)
       .populate("artworks")
       .lean()
@@ -21,11 +20,9 @@ export async function GET(
       );
     }
 
-    const transformedCollection = transformMongooseDoc(collection);
-
     return NextResponse.json({
       success: true,
-      data: transformedCollection,
+      data: collection,
     });
   } catch (error) {
     console.error("Error reading collection:", error);
