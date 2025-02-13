@@ -67,31 +67,3 @@ const ArticleViewSkeleton = () => {
 };
 
 export default ArticleViewSkeleton;
-
-{
-  /* {prevUrl ? (
-          <Link href={prevUrl} className="bg-black text-white w-full">
-            <button className="bg-black text-white p-4 w-full">Previous</button>
-          </Link>
-        ) : (
-          <button
-            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
-            disabled
-          >
-            Previous
-          </button>
-        )}
-
-        {nextUrl ? (
-          <Link href={nextUrl} className="bg-black text-white w-full">
-            <button className="bg-black text-white p-4 w-full">Next</button>
-          </Link>
-        ) : (
-          <button
-            className="bg-gray-400 text-gray-600 p-4 w-full cursor-not-allowed"
-            disabled
-          >
-            Next
-          </button>
-        )} */
-}

@@ -45,3 +45,122 @@ DELETE BLOG ENTRY
 FRONTEND TYPES:
 
 - should i Omit from the DBdocument type to create the frontend types?
+
+```
+src/
+└── components/
+    ├── animations/
+    │   ├── ArtworkImage.tsx                    [MOVE from animations/]
+    │   ├── PageLoading.tsx                     [MOVE from animations/]
+    │   └── TransitionGroup.tsx                 [MOVE from animations/]
+    │
+    ├── common/                                 [NEW - from generic/]
+    │   └── Feed.tsx                           [MOVE from generic/]
+    │
+    ├── features/
+    │   ├── admin/
+    │   │   ├── feeds/                         [MOVE from admin/feeds/]
+    │   │   │   ├── ArticleFeed.tsx
+    │   │   │   ├── ArtworkFeed.tsx
+    │   │   │   ├── BlogFeed.tsx
+    │   │   │   └── CollectionFeed.tsx
+    │   │   └── forms/                         [MOVE from ui/forms/admin/]
+    │   │       ├── CreateArticle.tsx
+    │   │       ├── CreateArticleForm.tsx
+    │   │       ├── CreateArtworkForm.tsx
+    │   │       └── ... (all admin forms)
+    │   │
+    │   └── home/                              [MOVE from views/home/]
+    │       ├── Home.test.tsx
+    │       └── Home.tsx
+    │
+    ├── layouts/
+    │   ├── admin/                             [MOVE from layouts/]
+    │   │   ├── AdminContentLayout.tsx
+    │   │   ├── AdminPageContainer.tsx
+    │   │   └── AdminSidebar.tsx
+    │   └── public/                            [MOVE from layouts/]
+    │       ├── ArtworkViewLayout.tsx
+    │       ├── BlogSortedByLayout.tsx
+    │       ├── ContentLayout.tsx
+    │       └── PaginationLayout.tsx
+    │
+    ├── loaders/                               [Keep structure, just move]
+    │   ├── ArticleLoader.tsx
+    │   ├── BiographySubnavLoader.tsx
+    │   └── ... (all loaders)
+    │
+    ├── sections/                              [MOVE from contentSections/]
+    │   ├── HomeArtworkSection.tsx
+    │   ├── HomeBiographySection.tsx
+    │   ├── HomeBlogSection.tsx
+    │   ├── HomeCollectionSection.tsx
+    │   ├── HomeProjectSection.tsx
+    │   └── HomeSubscribeSection.tsx
+    │
+    ├── skeletons/                            [Keep structure, just move]
+    │   ├── ArticleViewSkeleton.tsx
+    │   ├── ArtworkInfoCardSkeleton.tsx
+    │   └── ... (all skeletons)
+    │
+    └── ui/
+        ├── navigation/
+        │   ├── header/
+        │   │   └── Header.tsx                [MOVE from ui/header/header.tsx]
+        │   ├── navBar/                       [MOVE from ui/navBar/]
+        │   │   ├── DesktopNavLayout.tsx
+        │   │   ├── MobileNavLayout.tsx
+        │   │   └── TabletNavLayout.tsx
+        │   ├── breadcrumbs/                  [MOVE from ui/breadcrumbs/]
+        │   │   └── Breadcrumbs.tsx
+        │   └── subnav/                       [MOVE from ui/subnav/]
+        │       ├── SubNavBar.tsx
+        │       └── Subnav.tsx
+        │
+        ├── forms/                            [MOVE from ui/forms/]
+        │   ├── ContactForm.tsx
+        │   ├── EnquiryForm.tsx
+        │   ├── LoginForm.tsx
+        │   ├── LogoutForm.tsx
+        │   ├── SignInForm.tsx
+        │   ├── SignUpForm.tsx
+        │   ├── SubscribeForm.tsx
+        │   └── user/                         [MOVE from ui/forms/user/]
+        │
+        ├── cards/                            [MOVE from ui/cards/]
+        │   ├── ArticleFeedCard.tsx
+        │   ├── ArtworkFeedCard.tsx
+        │   └── ... (all cards)
+        │
+        ├── icons/                            [MOVE from ui/common/icons/]
+        │   ├── BlogIcon.tsx
+        │   ├── CollectionIcon.tsx
+        │   └── ... (all icons)
+        │
+        ├── modals/                           [MOVE from ui/modal/]
+        │   └── Modal.tsx
+        │
+        ├── hero/                             [MOVE from ui/hero/]
+        │   ├── Hero.tsx
+        │   ├── HeroSkeleton.tsx
+        │   ├── HeroSlide.tsx
+        │   └── slides/
+        │       └── Slide1.tsx
+        │
+        ├── utilities/                        [NEW - move from ui/ root]
+        │   ├── button.tsx
+        │   ├── calendar.tsx
+        │   ├── popover.tsx
+        │   └── tooltip.tsx
+        │
+        ├── shadcn/                           [MOVE from ui/shadcn/]
+        │   ├── DatePicker.tsx
+        │   ├── breadcrumb.tsx
+        │   └── ... (all shadcn components)
+        │
+        └── views/                            [MOVE from views/]
+            ├── AdminDashboard.tsx
+            ├── ArticleView.tsx
+            ├── ArtworkView.tsx
+            └── ... (all views)
+```
