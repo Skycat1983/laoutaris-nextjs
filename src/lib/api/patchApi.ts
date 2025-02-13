@@ -1,5 +1,7 @@
 import { UpdateArticleFormValues } from "@/lib/types/articleTypes";
 import { UpdateCollectionFormValues } from "../types/collectionTypes";
+import { UpdateArtworkFormValues } from "../types/artworkTypes";
+import { UpdateBlogFormValues } from "../types/blogTypes";
 
 export const patchArticle = async (
   articleId: string,
@@ -50,6 +52,67 @@ export const patchCollection = async (
 
     if (!result.success) {
       throw new Error(result.message || "Failed to update collection");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(
+      `API Error: ${
+        error instanceof Error ? error.message : "Unknown error occurred"
+      }`
+    );
+  }
+};
+
+export const patchArtwork = async (
+  artworkId: string,
+  data: UpdateArtworkFormValues
+) => {
+  try {
+    const response = await fetch(
+      `/api/v2/admin/artwork/update/${encodeURIComponent(artworkId)}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Failed to update artwork");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(
+      `API Error: ${
+        error instanceof Error ? error.message : "Unknown error occurred"
+      }`
+    );
+  }
+};
+
+export const patchBlog = async (blogId: string, data: UpdateBlogFormValues) => {
+  try {
+    const response = await fetch(
+      `/api/v2/admin/blog/update/${encodeURIComponent(blogId)}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Failed to update blog");
     }
 
     return result;

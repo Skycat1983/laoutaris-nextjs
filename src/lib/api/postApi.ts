@@ -6,6 +6,11 @@ import {
   CreateCollectionFormValues,
   FrontendCollection,
 } from "../types/collectionTypes";
+import {
+  CreateArtworkFormValues,
+  FrontendArtwork,
+} from "@/lib/types/artworkTypes";
+import { CreateBlogFormValues, FrontendBlogEntry } from "@/lib/types/blogTypes";
 
 export const postArticle = async (
   data: CreateArticleFormValues
@@ -51,6 +56,62 @@ export const postCollection = async (
 
     if (!result.success) {
       throw new Error(result.message || "Failed to create collection");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(
+      `API Error: ${
+        error instanceof Error ? error.message : "Unknown error occurred"
+      }`
+    );
+  }
+};
+
+export const postArtwork = async (
+  data: CreateArtworkFormValues
+): Promise<ApiResponse<FrontendArtwork>> => {
+  try {
+    const response = await fetch("/api/v2/admin/artwork/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Failed to create artwork");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(
+      `API Error: ${
+        error instanceof Error ? error.message : "Unknown error occurred"
+      }`
+    );
+  }
+};
+
+export const postBlog = async (
+  data: CreateBlogFormValues
+): Promise<ApiResponse<FrontendBlogEntry>> => {
+  try {
+    const response = await fetch("/api/v2/admin/blog/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Failed to create blog");
     }
 
     return result;

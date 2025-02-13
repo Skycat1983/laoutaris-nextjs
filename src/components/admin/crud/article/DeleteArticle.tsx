@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
+import { deleteArticle } from "@/lib/api/deleteApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -30,15 +31,9 @@ export function DeleteArticle() {
 
   async function onSubmit(data: DeleteArticleFormValues) {
     try {
-      const response = await fetch(`/api/v2/admin/article/delete`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: data.articleId }),
-      });
+      const response = await deleteArticle(data.articleId);
 
-      if (!response.ok) {
+      if (!response.success) {
         throw new Error("Failed to delete article");
       }
 

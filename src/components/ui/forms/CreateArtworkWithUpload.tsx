@@ -5,7 +5,7 @@ import { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import UploadButton from "../common/buttons/UploadButton";
 import { CreateArtworkForm } from "./CreateArtworkForm";
 import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
-import { cloudinaryResponseToArtworkImageData } from "@/lib/server/artwork/resolvers/cloudinaryResponseToArtworkImageData";
+import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";
 import { ArtworkImage } from "@/lib/types/artworkTypes";
 
 export function CreateArtworkWithUpload() {
