@@ -1,14 +1,15 @@
 import mongoose, { Document } from "mongoose";
 
+type Section = "artwork" | "biography" | "project" | "collections";
+
 export interface DBCollection extends Document {
   title: string;
   subtitle: string;
   summary: string;
   text: string;
-  // author: mongoose.Schema.Types.ObjectId;
   imageUrl: string;
   slug: string;
-  section: "artwork" | "biography" | "project";
+  section: Section;
   artworks: mongoose.Schema.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
@@ -20,17 +21,13 @@ const collectionSchema = new mongoose.Schema<DBCollection>(
     subtitle: { type: String, required: true },
     summary: { type: String, required: true },
     text: { type: String, required: true },
-    // author: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "user",
-    //   required: true,
-    // },
     imageUrl: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     section: {
       type: String,
-      required: true,
-      enum: ["artwork", "biography", "project"],
+      required: false,
+      default: "collections",
+      enum: ["artwork", "biography", "project", "collections"],
     },
     artworks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },

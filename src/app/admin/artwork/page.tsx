@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
-import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
+import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
 import { CreateArtworkWithUpload } from "@/components/ui/forms/CreateArtworkWithUpload";
 import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { DeleteArtwork } from "@/components/admin/crud/DeleteArtwork";

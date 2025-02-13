@@ -1,5 +1,8 @@
 import mongoose, { Document } from "mongoose";
 
+type Section = "artwork" | "biography" | "project" | "collections";
+type OverlayColour = "white" | "black";
+
 export interface DBArticle extends Document {
   title: string;
   subtitle: string;
@@ -9,8 +12,8 @@ export interface DBArticle extends Document {
   imageUrl: string;
   artwork: mongoose.Schema.Types.ObjectId;
   slug: string;
-  section: "artwork" | "biography" | "project";
-  overlayColour: "white" | "black";
+  section: Section;
+  overlayColour: OverlayColour;
 }
 
 const articleContentSchema = new mongoose.Schema<DBArticle>(

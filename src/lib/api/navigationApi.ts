@@ -50,7 +50,6 @@ export async function fetchCollectionNavigationList(
     cache: "no-store",
   });
 
-  console.log("Response status:", response.status);
   const text = await response.text();
   console.log("Response text:", text);
 

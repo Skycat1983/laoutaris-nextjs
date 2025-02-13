@@ -9,16 +9,7 @@ interface BlogCardProps {
 
 const BlogCard = ({
   stem,
-  blogEntry: {
-    title,
-    subtitle,
-    // summary,
-    // author,
-    imageUrl,
-    slug,
-    displayDate,
-    featured,
-  },
+  blogEntry: { title, subtitle, imageUrl, slug, displayDate, featured },
 }: BlogCardProps) => {
   const formattedDate = new Date(displayDate).toLocaleDateString();
   console.log("title :>> ", title);

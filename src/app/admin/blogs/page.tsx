@@ -1,6 +1,6 @@
 import React from "react";
 import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
-import { AdminCrudTabs } from "@/components/admin/AdminCrudTabs";
+import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CreateBlogForm } from "@/components/ui/forms/CreateBlogForm";
 import { DeleteBlogEntry } from "@/components/admin/crud/DeleteBlogEntry";

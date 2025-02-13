@@ -4,7 +4,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/shadcn/tabs";
-// import { AdminFeed } from "@/components/admin/AdminFeed";
 
 interface AdminMobileTabsProps {
   mainContent: React.ReactNode;
@@ -20,7 +19,6 @@ export function AdminMobileTabs({ mainContent }: AdminMobileTabsProps) {
         </TabsList>
         <TabsContent value="main">{mainContent}</TabsContent>
         <TabsContent value="feed">
-          {/* <AdminFeed /> */}
           <div className="w-full h-full bg-greyish/10 hover:bg-whitish">
             FEED
           </div>

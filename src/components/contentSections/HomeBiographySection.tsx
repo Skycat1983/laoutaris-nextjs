@@ -1,11 +1,8 @@
-// "use server";
-// "use client";
-
 import ButtonDivider from "../ui/common/ButtonDivider";
 import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeading from "../ui/common/SectionHeading";
 import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
-import BiographyCard from "../ui/cards/biographyCard/BiographyCard";
+import BiographyCard from "../ui/cards/BiographyCard";
 import { BiographyCardData } from "../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
 
 interface HomeBiographySectionProps {

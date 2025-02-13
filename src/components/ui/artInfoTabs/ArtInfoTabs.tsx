@@ -12,7 +12,7 @@ import {
 import {
   CloudinaryColorPalette,
   HexColorPalette,
-} from "@/components/ui/cards/artworkInfoCard/ColorPallette";
+} from "@/components/ui/disclosures/ColorPallette";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
 import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
