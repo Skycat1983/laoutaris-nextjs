@@ -1,5 +1,6 @@
 import { FrontendUser } from "./userTypes";
 import { ColorInfo } from "./colorTypes";
+import { FrontendCollection } from "./collectionTypes";
 
 interface BaseFrontendArtwork {
   _id: string;
@@ -19,6 +20,18 @@ type PopulatedField<T> = string | T;
 export interface FrontendArtwork extends BaseFrontendArtwork {
   watcherlist: PopulatedField<FrontendUser>[];
   favourited: PopulatedField<FrontendUser>[];
+}
+
+export interface FrontendArtworkWithCollections extends FrontendArtwork {
+  collections: FrontendCollection[];
+  watcherlist: string[];
+  favourited: string[];
+}
+
+export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
+  collections: string[];
+  watcherlist: string[];
+  favourited: string[];
 }
 
 export type Decade =
@@ -46,7 +59,11 @@ export type Medium =
 
 export type Surface = "paper" | "canvas" | "wood" | "film";
 
-export interface FrontendArtworkFull {
+export interface FrontendUserFull extends FrontendUser {
+  _id: string;
+}
+
+export interface FrontendArtworkFull extends FrontendArtwork {
   _id: string;
   image: ArtworkImage;
   title: string;
@@ -59,18 +76,18 @@ export interface FrontendArtworkFull {
   favourited: FrontendUserFull[];
 }
 
-export interface FrontendArtworkUnpopulated {
-  _id: string;
-  image: ArtworkImage;
-  title: string;
-  decade: Decade;
-  artstyle: ArtStyle;
-  medium: Medium;
-  surface: Surface;
-  featured: boolean;
-  watcherlist: string[];
-  favourited: string[];
-}
+// export interface FrontendArtworkUnpopulated {
+//   _id: string;
+//   image: ArtworkImage;
+//   title: string;
+//   decade: Decade;
+//   artstyle: ArtStyle;
+//   medium: Medium;
+//   surface: Surface;
+//   featured: boolean;
+//   watcherlist: string[];
+//   favourited: string[];
+// }
 
 export interface FrontendArtworkWithWatcherlist {
   _id: string;
