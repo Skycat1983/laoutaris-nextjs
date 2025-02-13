@@ -1,9 +1,10 @@
 "use server";
 
 import type { FrontendArticle } from "@/lib/types/articleTypes";
-import { HomeBiographySection } from "@/components/contentSections/HomeBiographySection";
 import { fetchArticles } from "@/lib/api/articleApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
+import { BiographySection } from "@/components/experimental/home/BiographySection";
+import { delay } from "@/utils/debug";
 
 // Config Constants
 const BIOGRAPHY_FETCH_CONFIG = {
@@ -18,7 +19,8 @@ export type BiographyCardData = Pick<
 >;
 
 // Loader Function
-export async function HomeBiographySectionLoader() {
+export async function BiographySectionLoader() {
+  await delay(2000);
   try {
     // Fetch data using API layer
     const articles = await fetchArticles({
@@ -32,7 +34,7 @@ export async function HomeBiographySectionLoader() {
     );
 
     // Return component with transformed data
-    return <HomeBiographySection articles={biographyCards} />;
+    return <BiographySection articles={biographyCards} />;
   } catch (error) {
     console.error("Biography section loading failed:", error);
     return null;

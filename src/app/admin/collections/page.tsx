@@ -1,10 +1,10 @@
 import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
 import { CollectionFeed } from "@/components/admin/feeds/CollectionFeed";
-import { AdminContentLayout } from "@/components/layouts/AdminContentLayout";
+import { AdminContentLayout } from "@/components/layouts/admin/AdminContentLayout";
 import React, { Suspense } from "react";
 import { CreateCollectionForm } from "@/components/ui/forms/admin/CreateCollectionForm";
 import { UpdateCollection } from "@/components/ui/forms/admin/UpdateCollection";
-import { FeedSkeleton } from "@/components/generic/Feed";
+import { FeedSkeleton } from "@/components/common/Feed";
 
 export default function AdminCollectionsPage() {
   return (

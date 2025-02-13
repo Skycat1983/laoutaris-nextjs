@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 
 // ! COMPONENTS
 import { Hero } from "../../ui/hero/Hero";
-import { ContentLayout } from "../../layouts/ContentLayout";
+import { ContentLayout } from "../../layouts/public/ContentLayout";
 
 // ! SKELETONS
 import { HomeProjectSectionSkeleton } from "../../skeletons/HomeProjectSectionSkeleton";
@@ -13,12 +13,11 @@ import { HomeSubscribeSectionSkeleton } from "@/components/skeletons/HomeSubscri
 import { BlogEntriesSkeleton } from "../../skeletons/BlogEntriesSkeleton";
 
 // ! LOADERS
-import { HomeBiographySectionLoader } from "../../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
+import { BiographySectionLoader } from "../../loaders/homeBiographySectionLoader/BiographySectionLoader";
 import { HomeSubscribeSectionLoader } from "@/components/loaders/homeSubscribeSectionLoader/HomeSubscribeSectionLoader";
 import { HomeProjectSectionLoader } from "@/components/loaders/homeProjectSectionLoader/homeProjectSectionLoader";
-// import { HomeArtworkSectionLoader } from "@/components/loaders/homeArtworkSectionLoader/HomeArtworkSectionLoader";
 import { HomeBlogSectionLoader } from "@/components/loaders/homeBlogSectionLoader/HomeBlogSectionLoader";
-import { HomeCollectionsSectionLoader } from "@/components/loaders/homeCollectionSectionLoader/HomeCollectionSectionLoader";
+import { CollectionsSectionLoader } from "@/components/loaders/homeCollectionSectionLoader/CollectionSectionLoader";
 import { HomeCollectionSectionSkeleton } from "@/components/skeletons/HomeCollectionSectionSkeleton";
 
 export async function Home() {
@@ -26,15 +25,9 @@ export async function Home() {
     <div data-testid="home-container">
       <Hero data-testid="home-hero" />
 
-      {/* <ContentLayout data-testid="home-content-layout">
-        <Suspense fallback={<HomeArtworkSectionSkeleton />}>
-          <HomeArtworkSectionLoader data-testid="home-artwork-section" />
-        </Suspense>
-      </ContentLayout> */}
-
       <ContentLayout data-testid="home-content-layout">
         <Suspense fallback={<HomeCollectionSectionSkeleton />}>
-          <HomeCollectionsSectionLoader data-testid="home-collection-section" />
+          <CollectionsSectionLoader data-testid="home-collection-section" />
         </Suspense>
       </ContentLayout>
 
@@ -46,7 +39,7 @@ export async function Home() {
 
       <ContentLayout>
         <Suspense fallback={<HomeBiographySectionSkeleton />}>
-          <HomeBiographySectionLoader data-testid="home-biography-section" />
+          <BiographySectionLoader data-testid="home-biography-section" />
         </Suspense>
       </ContentLayout>
 
@@ -64,7 +57,3 @@ export async function Home() {
     </div>
   );
 }
-
-// https://blog.arcjet.com/testing-next-js-app-router-api-routes/
-
-// TODO: HomeCollectionSectionLoader

@@ -1,13 +1,14 @@
 "use server";
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import { HomeCollectionSection } from "@/components/contentSections/HomeCollectionSection";
 import { FrontendCollection } from "@/lib/types/collectionTypes";
 import { fetchCollections } from "@/lib/api/collectionApi";
+import { CollectionSection } from "@/components/experimental/home/CollectionSection";
+import { delay } from "@/utils/debug";
 
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {
-  section: "artwork",
+  section: "collections",
   fields: ["title", "slug", "imageUrl", "artworks"] as const,
 } as const;
 
@@ -18,7 +19,8 @@ export type CollectionCardData = Pick<
 >;
 
 // Loader Function
-export async function HomeCollectionsSectionLoader() {
+export async function CollectionsSectionLoader() {
+  await delay(2000);
   try {
     // Fetch data using API layer
     const collections = await fetchCollections({
@@ -26,7 +28,7 @@ export async function HomeCollectionsSectionLoader() {
       fields: COLLECTIONS_FETCH_CONFIG.fields,
     });
 
-    console.log("collections", collections);
+    console.log("collections in loader", collections);
 
     // Transform data using transform layer
     const collectionCards: CollectionCardData[] = collections.map((article) =>
@@ -34,7 +36,7 @@ export async function HomeCollectionsSectionLoader() {
     );
 
     // Return component with transformed data
-    return <HomeCollectionSection collections={collectionCards} />;
+    return <CollectionSection collections={collectionCards} />;
   } catch (error) {
     console.error("Collections section loading failed:", error);
     return null;

@@ -3,7 +3,7 @@ import HorizontalDivider from "../ui/common/HorizontalDivider";
 import SectionHeading from "../ui/common/SectionHeading";
 import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
 import BiographyCard from "../ui/cards/BiographyCard";
-import { BiographyCardData } from "../loaders/homeBiographySectionLoader/HomeBiographySectionLoader";
+import { BiographyCardData } from "../loaders/homeBiographySectionLoader/BiographySectionLoader";
 
 interface HomeBiographySectionProps {
   articles: BiographyCardData[];

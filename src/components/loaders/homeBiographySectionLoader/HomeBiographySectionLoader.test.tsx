@@ -1,7 +1,7 @@
 // tests go here:
 
 import { render, screen } from "@testing-library/react";
-import { HomeBiographySectionLoader } from "./HomeBiographySectionLoader";
+import { HomeBiographySectionLoader } from "./BiographySectionLoader";
 import { fetchArticles } from "@/lib/api/articleApi";
 import { HomeBiographySection } from "@/components/contentSections/HomeBiographySection";
 

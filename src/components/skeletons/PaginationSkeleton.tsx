@@ -1,4 +1,4 @@
-import PaginationLayout from "../layouts/PaginationLayout";
+import PaginationLayout from "../layouts/public/PaginationLayout";
 import CollectionInfo from "../ui/common/CollectionInfo";
 import { Skeleton } from "../ui/shadcn/skeleton";
 

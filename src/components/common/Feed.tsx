@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 import { RefreshButton } from "../ui/common/buttons/RefreshButton";
 
-// Type for the fetch function that returns data
+// type for the fetch function that returns data
 type FetchFn<T> = () => Promise<PaginatedResponse<T[]>>;
 
-// Type for the card component
+// type for the card component
 type CardComponent<T> = React.ComponentType<{ item: T }>;
 
 const FeedLayout = ({
@@ -29,7 +29,7 @@ const FeedLayout = ({
   );
 };
 
-// Generic Feed component
+// generic Feed component
 export async function Feed<T>({
   fetchFn,
   CardComponent,
@@ -50,7 +50,7 @@ export async function Feed<T>({
   );
 }
 
-// Loading state component
+// loading state component
 export function FeedSkeleton() {
   return (
     <FeedLayout>

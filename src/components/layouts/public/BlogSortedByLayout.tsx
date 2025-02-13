@@ -1,26 +1,17 @@
 import React from "react";
 import dbConnect from "@/utils/mongodb";
 import { fetchBlogAvailability } from "@/lib/server/blog/data-fetching/fetchBlogAvailability";
-import BlogSidebar from "../ui/sidebar/BlogSidebar";
+import BlogSidebar from "../../ui/sidebar/BlogSidebar";
 
 type Props = {
   children: React.ReactNode;
 };
 
+//! UNUSED
+
 const BlogSortByLayout = async ({ children }: Props) => {
   await dbConnect();
-  // const section = "featured";
-  // const result = await fetchBlogAvailability(section);
 
-  // const data = result.success ? result.data : {};
-
-  // const sortRangeOptions = [
-  //   { label: "All posts", queryValue: "all" },
-  //   ...Object.keys(data).map((year) => ({
-  //     label: year,
-  //     queryValue: year,
-  //   })),
-  // ];
   return (
     <>
       <div className="grid grid-cols-12 gap-4">

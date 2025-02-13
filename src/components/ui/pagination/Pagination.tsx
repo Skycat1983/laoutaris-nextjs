@@ -1,7 +1,7 @@
 import React from "react";
 import PaginationItem from "./PaginationItem";
 import CollectionInfo from "../common/CollectionInfo";
-import PaginationLayout from "@/components/layouts/PaginationLayout";
+import PaginationLayout from "@/components/layouts/public/PaginationLayout";
 import { ArtworkNavFields } from "@/lib/types/navigationTypes";
 import { buildUrl } from "@/utils/buildUrl";
 

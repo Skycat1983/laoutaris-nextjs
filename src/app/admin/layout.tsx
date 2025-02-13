@@ -1,5 +1,5 @@
-import { AdminSidebar } from "@/components/layouts/AdminSidebar";
-import { AdminPageContainer } from "@/components/layouts/AdminPageContainer";
+import { AdminSidebar } from "@/components/layouts/admin/AdminSidebar";
+import { AdminPageContainer } from "@/components/layouts/admin/AdminPageContainer";
 
 export default function AdminLayout({
   children,
