@@ -1,4 +1,4 @@
-import { ArticleFeedCard } from "../ArticleFeedCard";
+import { ArticleFeedCard } from "../../ui/cards/ArticleFeedCard";
 import { fetchArticleFeed } from "@/lib/api/feedApi";
 import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
 import { Suspense } from "react";
