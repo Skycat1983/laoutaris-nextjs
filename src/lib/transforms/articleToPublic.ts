@@ -1,9 +1,9 @@
-import { FrontendArticleWithArtwork } from "../../../types/articleTypes";
-import { FrontendArtworkUnpopulated } from "../../../types/artworkTypes";
+import { FrontendArticleWithArtwork } from "../types/articleTypes";
+import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
 
 type SelectedArtworkFields = Omit<
   FrontendArtworkUnpopulated,
-  "watcherlist" | "favourited"
+  "watcherlist" | "favourited" | "collections"
 >;
 type SelectedArtworkImageFields = Pick<
   FrontendArtworkUnpopulated["image"],

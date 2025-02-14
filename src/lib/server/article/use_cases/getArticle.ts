@@ -2,7 +2,7 @@ import { FrontendArticleWithArtwork } from "../../../types/articleTypes";
 import {
   FrontendArticleWithArtworkTooltip,
   articleToView,
-} from "../resolvers/articleToView";
+} from "../../../transforms/articleToPublic";
 import { fetchArticleArtwork } from "../data-fetching/fetchArticleArtwork";
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
 

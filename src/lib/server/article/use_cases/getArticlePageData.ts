@@ -1,4 +1,4 @@
-import { FrontendArticleWithArtworkTooltip } from "../resolvers/articleToView";
+import { FrontendArticleWithArtworkTooltip } from "../../../transforms/articleToPublic";
 import { PrevNextLinks } from "../resolvers/articlesToPrevNext";
 import { getArticle } from "./getArticle";
 import { getArticlePrevNextLinks } from "./getArticlePrevNextLinks";

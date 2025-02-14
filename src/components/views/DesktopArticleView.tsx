@@ -1,7 +1,7 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArticleWithArtworkTooltip } from "@/lib/server/article/resolvers/articleToView";
+import { FrontendArticleWithArtworkTooltip } from "@/lib/transforms/articleToPublic";
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";

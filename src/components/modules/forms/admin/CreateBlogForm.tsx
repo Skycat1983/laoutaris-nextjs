@@ -23,7 +23,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
 import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
-import { handleBlogUpload } from "@/lib/server/blog/use_cases/handleBlogUpload";
+import { postBlog } from "@/lib/api/postApi";
 
 export function CreateBlogForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,9 +50,11 @@ export function CreateBlogForm() {
       setIsSubmitting(true);
       console.log("2. About to call handleBlogUpload");
 
-      const response = await handleBlogUpload({
-        formData: values,
-      });
+      const response = await postBlog(values);
+
+      // const response = await handleBlogUpload({
+      //   formData: values,
+      // });
 
       console.log("3. Got response from handleBlogUpload:", response);
       form.reset();

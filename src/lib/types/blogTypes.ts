@@ -126,7 +126,7 @@ export const createBlogSchema = z.object({
   imageUrl: z.string().url("Invalid URL"),
   displayDate: z.date(),
   featured: z.boolean().default(false),
-  tags: z.array(z.string()),
+  // tags: z.array(z.string()),
 });
 
 export type CreateBlogFormValues = z.infer<typeof createBlogSchema>;
