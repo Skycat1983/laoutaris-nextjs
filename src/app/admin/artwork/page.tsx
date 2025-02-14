@@ -2,11 +2,11 @@
 
 import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/admin/AdminContentLayout";
-import { AdminCrudTabs } from "@/components/ui/tabs/AdminCrudTabs";
-import { CreateArtworkWithUpload } from "@/components/ui/forms/admin/CreateArtworkWithUpload";
+import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
+import { CreateArtworkWithUpload } from "@/components/modules/forms/admin/CreateArtworkWithUpload";
 import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
-import { DeleteArtwork } from "@/components/ui/forms/admin/DeleteArtwork";
-import { UpdateArtwork } from "@/components/ui/forms/admin/UpdateArtwork";
+import { DeleteArtwork } from "@/components/modules/forms/admin/DeleteArtwork";
+import { UpdateArtwork } from "@/components/modules/forms/admin/UpdateArtwork";
 import { FeedSkeleton } from "@/components/compositions/Feed";
 
 export default async function AdminArtworkPage() {

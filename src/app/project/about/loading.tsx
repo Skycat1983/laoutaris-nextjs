@@ -1,4 +1,4 @@
-import ArticleSkeleton from "@/components/skeletons/ArticleViewSkeleton";
+import ArticleSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
 
 const AboutLoading = () => {
   return (

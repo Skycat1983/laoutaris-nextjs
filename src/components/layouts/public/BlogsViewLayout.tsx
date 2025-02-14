@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Subnav } from "@/components/ui/navigation/subnav/Subnav";
+import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
 import { BLOG_NAV_LINKS } from "@/constants/navigationLinks";
 
 interface BlogsViewLayoutProps {

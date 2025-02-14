@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import ButtonDivider from "@/components/ui/common/ButtonDivider";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import SectionHeading from "@/components/ui/common/SectionHeading";
+import ButtonDivider from "@/components/elements/misc/ButtonDivider";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import SectionHeading from "@/components/elements/typography/SectionHeading";
 
 interface HomeSectionProps {
   heading: string;

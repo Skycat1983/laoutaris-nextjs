@@ -3,14 +3,14 @@
 import React from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { updateUserWatchlist } from "@/lib/server/user/actions/updateUserWatchlist";
-import { Button } from "@/components/ui/shadcn/button";
+import { Button } from "@/components/shadcn/button";
 import { Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/shadcn/tooltip";
+} from "@/components/shadcn/tooltip";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "../ModalMessage";
 import SubmitButton from "./SubmitButton";

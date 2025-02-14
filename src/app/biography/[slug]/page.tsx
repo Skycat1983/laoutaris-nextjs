@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import ArticleViewSkeleton from "@/components/skeletons/ArticleViewSkeleton";
+import ArticleViewSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 
 export default async function BiographySlugPage({

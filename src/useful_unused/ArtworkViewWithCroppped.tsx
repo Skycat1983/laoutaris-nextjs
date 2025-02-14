@@ -1,8 +1,8 @@
 // "use client";
 // import { useCallback, useState } from "react";
 
-import ArtworkInfoCard from "@/components/ui/cards/artworkInfoCard/ArtworkInfoCard";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
+import ArtworkInfoCard from "@/components/modules/cards/artworkInfoCard/ArtworkInfoCard";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
 import Image from "next/image";
 

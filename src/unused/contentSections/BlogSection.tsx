@@ -1,8 +1,8 @@
 import React from "react";
-import SectionHeading from "../../components/ui/common/SectionHeading";
-import HorizontalDivider from "../../components/ui/common/HorizontalDivider";
+import SectionHeading from "../../components/elements/typography/SectionHeading";
+import HorizontalDivider from "../../components/elements/misc/HorizontalDivider";
 import Image from "next/image";
-import ButtonDivider from "../../components/ui/common/ButtonDivider";
+import ButtonDivider from "../../components/elements/misc/ButtonDivider";
 import Link from "next/link";
 import { BlogCardData } from "../../components/loaders/sectionLoaders/BlogSectionLoader";
 

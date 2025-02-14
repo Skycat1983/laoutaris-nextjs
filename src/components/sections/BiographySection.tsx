@@ -1,11 +1,11 @@
 import { ReactNode } from "react";
 
 import { SectionLayout } from "../layouts/public/SectionLayout";
-import { ScrollArea, ScrollBar } from "@/components/ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 import {
   BiographyCard,
   BiographyCardSkeleton,
-} from "@/components/ui/cards/BiographyCard";
+} from "@/components/modules/cards/BiographyCard";
 import { BiographyCardData } from "@/components/loaders/sectionLoaders/BiographySectionLoader";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
 

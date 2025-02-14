@@ -1,6 +1,6 @@
 import React from "react";
-import SubscribeForm from "../ui/forms/user/SubscribeForm";
-import { Skeleton } from "../ui/shadcn/skeleton";
+import SubscribeForm from "../modules/forms/user/SubscribeForm";
+import { Skeleton } from "../shadcn/skeleton";
 
 export function SubscribeSectionLayout({
   children,

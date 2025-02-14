@@ -1,4 +1,4 @@
-import { MainNav } from "@/components/ui/navigation/mainNav/MainNav";
+import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import {
   fetchArticleNavigationList,
   fetchCollectionNavigationList,

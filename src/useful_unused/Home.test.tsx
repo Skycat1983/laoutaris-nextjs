@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { Home } from "./Home";
 
 // ! COMPONENTS
-jest.mock("@/components/ui/hero/Hero", () => ({
+jest.mock("@/components/modules/hero/Hero", () => ({
   __esModule: true,
   Hero: () => <div data-testid="mock-hero">Hero</div>,
 }));
@@ -147,7 +147,7 @@ describe("Home Component", () => {
 
 // // ! COMPONENTS
 // // Mock the Hero component
-// jest.mock("@/components/ui/hero/Hero", () => ({
+// jest.mock("@/components/modules/hero/Hero", () => ({
 //   __esModule: true,
 //   default: () => <div data-testid="mock-hero">Hero</div>,
 // }));

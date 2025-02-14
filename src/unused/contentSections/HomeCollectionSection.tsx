@@ -1,7 +1,7 @@
 import Image from "next/image";
-import ButtonDivider from "@/components/ui/common/ButtonDivider";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import SectionHeading from "@/components/ui/common/SectionHeading";
+import ButtonDivider from "@/components/elements/misc/ButtonDivider";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import SectionHeading from "@/components/elements/typography/SectionHeading";
 import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import Link from "next/link";
 

@@ -1,8 +1,8 @@
-import HorizontalDivider from "../components/ui/common/HorizontalDivider";
-import SkeletonH1 from "../components/skeletons/SkeletonH1";
-import SkeletonH2 from "../components/skeletons/SkeletonH2";
-import SkeletonP from "../components/skeletons/SkeletonP";
-import { Skeleton } from "../components/ui/shadcn/skeleton";
+import HorizontalDivider from "../components/elements/misc/HorizontalDivider";
+import SkeletonH1 from "../components/elements/skeletons/SkeletonH1";
+import SkeletonH2 from "../components/elements/skeletons/SkeletonH2";
+import SkeletonP from "../components/elements/skeletons/SkeletonP";
+import { Skeleton } from "../components/shadcn/skeleton";
 
 const BlogViewSkeleton = () => {
   const array = Array(6);

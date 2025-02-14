@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components/ui/shadcn/button";
+import { Button } from "@/components/shadcn/button";
 
 interface SubnavButtonProps {
   title: string;

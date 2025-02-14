@@ -1,4 +1,4 @@
-import { ArtworkFeedCard } from "../../ui/cards/ArtworkFeedCard";
+import { ArtworkFeedCard } from "../../modules/cards/ArtworkFeedCard";
 import { fetchArtworkFeed } from "@/lib/api/feedApi";
 import { Feed } from "@/components/compositions/Feed";
 

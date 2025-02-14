@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 
 // ! COMPONENTS
-import { Hero } from "../ui/hero/Hero";
+import { Hero } from "../modules/hero/Hero";
 import { ContentLayout } from "../layouts/public/ContentLayout";
 
 // ! LOADERS

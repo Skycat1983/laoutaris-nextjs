@@ -1,5 +1,5 @@
-import CollectionInfo from "../components/ui/common/CollectionInfo";
-import { Skeleton } from "../components/ui/shadcn/skeleton";
+import CollectionInfo from "../components/modules/wip/CollectionInfo";
+import { Skeleton } from "../components/shadcn/skeleton";
 
 const PaginationSkeleton = () => {
   return (

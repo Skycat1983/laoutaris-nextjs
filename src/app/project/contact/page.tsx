@@ -1,7 +1,7 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import ContactForm from "@/components/ui/forms/user/ContactForm";
-import EnquiryForm from "@/components/ui/forms/user/EnquiryForm";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import ContactForm from "@/components/modules/forms/user/ContactForm";
+import EnquiryForm from "@/components/modules/forms/user/EnquiryForm";
 import Image from "next/image";
 import { Suspense } from "react";
 

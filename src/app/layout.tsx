@@ -3,8 +3,8 @@ import { getServerSession } from "next-auth";
 import React from "react";
 import { GlobalFeaturesProvider } from "@/contexts/GlobalFeaturesContext";
 import { SessionContextProvider } from "@/contexts/SessionProvider";
-import Modal from "@/components/ui/modal/Modal";
-import Footer from "@/components/ui/footer/Footer";
+import Modal from "@/components/modules/modal/Modal";
+import Footer from "@/components/modules/footer/Footer";
 import {
   archivo,
   archivoBlack,
@@ -14,7 +14,7 @@ import {
 } from "@/lib/styles/fonts";
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
-import { Header } from "@/components/ui/navigation/header/header";
+import { Header } from "@/components/modules/navigation/header/header";
 
 export const metadata: Metadata = {
   title: "Create Next App",

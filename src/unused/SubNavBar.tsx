@@ -1,8 +1,8 @@
 "use server";
 
-import NavItem from "@/components/ui/common/buttons/NavItem";
+import NavItem from "@/components/modules/common/buttons/NavItem";
 import Link from "next/link";
-import { ScrollArea, ScrollBar } from "../components/ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../components/shadcn/scroll-area";
 import { delay } from "@/utils/debug";
 
 export interface SubNavBarLink {

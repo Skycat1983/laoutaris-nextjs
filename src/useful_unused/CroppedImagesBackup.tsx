@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { ScrollArea, ScrollBar } from "../components/ui/shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "../components/shadcn/scroll-area";
 type CroppedImagesProps = {
   // displayedImageIndex: number;
   artworkImgUrlsArr: string[];

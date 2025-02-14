@@ -1,7 +1,7 @@
 import Image from "next/image";
-import HorizontalDivider from "../ui/common/HorizontalDivider";
+import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
-import { ArtworkInfoCard } from "../ui/cards/ArtworkInfoCard";
+import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 
 const ArtworkView = (artwork: PublicArtwork) => {
   return (

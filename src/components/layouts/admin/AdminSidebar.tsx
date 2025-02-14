@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { FileText, Image as ImageIcon, User } from "lucide-react";
 import CollectionIcon from "@/components/elements/icons/CollectionIcon";
 import BlogIcon from "@/components/elements/icons/BlogIcon";

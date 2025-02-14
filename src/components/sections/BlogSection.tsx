@@ -2,7 +2,7 @@ import { SectionLayout } from "../layouts/public/SectionLayout";
 
 import { BlogCardData } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
 import { ReactNode } from "react";
-import { BlogCard, BlogCardSkeleton } from "../ui/cards/BlogCard";
+import { BlogCard, BlogCardSkeleton } from "../modules/cards/BlogCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
 
 interface GridLayoutProps {

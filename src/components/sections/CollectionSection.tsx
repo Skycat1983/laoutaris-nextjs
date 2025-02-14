@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import {
   CollectionCard,
   CollectionCardSkeleton,
-} from "../ui/cards/CollectionCard";
+} from "../modules/cards/CollectionCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
 
 interface GridLayoutProps {

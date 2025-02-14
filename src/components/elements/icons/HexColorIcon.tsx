@@ -1,4 +1,4 @@
-import { HexColor } from "@/components/ui/disclosures/ColorPallette";
+import { HexColor } from "@/components/modules/disclosures/ColorPallette";
 
 const HexColorIcon = ({ hexColor }: { hexColor: HexColor }) => {
   return (

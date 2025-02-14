@@ -1,4 +1,4 @@
-import { CollectionPagination } from "@/components/ui/pagination/CollectionViewPagination";
+import { CollectionPagination } from "@/components/modules/pagination/CollectionViewPagination";
 import { fetchCollectionArtworksNavigation } from "@/lib/api/navigationApi";
 
 interface CollectionArtworksPaginationLoaderProps {

@@ -1,7 +1,7 @@
 import { buildUrl } from "@/utils/buildUrl";
 import { FrontendArtworkFull } from "../../../types/artworkTypes";
 import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
-import { PaginationArtworkLink } from "@/components/ui/pagination/CollectionViewPagination";
+import { PaginationArtworkLink } from "@/components/modules/pagination/CollectionViewPagination";
 
 type SelectedUserFields = Pick<FrontendUserWithWatcherlist, "watchlist">;
 

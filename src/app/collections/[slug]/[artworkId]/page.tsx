@@ -1,7 +1,7 @@
 "use server";
 
 import { CollectionArtworkLoader } from "@/components/loaders/viewLoaders/CollectionArtworkLoader";
-import ArtworkViewSkeleton from "@/components/skeletons/ArtworkViewSkeleton";
+import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
 import { Suspense } from "react";
 
 export default async function ArtworkId({

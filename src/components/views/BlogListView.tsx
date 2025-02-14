@@ -5,9 +5,9 @@ import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import {
   BlogsViewCard,
   BlogsViewCardSkeleton,
-} from "../ui/cards/BlogsViewCard";
+} from "../modules/cards/BlogsViewCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
-import { BlogsViewPagination } from "../ui/pagination/BlogsViewPagination";
+import { BlogsViewPagination } from "../modules/pagination/BlogsViewPagination";
 
 interface BlogListViewProps {
   blogEntries: BlogEntryData[];

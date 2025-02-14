@@ -1,4 +1,4 @@
-import ArtworkViewSkeleton from "@/components/skeletons/ArtworkViewSkeleton";
+import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
 import { Suspense } from "react";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
