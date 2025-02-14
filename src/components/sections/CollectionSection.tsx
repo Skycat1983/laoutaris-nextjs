@@ -1,4 +1,4 @@
-import { HomePageSection } from "../experimental/templates/HomePageSection";
+import { SectionLayout } from "../layouts/public/SectionLayout";
 import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import { ReactNode } from "react";
 import {
@@ -26,7 +26,7 @@ interface CollectionSectionProps {
 export const CollectionSection = ({ collections }: CollectionSectionProps) => {
   console.log("collections", collections);
   return (
-    <HomePageSection
+    <SectionLayout
       heading="Collections:"
       subheading="Curated by the family"
       buttonLabel="See more"
@@ -37,7 +37,7 @@ export const CollectionSection = ({ collections }: CollectionSectionProps) => {
           <CollectionCard key={index} collection={collection} />
         ))}
       </CollectionGrid>
-    </HomePageSection>
+    </SectionLayout>
   );
 };
 

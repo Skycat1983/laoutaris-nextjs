@@ -1,7 +1,7 @@
 "use server";
 import React, { Suspense } from "react";
 import { BiographySubnavLoader } from "../../components/loaders/componentLoaders/BiographySubnavLoader";
-import { SubNavSkeleton } from "@/components/ui/subnav/Subnav";
+import { SubnavSkeleton } from "@/components/ui/navigation/subnav/Subnav";
 
 export default async function BiographyLayout({
   children,
@@ -10,7 +10,7 @@ export default async function BiographyLayout({
 }) {
   return (
     <section>
-      <Suspense fallback={<SubNavSkeleton />}>
+      <Suspense fallback={<SubnavSkeleton />}>
         <BiographySubnavLoader />
       </Suspense>
       {children}

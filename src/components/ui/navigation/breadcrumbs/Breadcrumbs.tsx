@@ -11,7 +11,7 @@ import { useSelectedLayoutSegments, useSearchParams } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 
 import React from "react";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/shadcn/scroll-area";
 
 const Breadcrumbs = () => {
   const segments = useSelectedLayoutSegments();

@@ -1,7 +1,7 @@
 import React from "react";
 import dbConnect from "@/utils/mongodb";
 import { fetchBlogAvailability } from "@/lib/server/blog/data-fetching/fetchBlogAvailability";
-import BlogSidebar from "../../ui/sidebar/BlogSidebar";
+import BlogSidebar from "../components/ui/sidebar/BlogSidebar";
 
 type Props = {
   children: React.ReactNode;

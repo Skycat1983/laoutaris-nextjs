@@ -2,13 +2,13 @@ import WatchlistButton from "@/components/ui/common/buttons/WatchlistButton";
 import FavouritesButton from "@/components/ui/common/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
-import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import {
   CloudinaryColorPalette,
   HexColorPalette,
 } from "@/components/ui/disclosures/ColorPallette";
 
-export async function ArtworkInfoCard({ ...artwork }: SanitizedArtwork) {
+export async function ArtworkInfoCard({ ...artwork }: PublicArtwork) {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session?.user;
 

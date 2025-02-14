@@ -1,5 +1,6 @@
-import { HomePageSection } from "../experimental/templates/HomePageSection";
 import { ReactNode } from "react";
+
+import { SectionLayout } from "../layouts/public/SectionLayout";
 import { ScrollArea, ScrollBar } from "@/components/ui/shadcn/scroll-area";
 import {
   BiographyCard,
@@ -29,7 +30,7 @@ export const BiographyScroll = ({ children }: ScrollLayoutProps) => {
 
 export const BiographySection = ({ articles }: BiographySectionProps) => {
   return (
-    <HomePageSection
+    <SectionLayout
       heading="Biography:"
       subheading="Read my grandfather's story"
       buttonLabel="Read more"
@@ -40,7 +41,7 @@ export const BiographySection = ({ articles }: BiographySectionProps) => {
           <BiographyCard key={article.slug || index} entry={article} />
         ))}
       </BiographyScroll>
-    </HomePageSection>
+    </SectionLayout>
   );
 };
 

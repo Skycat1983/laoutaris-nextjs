@@ -1,7 +1,7 @@
 "use server";
 
 import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
-import { BlogsViewLayout } from "../layouts/BlogsViewLayout";
+import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import {
   BlogsViewCard,
   BlogsViewCardSkeleton,

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { CollectionsSubnavLoader } from "@/components/loaders/componentLoaders/CollectionsSubnavLoader";
-import { SubNavSkeleton } from "@/components/ui/subnav/Subnav";
+import { SubnavSkeleton } from "@/components/ui/navigation/subnav/Subnav";
 
 export default function CollectionsLayout({
   children,
@@ -9,7 +9,7 @@ export default function CollectionsLayout({
 }) {
   return (
     <section>
-      <Suspense fallback={<SubNavSkeleton />}>
+      <Suspense fallback={<SubnavSkeleton />}>
         <CollectionsSubnavLoader section={"collections"} />
       </Suspense>
       {children}

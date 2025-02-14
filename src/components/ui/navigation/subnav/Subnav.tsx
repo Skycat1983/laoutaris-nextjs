@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { ScrollArea, ScrollBar } from "../shadcn/scroll-area";
-import NavItem from "../common/buttons/NavItem";
-import { Skeleton } from "../shadcn/skeleton";
+import { ScrollArea, ScrollBar } from "@/components/ui/shadcn/scroll-area";
+import NavItem from "@/components/ui/common/buttons/NavItem";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import { ReactNode } from "react";
 
 // --- Subnav Wrapper Component ---
@@ -66,7 +66,7 @@ interface SubNavSkeletonProps {
   count?: number;
 }
 
-export const SubNavSkeleton = ({ count = 5 }: SubNavSkeletonProps) => {
+export const SubnavSkeleton = ({ count = 5 }: SubNavSkeletonProps) => {
   const skeletonClassName = "z-[99] w-36 h-14";
 
   return (

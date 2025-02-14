@@ -1,4 +1,4 @@
-import { Subnav } from "@/components/ui/subnav/Subnav";
+import { Subnav } from "@/components/ui/navigation/subnav/Subnav";
 import { fetchArticleNavigationList } from "@/lib/api/navigationApi";
 import { buildUrl } from "@/utils/buildUrl";
 

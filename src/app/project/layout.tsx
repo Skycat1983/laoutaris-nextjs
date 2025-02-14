@@ -1,15 +1,11 @@
-import dbConnect from "@/utils/mongodb";
 import { buildUrl } from "@/utils/buildUrl";
-import SubNavBar from "@/unused/SubNavBar";
-import { SubNavBarLink } from "@/lib/resolvers/subnavResolvers";
-import { Subnav } from "@/components/ui/subnav/Subnav";
+import { Subnav } from "@/components/ui/navigation/subnav/Subnav";
 
 export default async function ProjectLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await dbConnect();
   const stem = "project";
 
   const subNavLinks = [

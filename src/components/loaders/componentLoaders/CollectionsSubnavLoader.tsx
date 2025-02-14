@@ -1,8 +1,7 @@
 "use server";
 
-import { Subnav } from "@/components/ui/subnav/Subnav";
+import { Subnav } from "@/components/ui/navigation/subnav/Subnav";
 import { fetchCollectionNavigationList } from "@/lib/api/navigationApi";
-import { Section } from "@/lib/types/articleTypes";
 import { ValidSection } from "@/lib/types/navigationTypes";
 import { buildUrl } from "@/utils/buildUrl";
 

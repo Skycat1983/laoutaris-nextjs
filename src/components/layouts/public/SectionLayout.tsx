@@ -11,7 +11,7 @@ interface HomeSectionProps {
   buttonLink: string;
 }
 
-export const HomePageSection = ({
+export const SectionLayout = ({
   heading,
   subheading,
   children,

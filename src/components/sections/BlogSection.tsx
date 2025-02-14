@@ -1,4 +1,5 @@
-import { HomePageSection } from "../experimental/templates/HomePageSection";
+import { SectionLayout } from "../layouts/public/SectionLayout";
+
 import { BlogCardData } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
 import { ReactNode } from "react";
 import { BlogCard, BlogCardSkeleton } from "../ui/cards/BlogCard";
@@ -22,7 +23,7 @@ interface BlogSectionProps {
 
 export const BlogSection = ({ blogs }: BlogSectionProps) => {
   return (
-    <HomePageSection
+    <SectionLayout
       heading="Blog:"
       subheading="Recent posts"
       buttonLabel="See more"
@@ -33,7 +34,7 @@ export const BlogSection = ({ blogs }: BlogSectionProps) => {
           <BlogCard key={blog.slug} blog={blog} />
         ))}
       </BlogGrid>
-    </HomePageSection>
+    </SectionLayout>
   );
 };
 

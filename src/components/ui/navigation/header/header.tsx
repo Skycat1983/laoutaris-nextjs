@@ -1,8 +1,8 @@
 "use server";
 
-import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import Searchbar from "../common/inputs/Searchbar";
-import NavBar from "../navBar/NavBar";
+import Breadcrumbs from "@/components/ui/navigation/breadcrumbs/Breadcrumbs";
+import Searchbar from "@/components/ui/common/inputs/Searchbar";
+import NavBar from "@/components/ui/navBar/NavBar";
 
 const Header = ({ className }: { className?: string }) => {
   return (
