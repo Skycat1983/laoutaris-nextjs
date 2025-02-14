@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/disclosures/ColorPallette";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import EnquiryForm from "../forms/EnquiryForm";
-import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
 
 const ArtInfoTabs = ({ ...artwork }: SanitizedArtwork) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";

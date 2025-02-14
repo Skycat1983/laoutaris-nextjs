@@ -1,9 +1,9 @@
 import Image from "next/image";
 import HorizontalDivider from "../ui/common/HorizontalDivider";
-import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import { ArtworkInfoCard } from "../ui/cards/ArtworkInfoCard";
 
-const ArtworkView = (artwork: SanitizedArtwork) => {
+const ArtworkView = (artwork: PublicArtwork) => {
   return (
     <>
       <div

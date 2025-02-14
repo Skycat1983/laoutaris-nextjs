@@ -1,10 +1,10 @@
 import React from "react";
-import SectionHeading from "../ui/common/SectionHeading";
-import HorizontalDivider from "../ui/common/HorizontalDivider";
+import SectionHeading from "../../components/ui/common/SectionHeading";
+import HorizontalDivider from "../../components/ui/common/HorizontalDivider";
 import Image from "next/image";
-import ButtonDivider from "../ui/common/ButtonDivider";
+import ButtonDivider from "../../components/ui/common/ButtonDivider";
 import Link from "next/link";
-import { BlogCardData } from "../loaders/BlogSectionLoader";
+import { BlogCardData } from "../../components/loaders/sectionLoaders/BlogSectionLoader";
 
 interface HomeBlogSectionProps {
   blogs: BlogCardData[];

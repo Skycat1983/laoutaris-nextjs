@@ -1,6 +1,6 @@
 import HorizontalDivider from "../ui/common/HorizontalDivider";
 import YoutubeEmbedding from "../ui/common/YoutubeEmbedding";
-import SkeletonH1 from "../ui/common/skeletons/SkeletonH1";
+import SkeletonH1 from "./SkeletonH1";
 import SectionHeadingSkeleton from "./SectionHeadingSkeleton";
 
 export function HomeProjectSectionSkeleton() {

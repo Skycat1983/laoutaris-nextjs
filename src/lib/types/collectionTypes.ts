@@ -1,4 +1,8 @@
-import { FrontendArtwork, FrontendArtworkFull } from "./artworkTypes";
+import {
+  FrontendArtwork,
+  FrontendArtworkFull,
+  FrontendArtworkUnpopulated,
+} from "./artworkTypes";
 import { z } from "zod";
 
 interface BaseFrontendCollection {
@@ -21,7 +25,7 @@ export interface FrontendCollection extends BaseFrontendCollection {
 }
 
 export interface FrontendCollectionWithArtworks extends BaseFrontendCollection {
-  artworks: FrontendArtwork[];
+  artworks: FrontendArtworkUnpopulated[];
 }
 
 export interface FrontendCollectionUnpopulated extends BaseFrontendCollection {

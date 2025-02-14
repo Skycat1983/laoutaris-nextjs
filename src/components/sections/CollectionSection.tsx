@@ -1,5 +1,5 @@
 import { HomePageSection } from "../experimental/templates/HomePageSection";
-import { CollectionCardData } from "@/components/loaders/CollectionSectionLoader";
+import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import { ReactNode } from "react";
 import {
   CollectionCard,

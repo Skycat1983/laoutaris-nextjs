@@ -5,7 +5,7 @@ import {
   BiographyCard,
   BiographyCardSkeleton,
 } from "@/components/ui/cards/BiographyCard";
-import { BiographyCardData } from "@/components/loaders/BiographySectionLoader";
+import { BiographyCardData } from "@/components/loaders/sectionLoaders/BiographySectionLoader";
 import { SkeletonFactory } from "@/components/common/SkeletonFactory";
 
 interface BiographySectionProps {

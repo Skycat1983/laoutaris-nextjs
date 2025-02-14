@@ -3,7 +3,7 @@
 import { fetchArticleArtwork } from "@/lib/api/articleApi";
 import { fetchArticleNavigationList } from "@/lib/api/navigationApi";
 import { buildUrl } from "@/utils/buildUrl";
-import ArticleView from "../views/ArticleView";
+import ArticleView from "../../views/ArticleView";
 
 interface ArticleLoaderProps {
   slug: string;

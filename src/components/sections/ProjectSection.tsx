@@ -4,7 +4,7 @@ import YoutubeEmbedding from "../ui/common/YoutubeEmbedding";
 import ButtonDivider from "../ui/common/ButtonDivider";
 import { delay } from "@/utils/debug";
 
-const HomeProjectSection = () => {
+export function HomeProjectSection() {
   // await delay(2000);
   return (
     <div className="p-4 w-full">
@@ -42,6 +42,4 @@ const HomeProjectSection = () => {
       <ButtonDivider label="Learn more" link="/project" />
     </div>
   );
-};
-
-export { HomeProjectSection };
+}

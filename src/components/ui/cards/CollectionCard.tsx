@@ -1,4 +1,4 @@
-import { CollectionCardData } from "@/components/loaders/CollectionSectionLoader";
+import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import Image from "next/image";
 import Link from "next/link";
 

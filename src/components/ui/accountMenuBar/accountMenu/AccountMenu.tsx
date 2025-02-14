@@ -17,7 +17,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/ui/common/ModalMessage";
 import { usePathname, useRouter } from "next/navigation";
-import UserIcon from "../../common/icons/UserIcon";
+import UserIcon from "../../icons/UserIcon";
 
 interface UserSession {
   name?: string | null;

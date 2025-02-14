@@ -1,9 +1,9 @@
-import ButtonDivider from "../ui/common/ButtonDivider";
-import HorizontalDivider from "../ui/common/HorizontalDivider";
-import SectionHeading from "../ui/common/SectionHeading";
-import { ScrollArea, ScrollBar } from "../ui/shadcn/scroll-area";
-import BiographyCard from "../ui/cards/BiographyCard";
-import { BiographyCardData } from "../loaders/BiographySectionLoader";
+import ButtonDivider from "../../components/ui/common/ButtonDivider";
+import HorizontalDivider from "../../components/ui/common/HorizontalDivider";
+import SectionHeading from "../../components/ui/common/SectionHeading";
+import { ScrollArea, ScrollBar } from "../../components/ui/shadcn/scroll-area";
+import BiographyCard from "../../components/ui/cards/BiographyCard";
+import { BiographyCardData } from "../../components/loaders/sectionLoaders/BiographySectionLoader";
 
 interface HomeBiographySectionProps {
   articles: BiographyCardData[];

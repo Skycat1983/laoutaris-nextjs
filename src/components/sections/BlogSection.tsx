@@ -1,5 +1,5 @@
 import { HomePageSection } from "../experimental/templates/HomePageSection";
-import { BlogCardData } from "@/components/loaders/BlogSectionLoader";
+import { BlogCardData } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
 import { ReactNode } from "react";
 import { BlogCard, BlogCardSkeleton } from "../ui/cards/BlogCard";
 import { SkeletonFactory } from "../common/SkeletonFactory";

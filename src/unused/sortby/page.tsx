@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import BlogEntriesSkeleton from "@/components/skeletons/BlogEntriesSkeleton";
-import { BlogListLoader } from "@/components/loaders/BlogListLoader";
+import BlogEntriesSkeleton from "@/unused/sortby/BlogEntriesSkeleton";
+import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
 
 export default async function BlogSortBy({
   params,

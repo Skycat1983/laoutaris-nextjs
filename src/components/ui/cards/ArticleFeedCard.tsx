@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CopyIcon } from "@/components/ui/common/icons/CopyIcon";
+import { CopyIcon } from "@/components/ui/icons/CopyIcon";
 import copy_id from "@/utils/copy_id";
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
 

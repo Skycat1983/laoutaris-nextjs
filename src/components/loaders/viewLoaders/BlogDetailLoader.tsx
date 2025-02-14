@@ -1,5 +1,5 @@
 import { fetchBlogDetail } from "@/lib/api/blogApi";
-import BlogDetail from "../views/BlogDetail";
+import BlogDetail from "../../views/BlogDetail";
 
 interface BlogDetailLoaderProps {
   slug: string;

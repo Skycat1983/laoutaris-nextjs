@@ -1,5 +1,5 @@
 import React from "react";
-import { Skeleton } from "../ui/shadcn/skeleton";
+import { Skeleton } from "../../components/ui/shadcn/skeleton";
 
 export function BlogEntriesSkeleton() {
   const arr = Array(6).fill("");

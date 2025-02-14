@@ -54,6 +54,11 @@ export interface FrontendArtworkFull extends FrontendArtwork {
   favourited: FrontendUserUnpopulated[];
 }
 
+export interface PublicFrontendArtwork extends BaseFrontendArtwork {
+  favouriteCount: number;
+  watchCount: number;
+}
+
 export type Decade =
   | "1950s"
   | "1960s"

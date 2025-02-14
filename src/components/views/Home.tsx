@@ -6,20 +6,19 @@ import React, { Suspense } from "react";
 import { Hero } from "../ui/hero/Hero";
 import { ContentLayout } from "../layouts/public/ContentLayout";
 
+// ! LOADERS
+import { BiographySectionLoader } from "../loaders/sectionLoaders/BiographySectionLoader";
+import { BlogSectionLoader } from "../loaders/sectionLoaders/BlogSectionLoader";
+import { CollectionsSectionLoader } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
+import { SubscribeSectionLoader } from "@/components/loaders/sectionLoaders/SubscribeSectionLoader";
+import { ProjectSectionLoader } from "@/components/loaders/sectionLoaders/ProjectSectionLoader";
+
 // ! SKELETONS
 import { HomeProjectSectionSkeleton } from "../skeletons/HomeProjectSectionSkeleton";
-import { HomeSubscribeSectionSkeleton } from "@/components/skeletons/HomeSubscribeSkeleton";
 import { BlogSectionSkeleton } from "../sections/BlogSection";
 import { CollectionSectionSkeleton } from "../sections/CollectionSection";
 import { BiographySectionSkeleton } from "@/components/sections/BiographySection";
-
-// ! LOADERS
-import { BiographySectionLoader } from "../loaders/BiographySectionLoader";
-import { BlogSectionLoader } from "../loaders/BlogSectionLoader";
-import { CollectionsSectionLoader } from "@/components/loaders/CollectionSectionLoader";
-
-import { HomeSubscribeSectionLoader } from "@/components/loaders/HomeSubscribeSectionLoader";
-import { HomeProjectSectionLoader } from "@/components/loaders/homeProjectSectionLoader";
+import { SubscribeSectionSkeleton } from "../sections/SubscribeSection";
 
 export async function Home() {
   return (
@@ -34,7 +33,7 @@ export async function Home() {
 
       <ContentLayout bg="bg-slate/5">
         <Suspense fallback={<HomeProjectSectionSkeleton />}>
-          <HomeProjectSectionLoader data-testid="home-project-section" />
+          <ProjectSectionLoader data-testid="home-project-section" />
         </Suspense>
       </ContentLayout>
 
@@ -45,8 +44,8 @@ export async function Home() {
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
-        <Suspense fallback={<HomeSubscribeSectionSkeleton />}>
-          <HomeSubscribeSectionLoader data-testid="home-subscribe-section" />
+        <Suspense fallback={<SubscribeSectionSkeleton />}>
+          <SubscribeSectionLoader data-testid="home-subscribe-section" />
         </Suspense>
       </ContentLayout>
 

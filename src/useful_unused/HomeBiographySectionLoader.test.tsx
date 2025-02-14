@@ -1,9 +1,9 @@
 // tests go here:
 
 import { render, screen } from "@testing-library/react";
-import { HomeBiographySectionLoader } from "../components/loaders/BiographySectionLoader";
+import { HomeBiographySectionLoader } from "../components/loaders/sectionLoaders/BiographySectionLoader";
 import { fetchArticles } from "@/lib/api/articleApi";
-import { HomeBiographySection } from "@/components/contentSections/HomeBiographySection";
+import { HomeBiographySection } from "@/unused/contentSections/HomeBiographySection";
 
 // Mock dependencies
 jest.mock("@/lib/api/articleApi");

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import { FileText, Image as ImageIcon, User } from "lucide-react";
-import CollectionIcon from "@/components/ui/common/icons/CollectionIcon";
-import BlogIcon from "@/components/ui/common/icons/BlogIcon";
-import LogoutIcon from "@/components/ui/common/icons/LogoutIcon";
+import CollectionIcon from "@/components/ui/icons/CollectionIcon";
+import BlogIcon from "@/components/ui/icons/BlogIcon";
+import LogoutIcon from "@/components/ui/icons/LogoutIcon";
 
 const sidebarItems = [
   { label: "Articles", icon: <FileText />, href: "/admin/articles" },

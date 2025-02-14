@@ -1,6 +1,6 @@
 "use server";
 import React, { Suspense } from "react";
-import { BiographySubnavLoader } from "../../components/loaders/BiographySubnavLoader";
+import { BiographySubnavLoader } from "../../components/loaders/componentLoaders/BiographySubnavLoader";
 import { SubNavSkeleton } from "@/components/ui/subnav/Subnav";
 
 export default async function BiographyLayout({

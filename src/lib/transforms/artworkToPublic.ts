@@ -1,6 +1,6 @@
-import { FrontendArtworkUnpopulated } from "../../../types/artworkTypes";
+import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
 
-export type SanitizedArtwork = Omit<
+export type PublicArtwork = Omit<
   FrontendArtworkUnpopulated,
   "watcherlist" | "favourited"
 > & {
@@ -10,10 +10,10 @@ export type SanitizedArtwork = Omit<
   isWatchlisted: boolean;
 };
 
-export const artworkToView = (
+export const artworkToPublic = (
   artwork: FrontendArtworkUnpopulated,
   userId?: string | null
-): SanitizedArtwork => {
+): PublicArtwork => {
   const isFavourited = userId ? artwork.favourited.includes(userId) : false;
   const isWatchlisted = userId ? artwork.watcherlist.includes(userId) : false;
 
@@ -26,6 +26,9 @@ export const artworkToView = (
     medium: artwork.medium,
     surface: artwork.surface,
     featured: artwork.featured,
+    createdAt: artwork.createdAt,
+    updatedAt: artwork.updatedAt,
+    collections: artwork.collections,
     favouritedCount: artwork.favourited.length,
     watchlistCount: artwork.watcherlist.length,
     isFavourited,

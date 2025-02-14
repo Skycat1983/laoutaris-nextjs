@@ -1,5 +1,5 @@
-import { BlogListLoader } from "@/components/loaders/BlogListLoader";
-import BlogEntriesSkeleton from "@/components/skeletons/BlogEntriesSkeleton";
+import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
+import BlogEntriesSkeleton from "@/unused/sortby/BlogEntriesSkeleton";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 

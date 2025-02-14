@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { HomeBlogSectionLoader } from "../BlogSectionLoader";
 import { fetchBlogEntries } from "@/lib/api/blogApi";
-import { HomeBlogSection } from "@/components/contentSections/BlogSection";
+import { HomeBlogSection } from "@/unused/contentSections/BlogSection";
 
 // Before imports, mock the modules
 jest.mock("@/lib/api/blogApi", () => ({

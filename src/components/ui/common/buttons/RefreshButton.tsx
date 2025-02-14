@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshIcon } from "@/components/ui/common/icons/RefreshIcon";
+import { RefreshIcon } from "@/components/ui/icons/RefreshIcon";
 import { useRouter } from "next/navigation";
 
 interface RefreshButtonProps {

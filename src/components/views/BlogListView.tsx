@@ -3,13 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { NavigateNextIcon } from "../ui/common/icons/NavigateNextIcon";
+import { NavigateNextIcon } from "../ui/icons/NavigateNextIcon";
 import { Subnav } from "../ui/subnav/Subnav";
 import { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import { BLOG_NAV_LINKS } from "@/constants/navigationLinks";
 import { dateToYear } from "@/utils/dateUtils";
 import { getYearColor } from "@/utils/colorUtils";
-import { BlogEntryData } from "../loaders/BlogListLoader";
+import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 
 type BlogPageLink = string | null;
 

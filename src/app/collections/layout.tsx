@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { CollectionsSubnavLoader } from "@/components/loaders/CollectionsSubnavLoader";
+import { CollectionsSubnavLoader } from "@/components/loaders/componentLoaders/CollectionsSubnavLoader";
 import { SubNavSkeleton } from "@/components/ui/subnav/Subnav";
 
 export default function CollectionsLayout({

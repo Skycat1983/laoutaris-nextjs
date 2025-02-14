@@ -1,6 +1,9 @@
 import { headers } from "next/headers";
 import { Section } from "../types/articleTypes";
-import { FrontendCollection } from "../types/collectionTypes";
+import {
+  FrontendCollection,
+  FrontendCollectionWithArtworks,
+} from "../types/collectionTypes";
 
 interface FetchCollectionsParams {
   section?: Section;
@@ -36,4 +39,34 @@ export async function fetchCollections({
   }
 
   return result.data;
+}
+
+export async function fetchCollectionArtwork(
+  slug: string,
+  artworkId: string
+): Promise<FrontendCollectionWithArtworks> {
+  try {
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/collection/${slug}/artwork/${artworkId}`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch artwork");
+    }
+
+    const result =
+      (await response.json()) as ApiResponse<FrontendCollectionWithArtworks>;
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch artwork");
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error fetching artwork:", error);
+    throw error;
+  }
 }

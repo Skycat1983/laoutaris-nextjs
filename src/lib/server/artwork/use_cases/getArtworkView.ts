@@ -1,5 +1,8 @@
 import { fetchAndResolveObj } from "@/utils/fetchAndResolveObj";
-import { SanitizedArtwork, artworkToView } from "../resolvers/artworkToView";
+import {
+  SanitizedArtwork,
+  artworkToView,
+} from "../../../transforms/artworkToPublic";
 import { FrontendArtworkUnpopulated } from "../../../types/artworkTypes";
 import { fetchArtwork } from "../data-fetching/fetchArtwork";
 import { getUserIdFromSession } from "../../user/session/getUserIdFromSession";

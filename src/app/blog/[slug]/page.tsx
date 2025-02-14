@@ -1,4 +1,4 @@
-import { BlogDetailLoader } from "@/components/loaders/BlogDetailLoader";
+import { BlogDetailLoader } from "@/components/loaders/viewLoaders/BlogDetailLoader";
 
 export default async function BlogSlug({
   params,

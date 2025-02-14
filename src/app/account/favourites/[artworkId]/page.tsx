@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/utils/mongodb";
-import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
 import ArtworkView from "@/components/views/ArtworkView";
 import { getArtworkView } from "@/lib/server/artwork/use_cases/getArtworkView";
 

@@ -3,7 +3,7 @@
 
 import ArtworkInfoCard from "@/components/ui/cards/artworkInfoCard/ArtworkInfoCard";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import { SanitizedArtwork } from "@/lib/server/artwork/resolvers/artworkToView";
+import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
 import Image from "next/image";
 
 // TODO: refactor the image zooming logic

@@ -89,7 +89,7 @@ const MobileArticleView: React.FC<ArticleProps> = ({
           className="w-full bg-cover bg-fixed h-[400px] fade-in"
           style={{
             backgroundImage: `url(${article.artwork.image.secure_url})`,
-            backgroundPosition: "50% 50%", // Centered position for middle image
+            backgroundPosition: "50% 50%",
           }}
         >
           {/* Overlay text container */}
