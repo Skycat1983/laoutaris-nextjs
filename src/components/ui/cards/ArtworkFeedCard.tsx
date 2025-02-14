@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CopyIcon } from "@/components/ui/icons/CopyIcon";
+import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import type { FrontendArtwork } from "@/lib/types/artworkTypes";
 
 interface ArtworkFeedCardProps {

@@ -6,7 +6,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon, MessageCircleIcon } from "lucide-react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
-import SubscribeForm from "../forms/SubscribeForm";
+import SubscribeForm from "../forms/user/SubscribeForm";
 import Image from "next/image";
 
 type SortRangeSidebarProps = {

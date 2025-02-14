@@ -1,9 +1,9 @@
 import Link from "next/link";
 import React from "react";
 import Logo from "../../common/Logo";
-import { NavBarLink } from "../../navBar/NavBar";
-import { AccountNav } from "../../accountNav/AccountNav";
 import { MobileNavDrawer } from "../mobileNavDrawer/MobileNavDrawer";
+import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import { AccountNav } from "../accountNav/AccountNav";
 
 interface MobileNavLayoutProps {
   navLinks: NavBarLink[];

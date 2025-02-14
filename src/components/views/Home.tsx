@@ -14,11 +14,11 @@ import { SubscribeSectionLoader } from "@/components/loaders/sectionLoaders/Subs
 import { ProjectSectionLoader } from "@/components/loaders/sectionLoaders/ProjectSectionLoader";
 
 // ! SKELETONS
-import { HomeProjectSectionSkeleton } from "../skeletons/HomeProjectSectionSkeleton";
 import { BlogSectionSkeleton } from "../sections/BlogSection";
 import { CollectionSectionSkeleton } from "../sections/CollectionSection";
 import { BiographySectionSkeleton } from "@/components/sections/BiographySection";
 import { SubscribeSectionSkeleton } from "../sections/SubscribeSection";
+import { ProjectSectionSkeleton } from "@/components/sections/ProjectSection";
 
 export async function Home() {
   return (
@@ -32,7 +32,7 @@ export async function Home() {
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
-        <Suspense fallback={<HomeProjectSectionSkeleton />}>
+        <Suspense fallback={<ProjectSectionSkeleton />}>
           <ProjectSectionLoader data-testid="home-project-section" />
         </Suspense>
       </ContentLayout>

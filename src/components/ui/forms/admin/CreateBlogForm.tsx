@@ -21,7 +21,7 @@ import { Checkbox } from "../../shadcn/checkbox";
 import { Button } from "../../shadcn/button";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
-import { DatePicker } from "../../shadcn/DatePicker";
+import { DatePicker } from "../../datePicker/DatePicker";
 import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
 import { handleBlogUpload } from "@/lib/server/blog/use_cases/handleBlogUpload";
 

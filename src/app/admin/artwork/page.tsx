@@ -7,7 +7,7 @@ import { CreateArtworkWithUpload } from "@/components/ui/forms/admin/CreateArtwo
 import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { DeleteArtwork } from "@/components/ui/forms/admin/DeleteArtwork";
 import { UpdateArtwork } from "@/components/ui/forms/admin/UpdateArtwork";
-import { FeedSkeleton } from "@/components/common/Feed";
+import { FeedSkeleton } from "@/components/compositions/Feed";
 
 export default async function AdminArtworkPage() {
   console.log("server");

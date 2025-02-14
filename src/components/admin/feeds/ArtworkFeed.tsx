@@ -1,6 +1,6 @@
 import { ArtworkFeedCard } from "../../ui/cards/ArtworkFeedCard";
 import { fetchArtworkFeed } from "@/lib/api/feedApi";
-import { Feed } from "@/components/common/Feed";
+import { Feed } from "@/components/compositions/Feed";
 
 export function ArtworkFeed() {
   return (

@@ -6,7 +6,7 @@ import { CreateBlogForm } from "@/components/ui/forms/admin/CreateBlogForm";
 import { DeleteBlogEntry } from "@/components/ui/forms/admin/DeleteBlogEntry";
 import { UpdateBlogEntry } from "@/components/ui/forms/admin/UpdateBlogEntry";
 import ReadBlogForm from "@/components/ui/forms/ReadBlogForm";
-import { FeedSkeleton } from "@/components/common/Feed";
+import { FeedSkeleton } from "@/components/compositions/Feed";
 
 export default function AdminBlogsPage() {
   return (

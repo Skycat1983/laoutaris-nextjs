@@ -14,7 +14,7 @@ import {
   HexColorPalette,
 } from "@/components/ui/disclosures/ColorPallette";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
-import EnquiryForm from "../forms/EnquiryForm";
+import EnquiryForm from "../forms/user/EnquiryForm";
 import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
 
 const ArtInfoTabs = ({ ...artwork }: SanitizedArtwork) => {

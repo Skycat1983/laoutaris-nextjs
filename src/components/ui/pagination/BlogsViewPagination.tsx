@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { NavigateNextIcon } from "../icons/NavigateNextIcon";
+import { NavigateNextIcon } from "../../elements/icons/NavigateNextIcon";
 
 interface BlogsViewPaginationProps {
   next: string | null;

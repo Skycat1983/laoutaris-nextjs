@@ -2,9 +2,9 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import React from "react";
 import HorizontalDivider from "../components/ui/common/HorizontalDivider";
 import { FileText, Image as ImageIcon, User } from "lucide-react";
-import CollectionIcon from "../components/ui/icons/CollectionIcon";
-import BlogIcon from "../components/ui/icons/BlogIcon";
-import LogoutIcon from "../components/ui/icons/LogoutIcon";
+import CollectionIcon from "../components/elements/icons/CollectionIcon";
+import BlogIcon from "../components/elements/icons/BlogIcon";
+import LogoutIcon from "../components/elements/icons/LogoutIcon";
 import { CreateArtworkForm } from "../components/ui/forms/admin/CreateArtworkForm";
 
 type Props = {};

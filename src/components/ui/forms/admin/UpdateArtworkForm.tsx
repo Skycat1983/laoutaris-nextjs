@@ -13,12 +13,8 @@ import {
   FormDescription,
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
-
-import { Button } from "@/components/ui/button";
-import {
-  FrontendArtwork,
-  FrontendArtworkUnpopulated,
-} from "@/lib/types/artworkTypes";
+import { Button } from "@/components/ui/shadcn/button";
+import { FrontendArtwork } from "@/lib/types/artworkTypes";
 import { ScrollArea } from "../../shadcn/scroll-area";
 import {
   Select,

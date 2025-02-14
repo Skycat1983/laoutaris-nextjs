@@ -3,8 +3,8 @@ import Logo from "../../common/Logo";
 import Link from "next/link";
 import NavItem from "@/components/ui/common/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
-import { NavBarLink } from "../../navBar/NavBar";
-import { AccountNav } from "../../accountNav/AccountNav";
+import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import { AccountNav } from "../accountNav/AccountNav";
 
 interface DesktopNavLayoutProps {
   navLinks: NavBarLink[];

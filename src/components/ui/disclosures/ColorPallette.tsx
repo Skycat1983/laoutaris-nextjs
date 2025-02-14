@@ -1,5 +1,5 @@
-import HexColorIcon from "@/components/ui/icons/HexColorIcon";
-import TailwindColorIcon from "@/components/ui/icons/TailwindColorIcon";
+import HexColorIcon from "@/components/elements/icons/HexColorIcon";
+import TailwindColorIcon from "@/components/elements/icons/TailwindColorIcon";
 import { CloudinaryColor, HexColor } from "@/lib/types/artworkTypes";
 import {
   Disclosure,

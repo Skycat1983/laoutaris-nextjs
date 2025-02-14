@@ -8,9 +8,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../shadcn/form";
-import { Button } from "../shadcn/button";
-import { Input } from "../shadcn/input";
+} from "../../shadcn/form";
+import { Button } from "../../shadcn/button";
+import { Input } from "../../shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

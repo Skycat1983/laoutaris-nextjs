@@ -4,13 +4,13 @@ import Breadcrumbs from "@/components/ui/navigation/breadcrumbs/Breadcrumbs";
 import Searchbar from "@/components/ui/common/inputs/Searchbar";
 import { Suspense } from "react";
 import { MainNavLoader } from "@/components/loaders/componentLoaders/MainNavLoader";
+import { MainNavSkeleton } from "../mainNav/MainNav";
 
 export async function Header({ className }: { className?: string }) {
   return (
     <>
       <header className={`fixed top-0 z-10 w-full bg-whitish ${className}`}>
-        {/* <NavBar /> */}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<MainNavSkeleton />}>
           <MainNavLoader />
         </Suspense>
 

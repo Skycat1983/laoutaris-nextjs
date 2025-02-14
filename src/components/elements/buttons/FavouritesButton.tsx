@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../../tooltip";
+} from "../../shadcn/tooltip";
 
 type FavouritesButtonProps = {
   isLoggedIn: boolean;

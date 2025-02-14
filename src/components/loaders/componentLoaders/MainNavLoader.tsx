@@ -9,12 +9,11 @@ import { delay } from "@/utils/debug";
 export interface NavBarLink {
   label: string;
   path: string;
-  activeClassName?: string;
   disabled?: boolean;
 }
 
 export const MainNavLoader = async () => {
-  await delay(1000);
+  // await delay(1000);
   const [articleNavigation, collectionNavigation] = await Promise.all([
     fetchArticleNavigationList("biography"),
     fetchCollectionNavigationList("collections"),

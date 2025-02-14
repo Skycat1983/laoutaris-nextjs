@@ -7,7 +7,7 @@ import { UpdateArticle } from "@/components/ui/forms/admin/UpdateArticle";
 import { CreateArticle } from "@/components/ui/forms/admin/CreateArticle";
 import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
 import { DeleteArticle } from "@/components/ui/forms/admin/DeleteArticle";
-import { FeedSkeleton } from "@/components/common/Feed";
+import { FeedSkeleton } from "@/components/compositions/Feed";
 
 export default async function AdminArticlesPage() {
   return (

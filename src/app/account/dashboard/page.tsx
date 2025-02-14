@@ -1,4 +1,4 @@
-import LogoutForm from "@/components/ui/forms/LogoutForm";
+import LogoutForm from "@/components/ui/forms/user/LogoutForm";
 import { getUserDashboardData } from "@/lib/server/user/use_cases/getUserDashboardData";
 import { formatDate } from "@/utils/formatDate";
 

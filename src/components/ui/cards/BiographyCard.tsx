@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Skeleton } from "../shadcn/skeleton";
+import { Skeleton } from "@/components/shadcn/skeleton";
 
 type BiographyCardProps = {
   entry: {

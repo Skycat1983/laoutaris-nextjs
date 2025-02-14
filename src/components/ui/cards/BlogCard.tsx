@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BlogCardData } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
-import { Skeleton } from "@/components/ui/shadcn/skeleton";
+import { Skeleton } from "@/components/shadcn/skeleton";
 
 interface BlogCardProps {
   blog: BlogCardData;

@@ -4,7 +4,7 @@ import { AdminContentLayout } from "@/components/layouts/admin/AdminContentLayou
 import React, { Suspense } from "react";
 import { CreateCollectionForm } from "@/components/ui/forms/admin/CreateCollectionForm";
 import { UpdateCollection } from "@/components/ui/forms/admin/UpdateCollection";
-import { FeedSkeleton } from "@/components/common/Feed";
+import { FeedSkeleton } from "@/components/compositions/Feed";
 
 export default function AdminCollectionsPage() {
   return (

@@ -6,7 +6,7 @@ import {
   BlogsViewCard,
   BlogsViewCardSkeleton,
 } from "../ui/cards/BlogsViewCard";
-import { SkeletonFactory } from "../common/SkeletonFactory";
+import { SkeletonFactory } from "../compositions/SkeletonFactory";
 import { BlogsViewPagination } from "../ui/pagination/BlogsViewPagination";
 
 interface BlogListViewProps {

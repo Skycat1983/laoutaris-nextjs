@@ -1,5 +1,3 @@
-import WatchlistButton from "@/components/ui/common/buttons/WatchlistButton";
-import FavouritesButton from "@/components/ui/common/buttons/FavouritesButton";
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
@@ -7,6 +5,8 @@ import {
   CloudinaryColorPalette,
   HexColorPalette,
 } from "@/components/ui/disclosures/ColorPallette";
+import FavouritesButton from "@/components/elements/buttons/FavouritesButton";
+import WatchlistButton from "@/components/elements/buttons/WatchlistButton";
 
 export async function ArtworkInfoCard({ ...artwork }: PublicArtwork) {
   const session = await getServerSession(authOptions);

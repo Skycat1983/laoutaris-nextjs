@@ -1,4 +1,4 @@
-import { Feed } from "@/components/common/Feed";
+import { Feed } from "@/components/compositions/Feed";
 import { FeedSkeleton } from "@/components/skeletons/FeedSkeleton";
 import { CollectionFeedCard } from "@/components/ui/cards/CollectionFeedCard";
 import { fetchCollectionFeed } from "@/lib/api/feedApi";

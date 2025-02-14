@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import HorizontalDivider from "@/components/ui/common/HorizontalDivider";
 import Logo from "@/components/ui/common/Logo";
-import { NavBarLink } from "../../navBar/NavBar";
+import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 
 interface NavMenuProps {
   navLinks: NavBarLink[];

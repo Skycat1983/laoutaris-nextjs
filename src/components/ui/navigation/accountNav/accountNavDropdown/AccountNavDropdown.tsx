@@ -12,12 +12,15 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/shadcn/navigation-menu";
 import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
-import { MenubarSeparator, MenubarShortcut } from "../../shadcn/menubar";
 import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/ui/common/ModalMessage";
 import { usePathname, useRouter } from "next/navigation";
-import UserIcon from "../../icons/UserIcon";
+import UserIcon from "@/components/elements/icons/UserIcon";
+import {
+  MenubarSeparator,
+  MenubarShortcut,
+} from "@/components/ui/shadcn/menubar";
 
 interface UserSession {
   name?: string | null;

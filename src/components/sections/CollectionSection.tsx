@@ -5,7 +5,7 @@ import {
   CollectionCard,
   CollectionCardSkeleton,
 } from "../ui/cards/CollectionCard";
-import { SkeletonFactory } from "../common/SkeletonFactory";
+import { SkeletonFactory } from "../compositions/SkeletonFactory";
 
 interface GridLayoutProps {
   children: ReactNode;
