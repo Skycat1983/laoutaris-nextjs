@@ -11,10 +11,10 @@ import {
   cinzelDecorative,
   crimson,
   cormorant,
-} from "@/lib/styles/fonts";
+} from "@/lib/shared/styles/fonts";
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
-import { Header } from "@/components/modules/navigation/header/header";
+import { Header } from "@/components/modules/navigation/header/Header";
 
 export const metadata: Metadata = {
   title: "Create Next App",

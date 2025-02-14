@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BlogModel } from "@/lib/server/models";
+import { BlogModel } from "@/lib/data/models";
 
 export async function DELETE(request: NextRequest) {
   try {

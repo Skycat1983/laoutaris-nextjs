@@ -1,4 +1,4 @@
-import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import Image from "next/image";
 
 const BlogDetail = ({

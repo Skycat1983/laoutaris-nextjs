@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 import { ArtworkPaginationItem } from "./ArtworkPaginationItem";
 import CollectionInfo from "../wip/CollectionInfo";
-import { ArtworkNavFields } from "@/lib/types/navigationTypes";
-import { buildUrl } from "@/utils/buildUrl";
+import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
+import { buildUrl } from "@/lib/utils/buildUrl";
 
 interface PaginationProps {
   slug: string;

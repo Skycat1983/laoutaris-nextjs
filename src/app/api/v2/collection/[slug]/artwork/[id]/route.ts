@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/data/models";
 import { Types } from "mongoose";
-import { FrontendCollectionWithArtworks } from "@/lib/types/collectionTypes";
+import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 
 export async function GET(
   request: NextRequest,

@@ -1,5 +1,5 @@
-import dbConnect from "@/utils/mongodb";
-import { getUserSubnavLinks } from "@/lib/server/user/use_cases/getUserSubnavLinks";
+import dbConnect from "@/lib/db/mongodb";
+import { getUserSubnavLinks } from "@/lib/old_code/user/use_cases/getUserSubnavLinks";
 import { Suspense } from "react";
 
 export default async function AccountLayout({

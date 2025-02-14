@@ -1,4 +1,4 @@
-import { createArtwork } from "@/lib/server/admin/actions/createArtwork";
+import { createArtwork } from "@/lib/old_code/admin/actions/createArtwork";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

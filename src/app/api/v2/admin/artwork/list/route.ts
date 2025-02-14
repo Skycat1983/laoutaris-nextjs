@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ArtworkModel } from "@/lib/server/models/artworkModel";
+import { ArtworkModel } from "@/lib/data/models/artworkModel";
 
 export async function GET(request: NextRequest) {
   try {

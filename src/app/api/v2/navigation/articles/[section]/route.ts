@@ -1,4 +1,4 @@
-import { ArticleModel } from "@/lib/server/models";
+import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 
 // Types

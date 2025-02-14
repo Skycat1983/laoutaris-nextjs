@@ -1,5 +1,5 @@
-import { BlogModel } from "@/lib/server/models";
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
+import { BlogModel } from "@/lib/data/models";
+import { FrontendBlogEntryUnpopulated } from "@/lib/data/types/blogTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 

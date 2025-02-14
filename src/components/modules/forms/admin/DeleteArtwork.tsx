@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { revalidateArtworkFeed } from "@/lib/server/actions/revalidateArtwork";
+import { revalidateArtworkFeed } from "@/lib/old_code/actions/revalidateArtwork";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

@@ -1,6 +1,6 @@
 import HexColorIcon from "@/components/elements/icons/HexColorIcon";
 import TailwindColorIcon from "@/components/elements/icons/TailwindColorIcon";
-import { CloudinaryColor, HexColor } from "@/lib/types/artworkTypes";
+import { CloudinaryColor, HexColor } from "@/lib/data/types/artworkTypes";
 import {
   Disclosure,
   DisclosureButton,

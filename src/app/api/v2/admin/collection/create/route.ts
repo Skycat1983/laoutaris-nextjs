@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/config/authOptions";
-import { CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/data/models";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import slugify from "slugify";

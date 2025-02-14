@@ -1,4 +1,4 @@
-import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
+import { FrontendArtworkUnpopulated } from "../data/types/artworkTypes";
 
 export type PublicArtwork = Omit<
   FrontendArtworkUnpopulated,

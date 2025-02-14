@@ -1,8 +1,8 @@
 "use server";
 
-import { fetchBlogEntries } from "@/lib/api/blogApi";
+import { fetchBlogEntries } from "@/lib/api/public/blogApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import BlogListView from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 

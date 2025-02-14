@@ -1,8 +1,8 @@
-import { CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
-import { CollectionArtworkNav } from "@/lib/types/navigationTypes";
+import { CollectionArtworkNav } from "@/lib/data/types/navigationTypes";
 
 // Define the shape we want using Pick
 

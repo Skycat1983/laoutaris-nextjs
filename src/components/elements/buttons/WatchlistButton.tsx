@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { updateUserWatchlist } from "@/lib/server/user/actions/updateUserWatchlist";
+import { updateUserWatchlist } from "@/lib/old_code/user/actions/updateUserWatchlist";
 import { Button } from "@/components/shadcn/button";
 import { Loader2 } from "lucide-react";
 import {
@@ -12,8 +12,8 @@ import {
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import ModalMessage from "../ModalMessage";
 import SubmitButton from "./SubmitButton";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 type WatchlistButtonProps = {
   isLoggedIn: boolean;

@@ -2,9 +2,9 @@ import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import {
   fetchArticleNavigationList,
   fetchCollectionNavigationList,
-} from "@/lib/api/navigationApi";
-import { buildUrl } from "@/utils/buildUrl";
-import { delay } from "@/utils/debug";
+} from "@/lib/api/public/navigationApi";
+import { buildUrl } from "@/lib/utils/buildUrl";
+import { delay } from "@/lib/utils/debug";
 
 export interface NavBarLink {
   label: string;

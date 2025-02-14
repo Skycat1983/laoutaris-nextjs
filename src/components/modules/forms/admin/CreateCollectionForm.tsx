@@ -24,8 +24,8 @@ import {
   createCollectionSchema,
   CreateCollectionFormValues,
   FrontendCollection,
-} from "@/lib/types/collectionTypes";
-import { postCollection } from "@/lib/api/postApi";
+} from "@/lib/data/types/collectionTypes";
+import { postCollection } from "@/lib/api/admin/postApi";
 
 export const CreateCollectionForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

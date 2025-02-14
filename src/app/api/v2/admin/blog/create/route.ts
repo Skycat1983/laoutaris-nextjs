@@ -1,5 +1,5 @@
-import { createBlogEntry } from "@/lib/server/admin/actions/createBlogEntry";
-import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
+import { createBlogEntry } from "@/lib/old_code/admin/actions/createBlogEntry";
+import { CreateBlogFormSchema } from "@/lib/data/schemas/formSchemas";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {

@@ -1,5 +1,5 @@
 import { ArtworkFeedCard } from "../../modules/cards/ArtworkFeedCard";
-import { fetchArtworkFeed } from "@/lib/api/feedApi";
+import { fetchArtworkFeed } from "@/lib/api/admin/feedApi";
 import { Feed } from "@/components/compositions/Feed";
 
 export function ArtworkFeed() {

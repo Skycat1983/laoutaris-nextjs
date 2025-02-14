@@ -1,8 +1,8 @@
-import { BlogModel } from "@/lib/server/models";
+import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import dbConnect from "@/utils/mongodb";
+import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import dbConnect from "@/lib/db/mongodb";
 
 type BlogDetailResponse = ApiResponse<FrontendBlogEntry>;
 

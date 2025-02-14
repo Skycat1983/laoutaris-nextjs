@@ -15,11 +15,11 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   createArticleSchema,
   CreateArticleFormValues,
-} from "@/lib/types/articleTypes";
+} from "@/lib/data/types/articleTypes";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { postArticle } from "@/lib/api/postApi";
+import { postArticle } from "@/lib/api/admin/postApi";
 
 interface CreateArticleFormProps {
   artworkInfo: FrontendArtwork;

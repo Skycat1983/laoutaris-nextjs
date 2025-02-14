@@ -1,6 +1,6 @@
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { fetchArticleNavigationList } from "@/lib/api/navigationApi";
-import { buildUrl } from "@/utils/buildUrl";
+import { fetchArticleNavigationList } from "@/lib/api/public/navigationApi";
+import { buildUrl } from "@/lib/utils/buildUrl";
 
 export async function BiographySubnavLoader() {
   const articles = await fetchArticleNavigationList("biography");

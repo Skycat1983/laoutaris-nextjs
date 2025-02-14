@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  ArtworkModel,
-  ArticleModel,
-  CollectionModel,
-} from "@/lib/server/models";
+import { ArtworkModel, ArticleModel, CollectionModel } from "@/lib/data/models";
 import mongoose from "mongoose";
 
 export async function DELETE(

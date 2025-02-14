@@ -1,7 +1,7 @@
-import { UserModel } from "@/lib/server/models";
-import { FrontendUserWithWatcherlist } from "@/lib/types/userTypes";
-import dbConnect from "@/utils/mongodb";
-import { parseFields } from "@/utils/parseFields";
+import { UserModel } from "@/lib/data/models";
+import { FrontendUserWithWatcherlist } from "@/lib/data/types/userTypes";
+import dbConnect from "@/lib/db/mongodb";
+import { parseFields } from "@/lib/utils/parseFields";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {

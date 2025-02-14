@@ -1,5 +1,5 @@
 import { CollectionPagination } from "@/components/modules/pagination/CollectionViewPagination";
-import { fetchCollectionArtworksNavigation } from "@/lib/api/navigationApi";
+import { fetchCollectionArtworksNavigation } from "@/lib/api/public/navigationApi";
 
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;

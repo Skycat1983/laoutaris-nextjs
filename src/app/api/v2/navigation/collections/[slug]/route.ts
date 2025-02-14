@@ -1,9 +1,9 @@
-import { CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import type {
   CollectionNavItem,
   CollectionNavItemResponse,
-} from "@/lib/types/navigationTypes";
+} from "@/lib/data/types/navigationTypes";
 import type { Types } from "mongoose";
 
 interface CollectionNavData {

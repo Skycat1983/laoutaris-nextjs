@@ -1,8 +1,8 @@
 "use server";
 
-import { fetchArticleArtwork } from "@/lib/api/articleApi";
-import { fetchArticleNavigationList } from "@/lib/api/navigationApi";
-import { buildUrl } from "@/utils/buildUrl";
+import { fetchArticleArtwork } from "@/lib/api/public/articleApi";
+import { fetchArticleNavigationList } from "@/lib/api/public/navigationApi";
+import { buildUrl } from "@/lib/utils/buildUrl";
 import ArticleView from "../../views/ArticleView";
 
 interface ArticleLoaderProps {

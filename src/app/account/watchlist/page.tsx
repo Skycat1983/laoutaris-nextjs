@@ -40,9 +40,9 @@
  *     Designed to easily accommodate additional redirection logic if the watchlist structure changes or if more complex navigation is required.
  */
 
-import dbConnect from "@/utils/mongodb";
+import dbConnect from "@/lib/db/mongodb";
 import { redirect } from "next/navigation";
-import { getUserWatchlistArtworkDefaultPath } from "@/lib/server/user/use_cases/getUserWatchlistArtworkDefaultPath";
+import { getUserWatchlistArtworkDefaultPath } from "@/lib/old_code/user/use_cases/getUserWatchlistArtworkDefaultPath";
 
 export default async function Watchlist() {
   await dbConnect();

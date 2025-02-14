@@ -1,6 +1,6 @@
-import { ArticleModel } from "@/lib/server/models";
+import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type { FrontendArticle } from "@/lib/types/articleTypes";
+import type { FrontendArticle } from "@/lib/data/types/articleTypes";
 
 type ArticleApiResponse = ApiResponse<FrontendArticle[]>;
 

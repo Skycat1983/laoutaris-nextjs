@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/utils/mongodb";
-import { parseFields } from "@/utils/parseFields";
-import { UserModel } from "@/lib/server/models";
-import { FrontendUserWithFavourites } from "@/lib/types/userTypes";
+import dbConnect from "@/lib/db/mongodb";
+import { parseFields } from "@/lib/utils/parseFields";
+import { UserModel } from "@/lib/data/models";
+import { FrontendUserWithFavourites } from "@/lib/data/types/userTypes";
 
 export const GET = async (req: NextRequest): Promise<NextResponse> => {
   const { searchParams } = new URL(req.url);

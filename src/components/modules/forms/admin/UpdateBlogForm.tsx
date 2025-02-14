@@ -20,7 +20,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
-import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
+import { FrontendBlogEntryUnpopulated } from "@/lib/data/types/blogTypes";
 
 // Define the schema for updating a blog entry
 const updateBlogSchema = z.object({

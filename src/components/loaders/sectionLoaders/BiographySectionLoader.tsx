@@ -1,10 +1,10 @@
 "use server";
 
-import type { FrontendArticle } from "@/lib/types/articleTypes";
-import { fetchArticles } from "@/lib/api/articleApi";
+import type { FrontendArticle } from "@/lib/data/types/articleTypes";
+import { fetchArticles } from "@/lib/api/public/articleApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { BiographySection } from "@/components/sections/BiographySection";
-import { delay } from "@/utils/debug";
+import { delay } from "@/lib/utils/debug";
 
 // Config Constants
 const BIOGRAPHY_FETCH_CONFIG = {

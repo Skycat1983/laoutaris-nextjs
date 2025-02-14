@@ -1,4 +1,4 @@
-import { buildUrl } from "@/utils/buildUrl";
+import { buildUrl } from "@/lib/utils/buildUrl";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
 
 export default async function ProjectLayout({

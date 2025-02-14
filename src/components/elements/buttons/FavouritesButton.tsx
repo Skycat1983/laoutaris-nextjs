@@ -3,9 +3,8 @@
 import React from "react";
 import { useFormState } from "react-dom";
 
-import { updateUserFavourites } from "@/lib/server/user/actions/updateUserFavourites";
+import { updateUserFavourites } from "@/lib/old_code/user/actions/updateUserFavourites";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import ModalMessage from "../ModalMessage";
 import SubmitButton from "./SubmitButton";
 import {
   Tooltip,
@@ -13,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../shadcn/tooltip";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 type FavouritesButtonProps = {
   isLoggedIn: boolean;

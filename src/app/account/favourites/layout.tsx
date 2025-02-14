@@ -1,6 +1,6 @@
-import PaginationSkeleton from "@/unused/PaginationSkeleton";
+import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
 import { Pagination } from "@/components/modules/pagination/CollectionViewPagination";
-import { getUserFavouritesPaginationData } from "@/lib/server/user/use_cases/getUserFavouritesPaginationData";
+import { getUserFavouritesPaginationData } from "@/lib/old_code/user/use_cases/getUserFavouritesPaginationData";
 import { Suspense } from "react";
 
 export default async function FavouritesLayout({

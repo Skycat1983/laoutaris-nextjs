@@ -1,7 +1,7 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

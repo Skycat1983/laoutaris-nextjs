@@ -2,7 +2,7 @@ import SectionHeading from "../elements/typography/SectionHeading";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import YoutubeEmbedding from "../elements/misc/YoutubeEmbedding";
 import ButtonDivider from "../elements/misc/ButtonDivider";
-import { delay } from "@/utils/debug";
+import { delay } from "@/lib/utils/debug";
 
 export function ProjectSection() {
   // await delay(2000);

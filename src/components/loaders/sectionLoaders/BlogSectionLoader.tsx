@@ -1,9 +1,9 @@
 "use server";
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import { fetchBlogEntries } from "@/lib/api/blogApi";
-import { BlogSection } from "../../../unused/contentSections/BlogSection";
+import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import { fetchBlogEntries } from "@/lib/api/public/blogApi";
+import { BlogSection } from "../../../../unused/contentSections/BlogSection";
 
 // 1. Config Constants
 const BLOG_FETCH_CONFIG = {

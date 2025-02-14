@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -25,13 +25,13 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   updateArticleSchema,
   UpdateArticleFormValues,
-} from "@/lib/types/articleTypes";
-import { patchArticle } from "@/lib/api/patchApi";
-import { readArtwork } from "@/lib/api/readApi";
+} from "@/lib/data/types/articleTypes";
+import { patchArticle } from "@/lib/api/admin/patchApi";
+import { readArtwork } from "@/lib/api/admin/readApi";
 
 interface UpdateArticleFormProps {
   articleInfo: FrontendArticleWithArtworkAndAuthor;

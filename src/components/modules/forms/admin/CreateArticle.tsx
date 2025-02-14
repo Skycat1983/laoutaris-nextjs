@@ -14,9 +14,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { CreateArticleForm } from "@/components/modules/forms/admin/CreateArticleForm";
-import { readArtwork } from "@/lib/api/readApi";
+import { readArtwork } from "@/lib/api/admin/readApi";
 
 const readSchema = z.object({
   artworkId: z.string().min(1, "Artwork ID is required"),

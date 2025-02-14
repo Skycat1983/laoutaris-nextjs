@@ -1,8 +1,8 @@
-import { CollectionModel } from "@/lib/server/models";
+import { CollectionModel } from "@/lib/data/models";
 import {
   CollectionNavItem,
   CollectionNavListResponse,
-} from "@/lib/types/navigationTypes";
+} from "@/lib/data/types/navigationTypes";
 import { NextRequest, NextResponse } from "next/server";
 
 // Types (these would go in navigationTypes.ts)

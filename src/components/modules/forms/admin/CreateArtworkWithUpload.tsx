@@ -4,9 +4,9 @@ import { useState } from "react";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import UploadButton from "@/components/elements/buttons/UploadButton";
 import { CreateArtworkForm } from "./CreateArtworkForm";
-import { CloudinaryUploadInfo } from "@/lib/types/cloudinaryTypes";
+import { CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";
-import { ArtworkImage } from "@/lib/types/artworkTypes";
+import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 
 export function CreateArtworkWithUpload() {
   const [uploadInfo, setUploadInfo] = useState<ArtworkImage | null>(null);

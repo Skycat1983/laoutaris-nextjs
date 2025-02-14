@@ -1,4 +1,4 @@
-import { fetchBlogDetail } from "@/lib/api/blogApi";
+import { fetchBlogDetail } from "@/lib/api/public/blogApi";
 import BlogDetail from "../../views/BlogDetail";
 
 interface BlogDetailLoaderProps {

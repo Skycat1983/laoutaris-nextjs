@@ -1,5 +1,5 @@
-import { FrontendSubscriber } from "@/lib/types/subscriberTypes";
-import { SubscriberModel } from "@/lib/server/models";
+import { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
+import { SubscriberModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request): Promise<NextResponse> {

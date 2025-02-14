@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CollectionModel } from "@/lib/server/models";
-import type { FrontendCollection } from "@/lib/types/collectionTypes";
+import { CollectionModel } from "@/lib/data/models";
+import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
 
 type SingleCollectionApiResponse = ApiResponse<FrontendCollection>;
 

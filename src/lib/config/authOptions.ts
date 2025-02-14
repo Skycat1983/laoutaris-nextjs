@@ -1,11 +1,11 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authorizeUser } from "../server/user/data-fetching/authenticateUser";
-import clientPromise from "../mongo";
+import { authorizeUser } from "../old_code/user/data-fetching/authenticateUser";
+import clientPromise from "../db";
 import { Adapter } from "next-auth/adapters";
 import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";
-import { CustomMongoDBAdapter } from "../mongo/adapter";
+import { CustomMongoDBAdapter } from "../db/adapter";
 import { User, Account, Profile, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 

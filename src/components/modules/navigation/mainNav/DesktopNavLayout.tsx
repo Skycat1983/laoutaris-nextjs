@@ -3,7 +3,7 @@
 import Logo from "../../../elements/icons/Logo";
 import Link from "next/link";
 import NavItem from "@/components/elements/buttons/NavItem";
-import { navLinkBorderColours } from "@/utils/consts";
+import { navLinkBorderColours } from "@/lib/utils/consts";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 import { AccountNav } from "../accountNav/AccountNav";
 

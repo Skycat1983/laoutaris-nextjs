@@ -1,6 +1,6 @@
 import LogoutForm from "@/components/modules/forms/user/LogoutForm";
-import { getUserDashboardData } from "@/lib/server/user/use_cases/getUserDashboardData";
-import { formatDate } from "@/utils/formatDate";
+import { getUserDashboardData } from "@/lib/old_code/user/use_cases/getUserDashboardData";
+import { formatDate } from "@/lib/utils/formatDate";
 
 export default async function UserDashboard() {
   const { email, username, favourites, watchlist, createdAt } =

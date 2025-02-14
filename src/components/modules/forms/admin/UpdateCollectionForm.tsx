@@ -20,16 +20,16 @@ import {
   FrontendCollectionWithArtworks,
   UpdateCollectionFormValues,
   updateCollectionSchema,
-} from "@/lib/types/collectionTypes";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
+} from "@/lib/data/types/collectionTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/shadcn/tabs";
-import { patchCollection } from "@/lib/api/patchApi";
-import { readArtwork } from "@/lib/api/readApi";
+import { patchCollection } from "@/lib/api/admin/patchApi";
+import { readArtwork } from "@/lib/api/admin/readApi";
 
 interface UpdateCollectionFormProps {
   collectionInfo: FrontendCollectionWithArtworks;

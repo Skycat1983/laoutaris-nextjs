@@ -1,9 +1,9 @@
 "use server";
 
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { fetchCollectionNavigationList } from "@/lib/api/navigationApi";
-import { ValidSection } from "@/lib/types/navigationTypes";
-import { buildUrl } from "@/utils/buildUrl";
+import { fetchCollectionNavigationList } from "@/lib/api/public/navigationApi";
+import { ValidSection } from "@/lib/data/types/navigationTypes";
+import { buildUrl } from "@/lib/utils/buildUrl";
 
 interface CollectionsSubnavLoaderProps {
   section: ValidSection;

@@ -1,9 +1,9 @@
-import { ArticleModel } from "@/lib/server/models";
+import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import type {
   FrontendArticle,
   FrontendArticleWithArtwork,
-} from "@/lib/types/articleTypes";
+} from "@/lib/data/types/articleTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
 type ArticleWithArtworkResponse = ApiResponse<FrontendArticleWithArtwork>;

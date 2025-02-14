@@ -1,7 +1,7 @@
 import React from "react";
 import MobileArticleView from "./MobileArticleView";
 import DesktopArticleView from "./DesktopArticleView";
-import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 
 interface ArticleViewProps {
   article: FrontendArticleWithArtwork;

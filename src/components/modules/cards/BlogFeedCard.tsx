@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
-import copy_id from "@/utils/copy_id";
-import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import copy_id from "@/lib/shared/helpers/copy_id";
+import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 
 interface BlogFeedCardProps {
   item: FrontendBlogEntry;

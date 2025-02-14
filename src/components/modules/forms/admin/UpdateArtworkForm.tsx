@@ -14,7 +14,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArtwork } from "@/lib/types/artworkTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,

@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { UpdateBlogForm } from "@/components/modules/forms/admin/UpdateBlogForm";
-import { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

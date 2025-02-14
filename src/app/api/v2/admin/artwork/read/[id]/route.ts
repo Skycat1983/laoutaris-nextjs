@@ -1,4 +1,4 @@
-import { ArtworkModel } from "@/lib/server/models";
+import { ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 
 export async function GET(

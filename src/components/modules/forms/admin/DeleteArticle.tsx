@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { deleteArticle } from "@/lib/api/deleteApi";
+import { deleteArticle } from "@/lib/api/admin/deleteApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

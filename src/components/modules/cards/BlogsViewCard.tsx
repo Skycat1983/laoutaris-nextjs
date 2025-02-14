@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { BlogEntryData } from "@/components/loaders/viewLoaders/BlogListLoader";
-import { dateToYear } from "@/utils/dateUtils";
-import { getYearColor } from "@/utils/colorUtils";
+import { dateToYear } from "@/lib/utils/dateUtils";
+import { getYearColor } from "@/lib/utils/colorUtils";
 
 interface BlogsViewCardProps {
   blog: BlogEntryData;

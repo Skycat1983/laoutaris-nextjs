@@ -5,7 +5,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { LoginProcessResponse } from "@/lib/server/user/actions/processLogin";
+import { LoginProcessResponse } from "@/lib/old_code/user/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
 
 // TODO: redo this form with shadcn/ui

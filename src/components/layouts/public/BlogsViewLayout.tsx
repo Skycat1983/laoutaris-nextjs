@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { BLOG_NAV_LINKS } from "@/constants/navigationLinks";
+import { BLOG_NAV_LINKS } from "@/lib/shared/constants/navigationLinks";
 
 interface BlogsViewLayoutProps {
   children: ReactNode;

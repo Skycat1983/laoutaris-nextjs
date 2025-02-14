@@ -1,5 +1,5 @@
-import { FrontendArticleWithArtwork } from "../types/articleTypes";
-import { FrontendArtworkUnpopulated } from "../types/artworkTypes";
+import { FrontendArticleWithArtwork } from "../data/types/articleTypes";
+import { FrontendArtworkUnpopulated } from "../data/types/artworkTypes";
 
 type SelectedArtworkFields = Omit<
   FrontendArtworkUnpopulated,

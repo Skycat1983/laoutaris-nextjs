@@ -14,8 +14,8 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendCollectionWithArtworks } from "@/lib/types/collectionTypes";
-import { readCollection } from "@/lib/api/readApi";
+import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
+import { readCollection } from "@/lib/api/admin/readApi";
 import { UpdateCollectionForm } from "@/components/modules/forms/admin/UpdateCollectionForm";
 
 const readSchema = z.object({

@@ -1,6 +1,6 @@
-import { getUserWatchlistPaginationData } from "@/lib/server/user/use_cases/getUserWatchlistPaginationData";
+import { getUserWatchlistPaginationData } from "@/lib/old_code/user/use_cases/getUserWatchlistPaginationData";
 import { Suspense } from "react";
-import PaginationSkeleton from "@/unused/PaginationSkeleton";
+import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
 import { Pagination } from "@/components/modules/pagination/CollectionViewPagination";
 
 export default async function WatchlistLayout({

@@ -14,9 +14,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import { FrontendArticleWithArtworkAndAuthor } from "@/lib/types/articleTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { UpdateArticleForm } from "@/components/modules/forms/admin/UpdateArticleForm";
-import { readArticle } from "@/lib/api/readApi";
+import { readArticle } from "@/lib/api/admin/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

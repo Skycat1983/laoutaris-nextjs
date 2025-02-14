@@ -1,5 +1,5 @@
-import { FrontendEnquiry } from "@/lib/types/enquiryTypes";
-import { EnquiryModel } from "@/lib/server/models";
+import { FrontendEnquiry } from "@/lib/data/types/enquiryTypes";
+import { EnquiryModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 
 // TODO: delete or use

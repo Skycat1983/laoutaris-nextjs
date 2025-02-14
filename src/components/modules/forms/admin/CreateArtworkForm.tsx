@@ -22,15 +22,15 @@ import {
 } from "@/components/shadcn/select";
 import { Input } from "@/components/shadcn/input";
 import { Checkbox } from "@/components/shadcn/checkbox";
-import { ArtworkImage } from "@/lib/types/artworkTypes";
+import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
 import { useState } from "react";
-import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtworkUpload";
+import { handleArtworkUpload } from "@/lib/old_code/artwork/use_cases/handleArtworkUpload";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { CreateArtworkFormSchema } from "@/lib/server/schemas/formSchemas";
+import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
 import { revalidatePath } from "next/cache";
-import { BaseArtwork } from "@/lib/server/models";
-import { postArtwork } from "@/lib/api/postApi";
+import { BaseArtwork } from "@/lib/data/models";
+import { postArtwork } from "@/lib/api/admin/postApi";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;

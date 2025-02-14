@@ -1,10 +1,10 @@
 "use server";
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import { FrontendCollection } from "@/lib/types/collectionTypes";
-import { fetchCollections } from "@/lib/api/collectionApi";
+import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import { fetchCollections } from "@/lib/api/public/collectionApi";
 import { CollectionSection } from "@/components/sections/CollectionSection";
-import { delay } from "@/utils/debug";
+import { delay } from "@/lib/utils/debug";
 
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {

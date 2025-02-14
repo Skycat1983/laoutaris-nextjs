@@ -22,8 +22,8 @@ import { Button } from "@/components/shadcn/button";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
-import { CreateBlogFormSchema } from "@/lib/server/schemas/formSchemas";
-import { postBlog } from "@/lib/api/postApi";
+import { CreateBlogFormSchema } from "@/lib/data/schemas/formSchemas";
+import { postBlog } from "@/lib/api/admin/postApi";
 
 export function CreateBlogForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);

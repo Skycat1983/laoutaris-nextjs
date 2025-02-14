@@ -1,4 +1,4 @@
-import { ArtworkNavFields } from "../types/navigationTypes";
+import { ArtworkNavFields } from "../data/types/navigationTypes";
 
 // export function artworkNavToPaginationItem(
 //   artwork: ArtworkNavFields

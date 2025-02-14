@@ -17,9 +17,9 @@ import { Input } from "@/components/shadcn/input";
 import {
   FrontendArtwork,
   FrontendArtworkUnpopulated,
-} from "@/lib/types/artworkTypes";
+} from "@/lib/data/types/artworkTypes";
 import { UpdateArtworkForm } from "@/components/modules/forms/admin/UpdateArtworkForm";
-import { readArtwork } from "@/lib/api/readApi";
+import { readArtwork } from "@/lib/api/admin/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

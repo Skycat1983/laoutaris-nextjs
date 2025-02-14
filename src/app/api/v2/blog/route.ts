@@ -1,8 +1,8 @@
-import { BlogModel } from "@/lib/server/models";
+import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
+import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import dbConnect from "@/utils/mongodb";
+import dbConnect from "@/lib/db/mongodb";
 
 type BlogApiResponse = ApiResponse<FrontendBlogEntry[]>;
 type SortByType = "latest" | "oldest" | "popular" | "featured";

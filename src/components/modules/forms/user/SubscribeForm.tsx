@@ -14,7 +14,7 @@ import { Input } from "@/components/shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { submitSubscription } from "@/lib/server/subscriber/actions/submitSubscription";
+import { submitSubscription } from "@/lib/old_code/subscriber/actions/submitSubscription";
 
 // TODO: this form does not reflect nor return the errors from submission as we do not make use of useFormState
 // TODO: add modal to show success message after submission
