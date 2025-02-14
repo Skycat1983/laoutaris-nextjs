@@ -1,5 +1,5 @@
 import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
-import { fetchBlog } from "../../blog/data-fetching/fetchBlog";
+import { fetchBlog } from "../../lib/server/blog/data-fetching/fetchBlog";
 
 export const getBlogById = async (
   id: string

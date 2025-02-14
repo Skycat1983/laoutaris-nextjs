@@ -1,4 +1,4 @@
-import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
+import { SubNavBarLink } from "@/unused/SubNavBar";
 import { getCollectionSubNavData } from "./getCollectionSubnavData";
 
 export const getCollectionDefaultPath = async (): Promise<string> => {

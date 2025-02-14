@@ -1,4 +1,4 @@
-import { SortByType } from "@/app/api/blog/route";
+import { SortByType } from "@/unused/blog_routes_old/route";
 import { FrontendBlogEntryUnpopulated } from "@/lib/types/blogTypes";
 import { headers } from "next/headers";
 

@@ -1,5 +1,5 @@
-import PaginationSkeleton from "@/components/skeletons/PaginationSkeleton";
-import { Pagination } from "@/components/ui/pagination/Pagination";
+import PaginationSkeleton from "@/unused/PaginationSkeleton";
+import { Pagination } from "@/components/ui/pagination/CollectionViewPagination";
 import { getUserFavouritesPaginationData } from "@/lib/server/user/use_cases/getUserFavouritesPaginationData";
 import { Suspense } from "react";
 

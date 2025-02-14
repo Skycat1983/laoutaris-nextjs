@@ -2,7 +2,7 @@ import mongoose, { Document } from "mongoose";
 
 type Section = "artwork" | "biography" | "project" | "collections";
 
-export interface DBCollection extends Document {
+interface BaseCollection {
   title: string;
   subtitle: string;
   summary: string;
@@ -10,9 +10,12 @@ export interface DBCollection extends Document {
   imageUrl: string;
   slug: string;
   section: Section;
-  artworks: mongoose.Schema.Types.ObjectId[];
+}
+
+export interface DBCollection extends Document, BaseCollection {
   createdAt: Date;
   updatedAt: Date;
+  artworks: mongoose.Schema.Types.ObjectId[];
 }
 
 const collectionSchema = new mongoose.Schema<DBCollection>(

@@ -1,7 +1,7 @@
 "use client";
 
-import { getArticleFeed } from "@/lib/server/admin/use_cases/getArticleFeed";
-import { getArtworkFeed } from "@/lib/server/admin/use_cases/getArtworkFeed";
+import { getArticleFeed } from "@/useful_unused/use_cases/getArticleFeed";
+import { getArtworkFeed } from "@/useful_unused/use_cases/getArtworkFeed";
 
 interface AdminContentLayoutProps {
   title: string;

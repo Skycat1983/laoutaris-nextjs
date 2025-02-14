@@ -1,7 +1,5 @@
 import dbConnect from "@/utils/mongodb";
-import SubNavBar from "@/components/ui/subnav/SubNavBar";
 import { getUserSubnavLinks } from "@/lib/server/user/use_cases/getUserSubnavLinks";
-import SubNavSkeleton from "@/components/skeletons/SubNavSkeleton";
 import { Suspense } from "react";
 
 export default async function AccountLayout({
@@ -14,9 +12,9 @@ export default async function AccountLayout({
 
   return (
     <section className="p-0 m-0">
-      <Suspense fallback={<SubNavSkeleton />}>
+      {/* <Suspense fallback={<SubNavSkeleton />}>
         <SubNavBar fetchLinks={userLinks} />
-      </Suspense>
+      </Suspense> */}
       {children}
     </section>
   );

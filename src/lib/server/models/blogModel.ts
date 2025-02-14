@@ -1,20 +1,23 @@
 import mongoose, { Document } from "mongoose";
 
-export interface DBBlogEntry extends Document {
+interface BaseBlogEntry {
   title: string;
   subtitle: string;
   summary: string;
   text: string;
   imageUrl: string;
-  author: mongoose.Schema.Types.ObjectId;
   slug: string;
   displayDate: Date;
   featured: boolean;
   pinned: boolean;
   tags: string[];
+}
+
+export interface DBBlogEntry extends Document, BaseBlogEntry {
+  createdAt: Date;
+  updatedAt: Date;
+  author: mongoose.Schema.Types.ObjectId;
   comments: mongoose.Schema.Types.ObjectId[];
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 const blogSchema = new mongoose.Schema<DBBlogEntry>(

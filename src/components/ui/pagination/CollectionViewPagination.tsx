@@ -1,7 +1,6 @@
-import React from "react";
-import PaginationItem from "./PaginationItem";
+import React, { ReactNode } from "react";
+import { ArtworkPaginationItem } from "./ArtworkPaginationItem";
 import CollectionInfo from "../common/CollectionInfo";
-import PaginationLayout from "@/components/layouts/public/PaginationLayout";
 import { ArtworkNavFields } from "@/lib/types/navigationTypes";
 import { buildUrl } from "@/utils/buildUrl";
 
@@ -10,16 +9,22 @@ interface PaginationProps {
   items: ArtworkNavFields[];
 }
 
-export function Pagination({ slug, items }: PaginationProps) {
+const CollectionPaginationLayout = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="flex items-start justify-start pl-4 gap-8">{children}</div>
+  );
+};
+
+export function CollectionPagination({ slug, items }: PaginationProps) {
   return (
     <>
       <CollectionInfo
         heading="More from this collection"
         subheading={`${items.length} pieces`}
       />
-      <PaginationLayout>
+      <CollectionPaginationLayout>
         {items.map((artwork) => (
-          <PaginationItem
+          <ArtworkPaginationItem
             key={artwork._id}
             secure_url={artwork.image.secure_url}
             height={artwork.image.pixelHeight}
@@ -27,7 +32,7 @@ export function Pagination({ slug, items }: PaginationProps) {
             link_to={buildUrl(["collections", slug, artwork._id])}
           />
         ))}
-      </PaginationLayout>
+      </CollectionPaginationLayout>
     </>
   );
 }

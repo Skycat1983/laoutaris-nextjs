@@ -1,7 +1,7 @@
 "use server";
 
 import { FrontendBlogEntry } from "@/lib/types/blogTypes";
-import { fetchBlogFeed } from "../data-fetching/fetchBlogFeed";
+import { fetchBlogFeed } from "../../lib/server/admin/data-fetching/fetchBlogFeed";
 
 // useCase.ts
 export async function getBlogFeed() {

@@ -18,19 +18,24 @@ export function transformMongooseDoc<T>(
 
   // Handle objects
   if (typeof doc === "object") {
+    // if Date, return directly (or convert as needed)
+    if (doc instanceof Date) {
+      return doc as unknown as T;
+    }
+
     const transformed: any = {};
 
     for (const [key, value] of Object.entries(doc)) {
-      // Skip Mongoose internal fields if specified
+      // skip Mongoose internal fields if specified
       if (options.removeMongooseFields && key === "__v") continue;
 
-      // Transform ObjectIds to strings if specified
+      // transform ObjectIds to strings if specified
       if (options.stringifyIds && value instanceof Types.ObjectId) {
         transformed[key] = value.toString();
         continue;
       }
 
-      // Handle nested objects/arrays
+      //hhandle nested objects/arrays (but dates are handled above)
       if (typeof value === "object" && value !== null) {
         transformed[key] = transformMongooseDoc(value, options);
         continue;

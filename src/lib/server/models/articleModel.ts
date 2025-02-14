@@ -3,17 +3,22 @@ import mongoose, { Document } from "mongoose";
 type Section = "artwork" | "biography" | "project" | "collections";
 type OverlayColour = "white" | "black";
 
-export interface DBArticle extends Document {
+export interface BaseArticle {
   title: string;
   subtitle: string;
   summary: string;
   text: string;
-  author: mongoose.Schema.Types.ObjectId;
   imageUrl: string;
-  artwork: mongoose.Schema.Types.ObjectId;
   slug: string;
   section: Section;
   overlayColour: OverlayColour;
+}
+
+export interface DBArticle extends Document, BaseArticle {
+  author: mongoose.Schema.Types.ObjectId;
+  artwork: mongoose.Schema.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const articleContentSchema = new mongoose.Schema<DBArticle>(

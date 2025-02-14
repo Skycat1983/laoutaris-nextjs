@@ -2,7 +2,7 @@
 
 import dbConnect from "@/utils/mongodb";
 import { Suspense } from "react";
-import PaginationSkeleton from "@/components/skeletons/PaginationSkeleton";
+import PaginationSkeleton from "@/unused/PaginationSkeleton";
 import { CollectionArtworksPaginationLoader } from "@/components/loaders/componentLoaders/CollectionArtworksPaginationLoader";
 
 export default async function CollectionSlugLayout({

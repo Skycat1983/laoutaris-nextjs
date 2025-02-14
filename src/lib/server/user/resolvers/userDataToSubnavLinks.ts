@@ -1,4 +1,4 @@
-import { SubNavBarLink } from "@/components/ui/subnav/SubNavBar";
+import { SubNavBarLink } from "@/unused/SubNavBar";
 import { PotentialUrl } from "@/lib/types/commonTypes";
 // TODO: pass the cart, comments, dashboard objects where this function is called instead
 

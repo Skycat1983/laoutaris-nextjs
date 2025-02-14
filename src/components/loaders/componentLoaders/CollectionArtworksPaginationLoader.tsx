@@ -1,4 +1,4 @@
-import { Pagination } from "@/components/ui/pagination/Pagination";
+import { CollectionPagination } from "@/components/ui/pagination/CollectionViewPagination";
 import { fetchCollectionArtworksNavigation } from "@/lib/api/navigationApi";
 
 interface CollectionArtworksPaginationLoaderProps {
@@ -10,5 +10,5 @@ export async function CollectionArtworksPaginationLoader({
 }: CollectionArtworksPaginationLoaderProps) {
   const paginationArtwork = await fetchCollectionArtworksNavigation(slug);
 
-  return <Pagination items={paginationArtwork} slug={slug} />;
+  return <CollectionPagination items={paginationArtwork} slug={slug} />;
 }

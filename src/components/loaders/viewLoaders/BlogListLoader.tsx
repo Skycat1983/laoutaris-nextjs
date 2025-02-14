@@ -6,7 +6,7 @@ import type { FrontendBlogEntry } from "@/lib/types/blogTypes";
 import BlogListView from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 
-// 1. Config Constants
+// Config Constants
 const BLOG_ENTRIES_CONFIG = {
   fields: [
     "title",
@@ -20,7 +20,7 @@ const BLOG_ENTRIES_CONFIG = {
   limit: 6,
 } as const;
 
-// 2. Type Definitions
+// Type Definitions
 export type BlogEntryData = Pick<
   FrontendBlogEntry,
   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
@@ -31,7 +31,7 @@ interface BlogEntriesLoaderProps {
   page: number;
 }
 
-// 3. Loader Function
+// Loader Function
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
     // Fetch data using API layer
@@ -41,8 +41,6 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       limit: BLOG_ENTRIES_CONFIG.limit,
       fields: BLOG_ENTRIES_CONFIG.fields,
     });
-
-    // console.log("blogs in loader", blogs);
 
     // Transform blog entries with explicit typing
     const transformedBlogs: BlogEntryData[] = blogs.map((blog) =>
@@ -59,12 +57,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
 
     // Return component with transformed data
     return (
-      <BlogListView
-        blogEntries={transformedBlogs}
-        sortby={sortby}
-        next={next}
-        prev={prev}
-      />
+      <BlogListView blogEntries={transformedBlogs} next={next} prev={prev} />
     );
   } catch (error) {
     console.error("Blog entries loading failed:", error);

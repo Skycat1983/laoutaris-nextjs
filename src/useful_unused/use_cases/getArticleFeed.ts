@@ -1,7 +1,7 @@
 "use server";
 
 import { FrontendArticleWithArtwork } from "@/lib/types/articleTypes";
-import { fetchArticleFeed } from "../data-fetching/fetchArticleFeed";
+import { fetchArticleFeed } from "../../lib/server/admin/data-fetching/fetchArticleFeed";
 
 export async function getArticleFeed() {
   try {

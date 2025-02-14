@@ -68,15 +68,16 @@ export const GET = async (
         .sort(sortQuery) // Use sort query here
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean(),
+        .lean()
+        .exec(),
       BlogModel.countDocuments(filterQuery), // Use same filter query for count
     ]);
 
-    // console.log("Raw blogs count:", rawBlogs?.length);
-    // console.log("First raw blog:", JSON.stringify(rawBlogs?.[0], null, 2));
+    console.log("rawBlogs", rawBlogs);
 
-    // Transform mongoose docs
     const blogs = transformMongooseDoc<FrontendBlogEntry[]>(rawBlogs);
+
+    console.log("blogs transofrmed", blogs);
 
     const metadata: PaginationMetadata = {
       page,

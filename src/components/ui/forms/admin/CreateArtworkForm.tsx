@@ -29,6 +29,8 @@ import { handleArtworkUpload } from "@/lib/server/artwork/use_cases/handleArtwor
 import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 import { CreateArtworkFormSchema } from "@/lib/server/schemas/formSchemas";
 import { revalidatePath } from "next/cache";
+import { BaseArtwork } from "@/lib/server/models";
+import { postArtwork } from "@/lib/api/postApi";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;
@@ -52,10 +54,29 @@ export function CreateArtworkForm({
     setIsSubmitting(true);
 
     try {
-      const response = await handleArtworkUpload({
-        cloudinaryInfo: uploadInfo,
-        formData: values,
-      });
+      // const artworkData: Omit<
+      //   BaseArtwork,
+      //   "collections" | "watcherlist" | "favourited"
+      // > = {
+      //   title: values.title,
+      //   decade: values.decade,
+      //   artstyle: values.artstyle,
+      //   medium: values.medium,
+      //   surface: values.surface,
+      //   featured: values.featured,
+      //   image: uploadInfo,
+      // };
+      const artworkData: BaseArtwork = {
+        ...values,
+        image: uploadInfo,
+      };
+
+      const response = await postArtwork(artworkData);
+
+      // const response = await handleArtworkUpload({
+      //   cloudinaryInfo: uploadInfo,
+      //   formData: values,
+      // });
 
       console.log("response", response);
       // Revalidate the admin artwork page

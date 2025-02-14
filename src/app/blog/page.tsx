@@ -1,5 +1,4 @@
 import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
-import BlogEntriesSkeleton from "@/unused/sortby/BlogEntriesSkeleton";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -20,7 +19,7 @@ export default async function BlogPage({
   const page = parseInt(searchParams.page || "1", 10);
 
   return (
-    <Suspense fallback={<BlogEntriesSkeleton />}>
+    <Suspense fallback={<></>}>
       <BlogListLoader sortby={sortby} page={page} />
     </Suspense>
   );

@@ -34,13 +34,16 @@ export interface BaseArtwork {
     | "ink"
     | "sand";
   surface: "paper" | "canvas" | "wood" | "film";
-  featured?: boolean;
-  collections: mongoose.Schema.Types.ObjectId[];
-  watcherlist?: mongoose.Schema.Types.ObjectId[];
-  favourited?: mongoose.Schema.Types.ObjectId[];
+  featured: boolean;
 }
 
-export interface DBArtwork extends Document, BaseArtwork {}
+export interface DBArtwork extends Document, BaseArtwork {
+  collections: mongoose.Schema.Types.ObjectId[];
+  watcherlist: mongoose.Schema.Types.ObjectId[];
+  favourited: mongoose.Schema.Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const artworkSchema = new mongoose.Schema(
   {

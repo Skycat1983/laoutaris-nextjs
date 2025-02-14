@@ -32,7 +32,6 @@ export async function fetchBlogEntries({
     FrontendBlogEntry[]
   >;
 
-  // console.log("result in api", result);
   if (!result.success) {
     throw new Error("Failed to fetch blog entries");
   }
@@ -48,10 +47,8 @@ export async function fetchBlogDetail(
     headers: headers(),
     cache: "no-store",
   });
-  // console.log("response", response);
 
   const result = (await response.json()) as ApiResponse<FrontendBlogEntry>;
-  // console.log("result", result);
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch blog detail");
