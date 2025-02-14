@@ -2,13 +2,17 @@
 
 import Breadcrumbs from "@/components/ui/navigation/breadcrumbs/Breadcrumbs";
 import Searchbar from "@/components/ui/common/inputs/Searchbar";
-import NavBar from "@/components/ui/navBar/NavBar";
+import { Suspense } from "react";
+import { MainNavLoader } from "@/components/loaders/componentLoaders/MainNavLoader";
 
-const Header = ({ className }: { className?: string }) => {
+export async function Header({ className }: { className?: string }) {
   return (
     <>
       <header className={`fixed top-0 z-10 w-full bg-whitish ${className}`}>
-        <NavBar />
+        {/* <NavBar /> */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <MainNavLoader />
+        </Suspense>
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">
           <hr className="flex flex-row flex-grow" />
@@ -23,6 +27,4 @@ const Header = ({ className }: { className?: string }) => {
       </header>
     </>
   );
-};
-
-export default Header;
+}

@@ -1,17 +1,17 @@
 "use server";
 
-import Logo from "../common/Logo";
+import Logo from "../../common/Logo";
 import Link from "next/link";
-import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
+import { AccountNav } from "../../accountNav/AccountNav";
 import NavItem from "@/components/ui/common/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
-import { NavBarLink } from "./NavBar";
+import { NavBarLink } from "../../navBar/NavBar";
 
 interface DesktopNavLayoutProps {
   navLinks: NavBarLink[];
 }
 
-const DesktopNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
+export async function DesktopNavLayout({ navLinks }: DesktopNavLayoutProps) {
   return (
     <>
       {/* top row */}
@@ -52,11 +52,9 @@ const DesktopNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
             ))}
           </nav>
 
-          <AccountMenuBar />
+          <AccountNav />
         </div>
       </div>
     </>
   );
-};
-
-export default DesktopNavLayout;
+}

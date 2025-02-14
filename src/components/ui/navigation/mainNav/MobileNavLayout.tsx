@@ -1,15 +1,15 @@
 import Link from "next/link";
 import React from "react";
-import Logo from "../common/Logo";
-import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
-import NavMenu from "../accountMenuBar/navMenu/NavMenu";
-import { NavBarLink } from "./NavBar";
+import Logo from "../../common/Logo";
+import { NavBarLink } from "../../navBar/NavBar";
+import { AccountNav } from "../../accountNav/AccountNav";
+import { MobileNavDrawer } from "../mobileNavDrawer/MobileNavDrawer";
 
 interface MobileNavLayoutProps {
   navLinks: NavBarLink[];
 }
 
-const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {
+export function MobileNavLayout({ navLinks }: MobileNavLayoutProps) {
   return (
     <>
       <div className="flex flex-row max-w-full justify-between my-2 bg-whitish">
@@ -19,13 +19,11 @@ const MobileNavLayout = ({ navLinks }: MobileNavLayoutProps) => {
           </Link>
         </div>
         <div className="block flex gap-4 my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
-          <AccountMenuBar />
+          <AccountNav />
 
-          <NavMenu navLinks={navLinks} />
+          <MobileNavDrawer navLinks={navLinks} />
         </div>
       </div>
     </>
   );
-};
-
-export default MobileNavLayout;
+}

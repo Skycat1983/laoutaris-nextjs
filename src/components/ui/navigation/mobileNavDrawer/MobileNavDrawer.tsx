@@ -22,7 +22,7 @@ interface NavMenuProps {
   navLinks: NavBarLink[];
 }
 
-export function NavMenu({ navLinks }: NavMenuProps) {
+export function MobileNavDrawer({ navLinks }: NavMenuProps) {
   // console.log("navLinks", navLinks);
 
   const accountNavLinks = [
@@ -129,5 +129,3 @@ export function NavMenu({ navLinks }: NavMenuProps) {
 //     </div>
 //   );
 // };
-
-export default NavMenu;

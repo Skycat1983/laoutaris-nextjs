@@ -1,21 +1,20 @@
-"use server";
-
-import { buildUrl } from "@/utils/buildUrl";
-import MobileNavLayout from "../navigation/mainNav/MobileNavLayout";
-import TabletNavLayout from "../navigation/mainNav/TabletNavLayout";
-import DesktopNavLayout from "../navigation/mainNav/DesktopNavLayout";
+import { MainNav } from "@/components/ui/navigation/mainNav/MainNav";
 import {
   fetchArticleNavigationList,
   fetchCollectionNavigationList,
 } from "@/lib/api/navigationApi";
+import { buildUrl } from "@/utils/buildUrl";
+import { delay } from "@/utils/debug";
 
 export interface NavBarLink {
   label: string;
   path: string;
+  activeClassName?: string;
   disabled?: boolean;
 }
 
-const NavBar = async () => {
+export const MainNavLoader = async () => {
+  await delay(1000);
   const [articleNavigation, collectionNavigation] = await Promise.all([
     fetchArticleNavigationList("biography"),
     fetchCollectionNavigationList("collections"),
@@ -38,20 +37,7 @@ const NavBar = async () => {
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
-
-  return (
-    <nav className="">
-      <div className="block sm:hidden">
-        <MobileNavLayout navLinks={navLinks} />
-      </div>
-      <div className="hidden sm:block lg:hidden">
-        <TabletNavLayout navLinks={navLinks} />
-      </div>
-      <div className="hidden lg:block">
-        <DesktopNavLayout navLinks={navLinks} />
-      </div>
-    </nav>
-  );
+  console.log("navLinks", navLinks);
+  //   return <div>Loading...</div>;
+  return <MainNav navLinks={navLinks} />;
 };
-
-export default NavBar;

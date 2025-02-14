@@ -1,23 +1,22 @@
 import React from "react";
-import Logo from "../common/Logo";
+import Logo from "../../common/Logo";
 import Link from "next/link";
-import { AccountMenuBar } from "../accountMenuBar/AccountMenuBar";
 import NavItem from "@/components/ui/common/buttons/NavItem";
 import { navLinkBorderColours } from "@/utils/consts";
-import { NavBarLink } from "./NavBar";
+import { NavBarLink } from "../../navBar/NavBar";
+import { AccountNav } from "../../accountNav/AccountNav";
 
 interface DesktopNavLayoutProps {
   navLinks: NavBarLink[];
 }
 
-const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
+export function TabletNavLayout({ navLinks }: DesktopNavLayoutProps) {
   if (navLinks.length > navLinkBorderColours.length) {
     console.error(
       `navLinks.length > navLinkBorderColours.length. navLinks.length = ${navLinks.length}, navLinkBorderColours.length = ${navLinkBorderColours.length}`
     );
   }
 
-  // console.log("navLinks in tablet layout :>> ", navLinks);
   return (
     <>
       <div className="w-full flex flex-col h-auto bg-whitish">
@@ -29,7 +28,7 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
             </Link>
           </nav>
           <div className="flex flex-row gap-5 items-center">
-            <AccountMenuBar />
+            <AccountNav />
           </div>
         </div>
         {/* bottom row */}
@@ -66,66 +65,4 @@ const TabletNavLayout = ({ navLinks }: DesktopNavLayoutProps) => {
       </div>
     </>
   );
-};
-
-export default TabletNavLayout;
-
-{
-  /* <User />
-            <Heart />
-            <ShoppingBasket />
-
-            <div className="flex flex-row">
-              <h1>DE</h1>
-              <ChevronDown />
-            </div> */
-}
-
-{
-  /* <nav className="flex flex-row items-center h-auto space-x-3 md:space-x-6 ">
-            <Link href="/artwork">
-              <NavItem
-                label="Artwork"
-                slug="artwork"
-                className="font-face-default subheading-button"
-                activeClassName="font-face-default subheading-button-active"
-              />
-            </Link>
-
-            <Link href="/biography">
-              <NavItem
-                label="Biography"
-                slug="biography"
-                className="font-face-default subheading-button"
-                activeClassName="font-face-default subheading-button-active"
-              />
-            </Link>
-
-            <Link href="/project">
-              <NavItem
-                label="Project"
-                slug="project"
-                className="font-face-default subheading-button"
-                activeClassName="font-face-default subheading-button-active"
-              />
-            </Link>
-
-            <Link href="/blog">
-              <NavItem
-                label="Blog"
-                slug="blog"
-                className="font-face-default subheading-button"
-                activeClassName="font-face-default subheading-button-active"
-              />
-            </Link>
-
-            <Link href="/shop">
-              <NavItem
-                label="Shop"
-                slug="shop"
-                className="font-face-default subheading-button"
-                activeClassName="font-face-default subheading-button-active"
-              />
-            </Link>
-          </nav> */
 }

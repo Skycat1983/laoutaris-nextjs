@@ -25,7 +25,7 @@ interface UserSession {
   image?: string | null;
 }
 
-export function AccountMenu() {
+export function AccountNavDropdown() {
   const router = useRouter();
   const pathname = usePathname();
   const { openModal } = useGlobalFeatures();

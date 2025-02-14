@@ -14,7 +14,7 @@ import {
 } from "@/lib/styles/fonts";
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
-import Header from "@/components/ui/navigation/header/header";
+import { Header } from "@/components/ui/navigation/header/header";
 
 export const metadata: Metadata = {
   title: "Create Next App",

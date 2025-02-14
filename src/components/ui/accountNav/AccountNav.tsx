@@ -16,25 +16,10 @@ import {
   MenubarTrigger,
 } from "@/components/ui/shadcn/menubar";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import {
-  ChevronDown,
-  CircleUserIcon,
-  Heart,
-  Link,
-  LogIn,
-  LogOut,
-  Mail,
-  ShoppingBasket,
-  User,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import SignUpForm from "../forms/SignUpForm";
-import SignInForm from "../forms/SignInFormBackup";
+import { ChevronDown, Heart, ShoppingBasket } from "lucide-react";
+import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import ModalMessage from "@/components/ui/common/ModalMessage";
-import { useRouter } from "next/router";
-import LoginForm from "@/components/ui/forms/LoginForm";
-import { AccountMenu } from "./accountMenu/AccountMenu";
+import { AccountNavDropdown } from "./accountNavDropdown/AccountNavDropdown";
 
 interface UserSession {
   name?: string | null;
@@ -42,7 +27,7 @@ interface UserSession {
   image?: string | null;
 }
 
-export function AccountMenuBar() {
+export function AccountNav() {
   const { data, status } = useSession();
 
   //  the nullish coalescing operator (??)returns its right-hand side operand when its left-hand side operand is null or undefined, and otherwise returns its left-hand side operand.
@@ -57,7 +42,7 @@ export function AccountMenuBar() {
     <>
       <div className="flex flex-row bg-whitish items-center justify-center">
         {/* <AccountMenu session={session} /> */}
-        <AccountMenu />
+        <AccountNavDropdown />
 
         <Menubar className="flex flex-row w-auto gap-0 items-center bg-whitish">
           <MenubarMenu>
