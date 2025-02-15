@@ -17,6 +17,8 @@ export async function GET(request: NextRequest) {
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
 
+    console.log("artworks", artworks);
+
     return NextResponse.json({
       success: true,
       data: artworks,

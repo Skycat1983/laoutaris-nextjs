@@ -56,3 +56,42 @@ export const readCollection = async (
 
   return result.data;
 };
+
+export const readArtworks = async (
+  params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+  } = {}
+): Promise<ApiSuccessResponse<FrontendArtwork[]>> => {
+  const { page = 1, limit = 100, search = "" } = params;
+
+  try {
+    const searchParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search ? { search } : {}),
+    });
+
+    const response = await fetch(`/api/v2/admin/artwork/read?${searchParams}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result: ApiResponse<FrontendArtwork[]> = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch artworks");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(
+      `API Error: ${
+        error instanceof Error ? error.message : "Unknown error occurred"
+      }`
+    );
+  }
+};

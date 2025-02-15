@@ -8,6 +8,8 @@ import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { DeleteArtwork } from "@/components/modules/forms/admin/DeleteArtwork";
 import { UpdateArtwork } from "@/components/modules/forms/admin/UpdateArtwork";
 import { FeedSkeleton } from "@/components/compositions/Feed";
+import { FeedSwitcherTabs } from "@/components/admin/feedSwitcher/FeedSwitcherTabs";
+import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";
 
 export default async function AdminArtworkPage() {
   console.log("server");
@@ -16,13 +18,13 @@ export default async function AdminArtworkPage() {
       title="Artwork"
       feedComponent={
         <Suspense fallback={<FeedSkeleton />}>
-          <ArtworkFeed />
+          <FeedSwitcherTabs />
         </Suspense>
       }
     >
       <AdminCrudTabs
         createComponent={<CreateArtworkWithUpload />}
-        readComponent={<div>Read Artwork</div>}
+        readComponent={<ReadArtworkList />}
         updateComponent={<UpdateArtwork />}
         deleteComponent={<DeleteArtwork />}
       />

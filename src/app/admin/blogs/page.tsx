@@ -1,12 +1,11 @@
 import React, { Suspense } from "react";
 import { AdminContentLayout } from "@/components/layouts/admin/AdminContentLayout";
 import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
-import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CreateBlogForm } from "@/components/modules/forms/admin/CreateBlogForm";
 import { DeleteBlogEntry } from "@/components/modules/forms/admin/DeleteBlogEntry";
 import { UpdateBlogEntry } from "@/components/modules/forms/admin/UpdateBlogEntry";
-import ReadBlogForm from "@/components/modules/forms/ReadBlogForm";
 import { FeedSkeleton } from "@/components/compositions/Feed";
+import { FeedSwitcherTabs } from "@/components/admin/feedSwitcher/FeedSwitcherTabs";
 
 export default function AdminBlogsPage() {
   return (
@@ -14,13 +13,13 @@ export default function AdminBlogsPage() {
       title="Blogs"
       feedComponent={
         <Suspense fallback={<FeedSkeleton />}>
-          <BlogFeed />
+          <FeedSwitcherTabs />
         </Suspense>
       }
     >
       <AdminCrudTabs
         createComponent={<CreateBlogForm />}
-        readComponent={<ReadBlogForm />}
+        readComponent={<div>Read Blog</div>}
         updateComponent={<UpdateBlogEntry />}
         deleteComponent={<DeleteBlogEntry />}
       />

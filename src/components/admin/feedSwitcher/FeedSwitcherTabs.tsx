@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Suspense } from "react";
 
+// TODO: Load more note working correctly.
+
 export function FeedSwitcherTabs() {
   const pathname = usePathname();
   const [selectedFeed, setSelectedFeed] = useState<string>();

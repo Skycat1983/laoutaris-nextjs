@@ -6,7 +6,6 @@ import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/Deskto
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 
 export async function MainNav({ navLinks }: { navLinks: NavBarLink[] }) {
-  console.log("navLinks", navLinks);
   return (
     <nav className="">
       <div className="block sm:hidden">

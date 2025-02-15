@@ -17,8 +17,6 @@ export const GET = async (
       .lean()
       .exec();
 
-    console.log("collections in navigation/collections route:", collections);
-
     if (!collections.length) {
       return NextResponse.json({
         success: false,

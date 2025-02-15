@@ -28,23 +28,3 @@ export default async function AdminArticlesPage() {
     </AdminContentLayout>
   );
 }
-
-// export default async function AdminArticlesPage() {
-//   return (
-//     <AdminContentLayout
-//       title="Articles"
-//       feedComponent={
-//         <Suspense fallback={<FeedSkeleton />}>
-//           <ArticleFeed />
-//         </Suspense>
-//       }
-//     >
-//       <AdminCrudTabs
-//         createComponent={<CreateArticle />}
-//         readComponent={<div>Read Article</div>}
-//         updateComponent={<UpdateArticle />}
-//         deleteComponent={<DeleteArticle />}
-//       />
-//     </AdminContentLayout>
-//   );
-// }
