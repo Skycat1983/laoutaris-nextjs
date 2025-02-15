@@ -57,20 +57,32 @@ export const readCollection = async (
   return result.data;
 };
 
+type FilterParams = {
+  key: "decade" | "artstyle" | "medium" | "surface" | null;
+  value: string | null;
+};
+
 export const readArtworks = async (
   params: {
     page?: number;
     limit?: number;
     search?: string;
+    filter?: FilterParams;
   } = {}
 ): Promise<ApiSuccessResponse<FrontendArtwork[]>> => {
-  const { page = 1, limit = 100, search = "" } = params;
+  const { page = 1, limit = 100, search = "", filter } = params;
 
   try {
     const searchParams = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
       ...(search ? { search } : {}),
+      ...(filter?.key && filter?.value
+        ? {
+            filterKey: filter.key,
+            filterValue: filter.value,
+          }
+        : {}),
     });
 
     const response = await fetch(`/api/v2/admin/artwork/read?${searchParams}`, {

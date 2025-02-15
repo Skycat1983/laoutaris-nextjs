@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
+import { deleteArtwork } from "@/lib/api/admin/deleteApi";
 import { revalidateArtworkFeed } from "@/lib/old_code/actions/revalidateArtwork";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,17 +30,21 @@ export function DeleteArtwork() {
     },
   });
 
+  // 67a72f35e52dd10b0633c4ea
+
   async function onSubmit(data: DeleteArtworkFormValues) {
     try {
-      const response = await fetch(`/api/admin/artwork/delete`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: data.objectId }),
-      });
+      // const response = await fetch(`/api/admin/artwork/delete`, {
+      //   method: "DELETE",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ id: data.objectId }),
+      // });
 
-      if (!response.ok) {
+      const response = await deleteArtwork(data.objectId);
+
+      if (!response.success) {
         throw new Error("Failed to delete artwork");
       }
 

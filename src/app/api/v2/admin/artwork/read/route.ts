@@ -4,20 +4,27 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    // Add query parameters for filtering, pagination, etc.
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const limit = parseInt(searchParams.get("limit") || "100");
     const page = parseInt(searchParams.get("page") || "1");
     const search = searchParams.get("search") || "";
+    const filterKey = searchParams.get("filterKey");
+    const filterValue = searchParams.get("filterValue");
 
-    const artworks = await ArtworkModel.find({
-      // Add search conditions if needed
-      ...(search ? { title: new RegExp(search, "i") } : {}),
-    })
+    // Build query object
+    const query: any = {};
+
+    if (search) {
+      query.title = new RegExp(search, "i");
+    }
+
+    if (filterKey && filterValue) {
+      query[filterKey] = filterValue;
+    }
+
+    const artworks = await ArtworkModel.find(query)
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
-
-    console.log("artworks", artworks);
 
     return NextResponse.json({
       success: true,
