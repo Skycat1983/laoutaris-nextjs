@@ -5,6 +5,6 @@ export * from "./userModel";
 export * from "./blogModel";
 export * from "./enquiryModel";
 export * from "./subscribersModel";
-
+export * from "./commentModel";
 // export * from "./baseUserModel";
 // export * from "./adminModel";

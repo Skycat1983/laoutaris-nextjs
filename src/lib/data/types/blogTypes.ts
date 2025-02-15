@@ -1,4 +1,4 @@
-import { FrontendComment } from "./commentTypes";
+import { FrontendComment, FrontendCommentUnpopulated } from "./commentTypes";
 import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
 import { z } from "zod";
 
@@ -31,7 +31,8 @@ export interface FrontendBlogEntryWithAuthor extends FrontendBlogEntry {
 }
 
 export interface FrontendBlogEntryWithComments extends FrontendBlogEntry {
-  comments: FrontendComment[];
+  author: string;
+  comments: FrontendCommentUnpopulated[];
 }
 
 // export interface FrontendBlogEntryFull {

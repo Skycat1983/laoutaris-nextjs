@@ -16,7 +16,9 @@ export const GET = async (
     const { slug } = params;
     console.log("slug", slug);
 
-    const rawBlog = await BlogModel.findOne({ slug }).lean();
+    const rawBlog = await BlogModel.findOne({ slug })
+      .populate("comments")
+      .lean();
 
     if (!rawBlog) {
       return NextResponse.json({

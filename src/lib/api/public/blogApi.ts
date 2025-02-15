@@ -1,4 +1,7 @@
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import type {
+  FrontendBlogEntry,
+  FrontendBlogEntryWithComments,
+} from "@/lib/data/types/blogTypes";
 import { headers } from "next/headers";
 
 interface FetchBlogEntriesParams {
@@ -41,17 +44,39 @@ export async function fetchBlogEntries({
 
 export async function fetchBlogDetail(
   slug: string
-): Promise<FrontendBlogEntry> {
+): Promise<FrontendBlogEntryWithComments> {
   const response = await fetch(`${process.env.BASEURL}/api/v2/blog/${slug}`, {
     method: "GET",
     headers: headers(),
     cache: "no-store",
   });
 
-  const result = (await response.json()) as ApiResponse<FrontendBlogEntry>;
+  const result =
+    (await response.json()) as ApiResponse<FrontendBlogEntryWithComments>;
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch blog detail");
+  }
+
+  return result.data;
+}
+
+export async function fetchBlogComments(
+  slug: string
+): Promise<FrontendBlogEntryWithComments> {
+  const response = await fetch(
+    `${process.env.BASEURL}/api/v2/blog/${slug}/comments`,
+    {
+      method: "GET",
+      headers: headers(),
+    }
+  );
+
+  const result =
+    (await response.json()) as ApiResponse<FrontendBlogEntryWithComments>;
+
+  if (!result.success) {
+    throw new Error("Failed to fetch blog comments");
   }
 
   return result.data;

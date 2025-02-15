@@ -1,12 +1,15 @@
 import mongoose, { Document } from "mongoose";
 
-export interface DBComment extends Document {
+export interface BaseComment {
   text: string;
+  displayDate: Date;
+}
+
+export interface DBComment extends Document, BaseComment {
   author: mongoose.Schema.Types.ObjectId;
   blog: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
-  displayDate: Date;
 }
 
 const commentSchema = new mongoose.Schema<DBComment>(

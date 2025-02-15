@@ -1,5 +1,11 @@
-import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
+import CommentForm from "@/components/forms/CommentForm";
+import { createComment } from "@/lib/api/public/commentApi";
+import type { FrontendBlogEntryWithComments } from "@/lib/data/types/blogTypes";
+import CommentsList from "../sections/CommentsList";
 
 const BlogDetail = ({
   title,
@@ -7,33 +13,55 @@ const BlogDetail = ({
   text,
   imageUrl,
   displayDate,
-}: FrontendBlogEntry) => {
+  slug,
+  comments,
+}: FrontendBlogEntryWithComments) => {
+  console.log("comments", comments);
+  const handleCommentSubmit = async (commentText: string) => {
+    try {
+      const result = await createComment(slug, commentText);
+      console.log(result);
+      // TODO: Implement real-time updates or refresh comments
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
+  };
+
   return (
     <div className="w-full mx-auto">
-      <div className="bg-white shadow-lg w-full rounded overflow-hidden">
+      <div className="relative h-[500px] w-full">
         <Image
-          className="w-full h-[500px] object-cover object-center"
           src={imageUrl}
           alt="Blog post cover"
-          height={500}
-          width={1000}
+          layout="fill"
+          objectFit="cover"
+          className="z-0"
         />
-
-        <div className="p-4">
-          <div className="flex justify-center items-center text-gray-500 text-sm">
-            <h1 className="text-3xl font-special p-8">{title}</h1>
-          </div>
-
-          <div className="flex justify-center items-center text-gray-500 text-sm">
-            <p>By Heron Laoutaris</p> <p className="mx-2">|</p>
-            <p>{new Date(displayDate).toLocaleDateString()}</p>
-          </div>
-
-          {text.split("\r\n\r\n").map((paragraph, index) => (
-            <p key={index} className="mx-12 my-4 leading-8 prose-lg">
-              {paragraph}
-            </p>
-          ))}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+        {/* Centered white text */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-white px-4">
+          <h1 className="text-6xl font-bold mb-2">{title}</h1>
+          <h2 className="text-2xl mb-4">{subtitle}</h2>
+          <p className="text-sm">
+            {new Date(displayDate).toLocaleDateString()}
+          </p>
+        </div>
+      </div>
+      {/* Blog content and comments go below */}
+      <div className="p-8">
+        {text.split("\r\n\r\n").map((paragraph, index) => (
+          <p key={index} className="my-4 leading-8 prose-lg">
+            {paragraph}
+          </p>
+        ))}
+        {/* Comment Form & CommentsList here */}
+        <div className="mt-12 border-t pt-8">
+          <h2 className="text-2xl font-special mb-6 text-center">Comments</h2>
+          <CommentForm blogSlug={slug} onCommentSubmit={handleCommentSubmit} />
+        </div>
+        <div className="mt-12 border-t pt-8">
+          <CommentsList comments={comments} />
         </div>
       </div>
     </div>

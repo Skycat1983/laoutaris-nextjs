@@ -1,4 +1,5 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
+import { FrontendBlogEntry } from "./blogTypes";
 import { FrontendUser } from "./userTypes";
 
 interface BaseFrontendComment {
@@ -14,6 +15,22 @@ type PopulatedField<T> = string | T;
 
 export interface FrontendComment extends BaseFrontendComment {
   author: PopulatedField<FrontendUser>;
+  blog: PopulatedField<FrontendBlogEntry>;
+}
+
+export interface FrontendCommentUnpopulated extends BaseFrontendComment {
+  author: string;
+  blog: string;
+}
+
+export interface FrontendCommentWithAuthor extends FrontendComment {
+  author: FrontendUser;
+  blog: string;
+}
+
+export interface FrontendCommentWithBlogPost extends FrontendComment {
+  blog: FrontendBlogEntry;
+  author: string;
 }
 
 // export type FrontendComment =
