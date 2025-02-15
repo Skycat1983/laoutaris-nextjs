@@ -19,6 +19,9 @@ export const MainNavLoader = async () => {
     fetchCollectionNavigationList("collections"),
   ]);
 
+  // console.log("articleNavigation", articleNavigation);
+  // console.log("collectionNavigation", collectionNavigation);
+
   const navLinks = [
     {
       label: "Biography",
@@ -36,7 +39,7 @@ export const MainNavLoader = async () => {
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
-  console.log("navLinks", navLinks);
-  //   return <div>Loading...</div>;
+  // console.log("navLinks", navLinks);
+  // return <div>Loading...</div>;
   return <MainNav navLinks={navLinks} />;
 };

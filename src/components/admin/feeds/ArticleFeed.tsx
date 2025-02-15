@@ -6,12 +6,10 @@ import { Feed } from "@/components/compositions/Feed";
 
 export function ArticleFeed() {
   return (
-    <Suspense fallback={<FeedSkeleton />}>
-      <Feed
-        fetchFn={fetchArticleFeed}
-        CardComponent={ArticleFeedCard}
-        title="Article Feed"
-      />
-    </Suspense>
+    <Feed
+      fetchFn={fetchArticleFeed}
+      CardComponent={ArticleFeedCard}
+      title="Article Feed"
+    />
   );
 }

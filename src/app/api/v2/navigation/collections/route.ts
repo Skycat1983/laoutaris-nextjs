@@ -3,9 +3,8 @@ import {
   CollectionNavItem,
   CollectionNavListResponse,
 } from "@/lib/data/types/navigationTypes";
-import { NextRequest, NextResponse } from "next/server";
 
-// Types (these would go in navigationTypes.ts)
+import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest
@@ -15,7 +14,10 @@ export const GET = async (
     const collections = await CollectionModel.find({ section: "collections" }) // Only artwork collections
       .select("title slug artworks")
       .sort({ updatedAt: 1 })
-      .lean();
+      .lean()
+      .exec();
+
+    console.log("collections in navigation/collections route:", collections);
 
     if (!collections.length) {
       return NextResponse.json({
@@ -25,12 +27,27 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
+    // filter out collections without artworks
+    const collectionsWithArtworks = collections.filter(
+      (collection) => collection.artworks.length > 0
+    );
+
     // Transform to nav items
-    const navItems: CollectionNavItem[] = collections.map((collection) => ({
-      title: collection.title,
-      slug: collection.slug,
-      artworkId: collection.artworks[0]._id.toString(),
-    }));
+    const navItems: CollectionNavItem[] = collectionsWithArtworks.map(
+      (collection) => ({
+        title: collection.title,
+        slug: collection.slug,
+        artworkId: collection.artworks[0]._id.toString(),
+      })
+    );
+
+    // const navItems = transformNestedMongooseDoc(collectionsWithArtworks);
+
+    // const navItems = collectionsWithArtworks.map((collection) =>
+    //   transformMongooseDoc(collection)
+    // );
+
+    // console.log("navItems[0]", navItems[0]);
 
     return NextResponse.json({
       success: true,

@@ -9,6 +9,7 @@ import {
   CollectionArtworksNavResponse,
   ArtworkNavFields,
 } from "../../data/types/navigationTypes";
+import { FrontendCollection } from "@/lib/data/types/collectionTypes";
 
 export async function fetchArticleNavigationList(
   section: ValidSection
@@ -38,17 +39,27 @@ export async function fetchArticleNavigationList(
   }
 }
 
+// the type should Pick
+// export type CollectionRouteData = Pick<
+//   FrontendCollection,
+//   "title" | "slug" | "artworks"
+// >;
+
+// type CollectionRouteDataResponse = ApiResponse<CollectionRouteData[]>;
+
 export async function fetchCollectionNavigationList(
   section: ValidSection
 ): Promise<CollectionNavItem[]> {
   const url = `${process.env.BASEURL}/api/v2/navigation/collections`;
-  console.log("Fetching from:", url);
+  console.log("Fetching from in fetchCollectionNavigationList:", url);
 
   const response = await fetch(url, {
     method: "GET",
     headers: headers(),
     cache: "no-store",
   });
+
+  // console.log("response", response);
 
   const text = await response.text();
   // console.log("Response text:", text);
@@ -60,6 +71,7 @@ export async function fetchCollectionNavigationList(
         result.error || "Failed to fetch collection navigation list"
       );
     }
+    console.log("result.data in fetchCollectionNavigationList:", result.data);
     return result.data;
   } catch (error) {
     console.error("Error parsing response:", error);
@@ -71,7 +83,7 @@ export async function fetchCollectionNavigationItem(
   slug: string
 ): Promise<CollectionNavItem> {
   const url = `${process.env.BASEURL}/api/v2/navigation/collections/${slug}`;
-  console.log("Fetching from:", url);
+  console.log("Fetching from in fetchCollectionNavigationItem:", url);
 
   const response = await fetch(url, {
     method: "GET",

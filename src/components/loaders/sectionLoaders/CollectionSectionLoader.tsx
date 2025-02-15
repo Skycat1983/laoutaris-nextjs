@@ -28,7 +28,7 @@ export async function CollectionsSectionLoader() {
       fields: COLLECTIONS_FETCH_CONFIG.fields,
     });
 
-    console.log("collections in loader", collections);
+    // console.log("collections in loader", collections);
 
     // Transform data using transform layer
     const collectionCards: CollectionCardData[] = collections.map((article) =>

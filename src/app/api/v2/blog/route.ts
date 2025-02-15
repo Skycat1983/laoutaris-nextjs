@@ -15,7 +15,10 @@ export const GET = async (
     await dbConnect();
 
     const { searchParams } = new URL(req.url);
-    console.log("Search params:", Object.fromEntries(searchParams));
+    // console.log(
+    //   "Search params in blog route:",
+    //   Object.fromEntries(searchParams)
+    // );
 
     // Check total blogs in collection first
     const totalBlogs = await BlogModel.countDocuments({});
@@ -61,7 +64,7 @@ export const GET = async (
 
     // Try a simple find first to verify query works
     const simpleFind = await BlogModel.find({}).lean();
-    console.log("Simple find count:", simpleFind.length);
+    // console.log("Simple find count:", simpleFind.length);
 
     const [rawBlogs, total] = await Promise.all([
       BlogModel.find(filterQuery) // Use filter query here
@@ -73,11 +76,11 @@ export const GET = async (
       BlogModel.countDocuments(filterQuery), // Use same filter query for count
     ]);
 
-    console.log("rawBlogs", rawBlogs);
+    // console.log("rawBlogs", rawBlogs);
 
     const blogs = transformMongooseDoc<FrontendBlogEntry[]>(rawBlogs);
 
-    console.log("blogs transofrmed", blogs);
+    // console.log("blogs transofrmed", blogs);
 
     const metadata: PaginationMetadata = {
       page,

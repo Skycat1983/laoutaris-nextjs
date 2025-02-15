@@ -14,6 +14,8 @@ export async function CollectionsSubnavLoader({
 }: CollectionsSubnavLoaderProps) {
   const collections = await fetchCollectionNavigationList(section);
 
+  console.log("CollectionsSubnavLoader", collections);
+
   const links = collections.map((collection) => ({
     title: collection.title,
     slug: collection.slug,

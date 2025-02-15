@@ -33,7 +33,8 @@ export const GET = async (
     const articles = await ArticleModel.find({ section })
       .select("title slug")
       .sort({ displayDate: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     if (!articles.length) {
       return NextResponse.json({

@@ -6,12 +6,10 @@ import { Suspense } from "react";
 
 export function CollectionFeed() {
   return (
-    <Suspense fallback={<FeedSkeleton />}>
-      <Feed
-        fetchFn={fetchCollectionFeed}
-        CardComponent={CollectionFeedCard}
-        title="Collection Feed"
-      />
-    </Suspense>
+    <Feed
+      fetchFn={fetchCollectionFeed}
+      CardComponent={CollectionFeedCard}
+      title="Collection Feed"
+    />
   );
 }

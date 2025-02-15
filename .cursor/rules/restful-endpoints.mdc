@@ -46,8 +46,6 @@ This approach allows us to intuitively deduce which endpoints are possible and w
     │   │   │   └── route.ts
     │   │   ├── delete
     │   │   │   └── route.ts
-    │   │   ├── list
-    │   │   │   └── route.ts
     │   │   ├── read
     │   │   │   └── route.ts
     │   │   └── update
@@ -63,8 +61,6 @@ This approach allows us to intuitively deduce which endpoints are possible and w
     │   │   ├── create
     │   │   │   └── route.ts
     │   │   ├── delete
-    │   │   │   └── route.ts
-    │   │   ├── list
     │   │   │   └── route.ts
     │   │   ├── read
     │   │   │   └── route.ts
