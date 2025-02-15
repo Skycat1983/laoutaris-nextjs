@@ -1,6 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { FEED_CONFIGS, type FeedConfig } from "@/config/feedsConfig";
+import { FEED_CONFIGS } from "@/config/feedsConfig";
+import type { FeedConfig } from "@/config/feedsConfig";
 
 export type UseFeedSwitcherReturn = {
   selectedFeed: string;

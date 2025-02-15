@@ -1,3 +1,5 @@
+"use client";
+
 import { FeedSwitcherHeadless } from "./FeedSwitcherHeadless";
 import { FeedSwitcherUI } from "./FeedSwitcherUI";
 
@@ -15,10 +17,7 @@ import { FeedSwitcherUI } from "./FeedSwitcherUI";
 // 4. FeedSwitcherUI
 
 export function FeedSwitcher() {
-  //... "when FeedSwitcherHeadless calls its children function, receive the props and pass them to FeedSwitcherUI"
   return (
-    <FeedSwitcherHeadless>
-      {(props) => <FeedSwitcherUI {...props} />}
-    </FeedSwitcherHeadless>
+    <FeedSwitcherHeadless render={(props) => <FeedSwitcherUI {...props} />} />
   );
 }

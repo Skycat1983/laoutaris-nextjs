@@ -3,11 +3,11 @@ import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CollectionFeed } from "@/components/admin/feeds/CollectionFeed";
 
-export type FeedConfig = {
-  key: "articles" | "collections" | "artworks" | "blog";
+type FeedConfig = {
+  key: "articles" | "collections" | "artwork" | "blog";
   title: string;
-  component: React.ComponentType;
-  defaultFor?: string[];
+  component: React.ComponentType<{ page?: number }>;
+  defaultFor: string[];
 };
 
 export const FEED_CONFIGS: FeedConfig[] = [
@@ -24,10 +24,10 @@ export const FEED_CONFIGS: FeedConfig[] = [
     defaultFor: ["/admin/collections"],
   },
   {
-    key: "artworks",
+    key: "artwork",
     title: "Artwork Feed",
     component: ArtworkFeed,
-    defaultFor: ["/admin/artworks"],
+    defaultFor: ["/admin/artwork"],
   },
   {
     key: "blog",

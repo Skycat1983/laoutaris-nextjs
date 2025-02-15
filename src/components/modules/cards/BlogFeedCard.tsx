@@ -39,3 +39,7 @@ export function BlogFeedCard({ item }: BlogFeedCardProps) {
     </div>
   );
 }
+
+export function BlogFeedCardSkeleton() {
+  return <div className="w-full h-32 bg-gray-200 animate-pulse rounded-lg" />;
+}

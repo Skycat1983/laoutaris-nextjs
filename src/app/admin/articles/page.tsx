@@ -5,9 +5,9 @@ import { AdminContentLayout } from "@/components/layouts/admin/AdminContentLayou
 import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
 import { UpdateArticle } from "@/components/modules/forms/admin/UpdateArticle";
 import { CreateArticle } from "@/components/modules/forms/admin/CreateArticle";
-import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
 import { DeleteArticle } from "@/components/modules/forms/admin/DeleteArticle";
 import { FeedSkeleton } from "@/components/compositions/Feed";
+import { FeedSwitcherTabs } from "@/components/admin/feedSwitcher/FeedSwitcherTabs";
 
 export default async function AdminArticlesPage() {
   return (
@@ -15,7 +15,7 @@ export default async function AdminArticlesPage() {
       title="Articles"
       feedComponent={
         <Suspense fallback={<FeedSkeleton />}>
-          <ArticleFeed />
+          <FeedSwitcherTabs />
         </Suspense>
       }
     >
@@ -28,3 +28,23 @@ export default async function AdminArticlesPage() {
     </AdminContentLayout>
   );
 }
+
+// export default async function AdminArticlesPage() {
+//   return (
+//     <AdminContentLayout
+//       title="Articles"
+//       feedComponent={
+//         <Suspense fallback={<FeedSkeleton />}>
+//           <ArticleFeed />
+//         </Suspense>
+//       }
+//     >
+//       <AdminCrudTabs
+//         createComponent={<CreateArticle />}
+//         readComponent={<div>Read Article</div>}
+//         updateComponent={<UpdateArticle />}
+//         deleteComponent={<DeleteArticle />}
+//       />
+//     </AdminContentLayout>
+//   );
+// }

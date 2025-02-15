@@ -44,3 +44,7 @@ export function ArticleFeedCard({ item }: ArticleFeedCardProps) {
     </div>
   );
 }
+
+export function ArticleFeedCardSkeleton() {
+  return <div className="w-full h-32 bg-gray-200 animate-pulse rounded-lg" />;
+}

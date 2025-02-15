@@ -1,3 +1,5 @@
+"use client";
+
 import { FeedSkeleton } from "@/components/compositions/Feed";
 import { UseFeedSwitcherReturn } from "@/hooks/useFeedSwitcher";
 
@@ -15,7 +17,7 @@ import { UseFeedSwitcherReturn } from "@/hooks/useFeedSwitcher";
      • A set of buttons for each available feed (letting the user change the selection),
      • And the component corresponding to the current feed.
    - It is completely decoupled from the logic of how the data is obtained or managed.
-   - Its only concern is “how” things are rendered.
+   - Its only concern is "how" things are rendered.
 */
 
 export function FeedSwitcherUI({

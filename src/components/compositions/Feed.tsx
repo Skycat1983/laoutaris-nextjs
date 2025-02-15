@@ -1,8 +1,13 @@
 import { ReactNode } from "react";
 import { RefreshButton } from "@/components/elements/buttons/RefreshButton";
+import { SkeletonFactory } from "./SkeletonFactory";
+import { Skeleton } from "../shadcn/skeleton";
 
 // type for the fetch function that returns data
-type FetchFn<T> = () => Promise<PaginatedResponse<T[]>>;
+type FetchFn<T> = (params: {
+  page: number;
+  limit: number;
+}) => Promise<PaginatedResponse<T[]>>;
 
 // type for the card component
 type CardComponent<T> = React.ComponentType<{ item: T }>;
@@ -34,12 +39,14 @@ export async function Feed<T>({
   fetchFn,
   CardComponent,
   title,
+  page = 1,
 }: {
   fetchFn: FetchFn<T>;
   CardComponent: CardComponent<T>;
   title?: string;
+  page?: number;
 }) {
-  const { data } = await fetchFn();
+  const { data } = await fetchFn({ page, limit: 10 });
 
   return (
     <FeedLayout title={title}>
@@ -50,16 +57,15 @@ export async function Feed<T>({
   );
 }
 
+export function FeedCardSkeleton() {
+  return <Skeleton className="w-[300px] h-[400px] bg-gray-200 " />;
+}
+
 // loading state component
 export function FeedSkeleton() {
   return (
-    <FeedLayout>
-      {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="w-full h-32 bg-gray-200 animate-pulse rounded-lg"
-        />
-      ))}
-    </FeedLayout>
+    <>
+      <SkeletonFactory Layout={FeedLayout} Card={FeedCardSkeleton} count={3} />
+    </>
   );
 }
