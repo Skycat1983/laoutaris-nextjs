@@ -5,6 +5,8 @@ import {
   FrontendUserWithWatchlist,
 } from "@/lib/data/types/userTypes";
 import { headers } from "next/headers";
+import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
+import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 
 export async function fetchUserSettings(): Promise<ApiResponse<FrontendUser>> {
   try {
@@ -66,9 +68,18 @@ export async function fetchUserComments(): Promise<
   }
 }
 
-export async function fetchUserFavourites(): Promise<
-  ApiResponse<FrontendUserWithFavourites>
-> {
+// interface UserFavouritesResponse {
+//   success: boolean;
+//   data: {
+//     favourites: ArtworkNavFields[];
+//   };
+// }
+
+type UserFavouritesResponse = ApiResponse<{
+  favourites: ArtworkNavFields[];
+}>;
+
+export async function fetchUserFavourites(): Promise<UserFavouritesResponse> {
   try {
     const response = await fetch(
       `${process.env.BASEURL}/api/v2/user/favourites`,
@@ -82,8 +93,7 @@ export async function fetchUserFavourites(): Promise<
       throw new Error("Failed to fetch user favourites");
     }
 
-    const result =
-      (await response.json()) as ApiResponse<FrontendUserWithFavourites>;
+    const result = (await response.json()) as UserFavouritesResponse;
 
     if (!result.success) {
       throw new Error(result.error || "Failed to fetch user favourites");
@@ -95,6 +105,37 @@ export async function fetchUserFavourites(): Promise<
     return {
       success: false,
       error: "Failed to fetch user favourites",
+    } satisfies ApiErrorResponse;
+  }
+}
+
+export async function fetchUserFavouriteArtwork(
+  artworkId: string
+): Promise<ApiResponse<PublicArtwork>> {
+  try {
+    const encodedArtworkId = encodeURIComponent(artworkId);
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/user/favourites/${encodedArtworkId}`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+
+    console.log("response fetchUserFavouriteArtwork", response);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user favourite artwork");
+    }
+
+    const result = (await response.json()) as ApiResponse<PublicArtwork>;
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching user favourite artwork:", error);
+    return {
+      success: false,
+      error: "Failed to fetch user favourite artwork",
     } satisfies ApiErrorResponse;
   }
 }

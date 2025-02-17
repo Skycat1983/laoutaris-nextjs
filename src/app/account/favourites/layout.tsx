@@ -1,6 +1,5 @@
+import { UserFavouritesPaginationLoader } from "@/components/loaders/componentLoaders/UserFavouritesPaginationLoader";
 import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
-import { Pagination } from "@/components/modules/pagination/CollectionViewPagination";
-import { getUserFavouritesPaginationData } from "@/lib/old_code/user/use_cases/getUserFavouritesPaginationData";
 import { Suspense } from "react";
 
 export default async function FavouritesLayout({
@@ -8,13 +7,11 @@ export default async function FavouritesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const getData = getUserFavouritesPaginationData;
-
   return (
     <section className="">
       {children}
       <Suspense fallback={<PaginationSkeleton />}>
-        <Pagination getData={getData} />
+        <UserFavouritesPaginationLoader />
       </Suspense>
     </section>
   );

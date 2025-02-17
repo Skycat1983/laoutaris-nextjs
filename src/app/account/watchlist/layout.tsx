@@ -1,20 +1,17 @@
-import { getUserWatchlistPaginationData } from "@/lib/old_code/user/use_cases/getUserWatchlistPaginationData";
 import { Suspense } from "react";
 import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
-import { Pagination } from "@/components/modules/pagination/CollectionViewPagination";
+import { UserWatchlistPaginationLoader } from "@/components/loaders/componentLoaders/UserWatchlistPaginationLoader";
 
 export default async function WatchlistLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const getData = getUserWatchlistPaginationData;
-
   return (
     <section className="">
       {children}
       <Suspense fallback={<PaginationSkeleton />}>
-        <Pagination getData={getData} />
+        <UserWatchlistPaginationLoader />
       </Suspense>
     </section>
   );

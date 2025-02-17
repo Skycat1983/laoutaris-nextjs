@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   try {
     const rawUserFavourites = await UserModel.findById(userId)
       .select("favourites")
+      .populate("favourites")
       .lean()
       .exec();
 
@@ -22,6 +23,8 @@ export async function GET(req: NextRequest) {
 
     const userFavourites =
       transformMongooseDoc<FrontendUserWithFavourites>(rawUserFavourites);
+
+    console.log("userFavourites", userFavourites);
 
     return NextResponse.json({
       success: true,

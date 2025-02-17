@@ -15,7 +15,7 @@ export const getUserIdFromSession = async (): Promise<UserIdentifier> => {
   if (session && session.user && session.user.name) {
     const username = session.user.name;
     const email = session.user.email;
-    console.log("session.user", session.user);
+    // console.log("session.user", session.user);
 
     const user = await UserModel.findOne({ username });
 

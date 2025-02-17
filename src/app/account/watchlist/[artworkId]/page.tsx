@@ -1,11 +1,6 @@
 "use server";
 
 import dbConnect from "@/lib/db/mongodb";
-import { SanitizedArtwork } from "@/lib/transforms/artworkToPublic";
-import ArtworkView from "@/components/views/ArtworkView";
-import { getArtworkView } from "@/lib/old_code/artwork/use_cases/getArtworkView";
-
-//TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
 
 export default async function WatchlistedArtwork({
   params,
@@ -14,17 +9,17 @@ export default async function WatchlistedArtwork({
 }) {
   await dbConnect();
   // await delay(2000);
-  const { artworkId } = params;
-  const artworkData: SanitizedArtwork = await getArtworkView({
-    collectionSlug: "favourites",
-    artworkId,
-  });
+  // const { artworkId } = params;
+  // const artworkData: SanitizedArtwork = await getArtworkView({
+  //   collectionSlug: "favourites",
+  //   artworkId,
+  // });
 
-  console.log("params :>> ", params);
+  // console.log("params :>> ", params);
 
   return (
     <>
-      <ArtworkView {...artworkData} />
+      {/* <ArtworkView {...artworkData} /> */}
       {/* <ArtInfoTabs {...artworkData} /> */}
     </>
   );

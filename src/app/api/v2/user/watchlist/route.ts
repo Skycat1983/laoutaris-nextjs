@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   try {
     const rawUserWatchlist = await UserModel.findById(userId)
       .select("watchlist")
+      .populate("watchlist")
       .lean()
       .exec();
 
