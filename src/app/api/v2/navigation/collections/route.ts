@@ -39,14 +39,6 @@ export const GET = async (
       })
     );
 
-    // const navItems = transformNestedMongooseDoc(collectionsWithArtworks);
-
-    // const navItems = collectionsWithArtworks.map((collection) =>
-    //   transformMongooseDoc(collection)
-    // );
-
-    // console.log("navItems[0]", navItems[0]);
-
     return NextResponse.json({
       success: true,
       data: navItems,

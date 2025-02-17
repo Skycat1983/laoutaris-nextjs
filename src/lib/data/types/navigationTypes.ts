@@ -1,6 +1,9 @@
 import { FrontendArticle } from "./articleTypes";
 import { FrontendArtwork } from "./artworkTypes";
 import { FrontendCollection } from "./collectionTypes";
+import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
+
+// TypeFields = the properties that are used to generate the navigation items
 
 // Article Navigation
 export type ArticleNavFields = Pick<FrontendArticle, "title" | "slug">;
@@ -23,6 +26,12 @@ export type CollectionArtworkNav = {
   artworks: ArtworkNavFields[];
 };
 
+// User Account Navigation
+export type UserNavFields = Pick<
+  FrontendUserUnpopulated,
+  "favourites" | "watchlist" | "comments"
+>;
+
 // Valid sections
 export const VALID_SECTIONS = [
   "biography",
@@ -37,3 +46,4 @@ export type ArticleNavResponse = ApiResponse<ArticleNavItem[]>;
 export type CollectionNavListResponse = ApiResponse<CollectionNavItem[]>;
 export type CollectionNavItemResponse = ApiResponse<CollectionNavItem>;
 export type CollectionArtworksNavResponse = ApiResponse<CollectionArtworkNav>;
+export type UserNavResponse = ApiResponse<UserNavFields>;

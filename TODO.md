@@ -165,20 +165,12 @@ src/
             └── ... (all views)
 ```
 
-beryl collection
-67b075e1257868a9e7893b75
+User nav data:
 
-add to beryl
-67b0ad45257868a9e78c0c66
+options 1:
 
-sketch book
-67b0c069257868a9e78cb2ea
-67b0c027257868a9e78caefe
-67b0c3f3257868a9e78cd13d
-67b0c233257868a9e78cbfa0
-67b0c0e5257868a9e78cbbeb
-67b0c0ae257868a9e78cb825
+a fetch for each subnav item
 
-67b0c3c5257868a9e78cce51
-67b0c397257868a9e78ccae8
-67b0c2e3257868a9e78cc635
+options 2:
+
+a single fetch that returns all the data

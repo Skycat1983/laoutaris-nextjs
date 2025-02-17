@@ -32,13 +32,15 @@ export function SubnavWrapper({
 // --- Main Subnav Component ---
 
 interface SubnavProps {
-  links: ReadonlyArray<{
-    title: string;
-    slug: string;
-    link_to: string;
-    disabled?: boolean;
-  }>;
+  links: ReadonlyArray<SubnavLink>;
 }
+
+export type SubnavLink = {
+  title: string;
+  slug: string;
+  link_to: string;
+  disabled?: boolean;
+};
 
 export function Subnav({ links }: SubnavProps) {
   return (

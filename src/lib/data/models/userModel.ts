@@ -1,11 +1,13 @@
 import mongoose, { Document } from "mongoose";
-import { ArtworkModel } from "./artworkModel";
 
-export interface DBUser extends Document {
+export interface BaseUser {
   email: string;
   username: string;
   password: string;
   role: "user" | "admin";
+}
+
+export interface DBUser extends BaseUser, Document {
   comments: mongoose.Schema.Types.ObjectId[];
   watchlist: mongoose.Schema.Types.ObjectId[];
   favourites: mongoose.Schema.Types.ObjectId[];

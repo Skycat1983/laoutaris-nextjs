@@ -1,5 +1,6 @@
+import AccountSubnavLoader from "@/components/loaders/componentLoaders/AccountSubnavLoader";
+import { SubnavSkeleton } from "@/components/modules/navigation/subnav/Subnav";
 import dbConnect from "@/lib/db/mongodb";
-import { getUserSubnavLinks } from "@/lib/old_code/user/use_cases/getUserSubnavLinks";
 import { Suspense } from "react";
 
 export default async function AccountLayout({
@@ -8,13 +9,12 @@ export default async function AccountLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  const userLinks = getUserSubnavLinks;
 
   return (
     <section className="p-0 m-0">
-      {/* <Suspense fallback={<SubNavSkeleton />}>
-        <SubNavBar fetchLinks={userLinks} />
-      </Suspense> */}
+      <Suspense fallback={<SubnavSkeleton />}>
+        <AccountSubnavLoader />
+      </Suspense>
       {children}
     </section>
   );

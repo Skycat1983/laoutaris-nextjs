@@ -8,8 +8,8 @@ import {
   CollectionNavItemResponse,
   CollectionArtworksNavResponse,
   ArtworkNavFields,
+  UserNavResponse,
 } from "../../data/types/navigationTypes";
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
 
 export async function fetchArticleNavigationList(
   section: ValidSection
@@ -22,10 +22,7 @@ export async function fetchArticleNavigationList(
     cache: "no-store",
   });
 
-  // Log status and response for debugging
-  // console.log("Response status:", response.status);
   const text = await response.text();
-  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as ArticleNavResponse;
@@ -71,7 +68,7 @@ export async function fetchCollectionNavigationList(
         result.error || "Failed to fetch collection navigation list"
       );
     }
-    console.log("result.data in fetchCollectionNavigationList:", result.data);
+    // console.log("result.data in fetchCollectionNavigationList:", result.data);
     return result.data;
   } catch (error) {
     console.error("Error parsing response:", error);
@@ -83,7 +80,7 @@ export async function fetchCollectionNavigationItem(
   slug: string
 ): Promise<CollectionNavItem> {
   const url = `${process.env.BASEURL}/api/v2/navigation/collections/${slug}`;
-  console.log("Fetching from in fetchCollectionNavigationItem:", url);
+  // console.log("Fetching from in fetchCollectionNavigationItem:", url);
 
   const response = await fetch(url, {
     method: "GET",
@@ -109,6 +106,7 @@ export async function fetchCollectionNavigationItem(
   }
 }
 
+// used in pagination
 export async function fetchCollectionArtworksNavigation(
   slug: string
 ): Promise<ArtworkNavFields[]> {
@@ -121,9 +119,7 @@ export async function fetchCollectionArtworksNavigation(
     cache: "no-store",
   });
 
-  // console.log("Response status:", response.status);
   const text = await response.text();
-  // console.log("Response text:", text);
 
   try {
     const result = JSON.parse(text) as CollectionArtworksNavResponse;
@@ -135,6 +131,28 @@ export async function fetchCollectionArtworksNavigation(
     return result.data.artworks;
   } catch (error) {
     console.error("Error parsing response:", error);
+    throw error;
+  }
+}
+
+export async function fetchUserNavigationList(): Promise<UserNavResponse> {
+  const url = `${process.env.BASEURL}/api/v2/navigation/user`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers(),
+      cache: "no-store",
+    });
+
+    const text = await response.text();
+    const result = JSON.parse(text) as UserNavResponse;
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch user navigation list");
+    }
+    return result;
+  } catch (error) {
+    console.error("Error fetching user navigation list:", error);
     throw error;
   }
 }

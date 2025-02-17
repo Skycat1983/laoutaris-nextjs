@@ -37,6 +37,9 @@ export const GET = async (
     const collection =
       transformMongooseDoc<CollectionArtworkNav>(rawCollection);
 
+    // console.log("rawCollection", rawCollection);
+    // console.log("collection in route", collection);
+
     return NextResponse.json({
       success: true,
       data: collection,

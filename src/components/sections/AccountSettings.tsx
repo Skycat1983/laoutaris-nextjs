@@ -1,10 +1,13 @@
-import LogoutForm from "@/components/modules/forms/user/LogoutForm";
 import { getUserDashboardData } from "@/lib/old_code/user/use_cases/getUserDashboardData";
 import { formatDate } from "@/lib/utils/formatDate";
+import React from "react";
+import LogoutForm from "../modules/forms/user/LogoutForm";
+import { FrontendUser, SerializableUser } from "@/lib/data/types/userTypes";
 
-export default async function UserDashboard() {
-  const { email, username, favourites, watchlist, createdAt } =
-    await getUserDashboardData();
+type Props = {};
+
+export const AccountSettings = async (props: FrontendUser) => {
+  const { email, username, favourites, watchlist, createdAt } = props;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
@@ -49,4 +52,4 @@ export default async function UserDashboard() {
       <LogoutForm />
     </main>
   );
-}
+};
