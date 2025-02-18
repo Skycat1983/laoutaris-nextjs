@@ -1,7 +1,7 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authorizeUser } from "../old_code/user/data-fetching/authenticateUser";
+import { authorizeUser } from "../actions/authenticateUser";
 import clientPromise from "../db";
 import { Adapter } from "next-auth/adapters";
 import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";

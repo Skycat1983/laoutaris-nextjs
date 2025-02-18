@@ -25,7 +25,7 @@ import { Checkbox } from "@/components/shadcn/checkbox";
 import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
 import { useState } from "react";
-import { handleArtworkUpload } from "@/lib/old_code/artwork/use_cases/handleArtworkUpload";
+import { handleArtworkUpload } from "../../../../../unused/old_code/artwork/use_cases/handleArtworkUpload";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
 import { revalidatePath } from "next/cache";
@@ -54,29 +54,12 @@ export function CreateArtworkForm({
     setIsSubmitting(true);
 
     try {
-      // const artworkData: Omit<
-      //   BaseArtwork,
-      //   "collections" | "watcherlist" | "favourited"
-      // > = {
-      //   title: values.title,
-      //   decade: values.decade,
-      //   artstyle: values.artstyle,
-      //   medium: values.medium,
-      //   surface: values.surface,
-      //   featured: values.featured,
-      //   image: uploadInfo,
-      // };
       const artworkData: BaseArtwork = {
         ...values,
         image: uploadInfo,
       };
 
       const response = await postArtwork(artworkData);
-
-      // const response = await handleArtworkUpload({
-      //   cloudinaryInfo: uploadInfo,
-      //   formData: values,
-      // });
 
       console.log("response", response);
       // Revalidate the admin artwork page

@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import useModal, { UseModalValues } from "../hooks/useModal";
-import { getSession } from "@/lib/old_code/user/session/session";
+import { getSession } from "@/lib/session/session";
 
 type GlobalFeaturesContextValues = UseModalValues;
 

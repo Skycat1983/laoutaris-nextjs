@@ -1,6 +1,6 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { FrontendArtworkUnpopulated } from "@/lib/data/types/artworkTypes";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import {
   artworkToPublic,
   PublicArtwork,

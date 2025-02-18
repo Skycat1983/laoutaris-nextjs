@@ -1,15 +1,12 @@
 "use client";
 
-import SubmitButton from "@/components/modules/common/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignUpForm from "./SignUpForm";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import {
-  LoginProcessResponse,
-  processLogin,
-} from "@/lib/old_code/user/actions/processLogin";
+import { LoginProcessResponse, processLogin } from "@/lib/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
+import SubmitButton from "@/components/elements/buttons/SubmitButton";
 
 const initialState: LoginProcessResponse = {
   type: "validation",

@@ -1,4 +1,4 @@
-import { createBlogEntry } from "@/lib/old_code/admin/actions/createBlogEntry";
+import { createBlogEntry } from "../../../../../../../unused/old_code/admin/actions/createBlogEntry";
 import { CreateBlogFormSchema } from "@/lib/data/schemas/formSchemas";
 import { NextRequest, NextResponse } from "next/server";
 

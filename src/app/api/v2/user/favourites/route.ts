@@ -1,6 +1,6 @@
 import { UserModel } from "@/lib/data/models";
 import { FrontendUserWithFavourites } from "@/lib/data/types/userTypes";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { NextRequest, NextResponse } from "next/server";
 

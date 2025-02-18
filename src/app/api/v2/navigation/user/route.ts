@@ -3,7 +3,7 @@ import {
   UserNavFields,
   UserNavResponse,
 } from "@/lib/data/types/navigationTypes";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { NextRequest, NextResponse } from "next/server";
 

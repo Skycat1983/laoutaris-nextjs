@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CommentModel, BlogModel, UserModel } from "@/lib/data/models";
 import dbConnect from "@/lib/db/mongodb";
 import mongoose from "mongoose";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
 export async function POST(

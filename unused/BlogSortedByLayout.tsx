@@ -1,6 +1,6 @@
 import React from "react";
 import dbConnect from "@/lib/db/mongodb";
-import { fetchBlogAvailability } from "@/lib/old_code/blog/data-fetching/fetchBlogAvailability";
+import { fetchBlogAvailability } from "./old_code/blog/data-fetching/fetchBlogAvailability";
 import BlogSidebar from "../src/components/modules/sidebar/BlogSidebar";
 
 type Props = {

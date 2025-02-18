@@ -8,7 +8,7 @@ import ModalMessage from "@/components/elements/typography/ModalMessage";
 import {
   RegistrationResponse,
   processRegistration,
-} from "@/lib/processRegistration";
+} from "@/lib/actions/processRegistration";
 
 // TODO: redo this form with shadcn/ui
 

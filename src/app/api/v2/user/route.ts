@@ -1,5 +1,5 @@
 import { UserModel } from "@/lib/data/models";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { NextRequest, NextResponse } from "next/server";
 
 /*

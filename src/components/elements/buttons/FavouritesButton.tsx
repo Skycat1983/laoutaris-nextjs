@@ -3,7 +3,7 @@
 import React from "react";
 import { useFormState } from "react-dom";
 
-import { updateUserFavourites } from "@/lib/old_code/user/actions/updateUserFavourites";
+import { updateUserFavourites } from "@/lib/actions/updateUserFavourites";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import SubmitButton from "./SubmitButton";
 import {

@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/db/mongodb";
 import { redirect } from "next/navigation";
-import { getUserWatchlistArtworkDefaultPath } from "@/lib/old_code/user/use_cases/getUserWatchlistArtworkDefaultPath";
+import { getUserWatchlistArtworkDefaultPath } from "../../../../unused/old_code/user/use_cases/getUserWatchlistArtworkDefaultPath";
 
 export default async function Watchlist() {
   await dbConnect();
