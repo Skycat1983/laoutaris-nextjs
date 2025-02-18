@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
-import { ArtworkModel } from "@/lib/data/models/artworkModel";
-import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { ArtworkModel } from "@/lib/data/models";
 import { FrontendArtworkUnpopulated } from "@/lib/data/types/artworkTypes";
+import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
 import {
   artworkToPublic,
   PublicArtwork,
 } from "@/lib/transforms/artworkToPublic";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { artworkId: string } }
 ) {
   try {
@@ -38,19 +38,21 @@ export async function GET(
       transformMongooseDoc<FrontendArtworkUnpopulated>(rawArtwork);
     const data: PublicArtwork = artworkToPublic(artwork, userId);
 
-    if (!data.isFavourited) {
+    if (!data.isWatchlisted) {
       return NextResponse.json({
         success: false,
-        error: "Artwork not in favourites",
+        error: "Artwork not in watchlist",
       } satisfies ApiErrorResponse);
     }
+
+    console.log("data in watchlist route", data);
 
     return NextResponse.json({
       success: true,
       data: data,
     } satisfies ApiSuccessResponse<PublicArtwork>);
   } catch (error) {
-    console.error("Error in GET /user/favourites/:artworkId:", error);
+    console.error("Error in GET /user/watchlist/:artworkId:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 }

@@ -2,6 +2,12 @@ import { UserModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/old_code/user/session/getUserIdFromSession";
 import { NextRequest, NextResponse } from "next/server";
 
+/*
+Used By:
+
+fetchUserSettings in userApi.ts
+*/
+
 export async function GET(req: NextRequest) {
   const userId = await getUserIdFromSession();
 

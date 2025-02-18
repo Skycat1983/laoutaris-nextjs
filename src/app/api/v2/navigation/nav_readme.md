@@ -26,3 +26,9 @@ Within the controller function, we:
    <!-- 4. The transformed data is then returned to the component that called the loader function. -->
    <!-- 5. The data is then transformed to make it compatible with the component that will receive it. -->
 3. The data is then transformed to make it compatible with the component that will receive it.
+
+THOUGHTS & TODOS:
+
+- shouldthe api/navigation endpoints be asset oriented? so instead of /api/v2/navigation/articles, it would be /api/v2/navigation/biography/:assetId or /api/v2/navigation/collection/pagination?
+- at present, when i fetch 'articles', for example, the endpoint must be /api/v2/navigation/articles/[section], because we can potentially have articles belonging to /biograph or /project or /collection
+<!-- ? is this what is known as declarative routing? or is that what i have already?-->

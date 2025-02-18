@@ -1,4 +1,4 @@
-import { UserFavouritesPaginationLoader } from "@/components/loaders/componentLoaders/UserFavouritesPaginationLoader";
+import { FavouritesPaginationLoader } from "@/components/loaders/componentLoaders/FavouritesPaginationLoader";
 import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
 import { Suspense } from "react";
 
@@ -11,7 +11,7 @@ export default async function FavouritesLayout({
     <section className="">
       {children}
       <Suspense fallback={<PaginationSkeleton />}>
-        <UserFavouritesPaginationLoader />
+        <FavouritesPaginationLoader />
       </Suspense>
     </section>
   );

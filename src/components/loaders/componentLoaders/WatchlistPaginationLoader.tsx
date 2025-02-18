@@ -3,7 +3,7 @@ import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
 
-export async function UserWatchlistPaginationLoader() {
+export async function WatchlistPaginationLoader() {
   const result = await fetchUserWatchlist();
 
   if (!result.success) {

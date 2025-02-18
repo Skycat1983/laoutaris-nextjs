@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     const userFavourites =
       transformMongooseDoc<FrontendUserWithFavourites>(rawUserFavourites);
 
-    console.log("userFavourites", userFavourites);
+    // console.log("userFavourites", userFavourites);
 
     return NextResponse.json({
       success: true,

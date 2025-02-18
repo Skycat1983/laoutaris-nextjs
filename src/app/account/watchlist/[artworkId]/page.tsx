@@ -1,26 +1,19 @@
 "use server";
 
-import dbConnect from "@/lib/db/mongodb";
+import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
+import WatchlistedArtworkLoader from "@/components/loaders/viewLoaders/WatclistedArtworkLoader";
+import { Suspense } from "react";
 
 export default async function WatchlistedArtwork({
   params,
 }: {
   params: { artworkId: string };
 }) {
-  await dbConnect();
-  // await delay(2000);
-  // const { artworkId } = params;
-  // const artworkData: SanitizedArtwork = await getArtworkView({
-  //   collectionSlug: "favourites",
-  //   artworkId,
-  // });
-
-  // console.log("params :>> ", params);
-
   return (
     <>
-      {/* <ArtworkView {...artworkData} /> */}
-      {/* <ArtInfoTabs {...artworkData} /> */}
+      <Suspense fallback={<ArtworkViewSkeleton />}>
+        <WatchlistedArtworkLoader artworkId={params.artworkId} />
+      </Suspense>
     </>
   );
 }

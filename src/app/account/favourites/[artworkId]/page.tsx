@@ -1,12 +1,9 @@
 "use server";
 
 import dbConnect from "@/lib/db/mongodb";
-import ArtworkView from "@/components/views/ArtworkView";
-import { getArtworkView } from "@/lib/old_code/artwork/use_cases/getArtworkView";
 import { Suspense } from "react";
-import { UserFavouriteArtworkLoader } from "@/components/loaders/viewLoaders/UserFavouriteArtworkLoader";
-
-//TODO: cache a version of the dimensions for the artwork so that loading.tsx can create a skeleton with the correct dimensions
+import { FavouritedArtworkLoader } from "@/components/loaders/viewLoaders/FavouritedArtworkLoader";
+import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
 
 export default async function FavouritedArtwork({
   params,
@@ -20,8 +17,8 @@ export default async function FavouritedArtwork({
 
   return (
     <>
-      <Suspense>
-        {/* <UserFavouriteArtworkLoader artworkId={artworkId} /> */}
+      <Suspense fallback={<ArtworkViewSkeleton />}>
+        <FavouritedArtworkLoader artworkId={artworkId} />
       </Suspense>
     </>
   );

@@ -172,3 +172,34 @@ export async function fetchUserWatchlist(): Promise<
     } satisfies ApiErrorResponse;
   }
 }
+
+export async function fetchUserWatchlistArtwork(
+  artworkId: string
+): Promise<ApiResponse<PublicArtwork>> {
+  try {
+    const encodedArtworkId = encodeURIComponent(artworkId);
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/user/watchlist/${encodedArtworkId}`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+
+    console.log("response fetchUserWatchlistArtwork", response);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user watchlist artwork");
+    }
+
+    const result = (await response.json()) as ApiResponse<PublicArtwork>;
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching user watchlist artwork:", error);
+    return {
+      success: false,
+      error: "Failed to fetch user watchlist artwork",
+    } satisfies ApiErrorResponse;
+  }
+}
