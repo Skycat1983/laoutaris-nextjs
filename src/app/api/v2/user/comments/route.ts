@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
   try {
     const rawUserComments = await UserModel.findById(userId)
       .select("comments")
+      .populate("comments")
       .lean()
       .exec();
 

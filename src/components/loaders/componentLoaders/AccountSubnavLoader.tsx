@@ -47,7 +47,7 @@ const AccountSubnavLoader = async () => {
   links.push({
     title: "Comments",
     slug: "comments",
-    link_to: buildUrl([stem, "comments", firstId(data.comments)]),
+    link_to: buildUrl([stem, "comments"]),
     disabled: data.comments.length === 0,
   });
 

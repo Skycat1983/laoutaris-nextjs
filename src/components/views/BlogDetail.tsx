@@ -28,7 +28,7 @@ const BlogDetail = ({
   };
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-1/2 mx-auto">
       <div className="relative h-[500px] w-full">
         <Image
           src={imageUrl}
@@ -40,8 +40,8 @@ const BlogDetail = ({
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
         {/* Centered white text */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-white px-4">
-          <h1 className="text-6xl font-bold mb-2">{title}</h1>
+        <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-16">
+          <h1 className="text-5xl font-bold mb-2">{title}</h1>
           <h2 className="text-2xl mb-4">{subtitle}</h2>
           <p className="text-sm">
             {new Date(displayDate).toLocaleDateString()}
