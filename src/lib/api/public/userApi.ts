@@ -7,6 +7,7 @@ import {
 import { headers } from "next/headers";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
 
 export async function fetchUserSettings(): Promise<ApiResponse<FrontendUser>> {
   try {

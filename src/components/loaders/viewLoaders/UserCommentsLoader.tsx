@@ -2,19 +2,20 @@ import { fetchUserComments } from "@/lib/api/public/userApi";
 import React from "react";
 import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
 import UserCommentsView from "@/components/views/UserCommentsView";
+import { FrontendUserWithComments } from "@/lib/data/types/userTypes";
 
 const UserCommentsLoader = async () => {
-  const result = await fetchUserComments();
+  const result: ApiResponse<FrontendUserWithComments> =
+    await fetchUserComments();
   if (!result.success) {
     throw new Error(result.error);
   }
 
-  const blogLink = (comment: FrontendCommentWithBlogNav) =>
-    `/blog/${comment.blog.slug}`;
+  const comments = result.data.comments as FrontendCommentWithBlogNav[];
 
   return (
     <>
-      <UserCommentsView comments={result.data.comments} />
+      <UserCommentsView comments={comments} />
     </>
   );
 };
