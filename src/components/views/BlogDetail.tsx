@@ -5,6 +5,7 @@ import CommentForm from "@/components/forms/CommentForm";
 import { createComment } from "@/lib/api/public/commentApi";
 import type { FrontendBlogEntryWithComments } from "@/lib/data/types/blogTypes";
 import BlogCommentsList from "../sections/BlogCommentsList";
+import HorizontalDivider from "../elements/misc/HorizontalDivider";
 
 const BlogDetail = ({
   title,
@@ -50,8 +51,29 @@ const BlogDetail = ({
           </p>
         </div>
       </div>
+
       {/* Blog content and comments go below */}
       <div className="p-12">
+        {/* <div className="flex flex-row w-full gap-4 justify-end items-center px-4">
+          <div className="flex flex-col justify-start items-end ml-4">
+            <h1 className="text-2xl font-bold font-cormorant">
+              Heron Laoutaris
+            </h1>
+            <h2 className="text-neutral-500 ">Grandson</h2>
+          </div>
+          <div className="h-16 w-16">
+            <Image
+              src="https://res.cloudinary.com/dzncmfirr/image/upload/v1723539243/user-images/heron_drr8t3.png"
+              alt="avatar"
+              width={100}
+              height={100}
+              className="rounded-full"
+            />
+          </div>
+        </div> */}
+        {/* <div className="mb-4">
+          <HorizontalDivider />
+        </div> */}
         <article className="prose-xl text-left fade-in">
           {paragraphs.map((paragraph, index) => (
             <p
@@ -62,6 +84,7 @@ const BlogDetail = ({
             </p>
           ))}
         </article>
+
         {/* Comment Form & CommentsList here */}
         <div className="mt-12 border-t pt-8">
           <h2 className="text-2xl font-special mb-6 text-center">Comments</h2>

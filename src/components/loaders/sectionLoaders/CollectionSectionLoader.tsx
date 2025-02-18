@@ -26,6 +26,7 @@ export async function CollectionsSectionLoader() {
     const collections = await fetchCollections({
       section: COLLECTIONS_FETCH_CONFIG.section,
       fields: COLLECTIONS_FETCH_CONFIG.fields,
+      limit: 9,
     });
 
     // console.log("collections in loader", collections);

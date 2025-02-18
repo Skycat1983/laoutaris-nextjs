@@ -45,6 +45,6 @@ export const CollectionSectionSkeleton = () => (
   <SkeletonFactory
     Layout={CollectionGrid}
     Card={CollectionCardSkeleton}
-    count={5}
+    count={9}
   />
 );
