@@ -9,8 +9,20 @@ export function transformToPaginationLinks(
   total: number,
   basePath: string
 ): PaginationLinks {
+  const baseUrl = new URL(basePath, "http://placeholder.com");
+
   return {
-    prev: page > 1 ? `${basePath}?page=${page - 1}` : null,
-    next: page * limit < total ? `${basePath}?page=${page + 1}` : null,
+    prev:
+      page > 1
+        ? `${baseUrl.pathname}?sortby=${baseUrl.searchParams.get(
+            "sortby"
+          )}&page=${page - 1}`
+        : null,
+    next:
+      page * limit < total
+        ? `${baseUrl.pathname}?sortby=${baseUrl.searchParams.get(
+            "sortby"
+          )}&page=${page + 1}`
+        : null,
   };
 }

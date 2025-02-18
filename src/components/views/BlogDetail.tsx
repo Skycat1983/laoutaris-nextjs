@@ -26,6 +26,8 @@ const BlogDetail = ({
     }
   };
 
+  const paragraphs = text.replace(/\r\n/g, "\n").split(/\n\n+/);
+
   return (
     <div className="w-1/2 mx-auto">
       <div className="relative h-[500px] w-full">
@@ -39,21 +41,27 @@ const BlogDetail = ({
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
         {/* Centered white text */}
-        <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-16">
+        <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-16 ml-8 border-l-4 border-white">
           <h1 className="text-5xl font-bold mb-2">{title}</h1>
           <h2 className="text-2xl mb-4">{subtitle}</h2>
           <p className="text-sm">
-            {new Date(displayDate).toLocaleDateString()}
+            {new Date(displayDate).toLocaleDateString("en-GB")}{" "}
+            {/* DD/MM/YYYY */}
           </p>
         </div>
       </div>
       {/* Blog content and comments go below */}
       <div className="p-8">
-        {text.split("\r\n\r\n").map((paragraph, index) => (
-          <p key={index} className="my-4 leading-8 prose-lg">
-            {paragraph}
-          </p>
-        ))}
+        <article className="prose-xl text-left fade-in">
+          {paragraphs.map((paragraph, index) => (
+            <p
+              key={index}
+              className={`m-2 leading-8 py-2 ${index === 0 ? "drop-cap" : ""}`}
+            >
+              {paragraph.trim()}
+            </p>
+          ))}
+        </article>
         {/* Comment Form & CommentsList here */}
         <div className="mt-12 border-t pt-8">
           <h2 className="text-2xl font-special mb-6 text-center">Comments</h2>

@@ -7,6 +7,9 @@ interface BlogDetailLoaderProps {
 
 export async function BlogDetailLoader({ slug }: BlogDetailLoaderProps) {
   const blog = await fetchBlogDetail(slug);
+  if (!blog) {
+    throw new Error("Blog not found");
+  }
 
   return <BlogDetail {...blog} />;
 }

@@ -30,7 +30,10 @@ export interface FrontendCommentWithAuthor extends BaseFrontendComment {
   blog: string;
 }
 
-type BlogNavFields = Pick<FrontendBlogEntry, "slug" | "title">;
+type BlogNavFields = Pick<
+  FrontendBlogEntry,
+  "slug" | "title" | "imageUrl" | "subtitle"
+>;
 
 export interface FrontendCommentWithBlogNav extends BaseFrontendComment {
   author: string;

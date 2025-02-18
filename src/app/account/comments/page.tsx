@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 export default async function CommentsPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
       <UserCommentsLoader />
     </Suspense>
   );

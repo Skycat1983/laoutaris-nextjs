@@ -47,12 +47,13 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
     );
 
-    // Transform pagination data
+    // Fix: Pass the complete URL with existing query params
+    const currentUrl = `/blog?sortby=${sortby}&page=${page}`;
     const { prev, next } = transformToPaginationLinks(
       metadata.page,
       metadata.limit,
       metadata.total,
-      `/blog/${sortby}`
+      currentUrl
     );
 
     // Return component with transformed data

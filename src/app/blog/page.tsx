@@ -1,5 +1,4 @@
 import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function BlogPage({
@@ -7,16 +6,16 @@ export default async function BlogPage({
 }: {
   searchParams: { sortby?: string; page?: string };
 }) {
-  if (!searchParams.sortby) {
-    redirect("/blog?sortby=latest");
-  }
+  const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
+  type SortOption = (typeof validSortOptions)[number];
 
-  const sortby = (searchParams.sortby || "latest") as
-    | "latest"
-    | "oldest"
-    | "popular"
-    | "featured";
-  const page = parseInt(searchParams.page || "1", 10);
+  const sortby = (
+    validSortOptions.includes(searchParams.sortby as SortOption)
+      ? searchParams.sortby
+      : "latest"
+  ) as SortOption;
+
+  const page = Math.max(1, parseInt(searchParams.page || "1", 10));
 
   return (
     <Suspense fallback={<></>}>

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
         path: "comments",
         populate: {
           path: "blog",
-          select: "slug title",
+          select: "slug title imageUrl subtitle",
         },
       })
       .lean()

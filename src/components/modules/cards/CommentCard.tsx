@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { FrontendComment } from "@/lib/data/types/commentTypes";
+import { formatDateImproved } from "@/lib/utils/formatDate";
 import React from "react";
 
 type Props = {
@@ -13,12 +14,17 @@ export const CommentCardSkeleton = () => {
 };
 
 export const CommentCard = ({ comment }: Props) => {
+  const paragraphs = comment.text.replace(/\r\n/g, "\n").split(/\n\n+/);
   return (
     <>
       <div className="border-b bg-white w-full max-w-2xl mx-auto mt-8 p-8 rounded-tl-lg rounded-tr-lg rounded-bl-lg shadow">
-        <p className="text-gray-800">{comment.text}</p>
-        <p className="text-gray-500 text-xs">
-          {new Date(comment.displayDate).toLocaleString()}
+        {paragraphs.map((paragraph, index) => (
+          <p key={index} className={`m-2 leading-8 prose-lg py-2 }`}>
+            {paragraph.trim()}
+          </p>
+        ))}
+        <p className="text-sm">
+          {formatDateImproved(comment.displayDate.toString())}
         </p>
       </div>
     </>
