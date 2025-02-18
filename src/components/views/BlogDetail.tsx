@@ -29,7 +29,7 @@ const BlogDetail = ({
   const paragraphs = text.replace(/\r\n/g, "\n").split(/\n\n+/);
 
   return (
-    <div className="w-1/2 mx-auto">
+    <div className="w-full md:w-3/4  xl:w-1/2 mx-auto shadow bg-white">
       <div className="relative h-[500px] w-full">
         <Image
           src={imageUrl}
@@ -41,7 +41,7 @@ const BlogDetail = ({
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black opacity-50"></div>
         {/* Centered white text */}
-        <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-16 ml-8 border-l-4 border-white">
+        <div className="absolute inset-0 flex flex-col justify-center items-start text-white px-16 ml-12 border-l-4 border-white">
           <h1 className="text-5xl font-bold mb-2">{title}</h1>
           <h2 className="text-2xl mb-4">{subtitle}</h2>
           <p className="text-sm">
@@ -51,7 +51,7 @@ const BlogDetail = ({
         </div>
       </div>
       {/* Blog content and comments go below */}
-      <div className="p-8">
+      <div className="p-12">
         <article className="prose-xl text-left fade-in">
           {paragraphs.map((paragraph, index) => (
             <p
