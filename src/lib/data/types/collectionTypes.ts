@@ -18,7 +18,7 @@ interface BaseFrontendCollection {
   updatedAt: Date;
 }
 
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
 export interface FrontendCollection extends BaseFrontendCollection {
   artworks: PopulatedField<FrontendArtwork>[];

@@ -17,7 +17,7 @@ interface BaseFrontendArtwork {
   updatedAt: Date;
 }
 
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
 export interface FrontendArtwork extends BaseFrontendArtwork {
   watcherlist: PopulatedField<FrontendUser>[];

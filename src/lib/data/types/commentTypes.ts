@@ -11,26 +11,36 @@ interface BaseFrontendComment {
 }
 
 // type CommentAuthorType = FrontendUser | string;
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
+// Base comment type with flexible population
 export interface FrontendComment extends BaseFrontendComment {
   author: PopulatedField<FrontendUser>;
   blog: PopulatedField<FrontendBlogEntry>;
 }
 
+// Specific comment types for different use cases
 export interface FrontendCommentUnpopulated extends BaseFrontendComment {
   author: string;
   blog: string;
 }
 
-export interface FrontendCommentWithAuthor extends FrontendComment {
+export interface FrontendCommentWithAuthor extends BaseFrontendComment {
   author: FrontendUser;
   blog: string;
 }
 
-export interface FrontendCommentWithBlogPost extends FrontendComment {
-  blog: FrontendBlogEntry;
+type BlogNavFields = Pick<FrontendBlogEntry, "slug" | "title">;
+
+export interface FrontendCommentWithBlogNav extends BaseFrontendComment {
   author: string;
+  blog: BlogNavFields;
+}
+
+// Full blog population
+export interface FrontendCommentWithBlogPost extends BaseFrontendComment {
+  author: string;
+  blog: FrontendBlogEntry;
 }
 
 // export type FrontendComment =

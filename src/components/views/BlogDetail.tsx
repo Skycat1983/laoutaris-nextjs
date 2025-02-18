@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import CommentForm from "@/components/forms/CommentForm";
 import { createComment } from "@/lib/api/public/commentApi";
 import type { FrontendBlogEntryWithComments } from "@/lib/data/types/blogTypes";
-import CommentsList from "../sections/CommentsList";
+import BlogCommentsList from "../sections/BlogCommentsList";
 
 const BlogDetail = ({
   title,
@@ -61,7 +60,7 @@ const BlogDetail = ({
           <CommentForm blogSlug={slug} onCommentSubmit={handleCommentSubmit} />
         </div>
         <div className="mt-12 border-t pt-8">
-          <CommentsList comments={comments} />
+          <BlogCommentsList comments={comments} />
         </div>
       </div>
     </div>

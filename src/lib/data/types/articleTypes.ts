@@ -16,7 +16,7 @@ interface BaseFrontendArticle {
   overlayColour: OverlayColour;
 }
 
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
 export interface FrontendArticle extends BaseFrontendArticle {
   author: PopulatedField<FrontendUser>;

@@ -10,7 +10,13 @@ export async function GET(req: NextRequest) {
   try {
     const rawUserComments = await UserModel.findById(userId)
       .select("comments")
-      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "blog",
+          select: "slug title",
+        },
+      })
       .lean()
       .exec();
 

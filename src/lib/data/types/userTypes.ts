@@ -1,6 +1,7 @@
 import { DBUser } from "../models";
 import { FrontendArtwork } from "./artworkTypes";
-import { FrontendComment } from "./commentTypes";
+import { FrontendBlogEntry } from "./blogTypes";
+import { FrontendComment, FrontendCommentWithBlogNav } from "./commentTypes";
 
 export type SerializableUser = Omit<
   DBUser,
@@ -22,17 +23,18 @@ export interface BaseFrontendUser {
 }
 
 // Each field can be either unpopulated or populated
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
-// Define the user interface with populatable fields
+// Base user type with flexible population
 export interface FrontendUser extends BaseFrontendUser {
   comments: PopulatedField<FrontendComment>[];
   watchlist: PopulatedField<FrontendArtwork>[];
   favourites: PopulatedField<FrontendArtwork>[];
 }
 
-export interface FrontendUserWithComments extends FrontendUser {
-  comments: PopulatedField<FrontendComment>[];
+// Specific user type for the comments view
+export interface FrontendUserWithComments extends BaseFrontendUser {
+  comments: FrontendCommentWithBlogNav[]; // Using the nav-specific comment type
   watchlist: string[];
   favourites: string[];
 }

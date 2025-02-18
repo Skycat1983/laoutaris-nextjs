@@ -33,7 +33,7 @@ type PaginatedResponse<T> = ApiSuccessResponse<T> & {
 };
 
 // Utility type for fields that might be populated with full objects or remain as string IDs
-type PopulatedField<T> = string | T;
+type PopulatedField<T> = string | T | Partial<T>;
 
 // Specific response types for different endpoints
 // type BlogListResponse = ApiResponse<FrontendBlogEntry[]>; // Blog list endpoint - can be success with blog array or error
