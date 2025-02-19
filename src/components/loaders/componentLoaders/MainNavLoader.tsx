@@ -1,10 +1,5 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
-import {
-  fetchArticleNavigationList,
-  fetchCollectionNavigationList,
-} from "@/lib/api/public/navigationApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { delay } from "@/lib/utils/debug";
 import { serverApi } from "@/lib/api/server";
 
 export interface NavBarLink {
@@ -14,7 +9,6 @@ export interface NavBarLink {
 }
 
 export const MainNavLoader = async () => {
-  // await delay(1000);
   const [articleNavigation, collectionNavigation] = await Promise.all([
     serverApi.navigation.fetchArticleNavigationList("biography"),
     serverApi.navigation.fetchCollectionNavigationList(),
@@ -32,8 +26,8 @@ export const MainNavLoader = async () => {
     );
   }
 
-  const articleNavigationList = articleNavigation.data;
-  const collectionNavigationList = collectionNavigation.data;
+  const { data: articleNavigationList } = articleNavigation;
+  const { data: collectionNavigationList } = collectionNavigation;
 
   const navLinks: NavBarLink[] = [
     {
@@ -48,11 +42,9 @@ export const MainNavLoader = async () => {
         collectionNavigationList[0].artworkId,
       ]),
     },
-    { label: "Blog", path: buildUrl(["blog"], { sortby: "latest" }) }, // Add query param
+    { label: "Blog", path: buildUrl(["blog"], { sortby: "latest" }) },
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
-  // console.log("navLinks", navLinks);
-  // return <div>Loading...</div>;
   return <MainNav navLinks={navLinks} />;
 };
