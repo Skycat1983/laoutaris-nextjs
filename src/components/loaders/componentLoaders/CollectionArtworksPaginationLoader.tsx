@@ -18,11 +18,11 @@ export async function CollectionArtworksPaginationLoader({
   console.log("paginationArtwork", paginationArtwork);
   return (
     <>
-      {/* <ArtworkPagination
-      items={paginationArtwork}
-      heading="More from this collection"
-      link_to={buildCollectionLink}
-    /> */}
+      <ArtworkPagination
+        items={paginationArtwork}
+        heading="More from this collection"
+        link_to={buildCollectionLink}
+      />
     </>
   );
 }

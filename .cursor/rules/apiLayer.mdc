@@ -1,0 +1,75 @@
+---
+description: Blueprint for apiLayer functions of the lib/api folder
+globs: src/lib/api/*/**.ts
+---
+API Function Pattern Guidelines
+
+
+1. Type Definition
+- Use specific input/output types
+- Leverage ApiResponse generic type for consistent responses
+
+```ts
+interface FunctionParams {
+  // Required and optional parameters
+  required: string;
+  optional?: string;
+  // Use specific types, avoid 'any'
+}
+
+type ResponseData = {
+  // The expected successful response data shape
+};
+```
+
+
+2. Function Structure
+- Async function with typed parameters and return type
+- Use ApiResponse<T> for return type
+
+```ts
+async function fetchEndpoint(
+  params: FunctionParams
+): Promise<ApiResponse<ResponseData>> {
+  try {
+    // 3. URL Construction
+    const url = new URL(`${process.env.BASEURL}/api/v2/resource`);
+    
+    // Add query parameters if needed
+    if (params.optional) {
+      url.searchParams.append('key', params.optional);
+    }
+
+    // 4. Request
+    const response = await fetch(url.toString(), {
+      method: "GET", // or POST, PUT, DELETE
+      headers: headers(),
+      cache: "no-store", // if needed
+    });
+
+    // 5. Response Handling
+    const result = await response.json();
+
+    // 6. Type Guards & Error Handling
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || "Default error message",
+      } satisfies ApiErrorResponse;
+    }
+
+    // 7. Success Response
+    return result satisfies ApiSuccessResponse<ResponseData>;
+
+  } catch (error) {
+    // 8. Exception Handling
+    console.error(`Error in fetchEndpoint:`, error);
+    return {
+      success: false,
+      error: "Generic error message for this endpoint",
+    } satisfies ApiErrorResponse;
+  }
+}```
+
+
+

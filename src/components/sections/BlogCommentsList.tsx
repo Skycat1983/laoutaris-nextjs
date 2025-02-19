@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import type { FrontendCommentUnpopulated } from "@/lib/data/types/commentTypes";
+import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { CommentCard } from "../modules/cards/CommentCard";
 
 interface CommentsListProps {
-  comments: FrontendCommentUnpopulated[];
+  comments: FrontendCommentWithAuthor[];
 }
 
 export default function BlogCommentsList({ comments }: CommentsListProps) {
@@ -19,8 +19,8 @@ export default function BlogCommentsList({ comments }: CommentsListProps) {
 
   return (
     <div className="space-y-6 mt-8">
-      {comments.map((comment, index) => (
-        <CommentCard key={index} comment={comment} />
+      {comments.map((comment) => (
+        <CommentCard key={comment._id} comment={comment} />
       ))}
     </div>
   );

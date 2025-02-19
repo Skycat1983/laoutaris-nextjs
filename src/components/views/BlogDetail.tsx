@@ -3,9 +3,19 @@
 import Image from "next/image";
 import CommentForm from "@/components/forms/CommentForm";
 import { createComment } from "@/lib/api/public/commentApi";
-import type { FrontendBlogEntryWithComments } from "@/lib/data/types/blogTypes";
+import type {
+  FrontendBlogEntry,
+  FrontendBlogEntryWithCommentAuthor,
+} from "@/lib/data/types/blogTypes";
 import BlogCommentsList from "../sections/BlogCommentsList";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
+import { useState } from "react";
+import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import { blogClient } from "@/lib/api/public/blog/client";
+
+interface BlogDetailProps extends FrontendBlogEntry {
+  showComments?: boolean;
+}
 
 const BlogDetail = ({
   title,
@@ -14,9 +24,30 @@ const BlogDetail = ({
   imageUrl,
   displayDate,
   slug,
-  comments,
-}: FrontendBlogEntryWithComments) => {
-  console.log("comments", comments);
+  comments = [],
+  showComments = false,
+}: BlogDetailProps) => {
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [populatedComments, setPopulatedComments] = useState<
+    FrontendCommentWithAuthor[]
+  >([]);
+  const [hasLoadedComments, setHasLoadedComments] = useState(false);
+
+  const loadComments = async () => {
+    setIsLoadingComments(true);
+    try {
+      const result = await blogClient.fetchWithCommentAuthor(slug);
+      if (result.success) {
+        setPopulatedComments(result.data.comments);
+        setHasLoadedComments(true);
+      }
+    } catch (error) {
+      console.error("Failed to load comments:", error);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  };
+
   const handleCommentSubmit = async (commentText: string) => {
     try {
       const result = await createComment(slug, commentText);
@@ -54,7 +85,59 @@ const BlogDetail = ({
 
       {/* Blog content and comments go below */}
       <div className="p-12">
-        {/* <div className="flex flex-row w-full gap-4 justify-end items-center px-4">
+        <article className="prose-xl text-left fade-in">
+          {paragraphs.map((paragraph, index) => (
+            <p
+              key={index}
+              className={`m-2 leading-8 py-2 ${index === 0 ? "drop-cap" : ""}`}
+            >
+              {paragraph.trim()}
+            </p>
+          ))}
+        </article>
+
+        {/* Comments Section */}
+        <div className="mt-12 border-t pt-8">
+          {!showComments ? (
+            <button
+              onClick={loadComments}
+              className="w-full py-2 text-center text-gray-600 hover:text-gray-900"
+            >
+              Show Comments
+            </button>
+          ) : (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-special mb-6 text-center">
+                Comments
+              </h2>
+              <CommentForm
+                blogSlug={slug}
+                onCommentSubmit={handleCommentSubmit}
+              />
+              {isLoadingComments ? (
+                <div className="animate-pulse">Loading comments...</div>
+              ) : (
+                <BlogCommentsList
+                  comments={
+                    hasLoadedComments
+                      ? populatedComments
+                      : (comments as FrontendCommentWithAuthor[])
+                  }
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BlogDetail;
+
+// AUTHOR INFO IF NEEDED
+{
+  /* <div className="flex flex-row w-full gap-4 justify-end items-center px-4">
           <div className="flex flex-col justify-start items-end ml-4">
             <h1 className="text-2xl font-bold font-cormorant">
               Heron Laoutaris
@@ -70,32 +153,10 @@ const BlogDetail = ({
               className="rounded-full"
             />
           </div>
-        </div> */}
-        {/* <div className="mb-4">
+        </div> */
+}
+{
+  /* <div className="mb-4">
           <HorizontalDivider />
-        </div> */}
-        <article className="prose-xl text-left fade-in">
-          {paragraphs.map((paragraph, index) => (
-            <p
-              key={index}
-              className={`m-2 leading-8 py-2 ${index === 0 ? "drop-cap" : ""}`}
-            >
-              {paragraph.trim()}
-            </p>
-          ))}
-        </article>
-
-        {/* Comment Form & CommentsList here */}
-        <div className="mt-12 border-t pt-8">
-          <h2 className="text-2xl font-special mb-6 text-center">Comments</h2>
-          <CommentForm blogSlug={slug} onCommentSubmit={handleCommentSubmit} />
-        </div>
-        <div className="mt-12 border-t pt-8">
-          <BlogCommentsList comments={comments} />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default BlogDetail;
+        </div> */
+}

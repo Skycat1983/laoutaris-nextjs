@@ -1,5 +1,6 @@
 import type {
   FrontendBlogEntry,
+  FrontendBlogEntryWithCommentAuthor,
   FrontendBlogEntryWithComments,
 } from "@/lib/data/types/blogTypes";
 import { headers } from "next/headers";
@@ -16,49 +17,68 @@ export async function fetchBlogEntries({
   fields,
   limit,
   page,
-}: FetchBlogEntriesParams = {}): Promise<
-  PaginatedResponse<FrontendBlogEntry[]>
-> {
-  const params = new URLSearchParams();
+}: FetchBlogEntriesParams = {}): Promise<ApiResponse<FrontendBlogEntry[]>> {
+  try {
+    const params = new URLSearchParams();
+    if (sortby) params.append("sortby", sortby);
+    if (fields) params.append("fields", fields.join(","));
+    if (limit) params.append("limit", limit.toString());
+    if (page) params.append("page", page.toString());
 
-  if (sortby) params.append("sortby", sortby);
-  if (fields) params.append("fields", fields.join(","));
-  if (limit) params.append("limit", limit.toString());
-  if (page) params.append("page", page.toString());
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/blog?${params}`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
 
-  const response = await fetch(`${process.env.BASEURL}/api/v2/blog?${params}`, {
-    method: "GET",
-    headers: headers(),
-  });
+    const result = await response.json();
 
-  const result = (await response.json()) as PaginatedResponse<
-    FrontendBlogEntry[]
-  >;
+    if (!result.success) {
+      return {
+        success: false,
+        error: "Failed to fetch blog entries",
+      } satisfies ApiErrorResponse;
+    }
 
-  if (!result.success) {
-    throw new Error("Failed to fetch blog entries");
+    return result satisfies ApiSuccessResponse<FrontendBlogEntry[]>;
+  } catch (error) {
+    console.error("Error fetching blog entries:", error);
+    return {
+      success: false,
+      error: "Failed to fetch blog entries",
+    } satisfies ApiErrorResponse;
   }
-
-  return result;
 }
 
-export async function fetchBlogDetail(
+export async function fetchBlog(
   slug: string
-): Promise<FrontendBlogEntryWithComments> {
-  const response = await fetch(`${process.env.BASEURL}/api/v2/blog/${slug}`, {
-    method: "GET",
-    headers: headers(),
-    cache: "no-store",
-  });
+): Promise<ApiResponse<FrontendBlogEntry>> {
+  try {
+    const response = await fetch(`${process.env.BASEURL}/api/v2/blog/${slug}`, {
+      method: "GET",
+      headers: headers(),
+      cache: "no-store",
+    });
 
-  const result =
-    (await response.json()) as ApiResponse<FrontendBlogEntryWithComments>;
+    const result = await response.json();
 
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch blog detail");
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || "Failed to fetch blog",
+      } satisfies ApiErrorResponse;
+    }
+
+    return result satisfies ApiSuccessResponse<FrontendBlogEntry>;
+  } catch (error) {
+    console.error("Error fetching blog:", error);
+    return {
+      success: false,
+      error: "Failed to fetch blog",
+    } satisfies ApiErrorResponse;
   }
-
-  return result.data;
 }
 
 export async function fetchBlogComments(
@@ -80,4 +100,35 @@ export async function fetchBlogComments(
   }
 
   return result.data;
+}
+
+export async function fetchBlogWithCommentAuthor(
+  slug: string
+): Promise<ApiResponse<FrontendBlogEntryWithCommentAuthor>> {
+  try {
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/blog/${slug}/comments/author`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error || "Failed to fetch blog with comments",
+      } satisfies ApiErrorResponse;
+    }
+
+    return result satisfies ApiSuccessResponse<FrontendBlogEntryWithCommentAuthor>;
+  } catch (error) {
+    console.error("Error fetching blog with comments:", error);
+    return {
+      success: false,
+      error: "Failed to fetch blog with comments",
+    } satisfies ApiErrorResponse;
+  }
 }

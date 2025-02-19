@@ -74,7 +74,7 @@ export function AccountNavDropdown() {
                         ? "opacity-50 cursor-not-allowed bg-whitish"
                         : "from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground bg-whitish"
                     }`}
-                    href={isDisabled ? "#" : "/account"}
+                    href={isDisabled ? "#" : "/account/settings"}
                     onClick={(e) => {
                       if (isDisabled) {
                         e.preventDefault();

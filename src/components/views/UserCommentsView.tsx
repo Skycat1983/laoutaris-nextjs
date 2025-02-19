@@ -11,6 +11,8 @@ type Props = {
   comments: FrontendCommentWithBlogNav[];
 };
 
+// v2 or v4
+
 const UserCommentsView = ({ comments }: Props) => {
   const blogLink = (comment: FrontendCommentWithBlogNav) =>
     `/blog/${comment.blog.slug}`;
@@ -31,9 +33,17 @@ const UserCommentsView = ({ comments }: Props) => {
     blogSlug: string,
     commentIndex: number
   ): boolean => {
-    return commentIndex === 0; // The first comment for each blog
+    return commentIndex === 0;
   };
 
+  const withPlaceholderUsername = (comment: FrontendCommentWithBlogNav) => {
+    return {
+      ...comment,
+      author: {
+        username: "Anonymous",
+      },
+    };
+  };
   return (
     <>
       <div className="space-y-8 mt-8 border border-gray-600 rounded-lg p-4 container mx-auto max-w-3xl p-16 bg-gray-200">
@@ -71,7 +81,10 @@ const UserCommentsView = ({ comments }: Props) => {
             {/* comments for the current blog */}
             {blogComments.map((comment, index) => (
               // <Link key={comment._id} href={blogLink(comment)}>
-              <CommentCard key={comment._id} comment={comment} />
+              <CommentCard
+                key={comment._id}
+                comment={withPlaceholderUsername(comment)}
+              />
               // </Link>
             ))}
           </div>
