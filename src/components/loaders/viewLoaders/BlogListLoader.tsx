@@ -1,10 +1,10 @@
 "use server";
 
-import { fetchBlogEntries } from "@/lib/api/public/blogApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import BlogListView from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
+import { blogServer } from "@/lib/api/public/blog/server";
 
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
@@ -34,20 +34,26 @@ interface BlogEntriesLoaderProps {
 // Loader Function
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
-    // Fetch data using API layer
-    const { data: blogs, metadata } = await fetchBlogEntries({
+    const result = (await blogServer.fetchBlogs({
       sortby,
       page,
       limit: BLOG_ENTRIES_CONFIG.limit,
       fields: BLOG_ENTRIES_CONFIG.fields,
-    });
+    })) as ApiResponse<FrontendBlogEntry[]>;
 
-    // Transform blog entries with explicit typing
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch blog entries");
+    }
+
+    const { data: blogs, metadata } = result as PaginatedResponse<
+      FrontendBlogEntry[]
+    >;
+
+    // Transform blogs with explicit typing
     const transformedBlogs: BlogEntryData[] = blogs.map((blog) =>
       transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
     );
 
-    // Fix: Pass the complete URL with existing query params
     const currentUrl = `/blog?sortby=${sortby}&page=${page}`;
     const { prev, next } = transformToPaginationLinks(
       metadata.page,
@@ -56,12 +62,10 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       currentUrl
     );
 
-    // Return component with transformed data
     return (
       <BlogListView blogEntries={transformedBlogs} next={next} prev={prev} />
     );
   } catch (error) {
-    console.error("Blog entries loading failed:", error);
-    return null;
+    throw error;
   }
 }

@@ -1,5 +1,3 @@
-import { Fetcher, FetcherConfig } from "./types";
-
 /*
 Fully typed from end to end
 Shared error handling
@@ -7,6 +5,17 @@ Consistent API responses
 Clear separation between client and server code
 Reusable fetching logic
 */
+
+// Fetcher types
+export type Fetcher = <T>(
+  endpoint: string,
+  options?: RequestInit
+) => Promise<ApiResponse<T>>;
+
+export type FetcherConfig = {
+  getUrl: (path: string) => string;
+  getHeaders: () => HeadersInit;
+};
 
 export const createFetcher = (config: FetcherConfig): Fetcher => {
   return async <T>(

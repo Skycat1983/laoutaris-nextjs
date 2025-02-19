@@ -5,6 +5,23 @@ import type {
 } from "@/lib/data/types/articleTypes";
 import { headers } from "next/headers";
 
+export async function fetchArticle(slug: string) {
+  const response = await fetch(
+    `${process.env.BASEURL}/api/v2/article/${slug}`,
+    {
+      method: "GET",
+      headers: headers(),
+    }
+  );
+
+  const result = (await response.json()) as ApiResponse<FrontendArticle>;
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch article");
+  }
+
+  return result.data;
+}
+
 interface FetchArticlesParams {
   section?: Section;
   fields?: readonly string[];
@@ -36,23 +53,6 @@ export async function fetchArticles({
   const result = (await response.json()) as ApiResponse<FrontendArticle[]>;
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch articles");
-  }
-
-  return result.data;
-}
-
-export async function fetchArticle(slug: string) {
-  const response = await fetch(
-    `${process.env.BASEURL}/api/v2/article/${slug}`,
-    {
-      method: "GET",
-      headers: headers(),
-    }
-  );
-
-  const result = (await response.json()) as ApiResponse<FrontendArticle>;
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch article");
   }
 
   return result.data;
