@@ -43,22 +43,22 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
     ),
 
   // ! admin only
-  createBlog: async (data: CreateBlogFormValues) =>
-    fetcher<FrontendBlogEntry>("/api/v2/blog/create", {
-      method: "POST",
-      body: JSON.stringify(data),
-    }),
+  // createBlog: async (data: CreateBlogFormValues) =>
+  //   fetcher<FrontendBlogEntry>("/api/v2/blog/create", {
+  //     method: "POST",
+  //     body: JSON.stringify(data),
+  //   }),
 
-  updateBlog: async (slug: string, data: UpdateBlogFormValues) =>
-    fetcher<FrontendBlogEntry>(`/api/v2/blog/${slug}`, {
-      method: "PATCH",
-      body: JSON.stringify(data),
-    }),
+  // updateBlog: async (slug: string, data: UpdateBlogFormValues) =>
+  //   fetcher<FrontendBlogEntry>(`/api/v2/blog/${slug}`, {
+  //     method: "PATCH",
+  //     body: JSON.stringify(data),
+  //   }),
 
-  deleteBlog: async (slug: string) =>
-    fetcher<void>(`/api/v2/blog/${slug}`, {
-      method: "DELETE",
-    }),
+  // deleteBlog: async (slug: string) =>
+  //   fetcher<void>(`/api/v2/blog/${slug}`, {
+  //     method: "DELETE",
+  //   }),
 });
 
 // Type for our blog fetchers object

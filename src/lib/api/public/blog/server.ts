@@ -3,7 +3,10 @@ import { createFetcher } from "../../core/createFetcher";
 import { createBlogFetchers } from "./shared";
 
 const serverFetcher = createFetcher({
-  getUrl: (path) => `${process.env.BASEURL}${path}`,
+  getUrl: (path) => {
+    const baseUrl = process.env.BASEURL || "http://localhost:3000";
+    return new URL(path, baseUrl).toString();
+  },
   getHeaders: () => headers(),
 });
 

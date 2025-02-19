@@ -1,38 +1,34 @@
 import BlogDetail from "@/components/views/BlogDetail";
-import { fetchBlogWithCommentAuthor } from "@/lib/api/experimental/serverBlogFetchers";
 import { blogServer } from "@/lib/api/public/blog/server";
-import {
-  fetchBlog,
-  // fetchBlogWithCommentAuthor,
-} from "@/lib/api/public/blogApi";
 
 interface Props {
   slug: string;
   showComments?: boolean;
 }
 
-export const BlogDetailLoader = async ({
+export default async function BlogDetailLoader({
   slug,
   showComments = false,
-}: Props) => {
+}: Props) {
   try {
     const result = showComments
-      ? await blogServer.fetchWithCommentAuthor(slug)
-      : await fetchBlog(slug);
+      ? await blogServer.fetchBlogCommentsAuthor(slug)
+      : await blogServer.fetchBlog(slug);
+    console.log("result", result);
 
     if (!result.success) {
-      if (showComments) {
-        // if we couldn't fetch comments, fallback to basic blog
-        const fallbackResult = await fetchBlog(slug);
-        if (fallbackResult.success) {
-          return <BlogDetail {...fallbackResult.data} showComments={false} />;
-        }
-      }
-      throw new Error(result.error);
+      // Convert error to string if it's an object
+      const errorMessage =
+        typeof result.error === "object"
+          ? JSON.stringify(result.error)
+          : result.error;
+
+      throw new Error(errorMessage);
     }
 
     return <BlogDetail {...result.data} showComments={showComments} />;
   } catch (error) {
-    throw error; // to error boundary
+    console.error("Error in BlogDetailLoader:", error);
+    throw error; // or handle error appropriately
   }
-};
+}

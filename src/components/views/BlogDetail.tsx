@@ -36,7 +36,7 @@ const BlogDetail = ({
   const loadComments = async () => {
     setIsLoadingComments(true);
     try {
-      const result = await blogClient.fetchWithCommentAuthor(slug);
+      const result = await blogClient.fetchBlogCommentsAuthor(slug);
       if (result.success) {
         setPopulatedComments(result.data.comments);
         setHasLoadedComments(true);

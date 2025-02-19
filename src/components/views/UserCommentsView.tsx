@@ -11,8 +11,6 @@ type Props = {
   comments: FrontendCommentWithBlogNav[];
 };
 
-// v2 or v4
-
 const UserCommentsView = ({ comments }: Props) => {
   const blogLink = (comment: FrontendCommentWithBlogNav) =>
     `/blog/${comment.blog.slug}`;
