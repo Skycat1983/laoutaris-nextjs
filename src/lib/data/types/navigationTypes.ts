@@ -22,7 +22,7 @@ export type CollectionNavItem = {
 
 // Artwork Navigation (for collection pagination)
 export type ArtworkNavFields = Pick<FrontendArtwork, "title" | "_id" | "image">;
-export type CollectionArtworkNav = {
+export type CollectionArtworkNavList = {
   artworks: ArtworkNavFields[];
 };
 
@@ -45,5 +45,6 @@ export type ValidSection = (typeof VALID_SECTIONS)[number];
 export type ArticleNavResponse = ApiResponse<ArticleNavItem[]>;
 export type CollectionNavListResponse = ApiResponse<CollectionNavItem[]>;
 export type CollectionNavItemResponse = ApiResponse<CollectionNavItem>;
-export type CollectionArtworksNavResponse = ApiResponse<CollectionArtworkNav>;
+export type CollectionArtworksNavResponse =
+  ApiResponse<CollectionArtworkNavList>;
 export type UserNavResponse = ApiResponse<UserNavFields>;

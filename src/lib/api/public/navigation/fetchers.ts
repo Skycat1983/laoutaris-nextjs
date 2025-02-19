@@ -2,7 +2,7 @@ import {
   ArticleNavItem,
   CollectionNavItem,
   ValidSection,
-  ArtworkNavFields,
+  CollectionArtworkNavList,
 } from "@/lib/data/types/navigationTypes";
 import { Fetcher } from "../../core/createFetcher";
 
@@ -21,7 +21,7 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
 
   // Get collection artworks navigation
   fetchCollectionArtworksNavigation: async (slug: string) =>
-    fetcher<ArtworkNavFields[]>(
+    fetcher<CollectionArtworkNavList>(
       `/api/v2/navigation/collections/${slug}/artworks`
     ),
 });

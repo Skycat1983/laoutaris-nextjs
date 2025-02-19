@@ -20,16 +20,15 @@ export async function CollectionArtworksPaginationLoader({
     );
   }
 
-  const paginationArtwork = result.data;
-
+  const { data: artworkNavigationList } = result;
+  const { artworks } = artworkNavigationList;
   const buildCollectionLink = (artwork: ArtworkNavFields) =>
     buildUrl(["collections", slug, artwork._id]);
 
-  console.log("paginationArtwork", paginationArtwork);
   return (
     <>
       <ArtworkPagination
-        items={paginationArtwork}
+        items={artworks}
         heading="More from this collection"
         link_to={buildCollectionLink}
       />
