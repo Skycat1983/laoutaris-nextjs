@@ -11,7 +11,7 @@ import BlogCommentsList from "../sections/BlogCommentsList";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
-import { blogClient } from "@/lib/api/public/blog/client";
+import { clientApi } from "@/lib/api/client";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -36,7 +36,8 @@ const BlogDetail = ({
   const loadComments = async () => {
     setIsLoadingComments(true);
     try {
-      const result = await blogClient.fetchBlogCommentsAuthor(slug);
+      const result = await clientApi.blog.fetchBlogCommentsAuthor(slug);
+      console.log("result", result);
       if (result.success) {
         setPopulatedComments(result.data.comments);
         setHasLoadedComments(true);
@@ -57,6 +58,8 @@ const BlogDetail = ({
       console.error("Error submitting comment:", error);
     }
   };
+
+  console.log("comments", comments);
 
   const paragraphs = text.replace(/\r\n/g, "\n").split(/\n\n+/);
 
@@ -97,8 +100,16 @@ const BlogDetail = ({
         </article>
 
         {/* Comments Section */}
+        {/* Comments Section */}
         <div className="mt-12 border-t pt-8">
-          {!showComments ? (
+          {/* Comment Form should always be visible */}
+          <h2 className="text-2xl font-special mb-6 text-center">
+            Leave a Comment
+          </h2>
+          <CommentForm blogSlug={slug} onCommentSubmit={handleCommentSubmit} />
+
+          {/* Toggle comments visibility */}
+          {!showComments && !hasLoadedComments ? (
             <button
               onClick={loadComments}
               className="w-full py-2 text-center text-gray-600 hover:text-gray-900"
@@ -110,10 +121,6 @@ const BlogDetail = ({
               <h2 className="text-2xl font-special mb-6 text-center">
                 Comments
               </h2>
-              <CommentForm
-                blogSlug={slug}
-                onCommentSubmit={handleCommentSubmit}
-              />
               {isLoadingComments ? (
                 <div className="animate-pulse">Loading comments...</div>
               ) : (

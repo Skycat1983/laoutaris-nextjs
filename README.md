@@ -1,5 +1,3 @@
-I'll help create a comprehensive README that documents your architecture. I'll include both a high-level overview and detailed explanations with an annotated directory structure.
-
 ````markdown:my-app/README.md
 # Next.js Clean Architecture Project
 

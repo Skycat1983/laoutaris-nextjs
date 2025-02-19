@@ -1,11 +1,10 @@
 import ArtworkView from "@/components/views/ArtworkView";
-import { fetchCollectionArtwork } from "@/lib/api/public/collectionApi";
 import {
   artworkToPublic,
   PublicArtwork,
 } from "@/lib/transforms/artworkToPublic";
-import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { delay } from "@/lib/utils/debug";
+import { serverApi } from "@/lib/api/server";
 
 export async function CollectionArtworkLoader({
   slug,
@@ -15,12 +14,16 @@ export async function CollectionArtworkLoader({
   artworkId: string;
 }) {
   await delay(1000);
-  const collectionArtwork: FrontendCollectionWithArtworks =
-    await fetchCollectionArtwork(slug, artworkId);
-
-  const publicArtwork: PublicArtwork = artworkToPublic(
-    collectionArtwork.artworks[0]
+  const result = await serverApi.collection.fetchCollectionArtwork(
+    slug,
+    artworkId
   );
+
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch collection artwork");
+  }
+
+  const publicArtwork: PublicArtwork = artworkToPublic(result.data.artworks[0]);
 
   return <ArtworkView {...publicArtwork} />;
 }

@@ -4,6 +4,7 @@ import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
 import { fetchCollectionNavigationList } from "@/lib/api/public/navigationApi";
 import { ValidSection } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
+import { serverApi } from "@/lib/api/server";
 
 interface CollectionsSubnavLoaderProps {
   section: ValidSection;
@@ -12,11 +13,16 @@ interface CollectionsSubnavLoaderProps {
 export async function CollectionsSubnavLoader({
   section,
 }: CollectionsSubnavLoaderProps) {
-  const collections = await fetchCollectionNavigationList(section);
+  const result = await serverApi.navigation.fetchCollectionNavigationList();
 
+  if (!result.success) {
+    throw new Error(result.error || "Failed to fetch collection navigation");
+  }
+
+  const { data: collections } = result;
   console.log("CollectionsSubnavLoader", collections);
 
-  const links = collections.map((collection) => ({
+  const links = result.data.map((collection) => ({
     title: collection.title,
     slug: collection.slug,
     link_to: buildUrl(["collections", collection.slug, collection.artworkId]),

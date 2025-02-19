@@ -2,8 +2,8 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { fetchBlogEntries } from "@/lib/api/public/blogApi";
 import { BlogSection } from "../../../../unused/contentSections/BlogSection";
+import { serverApi } from "@/lib/api/server";
 
 // 1. Config Constants
 const BLOG_FETCH_CONFIG = {
@@ -22,15 +22,17 @@ export type BlogCardData = Pick<
 export async function BlogSectionLoader() {
   try {
     // Fetch data using API layer
-    const response = await fetchBlogEntries({
+    const response = await serverApi.blog.fetchBlogs({
       sortby: BLOG_FETCH_CONFIG.sortby,
       limit: BLOG_FETCH_CONFIG.limit,
       fields: BLOG_FETCH_CONFIG.fields,
     });
 
-    // console.log("response in loader", response);
+    if (!response.success) {
+      throw new Error(response.error || "Failed to fetch blogs");
+    }
 
-    const blogs = response.data;
+    const { data: blogs } = response;
 
     // Transform data using transform layer
     const blogCards = blogs.map((blog) =>

@@ -1,6 +1,5 @@
 import BlogDetail from "@/components/views/BlogDetail";
-import { blogServer } from "@/lib/api/public/blog/server";
-
+import { serverApi } from "@/lib/api/server";
 interface Props {
   slug: string;
   showComments?: boolean;
@@ -12,8 +11,8 @@ export default async function BlogDetailLoader({
 }: Props) {
   try {
     const result = showComments
-      ? await blogServer.fetchBlogCommentsAuthor(slug)
-      : await blogServer.fetchBlog(slug);
+      ? await serverApi.blog.fetchBlogCommentsAuthor(slug)
+      : await serverApi.blog.fetchBlog(slug);
     console.log("result", result);
 
     if (!result.success) {

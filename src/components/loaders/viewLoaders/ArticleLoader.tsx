@@ -1,32 +1,44 @@
 "use server";
 
-import { fetchArticleArtwork } from "@/lib/api/public/articleApi";
-import { fetchArticleNavigationList } from "@/lib/api/public/navigationApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import ArticleView from "../../views/ArticleView";
+import { serverApi } from "@/lib/api/server";
 
 interface ArticleLoaderProps {
   slug: string;
 }
 
 export async function ArticleLoader({ slug }: ArticleLoaderProps) {
-  const [article, allArticles] = await Promise.all([
-    fetchArticleArtwork(slug),
-    fetchArticleNavigationList("biography"),
+  const [articleResponse, navigationResponse] = await Promise.all([
+    serverApi.article.fetchArticleArtwork(slug),
+    serverApi.navigation.fetchArticleNavigationList("biography"),
   ]);
 
+  if (!articleResponse.success) {
+    throw new Error(articleResponse.error || "Failed to fetch article artwork");
+  }
+
+  if (!navigationResponse.success) {
+    throw new Error(
+      navigationResponse.error || "Failed to fetch article navigation"
+    );
+  }
+
+  const article = articleResponse.data;
+  const navigationList = navigationResponse.data;
+
   // Find current article index
-  const currentIndex = allArticles.findIndex((a) => a.slug === slug);
+  const currentIndex = navigationList.findIndex((a) => a.slug === slug);
 
   // Build navigation links
   const navigation = {
     prev:
       currentIndex > 0
-        ? buildUrl(["biography", allArticles[currentIndex - 1].slug])
+        ? buildUrl(["biography", navigationList[currentIndex - 1].slug])
         : null,
     next:
-      currentIndex < allArticles.length - 1
-        ? buildUrl(["biography", allArticles[currentIndex + 1].slug])
+      currentIndex < navigationList.length - 1
+        ? buildUrl(["biography", navigationList[currentIndex + 1].slug])
         : null,
   };
 

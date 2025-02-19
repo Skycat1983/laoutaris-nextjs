@@ -2,9 +2,9 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { FrontendCollection } from "@/lib/data/types/collectionTypes";
-import { fetchCollections } from "@/lib/api/public/collectionApi";
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { delay } from "@/lib/utils/debug";
+import { serverApi } from "@/lib/api/server";
 
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {
@@ -23,11 +23,17 @@ export async function CollectionsSectionLoader() {
   await delay(2000);
   try {
     // Fetch data using API layer
-    const collections = await fetchCollections({
+    const result = await serverApi.collection.fetchCollections({
       section: COLLECTIONS_FETCH_CONFIG.section,
       fields: COLLECTIONS_FETCH_CONFIG.fields,
       limit: 9,
     });
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch collections");
+    }
+
+    const { data: collections } = result;
 
     // console.log("collections in loader", collections);
 

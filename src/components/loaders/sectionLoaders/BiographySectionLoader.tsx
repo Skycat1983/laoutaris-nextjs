@@ -1,10 +1,10 @@
 "use server";
 
 import type { FrontendArticle } from "@/lib/data/types/articleTypes";
-import { fetchArticles } from "@/lib/api/public/articleApi";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { BiographySection } from "@/components/sections/BiographySection";
 import { delay } from "@/lib/utils/debug";
+import { serverApi } from "@/lib/api/server";
 
 // Config Constants
 const BIOGRAPHY_FETCH_CONFIG = {
@@ -23,10 +23,16 @@ export async function BiographySectionLoader() {
   await delay(2000);
   try {
     // Fetch data using API layer
-    const articles = await fetchArticles({
+    const result = await serverApi.article.fetchArticles({
       section: BIOGRAPHY_FETCH_CONFIG.section,
       fields: BIOGRAPHY_FETCH_CONFIG.fields,
     });
+
+    if (!result.success) {
+      throw new Error(result.error || "Failed to fetch articles");
+    }
+
+    const { data: articles } = result;
 
     // Transform data using transform layer
     const biographyCards: BiographyCardData[] = articles.map((article) =>
