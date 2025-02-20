@@ -1,19 +1,16 @@
 "use client";
 
-import { getArticleFeed } from "../../../../unused/useful_unused/use_cases/getArticleFeed";
-import { getArtworkFeed } from "../../../../unused/useful_unused/use_cases/getArtworkFeed";
-
 interface AdminContentLayoutProps {
   title: string;
   children: React.ReactNode;
-  feedComponent: React.ReactNode;
+  // feedComponent: React.ReactNode;
 }
 
 export async function AdminContentLayout({
   title,
   children,
-  feedComponent,
-}: AdminContentLayoutProps) {
+}: // feedComponent,
+AdminContentLayoutProps) {
   // console.log("title in admin content layout", title);
 
   return (
@@ -28,7 +25,7 @@ export async function AdminContentLayout({
           {children}
         </div>
       </div>
-      <div className="">{feedComponent}</div>
+      <div className="">{/* {feedComponent} */}</div>
     </div>
   );
 }

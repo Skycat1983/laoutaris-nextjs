@@ -7,7 +7,7 @@ import { Skeleton } from "../shadcn/skeleton";
 type FetchFn<T> = (params: {
   page: number;
   limit: number;
-}) => Promise<PaginatedResponse<T[]>>;
+}) => Promise<ApiResponse<T[]>>;
 
 // type for the card component
 type CardComponent<T> = React.ComponentType<{ item: T }>;
@@ -46,11 +46,27 @@ export async function Feed<T>({
   title?: string;
   page?: number;
 }) {
-  const { data } = await fetchFn({ page, limit: 10 });
+  const result = await fetchFn({ page, limit: 10 });
+
+  if (!result.success) {
+    throw new Error(result.error);
+  }
+
+  const successResult: ApiSuccessResponse<T[]> = result;
+  const metadata = successResult.metadata;
+  // Now TypeScript should warn us about metadata being optional
+  const { data } = result;
+
+  // Should use type guard
+  // if (!result.metadata) {
+  //   throw new Error("Missing pagination metadata");
+  // }
+
+  console.log("metadata", metadata);
 
   return (
     <FeedLayout title={title}>
-      {data.map((item, index) => (
+      {data.map((item: T, index: number) => (
         <CardComponent key={index} item={item} />
       ))}
     </FeedLayout>

@@ -21,8 +21,6 @@ export function FeedSwitcherTabs() {
     );
     setSelectedFeed(defaultFeed?.key || FEED_CONFIGS[0].key);
     setIsLoading(false);
-    // Reset page when switching feeds
-    setPage(1);
   }, [pathname]);
 
   const CurrentFeedComponent = FEED_CONFIGS.find(
@@ -49,23 +47,22 @@ export function FeedSwitcherTabs() {
         ))}
       </div>
 
-      {/* Feed Component and load more button */}
-      <Suspense fallback={<FeedSkeleton />}>
-        {CurrentFeedComponent && (
-          <div className="flex flex-col gap-4">
+      {CurrentFeedComponent && (
+        <div className="flex flex-col gap-4">
+          <Suspense fallback={<FeedSkeleton />}>
             <CurrentFeedComponent page={page} />
-            <div className="flex justify-center">
-              <Button
-                variant="outline"
-                className="mt-4 w-32 p-4 bg-whitish rounded-full"
-                onClick={() => setPage((prev) => prev + 1)}
-              >
-                Load More
-              </Button>
-            </div>
+          </Suspense>
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              className="mt-4 w-32 p-4 bg-whitish rounded-full"
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              Load More
+            </Button>
           </div>
-        )}
-      </Suspense>
+        </div>
+      )}
     </div>
   );
 }

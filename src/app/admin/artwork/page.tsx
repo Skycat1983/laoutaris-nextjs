@@ -17,24 +17,40 @@ import {
 export default async function AdminArtworkPage() {
   console.log("server");
   return (
-    <AdminContentLayout
-      title="Artwork"
-      feedComponent={
-        <Suspense fallback={<FeedSkeleton />}>
-          <FeedSwitcherTabs />
+    <AdminCrudTabs
+      createComponent={<CreateArtworkWithUpload />}
+      readComponent={
+        <Suspense fallback={<ArtworkListSkeleton />}>
+          <ReadArtworkList />
         </Suspense>
       }
-    >
-      <AdminCrudTabs
-        createComponent={<CreateArtworkWithUpload />}
-        readComponent={
-          <Suspense fallback={<ArtworkListSkeleton />}>
-            <ReadArtworkList />
-          </Suspense>
-        }
-        updateComponent={<UpdateArtwork />}
-        deleteComponent={<DeleteArtwork />}
-      />
-    </AdminContentLayout>
+      updateComponent={<UpdateArtwork />}
+      deleteComponent={<DeleteArtwork />}
+    />
   );
 }
+
+// export default async function AdminArtworkPage() {
+//   console.log("server");
+//   return (
+//     <AdminContentLayout
+//       title="Artwork"
+//       // feedComponent={
+//       //   <Suspense fallback={<FeedSkeleton />}>
+//       //     <FeedSwitcherTabs />
+//       //   </Suspense>
+//       // }
+//     >
+//       <AdminCrudTabs
+//         createComponent={<CreateArtworkWithUpload />}
+//         readComponent={
+//           <Suspense fallback={<ArtworkListSkeleton />}>
+//             <ReadArtworkList />
+//           </Suspense>
+//         }
+//         updateComponent={<UpdateArtwork />}
+//         deleteComponent={<DeleteArtwork />}
+//       />
+//     </AdminContentLayout>
+//   );
+// }

@@ -1,7 +1,13 @@
-import { SubNavBarLink } from "../../../../unused/resolvers/subnavResolvers";
 import { buildUrl } from "@/lib/utils/buildUrl";
 
-export const BLOG_NAV_LINKS: SubNavBarLink[] = [
+interface NavLink {
+  title: string;
+  slug: string;
+  link_to: string;
+  disabled?: boolean;
+}
+
+export const BLOG_NAV_LINKS: NavLink[] = [
   {
     title: "Latest",
     slug: "latest",

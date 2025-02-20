@@ -12,7 +12,7 @@ const adminClientFetcher = createFetcher({
   }),
 });
 
-export const adminClientApi = {
+export const clientAdminApi = {
   create: createPostFetchers(adminClientFetcher),
   delete: createDeleteFetchers(adminClientFetcher),
   update: createUpdateFetchers(adminClientFetcher),

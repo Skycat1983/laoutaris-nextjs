@@ -25,7 +25,6 @@ import { Checkbox } from "@/components/shadcn/checkbox";
 import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
 import { useState } from "react";
-import { handleArtworkUpload } from "../../../../../unused/old_code/artwork/use_cases/handleArtworkUpload";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
 import { revalidatePath } from "next/cache";

@@ -1,6 +1,7 @@
 import type {
   FrontendArticleWithArtworkAndAuthor,
   FrontendArticle,
+  FrontendArticleWithArtwork,
 } from "@/lib/data/types/articleTypes";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type {
@@ -25,13 +26,32 @@ interface ReadListParams {
   filter?: FilterParams;
 }
 
+/*
+! Single Item Blueprint
+readModel: async (modelId: string) => {
+  const encodedId = encodeURIComponent(modelId);
+  return fetcher<FrontendModel>(`/api/v2/admin/model/read/${encodedId}`);
+};
+
+! List Blueprint
+readModels: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+  return fetcher<FrontendModel[]>(`/api/v2/admin/model/read?${params}`);
+};
+*/
+
 export const createReadFetchers = (fetcher: Fetcher) => ({
-  // Single item fetchers
+  //! Single item fetchers
+  // Artworks
   readArtwork: async (artworkId: string) => {
     const encodedId = encodeURIComponent(artworkId);
     return fetcher<FrontendArtwork>(`/api/v2/admin/artwork/read/${encodedId}`);
   },
 
+  // Articles
   readArticle: async (articleId: string) => {
     const encodedId = encodeURIComponent(articleId);
     return fetcher<FrontendArticleWithArtworkAndAuthor>(
@@ -39,6 +59,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     );
   },
 
+  // Collections
   readCollection: async (collectionId: string) => {
     const encodedId = encodeURIComponent(collectionId);
     return fetcher<FrontendCollectionWithArtworks>(
@@ -46,52 +67,48 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     );
   },
 
+  // Blogs
   readBlog: async (blogId: string) => {
     const encodedId = encodeURIComponent(blogId);
     return fetcher<FrontendBlogEntry>(`/api/v2/admin/blog/read/${encodedId}`);
   },
 
+  // Users
   readUser: async (userId: string) => {
     const encodedId = encodeURIComponent(userId);
     return fetcher<FrontendUser>(`/api/v2/admin/user/read/${encodedId}`);
   },
 
+  // Comments
   readComment: async (commentId: string) => {
     const encodedId = encodeURIComponent(commentId);
     return fetcher<FrontendComment>(`/api/v2/admin/comment/read/${encodedId}`);
   },
 
-  // List fetchers
-  readArtworks: async ({
-    page = 1,
-    limit = 100,
-    search = "",
-    filter,
-  }: ReadListParams = {}) => {
+  //! List fetchers
+  // Artworks
+  readArtworks: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
-      ...(search ? { search } : {}),
-      ...(filter?.key && filter?.value
-        ? {
-            filterKey: filter.key,
-            filterValue: filter.value,
-          }
-        : {}),
     });
 
     return fetcher<FrontendArtwork[]>(`/api/v2/admin/artwork/read?${params}`);
   },
 
+  // Articles
   readArticles: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendArticle[]>(`/api/v2/admin/article/read?${params}`);
+    return fetcher<FrontendArticleWithArtwork[]>(
+      `/api/v2/admin/article/read?${params}`
+    );
   },
 
+  // Collections
   readCollections: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -103,6 +120,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     );
   },
 
+  // Blogs
   readBlogs: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -112,6 +130,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     return fetcher<FrontendBlogEntry[]>(`/api/v2/admin/blog/read?${params}`);
   },
 
+  // Users
   readUsers: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -121,6 +140,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     return fetcher<FrontendUser[]>(`/api/v2/admin/user/read?${params}`);
   },
 
+  // Comments
   readComments: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),

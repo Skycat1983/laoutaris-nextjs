@@ -13,7 +13,7 @@ const adminServerFetcher = createFetcher({
   getHeaders: () => headers(),
 });
 
-export const adminServerApi = {
+export const serverAdminApi = {
   create: createPostFetchers(adminServerFetcher),
   delete: createDeleteFetchers(adminServerFetcher),
   update: createUpdateFetchers(adminServerFetcher),

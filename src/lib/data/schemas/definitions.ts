@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// unused? imports can come from formSchemas instead
-
 export const SignupFormSchema = z.object({
   // name: z.string().min(2),
   email: z.string().email(),

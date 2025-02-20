@@ -2,8 +2,8 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { BlogSection } from "../../../../unused/contentSections/BlogSection";
 import { serverApi } from "@/lib/api/server";
+import { BlogSection } from "@/components/sections/BlogSection";
 
 // 1. Config Constants
 const BLOG_FETCH_CONFIG = {

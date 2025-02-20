@@ -11,14 +11,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../shadcn/form";
-import { Button } from "../../shadcn/button";
-import { Input } from "../../shadcn/input";
+} from "@/components/shadcn/form";
+import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RadioGroup, RadioGroupItem } from "../../shadcn/radio-group";
-import { Textarea } from "../../shadcn/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
+import { Textarea } from "@/components/shadcn/textarea";
 import { submitEnquiry } from "@/lib/actions/submitEnquiry";
 
 // TODO: redo this form with shadcn/ui
