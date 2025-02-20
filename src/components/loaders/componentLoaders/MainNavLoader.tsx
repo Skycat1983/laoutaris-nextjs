@@ -1,6 +1,10 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { serverApi } from "@/lib/api/server";
+import {
+  ArticleNavItem,
+  CollectionNavItem,
+} from "@/lib/data/types/navigationTypes";
 
 export interface NavBarLink {
   label: string;
@@ -8,12 +12,17 @@ export interface NavBarLink {
   disabled?: boolean;
 }
 
-export const MainNavLoader = async () => {
-  const [articleNavigation, collectionNavigation] = await Promise.all([
-    serverApi.navigation.fetchArticleNavigationList("biography"),
-    serverApi.navigation.fetchCollectionNavigationList(),
-  ]);
+type MainNavFetchResults = [
+  ApiResponse<ArticleNavItem[]>,
+  ApiResponse<CollectionNavItem[]>
+];
 
+export const MainNavLoader = async () => {
+  const [articleNavigation, collectionNavigation]: MainNavFetchResults =
+    await Promise.all([
+      serverApi.navigation.fetchArticleNavigationList("biography"),
+      serverApi.navigation.fetchCollectionNavigationList(),
+    ]);
   if (!articleNavigation.success) {
     throw new Error(
       articleNavigation.error || "Failed to fetch article navigation"
@@ -26,8 +35,10 @@ export const MainNavLoader = async () => {
     );
   }
 
-  const { data: articleNavigationList } = articleNavigation;
-  const { data: collectionNavigationList } = collectionNavigation;
+  const { data: articleNavigationList } =
+    articleNavigation as ApiSuccessResponse<ArticleNavItem[]>;
+  const { data: collectionNavigationList } =
+    collectionNavigation as ApiSuccessResponse<CollectionNavItem[]>;
 
   const navLinks: NavBarLink[] = [
     {

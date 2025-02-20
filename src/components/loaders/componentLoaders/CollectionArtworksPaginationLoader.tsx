@@ -1,5 +1,8 @@
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
+import {
+  ArtworkNavFields,
+  CollectionArtworkNavList,
+} from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
 import { serverApi } from "@/lib/api/server";
 
@@ -10,9 +13,8 @@ interface CollectionArtworksPaginationLoaderProps {
 export async function CollectionArtworksPaginationLoader({
   slug,
 }: CollectionArtworksPaginationLoaderProps) {
-  const result = await serverApi.navigation.fetchCollectionArtworksNavigation(
-    slug
-  );
+  const result: ApiResponse<CollectionArtworkNavList> =
+    await serverApi.navigation.fetchCollectionArtworksNavigation(slug);
 
   if (!result.success) {
     throw new Error(
@@ -20,8 +22,11 @@ export async function CollectionArtworksPaginationLoader({
     );
   }
 
-  const { data: artworkNavigationList } = result;
+  const { data: artworkNavigationList } =
+    result as ApiSuccessResponse<CollectionArtworkNavList>;
+
   const { artworks } = artworkNavigationList;
+
   const buildCollectionLink = (artwork: ArtworkNavFields) =>
     buildUrl(["collections", slug, artwork._id]);
 

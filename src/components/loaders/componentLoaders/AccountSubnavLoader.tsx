@@ -3,18 +3,21 @@ import {
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
 import { serverApi } from "@/lib/api/server";
+import { UserNavItem } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
 
 const firstId = (arr: string[]) => arr[0];
 
 const AccountSubnavLoader = async () => {
-  const result = await serverApi.navigation.fetchUserNavigationList();
+  const result: ApiResponse<UserNavItem> =
+    await serverApi.navigation.fetchUserNavigationList();
+
   if (!result.success) {
     throw new Error(result.error);
   }
-  console.log("result", result);
-  const { data } = result;
+
+  const { data } = result as ApiSuccessResponse<UserNavItem>;
 
   const links: SubnavLink[] = [];
 
@@ -26,7 +29,6 @@ const AccountSubnavLoader = async () => {
     link_to: buildUrl([stem, "settings"]),
   });
 
-  // Favourites link
   links.push({
     title: "Favourites",
     slug: "favourites",
@@ -34,7 +36,6 @@ const AccountSubnavLoader = async () => {
     disabled: data.favourites.length === 0,
   });
 
-  // Watchlist link
   links.push({
     title: "Watchlist",
     slug: "watchlist",
@@ -42,7 +43,6 @@ const AccountSubnavLoader = async () => {
     disabled: data.watchlist.length === 0,
   });
 
-  // Comments link
   links.push({
     title: "Comments",
     slug: "comments",
