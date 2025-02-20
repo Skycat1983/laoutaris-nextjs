@@ -20,8 +20,10 @@ type PaginatedBlogResponse = {
 
 export const createBlogFetchers = (fetcher: Fetcher) => ({
   // get one blog by slug
-  fetchBlog: async (slug: string) =>
-    fetcher<FrontendBlogEntry>(`/api/v2/blog/${slug}`),
+  fetchBlog: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<FrontendBlogEntry>(`/api/v2/blog/${encodedSlug}`);
+  },
 
   // get multiple blogs by params
   fetchBlogs: async ({
@@ -36,15 +38,18 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<PaginatedBlogResponse["data"]>(`/api/v2/blog?${params}`);
+    return fetcher<PaginatedBlogResponse["data"]>(
+      `/api/v2/blog?${params.toString()}`
+    );
   },
 
   // get one blog by slug. populate blog comments. populate comment author
-  fetchBlogCommentsAuthor: async (slug: string) =>
-    // Uses the generic fetcher with the specific blog type
-    fetcher<FrontendBlogEntryWithCommentAuthor>(
-      `/api/v2/blog/${slug}/comments/author`
-    ),
+  fetchBlogCommentsAuthor: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<FrontendBlogEntryWithCommentAuthor>(
+      `/api/v2/blog/${encodedSlug}/comments/author`
+    );
+  },
 });
 
 // Type for our blog fetchers object

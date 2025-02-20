@@ -14,8 +14,10 @@ interface FetchArticlesParams {
 
 export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug
-  fetchArticle: async (slug: string) =>
-    fetcher<FrontendArticle>(`/api/v2/article/${slug}`),
+  fetchArticle: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<FrontendArticle>(`/api/v2/article/${encodedSlug}`);
+  },
 
   // Get multiple articles by params
   fetchArticles: async ({
@@ -34,8 +36,12 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
   },
 
   // Get article with artwork
-  fetchArticleArtwork: async (slug: string) =>
-    fetcher<FrontendArticleWithArtwork>(`/api/v2/article/${slug}/artwork`),
+  fetchArticleArtwork: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<FrontendArticleWithArtwork>(
+      `/api/v2/article/${encodedSlug}/artwork`
+    );
+  },
 });
 
 // Type for our article fetchers object

@@ -8,7 +8,7 @@ import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
 import { Suspense } from "react";
 
-function BlogFeedSkeleton() {
+export function BlogFeedSkeleton() {
   return (
     <SkeletonFactory
       Layout={FeedSkeleton}

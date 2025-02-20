@@ -14,8 +14,10 @@ interface FetchCollectionsParams {
 
 export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get one collection by slug
-  fetchCollection: async (slug: string) =>
-    fetcher<FrontendCollection>(`/api/v2/collection/${slug}`),
+  fetchCollection: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<FrontendCollection>(`/api/v2/collection/${encodedSlug}`);
+  },
 
   // Get multiple collections by params
   fetchCollections: async ({
@@ -30,14 +32,19 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<FrontendCollection[]>(`/api/v2/collection?${params}`);
+    return fetcher<FrontendCollection[]>(
+      `/api/v2/collection?${params.toString()}`
+    );
   },
 
   // Get collection with specific artwork
-  fetchCollectionArtwork: async (slug: string, artworkId: string) =>
-    fetcher<FrontendCollectionWithArtworks>(
-      `/api/v2/collection/${slug}/artwork/${artworkId}`
-    ),
+  fetchCollectionArtwork: async (slug: string, artworkId: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    const encodedArtworkId = encodeURIComponent(artworkId);
+    return fetcher<FrontendCollectionWithArtworks>(
+      `/api/v2/collection/${encodedSlug}/artwork/${encodedArtworkId}`
+    );
+  },
 });
 
 // Type for our collection fetchers object

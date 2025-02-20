@@ -1,7 +1,6 @@
 import type {
   FrontendUser,
   FrontendUserWithComments,
-  FrontendUserWithFavourites,
   FrontendUserWithWatchlist,
 } from "@/lib/data/types/userTypes";
 import type { PublicArtwork } from "@/lib/transforms/artworkToPublic";

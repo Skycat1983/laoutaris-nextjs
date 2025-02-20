@@ -11,22 +11,32 @@ import { Fetcher } from "../../core/createFetcher";
 
 export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get article navigation list
-  fetchArticleNavigationList: async (section: ValidSection) =>
-    fetcher<ArticleNavItem[]>(`/api/v2/navigation/articles/${section}`),
+  fetchArticleNavigationList: async (section: ValidSection) => {
+    const encodedSection = encodeURIComponent(section);
+    return fetcher<ArticleNavItem[]>(
+      `/api/v2/navigation/articles/${encodedSection}`
+    );
+  },
 
   // Get collection navigation list
   fetchCollectionNavigationList: async () =>
     fetcher<CollectionNavItem[]>(`/api/v2/navigation/collections`),
 
   // Get single collection navigation item
-  fetchCollectionNavigationItem: async (slug: string) =>
-    fetcher<CollectionNavItem>(`/api/v2/navigation/collections/${slug}`),
+  fetchCollectionNavigationItem: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<CollectionNavItem>(
+      `/api/v2/navigation/collections/${encodedSlug}`
+    );
+  },
 
   // Get collection artworks navigation
-  fetchCollectionArtworksNavigation: async (slug: string) =>
-    fetcher<CollectionArtworkNavList>(
-      `/api/v2/navigation/collections/${slug}/artworks`
-    ),
+  fetchCollectionArtworksNavigation: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<CollectionArtworkNavList>(
+      `/api/v2/navigation/collections/${encodedSlug}/artworks`
+    );
+  },
 
   // Add the user navigation fetcher
   fetchUserNavigationList: async () =>
