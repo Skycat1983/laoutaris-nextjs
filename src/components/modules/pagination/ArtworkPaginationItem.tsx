@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@/components/shadcn/skeleton";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -44,5 +45,13 @@ export const ArtworkPaginationItem = ({
         />
       </div>
     </Link>
+  );
+};
+
+export const ArtworkPaginationItemSkeleton = () => {
+  return (
+    <div className="h-auto w-auto shadow-2xl">
+      <Skeleton className="h-auto w-auto" />
+    </div>
   );
 };

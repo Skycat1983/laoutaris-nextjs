@@ -1,5 +1,5 @@
 import { FavouritesPaginationLoader } from "@/components/loaders/componentLoaders/FavouritesPaginationLoader";
-import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
+import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";
 import { Suspense } from "react";
 
 export default async function FavouritesLayout({

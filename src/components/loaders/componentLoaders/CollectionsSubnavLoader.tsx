@@ -1,7 +1,7 @@
 "use server";
 
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { fetchCollectionNavigationList } from "@/lib/api/public/navigationApi";
+import { fetchCollectionNavigationList } from "../../../../phase_out/navigationApi";
 import {
   CollectionNavItem,
   ValidSection,

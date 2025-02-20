@@ -1,5 +1,8 @@
 import React, { ReactNode } from "react";
-import { ArtworkPaginationItem } from "./ArtworkPaginationItem";
+import {
+  ArtworkPaginationItem,
+  ArtworkPaginationItemSkeleton,
+} from "./ArtworkPaginationItem";
 import CollectionInfo from "../wip/CollectionInfo";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 
@@ -38,3 +41,11 @@ export function ArtworkPagination({
     </>
   );
 }
+
+export const PaginationSkeleton = () => {
+  return (
+    <div className="flex items-start justify-start pl-4 gap-8">
+      <ArtworkPaginationItemSkeleton />
+    </div>
+  );
+};

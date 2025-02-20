@@ -1,5 +1,5 @@
 import ArtworkView from "@/components/views/ArtworkView";
-import { fetchUserWatchlistArtwork } from "@/lib/api/public/userApi";
+import { fetchUserWatchlistArtwork } from "../../../../phase_out/userApi";
 
 export default async function WatchlistedArtworkLoader({
   artworkId,

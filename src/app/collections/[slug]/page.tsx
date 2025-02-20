@@ -1,6 +1,6 @@
 "use server";
 
-import { fetchCollectionNavigationItem } from "@/lib/api/public/navigationApi";
+import { fetchCollectionNavigationItem } from "../../../../phase_out/navigationApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import { fetchUserComments } from "@/lib/api/public/userApi";
+import { fetchUserComments } from "../../../../phase_out/userApi";
 import React from "react";
 import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
 import UserCommentsView from "@/components/views/UserCommentsView";

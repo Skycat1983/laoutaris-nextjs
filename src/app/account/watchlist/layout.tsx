@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import PaginationSkeleton from "../../../../unused/PaginationSkeleton";
+import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";
 import { WatchlistPaginationLoader } from "@/components/loaders/componentLoaders/WatchlistPaginationLoader";
 
 export default async function WatchlistLayout({

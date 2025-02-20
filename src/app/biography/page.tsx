@@ -1,4 +1,4 @@
-import { fetchArticleNavigationList } from "@/lib/api/public/navigationApi";
+import { fetchArticleNavigationList } from "../../../phase_out/navigationApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 

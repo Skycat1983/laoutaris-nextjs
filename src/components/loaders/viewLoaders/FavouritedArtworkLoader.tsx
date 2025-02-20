@@ -1,5 +1,5 @@
 import ArtworkView from "@/components/views/ArtworkView";
-import { fetchUserFavouriteArtwork } from "@/lib/api/public/userApi";
+import { fetchUserFavouriteArtwork } from "../../../../phase_out/userApi";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 
 export const FavouritedArtworkLoader = async ({
