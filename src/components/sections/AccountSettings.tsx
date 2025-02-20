@@ -2,6 +2,7 @@ import { formatDate } from "@/lib/utils/formatDate";
 import React from "react";
 import LogoutForm from "../modules/forms/user/LogoutForm";
 import { FrontendUser } from "@/lib/data/types/userTypes";
+import { Button } from "../shadcn/button";
 
 export const AccountSettings = async (props: FrontendUser) => {
   const { email, username, favourites, watchlist, createdAt } = props;
@@ -158,8 +159,8 @@ export const AccountSettingsV3 = async (props: FrontendUser) => {
   const { email, username, favourites, watchlist, createdAt } = props;
 
   return (
-    <main className="min-h-screen bg-whitish py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
+    <main className="min-h-screen bg-whitish py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white p-16 rounded-lg">
         <div className="border-b border-gray-200 pb-8 mb-8">
           <h1 className="text-4xl font-light text-gray-900">Account</h1>
           <p className="mt-2 text-gray-500">

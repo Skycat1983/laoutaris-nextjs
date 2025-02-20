@@ -5,6 +5,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/shadcn/button";
 
 // TODO: redo this form with shadcn/ui
 const LogoutForm = () => {
@@ -32,14 +33,16 @@ const LogoutForm = () => {
 
   return (
     <>
-      <div className="bg-white w-1/2 p-12 mx-auto">
-        <button
+      <div className="bg-white w-1/2 p-12 mx-auto flex flex-row gap-4 w-full">
+        <Button
           onClick={handleLogout}
           disabled={isLoading}
-          className="bg-blue-600 text-white rounded-md p-3"
+          variant="outline"
+          className="text-black p-3 w-full"
         >
           {isLoading ? "Logging out..." : "Logout"}
-        </button>
+        </Button>
+        <Button className=" text-white p-3 w-full">Delete Account</Button>
       </div>
     </>
   );
