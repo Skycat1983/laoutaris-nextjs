@@ -13,7 +13,7 @@ const BLOG_FETCH_CONFIG = {
 } as const;
 
 // 2. Type Definitions
-export type BlogCardData = Pick<
+type BlogCardData = Pick<
   FrontendBlogEntry,
   (typeof BLOG_FETCH_CONFIG.fields)[number]
 >;
@@ -22,24 +22,23 @@ export type BlogCardData = Pick<
 export async function BlogSectionLoader() {
   try {
     // Fetch data using API layer
-    const response = await serverApi.blog.fetchBlogs({
-      sortby: BLOG_FETCH_CONFIG.sortby,
-      limit: BLOG_FETCH_CONFIG.limit,
-      fields: BLOG_FETCH_CONFIG.fields,
-    });
+    const response: ApiResponse<FrontendBlogEntry[]> =
+      await serverApi.blog.fetchBlogs({
+        sortby: BLOG_FETCH_CONFIG.sortby,
+        limit: BLOG_FETCH_CONFIG.limit,
+        fields: BLOG_FETCH_CONFIG.fields,
+      });
 
     if (!response.success) {
       throw new Error(response.error || "Failed to fetch blogs");
     }
 
-    const { data: blogs } = response;
+    const { data: blogs } = response as ApiSuccessResponse<FrontendBlogEntry[]>;
 
     // Transform data using transform layer
     const blogCards = blogs.map((blog) =>
       transformToPick(blog, BLOG_FETCH_CONFIG.fields)
     );
-
-    // console.log("blogCards", blogCards);
 
     // Return component with transformed data
     return <BlogSection blogs={blogCards} />;

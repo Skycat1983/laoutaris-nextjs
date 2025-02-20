@@ -13,7 +13,7 @@ const BIOGRAPHY_FETCH_CONFIG = {
 } as const;
 
 // Type Definitions
-export type BiographyCardData = Pick<
+type BiographyCardData = Pick<
   FrontendArticle,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;
@@ -23,16 +23,17 @@ export async function BiographySectionLoader() {
   await delay(2000);
   try {
     // Fetch data using API layer
-    const result = await serverApi.article.fetchArticles({
-      section: BIOGRAPHY_FETCH_CONFIG.section,
-      fields: BIOGRAPHY_FETCH_CONFIG.fields,
-    });
+    const result: ApiResponse<FrontendArticle[]> =
+      await serverApi.article.fetchArticles({
+        section: BIOGRAPHY_FETCH_CONFIG.section,
+        fields: BIOGRAPHY_FETCH_CONFIG.fields,
+      });
 
     if (!result.success) {
       throw new Error(result.error || "Failed to fetch articles");
     }
 
-    const { data: articles } = result;
+    const { data: articles } = result as ApiSuccessResponse<FrontendArticle[]>;
 
     // Transform data using transform layer
     const biographyCards: BiographyCardData[] = articles.map((article) =>

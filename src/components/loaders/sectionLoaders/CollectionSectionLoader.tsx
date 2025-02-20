@@ -23,19 +23,20 @@ export async function CollectionsSectionLoader() {
   await delay(2000);
   try {
     // Fetch data using API layer
-    const result = await serverApi.collection.fetchCollections({
-      section: COLLECTIONS_FETCH_CONFIG.section,
-      fields: COLLECTIONS_FETCH_CONFIG.fields,
-      limit: 9,
-    });
+    const result: ApiResponse<FrontendCollection[]> =
+      await serverApi.collection.fetchCollections({
+        section: COLLECTIONS_FETCH_CONFIG.section,
+        fields: COLLECTIONS_FETCH_CONFIG.fields,
+        limit: 9,
+      });
 
     if (!result.success) {
       throw new Error(result.error || "Failed to fetch collections");
     }
 
-    const { data: collections } = result;
-
-    // console.log("collections in loader", collections);
+    const { data: collections } = result as ApiSuccessResponse<
+      FrontendCollection[]
+    >;
 
     // Transform data using transform layer
     const collectionCards: CollectionCardData[] = collections.map((article) =>

@@ -4,7 +4,9 @@ import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
 
 export async function FavouritesPaginationLoader() {
-  const result = await serverApi.user.fetchUserFavourites();
+  const result: ApiResponse<{
+    favourites: ArtworkNavFields[];
+  }> = await serverApi.user.fetchUserFavourites();
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch favourites");

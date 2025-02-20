@@ -3,16 +3,27 @@
 import { buildUrl } from "@/lib/utils/buildUrl";
 import ArticleView from "../../views/ArticleView";
 import { serverApi } from "@/lib/api/server";
+import {
+  FrontendArticle,
+  FrontendArticleWithArtwork,
+} from "@/lib/data/types/articleTypes";
+import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
 
 interface ArticleLoaderProps {
   slug: string;
 }
 
+type ArticleLoaderResponse = [
+  ApiResponse<FrontendArticleWithArtwork>,
+  ApiResponse<ArticleNavItem[]>
+];
+
 export async function ArticleLoader({ slug }: ArticleLoaderProps) {
-  const [articleResponse, navigationResponse] = await Promise.all([
-    serverApi.article.fetchArticleArtwork(slug),
-    serverApi.navigation.fetchArticleNavigationList("biography"),
-  ]);
+  const [articleResponse, navigationResponse]: ArticleLoaderResponse =
+    await Promise.all([
+      serverApi.article.fetchArticleArtwork(slug),
+      serverApi.navigation.fetchArticleNavigationList("biography"),
+    ]);
 
   if (!articleResponse.success) {
     throw new Error(articleResponse.error || "Failed to fetch article artwork");
@@ -24,8 +35,11 @@ export async function ArticleLoader({ slug }: ArticleLoaderProps) {
     );
   }
 
-  const article = articleResponse.data;
-  const navigationList = navigationResponse.data;
+  const { data: article } =
+    articleResponse as ApiSuccessResponse<FrontendArticleWithArtwork>;
+  const { data: navigationList } = navigationResponse as ApiSuccessResponse<
+    ArticleNavItem[]
+  >;
 
   // Find current article index
   const currentIndex = navigationList.findIndex((a) => a.slug === slug);
