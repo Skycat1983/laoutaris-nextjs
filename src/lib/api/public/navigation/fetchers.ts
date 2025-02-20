@@ -1,8 +1,10 @@
-import {
+import type {
   ArticleNavItem,
   CollectionNavItem,
   ValidSection,
   CollectionArtworkNavList,
+  UserNavItem,
+  UserNavResponse,
 } from "@/lib/data/types/navigationTypes";
 import { Fetcher } from "../../core/createFetcher";
 
@@ -24,6 +26,10 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
     fetcher<CollectionArtworkNavList>(
       `/api/v2/navigation/collections/${slug}/artworks`
     ),
+
+  // Add the user navigation fetcher
+  fetchUserNavigationList: async () =>
+    fetcher<UserNavItem>(`/api/v2/navigation/user`),
 });
 
 // Type for our navigation fetchers object

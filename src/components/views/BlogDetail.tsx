@@ -107,6 +107,9 @@ const BlogDetail = ({
             Leave a Comment
           </h2>
           <CommentForm blogSlug={slug} onCommentSubmit={handleCommentSubmit} />
+          <div className="my-8">
+            <HorizontalDivider />
+          </div>
 
           {/* Toggle comments visibility */}
           {!showComments && !hasLoadedComments ? (

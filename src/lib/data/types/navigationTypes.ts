@@ -31,6 +31,7 @@ export type UserNavFields = Pick<
   FrontendUserUnpopulated,
   "favourites" | "watchlist" | "comments"
 >;
+export type UserNavItem = UserNavFields;
 
 // Valid sections
 export const VALID_SECTIONS = [
@@ -47,4 +48,4 @@ export type CollectionNavListResponse = ApiResponse<CollectionNavItem[]>;
 export type CollectionNavItemResponse = ApiResponse<CollectionNavItem>;
 export type CollectionArtworksNavResponse =
   ApiResponse<CollectionArtworkNavList>;
-export type UserNavResponse = ApiResponse<UserNavFields>;
+export type UserNavResponse = ApiResponse<UserNavItem>;

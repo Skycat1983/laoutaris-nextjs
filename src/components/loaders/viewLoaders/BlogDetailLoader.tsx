@@ -16,7 +16,6 @@ export default async function BlogDetailLoader({
     console.log("result", result);
 
     if (!result.success) {
-      // Convert error to string if it's an object
       const errorMessage =
         typeof result.error === "object"
           ? JSON.stringify(result.error)

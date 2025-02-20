@@ -14,6 +14,8 @@ const serverFetcher = createFetcher({
   getHeaders: () => headers(),
 });
 
+// can these properties be typed? maybe with Partial??
+
 export const serverApi = {
   article: createArticleFetchers(serverFetcher),
   blog: createBlogFetchers(serverFetcher),

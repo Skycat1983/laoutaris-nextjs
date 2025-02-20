@@ -2,19 +2,18 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { fetchUserNavigationList } from "@/lib/api/public/navigationApi";
+import { serverApi } from "@/lib/api/server";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
-
-type Props = {};
 
 const firstId = (arr: string[]) => arr[0];
 
 const AccountSubnavLoader = async () => {
-  const result = await fetchUserNavigationList();
+  const result = await serverApi.navigation.fetchUserNavigationList();
   if (!result.success) {
     throw new Error(result.error);
   }
+  console.log("result", result);
   const { data } = result;
 
   const links: SubnavLink[] = [];
