@@ -7,6 +7,8 @@ export async function DELETE(
 ) {
   const { id } = params;
 
+  console.log("Deleting article with ID:", id);
+
   try {
     if (!id) {
       return NextResponse.json(
@@ -17,15 +19,20 @@ export async function DELETE(
 
     const deletedArticle = await ArticleModel.findByIdAndDelete(id);
 
+    console.log("Deleted article:", deletedArticle);
+
     if (!deletedArticle) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Article deleted successfully" });
+    return NextResponse.json({
+      success: true,
+      message: "Article deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting article:", error);
     return NextResponse.json(
-      { error: "Failed to delete article" },
+      { success: false, error: "Failed to delete article" },
       { status: 500 }
     );
   }

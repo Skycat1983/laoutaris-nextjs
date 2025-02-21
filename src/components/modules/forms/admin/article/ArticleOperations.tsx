@@ -7,6 +7,9 @@ import { UpdateArticleForm } from "../UpdateArticleForm";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
+import { DeleteConfirmation } from "./DeleteConfirmation";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -18,14 +21,53 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
   const [artworkInfo, setArtworkInfo] = useState<FrontendArtwork | null>(null);
   const [articleInfo, setArticleInfo] =
     useState<FrontendArticleWithArtworkAndAuthor | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { openModal } = useGlobalFeatures();
 
   const handleSuccess = () => {
     setArtworkInfo(null);
     setArticleInfo(null);
+    openModal(
+      <ModalMessage
+        message={`Article ${
+          operationType === "create"
+            ? "created"
+            : operationType === "update"
+            ? "updated"
+            : "deleted"
+        } successfully`}
+        type="success"
+      />
+    );
   };
 
-  if (operationType === "create") {
-    return (
+  const handleDelete = async () => {
+    if (!articleInfo?._id) return;
+
+    try {
+      setIsDeleting(true);
+      const response = await clientAdminApi.delete.deleteArticle(
+        articleInfo._id
+      );
+      if (response.success) {
+        handleSuccess();
+      } else {
+        openModal(
+          <ModalMessage message="Failed to delete article" type="error" />
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting article:", error);
+      openModal(
+        <ModalMessage message="Failed to delete article" type="error" />
+      );
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const operationComponents = {
+    create: (
       <>
         {!artworkInfo && (
           <DocumentReader<FrontendArtwork>
@@ -41,11 +83,8 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
           />
         )}
       </>
-    );
-  }
-
-  if (operationType === "update") {
-    return (
+    ),
+    update: (
       <>
         {!articleInfo && (
           <DocumentReader<FrontendArticleWithArtworkAndAuthor>
@@ -62,9 +101,23 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
           />
         )}
       </>
-    );
-  }
+    ),
+    delete: (
+      <>
+        {!articleInfo && (
+          <DocumentReader<FrontendArticleWithArtworkAndAuthor>
+            onDocumentFound={setArticleInfo}
+            readDocument={(id) => clientAdminApi.read.readArticle(id)}
+            documentType="Article"
+            buttonVariant="destructive"
+          />
+        )}
+        {articleInfo && (
+          <DeleteConfirmation article={articleInfo} onDelete={handleDelete} />
+        )}
+      </>
+    ),
+  };
 
-  // Handle delete operation similarly...
-  return null;
+  return operationComponents[operationType] ?? null;
 }

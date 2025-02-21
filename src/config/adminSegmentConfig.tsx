@@ -15,6 +15,10 @@ import { ArtworkListSkeleton } from "@/components/admin/crud/read/ReadArtworkLis
 import { ArticleOperations } from "@/components/modules/forms/admin/article/ArticleOperations";
 import { ReadArticleList } from "@/components/admin/crud/read/ReadArticleList";
 import { ArticleListSkeleton } from "@/components/admin/crud/read/ReadArticleList";
+import {
+  BlogListSkeleton,
+  ReadBlogList,
+} from "@/components/admin/crud/read/ReadBlogList";
 
 export const adminSegmentConfig = {
   articles: {
@@ -39,7 +43,11 @@ export const adminSegmentConfig = {
   },
   blogs: {
     createComponent: <CreateBlogForm />,
-    readComponent: <div>Read Blog</div>,
+    readComponent: (
+      <Suspense fallback={<BlogListSkeleton />}>
+        <ReadBlogList />
+      </Suspense>
+    ),
     updateComponent: <UpdateBlogEntry />,
     deleteComponent: <DeleteBlogEntry />,
   },
