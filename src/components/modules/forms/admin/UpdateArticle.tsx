@@ -16,7 +16,7 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { UpdateArticleForm } from "@/components/modules/forms/admin/UpdateArticleForm";
-import { readArticle } from "@/lib/api/admin/readApi";
+import { readArticle } from "../../../../../still useful/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

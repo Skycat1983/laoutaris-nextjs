@@ -1,6 +1,6 @@
-import { FrontendArticleWithArtworkAndAuthor } from "../../data/types/articleTypes";
-import { FrontendArtwork } from "../../data/types/artworkTypes";
-import { FrontendCollectionWithArtworks } from "../../data/types/collectionTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "../src/lib/data/types/articleTypes";
+import { FrontendArtwork } from "../src/lib/data/types/artworkTypes";
+import { FrontendCollectionWithArtworks } from "../src/lib/data/types/collectionTypes";
 
 export const readArtwork = async (
   artworkId: string

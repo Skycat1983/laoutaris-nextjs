@@ -3,15 +3,13 @@
 import Image from "next/image";
 import CommentForm from "@/components/forms/CommentForm";
 import { createComment } from "@/lib/api/public/commentApi";
-import type {
-  FrontendBlogEntry,
-  FrontendBlogEntryWithCommentAuthor,
-} from "@/lib/data/types/blogTypes";
+import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import BlogCommentsList from "../sections/BlogCommentsList";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
+import { clientApi } from "@/lib/api/clientApi";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -51,9 +49,9 @@ const BlogDetail = ({
 
   const handleCommentSubmit = async (commentText: string) => {
     try {
-      const result = await createComment(slug, commentText);
-      console.log(result);
-      // TODO: Implement real-time updates or refresh comments
+      await clientApi.public.comment.createComment(slug, commentText);
+      // Refresh comments after submission
+      await loadComments();
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
@@ -100,7 +98,6 @@ const BlogDetail = ({
         </article>
 
         {/* Comments Section */}
-        {/* Comments Section */}
         <div className="mt-12 border-t pt-8">
           {/* Comment Form should always be visible */}
           <h2 className="text-2xl font-special mb-6 text-center">
@@ -133,6 +130,7 @@ const BlogDetail = ({
                       ? populatedComments
                       : (comments as FrontendCommentWithAuthor[])
                   }
+                  onCommentUpdated={loadComments}
                 />
               )}
             </div>

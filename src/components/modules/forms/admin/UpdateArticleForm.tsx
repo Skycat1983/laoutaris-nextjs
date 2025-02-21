@@ -30,8 +30,8 @@ import {
   updateArticleSchema,
   UpdateArticleFormValues,
 } from "@/lib/data/types/articleTypes";
-import { patchArticle } from "@/lib/api/admin/patchApi";
-import { readArtwork } from "@/lib/api/admin/readApi";
+import { patchArticle } from "../../../../../still useful/patchApi";
+import { readArtwork } from "../../../../../still useful/readApi";
 
 interface UpdateArticleFormProps {
   articleInfo: FrontendArticleWithArtworkAndAuthor;

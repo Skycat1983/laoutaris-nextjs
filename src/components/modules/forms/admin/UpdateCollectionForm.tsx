@@ -28,8 +28,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/shadcn/tabs";
-import { patchCollection } from "@/lib/api/admin/patchApi";
-import { readArtwork } from "@/lib/api/admin/readApi";
+import { patchCollection } from "../../../../../still useful/patchApi";
+import { readArtwork } from "../../../../../still useful/readApi";
 
 interface UpdateCollectionFormProps {
   collectionInfo: FrontendCollectionWithArtworks;

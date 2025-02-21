@@ -1,7 +1,7 @@
 import { UpdateArticleFormValues } from "@/lib/data/types/articleTypes";
-import { UpdateCollectionFormValues } from "../../data/types/collectionTypes";
-import { UpdateArtworkFormValues } from "../../data/types/artworkTypes";
-import { UpdateBlogFormValues } from "../../data/types/blogTypes";
+import { UpdateCollectionFormValues } from "../src/lib/data/types/collectionTypes";
+import { UpdateArtworkFormValues } from "../src/lib/data/types/artworkTypes";
+import { UpdateBlogFormValues } from "../src/lib/data/types/blogTypes";
 
 export const patchArticle = async (
   articleId: string,

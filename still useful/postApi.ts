@@ -5,7 +5,7 @@ import {
 import {
   CreateCollectionFormValues,
   FrontendCollection,
-} from "../../data/types/collectionTypes";
+} from "../src/lib/data/types/collectionTypes";
 import {
   CreateArtworkFormValues,
   FrontendArtwork,

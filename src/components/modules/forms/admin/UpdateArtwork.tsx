@@ -19,7 +19,7 @@ import {
   FrontendArtworkUnpopulated,
 } from "@/lib/data/types/artworkTypes";
 import { UpdateArtworkForm } from "@/components/modules/forms/admin/UpdateArtworkForm";
-import { readArtwork } from "@/lib/api/admin/readApi";
+import { readArtwork } from "../../../../../still useful/readApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

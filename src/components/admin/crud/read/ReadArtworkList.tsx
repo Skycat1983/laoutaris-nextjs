@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { readArtworks } from "@/lib/api/admin/readApi";
+import { readArtworks } from "../../../../../still useful/readApi";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import Image from "next/image";

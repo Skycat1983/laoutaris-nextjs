@@ -4,7 +4,7 @@ import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
 import { headers } from "next/headers";
-import { FrontendArtwork } from "../../data/types/artworkTypes";
+import { FrontendArtwork } from "../src/lib/data/types/artworkTypes";
 
 interface PaginationParams {
   page?: number;
