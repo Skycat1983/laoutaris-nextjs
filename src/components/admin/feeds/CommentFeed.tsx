@@ -1,13 +1,10 @@
 "use client";
 
-import { CommentCard } from "../../modules/cards/CommentCard";
+import { CommentFeedCard } from "../../modules/cards/CommentFeedCard";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type {
-  FrontendComment,
-  FrontendCommentWithAuthor,
-} from "@/lib/data/types/commentTypes";
+import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 
 export function CommentFeed() {
   const [comments, setComments] = useState<FrontendCommentWithAuthor[]>([]);
@@ -40,7 +37,7 @@ export function CommentFeed() {
   return (
     <div className="flex flex-col gap-4 p-4">
       {comments.map((comment, index) => (
-        <CommentCard key={comment._id || index} comment={comment} />
+        <CommentFeedCard key={comment._id || index} item={comment} />
       ))}
     </div>
   );

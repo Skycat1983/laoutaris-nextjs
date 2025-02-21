@@ -8,20 +8,6 @@ import CollectionIcon from "@/components/elements/icons/CollectionIcon";
 import BlogIcon from "@/components/elements/icons/BlogIcon";
 import LogoutIcon from "@/components/elements/icons/LogoutIcon";
 
-const adminSidebarItems = [
-  { label: "Articles", icon: <FileText />, href: "/admin/articles" },
-  { label: "Artwork", icon: <ImageIcon />, href: "/admin/artwork" },
-  { label: "Blogs", icon: <BlogIcon />, href: "/admin/blogs" },
-
-  {
-    label: "Collections",
-    icon: <CollectionIcon />,
-    href: "/admin/collections",
-  },
-  { label: "Users", icon: <User />, href: "/admin/users" },
-];
-
-// sidebar items but with /dashboard segment instead of /admin
 const sidebarItems = [
   { label: "Articles", icon: <FileText />, href: "/dashboard/articles" },
   { label: "Artwork", icon: <ImageIcon />, href: "/dashboard/artwork" },
@@ -32,23 +18,19 @@ const sidebarItems = [
     href: "/dashboard/collections",
   },
   { label: "Users", icon: <User />, href: "/dashboard/users" },
-];
+] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  console.log("pathname", pathname);
+
   const myh2 =
     "text-xl font-archivo font-medium px-2 bg-whitish subheading text-neutral-700 hidden lg:block md:px-4 lg:px-6";
-
-  const iterables = pathname.includes("/admin")
-    ? adminSidebarItems
-    : sidebarItems;
 
   return (
     <div className="col-span-1 shadow-xl">
       <div className="flex flex-col text-left m-8 gap-2">
-        {iterables.map((item) => {
-          const isActive = pathname === item.href;
+        {sidebarItems.map((item) => {
+          const isActive = pathname.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href}>
               <div className="flex flex-row items-center outline-none cursor-pointer hover:bg-slate-50 p-2 rounded-full transition-all duration-200">

@@ -35,7 +35,6 @@ export function DashboardFeed() {
       <Tabs defaultValue="articles" className="w-full">
         <div className="flex flex-row items-center pt-8 border-b-2">
           <Button
-            // variant="ghost"
             size="icon"
             onClick={() => scroll("left")}
             className="px-2 bg-whitish rounded text-gray-400 outline-none"
@@ -64,8 +63,6 @@ export function DashboardFeed() {
           </div>
 
           <Button
-            // variant="ghost"
-            // variant="outline"
             size="icon"
             onClick={() => scroll("right")}
             className="px-2 bg-whitish rounded text-gray-400 outline-none"
