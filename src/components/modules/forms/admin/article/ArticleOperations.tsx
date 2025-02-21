@@ -9,7 +9,7 @@ import type { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/artic
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { DeleteConfirmation } from "./DeleteConfirmation";
+import { DeleteConfirmation } from "../DeleteConfirmation";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -113,7 +113,13 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
           />
         )}
         {articleInfo && (
-          <DeleteConfirmation article={articleInfo} onDelete={handleDelete} />
+          <DeleteConfirmation
+            document={articleInfo}
+            documentType="Article"
+            onDelete={handleDelete}
+            isDeleting={isDeleting}
+            onCancel={() => setArticleInfo(null)}
+          />
         )}
       </>
     ),
