@@ -4,7 +4,7 @@ import {
   CollectionArtworkNavList,
 } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;
@@ -14,7 +14,7 @@ export async function CollectionArtworksPaginationLoader({
   slug,
 }: CollectionArtworksPaginationLoaderProps) {
   const result: ApiResponse<CollectionArtworkNavList> =
-    await serverApi.navigation.fetchCollectionArtworksNavigation(slug);
+    await serverPublicApi.navigation.fetchCollectionArtworksNavigation(slug);
 
   if (!result.success) {
     throw new Error(

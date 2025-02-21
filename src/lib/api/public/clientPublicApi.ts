@@ -13,7 +13,7 @@ const clientFetcher = createFetcher({
   }),
 });
 
-export const clientApi = {
+export const clientPublicApi = {
   article: createArticleFetchers(clientFetcher),
   blog: createBlogFetchers(clientFetcher),
   collection: createCollectionFetchers(clientFetcher),

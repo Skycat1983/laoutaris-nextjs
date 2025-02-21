@@ -1,6 +1,6 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import {
   ArticleNavItem,
   CollectionNavItem,
@@ -20,8 +20,8 @@ type MainNavFetchResults = [
 export const MainNavLoader = async () => {
   const [articleNavigation, collectionNavigation]: MainNavFetchResults =
     await Promise.all([
-      serverApi.navigation.fetchArticleNavigationList("biography"),
-      serverApi.navigation.fetchCollectionNavigationList(),
+      serverPublicApi.navigation.fetchArticleNavigationList("biography"),
+      serverPublicApi.navigation.fetchCollectionNavigationList(),
     ]);
   if (!articleNavigation.success) {
     throw new Error(

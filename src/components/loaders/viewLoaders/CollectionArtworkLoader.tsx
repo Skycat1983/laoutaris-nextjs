@@ -4,7 +4,7 @@ import {
   PublicArtwork,
 } from "@/lib/transforms/artworkToPublic";
 import { delay } from "@/lib/utils/debug";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 export async function CollectionArtworkLoader({
   slug,
@@ -14,7 +14,7 @@ export async function CollectionArtworkLoader({
   artworkId: string;
 }) {
   await delay(1000);
-  const result = await serverApi.collection.fetchCollectionArtwork(
+  const result = await serverPublicApi.collection.fetchCollectionArtwork(
     slug,
     artworkId
   );

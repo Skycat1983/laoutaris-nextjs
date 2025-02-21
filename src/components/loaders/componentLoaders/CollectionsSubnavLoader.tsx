@@ -7,7 +7,7 @@ import {
   ValidSection,
 } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 interface CollectionsSubnavLoaderProps {
   section: ValidSection;
@@ -17,7 +17,7 @@ export async function CollectionsSubnavLoader({
   section,
 }: CollectionsSubnavLoaderProps) {
   const result: ApiResponse<CollectionNavItem[]> =
-    await serverApi.navigation.fetchCollectionNavigationList();
+    await serverPublicApi.navigation.fetchCollectionNavigationList();
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch collection navigation");

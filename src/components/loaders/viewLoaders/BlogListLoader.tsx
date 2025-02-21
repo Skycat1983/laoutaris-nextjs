@@ -4,7 +4,7 @@ import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import BlogListView from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
@@ -34,7 +34,7 @@ interface BlogEntriesLoaderProps {
 // Loader Function
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
-    const result = (await serverApi.blog.fetchBlogs({
+    const result = (await serverPublicApi.blog.fetchBlogs({
       sortby,
       page,
       limit: BLOG_ENTRIES_CONFIG.limit,

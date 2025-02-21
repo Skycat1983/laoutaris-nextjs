@@ -11,7 +11,7 @@ import BlogCommentsList from "../sections/BlogCommentsList";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
-import { clientApi } from "@/lib/api/client";
+import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -36,7 +36,7 @@ const BlogDetail = ({
   const loadComments = async () => {
     setIsLoadingComments(true);
     try {
-      const result = await clientApi.blog.fetchBlogCommentsAuthor(slug);
+      const result = await clientPublicApi.blog.fetchBlogCommentsAuthor(slug);
       console.log("result", result);
       if (result.success) {
         setPopulatedComments(result.data.comments);

@@ -2,7 +2,7 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { UserNavFields } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
@@ -11,7 +11,7 @@ const firstId = (arr: string[]) => arr[0];
 
 const AccountSubnavLoader = async () => {
   const result: ApiResponse<UserNavFields> =
-    await serverApi.navigation.fetchUserNavigationList();
+    await serverPublicApi.navigation.fetchUserNavigationList();
 
   if (!result.success) {
     throw new Error(result.error);

@@ -1,4 +1,4 @@
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
@@ -6,7 +6,7 @@ import { ArtworkPagination } from "@/components/modules/pagination/CollectionVie
 export async function FavouritesPaginationLoader() {
   const result: ApiResponse<{
     favourites: ArtworkNavFields[];
-  }> = await serverApi.user.fetchUserFavourites();
+  }> = await serverPublicApi.user.fetchUserFavourites();
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch favourites");

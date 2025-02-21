@@ -4,7 +4,7 @@ import type { FrontendArticle } from "@/lib/data/types/articleTypes";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { BiographySection } from "@/components/sections/BiographySection";
 import { delay } from "@/lib/utils/debug";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 // Config Constants
 const BIOGRAPHY_FETCH_CONFIG = {
@@ -24,7 +24,7 @@ export async function BiographySectionLoader() {
   try {
     // Fetch data using API layer
     const result: ApiResponse<FrontendArticle[]> =
-      await serverApi.article.fetchArticles({
+      await serverPublicApi.article.fetchArticles({
         section: BIOGRAPHY_FETCH_CONFIG.section,
         fields: BIOGRAPHY_FETCH_CONFIG.fields,
       });

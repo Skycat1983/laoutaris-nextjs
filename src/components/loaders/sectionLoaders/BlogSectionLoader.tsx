@@ -2,7 +2,7 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { BlogSection } from "@/components/sections/BlogSection";
 
 // 1. Config Constants
@@ -23,7 +23,7 @@ export async function BlogSectionLoader() {
   try {
     // Fetch data using API layer
     const response: ApiResponse<FrontendBlogEntry[]> =
-      await serverApi.blog.fetchBlogs({
+      await serverPublicApi.blog.fetchBlogs({
         sortby: BLOG_FETCH_CONFIG.sortby,
         limit: BLOG_FETCH_CONFIG.limit,
         fields: BLOG_FETCH_CONFIG.fields,

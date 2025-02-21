@@ -2,7 +2,7 @@
 
 import { buildUrl } from "@/lib/utils/buildUrl";
 import ArticleView from "../../views/ArticleView";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import {
   FrontendArticle,
   FrontendArticleWithArtwork,
@@ -21,8 +21,8 @@ type ArticleLoaderResponse = [
 export async function ArticleLoader({ slug }: ArticleLoaderProps) {
   const [articleResponse, navigationResponse]: ArticleLoaderResponse =
     await Promise.all([
-      serverApi.article.fetchArticleArtwork(slug),
-      serverApi.navigation.fetchArticleNavigationList("biography"),
+      serverPublicApi.article.fetchArticleArtwork(slug),
+      serverPublicApi.navigation.fetchArticleNavigationList("biography"),
     ]);
 
   if (!articleResponse.success) {

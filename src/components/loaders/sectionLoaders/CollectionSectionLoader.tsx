@@ -4,7 +4,7 @@ import { transformToPick } from "@/lib/transforms/transformToPick";
 import { FrontendCollection } from "@/lib/data/types/collectionTypes";
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { delay } from "@/lib/utils/debug";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {
@@ -24,7 +24,7 @@ export async function CollectionsSectionLoader() {
   try {
     // Fetch data using API layer
     const result: ApiResponse<FrontendCollection[]> =
-      await serverApi.collection.fetchCollections({
+      await serverPublicApi.collection.fetchCollections({
         section: COLLECTIONS_FETCH_CONFIG.section,
         fields: COLLECTIONS_FETCH_CONFIG.fields,
         limit: 9,

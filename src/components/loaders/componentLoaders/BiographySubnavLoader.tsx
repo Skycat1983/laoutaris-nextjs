@@ -1,11 +1,11 @@
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { serverApi } from "@/lib/api/server";
+import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
 
 export async function BiographySubnavLoader() {
   const result: ApiResponse<ArticleNavItem[]> =
-    await serverApi.navigation.fetchArticleNavigationList("biography");
+    await serverPublicApi.navigation.fetchArticleNavigationList("biography");
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch article navigation");
