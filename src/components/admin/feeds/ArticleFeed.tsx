@@ -2,30 +2,40 @@
 
 import { ArticleFeedCard } from "../../modules/cards/ArticleFeedCard";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
-import { Suspense } from "react";
+import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
+import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 
-// Client wrapper component
-export function ArticleFeed({ page = 1 }: { page?: number }) {
+export function ArticleFeed() {
+  const [articles, setArticles] = useState<FrontendArticleWithArtwork[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        const result = await clientAdminApi.read.readArticles({
+          page: 1,
+          limit: 10,
+        });
+        if (result.success) {
+          setArticles(result.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch articles:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchArticles();
+  }, []); // Empty dependency array
+
+  if (isLoading) return <FeedSkeleton />;
+
   return (
-    <Suspense fallback={<FeedSkeleton />}>
-      <AsyncArticleFeed page={page} />
-    </Suspense>
-  );
-}
-
-// Async server component
-async function AsyncArticleFeed({ page }: { page: number }) {
-  const result = await clientAdminApi.read.readArticles({ page, limit: 10 });
-
-  if (!result.success) {
-    throw new Error(result.error);
-  }
-
-  return (
-    <div className="w-full">
-      {result.data.map((item, index) => (
-        <ArticleFeedCard key={index} item={item} />
+    <div className="flex flex-col gap-4 p-4">
+      {articles.map((article, index) => (
+        <ArticleFeedCard key={article._id || index} item={article} />
       ))}
     </div>
   );

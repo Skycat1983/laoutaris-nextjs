@@ -1,6 +1,9 @@
 import { ArticleModel, CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+
+// TODO: remove the 'return one item' logic
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,22 +18,21 @@ export async function GET(request: NextRequest) {
       const skip = (page - 1) * limit;
       const total = await CollectionModel.countDocuments();
 
-      const articles = await ArticleModel.find()
+      const collections = await CollectionModel.find()
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit)
-        .populate(["artwork", "author"]);
+        .limit(limit);
 
       return NextResponse.json({
         success: true,
-        data: articles,
+        data: collections,
         metadata: {
           page,
           limit,
           total,
           totalPages: Math.ceil(total / limit),
         },
-      });
+      }) satisfies NextResponse<ApiSuccessResponse<FrontendCollection[]>>;
     }
 
     // If ID provided, return single item
@@ -42,18 +44,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Collection not found" },
         { status: 404 }
-      );
+      ) satisfies NextResponse<ApiErrorResponse>;
     }
 
     return NextResponse.json({
       success: true,
       data: collection,
-    });
+    }) satisfies NextResponse<ApiSuccessResponse<FrontendCollection>>;
   } catch (error) {
     console.error("[ARTICLE_READ]", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch article(s)" },
       { status: 500 }
-    );
+    ) satisfies NextResponse<ApiErrorResponse>;
   }
 }
