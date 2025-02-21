@@ -1,6 +1,6 @@
 import { AdminSidebar } from "@/components/layouts/admin/AdminSidebar";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
   feed,
   main,
@@ -19,6 +19,7 @@ export default function DashboardLayout({
           </div>
           <div className="bg-whitish">{feed}</div>
         </div>
+        {children}
       </div>
     </div>
   );
