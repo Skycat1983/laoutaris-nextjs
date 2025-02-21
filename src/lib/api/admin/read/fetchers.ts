@@ -10,7 +10,10 @@ import type {
 } from "@/lib/data/types/collectionTypes";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import type { FrontendUser } from "@/lib/data/types/userTypes";
-import type { FrontendComment } from "@/lib/data/types/commentTypes";
+import type {
+  FrontendComment,
+  FrontendCommentWithAuthor,
+} from "@/lib/data/types/commentTypes";
 import type { Fetcher } from "../../core/createFetcher";
 
 // Filter types
@@ -147,7 +150,9 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendComment[]>(`/api/v2/admin/comment/read?${params}`);
+    return fetcher<FrontendCommentWithAuthor[]>(
+      `/api/v2/admin/comment/read?${params}`
+    );
   },
 });
 

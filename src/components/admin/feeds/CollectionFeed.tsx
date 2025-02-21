@@ -13,10 +13,11 @@ export function CollectionFeed() {
   useEffect(() => {
     async function fetchCollections() {
       try {
-        const result = await clientAdminApi.read.readCollections({
-          page: 1,
-          limit: 10,
-        });
+        const result: ApiResponse<FrontendCollection[]> =
+          await clientAdminApi.read.readCollections({
+            page: 1,
+            limit: 10,
+          });
         console.log("result", result);
         if (result.success) {
           setCollections(result.data);

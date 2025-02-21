@@ -27,6 +27,10 @@ export function CollectionFeedCard({ item }: CollectionFeedCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
           <h2 className="text-white text-xl font-bold">{item.title}</h2>
           <p className="text-white/80 text-sm">{item.subtitle}</p>
+          <h1 className="text-white text-sm font-bold">
+            Artworks:{" "}
+            <span className="text-white/80">{item.artworks.length}</span>
+          </h1>
         </div>
       </div>
       <button

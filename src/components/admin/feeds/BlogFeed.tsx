@@ -12,28 +12,6 @@ import { Suspense } from "react";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 
-//! old code
-// export function BlogFeedSkeleton() {
-//   return (
-//     <SkeletonFactory
-//       Layout={FeedSkeleton}
-//       Card={BlogFeedCardSkeleton}
-//       count={3}
-//     />
-//   );
-// }
-
-// export function BlogFeed({ page = 1 }: { page?: number }) {
-//   return (
-//     <Feed<FrontendBlogEntry>
-//       // fetchFn={(params) => fetchBlogFeed({ ...params, page })}
-//       fetchFn={(params) => clientAdminApi.read.readBlogs({ ...params, page })}
-//       CardComponent={BlogFeedCard}
-//       title="Blog Feed"
-//     />
-//   );
-// }
-
 export function BlogFeed() {
   const [blogs, setBlogs] = useState<FrontendBlogEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -68,3 +46,25 @@ export function BlogFeed() {
     </div>
   );
 }
+
+//! old code
+// export function BlogFeedSkeleton() {
+//   return (
+//     <SkeletonFactory
+//       Layout={FeedSkeleton}
+//       Card={BlogFeedCardSkeleton}
+//       count={3}
+//     />
+//   );
+// }
+
+// export function BlogFeed({ page = 1 }: { page?: number }) {
+//   return (
+//     <Feed<FrontendBlogEntry>
+//       // fetchFn={(params) => fetchBlogFeed({ ...params, page })}
+//       fetchFn={(params) => clientAdminApi.read.readBlogs({ ...params, page })}
+//       CardComponent={BlogFeedCard}
+//       title="Blog Feed"
+//     />
+//   );
+// }
