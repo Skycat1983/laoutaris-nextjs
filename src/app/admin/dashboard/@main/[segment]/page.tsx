@@ -7,7 +7,6 @@ export default function SegmentPage({
 }: {
   params: { segment: string };
 }) {
-  // Type guard for segment
   if (!isValidSegment(segment)) {
     notFound();
   }
@@ -24,12 +23,11 @@ export default function SegmentPage({
   );
 }
 
-// Type guard function
 function isValidSegment(segment: string): segment is AdminSegment {
   return segment in adminSegmentConfig;
 }
 
-// Generate static params for optimization
+//? Unused?
 export function generateStaticParams() {
   return Object.keys(adminSegmentConfig).map((segment) => ({
     segment,

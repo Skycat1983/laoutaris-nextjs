@@ -12,13 +12,20 @@ import { UpdateCollection } from "@/components/modules/forms/admin/UpdateCollect
 import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";
 import { Suspense } from "react";
 import { ArtworkListSkeleton } from "@/components/admin/crud/read/ReadArtworkList";
+import { ArticleOperations } from "@/components/modules/forms/admin/article/ArticleOperations";
+import { ReadArticleList } from "@/components/admin/crud/read/ReadArticleList";
+import { ArticleListSkeleton } from "@/components/admin/crud/read/ReadArticleList";
 
 export const adminSegmentConfig = {
   articles: {
-    createComponent: <CreateArticle />,
-    readComponent: <div>Read Article</div>,
-    updateComponent: <UpdateArticle />,
-    deleteComponent: <DeleteArticle />,
+    createComponent: <ArticleOperations operationType="create" />,
+    readComponent: (
+      <Suspense fallback={<ArticleListSkeleton />}>
+        <ReadArticleList />
+      </Suspense>
+    ),
+    updateComponent: <ArticleOperations operationType="update" />,
+    deleteComponent: <ArticleOperations operationType="delete" />,
   },
   artwork: {
     createComponent: <CreateArtworkWithUpload />,

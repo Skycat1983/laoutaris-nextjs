@@ -16,7 +16,7 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { CreateArticleForm } from "@/components/modules/forms/admin/CreateArticleForm";
-import { readArtwork } from "@/lib/api/admin/readApi";
+import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 const readSchema = z.object({
   artworkId: z.string().min(1, "Artwork ID is required"),
@@ -35,8 +35,12 @@ export const CreateArticle = () => {
 
   async function onSubmit(data: ReadFormValues) {
     try {
-      const result = await readArtwork(data.artworkId);
-      setArtworkInfo(result);
+      const result = await clientAdminApi.read.readArtwork(data.artworkId);
+      if (result.success) {
+        setArtworkInfo(result.data);
+      } else {
+        console.error("Error in CreateArticle:", result.error);
+      }
     } catch (error) {
       console.error("Error in CreateArticle:", error);
     }

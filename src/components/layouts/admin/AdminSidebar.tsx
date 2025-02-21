@@ -7,17 +7,22 @@ import { FileText, Image as ImageIcon, User } from "lucide-react";
 import CollectionIcon from "@/components/elements/icons/CollectionIcon";
 import BlogIcon from "@/components/elements/icons/BlogIcon";
 import LogoutIcon from "@/components/elements/icons/LogoutIcon";
-
+import CommentIcon from "@/components/elements/icons/CommentIcon";
 const sidebarItems = [
-  { label: "Articles", icon: <FileText />, href: "/dashboard/articles" },
-  { label: "Artwork", icon: <ImageIcon />, href: "/dashboard/artwork" },
-  { label: "Blogs", icon: <BlogIcon />, href: "/dashboard/blogs" },
+  { label: "Articles", icon: <FileText />, href: "/admin/dashboard/articles" },
+  { label: "Artwork", icon: <ImageIcon />, href: "/admin/dashboard/artwork" },
+  { label: "Blogs", icon: <BlogIcon />, href: "/admin/dashboard/blogs" },
   {
     label: "Collections",
     icon: <CollectionIcon />,
-    href: "/dashboard/collections",
+    href: "/admin/dashboard/collections",
   },
-  { label: "Users", icon: <User />, href: "/dashboard/users" },
+  {
+    label: "Comments",
+    icon: <CommentIcon />,
+    href: "/admin/dashboard/comments",
+  },
+  { label: "Users", icon: <User />, href: "/admin/dashboard/users" },
 ] as const;
 
 export function AdminSidebar() {

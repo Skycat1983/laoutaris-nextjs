@@ -28,8 +28,6 @@ const Breadcrumbs = () => {
     (segment) => segment !== toFilterOut
   );
 
-  console.log("allSegments", allSegments);
-
   return (
     <div className="pl-4">
       <ScrollArea className="container whitespace-nowrap rounded-md h-auto">

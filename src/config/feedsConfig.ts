@@ -3,6 +3,8 @@ import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
 import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
 import { CollectionFeed } from "@/components/admin/feeds/CollectionFeed";
 
+// ! Unused
+//? could be used if we go baack to generating feed components again instead of hardcoding them
 type FeedConfig = {
   key: "articles" | "collections" | "artwork" | "blog";
   title: string;

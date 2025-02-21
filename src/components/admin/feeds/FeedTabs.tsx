@@ -19,7 +19,7 @@ import { Button } from "@/components/shadcn/button";
 const baseTabClass =
   "text-lg font-archivo px-6 text-gray-400 data-[state=active]:text-black transition-colors whitespace-nowrap";
 
-export function DashboardFeed() {
+export function FeedTabs() {
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
