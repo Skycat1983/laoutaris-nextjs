@@ -20,6 +20,7 @@ import {
   ReadBlogList,
 } from "@/components/admin/crud/read/ReadBlogList";
 import { ArtworkOperations } from "@/components/modules/forms/admin/artwork/ArtworkOperations";
+import { BlogOperations } from "@/components/modules/forms/admin/blog/BlogOperations";
 
 export const adminSegmentConfig = {
   articles: {
@@ -43,14 +44,14 @@ export const adminSegmentConfig = {
     deleteComponent: <ArtworkOperations operationType="delete" />,
   },
   blogs: {
-    createComponent: <CreateBlogForm />,
+    createComponent: <BlogOperations operationType="create" />,
     readComponent: (
       <Suspense fallback={<BlogListSkeleton />}>
         <ReadBlogList />
       </Suspense>
     ),
-    updateComponent: <UpdateBlogEntry />,
-    deleteComponent: <DeleteBlogEntry />,
+    updateComponent: <BlogOperations operationType="update" />,
+    deleteComponent: <BlogOperations operationType="delete" />,
   },
   collections: {
     createComponent: <CreateCollectionForm />,

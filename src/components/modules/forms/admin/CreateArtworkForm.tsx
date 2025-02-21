@@ -29,7 +29,7 @@ import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
 import { revalidatePath } from "next/cache";
 import { BaseArtwork } from "@/lib/data/models";
-import { postArtwork } from "@/lib/api/admin/postApi";
+import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;
@@ -58,7 +58,7 @@ export function CreateArtworkForm({
         image: uploadInfo,
       };
 
-      const response = await postArtwork(artworkData);
+      const response = await clientAdminApi.create.postArtwork(artworkData);
 
       console.log("response", response);
       // Revalidate the admin artwork page

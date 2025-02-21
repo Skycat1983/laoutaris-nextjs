@@ -29,7 +29,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { postArticle } from "@/lib/api/admin/postApi";
+import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 interface CreateArticleFormProps {
   artworkInfo: FrontendArtwork;
@@ -59,7 +59,7 @@ export const CreateArticleForm = ({
   async function onSubmit(data: CreateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      await postArticle(data);
+      await clientAdminApi.create.postArticle(data);
       onSuccess();
     } catch (error) {
       console.error("Error in CreateArticleForm:", error);
