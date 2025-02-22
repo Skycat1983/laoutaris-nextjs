@@ -20,7 +20,11 @@ import { z } from "zod";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
-import { FrontendBlogEntryUnpopulated } from "@/lib/data/types/blogTypes";
+import {
+  FrontendBlogEntry,
+  FrontendBlogEntryUnpopulated,
+} from "@/lib/data/types/blogTypes";
+import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 // Define the schema for updating a blog entry
 const updateBlogSchema = z.object({
@@ -31,15 +35,17 @@ const updateBlogSchema = z.object({
   summary: z.string().min(1, "Summary is required"),
   text: z.string().min(1, "Blog content is required"),
   featured: z.boolean(),
-  tags: z.array(z.string()).optional(),
+  // tags: z.array(z.string()).optional(),
 });
 
 type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;
 
 export const UpdateBlogForm = ({
   blogInfo,
+  onSuccess,
 }: {
-  blogInfo: FrontendBlogEntryUnpopulated;
+  blogInfo: FrontendBlogEntry;
+  onSuccess?: () => void;
 }) => {
   const [imagePreview, setImagePreview] = useState(blogInfo.imageUrl);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,7 +64,7 @@ export const UpdateBlogForm = ({
       summary: blogInfo.summary,
       text: blogInfo.text,
       featured: blogInfo.featured,
-      tags: blogInfo.tags,
+      // tags: blogInfo.tags,
     },
   });
 
@@ -69,25 +75,14 @@ export const UpdateBlogForm = ({
   async function onSubmit(data: UpdateBlogFormValues) {
     setIsSubmitting(true);
     try {
-      console.log("data in update blog form:>> ", data);
-      //! we need to implement the update blog entry API route
-      const response = await fetch(
-        `/api/admin/blog/update?_id=${blogInfo._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
+      const response = await clientAdminApi.update.patchBlog(
+        blogInfo._id,
+        data
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to update blog entry");
+      if (response.success) {
+        onSuccess?.();
       }
-
-      const updatedBlog = await response.json();
-      console.log("Blog entry updated successfully:", updatedBlog);
     } catch (error) {
       console.error("Error updating blog entry:", error);
     } finally {

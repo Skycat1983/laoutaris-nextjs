@@ -1,6 +1,6 @@
 import HexColorIcon from "@/components/elements/icons/HexColorIcon";
 import TailwindColorIcon from "@/components/elements/icons/TailwindColorIcon";
-import { CloudinaryColor, HexColor } from "@/lib/data/types/artworkTypes";
+import { ColorInfo } from "@/lib/data/types/artworkTypes";
 import {
   Disclosure,
   DisclosureButton,
@@ -9,7 +9,7 @@ import {
 import { ChevronDown } from "lucide-react";
 
 interface HexColorPaletteProps {
-  colors: HexColor[];
+  colors: ColorInfo[];
   label: string;
 }
 
@@ -36,7 +36,7 @@ const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
 };
 
 interface CloudinaryColorPaletteProps {
-  colors: CloudinaryColor[];
+  colors: ColorInfo[];
   label: string;
 }
 

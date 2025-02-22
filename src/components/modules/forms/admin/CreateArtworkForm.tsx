@@ -58,24 +58,30 @@ export function CreateArtworkForm({
         image: uploadInfo,
       };
 
+      console.log("artworkData", artworkData);
+
       const response = await clientAdminApi.create.postArtwork(artworkData);
+      if (response.success) {
+        onSuccess();
+      } else {
+        console.error("Failed to create artwork:", response.error);
+      }
 
       console.log("response", response);
       // Revalidate the admin artwork page
-      revalidatePath("/admin/artwork");
-      onSuccess();
+      // revalidatePath("/admin/artwork");
     } catch (error) {
       console.error("Form submission failed:", error);
     } finally {
       setIsSubmitting(false);
-      form.reset({
-        title: "",
-        decade: undefined,
-        artstyle: undefined,
-        medium: undefined,
-        surface: undefined,
-        featured: false,
-      });
+      // form.reset({
+      //   title: "",
+      //   decade: undefined,
+      //   artstyle: undefined,
+      //   medium: undefined,
+      //   surface: undefined,
+      //   featured: false,
+      // });
     }
   }
 

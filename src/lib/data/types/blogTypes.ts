@@ -16,7 +16,7 @@ export interface BaseBlogEntry {
   slug: string;
   displayDate: Date;
   featured: boolean;
-  tags: string[];
+  // tags: string[];
 }
 
 export interface FrontendBlogEntry extends BaseBlogEntry {
@@ -123,7 +123,7 @@ export const updateBlogSchema = z.object({
   imageUrl: z.string().url("Invalid URL"),
   displayDate: z.date(),
   featured: z.boolean(),
-  tags: z.array(z.string()),
+  // tags: z.array(z.string()),
 });
 
 export type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;

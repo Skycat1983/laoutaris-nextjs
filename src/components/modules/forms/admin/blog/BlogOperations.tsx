@@ -71,7 +71,11 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
           />
         )}
         {blogInfo && (
-          <UpdateBlogForm blogInfo={blogInfo} onSuccess={handleSuccess} />
+          <UpdateBlogForm
+            blogInfo={blogInfo}
+            onSuccess={handleSuccess}
+            // onCancel={() => setBlogInfo(null)}
+          />
         )}
       </>
     ),

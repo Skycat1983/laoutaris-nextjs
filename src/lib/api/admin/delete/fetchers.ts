@@ -1,16 +1,12 @@
 import type { Fetcher } from "../../core/createFetcher";
 
-// Response types
-interface DeleteArtworkResponse {
-  success: boolean;
-  message: string;
-  articleId?: string; // for the conflict case
+// ArticleId is returned to identify the conflict case
+export interface DeleteArtworkResponse extends ApiSuccessResponse<null> {
+  articleId?: string; //? because deleteing an artwork can cause problems if it's referenced in an article
 }
 
-interface DeleteResponse {
-  success: boolean;
-  message: string;
-}
+// 'null' because we don't expect any data (T) to be returned from the delete operation
+export type DeleteResponse = ApiResponse<null>;
 
 export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete artwork

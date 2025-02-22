@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
-import { ColorInfo, PredominantColors } from "@/lib/data/types/colorTypes";
+import { z } from "zod";
+import { ColorInfo, PredominantColors } from "../types";
 
 export interface BaseArtwork {
   title: string;
@@ -70,10 +71,25 @@ const artworkSchema = new mongoose.Schema(
       pixelHeight: { type: Number, required: true },
       pixelWidth: { type: Number, required: true },
       format: { type: String, required: true },
-      hexColors: [{ color: String, percentage: Number }],
+      hexColors: [
+        {
+          color: { type: String, required: true },
+          percentage: { type: Number, required: true },
+        },
+      ],
       predominantColors: {
-        cloudinary: [{ color: String, percentage: Number }],
-        google: [{ color: String, percentage: Number }],
+        cloudinary: [
+          {
+            color: { type: String, required: true },
+            percentage: { type: Number, required: true },
+          },
+        ],
+        google: [
+          {
+            color: { type: String, required: true },
+            percentage: { type: Number, required: true },
+          },
+        ],
       },
     },
     artstyle: {

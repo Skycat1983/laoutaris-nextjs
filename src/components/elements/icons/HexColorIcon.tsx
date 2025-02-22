@@ -1,6 +1,6 @@
-import { HexColor } from "@/lib/data/types/artworkTypes";
+import { ColorInfo } from "@/lib/data/types/artworkTypes";
 
-const HexColorIcon = ({ hexColor }: { hexColor: HexColor }) => {
+const HexColorIcon = ({ hexColor }: { hexColor: ColorInfo }) => {
   return (
     <div
       style={{
