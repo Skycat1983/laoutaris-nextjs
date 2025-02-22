@@ -26,10 +26,9 @@ import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
 import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
-import { revalidatePath } from "next/cache";
 import { BaseArtwork } from "@/lib/data/models";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { createArtworkSchema } from "@/lib/data/schemas";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;
@@ -41,14 +40,14 @@ export function CreateArtworkForm({
   onSuccess,
 }: CreateArtworkFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof CreateArtworkFormSchema>>({
-    resolver: zodResolver(CreateArtworkFormSchema),
+  const form = useForm<z.infer<typeof createArtworkSchema>>({
+    resolver: zodResolver(createArtworkSchema),
     defaultValues: {
       featured: false,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof CreateArtworkFormSchema>) {
+  async function onSubmit(values: z.infer<typeof createArtworkSchema>) {
     if (!uploadInfo) return;
     setIsSubmitting(true);
 

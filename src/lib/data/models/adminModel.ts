@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DBUser, UserModel } from ".";
+import { DBUser, UserModel } from "./userModel";
 
 // Define the interface for the Admin user
 export interface IAdmin extends DBUser {
