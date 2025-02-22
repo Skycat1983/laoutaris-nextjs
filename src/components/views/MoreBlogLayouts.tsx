@@ -18,46 +18,6 @@ interface BlogLayoutProps {
   prev: string | null;
 }
 
-// 1. Modern Card Grid
-export const ModernCardGrid = ({ blogEntries }: BlogLayoutProps) => {
-  return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        {blogEntries.map((blog) => (
-          <Link href={`/blog/${blog.slug}`} key={blog.slug} className="group">
-            <article className="h-[200px] bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl flex">
-              <div className="aspect-[16/9] relative  w-48">
-                <Image
-                  src={blog.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_800,q_auto/"
-                  )}
-                  alt={blog.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6 flex flex-col justify-center">
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                  March 2024
-                </div>
-                <h2 className="text-xl font-bold mb-3 group-hover:text-emerald-600 transition-colors">
-                  {blog.title}
-                </h2>
-                <p className="text-gray-600 line-clamp-2">{blog.subtitle}</p>
-                <div className="mt-4 flex items-center text-emerald-600">
-                  <span className="text-sm font-medium">Read article</span>
-                  <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-2" />
-                </div>
-              </div>
-            </article>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 export const MagazineSpotlight = ({ blogEntries }: BlogLayoutProps) => {
   const firstSevenEntries = blogEntries.slice(0, 7);
   return (
