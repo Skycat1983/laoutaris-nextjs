@@ -5,8 +5,8 @@ import {
   CloudinaryColorPalette,
   HexColorPalette,
 } from "@/components/modules/disclosures/ColorPallette";
-import FavouritesButton from "@/components/elements/buttons/FavouritesButton";
-import WatchlistButton from "@/components/elements/buttons/WatchlistButton";
+import { FavouritesButton } from "@/components/elements/buttons";
+import { WatchlistButton } from "@/components/elements/buttons";
 
 export async function ArtworkInfoCard({ ...artwork }: PublicArtwork) {
   const session = await getServerSession(authOptions);

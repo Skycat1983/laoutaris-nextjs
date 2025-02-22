@@ -21,4 +21,4 @@ const DeleteIcon = () => {
   );
 };
 
-export default DeleteIcon;
+export { DeleteIcon };

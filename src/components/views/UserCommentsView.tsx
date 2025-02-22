@@ -92,4 +92,4 @@ const UserCommentsView = ({ comments }: Props) => {
   );
 };
 
-export default UserCommentsView;
+export { UserCommentsView };

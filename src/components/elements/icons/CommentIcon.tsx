@@ -17,4 +17,4 @@ const CommentIcon = () => {
   );
 };
 
-export default CommentIcon;
+export { CommentIcon };

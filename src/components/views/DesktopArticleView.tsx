@@ -120,7 +120,7 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
   );
 };
 
-export default DesktopArticleView;
+export { DesktopArticleView };
 
 {
   /* <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full z-1 relative">

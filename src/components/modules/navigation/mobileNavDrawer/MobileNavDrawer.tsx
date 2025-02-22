@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/drawer";
 import Link from "next/link";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import Logo from "@/components/elements/icons/Logo";
+import { Logo } from "@/components/elements/icons";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 
 interface NavMenuProps {

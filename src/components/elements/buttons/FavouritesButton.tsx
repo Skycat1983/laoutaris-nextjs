@@ -5,7 +5,7 @@ import { useFormState } from "react-dom";
 
 import { updateUserFavourites } from "@/lib/actions/updateUserFavourites";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import SubmitButton from "./SubmitButton";
+import { SubmitButton } from "./SubmitButton";
 import {
   Tooltip,
   TooltipContent,
@@ -88,4 +88,4 @@ const FavouritesButton = ({
   }
 };
 
-export default FavouritesButton;
+export { FavouritesButton };

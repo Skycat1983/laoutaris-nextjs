@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DocumentReader } from "../document-reader/DocumentReader";
 import { CreateArtworkForm } from "../CreateArtworkForm";
 import { UpdateArtworkForm } from "../UpdateArtworkForm";
-import { UploadButton } from "@/components/elements/buttons/UploadButton";
+import { UploadButton } from "@/components/elements/buttons";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";

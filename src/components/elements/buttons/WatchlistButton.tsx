@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
-import SubmitButton from "./SubmitButton";
+import { SubmitButton } from "./SubmitButton";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 type WatchlistButtonProps = {
@@ -97,7 +97,7 @@ const WatchlistButton = ({
   }
 };
 
-export default WatchlistButton;
+export { WatchlistButton };
 
 // interface SubmitButtonProps {
 //   label: string;

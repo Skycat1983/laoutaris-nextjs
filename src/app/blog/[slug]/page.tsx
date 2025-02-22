@@ -1,4 +1,4 @@
-import BlogDetailLoader from "@/components/loaders/viewLoaders/BlogDetailLoader";
+import { BlogDetailLoader } from "@/components/loaders/viewLoaders";
 import { Suspense } from "react";
 
 export default async function BlogSlug({

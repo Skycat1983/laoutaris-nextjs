@@ -154,4 +154,4 @@ const MobileArticleView: React.FC<ArticleProps> = ({
   );
 };
 
-export default MobileArticleView;
+export { MobileArticleView };

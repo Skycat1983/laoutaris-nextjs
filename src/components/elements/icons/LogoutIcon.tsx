@@ -19,4 +19,4 @@ const LogoutIcon = () => {
   );
 };
 
-export default LogoutIcon;
+export { LogoutIcon };

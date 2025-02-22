@@ -67,4 +67,4 @@ const AccountSubnavLoader = async () => {
   return <Subnav links={links} />;
 };
 
-export default AccountSubnavLoader;
+export { AccountSubnavLoader };

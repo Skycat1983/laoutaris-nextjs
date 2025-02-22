@@ -40,4 +40,4 @@ const ArtworkView = (artwork: PublicArtwork) => {
   );
 };
 
-export default ArtworkView;
+export { ArtworkView };

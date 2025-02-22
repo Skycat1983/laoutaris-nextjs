@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
-import UploadButton from "@/components/elements/buttons/UploadButton";
+import { UploadButton } from "@/components/elements/buttons";
 import { CreateArtworkForm } from "./CreateArtworkForm";
 import { CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";

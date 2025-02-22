@@ -1,7 +1,7 @@
 import ArtworkView from "@/components/views/ArtworkView";
 import { fetchUserWatchlistArtwork } from "../../../../phase_out/userApi";
 
-export default async function WatchlistedArtworkLoader({
+export async function WatchlistedArtworkLoader({
   artworkId,
 }: {
   artworkId: string;

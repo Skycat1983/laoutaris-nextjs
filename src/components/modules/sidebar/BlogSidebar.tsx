@@ -7,7 +7,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
 import SubscribeForm from "../forms/user/SubscribeForm";
 import Image from "next/image";
-import SubnavButton from "@/components/elements/buttons/SubnavButton";
+import { SubnavButton } from "@/components/elements/buttons";
 
 type SortRangeSidebarProps = {
   options: { label: string; queryValue: string }[];

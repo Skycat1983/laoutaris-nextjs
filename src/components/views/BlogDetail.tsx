@@ -4,7 +4,7 @@ import Image from "next/image";
 import CommentForm from "@/components/forms/CommentForm";
 import { createComment } from "@/lib/api/public/commentApi";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import BlogCommentsList from "../sections/BlogCommentsList";
+import { BlogCommentsList } from "../sections";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";

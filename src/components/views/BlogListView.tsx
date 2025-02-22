@@ -41,4 +41,4 @@ export const BlogListViewSkeleton = () => (
   </>
 );
 
-export default BlogListView;
+export { BlogListView };

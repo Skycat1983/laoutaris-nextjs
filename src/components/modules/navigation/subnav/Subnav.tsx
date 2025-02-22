@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
-import NavItem from "@/components/elements/buttons/NavItem";
+import { NavItem } from "@/components/elements/buttons";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { ReactNode } from "react";
 

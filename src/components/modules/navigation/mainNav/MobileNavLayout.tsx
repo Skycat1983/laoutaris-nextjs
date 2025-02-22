@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import Logo from "../../../elements/icons/Logo";
+import { Logo } from "@/components/elements/icons";
 import { MobileNavDrawer } from "../mobileNavDrawer/MobileNavDrawer";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 import { AccountNav } from "../accountNav/AccountNav";

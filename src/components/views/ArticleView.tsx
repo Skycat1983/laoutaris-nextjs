@@ -1,6 +1,6 @@
 import React from "react";
-import MobileArticleView from "./MobileArticleView";
-import DesktopArticleView from "./DesktopArticleView";
+import { MobileArticleView } from "./MobileArticleView";
+import { DesktopArticleView } from "./DesktopArticleView";
 import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 
 interface ArticleViewProps {
@@ -29,5 +29,3 @@ export function ArticleView({ article, navigation }: ArticleViewProps) {
     </main>
   );
 }
-
-export default ArticleView;

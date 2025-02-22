@@ -17,4 +17,4 @@ const CollectionIcon = () => {
   );
 };
 
-export default CollectionIcon;
+export { CollectionIcon };

@@ -13,4 +13,4 @@ const HexColorIcon = ({ hexColor }: { hexColor: ColorInfo }) => {
   );
 };
 
-export default HexColorIcon;
+export { HexColorIcon };

@@ -1,5 +1,5 @@
-import HexColorIcon from "@/components/elements/icons/HexColorIcon";
-import TailwindColorIcon from "@/components/elements/icons/TailwindColorIcon";
+import { HexColorIcon } from "@/components/elements/icons";
+import { TailwindColorIcon } from "@/components/elements/icons";
 import { ColorInfo } from "@/lib/data/types/artworkTypes";
 import {
   Disclosure,

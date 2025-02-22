@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { readArtworks } from "../../../../../still useful/readApi";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import { CopyIcon } from "@/components/elements/icons/CopyIcon";
+import { CopyIcon } from "@/components/elements/icons";
 import Image from "next/image";
 import { Button } from "@/components/shadcn/button";
 import { ArtworkFilterDropdowns } from "./ArtworkFilterDropdowns";

@@ -1,4 +1,3 @@
-import { User } from "lucide-react";
 import React from "react";
 
 const UserIcon = () => {
@@ -22,10 +21,4 @@ const UserIcon = () => {
   );
 };
 
-export default UserIcon;
-
-// const UserIcon = () => {
-//   return <User />;
-// };
-
-// export default UserIcon;
+export { UserIcon };

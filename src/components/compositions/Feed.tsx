@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { RefreshButton } from "@/components/elements/buttons/RefreshButton";
+import { RefreshButton } from "@/components/elements/buttons";
 import { SkeletonFactory } from "./SkeletonFactory";
 import { Skeleton } from "../shadcn/skeleton";
 

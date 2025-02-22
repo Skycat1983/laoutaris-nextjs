@@ -1,7 +1,7 @@
 import React from "react";
-import Logo from "../../../elements/icons/Logo";
+import { Logo } from "@/components/elements/icons";
 import Link from "next/link";
-import NavItem from "@/components/elements/buttons/NavItem";
+import { NavItem } from "@/components/elements/buttons";
 import { navLinkBorderColours } from "@/lib/utils/consts";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 import { AccountNav } from "../accountNav/AccountNav";

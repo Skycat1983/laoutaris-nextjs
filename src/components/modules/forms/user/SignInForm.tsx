@@ -6,7 +6,7 @@ import SignUpForm from "./SignUpForm";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { LoginProcessResponse } from "@/lib/actions/processLogin";
 import { signIn, useSession } from "next-auth/react";
-import SubmitButton from "@/components/elements/buttons/SubmitButton";
+import { SubmitButton } from "@/components/elements/buttons";
 
 // TODO: redo this form with shadcn/ui
 

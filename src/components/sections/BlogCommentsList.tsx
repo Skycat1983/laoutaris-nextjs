@@ -9,7 +9,7 @@ interface CommentsListProps {
   onCommentUpdated: () => void;
 }
 
-export default function BlogCommentsList({
+export function BlogCommentsList({
   comments,
   onCommentUpdated,
 }: CommentsListProps) {

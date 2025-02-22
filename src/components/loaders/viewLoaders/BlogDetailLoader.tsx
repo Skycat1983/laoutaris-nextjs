@@ -5,10 +5,7 @@ interface Props {
   showComments?: boolean;
 }
 
-export default async function BlogDetailLoader({
-  slug,
-  showComments = false,
-}: Props) {
+export async function BlogDetailLoader({ slug, showComments = false }: Props) {
   try {
     const result = showComments
       ? await serverPublicApi.blog.fetchBlogCommentsAuthor(slug)

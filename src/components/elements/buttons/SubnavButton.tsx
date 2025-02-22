@@ -20,4 +20,4 @@ const SubnavButton = ({ title, slug }: SubnavButtonProps) => {
     </Button>
   );
 };
-export default SubnavButton;
+export { SubnavButton };

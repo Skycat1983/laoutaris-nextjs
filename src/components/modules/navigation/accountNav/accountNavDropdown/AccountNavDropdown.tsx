@@ -9,14 +9,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/shadcn/navigation-menu";
 import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { usePathname, useRouter } from "next/navigation";
-import UserIcon from "@/components/elements/icons/UserIcon";
+import { UserIcon } from "@/components/elements/icons/UserIcon";
 import { MenubarSeparator, MenubarShortcut } from "@/components/shadcn/menubar";
 
 interface UserSession {

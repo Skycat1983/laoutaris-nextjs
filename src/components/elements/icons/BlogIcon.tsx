@@ -19,4 +19,4 @@ const BlogIcon = () => {
   );
 };
 
-export default BlogIcon;
+export { BlogIcon };

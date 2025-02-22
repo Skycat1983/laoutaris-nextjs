@@ -36,4 +36,4 @@ const TailwindColorIcon = ({ color }: ColorProps) => {
   );
 };
 
-export default TailwindColorIcon;
+export { TailwindColorIcon };

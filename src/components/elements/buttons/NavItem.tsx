@@ -51,4 +51,4 @@ const NavItem = ({
   );
 };
 
-export default NavItem;
+export { NavItem };

@@ -30,4 +30,4 @@ function SubmitButton({ label, variant }: SubmitButtonProps) {
   );
 }
 
-export default SubmitButton;
+export { SubmitButton };

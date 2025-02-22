@@ -4,7 +4,7 @@ import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
 import UserCommentsView from "@/components/views/UserCommentsView";
 import { FrontendUserWithComments } from "@/lib/data/types/userTypes";
 
-const UserCommentsLoader = async () => {
+export const UserCommentsLoader = async () => {
   const result: ApiResponse<FrontendUserWithComments> =
     await fetchUserComments();
   if (!result.success) {
@@ -19,5 +19,3 @@ const UserCommentsLoader = async () => {
     </>
   );
 };
-
-export default UserCommentsLoader;
