@@ -4,7 +4,7 @@ export {
   AccountSettingsV2,
   AccountSettingsV3,
 } from "./AccountSettings";
-export { default as BlogCommentsList } from "./BlogCommentsList";
+export { BlogCommentsList } from "./BlogCommentsList";
 export {
   BiographySection,
   BiographyScroll,
