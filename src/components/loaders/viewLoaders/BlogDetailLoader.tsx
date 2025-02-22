@@ -1,4 +1,4 @@
-import BlogDetail from "@/components/views/BlogDetail";
+import { BlogDetail } from "@/components/views/BlogDetail";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 interface Props {
   slug: string;

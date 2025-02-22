@@ -143,7 +143,7 @@ const BlogDetail = ({
   );
 };
 
-export default BlogDetail;
+export { BlogDetail };
 
 // AUTHOR INFO IF NEEDED
 {

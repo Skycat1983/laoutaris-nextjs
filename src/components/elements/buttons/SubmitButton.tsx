@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/shadcn/button";
 import { Loader2 } from "lucide-react";
 import { useFormStatus } from "react-dom";

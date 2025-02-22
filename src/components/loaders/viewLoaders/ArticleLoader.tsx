@@ -1,7 +1,7 @@
 "use server";
 
 import { buildUrl } from "@/lib/utils/buildUrl";
-import ArticleView from "../../views/ArticleView";
+import { ArticleView } from "@/components/views/ArticleView";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import {
   FrontendArticle,

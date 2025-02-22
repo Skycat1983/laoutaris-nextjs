@@ -1,4 +1,4 @@
-import ArtworkView from "@/components/views/ArtworkView";
+import { ArtworkView } from "@/components/views";
 import {
   artworkToPublic,
   PublicArtwork,
