@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { useSession } from "next-auth/react";
 import { Pencil, Trash2, X, Check } from "lucide-react";
@@ -10,8 +12,17 @@ import { Textarea } from "@/components/shadcn/textarea";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { formatDateImproved } from "@/lib/utils/formatDate";
 import React from "react";
-import DeleteIcon from "@/components/elements/icons/DeleteIcon";
-import EditIcon from "@/components/elements/icons/EditIcon";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/shadcn/form";
+import {
+  updateCommentSchema,
+  type UpdateCommentFormValues,
+} from "@/lib/data/schemas/commentSchema";
 
 interface CommentCardProps {
   comment: FrontendCommentWithAuthor;
@@ -24,8 +35,15 @@ export const CommentCard = ({
 }: CommentCardProps) => {
   const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedText, setEditedText] = useState(comment.text);
   const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<UpdateCommentFormValues>({
+    resolver: zodResolver(updateCommentSchema),
+    defaultValues: {
+      text: comment.text,
+      commentId: comment._id,
+    },
+  });
 
   const isOwner = session?.user?.id === comment.author._id;
 
@@ -37,9 +55,10 @@ export const CommentCard = ({
 
     try {
       setIsLoading(true);
+      const values = form.getValues();
       const result = await clientApi.public.comment.updateComment(
-        comment._id,
-        editedText
+        values.commentId,
+        values.text
       );
 
       if (result.success) {
@@ -140,12 +159,24 @@ export const CommentCard = ({
           </div>
         </div>
         {isEditing ? (
-          <Textarea
-            value={editedText}
-            onChange={(e) => setEditedText(e.target.value)}
-            className="w-full min-h-[100px]"
-            disabled={isLoading}
-          />
+          <Form {...form}>
+            <FormField
+              control={form.control}
+              name="text"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      className="w-full min-h-[100px]"
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Form>
         ) : (
           <div className="prose prose-sm max-w-none">
             {paragraphs.map((paragraph, index) => (

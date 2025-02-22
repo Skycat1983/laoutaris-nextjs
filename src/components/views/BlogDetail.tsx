@@ -10,6 +10,8 @@ import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
 import { clientApi } from "@/lib/api/clientApi";
+import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
+import { useRouter } from "next/navigation";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -30,6 +32,7 @@ const BlogDetail = ({
     FrontendCommentWithAuthor[]
   >([]);
   const [hasLoadedComments, setHasLoadedComments] = useState(false);
+  const router = useRouter();
 
   const loadComments = async () => {
     setIsLoadingComments(true);
@@ -47,13 +50,12 @@ const BlogDetail = ({
     }
   };
 
-  const handleCommentSubmit = async (commentText: string) => {
+  const handleCommentSubmit = async (comment: CreateCommentFormValues) => {
     try {
-      await clientApi.public.comment.createComment(slug, commentText);
-      // Refresh comments after submission
-      await loadComments();
+      await clientPublicApi.comment.postComment(slug, comment);
+      router.refresh();
     } catch (error) {
-      console.error("Error submitting comment:", error);
+      console.error("Error posting comment:", error);
     }
   };
 

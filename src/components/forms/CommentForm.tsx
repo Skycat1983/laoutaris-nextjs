@@ -1,52 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Textarea } from "@/components/shadcn/textarea";
+import {
+  createCommentSchema,
+  type CreateCommentFormValues,
+} from "@/lib/data/schemas/commentSchema";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/shadcn/form";
 
 interface CommentFormProps {
   blogSlug: string;
-  onCommentSubmit: (comment: string) => Promise<void>;
+  onCommentSubmit: (comment: CreateCommentFormValues) => Promise<void>;
 }
 
 const CommentForm = ({ blogSlug, onCommentSubmit }: CommentFormProps) => {
-  const [comment, setComment] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const form = useForm<CreateCommentFormValues>({
+    resolver: zodResolver(createCommentSchema),
+    defaultValues: {
+      text: "",
+      blogSlug,
+      displayDate: new Date(),
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!comment.trim()) return;
-
-    setIsSubmitting(true);
+  const handleSubmit = async (values: CreateCommentFormValues) => {
     try {
-      await onCommentSubmit(comment);
-      setComment(""); // Clear form after successful submission
+      await onCommentSubmit(values);
+      form.reset(); // Clear form after successful submission
     } catch (error) {
       console.error("Error submitting comment:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto mt-8">
-      <div className="space-y-4">
-        <Textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Share your thoughts..."
-          className="min-h-[100px]"
-          aria-label="Comment text"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="w-full max-w-2xl mx-auto mt-8"
+      >
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder="Share your thoughts..."
+                  className="min-h-[100px]"
+                  aria-label="Comment text"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
         <Button
           type="submit"
-          disabled={isSubmitting || !comment.trim()}
-          className="w-full sm:w-auto"
+          disabled={form.formState.isSubmitting}
+          className="w-full sm:w-auto mt-4"
         >
-          {isSubmitting ? "Posting..." : "Post Comment"}
+          {form.formState.isSubmitting ? "Posting..." : "Post Comment"}
         </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 };
 

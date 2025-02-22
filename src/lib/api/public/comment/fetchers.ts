@@ -1,5 +1,6 @@
 import type { FrontendComment } from "@/lib/data/types/commentTypes";
 import type { Fetcher } from "../../core/createFetcher";
+import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 
 export const createCommentFetchers = (fetcher: Fetcher) => ({
   // Create comment
@@ -30,6 +31,13 @@ export const createCommentFetchers = (fetcher: Fetcher) => ({
       }
     );
   },
+
+  // Post comment
+  postComment: async (blogSlug: string, comment: CreateCommentFormValues) =>
+    fetcher<FrontendComment>(`/api/v2/blog/${blogSlug}/comments`, {
+      method: "POST",
+      body: JSON.stringify(comment),
+    }),
 });
 
 export type CommentFetchers = ReturnType<typeof createCommentFetchers>;
