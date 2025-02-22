@@ -19,7 +19,7 @@ import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   createArticleSchema,
   CreateArticleFormValues,
-} from "@/lib/data/types/articleTypes";
+} from "@/lib/data/schemas/articleSchema";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,

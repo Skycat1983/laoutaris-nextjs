@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ArtworkModel } from "@/lib/data/models/artworkModel";
+import { ArtworkModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { FrontendArtworkUnpopulated } from "@/lib/data/types/artworkTypes";

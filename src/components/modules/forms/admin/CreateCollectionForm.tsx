@@ -20,12 +20,12 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useRouter } from "next/navigation";
 
-import {
-  createCollectionSchema,
-  CreateCollectionFormValues,
-  FrontendCollection,
-} from "@/lib/data/types/collectionTypes";
+import { FrontendCollection } from "@/lib/data/types/collectionTypes";
 import { postCollection } from "../../../../../still useful/postApi";
+import {
+  CreateCollectionFormValues,
+  createCollectionSchema,
+} from "@/lib/data/schemas/collectionSchema";
 
 export const CreateCollectionForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);

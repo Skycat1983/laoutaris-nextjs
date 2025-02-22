@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -22,7 +21,10 @@ import { Button } from "@/components/shadcn/button";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
-import { CreateBlogFormSchema } from "@/lib/data/schemas/formSchemas";
+import {
+  createBlogFormSchema,
+  CreateBlogFormValues,
+} from "@/lib/data/schemas/blogSchema";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 interface CreateBlogFormProps {
@@ -35,8 +37,8 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const form = useForm<z.infer<typeof CreateBlogFormSchema>>({
-    resolver: zodResolver(CreateBlogFormSchema),
+  const form = useForm<CreateBlogFormValues>({
+    resolver: zodResolver(createBlogFormSchema),
     defaultValues: {
       title: "",
       subtitle: "",
@@ -48,7 +50,7 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof CreateBlogFormSchema>) {
+  async function onSubmit(values: CreateBlogFormValues) {
     try {
       setIsSubmitting(true);
       const response = await clientAdminApi.create.postBlog(values);
