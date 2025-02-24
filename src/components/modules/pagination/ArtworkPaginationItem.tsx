@@ -28,16 +28,23 @@ export const ArtworkPaginationItem = ({
     relative
     h-auto 
     w-auto 
-    transform
     transition-all
     duration-500
     ease-in-out
-    ${isActive ? "scale-110 z-10 px-6" : "scale-100 hover:scale-105"}
+    origin-top
+    ${isActive ? "z-10" : ""}
   `;
 
   const imageWrapperClassName = `
     overflow-visible
+    transform-gpu
+    transition-all
+    bg-white
+    duration-500
+    ease-in-out
+    origin-top
     ${isPortrait ? "w-[200px]" : "w-[400px]"}
+    ${isActive ? "scale-110 opacity-100 shadow-2xl" : "hover:scale-105"}
   `;
 
   const imageClassname = `

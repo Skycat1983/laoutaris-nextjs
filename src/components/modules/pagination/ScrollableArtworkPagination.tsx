@@ -59,7 +59,7 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
       {showLeftButton && (
         <button
           onClick={() => handleScroll("left")}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+          className="absolute left-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
           aria-label="Scroll left"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -68,7 +68,7 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
 
       <div
         ref={scrollContainerRef}
-        className="flex items-start justify-start pl-4 gap-8 overflow-x-auto scroll-smooth"
+        className="flex items-start justify-start pl-4 gap-12 overflow-x-auto scroll-smooth"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
@@ -81,7 +81,7 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
       {showRightButton && (
         <button
           onClick={() => handleScroll("right")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
+          className="absolute right-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
           aria-label="Scroll right"
         >
           <ChevronRight className="w-5 h-5" />
