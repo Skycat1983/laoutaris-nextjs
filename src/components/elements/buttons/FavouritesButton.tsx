@@ -52,7 +52,7 @@ const FavouritesButton = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <form action={formAction} className="w-full">
+              <form action={formAction} className="w-full bg-whitish">
                 <input type="hidden" name="artworkId" value={artworkId} />
                 <SubmitButton label={label} variant={"outline"} />
               </form>
@@ -70,7 +70,7 @@ const FavouritesButton = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className="w-full"
+              className="w-full bg-whitish"
               onClick={() => {
                 handleUnauthenticatedAction();
               }}

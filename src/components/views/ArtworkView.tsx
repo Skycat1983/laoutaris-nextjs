@@ -2,8 +2,34 @@ import Image from "next/image";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
+import {
+  ClassicMuseumCard,
+  ContemporaryGridCard,
+  MagazineCard,
+  TimelineCard,
+} from "../modules/cards/ArtworkInfoCardVariations";
+import {
+  ArtworkMagazineCard,
+  ArtworkMagazineCard2,
+} from "../modules/cards/ArtworkMagazineCard";
 
 const ArtworkView = (artwork: PublicArtwork) => {
+  const Card = () => {
+    // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
+    return (
+      <>
+        {/* <ArtworkInfoCard {...artwork} /> */}
+        {/* <TimelineCard artwork={artwork} isLoggedIn={false} /> */}
+
+        {/* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */}
+        <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} />
+
+        {/* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */}
+
+        {/* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */}
+      </>
+    );
+  };
   return (
     <>
       <div
@@ -28,7 +54,7 @@ const ArtworkView = (artwork: PublicArtwork) => {
         </span>
 
         <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
-          <ArtworkInfoCard {...artwork} />
+          <Card />
         </div>
       </div>
       <div className="p-6">

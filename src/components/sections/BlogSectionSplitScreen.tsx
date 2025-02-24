@@ -16,17 +16,15 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
   const [featuredIndex, setFeaturedIndex] = useState(5);
   const featured = blogEntries[featuredIndex];
   const otherEntries = blogEntries.filter((_, i) => i !== featuredIndex);
-
   const firstFourEntries = otherEntries.slice(0, 4);
 
   return (
     <div className="container mx-auto p-4">
-      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-h-[800px]"> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Featured Article - Left Side */}
-        <div className="sticky top-4 h-[calc(66vh-2rem)]">
+        <div className="relative lg:sticky lg:top-4 h-[calc(69vh-2rem)] mb-8 lg:mb-0">
           <Link href={`/blog/${featured.slug}`} className="group block h-full">
-            <div className="relative h-full rounded-2xl overflow-hidden">
+            <div className="relative h-full rounded-2xl overflow-hidden bg-gray-100">
               <Image
                 src={featured.imageUrl.replace(
                   "/upload/",
@@ -50,14 +48,14 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
             </div>
           </Link>
         </div>
+
         {/* List - Right Side */}
-        <div className="space-y-6">
+        <div className="relative z-10 space-y-6 bg-white/80 backdrop-blur-sm rounded-xl p-4">
           {firstFourEntries.map((blog) => (
             <Link
               href={`/blog/${blog.slug}`}
               key={blog.slug}
               className="group block"
-              //   onMouseEnter={() => setFeaturedIndex(blogEntries.indexOf(blog))}
             >
               <article className="bg-white rounded-xl p-4 transition-all duration-300 hover:shadow-lg">
                 <div className="flex gap-6">
