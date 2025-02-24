@@ -18,11 +18,11 @@ const ArtworkView = (artwork: PublicArtwork) => {
     // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
     return (
       <>
-        {/* <ArtworkInfoCard {...artwork} /> */}
+        <ArtworkInfoCard {...artwork} />
         {/* <TimelineCard artwork={artwork} isLoggedIn={false} /> */}
 
         {/* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */}
-        <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} />
+        {/* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */}
 
         {/* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */}
 

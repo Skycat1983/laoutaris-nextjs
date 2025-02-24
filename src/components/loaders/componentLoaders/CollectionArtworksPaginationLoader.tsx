@@ -5,6 +5,7 @@ import {
 } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;
@@ -30,12 +31,21 @@ export async function CollectionArtworksPaginationLoader({
   const buildCollectionLink = (artwork: ArtworkNavFields) =>
     buildUrl(["collections", slug, artwork._id]);
 
+  const itemsWithLinks = artworks.map((artwork) => ({
+    ...artwork,
+    link: buildCollectionLink(artwork),
+  }));
+
   return (
     <>
-      <ArtworkPagination
+      {/* <ArtworkPagination
         items={artworks}
         heading="More from this collection"
         link_to={buildCollectionLink}
+      /> */}
+      <ScrollableArtworkPagination
+        items={itemsWithLinks}
+        heading="More from this collection"
       />
     </>
   );

@@ -20,29 +20,44 @@ export const ArtworkPaginationItem = ({
 }: ArtworkPaginationItemProps) => {
   const segment = useSelectedLayoutSegment();
   const _id = link_to.split("/").pop();
-
   const isActive = segment === _id;
-  if (isActive) console.warn("active", segment);
-
-  const containerClassname = isActive
-    ? "h-auto w-auto shadow-2xl"
-    : "h-auto w-auto";
 
   const isPortrait = height > width;
 
-  const imageClassname = isPortrait
-    ? "h-auto max-w-[200px]  object-contain self-start"
-    : "h-auto max-w-[400px]  object-contain self-start";
+  const containerClassname = `
+    relative
+    h-auto 
+    w-auto 
+    transform
+    transition-all
+    duration-500
+    ease-in-out
+    ${isActive ? "scale-110 z-10 px-6" : "scale-100 hover:scale-105"}
+  `;
+
+  const imageWrapperClassName = `
+    overflow-visible
+    ${isPortrait ? "w-[200px]" : "w-[400px]"}
+  `;
+
+  const imageClassname = `
+    w-full
+    h-auto
+    object-contain
+  `;
+
   return (
     <Link href={link_to}>
       <div className={containerClassname}>
-        <Image
-          src={secure_url}
-          alt="Untitled artwork"
-          height={height}
-          width={width}
-          className={imageClassname}
-        />
+        <div className={imageWrapperClassName}>
+          <Image
+            src={secure_url}
+            alt="Untitled artwork"
+            height={height}
+            width={width}
+            className={imageClassname}
+          />
+        </div>
       </div>
     </Link>
   );
