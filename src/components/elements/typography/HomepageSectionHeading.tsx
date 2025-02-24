@@ -3,7 +3,7 @@ type Props = {
   subheading: string;
 };
 
-const SectionHeading = ({ heading, subheading }: Props) => {
+export const HomepageSectionHeading = ({ heading, subheading }: Props) => {
   return (
     <>
       <div className="w-full px-4">
@@ -15,5 +15,3 @@ const SectionHeading = ({ heading, subheading }: Props) => {
     </>
   );
 };
-
-export default SectionHeading;

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import ButtonDivider from "@/components/elements/misc/ButtonDivider";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import SectionHeading from "@/components/elements/typography/SectionHeading";
+import { HomepageSectionHeading } from "@/components/elements/typography/HomepageSectionHeading";
 
 interface HomeSectionProps {
   heading: string;
@@ -20,7 +20,7 @@ export const SectionLayout = ({
 }: HomeSectionProps) => {
   return (
     <div>
-      <SectionHeading heading={heading} subheading={subheading} />
+      <HomepageSectionHeading heading={heading} subheading={subheading} />
       <HorizontalDivider />
 
       {children}

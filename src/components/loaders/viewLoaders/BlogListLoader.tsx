@@ -2,28 +2,10 @@
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-// import { BlogListView } from "@/components/views/BlogListView";
+import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
-// Combo 1
-import { CarouselLayout } from "@/components/views/AlternativeBlogLayouts";
-import {
-  CategoryCards,
-  MagazineSpotlight,
-  MagazineSpotlight2,
-} from "@/components/views/MoreBlogLayouts";
 
-// Combo 2
-import {
-  MagazineFeatured,
-  SplitScreenFeatured,
-} from "@/components/views/FeaturedListVariations";
-
-import { HorizontalScrollLayout } from "@/components/views/AlternativeBlogLayouts";
-import { FeaturedBlog } from "@/components/views/FeaturedListVariations";
-import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { BLOG_NAV_LINKS } from "@/lib/shared/constants/navigationLinks";
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
   fields: [
@@ -80,87 +62,9 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       currentUrl
     );
 
-    const Combo1 = () => {
-      return (
-        <>
-          <CarouselLayout
-            blogEntries={transformedBlogs}
-            next={next}
-            prev={prev}
-          />
-          <CategoryCards
-            blogEntries={transformedBlogs}
-            next={next}
-            prev={prev}
-          />
-        </>
-      );
-    };
-
-    const LatestBlogs = () => {
-      return (
-        <>
-          {/* <Subnav links={BLOG_NAV_LINKS} /> */}
-
-          <FeaturedBlog blogEntries={transformedBlogs} />
-          {/* <CategoryCards
-            blogEntries={transformedBlogs}
-            next={next}
-            prev={prev}
-          /> */}
-          {/* <DynamicGrid blogEntries={transformedBlogs} next={next} prev={prev} /> */}
-          <HorizontalScrollLayout
-            blogEntries={transformedBlogs}
-            next={next}
-            prev={prev}
-          />
-        </>
-      );
-    };
-
-    const Divider = () => {
-      return (
-        <>
-          <div className="py-8 container mx-auto">
-            <HorizontalDivider />
-          </div>
-          <div className="py-8 container mx-auto">
-            <HorizontalDivider />
-          </div>
-        </>
-      );
-    };
-
     return (
       <>
-        {/* <Subnav links={BLOG_NAV_LINKS} /> */}
-        <MagazineFeatured blogEntries={transformedBlogs} />
-
-        <Divider />
-        <SplitScreenFeatured blogEntries={transformedBlogs} />
-        <Divider />
-        <LatestBlogs />
-        <Divider />
-        <Combo1 />
-        <Divider />
-        <MagazineSpotlight
-          blogEntries={transformedBlogs}
-          next={next}
-          prev={prev}
-        />
-        <Divider />
-        <MagazineSpotlight2
-          blogEntries={transformedBlogs}
-          next={next}
-          prev={prev}
-        />
-        <Divider />
-
-        {/* <DynamicGrid blogEntries={transformedBlogs} next={next} prev={prev} /> */}
-
-        {/* <Combo1 /> */}
-        {/* <BlogListView2 blogEntries={transformedBlogs} next={next} prev={prev} /> */}
-        {/* <MasonryLayout blogEntries={transformedBlogs} next={next} prev={prev} /> */}
+        <BlogListView blogEntries={transformedBlogs} next={next} prev={prev} />
       </>
     );
   } catch (error) {

@@ -1,16 +1,10 @@
 "use client";
 
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
+import { BlogEntryData } from "../src/components/loaders/viewLoaders/BlogListLoader";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
-  Clock,
-  ArrowRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryData[];

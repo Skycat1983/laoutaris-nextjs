@@ -1,6 +1,6 @@
 "use client";
 
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
+import { BlogEntryData } from "../src/components/loaders/viewLoaders/BlogListLoader";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -138,7 +138,7 @@ export const MagazineFeatured = ({ blogEntries }: BlogLayoutProps) => {
             onMouseEnter={() => setFeaturedIndex(blogEntries.indexOf(blog))}
           >
             <article className="space-y-4">
-              <div className="aspect-[4/3] relative rounded-xl overflow-hidden">
+              <div className="aspect-[5/3] relative rounded-xl overflow-hidden">
                 <Image
                   src={blog.imageUrl.replace(
                     "/upload/",

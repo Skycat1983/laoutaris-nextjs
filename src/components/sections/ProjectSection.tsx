@@ -1,4 +1,4 @@
-import SectionHeading from "../elements/typography/SectionHeading";
+import { HomepageSectionHeading } from "../elements/typography/HomepageSectionHeading";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import YoutubeEmbedding from "../elements/misc/YoutubeEmbedding";
 import ButtonDivider from "../elements/misc/ButtonDivider";
@@ -8,7 +8,10 @@ export function ProjectSection() {
   // await delay(2000);
   return (
     <div className="p-4 w-full">
-      <SectionHeading heading="Project:" subheading="Watch the documentary" />
+      <HomepageSectionHeading
+        heading="Project:"
+        subheading="Watch the documentary"
+      />
       <section
         data-testid="project-content"
         className="relative my-10 bg-gray-100"
@@ -47,7 +50,10 @@ export function ProjectSection() {
 export const ProjectSectionSkeleton = () => {
   return (
     <div className="p-4 w-full">
-      <SectionHeading heading="Project:" subheading="Watch the documentary" />
+      <HomepageSectionHeading
+        heading="Project:"
+        subheading="Watch the documentary"
+      />
     </div>
   );
 };

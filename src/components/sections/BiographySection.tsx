@@ -6,11 +6,11 @@ import {
   BiographyCard,
   BiographyCardSkeleton,
 } from "@/components/modules/cards/BiographyCard";
-import { BiographyCardData } from "@/components/loaders/sectionLoaders/BiographySectionLoader";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
+import { FrontendArticle } from "@/lib/data/types";
 
 interface BiographySectionProps {
-  articles: BiographyCardData[];
+  articles: FrontendArticle[];
 }
 
 interface ScrollLayoutProps {
