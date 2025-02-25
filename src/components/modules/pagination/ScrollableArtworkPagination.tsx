@@ -55,7 +55,7 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <div className="relative w-full group pb-32">
+    <div className="relative w-full group">
       {showLeftButton && (
         <button
           onClick={() => handleScroll("left")}

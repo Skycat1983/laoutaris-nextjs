@@ -7,6 +7,7 @@ import {
   FavouritesButton,
   WatchlistButton,
 } from "@/components/elements/buttons";
+import { Bookmark, Heart } from "lucide-react";
 
 // Classic Museum Card
 export const ClassicMuseumCard = ({
@@ -17,7 +18,7 @@ export const ClassicMuseumCard = ({
   isLoggedIn: boolean;
 }) => {
   return (
-    <div className="w-1/2 max-w-2xl p-12 bg-cream-50 border border-gray-200">
+    <div className="w-5/8 max-w-2xl p-12 bg-cream-50 border border-gray-200">
       <div className="space-y-8">
         <div className="text-left border-b pb-6">
           <h1 className="font-serif text-3xl mb-2">Joseph Laoutaris</h1>
@@ -227,7 +228,7 @@ export const TimelineCard = ({
           </div>
         </div>
 
-        <div className="relative">
+        {/* <div className="relative w-1/2">
           <div className="absolute -left-10 w-4 h-4 bg-gray-200 rounded-full" />
           <div className={`flex space-x-4 ${pl}`}>
             <WatchlistButton
@@ -240,6 +241,34 @@ export const TimelineCard = ({
               isFavourited={artwork.isFavourited}
               artworkId={artwork._id}
             />
+          </div>
+        </div> */}
+        <div className="col-span-6 flex items-end justify-start space-x-6 pl-8">
+          <div className="flex flex-col items-center gap-1">
+            <Bookmark
+              className={`w-6 h-6 transition-colors duration-300 cursor-pointer
+                ${
+                  artwork.isWatchlisted
+                    ? "fill-black stroke-black"
+                    : "stroke-gray-400 hover:stroke-black"
+                }`}
+            />
+            <span className="text-xs text-gray-500">
+              {artwork.watchlistCount}
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <Heart
+              className={`w-6 h-6 transition-colors duration-300 cursor-pointer
+                ${
+                  artwork.isFavourited
+                    ? "fill-black stroke-black"
+                    : "stroke-gray-400 hover:stroke-black"
+                }`}
+            />
+            <span className="text-xs text-gray-500">
+              {artwork.favouritedCount}
+            </span>
           </div>
         </div>
       </div>

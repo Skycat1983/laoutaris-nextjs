@@ -1,7 +1,7 @@
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
-import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
+import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 
 export async function WatchlistPaginationLoader() {
   const result = await serverPublicApi.user.fetchUserWatchlist();
@@ -18,10 +18,12 @@ export async function WatchlistPaginationLoader() {
     buildUrl(["account", "watchlist", artwork._id]);
 
   return (
-    <ArtworkPagination
-      items={data.watchlist}
+    <ScrollableArtworkPagination
+      items={data.watchlist.map((artwork) => ({
+        ...artwork,
+        link: buildFavouritesLink(artwork),
+      }))}
       heading="Your Watchlist"
-      link_to={buildFavouritesLink}
     />
   );
 }

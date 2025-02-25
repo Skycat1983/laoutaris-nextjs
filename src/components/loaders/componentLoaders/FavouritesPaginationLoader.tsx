@@ -2,6 +2,7 @@ import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
+import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 
 export async function FavouritesPaginationLoader() {
   const result: ApiResponse<{
@@ -20,10 +21,18 @@ export async function FavouritesPaginationLoader() {
     buildUrl(["account", "favourites", artwork._id]);
 
   return (
-    <ArtworkPagination
-      items={data.favourites}
+    // <ArtworkPagination
+    //   items={data.favourites}
+    //   heading="Your Favourites"
+    //   link_to={buildFavouritesLink}
+    // />
+
+    <ScrollableArtworkPagination
+      items={data.favourites.map((artwork) => ({
+        ...artwork,
+        link: buildFavouritesLink(artwork),
+      }))}
       heading="Your Favourites"
-      link_to={buildFavouritesLink}
     />
   );
 }

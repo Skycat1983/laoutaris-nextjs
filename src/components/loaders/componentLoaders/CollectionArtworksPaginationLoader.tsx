@@ -47,6 +47,7 @@ export async function CollectionArtworksPaginationLoader({
         items={itemsWithLinks}
         heading="More from this collection"
       />
+      <div className="h-16"></div>
     </>
   );
 }

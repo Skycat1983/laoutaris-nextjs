@@ -26,7 +26,7 @@ export const ArtworkPaginationItem = ({
 
   const containerClassname = `
     relative
-    h-auto 
+    h-[400px] 
     w-auto 
     transition-all
     duration-500

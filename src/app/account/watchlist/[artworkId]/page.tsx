@@ -1,7 +1,7 @@
 "use server";
 
 import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
-import WatchlistedArtworkLoader from "@/components/loaders/viewLoaders/WatclistedArtworkLoader";
+import { WatchlistedArtworkLoader } from "@/components/loaders/viewLoaders/WatclistedArtworkLoader";
 import { Suspense } from "react";
 
 export default async function WatchlistedArtwork({

@@ -1,4 +1,5 @@
 import { FavouritesButton } from "@/components/elements/buttons/FavouritesButton";
+import { Heart, Bookmark } from "lucide-react";
 
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import { HexColorPalette } from "../disclosures/ColorPallette";
@@ -72,9 +73,9 @@ export const ArtworkMagazineCard2 = ({
   isLoggedIn: boolean;
 }) => {
   return (
-    <div className="w-full max-w-xl p-12 bg-white">
+    <div className="w-full max-w-xl p-8 bg-white">
       <div className="grid grid-cols-12 gap-0">
-        <div className="col-span-8 flex flex-col justify-center">
+        <div className="col-span-8 flex flex-col justify-start">
           <div className="flex flex-row items-center">
             <div className="h-[80px] w-[80px] bg-gradient-to-bl from-gray-400/10 to-gray-900/20 m-2 flex justify-center items-center">
               <div className="h-[25px] w-full m-auto flex justify-center items-center border-r-[3px] border-black pl-1">
@@ -113,17 +114,33 @@ export const ArtworkMagazineCard2 = ({
           />
         </div>
 
-        <div className="col-span-6 flex items-end justify-end space-x-4">
-          <WatchlistButton
-            isWatchlisted={artwork.isWatchlisted}
-            artworkId={artwork._id}
-            isLoggedIn={isLoggedIn}
-          />
-          <FavouritesButton
-            isLoggedIn={isLoggedIn}
-            isFavourited={artwork.isFavourited}
-            artworkId={artwork._id}
-          />
+        <div className="col-span-6 flex items-end justify-end space-x-6">
+          <div className="flex flex-col items-center gap-1">
+            <Bookmark
+              className={`w-6 h-6 transition-colors duration-300 cursor-pointer
+                ${
+                  artwork.isWatchlisted
+                    ? "fill-black stroke-black"
+                    : "stroke-gray-400 hover:stroke-black"
+                }`}
+            />
+            <span className="text-xs text-gray-500">
+              {artwork.watchlistCount}
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <Heart
+              className={`w-6 h-6 transition-colors duration-300 cursor-pointer
+                ${
+                  artwork.isFavourited
+                    ? "fill-black stroke-black"
+                    : "stroke-gray-400 hover:stroke-black"
+                }`}
+            />
+            <span className="text-xs text-gray-500">
+              {artwork.favouritedCount}
+            </span>
+          </div>
         </div>
       </div>
     </div>
