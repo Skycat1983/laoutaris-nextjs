@@ -1,20 +1,16 @@
-import type {
-  CreateArticleFormValues,
-  FrontendArticle,
-} from "@/lib/data/types/articleTypes";
-import type {
-  CreateCollectionFormValues,
-  FrontendCollection,
-} from "@/lib/data/types/collectionTypes";
-import type {
-  CreateArtworkFormValues,
-  FrontendArtwork,
-} from "@/lib/data/types/artworkTypes";
+import type { FrontendArticle } from "@/lib/data/types/articleTypes";
+import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type {
   CreateBlogFormValues,
   FrontendBlogEntry,
 } from "@/lib/data/types/blogTypes";
 import { Fetcher } from "../../core/createFetcher";
+import {
+  CreateArticleFormValues,
+  CreateArtworkFormValues,
+} from "@/lib/data/schemas";
+import { CreateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 
 export const createPostFetchers = (fetcher: Fetcher) => ({
   // Post new article

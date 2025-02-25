@@ -1,15 +1,17 @@
-import { fetchUserComments } from "../../../../phase_out/userApi";
 import React from "react";
 import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
-import UserCommentsView from "@/components/views/UserCommentsView";
+import { UserCommentsView } from "@/components/views/UserCommentsView";
 import { FrontendUserWithComments } from "@/lib/data/types/userTypes";
+import { serverApi } from "@/lib/api/serverApi";
 
 export const UserCommentsLoader = async () => {
   const result: ApiResponse<FrontendUserWithComments> =
-    await fetchUserComments();
+    await serverApi.public.user.fetchUserComments();
   if (!result.success) {
     throw new Error(result.error);
   }
+
+  console.log("result", result.data);
 
   const comments = result.data.comments as FrontendCommentWithBlogNav[];
 

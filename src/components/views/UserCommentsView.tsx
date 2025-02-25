@@ -12,11 +12,12 @@ type Props = {
 };
 
 const UserCommentsView = ({ comments }: Props) => {
+  console.log("comments", comments);
   const blogLink = (comment: FrontendCommentWithBlogNav) =>
     `/blog/${comment.blog.slug}`;
   console.log("comments", comments);
 
-  // Group comments by blog slug
+  // group comments by blog slug
   const commentsByBlog = comments.reduce((acc, comment) => {
     const blogSlug = comment.blog.slug;
     if (!acc[blogSlug]) {
@@ -42,6 +43,7 @@ const UserCommentsView = ({ comments }: Props) => {
       },
     };
   };
+
   return (
     <>
       <div className="space-y-8 mt-8 border border-gray-600 rounded-lg p-4 container mx-auto max-w-3xl p-16 bg-gray-200">
@@ -82,6 +84,7 @@ const UserCommentsView = ({ comments }: Props) => {
               <CommentCard
                 key={comment._id}
                 comment={withPlaceholderUsername(comment)}
+                onCommentUpdated={() => {}}
               />
               // </Link>
             ))}

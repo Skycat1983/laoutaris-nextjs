@@ -26,12 +26,13 @@ import {
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import {
-  updateArticleSchema,
-  UpdateArticleFormValues,
-} from "@/lib/data/types/articleTypes";
+
 import { patchArticle } from "../../../../../still useful/patchApi";
 import { readArtwork } from "../../../../../still useful/readApi";
+import {
+  UpdateArticleFormValues,
+  updateArticleSchema,
+} from "@/lib/data/schemas";
 
 interface UpdateArticleFormProps {
   articleInfo: FrontendArticleWithArtworkAndAuthor;

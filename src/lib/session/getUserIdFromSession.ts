@@ -9,7 +9,23 @@ import { authOptions } from "@/lib/config/authOptions";
 
 type UserIdentifier = string | null;
 
-export const getUserIdFromSession = async (): Promise<UserIdentifier> => {
+export const getUserIdFromSession = async (
+  req?: Request
+): Promise<UserIdentifier> => {
+  // For Postman testing in development environment
+  if (process.env.NODE_ENV === "development" && req) {
+    const testUserId = req.headers.get("X-Test-User-Id");
+    if (testUserId) {
+      console.log("Using test user ID:", testUserId);
+      return testUserId;
+    }
+    const testAdminId = req.headers.get("X-Test-Admin-Id");
+    if (testAdminId) {
+      console.log("Using test admin ID:", testAdminId);
+      return testAdminId;
+    }
+  }
+
   const session = await getServerSession(authOptions);
 
   if (session && session.user && session.user.name) {

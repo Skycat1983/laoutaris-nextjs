@@ -25,20 +25,9 @@ import {
   FrontendBlogEntryUnpopulated,
 } from "@/lib/data/types/blogTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { updateBlogFormSchema } from "@/lib/data/schemas";
 
-// Define the schema for updating a blog entry
-const updateBlogSchema = z.object({
-  displayDate: z.date(),
-  imageUrl: z.string().url("Invalid URL"),
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  summary: z.string().min(1, "Summary is required"),
-  text: z.string().min(1, "Blog content is required"),
-  featured: z.boolean(),
-  // tags: z.array(z.string()).optional(),
-});
-
-type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;
+type UpdateBlogFormValues = z.infer<typeof updateBlogFormSchema>;
 
 export const UpdateBlogForm = ({
   blogInfo,
@@ -55,7 +44,7 @@ export const UpdateBlogForm = ({
   const [selectedYear, setSelectedYear] = useState(initialYear);
 
   const form = useForm<UpdateBlogFormValues>({
-    resolver: zodResolver(updateBlogSchema),
+    resolver: zodResolver(updateBlogFormSchema),
     defaultValues: {
       displayDate: new Date(blogInfo.displayDate),
       imageUrl: blogInfo.imageUrl,

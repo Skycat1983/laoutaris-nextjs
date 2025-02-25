@@ -1,8 +1,10 @@
-import type { UpdateArticleFormValues } from "@/lib/data/types/articleTypes";
-import type { UpdateCollectionFormValues } from "@/lib/data/types/collectionTypes";
-import type { UpdateArtworkFormValues } from "@/lib/data/types/artworkTypes";
 import type { UpdateBlogFormValues } from "@/lib/data/types/blogTypes";
 import type { Fetcher } from "../../core/createFetcher";
+import {
+  UpdateArticleFormValues,
+  UpdateArtworkFormValues,
+} from "@/lib/data/schemas";
+import { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 
 interface UpdateResponse {
   success: boolean;

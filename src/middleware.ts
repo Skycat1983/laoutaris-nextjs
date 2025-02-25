@@ -1,62 +1,89 @@
-import { type NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-//* for client side
+export const config = {
+  matcher: ["/account/:path*", "/admin/:path*", "/api/v2/admin/:path*"],
+};
 
-export const middleware = async (req: NextRequest) => {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Get token directly - no database calls
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const isAdmin = token?.role === "admin";
 
-  //! Visitor trying to access FRONTEND route for authenticated users
+  // For test headers in development
+  let testUserId = null;
+  let testIsAdmin = false;
+
+  if (process.env.NODE_ENV === "development") {
+    testUserId =
+      req.headers.get("X-Test-User-Id") || req.headers.get("X-Test-Admin-Id");
+    testIsAdmin = !!req.headers.get("X-Test-Admin-Id");
+  }
+
+  // User is authenticated if they have a token OR test headers
+  const isAuthenticated = !!token || !!testUserId;
+  // User is admin if token says so OR test admin header
+  const userIsAdmin = isAdmin || testIsAdmin;
+
+  // Handle account routes
   if (pathname.startsWith("/account")) {
-    console.log("Middleware: Accessing /account FRONTEND route");
-    if (!token) {
-      console.log(
-        "Middleware: No token found, redirecting to /api/auth/signin"
-      );
+    if (!isAuthenticated) {
       return NextResponse.redirect(new URL("/api/auth/signin", req.url));
     }
-    console.log("Middleware: access permitted to /account");
     return NextResponse.next();
   }
 
-  //! Visitor trying to access FRONTEND route for ADMIN users
+  // Handle admin frontend routes
   if (pathname.startsWith("/admin")) {
-    // console.log("Middleware: Accessing /admin FRONTEND route");
-    if (!token) {
-      ("Middleware: No token found, redirecting to /api/auth/signin");
+    if (!isAuthenticated) {
       return NextResponse.redirect(new URL("/api/auth/signin", req.url));
     }
-    // console.log("Middleware: Token found", token);
-    if (!isAdmin) {
-      console.log(
-        "Middleware: User is not admin, redirecting to user account page"
-      );
+    if (!userIsAdmin) {
       return NextResponse.redirect(new URL("/account", req.url));
     }
-    // console.log("Middleware: access permitted to /admin");
     return NextResponse.next();
   }
 
-  //! Visitor trying to access API route for ADMIN users
-  if (pathname.startsWith("/api/admin")) {
-    // console.log("Middleware: Accessing /api/admin API route");
-    // console.log("Middleware: Pathname", pathname);
-    // console.log("Middleware: Token", token);
-    if (!token) {
-      console.log("Middleware: No token found, redirecting to homepage");
-      return NextResponse.redirect(new URL("/", req.url));
+  // Handle admin API routes
+  if (pathname.startsWith("/api/v2/admin")) {
+    if (!isAuthenticated) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
-    if (!isAdmin) {
-      console.log("Middleware: User is not admin, redirecting to homepage");
-      return NextResponse.redirect(new URL("/", req.url));
+    if (!userIsAdmin) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden" },
+        { status: 403 }
+      );
     }
-    console.log("Middleware: access permitted to /api/admin route");
-    return NextResponse.next();
+
+    // Add headers for downstream use
+    const requestWithUserInfo = new NextRequest(req);
+    if (token) {
+      console.log("Token found");
+    }
+    if (testUserId) {
+      console.log("Test user ID found", testUserId);
+    }
+    if (userIsAdmin) {
+      console.log("User is admin");
+    }
+    const userId = token?.sub || testUserId;
+    const role = userIsAdmin ? "admin" : "user";
+
+    if (userId) {
+      requestWithUserInfo.headers.set("X-User-ID", userId);
+      requestWithUserInfo.headers.set("X-User-Role", role);
+    }
+
+    return NextResponse.next({
+      request: requestWithUserInfo,
+    });
   }
 
-  // all other cases
   return NextResponse.next();
-};
+}

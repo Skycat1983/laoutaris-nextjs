@@ -1,31 +1,42 @@
-import { authOptions } from "@/lib/config/authOptions";
 import { BlogModel } from "@/lib/data/models";
-import { CreateBlogFormSchema } from "@/lib/data/schemas/formSchemas";
-import { getServerSession } from "next-auth";
+import { createBlogFormSchema } from "@/lib/data/schemas";
+import { FrontendBlogEntry } from "@/lib/data/types";
+import { getAuthUser } from "@/lib/session/getAuthUser";
 import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const user = await getAuthUser(request);
+
+    // The middleware already checked authentication,
+    // but we double-check here for safety
+    if (!user) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        { success: false, error: "Unauthorized" } satisfies ApiErrorResponse,
         { status: 401 }
       );
     }
 
-    const body = await request.json();
-    const validatedData = CreateBlogFormSchema.parse(body);
+    if (user.role !== "admin") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Forbidden: Admin access required",
+        } satisfies ApiErrorResponse,
+        { status: 403 }
+      );
+    }
 
-    // Create slug from title
+    const body = await request.json();
+    const validatedData = createBlogFormSchema.parse(body);
+
     const slug = slugify(validatedData.title, { lower: true });
 
-    // Combine the validated data with additional fields
     const blogData = {
       ...validatedData,
       slug,
-      author: session.user.id,
+      author: user.id,
     };
 
     const blog = new BlogModel(blogData);
@@ -34,11 +45,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: blog,
-    });
+    } satisfies ApiSuccessResponse<FrontendBlogEntry>);
   } catch (error) {
     console.error("Error in blog create route:", error);
+
     return NextResponse.json(
-      { success: false, error: "Failed to create blog entry" },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }
