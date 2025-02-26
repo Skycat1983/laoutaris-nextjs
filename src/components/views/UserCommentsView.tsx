@@ -83,7 +83,7 @@ const UserCommentsView = ({ comments }: Props) => {
               // <Link key={comment._id} href={blogLink(comment)}>
               <CommentCard
                 key={comment._id}
-                comment={withPlaceholderUsername(comment)}
+                comment={comment}
                 onCommentUpdated={() => {}}
               />
               // </Link>

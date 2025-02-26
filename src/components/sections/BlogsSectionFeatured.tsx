@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 import { useState } from "react";
+import { NewLogoDark, NewLogoLight } from "../elements/icons/NewLogos";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryData[];
@@ -43,6 +44,9 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
                   </p>
                 </div>
               </div>
+              {/* <div className="absolute bottom-0 right-0 p-0">
+                <NewLogoLight />
+              </div> */}
             </article>
           </Link>
         </div>

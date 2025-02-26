@@ -85,7 +85,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
         serverPublicApi.blog.fetchBlogs({
           sortby: "featured",
           page: 1,
-          limit: 4,
+          limit: 5,
           fields: BLOG_ENTRIES_CONFIG.fields,
         }),
         serverPublicApi.blog.fetchBlogs({
@@ -97,7 +97,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
         serverPublicApi.blog.fetchBlogs({
           sortby: "popular",
           page: 1,
-          limit: 6,
+          limit: 8,
           fields: BLOG_ENTRIES_CONFIG.fields,
         }),
       ]);

@@ -53,7 +53,7 @@ export const MainNavLoader = async () => {
         collectionNavigationList[0].artworkId,
       ]),
     },
-    { label: "Blog", path: buildUrl(["blog"], { sortby: "latest" }) },
+    { label: "Blog", path: buildUrl(["blog"]) },
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
