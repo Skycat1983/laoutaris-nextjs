@@ -1,4 +1,4 @@
-import { BlogModel } from "@/lib/data/models";
+import { BlogModel, UserModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
@@ -13,9 +13,9 @@ export async function GET(request: NextRequest) {
       const limit = parseInt(searchParams.get("limit") || "10");
       const page = parseInt(searchParams.get("page") || "1");
       const skip = (page - 1) * limit;
-      const total = await BlogModel.countDocuments();
+      const total = await UserModel.countDocuments();
 
-      const blogs = await BlogModel.find()
+      const users = await UserModel.find()
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: blogs,
+        data: users,
         metadata: {
           page,
           limit,
@@ -34,23 +34,23 @@ export async function GET(request: NextRequest) {
     }
 
     // If ID provided, return single item
-    const blog = await BlogModel.findById(id);
+    const user = await UserModel.findById(id);
 
-    if (!blog) {
+    if (!user) {
       return NextResponse.json(
-        { success: false, error: "Blog not found" },
+        { success: false, error: "User not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      data: blog,
+      data: user,
     });
   } catch (error) {
     console.error("[BLOG_READ]", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch blog(s)" },
+      { success: false, error: "Failed to fetch user(s)" },
       { status: 500 }
     );
   }

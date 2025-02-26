@@ -126,7 +126,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendCollection[]>(
+    return fetcher<FrontendCollectionWithArtworks[]>(
       `/api/v2/admin/collection/read?${params}`
     );
   },

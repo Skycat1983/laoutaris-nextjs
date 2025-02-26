@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";

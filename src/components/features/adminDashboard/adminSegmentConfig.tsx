@@ -1,5 +1,3 @@
-import { CreateCollectionForm } from "@/components/modules/forms/admin/CreateCollectionForm";
-import { UpdateCollection } from "@/components/modules/forms/admin/UpdateCollection";
 import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";
 import { Suspense } from "react";
 import { ArtworkListSkeleton } from "@/components/admin/crud/read/ReadArtworkList";
@@ -13,6 +11,20 @@ import { ArtworkOperations } from "@/components/features/adminDashboard/ArtworkO
 import { BlogOperations } from "@/components/features/adminDashboard/BlogOperations";
 import { ArticleOperations } from "./ArticleOperations";
 import { CollectionOperations } from "@/components/features/adminDashboard/CollectionOperations";
+import {
+  CollectionListSkeleton,
+  ReadCollectionList,
+} from "@/components/admin/crud/read/ReadCollectionList";
+import { UserOperations } from "./UserOperations";
+import { CommentOperations } from "./CommentOperations";
+import {
+  UserListSkeleton,
+  ReadUserList,
+} from "@/components/admin/crud/read/ReadUserList";
+import {
+  CommentListSkeleton,
+  ReadCommentList,
+} from "@/components/admin/crud/read/ReadCommentList";
 
 export const adminSegmentConfig = {
   articles: {
@@ -47,21 +59,35 @@ export const adminSegmentConfig = {
   },
   collections: {
     createComponent: <CollectionOperations operationType="create" />,
-    readComponent: <div>Read Collection</div>,
+    readComponent: (
+      <Suspense fallback={<CollectionListSkeleton />}>
+        <ReadCollectionList />
+      </Suspense>
+    ),
     updateComponent: <CollectionOperations operationType="update" />,
     deleteComponent: <CollectionOperations operationType="delete" />,
   },
   users: {
-    createComponent: <div>Create User</div>,
-    readComponent: <div>Read User</div>,
-    updateComponent: <div>Update User</div>,
-    deleteComponent: <div>Delete User</div>,
+    createComponent: <div>Not Available</div>,
+    readComponent: (
+      <Suspense fallback={<UserListSkeleton />}>
+        <ReadUserList />
+      </Suspense>
+    ),
+    updateComponent: <div>Not Available</div>,
+    deleteComponent: <UserOperations operationType="delete" />,
+    disabledOperations: ["create", "update"],
   },
   comments: {
-    createComponent: <div>Create Comment</div>,
-    readComponent: <div>Read Comment</div>,
-    updateComponent: <div>Update Comment</div>,
-    deleteComponent: <div>Delete Comment</div>,
+    createComponent: <div>Not Available</div>,
+    readComponent: (
+      <Suspense fallback={<CommentListSkeleton />}>
+        <ReadCommentList />
+      </Suspense>
+    ),
+    updateComponent: <div>Not Available</div>,
+    deleteComponent: <CommentOperations operationType="delete" />,
+    disabledOperations: ["create", "update"],
   },
 } as const;
 

@@ -29,10 +29,3 @@ export default function SegmentPage({
 function isValidSegment(segment: string): segment is AdminSegment {
   return segment in adminSegmentConfig;
 }
-
-//? Unused?
-export function generateStaticParams() {
-  return Object.keys(adminSegmentConfig).map((segment) => ({
-    segment,
-  }));
-}

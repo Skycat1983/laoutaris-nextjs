@@ -4,10 +4,7 @@ import { useState } from "react";
 import { DocumentReader } from "./DocumentReader";
 import { CreateCollectionForm } from "../../modules/forms/admin/CreateCollectionForm";
 import { UpdateCollectionForm } from "../../modules/forms/admin/UpdateCollectionForm";
-import type {
-  FrontendCollection,
-  FrontendCollectionWithArtworks,
-} from "@/lib/data/types/collectionTypes";
+import type { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";

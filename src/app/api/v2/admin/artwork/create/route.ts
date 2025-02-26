@@ -1,9 +1,9 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { CreateArtworkFormSchema } from "@/lib/data/schemas/formSchemas";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/config/authOptions";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { createArtworkSchema } from "@/lib/data/schemas";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const validatedData = CreateArtworkFormSchema.parse(body);
+    const validatedData = createArtworkSchema.parse(body);
 
     // Ensure image data is properly structured
     const artworkData = {

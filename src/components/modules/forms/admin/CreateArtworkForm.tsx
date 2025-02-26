@@ -27,7 +27,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { BaseArtwork } from "@/lib/data/models";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { clientApi } from "@/lib/api/clientApi";
 import { createArtworkSchema } from "@/lib/data/schemas";
 
 interface CreateArtworkFormProps {
@@ -59,7 +59,7 @@ export function CreateArtworkForm({
 
       console.log("artworkData", artworkData);
 
-      const response = await clientAdminApi.create.artwork(artworkData);
+      const response = await clientApi.admin.create.artwork(artworkData);
       if (response.success) {
         onSuccess();
       } else {
