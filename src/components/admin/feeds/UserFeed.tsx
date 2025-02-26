@@ -1,15 +1,15 @@
 "use client";
 
-import { CommentFeedCard } from "../../modules/cards/CommentFeedCard";
+import { UserFeedCard } from "../../modules/cards/UserFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import type { FrontendUser } from "@/lib/data/types/userTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 
-export function CommentFeed() {
-  const [comments, setComments] = useState<FrontendCommentWithAuthor[]>([]);
+export function UserFeed() {
+  const [users, setUsers] = useState<FrontendUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,
@@ -18,16 +18,16 @@ export function CommentFeed() {
     totalPages: 1,
   });
 
-  async function fetchComments(page: number) {
+  async function fetchUsers(page: number) {
     setIsLoading(true);
     try {
-      const result = await clientApi.admin.read.comments({
+      const result = await clientApi.admin.read.users({
         page,
         limit: 10,
       });
 
       if (result.success) {
-        setComments(result.data);
+        setUsers(result.data);
         if (result.metadata) {
           setMetadata({
             page: result.metadata.page ?? 1,
@@ -38,18 +38,18 @@ export function CommentFeed() {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch comments:", error);
+      console.error("Failed to fetch users:", error);
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchComments(1);
+    fetchUsers(1);
   }, []);
 
   const handlePageChange = (newPage: number) => {
-    fetchComments(newPage);
+    fetchUsers(newPage);
   };
 
   if (isLoading) return <FeedSkeleton />;
@@ -57,8 +57,8 @@ export function CommentFeed() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4 p-4">
-        {comments.map((comment, index) => (
-          <CommentFeedCard key={comment._id || index} item={comment} />
+        {users.map((user, index) => (
+          <UserFeedCard key={user._id || index} item={user} />
         ))}
       </div>
       <FeedPagination

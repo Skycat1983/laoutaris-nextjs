@@ -12,6 +12,7 @@ import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
 import { clientApi } from "@/lib/api/clientApi";
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "../shadcn/skeleton";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -145,7 +146,21 @@ const BlogDetail = ({
   );
 };
 
-export { BlogDetail };
+const BlogDetailSkeleton = () => {
+  return (
+    <div className="w-full md:w-3/4  xl:w-1/2 mx-auto shadow bg-white">
+      <div className="relative h-[500px] w-full">
+        <Skeleton className="w-full h-[500px]" />
+      </div>
+      <article className="prose-xl text-center p-24 bg-white fade-in mx-auto">
+        {[...Array(15)].map((_, index) => (
+          <Skeleton key={index} className="m-2 h-4 w-full mx-auto" />
+        ))}
+      </article>
+    </div>
+  );
+};
+export { BlogDetail, BlogDetailSkeleton };
 
 // AUTHOR INFO IF NEEDED
 {

@@ -15,6 +15,7 @@ import { CollectionFeed } from "./CollectionFeed";
 import { CommentFeed } from "./CommentFeed";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/shadcn/button";
+import { UserFeed } from "./UserFeed";
 
 const baseTabClass =
   "text-lg font-archivo px-6 text-gray-400 data-[state=active]:text-black transition-colors whitespace-nowrap";
@@ -59,6 +60,9 @@ export function FeedTabs() {
               <TabsTrigger value="comments" className={baseTabClass}>
                 Comments
               </TabsTrigger>
+              <TabsTrigger value="users" className={baseTabClass}>
+                Users
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -95,6 +99,11 @@ export function FeedTabs() {
           <TabsContent value="comments">
             <Suspense fallback={<FeedSkeleton />}>
               <CommentFeed />
+            </Suspense>
+          </TabsContent>
+          <TabsContent value="users">
+            <Suspense fallback={<FeedSkeleton />}>
+              <UserFeed />
             </Suspense>
           </TabsContent>
         </div>

@@ -1,11 +1,13 @@
 import { BlogDetail } from "@/components/views/BlogDetail";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { delay } from "@/lib/utils/debug";
 interface Props {
   slug: string;
   showComments?: boolean;
 }
 
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
+  await delay(2000);
   try {
     const result = showComments
       ? await serverPublicApi.blog.fetchBlogCommentsAuthor(slug)
