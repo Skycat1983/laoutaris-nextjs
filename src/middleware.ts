@@ -10,20 +10,22 @@ export default async function middleware(req: NextRequest) {
 
   // Get token directly - no database calls
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // console.log("token", token);
   const isAdmin = token?.role === "admin";
 
   // For test headers in development
   let testUserId = null;
   let testIsAdmin = false;
+  let testAdminId = null;
 
   if (process.env.NODE_ENV === "development") {
-    testUserId =
-      req.headers.get("X-Test-User-Id") || req.headers.get("X-Test-Admin-Id");
-    testIsAdmin = !!req.headers.get("X-Test-Admin-Id");
+    testUserId = req.headers.get("X-Test-User-Id");
+    testAdminId = req.headers.get("X-Test-Admin-Id");
+    testIsAdmin = !!testAdminId;
   }
 
   // User is authenticated if they have a token OR test headers
-  const isAuthenticated = !!token || !!testUserId;
+  const isAuthenticated = !!token || !!testUserId || !!testAdminId;
   // User is admin if token says so OR test admin header
   const userIsAdmin = isAdmin || testIsAdmin;
 
@@ -61,18 +63,19 @@ export default async function middleware(req: NextRequest) {
       );
     }
 
-    // Add headers for downstream use
+    // Create a new request with all the original headers
     const requestWithUserInfo = new NextRequest(req);
-    if (token) {
-      console.log("Token found");
-    }
+
+    // IMPORTANT: Preserve the original test headers
     if (testUserId) {
-      console.log("Test user ID found", testUserId);
+      requestWithUserInfo.headers.set("X-Test-User-Id", testUserId);
     }
-    if (userIsAdmin) {
-      console.log("User is admin");
+    if (testAdminId) {
+      requestWithUserInfo.headers.set("X-Test-Admin-Id", testAdminId);
     }
-    const userId = token?.sub || testUserId;
+
+    // Add our processed user info
+    const userId = token?.sub || testUserId || testAdminId;
     const role = userIsAdmin ? "admin" : "user";
 
     if (userId) {

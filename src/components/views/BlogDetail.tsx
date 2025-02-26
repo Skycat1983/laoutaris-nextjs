@@ -38,7 +38,7 @@ const BlogDetail = ({
     setIsLoadingComments(true);
     try {
       const result = await clientPublicApi.blog.fetchBlogCommentsAuthor(slug);
-      console.log("result", result);
+      // console.log("result", result);
       if (result.success) {
         setPopulatedComments(result.data.comments);
         setHasLoadedComments(true);

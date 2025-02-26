@@ -12,6 +12,7 @@ import {
   ArtworkMagazineCard,
   ArtworkMagazineCard2,
 } from "../modules/cards/ArtworkMagazineCard";
+import { MagnifierImage } from "../modules/MagnifierImage";
 
 const ArtworkView = (artwork: PublicArtwork) => {
   const Card = () => {
@@ -43,12 +44,13 @@ const ArtworkView = (artwork: PublicArtwork) => {
       >
         <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
           {artwork && (
-            <Image
+            <MagnifierImage
               src={artwork.image.secure_url}
               width={artwork.image.pixelWidth}
               height={artwork.image.pixelHeight}
-              alt="Artwork"
-              className="object-contain max-h-full w-auto shadow-2xl fade-in"
+              alt={artwork.title || "Artwork"}
+              magnifierSize={250}
+              magnificationLevel={8}
             />
           )}
         </span>

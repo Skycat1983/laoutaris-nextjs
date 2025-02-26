@@ -115,28 +115,28 @@ export interface FrontendBlogEntryWithCommentAuthor extends BaseBlogEntry {
 //   tags: string[];
 // }
 
-export const updateBlogSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  summary: z.string().min(10, "Summary must be at least 10 characters"),
-  text: z.string().min(50, "Blog text must be at least 50 characters"),
-  imageUrl: z.string().url("Invalid URL"),
-  displayDate: z.date(),
-  featured: z.boolean(),
-  // tags: z.array(z.string()),
-});
+// export const updateBlogSchema = z.object({
+//   title: z.string().min(1, "Title is required"),
+//   subtitle: z.string().min(1, "Subtitle is required"),
+//   summary: z.string().min(10, "Summary must be at least 10 characters"),
+//   text: z.string().min(50, "Blog text must be at least 50 characters"),
+//   imageUrl: z.string().url("Invalid URL"),
+//   displayDate: z.date(),
+//   featured: z.boolean(),
+//   // tags: z.array(z.string()),
+// });
 
-export type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;
+// export type UpdateBlogFormValues = z.infer<typeof updateBlogSchema>;
 
-export const createBlogSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  subtitle: z.string().min(1, "Subtitle is required"),
-  summary: z.string().min(10, "Summary must be at least 10 characters"),
-  text: z.string().min(50, "Blog text must be at least 50 characters"),
-  imageUrl: z.string().url("Invalid URL"),
-  displayDate: z.date(),
-  featured: z.boolean().default(false),
-  // tags: z.array(z.string()),
-});
+// export const createBlogSchema = z.object({
+//   title: z.string().min(1, "Title is required"),
+//   subtitle: z.string().min(1, "Subtitle is required"),
+//   summary: z.string().min(10, "Summary must be at least 10 characters"),
+//   text: z.string().min(50, "Blog text must be at least 50 characters"),
+//   imageUrl: z.string().url("Invalid URL"),
+//   displayDate: z.date(),
+//   featured: z.boolean().default(false),
+//   // tags: z.array(z.string()),
+// });
 
-export type CreateBlogFormValues = z.infer<typeof createBlogSchema>;
+// export type CreateBlogFormValues = z.infer<typeof createBlogSchema>;

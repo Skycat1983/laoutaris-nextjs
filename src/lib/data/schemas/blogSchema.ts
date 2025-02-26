@@ -22,3 +22,26 @@ export const updateBlogFormSchema = z.object({
 });
 
 export type UpdateBlogFormValues = z.infer<typeof updateBlogFormSchema>;
+
+export const apiUpdateBlogSchema = z.object({
+  title: z.string().min(1, "Title is required").optional(),
+  subtitle: z.string().min(1, "Subtitle is required").optional(),
+  summary: z
+    .string()
+    .min(10, "Summary must be at least 10 characters")
+    .optional(),
+  text: z
+    .string()
+    .min(50, "Blog text must be at least 50 characters")
+    .optional(),
+  imageUrl: z.string().url("Invalid URL").optional(),
+  displayDate: z
+    .string()
+    .or(z.date())
+    .transform((val) => (val ? new Date(val) : undefined))
+    .optional(),
+  featured: z.boolean().optional(),
+  // tags: z.array(z.string()).optional(),
+});
+
+export type ApiUpdateBlogValues = z.infer<typeof apiUpdateBlogSchema>;

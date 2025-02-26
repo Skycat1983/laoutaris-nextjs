@@ -16,18 +16,12 @@ import { Textarea } from "@/components/shadcn/textarea";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { DatePicker } from "../../datePicker/DatePicker";
-import {
-  FrontendBlogEntry,
-  FrontendBlogEntryUnpopulated,
-} from "@/lib/data/types/blogTypes";
+import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
-import { updateBlogFormSchema } from "@/lib/data/schemas";
-
-type UpdateBlogFormValues = z.infer<typeof updateBlogFormSchema>;
+import { updateBlogFormSchema, UpdateBlogFormValues } from "@/lib/data/schemas";
 
 export const UpdateBlogForm = ({
   blogInfo,

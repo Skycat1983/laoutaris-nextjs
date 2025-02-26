@@ -16,11 +16,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import {
-  FrontendCollectionWithArtworks,
-  UpdateCollectionFormValues,
-  updateCollectionSchema,
-} from "@/lib/data/types/collectionTypes";
+import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   Tabs,
@@ -30,6 +26,10 @@ import {
 } from "@/components/shadcn/tabs";
 import { patchCollection } from "../../../../../still useful/patchApi";
 import { readArtwork } from "../../../../../still useful/readApi";
+import {
+  UpdateCollectionFormValues,
+  updateCollectionSchema,
+} from "@/lib/data/schemas/collectionSchema";
 
 interface UpdateCollectionFormProps {
   collectionInfo: FrontendCollectionWithArtworks;

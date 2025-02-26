@@ -31,7 +31,9 @@ function ensureSingleDocument(
 export async function getAuthUser(req: NextRequest): Promise<AuthUser | null> {
   // Check for test headers first (development only)
   if (process.env.NODE_ENV === "development") {
+    console.log("Getting auth user in development");
     const testUserId = req.headers.get("X-Test-User-Id");
+    console.log("testUserId", testUserId);
     if (testUserId) {
       console.log("Using test user ID:", testUserId);
       try {
@@ -54,8 +56,11 @@ export async function getAuthUser(req: NextRequest): Promise<AuthUser | null> {
         console.error("Error fetching test user:", error);
       }
     }
+    console.log("No test user ID found");
 
     const testAdminId = req.headers.get("X-Test-Admin-Id");
+    console.log("req.headers", req.headers);
+    console.log("testAdminId", testAdminId);
     if (testAdminId) {
       console.log("Using test admin ID:", testAdminId);
       return { id: testAdminId, role: "admin" };

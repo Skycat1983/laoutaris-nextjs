@@ -11,7 +11,7 @@ export const UserCommentsLoader = async () => {
     throw new Error(result.error);
   }
 
-  console.log("result", result.data);
+  // console.log("result", result.data);
 
   const comments = result.data.comments as FrontendCommentWithBlogNav[];
 

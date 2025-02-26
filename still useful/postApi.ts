@@ -1,19 +1,13 @@
+import { FrontendArticle } from "@/lib/data/types/articleTypes";
+import { FrontendCollection } from "../src/lib/data/types/collectionTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import {
   CreateArticleFormValues,
-  FrontendArticle,
-} from "@/lib/data/types/articleTypes";
-import {
-  CreateCollectionFormValues,
-  FrontendCollection,
-} from "../src/lib/data/types/collectionTypes";
-import {
   CreateArtworkFormValues,
-  FrontendArtwork,
-} from "@/lib/data/types/artworkTypes";
-import {
   CreateBlogFormValues,
-  FrontendBlogEntry,
-} from "@/lib/data/types/blogTypes";
+} from "@/lib/data/schemas";
+import { CreateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 
 export const postArticle = async (
   data: CreateArticleFormValues

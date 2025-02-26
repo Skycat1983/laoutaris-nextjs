@@ -1,8 +1,8 @@
-import type { UpdateBlogFormValues } from "@/lib/data/types/blogTypes";
 import type { Fetcher } from "../../core/createFetcher";
 import {
   UpdateArticleFormValues,
   UpdateArtworkFormValues,
+  UpdateBlogFormValues,
 } from "@/lib/data/schemas";
 import { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 

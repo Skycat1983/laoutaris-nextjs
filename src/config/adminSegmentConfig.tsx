@@ -1,12 +1,3 @@
-import { CreateArticle } from "@/components/modules/forms/admin/CreateArticle";
-import { UpdateArticle } from "@/components/modules/forms/admin/UpdateArticle";
-import { DeleteArticle } from "@/components/modules/forms/admin/DeleteArticle";
-import { CreateArtworkWithUpload } from "@/components/modules/forms/admin/CreateArtworkWithUpload";
-import { UpdateArtwork } from "@/components/modules/forms/admin/UpdateArtwork";
-import { DeleteArtwork } from "@/components/modules/forms/admin/DeleteArtwork";
-import { CreateBlogForm } from "@/components/modules/forms/admin/CreateBlogForm";
-import { UpdateBlogEntry } from "@/components/modules/forms/admin/UpdateBlogEntry";
-import { DeleteBlogEntry } from "@/components/modules/forms/admin/DeleteBlogEntry";
 import { CreateCollectionForm } from "@/components/modules/forms/admin/CreateCollectionForm";
 import { UpdateCollection } from "@/components/modules/forms/admin/UpdateCollection";
 import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";

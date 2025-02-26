@@ -9,6 +9,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const user = await getAuthUser(request);
 
+    console.log("user in blog create route", user);
+
     // The middleware already checked authentication,
     // but we double-check here for safety
     if (!user) {
