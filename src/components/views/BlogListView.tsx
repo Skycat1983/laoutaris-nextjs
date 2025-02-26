@@ -1,6 +1,9 @@
 "use server";
 
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
+import {
+  BlogEntryData,
+  SortedBlogData,
+} from "../loaders/viewLoaders/BlogListLoader";
 import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import { BlogsViewCardSkeleton } from "../modules/cards/BlogsViewCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
@@ -14,38 +17,49 @@ import { BlogSectionTiles } from "../sections/BlogSectionTiles";
 import BlogSectionHeading from "../elements/typography/BlogSectionHeading";
 
 interface BlogListViewProps {
-  blogEntries: BlogEntryData[];
+  blogData: SortedBlogData;
   next: string | null;
   prev: string | null;
 }
 
-const BlogListView = ({ blogEntries, next, prev }: BlogListViewProps) => {
+const BlogListView = ({ blogData, next, prev }: BlogListViewProps) => {
+  // If we have a single sort type, show continuous view
+  if (blogData.single) {
+    return (
+      <>
+        <BlogSectionHeading heading={`${blogData.single.type} Posts`} />
+        <BlogSectionContinuous
+          blogEntries={blogData.single.data}
+          next={next}
+          prev={prev}
+        />
+      </>
+    );
+  }
+
+  // Otherwise show all sections
   return (
     <>
-      {/* Featured Blogs Section */}
-      <BlogsSectionFeatured blogEntries={blogEntries} next={next} prev={prev} />
+      {blogData.featured && (
+        <>
+          {/* <BlogSectionHeading heading="Featured Posts" /> */}
+          <BlogsSectionFeatured blogEntries={blogData.featured} />
+        </>
+      )}
 
-      {/* Latest Posts Section */}
-      <BlogSectionHeading heading="Latest Posts" />
-      <BlogSectionSplitScreen
-        blogEntries={blogEntries}
-        next={next}
-        prev={prev}
-      />
+      {blogData.latest && (
+        <>
+          <BlogSectionHeading heading="Latest Posts" />
+          <BlogSectionSplitScreen blogEntries={blogData.latest} />
+        </>
+      )}
 
-      {/* Popular Posts Section */}
-      <BlogSectionHeading heading="Popular Posts" />
-      <BlogSectionTiles blogEntries={blogEntries} next={next} prev={prev} />
-
-      {/* All Posts Section */}
-      <BlogSectionHeading heading="All Posts" />
-      <BlogSectionContinuous
-        blogEntries={blogEntries}
-        next={next}
-        prev={prev}
-      />
-      {/* ! UNUSED PAGINATION COMPONENT */}
-      {/* <BlogsViewPagination next={next} prev={prev} /> */}
+      {blogData.popular && (
+        <>
+          <BlogSectionHeading heading="Popular Posts" />
+          <BlogSectionTiles blogEntries={blogData.popular} />
+        </>
+      )}
     </>
   );
 };

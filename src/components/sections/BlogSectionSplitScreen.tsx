@@ -8,8 +8,8 @@ import { Calendar } from "lucide-react";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryData[];
-  next: string | null;
-  prev: string | null;
+  // next: string | null;
+  // prev: string | null;
 }
 
 export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {

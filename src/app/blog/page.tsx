@@ -1,19 +1,20 @@
 import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
 import { Suspense } from "react";
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: { sortby?: string; page?: string };
-}) {
-  const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
-  type SortOption = (typeof validSortOptions)[number];
+const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
+type SortOption = (typeof validSortOptions)[number];
 
-  const sortby = (
-    validSortOptions.includes(searchParams.sortby as SortOption)
-      ? searchParams.sortby
-      : "latest"
-  ) as SortOption;
+interface BlogPageProps {
+  searchParams: {
+    sortby?: string;
+    page?: string;
+  };
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const sortby = validSortOptions.includes(searchParams.sortby as SortOption)
+    ? (searchParams.sortby as SortOption)
+    : undefined;
 
   const page = Math.max(1, parseInt(searchParams.page || "1", 10));
 

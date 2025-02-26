@@ -27,46 +27,122 @@ export type BlogEntryData = Pick<
 >;
 
 interface BlogEntriesLoaderProps {
-  sortby: "latest" | "oldest" | "popular" | "featured";
+  sortby?: "latest" | "oldest" | "popular" | "featured";
   page: number;
+}
+
+export interface SortedBlogData {
+  featured?: BlogEntryData[];
+  latest?: BlogEntryData[];
+  popular?: BlogEntryData[];
+  single?: {
+    type: "latest" | "oldest" | "popular" | "featured";
+    data: BlogEntryData[];
+  };
+  metadata: PaginationMetadata;
 }
 
 // Loader Function
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
-    const result = (await serverPublicApi.blog.fetchBlogs({
-      sortby,
-      page,
-      limit: BLOG_ENTRIES_CONFIG.limit,
-      fields: BLOG_ENTRIES_CONFIG.fields,
-    })) as ApiResponse<FrontendBlogEntry[]>;
+    let blogData: SortedBlogData;
 
-    if (!result.success) {
-      throw new Error(result.error || "Failed to fetch blog entries");
+    if (sortby) {
+      // Single sort type fetch
+      const result = await serverPublicApi.blog.fetchBlogs({
+        sortby,
+        page,
+        limit: BLOG_ENTRIES_CONFIG.limit,
+        fields: BLOG_ENTRIES_CONFIG.fields,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch blog entries");
+      }
+
+      const {
+        data: blogs,
+        metadata = {
+          page: 1,
+          limit: BLOG_ENTRIES_CONFIG.limit,
+          total: blogs.length,
+          totalPages: 1,
+        },
+      } = result as PaginatedResponse<FrontendBlogEntry[]>;
+
+      blogData = {
+        single: {
+          type: sortby,
+          data: blogs.map((blog) =>
+            transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
+          ),
+        },
+        metadata,
+      };
+    } else {
+      // Multiple sort types fetch
+      const [featuredResult, latestResult, popularResult] = await Promise.all([
+        serverPublicApi.blog.fetchBlogs({
+          sortby: "featured",
+          page: 1,
+          limit: 4,
+          fields: BLOG_ENTRIES_CONFIG.fields,
+        }),
+        serverPublicApi.blog.fetchBlogs({
+          sortby: "latest",
+          page: 1,
+          limit: 6,
+          fields: BLOG_ENTRIES_CONFIG.fields,
+        }),
+        serverPublicApi.blog.fetchBlogs({
+          sortby: "popular",
+          page: 1,
+          limit: 6,
+          fields: BLOG_ENTRIES_CONFIG.fields,
+        }),
+      ]);
+
+      if (
+        !featuredResult.success ||
+        !latestResult.success ||
+        !popularResult.success
+      ) {
+        throw new Error("Failed to fetch one or more blog sets");
+      }
+
+      // Ensure we have valid metadata
+      const defaultMetadata: PaginationMetadata = {
+        page: 1,
+        limit: BLOG_ENTRIES_CONFIG.limit,
+        total: latestResult.data.length,
+        totalPages: 1,
+      };
+
+      blogData = {
+        featured: featuredResult.data.map((blog) =>
+          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
+        ),
+        latest: latestResult.data.map((blog) =>
+          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
+        ),
+        popular: popularResult.data.map((blog) =>
+          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
+        ),
+        metadata: latestResult.metadata ?? defaultMetadata,
+      };
     }
 
-    const { data: blogs, metadata } = result as PaginatedResponse<
-      FrontendBlogEntry[]
-    >;
-
-    // Transform blogs with explicit typing
-    const transformedBlogs: BlogEntryData[] = blogs.map((blog) =>
-      transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
-    );
-
-    const currentUrl = `/blog?sortby=${sortby}&page=${page}`;
+    const currentUrl = sortby
+      ? `/blog?sortby=${sortby}&page=${page}`
+      : `/blog?page=${page}`;
     const { prev, next } = transformToPaginationLinks(
-      metadata.page,
-      metadata.limit,
-      metadata.total,
+      blogData.metadata.page,
+      blogData.metadata.limit,
+      blogData.metadata.total,
       currentUrl
     );
 
-    return (
-      <>
-        <BlogListView blogEntries={transformedBlogs} next={next} prev={prev} />
-      </>
-    );
+    return <BlogListView blogData={blogData} next={next} prev={prev} />;
   } catch (error) {
     throw error;
   }

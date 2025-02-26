@@ -4,8 +4,8 @@ import Image from "next/image";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryData[];
-  next: string | null;
-  prev: string | null;
+  // next: string | null;
+  // prev: string | null;
 }
 
 export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
