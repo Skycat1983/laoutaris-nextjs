@@ -1,7 +1,4 @@
-import {
-  LoginFormSchema,
-  LoginWithUsernameSchema,
-} from "@/lib/data/schemas/userSchema";
+import { LoginFormSchema, LoginWithUsernameSchema } from "@/lib/data/schemas";
 import { formatFieldErrors } from "@/lib/shared/helpers/formatFieldErrors";
 
 // type LoginFormData = {

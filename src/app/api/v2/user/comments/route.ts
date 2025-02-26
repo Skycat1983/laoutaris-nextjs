@@ -5,17 +5,15 @@ import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const userId = await getUserIdFromSession(req);
+  const userId = await getUserIdFromSession();
 
   console.log("userId", userId);
 
   const blogId = "67b46c5a31b3f845bc8019d8";
-
   const blog = await BlogModel.findById(blogId);
   console.log("blog", blog);
 
   try {
-    // First, let's get the raw comments without population to verify the blog IDs
     const rawUserWithoutPopulation = await UserModel.findById(userId)
       .select("comments")
       .lean()
@@ -26,14 +24,13 @@ export async function GET(req: NextRequest) {
       JSON.stringify(rawUserWithoutPopulation, null, 2)
     );
 
-    // Now let's try to populate with the correct model name
     const rawUserComments = await UserModel.findById(userId)
       .select("comments")
       .populate({
         path: "comments",
         populate: {
           path: "blog",
-          model: "Blog", // Make sure this matches your actual model name
+          model: "Blog",
           select: "slug title imageUrl subtitle",
         },
       })

@@ -3,12 +3,8 @@ import { CommentModel, BlogModel, UserModel } from "@/lib/data/models";
 import dbConnect from "@/lib/db/mongodb";
 import mongoose from "mongoose";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function POST(req: NextRequest) {
   await dbConnect();
 
   console.log("in comment route");
@@ -24,15 +20,14 @@ export async function POST(
   }
 
   try {
-    const { text } = await req.json();
-    const { slug } = params;
+    const comment = await req.json();
+    const { blogSlug, text } = comment;
 
-    // Start a session for the transaction
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-      const blog = await BlogModel.findOne({ slug });
+      const blog = await BlogModel.findOne({ slug: blogSlug });
 
       if (!blog) {
         await session.abortTransaction();
@@ -91,36 +86,3 @@ export async function POST(
     } satisfies ApiErrorResponse);
   }
 }
-
-// export async function GET(
-//   req: NextRequest,
-//   { params }: { params: { slug: string } }
-// ) {
-//   const { slug } = params;
-
-//   await dbConnect();
-
-//   const rawBlog = await BlogModel.findOne({ slug })
-//     .populate("comments")
-//     .lean()
-//     .exec();
-
-//   if (!rawBlog) {
-//     return NextResponse.json({
-//       success: false,
-//       error: "Blog not found",
-//       statusCode: 404,
-//     });
-//   }
-
-//   console.log("rawBlog", rawBlog);
-
-//   const comments = rawBlog.map((comment) => {
-//     return transformMongooseDoc(comment);
-//   });
-
-//   return NextResponse.json({
-//     success: true,
-//     data: comments,
-//   });
-// }

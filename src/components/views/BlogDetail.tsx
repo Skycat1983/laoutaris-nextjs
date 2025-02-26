@@ -52,7 +52,7 @@ const BlogDetail = ({
 
   const handleCommentSubmit = async (comment: CreateCommentFormValues) => {
     try {
-      await clientPublicApi.comment.postComment(slug, comment);
+      await clientPublicApi.comment.createComment(comment);
       router.refresh();
     } catch (error) {
       console.error("Error posting comment:", error);

@@ -1,91 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { isProtectedRoute, isAdminRoute } from "@/lib/routes";
 
-export const config = {
-  matcher: ["/account/:path*", "/admin/:path*", "/api/v2/admin/:path*"],
-};
+export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  console.log("Middleware - Path:", path);
 
-export default async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  // Log the raw cookie
+  // console.log("Middleware - Cookie header:", request.headers.get("cookie"));
 
-  // Get token directly - no database calls
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  // console.log("token", token);
-  const isAdmin = token?.role === "admin";
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-  // For test headers in development
-  let testUserId = null;
-  let testIsAdmin = false;
-  let testAdminId = null;
+  // console.log("Middleware - Decoded token:", token);
 
-  if (process.env.NODE_ENV === "development") {
-    testUserId = req.headers.get("X-Test-User-Id");
-    testAdminId = req.headers.get("X-Test-Admin-Id");
-    testIsAdmin = !!testAdminId;
-  }
+  const role = token?.role;
+  console.log("user role in middleware", role);
 
-  // User is authenticated if they have a token OR test headers
-  const isAuthenticated = !!token || !!testUserId || !!testAdminId;
-  // User is admin if token says so OR test admin header
-  const userIsAdmin = isAdmin || testIsAdmin;
+  // Check if the route needs protection
+  if (isProtectedRoute(path)) {
+    console.log("isProtectedRoute", isProtectedRoute(path));
 
-  // Handle account routes
-  if (pathname.startsWith("/account")) {
-    if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/api/auth/signin", req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Handle admin frontend routes
-  if (pathname.startsWith("/admin")) {
-    if (!isAuthenticated) {
-      return NextResponse.redirect(new URL("/api/auth/signin", req.url));
-    }
-    if (!userIsAdmin) {
-      return NextResponse.redirect(new URL("/account", req.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Handle admin API routes
-  if (pathname.startsWith("/api/v2/admin")) {
-    if (!isAuthenticated) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-    if (!userIsAdmin) {
-      return NextResponse.json(
-        { success: false, error: "Forbidden" },
-        { status: 403 }
-      );
+    // Check authentication
+    if (!token) {
+      return NextResponse.redirect(new URL("/api/auth/signin", request.url));
     }
 
-    // Create a new request with all the original headers
-    const requestWithUserInfo = new NextRequest(req);
-
-    // IMPORTANT: Preserve the original test headers
-    if (testUserId) {
-      requestWithUserInfo.headers.set("X-Test-User-Id", testUserId);
+    // Check admin routes
+    if (isAdminRoute(path)) {
+      console.log("isAdminRoute", isAdminRoute(path));
+      if (role !== "admin") {
+        // Redirect API requests with 403, frontend requests to home
+        if (path.startsWith("/api")) {
+          return NextResponse.json(
+            { success: false, error: "Forbidden" },
+            { status: 403 }
+          );
+        }
+        return NextResponse.redirect(new URL("/", request.url));
+      }
     }
-    if (testAdminId) {
-      requestWithUserInfo.headers.set("X-Test-Admin-Id", testAdminId);
-    }
-
-    // Add our processed user info
-    const userId = token?.sub || testUserId || testAdminId;
-    const role = userIsAdmin ? "admin" : "user";
-
-    if (userId) {
-      requestWithUserInfo.headers.set("X-User-ID", userId);
-      requestWithUserInfo.headers.set("X-User-Role", role);
-    }
-
-    return NextResponse.next({
-      request: requestWithUserInfo,
-    });
   }
 
   return NextResponse.next();
