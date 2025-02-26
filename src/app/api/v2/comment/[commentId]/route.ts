@@ -13,6 +13,8 @@ export async function PATCH(
   try {
     await dbConnect();
 
+    const userId = await getUserIdFromSession();
+
     // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {

@@ -38,7 +38,6 @@ const BlogDetail = ({
     setIsLoadingComments(true);
     try {
       const result = await clientPublicApi.blog.fetchBlogCommentsAuthor(slug);
-      // console.log("result", result);
       if (result.success) {
         setPopulatedComments(result.data.comments);
         setHasLoadedComments(true);
@@ -52,8 +51,11 @@ const BlogDetail = ({
 
   const handleCommentSubmit = async (comment: CreateCommentFormValues) => {
     try {
-      await clientPublicApi.comment.createComment(comment);
-      router.refresh();
+      const result = await clientPublicApi.comment.createComment(comment);
+      if (result.success) {
+        loadComments();
+      }
+      console.log("result", result);
     } catch (error) {
       console.error("Error posting comment:", error);
     }
