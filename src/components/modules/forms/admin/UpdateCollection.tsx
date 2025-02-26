@@ -15,8 +15,8 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
 import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
-import { readCollection } from "../../../../../still useful/readApi";
 import { UpdateCollectionForm } from "@/components/modules/forms/admin/UpdateCollectionForm";
+import { clientApi } from "@/lib/api/clientApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -38,10 +38,14 @@ export const UpdateCollection = () => {
   async function onSubmit(formData: ReadFormValues) {
     try {
       // TODO: Implement readCollection function
-      const collection: FrontendCollectionWithArtworks = await readCollection(
+      const collection = await clientApi.admin.read.collection(
         formData.objectId
       );
-      setCollectionInfo(collection);
+      if (collection.success) {
+        setCollectionInfo(collection.data);
+      } else {
+        console.error("Error in UpdateCollection:", collection.error);
+      }
     } catch (error) {
       console.error("Error in UpdateCollection:", error);
     }

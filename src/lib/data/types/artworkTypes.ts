@@ -119,6 +119,11 @@ export interface ImageColorData {
   predominantColors: PredominantColors;
 }
 
+export interface ArtworkFilterParams {
+  key: "decade" | "artstyle" | "medium" | "surface" | null;
+  value: string | null;
+}
+
 // export const updateArtworkSchema = z.object({
 //   title: z.string().min(1, "Title is required"),
 //   decade: z.enum([

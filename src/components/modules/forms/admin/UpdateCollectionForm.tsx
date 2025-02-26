@@ -24,13 +24,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/shadcn/tabs";
-import { patchCollection } from "../../../../../still useful/patchApi";
-import { readArtwork } from "../../../../../still useful/readApi";
 import {
   UpdateCollectionFormValues,
   updateCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
-
+import { clientApi } from "@/lib/api/clientApi";
 interface UpdateCollectionFormProps {
   collectionInfo: FrontendCollectionWithArtworks;
   onSuccess: () => void;
@@ -79,20 +77,24 @@ export const UpdateCollectionForm = ({
 
     setIsLoadingArtwork(true);
     try {
-      const artwork = await readArtwork(artworkId);
-      // Check if artwork is already in the collection
-      if (artworks.some((a) => a._id === artwork._id)) {
-        // TODO: Show error message - artwork already exists
-        return;
+      const artwork = await clientApi.admin.read.artwork(artworkId);
+      if (artwork.success) {
+        // Check if artwork is already in the collection
+        if (artworks.some((a) => a._id === artwork.data._id)) {
+          // TODO: Show error message - artwork already exists
+          return;
+        }
+        setArtworks((current) => [...current, artwork.data]);
+        setArtworksToAdd((current) => [...current, artwork.data._id]);
+        // If this artwork was previously removed, remove it from artworksToRemove
+        setArtworksToRemove((current) =>
+          current.filter((id) => id !== artwork.data._id)
+        );
+        setArtworkToAdd(null);
+        if (artworkIdRef.current) artworkIdRef.current.value = "";
+      } else {
+        console.error("Error fetching artwork:", artwork.error);
       }
-      setArtworks((current) => [...current, artwork]);
-      setArtworksToAdd((current) => [...current, artwork._id]);
-      // If this artwork was previously removed, remove it from artworksToRemove
-      setArtworksToRemove((current) =>
-        current.filter((id) => id !== artwork._id)
-      );
-      setArtworkToAdd(null);
-      if (artworkIdRef.current) artworkIdRef.current.value = "";
     } catch (error) {
       console.error("Error fetching artwork:", error);
     } finally {
@@ -104,11 +106,14 @@ export const UpdateCollectionForm = ({
     setIsSubmitting(true);
     try {
       // Send both the form data and artwork changes
-      const updatedCollection = await patchCollection(collectionInfo._id, {
-        ...data,
-        artworksToAdd,
-        artworksToRemove,
-      });
+      const updatedCollection = await clientApi.admin.update.patchCollection(
+        collectionInfo._id,
+        {
+          ...data,
+          artworksToAdd,
+          artworksToRemove,
+        }
+      );
 
       console.log("Updated collection:", updatedCollection);
       onSuccess();

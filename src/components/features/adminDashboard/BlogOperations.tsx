@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { DocumentReader } from "../document-reader/DocumentReader";
-import { CreateBlogForm } from "../CreateBlogForm";
-import { UpdateBlogForm } from "../UpdateBlogForm";
+import { DocumentReader } from "./DocumentReader";
+import { CreateBlogForm } from "../../modules/forms/admin/CreateBlogForm";
+import { UpdateBlogForm } from "../../modules/forms/admin/UpdateBlogForm";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { DeleteConfirmation } from "../DeleteConfirmation";
+import { DeleteConfirmation } from "../../modules/forms/admin/DeleteConfirmation";
+import { clientApi } from "@/lib/api/clientApi";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -42,7 +43,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
 
     try {
       setIsDeleting(true);
-      const response = await clientAdminApi.delete.deleteBlog(blogInfo._id);
+      const response = await clientApi.admin.delete.blog(blogInfo._id);
       if (response.success) {
         handleSuccess();
       } else {
@@ -65,7 +66,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
         {!blogInfo && (
           <DocumentReader<FrontendBlogEntry>
             onDocumentFound={setBlogInfo}
-            readDocument={(id) => clientAdminApi.read.readBlog(id)}
+            readDocument={(id) => clientAdminApi.read.blog(id)}
             documentType="Blog"
             buttonVariant="destructive"
           />
@@ -84,7 +85,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
         {!blogInfo && (
           <DocumentReader<FrontendBlogEntry>
             onDocumentFound={setBlogInfo}
-            readDocument={(id) => clientAdminApi.read.readBlog(id)}
+            readDocument={(id) => clientApi.admin.read.blog(id)}
             documentType="Blog"
             buttonVariant="destructive"
           />

@@ -8,6 +8,7 @@ import { CopyIcon } from "lucide-react";
 import Image from "next/image";
 import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import { ArticleFilterDropdowns } from "./ArticleFilterDropdowns";
+import { clientApi } from "@/lib/api/clientApi";
 
 type FilterKey = "section" | "overlayColour" | null;
 
@@ -29,7 +30,7 @@ export function ReadArticleList() {
     const fetchArticles = async () => {
       try {
         setIsLoading(true);
-        const response = await clientAdminApi.read.readArticles({
+        const response = await clientApi.admin.read.articles({
           page: 1,
           limit: 10,
         });

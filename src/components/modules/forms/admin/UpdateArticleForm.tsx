@@ -27,13 +27,11 @@ import {
 import { Textarea } from "@/components/shadcn/textarea";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 
-import { patchArticle } from "../../../../../still useful/patchApi";
-import { readArtwork } from "../../../../../still useful/readApi";
 import {
   UpdateArticleFormValues,
   updateArticleSchema,
 } from "@/lib/data/schemas";
-
+import { clientApi } from "@/lib/api/clientApi";
 interface UpdateArticleFormProps {
   articleInfo: FrontendArticleWithArtworkAndAuthor;
   onSuccess: () => void;
@@ -70,9 +68,13 @@ export const UpdateArticleForm = ({
 
     setIsLoadingArtwork(true);
     try {
-      const artwork: FrontendArtwork = await readArtwork(artworkId);
-      setNewArtwork(artwork);
-      setImagePreview(artwork.image.secure_url);
+      const artwork = await clientApi.admin.read.artwork(artworkId);
+      if (artwork.success) {
+        setNewArtwork(artwork.data);
+        setImagePreview(artwork.data.image.secure_url);
+      } else {
+        console.error("Error fetching artwork:", artwork.error);
+      }
     } catch (error) {
       console.error("Error fetching artwork:", error);
     } finally {
@@ -83,7 +85,7 @@ export const UpdateArticleForm = ({
   async function onSubmit(data: UpdateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      await patchArticle(articleInfo._id, {
+      await clientApi.admin.update.patchArticle(articleInfo._id, {
         ...data,
         artwork: newArtwork?._id || articleInfo.artwork._id,
       });

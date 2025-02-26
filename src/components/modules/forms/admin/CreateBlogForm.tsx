@@ -26,6 +26,7 @@ import {
   CreateBlogFormValues,
 } from "@/lib/data/schemas/blogSchema";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { clientApi } from "@/lib/api/clientApi";
 
 interface CreateBlogFormProps {
   onSuccess?: () => void;
@@ -53,7 +54,7 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
   async function onSubmit(values: CreateBlogFormValues) {
     try {
       setIsSubmitting(true);
-      const response = await clientAdminApi.create.postBlog(values);
+      const response = await clientApi.admin.create.blog(values);
 
       if (response.success) {
         form.reset();

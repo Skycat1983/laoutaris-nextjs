@@ -16,7 +16,7 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { UpdateArticleForm } from "@/components/modules/forms/admin/UpdateArticleForm";
-import { readArticle } from "../../../../../still useful/readApi";
+import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -37,10 +37,13 @@ export const UpdateArticle = () => {
   async function onSubmit(formData: ReadFormValues) {
     // console.log("formData", formData);
     try {
-      const article: FrontendArticleWithArtworkAndAuthor = await readArticle(
-        formData.objectId
-      );
-      setArticleInfo(article);
+      const article = await clientAdminApi.read.article(formData.objectId);
+
+      if (article.success) {
+        setArticleInfo(article.data);
+      } else {
+        console.error("Error in UpdateArticle:", article.error);
+      }
     } catch (error) {
       console.error("Error in UpdateArticle:", error);
     }

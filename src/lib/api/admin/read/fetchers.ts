@@ -1,14 +1,21 @@
 import type {
   FrontendArticleWithArtworkAndAuthor,
-  FrontendArticle,
   FrontendArticleWithArtwork,
+  ArticleFilterParams,
 } from "@/lib/data/types/articleTypes";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type {
+  ArtworkFilterParams,
+  FrontendArtwork,
+} from "@/lib/data/types/artworkTypes";
+import type {
+  CollectionFilterParams,
   FrontendCollection,
   FrontendCollectionWithArtworks,
 } from "@/lib/data/types/collectionTypes";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import type {
+  BlogFilterParams,
+  FrontendBlogEntry,
+} from "@/lib/data/types/blogTypes";
 import type { FrontendUser } from "@/lib/data/types/userTypes";
 import type {
   FrontendComment,
@@ -17,10 +24,12 @@ import type {
 import type { Fetcher } from "../../core/createFetcher";
 
 // Filter types
-interface FilterParams {
-  key: "decade" | "artstyle" | "medium" | "surface" | null;
-  value: string | null;
-}
+
+type FilterParams =
+  | ArticleFilterParams
+  | ArtworkFilterParams
+  | CollectionFilterParams
+  | BlogFilterParams;
 
 interface ReadListParams {
   page?: number;
@@ -31,13 +40,13 @@ interface ReadListParams {
 
 /*
 ! Single Item Blueprint
-readModel: async (modelId: string) => {
+model: async (modelId: string) => {
   const encodedId = encodeURIComponent(modelId);
   return fetcher<FrontendModel>(`/api/v2/admin/model/read/${encodedId}`);
 };
 
 ! List Blueprint
-readModels: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+models: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
@@ -49,13 +58,13 @@ readModels: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
 export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
   // Artworks
-  readArtwork: async (artworkId: string) => {
+  artwork: async (artworkId: string) => {
     const encodedId = encodeURIComponent(artworkId);
     return fetcher<FrontendArtwork>(`/api/v2/admin/artwork/read/${encodedId}`);
   },
 
   // Articles
-  readArticle: async (articleId: string) => {
+  article: async (articleId: string) => {
     const encodedId = encodeURIComponent(articleId);
     return fetcher<FrontendArticleWithArtworkAndAuthor>(
       `/api/v2/admin/article/read/${encodedId}`
@@ -63,7 +72,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Collections
-  readCollection: async (collectionId: string) => {
+  collection: async (collectionId: string) => {
     const encodedId = encodeURIComponent(collectionId);
     return fetcher<FrontendCollectionWithArtworks>(
       `/api/v2/admin/collection/read/${encodedId}`
@@ -71,7 +80,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Blogs
-  readBlog: async (blogId: string) => {
+  blog: async (blogId: string) => {
     const encodedId = encodeURIComponent(blogId);
     return fetcher<FrontendBlogEntry>(`/api/v2/admin/blog/read/${encodedId}`);
   },
@@ -90,7 +99,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
 
   //! List fetchers
   // Artworks
-  readArtworks: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  artworks: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -100,7 +109,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Articles
-  readArticles: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  articles: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -112,7 +121,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Collections
-  readCollections: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  collections: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -124,7 +133,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Blogs
-  readBlogs: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  blogs: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),

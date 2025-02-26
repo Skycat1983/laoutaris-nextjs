@@ -1,13 +1,12 @@
 "use client";
 
 import { ArticleFeedCard } from "../../modules/cards/ArticleFeedCard";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
 import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
-
+import { clientApi } from "@/lib/api/clientApi";
 export function ArticleFeed() {
   const [articles, setArticles] = useState<FrontendArticleWithArtwork[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +20,7 @@ export function ArticleFeed() {
   async function fetchArticles(page: number) {
     setIsLoading(true);
     try {
-      const result = await clientAdminApi.read.readArticles({
+      const result = await clientApi.admin.read.articles({
         page,
         limit: 10,
       });

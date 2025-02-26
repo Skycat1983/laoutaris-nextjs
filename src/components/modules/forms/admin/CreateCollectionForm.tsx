@@ -26,6 +26,7 @@ import {
   CreateCollectionFormValues,
   createCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
+import { clientApi } from "@/lib/api/clientApi";
 
 export const CreateCollectionForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,9 +53,8 @@ export const CreateCollectionForm = () => {
   const onSubmit = async (values: z.infer<typeof createCollectionSchema>) => {
     try {
       setIsSubmitting(true);
-      const response: ApiResponse<FrontendCollection> = await postCollection(
-        values
-      );
+      const response: ApiResponse<FrontendCollection> =
+        await clientApi.admin.create.collection(values);
       if (!response.success) {
         throw new Error("Failed to create collection");
       }

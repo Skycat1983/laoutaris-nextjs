@@ -1,12 +1,12 @@
 "use client";
 
 import { BlogFeedCard } from "../../modules/cards/BlogFeedCard";
-import { Feed, FeedSkeleton } from "@/components/compositions/Feed";
+import { FeedSkeleton } from "@/components/compositions/Feed";
 import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
+import { clientApi } from "@/lib/api/clientApi";
 
 export function BlogFeed() {
   const [blogs, setBlogs] = useState<FrontendBlogEntry[]>([]);
@@ -21,7 +21,7 @@ export function BlogFeed() {
   async function fetchBlogs(page: number) {
     setIsLoading(true);
     try {
-      const result = await clientAdminApi.read.readBlogs({
+      const result = await clientApi.admin.read.blogs({
         page,
         limit: 10,
       });

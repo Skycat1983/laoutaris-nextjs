@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/shadcn/button";
 import { ArtworkFilterDropdowns } from "./ArtworkFilterDropdowns";
 import { Skeleton } from "@/components/shadcn/skeleton";
+import { clientApi } from "@/lib/api/clientApi";
 
 export function ReadArtworkList() {
   const [artworks, setArtworks] = useState<FrontendArtwork[]>([]);
@@ -22,10 +23,14 @@ export function ReadArtworkList() {
     const fetchArtworks = async () => {
       try {
         setIsLoading(true);
-        const response = await readArtworks({
+        const response = await clientApi.admin.read.artworks({
           filter: activeFilter.key ? activeFilter : undefined,
         });
-        setArtworks(response.data);
+        if (response.success) {
+          setArtworks(response.data);
+        } else {
+          setError(response.error);
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch artworks"

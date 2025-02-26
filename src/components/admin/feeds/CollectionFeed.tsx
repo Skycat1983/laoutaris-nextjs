@@ -7,7 +7,7 @@ import { FeedSkeleton } from "@/components/compositions/Feed";
 import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
-
+import { clientApi } from "@/lib/api/clientApi";
 export function CollectionFeed() {
   const [collections, setCollections] = useState<FrontendCollection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ export function CollectionFeed() {
   async function fetchCollections(page: number) {
     setIsLoading(true);
     try {
-      const result = await clientAdminApi.read.readCollections({
+      const result = await clientApi.admin.read.collections({
         page,
         limit: 10,
       });

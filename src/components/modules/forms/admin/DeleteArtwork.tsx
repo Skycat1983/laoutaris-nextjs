@@ -10,11 +10,10 @@ import {
   FormMessage,
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
-import { deleteArtwork } from "../../../../../still useful/deleteApi";
 import { revalidateArtworkFeed } from "@/lib/old_code/actions/revalidateArtwork";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { deleteArtwork } from "../../../../../still useful/deleteApi";
 
 const deleteArtworkSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

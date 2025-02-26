@@ -1,5 +1,8 @@
 import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
-import { adminSegmentConfig, AdminSegment } from "@/config/adminSegmentConfig";
+import {
+  adminSegmentConfig,
+  AdminSegment,
+} from "@/components/features/adminDashboard/adminSegmentConfig";
 import { notFound } from "next/navigation";
 
 export default function SegmentPage({

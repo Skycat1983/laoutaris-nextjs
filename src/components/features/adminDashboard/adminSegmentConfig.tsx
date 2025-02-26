@@ -3,15 +3,15 @@ import { UpdateCollection } from "@/components/modules/forms/admin/UpdateCollect
 import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";
 import { Suspense } from "react";
 import { ArtworkListSkeleton } from "@/components/admin/crud/read/ReadArtworkList";
-import { ArticleOperations } from "@/components/modules/forms/admin/article/ArticleOperations";
 import { ReadArticleList } from "@/components/admin/crud/read/ReadArticleList";
 import { ArticleListSkeleton } from "@/components/admin/crud/read/ReadArticleList";
 import {
   BlogListSkeleton,
   ReadBlogList,
 } from "@/components/admin/crud/read/ReadBlogList";
-import { ArtworkOperations } from "@/components/modules/forms/admin/artwork/ArtworkOperations";
-import { BlogOperations } from "@/components/modules/forms/admin/blog/BlogOperations";
+import { ArtworkOperations } from "@/components/features/adminDashboard/ArtworkOperations";
+import { BlogOperations } from "@/components/features/adminDashboard/BlogOperations";
+import { ArticleOperations } from "./ArticleOperations";
 
 export const adminSegmentConfig = {
   articles: {

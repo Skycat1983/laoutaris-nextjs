@@ -43,3 +43,8 @@ export interface FrontendArticleWithArtworkAndAuthor
   author: FrontendUser;
   artwork: FrontendArtwork;
 }
+
+export interface ArticleFilterParams {
+  key: "section" | null;
+  value: string | null;
+}

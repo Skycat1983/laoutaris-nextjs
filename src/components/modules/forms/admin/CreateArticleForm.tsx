@@ -59,7 +59,7 @@ export const CreateArticleForm = ({
   async function onSubmit(data: CreateArticleFormValues) {
     setIsSubmitting(true);
     try {
-      await clientAdminApi.create.postArticle(data);
+      await clientAdminApi.create.article(data);
       onSuccess();
     } catch (error) {
       console.error("Error in CreateArticleForm:", error);

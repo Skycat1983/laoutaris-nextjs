@@ -59,7 +59,7 @@ export function CreateArtworkForm({
 
       console.log("artworkData", artworkData);
 
-      const response = await clientAdminApi.create.postArtwork(artworkData);
+      const response = await clientAdminApi.create.artwork(artworkData);
       if (response.success) {
         onSuccess();
       } else {

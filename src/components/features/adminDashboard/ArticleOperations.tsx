@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { DocumentReader } from "../document-reader/DocumentReader";
-import { CreateArticleForm } from "../CreateArticleForm";
-import { UpdateArticleForm } from "../UpdateArticleForm";
+import { CreateArticleForm } from "../../modules/forms/admin/CreateArticleForm";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { DeleteConfirmation } from "../DeleteConfirmation";
+import { clientApi } from "@/lib/api/clientApi";
+import { UpdateArticleForm } from "@/components/modules/forms/admin/UpdateArticleForm";
+import { DeleteConfirmation } from "@/components/modules/forms/admin/DeleteConfirmation";
+import { DocumentReader } from "./DocumentReader";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -46,9 +46,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
 
     try {
       setIsDeleting(true);
-      const response = await clientAdminApi.delete.deleteArticle(
-        articleInfo._id
-      );
+      const response = await clientApi.admin.delete.article(articleInfo._id);
       if (response.success) {
         handleSuccess();
       } else {
@@ -72,7 +70,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
         {!artworkInfo && (
           <DocumentReader<FrontendArtwork>
             onDocumentFound={setArtworkInfo}
-            readDocument={(id) => clientAdminApi.read.readArtwork(id)}
+            readDocument={(id) => clientApi.admin.read.artwork(id)}
             documentType="Artwork"
           />
         )}
@@ -89,7 +87,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
         {!articleInfo && (
           <DocumentReader<FrontendArticleWithArtworkAndAuthor>
             onDocumentFound={setArticleInfo}
-            readDocument={(id) => clientAdminApi.read.readArticle(id)}
+            readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
             buttonVariant="destructive"
           />
@@ -107,7 +105,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
         {!articleInfo && (
           <DocumentReader<FrontendArticleWithArtworkAndAuthor>
             onDocumentFound={setArticleInfo}
-            readDocument={(id) => clientAdminApi.read.readArticle(id)}
+            readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
             buttonVariant="destructive"
           />

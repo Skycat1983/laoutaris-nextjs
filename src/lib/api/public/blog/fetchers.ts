@@ -54,21 +54,3 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
 
 // Type for our blog fetchers object
 export type BlogFetchers = ReturnType<typeof createBlogFetchers>;
-
-// ! admin only
-// createBlog: async (data: CreateBlogFormValues) =>
-//   fetcher<FrontendBlogEntry>("/api/v2/blog/create", {
-//     method: "POST",
-//     body: JSON.stringify(data),
-//   }),
-
-// updateBlog: async (slug: string, data: UpdateBlogFormValues) =>
-//   fetcher<FrontendBlogEntry>(`/api/v2/blog/${slug}`, {
-//     method: "PATCH",
-//     body: JSON.stringify(data),
-//   }),
-
-// deleteBlog: async (slug: string) =>
-//   fetcher<void>(`/api/v2/blog/${slug}`, {
-//     method: "DELETE",
-//   }),

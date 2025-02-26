@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { DocumentReader } from "../document-reader/DocumentReader";
-import { CreateArtworkForm } from "../CreateArtworkForm";
-import { UpdateArtworkForm } from "../UpdateArtworkForm";
+import { DocumentReader } from "./DocumentReader";
+import { CreateArtworkForm } from "../../modules/forms/admin/CreateArtworkForm";
+import { UpdateArtworkForm } from "../../modules/forms/admin/UpdateArtworkForm";
 import { UploadButton } from "@/components/elements/buttons";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { DeleteConfirmation } from "../DeleteConfirmation";
+import { DeleteConfirmation } from "../../modules/forms/admin/DeleteConfirmation";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";
 import type { CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import { clientApi } from "@/lib/api/clientApi";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -71,9 +72,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
 
     try {
       setIsDeleting(true);
-      const response = await clientAdminApi.delete.deleteArtwork(
-        artworkInfo._id
-      );
+      const response = await clientApi.admin.delete.artwork(artworkInfo._id);
       if (response.success) {
         handleSuccess();
       } else {
@@ -114,7 +113,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
         {!artworkInfo && (
           <DocumentReader<FrontendArtwork>
             onDocumentFound={setArtworkInfo}
-            readDocument={(id) => clientAdminApi.read.readArtwork(id)}
+            readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
             buttonVariant="destructive"
           />

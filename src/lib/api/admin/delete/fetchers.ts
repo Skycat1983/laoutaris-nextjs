@@ -10,7 +10,7 @@ export type DeleteResponse = ApiResponse<null>;
 
 export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete artwork
-  deleteArtwork: async (artworkId: string) => {
+  artwork: async (artworkId: string) => {
     const encodedId = encodeURIComponent(artworkId);
     return fetcher<DeleteArtworkResponse>(
       `/api/v2/admin/artwork/delete/${encodedId}`,
@@ -21,7 +21,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   },
 
   // Delete article
-  deleteArticle: async (articleId: string) => {
+  article: async (articleId: string) => {
     const encodedId = encodeURIComponent(articleId);
     return fetcher<DeleteResponse>(
       `/api/v2/admin/article/delete/${encodedId}`,
@@ -32,7 +32,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   },
 
   // Delete blog
-  deleteBlog: async (blogId: string) => {
+  blog: async (blogId: string) => {
     const encodedId = encodeURIComponent(blogId);
     return fetcher<DeleteResponse>(`/api/v2/admin/blog/delete/${encodedId}`, {
       method: "DELETE",
@@ -40,10 +40,31 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   },
 
   // Delete collection
-  deleteCollection: async (collectionId: string) => {
+  collection: async (collectionId: string) => {
     const encodedId = encodeURIComponent(collectionId);
     return fetcher<DeleteResponse>(
       `/api/v2/admin/collection/delete/${encodedId}`,
+      {
+        method: "DELETE",
+      }
+    );
+  },
+
+  //! not implemented yet
+  // Delete user
+  user: async (userId: string) => {
+    const encodedId = encodeURIComponent(userId);
+    return fetcher<DeleteResponse>(`/api/v2/admin/user/delete/${encodedId}`, {
+      method: "DELETE",
+    });
+  },
+
+  //! not implemented yet
+  // Delete comment
+  comment: async (commentId: string) => {
+    const encodedId = encodeURIComponent(commentId);
+    return fetcher<DeleteResponse>(
+      `/api/v2/admin/comment/delete/${encodedId}`,
       {
         method: "DELETE",
       }

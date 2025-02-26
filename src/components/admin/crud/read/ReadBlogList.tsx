@@ -8,6 +8,7 @@ import { CopyIcon } from "lucide-react";
 import Image from "next/image";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogFilterDropdowns } from "./BlogFilterDropdowns";
+import { clientApi } from "@/lib/api/clientApi";
 
 type FilterKey = "featured" | "year" | null;
 
@@ -29,7 +30,7 @@ export function ReadBlogList() {
     const fetchBlogs = async () => {
       try {
         setIsLoading(true);
-        const response = await clientAdminApi.read.readBlogs({
+        const response = await clientApi.admin.read.blogs({
           page: 1,
           limit: 10,
         });
