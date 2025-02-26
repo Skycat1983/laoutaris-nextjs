@@ -24,7 +24,6 @@ import type {
 import type { Fetcher } from "../../core/createFetcher";
 
 // Filter types
-
 type FilterParams =
   | ArticleFilterParams
   | ArtworkFilterParams
@@ -86,13 +85,13 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Users
-  readUser: async (userId: string) => {
+  user: async (userId: string) => {
     const encodedId = encodeURIComponent(userId);
     return fetcher<FrontendUser>(`/api/v2/admin/user/read/${encodedId}`);
   },
 
   // Comments
-  readComment: async (commentId: string) => {
+  comment: async (commentId: string) => {
     const encodedId = encodeURIComponent(commentId);
     return fetcher<FrontendComment>(`/api/v2/admin/comment/read/${encodedId}`);
   },
@@ -143,7 +142,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Users
-  readUsers: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  users: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -153,7 +152,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Comments
-  readComments: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  comments: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),

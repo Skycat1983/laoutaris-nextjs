@@ -11,6 +11,8 @@ export async function GET(request: NextRequest) {
     const segments = pathname.split("/");
     const id = segments[segments.length - 1];
 
+    console.log("id", id);
+
     // If no ID, return paginated list
     if (id === "read") {
       const limit = parseInt(searchParams.get("limit") || "10");

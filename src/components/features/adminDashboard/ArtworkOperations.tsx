@@ -131,7 +131,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
         {!artworkInfo && (
           <DocumentReader<FrontendArtwork>
             onDocumentFound={setArtworkInfo}
-            readDocument={(id) => clientAdminApi.read.readArtwork(id)}
+            readDocument={(id) => clientApi.admin.read.artwork(id)}
             documentType="Artwork"
             buttonVariant="destructive"
           />

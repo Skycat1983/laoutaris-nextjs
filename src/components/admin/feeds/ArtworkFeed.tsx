@@ -1,13 +1,12 @@
 "use client";
 
 import { ArtworkFeedCard } from "../../modules/cards/ArtworkFeedCard";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
-
+import { clientApi } from "@/lib/api/clientApi";
 export function ArtworkFeed() {
   const [artworks, setArtworks] = useState<FrontendArtwork[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +20,7 @@ export function ArtworkFeed() {
   async function fetchArtworks(page: number) {
     setIsLoading(true);
     try {
-      const result = await clientAdminApi.read.readArtworks({
+      const result = await clientApi.admin.read.artworks({
         page,
         limit: 10,
       });

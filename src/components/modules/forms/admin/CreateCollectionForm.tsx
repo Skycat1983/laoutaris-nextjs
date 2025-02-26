@@ -21,14 +21,17 @@ import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useRouter } from "next/navigation";
 
 import { FrontendCollection } from "@/lib/data/types/collectionTypes";
-import { postCollection } from "../../../../../still useful/postApi";
 import {
   CreateCollectionFormValues,
   createCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
 
-export const CreateCollectionForm = () => {
+export const CreateCollectionForm = ({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);

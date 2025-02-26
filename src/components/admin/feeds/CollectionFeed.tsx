@@ -1,7 +1,6 @@
 "use client";
 
 import { CollectionFeedCard } from "../../modules/cards/CollectionFeedCard";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
 import type { FrontendCollection } from "@/lib/data/types/collectionTypes";

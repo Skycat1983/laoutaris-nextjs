@@ -12,6 +12,7 @@ import {
 import { ArtworkOperations } from "@/components/features/adminDashboard/ArtworkOperations";
 import { BlogOperations } from "@/components/features/adminDashboard/BlogOperations";
 import { ArticleOperations } from "./ArticleOperations";
+import { CollectionOperations } from "@/components/features/adminDashboard/CollectionOperations";
 
 export const adminSegmentConfig = {
   articles: {
@@ -45,10 +46,22 @@ export const adminSegmentConfig = {
     deleteComponent: <BlogOperations operationType="delete" />,
   },
   collections: {
-    createComponent: <CreateCollectionForm />,
+    createComponent: <CollectionOperations operationType="create" />,
     readComponent: <div>Read Collection</div>,
-    updateComponent: <UpdateCollection />,
-    deleteComponent: <div>Delete Collection</div>,
+    updateComponent: <CollectionOperations operationType="update" />,
+    deleteComponent: <CollectionOperations operationType="delete" />,
+  },
+  users: {
+    createComponent: <div>Create User</div>,
+    readComponent: <div>Read User</div>,
+    updateComponent: <div>Update User</div>,
+    deleteComponent: <div>Delete User</div>,
+  },
+  comments: {
+    createComponent: <div>Create Comment</div>,
+    readComponent: <div>Read Comment</div>,
+    updateComponent: <div>Update Comment</div>,
+    deleteComponent: <div>Delete Comment</div>,
   },
 } as const;
 
