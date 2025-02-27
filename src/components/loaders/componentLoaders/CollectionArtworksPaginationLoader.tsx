@@ -38,11 +38,6 @@ export async function CollectionArtworksPaginationLoader({
 
   return (
     <>
-      {/* <ArtworkPagination
-        items={artworks}
-        heading="More from this collection"
-        link_to={buildCollectionLink}
-      /> */}
       <ScrollableArtworkPagination
         items={itemsWithLinks}
         heading="More from this collection"

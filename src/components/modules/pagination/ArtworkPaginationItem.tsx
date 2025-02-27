@@ -1,9 +1,11 @@
 "use client";
 
-import { Skeleton } from "@/components/shadcn/skeleton";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
+import { motion } from "framer-motion";
+import { Skeleton } from "@/components/shadcn/skeleton";
 
 interface ArtworkPaginationItemProps {
   secure_url: string;
@@ -21,7 +23,6 @@ export const ArtworkPaginationItem = ({
   const segment = useSelectedLayoutSegment();
   const _id = link_to.split("/").pop();
   const isActive = segment === _id;
-
   const isPortrait = height > width;
 
   const containerClassname = `
@@ -47,11 +48,9 @@ export const ArtworkPaginationItem = ({
     ${isActive ? "scale-110 opacity-100 shadow-2xl" : "hover:scale-105"}
   `;
 
-  const imageClassname = `
-    w-full
-    h-auto
-    object-contain
-  `;
+  const imageClassname = isPortrait
+    ? "h-auto max-w-[200px] object-contain self-start"
+    : "h-auto max-w-[400px] object-contain self-start";
 
   return (
     <Link href={link_to}>
@@ -59,10 +58,12 @@ export const ArtworkPaginationItem = ({
         <div className={imageWrapperClassName}>
           <Image
             src={secure_url}
-            alt="Untitled artwork"
+            alt="Artwork"
             height={height}
             width={width}
             className={imageClassname}
+            loading="eager"
+            priority={true}
           />
         </div>
       </div>
@@ -72,8 +73,8 @@ export const ArtworkPaginationItem = ({
 
 export const ArtworkPaginationItemSkeleton = () => {
   return (
-    <div className="h-auto w-auto shadow-2xl">
-      <Skeleton className="h-auto w-auto" />
+    <div className="bg-gray-400">
+      <Skeleton className=" rounded-sm h-[250px] w-[200px]" />
     </div>
   );
 };

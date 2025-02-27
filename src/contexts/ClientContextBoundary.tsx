@@ -21,7 +21,11 @@ export default function ClientContextBoundary({
   }, []);
 
   if (!mounted) {
-    return <PageLoading />;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <PageLoading />
+      </div>
+    );
   }
 
   return (
