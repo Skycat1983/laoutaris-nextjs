@@ -204,7 +204,7 @@ export const CollectionMagazineCard3 = ({
   );
 };
 
-export const CollectionMagazineCard3b = ({
+export const CollectionMagazineCard3a = ({
   title,
   subtitle,
   artworkCount = 0,
@@ -231,7 +231,6 @@ export const CollectionMagazineCard3b = ({
       <div className="grid grid-cols-12 gap-8 p-8">
         <div className="col-span-8">
           <p className="text-gray-700 mb-6">{subtitle}</p>
-
           <div className="flex space-x-12">
             <div>
               <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
@@ -247,7 +246,6 @@ export const CollectionMagazineCard3b = ({
             </div>
           </div>
         </div>
-
         <div className="col-span-4 bg-gray-50 p-6 flex flex-col items-center justify-center">
           <p className="text-4xl font-light mb-2">{artworkCount}</p>
           <p className="text-sm uppercase tracking-wider text-gray-500">
@@ -256,6 +254,219 @@ export const CollectionMagazineCard3b = ({
           <button className="mt-4 text-sm font-medium border-b border-gray-400 hover:border-black transition-colors">
             Browse Collection
           </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCard3b = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl bg-gray-900">
+      <div className="flex justify-between items-start p-8 border-b border-gray-700">
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Collection
+          </p>
+          <h2 className="text-2xl font-medium text-white">{title}</h2>
+        </div>
+        <div className="text-right">
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Artist
+          </p>
+          <p className="text-lg text-white">Joseph Laoutaris</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-8 p-8">
+        <div className="col-span-8">
+          <p className="text-gray-300 mb-6">{subtitle}</p>
+          <div className="flex space-x-12">
+            <div>
+              <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+                Period
+              </p>
+              <p className="text-lg text-white">{period}</p>
+            </div>
+            <div>
+              <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+                Medium
+              </p>
+              <p className="text-lg text-white">{medium}</p>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-4 bg-gray-800 p-6 flex flex-col items-center justify-center">
+          <p className="text-4xl font-light mb-2 text-white">{artworkCount}</p>
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Artworks
+          </p>
+          <button className="mt-4 text-sm font-medium text-white border-b border-gray-600 hover:border-white transition-colors">
+            Browse Collection
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCard3c = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl bg-white">
+      <div className="flex justify-between items-start bg-gray-900 p-8">
+        <div className="flex-1">
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Collection
+          </p>
+          <h2 className="text-3xl font-light text-white">{title}</h2>
+        </div>
+        <div className="ml-8 flex flex-col items-end">
+          <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-2">
+            <span className="text-2xl font-light">{artworkCount}</span>
+          </div>
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Artworks
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-8 p-8">
+        <div className="col-span-12">
+          <p className="text-gray-700 mb-8 text-lg">{subtitle}</p>
+          <div className="flex space-x-12">
+            <div>
+              <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+                Period
+              </p>
+              <p className="text-lg">{period}</p>
+            </div>
+            <div>
+              <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+                Medium
+              </p>
+              <p className="text-lg">{medium}</p>
+            </div>
+            <div className="ml-auto">
+              <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+                Artist
+              </p>
+              <p className="text-lg">Joseph Laoutaris</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCard3d = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl bg-white">
+      <div className="grid grid-cols-12 bg-gray-900">
+        <div className="col-span-8 p-8">
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-2">
+            Collection
+          </p>
+          <h2 className="text-3xl font-medium text-white mb-4">{title}</h2>
+          <p className="text-gray-300">{subtitle}</p>
+        </div>
+        <div className="col-span-4 bg-black p-8 flex flex-col justify-center items-center">
+          <p className="text-5xl font-light text-white mb-2">{artworkCount}</p>
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Artworks
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 p-8">
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+            Period
+          </p>
+          <p className="text-lg">{period}</p>
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+            Medium
+          </p>
+          <p className="text-lg">{medium}</p>
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-500 mb-1">
+            Artist
+          </p>
+          <p className="text-lg">Joseph Laoutaris</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCard3e = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl bg-gradient-to-b from-gray-900 to-black">
+      <div className="p-8 border-b border-gray-800">
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+              Collection
+            </p>
+            <h2 className="text-3xl font-light text-white">{title}</h2>
+          </div>
+          <div className="flex flex-col items-end">
+            <p className="text-6xl font-light text-white mb-1">
+              {artworkCount}
+            </p>
+            <p className="text-sm uppercase tracking-wider text-gray-400">
+              Artworks
+            </p>
+          </div>
+        </div>
+        <p className="text-gray-300 text-lg">{subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-8 p-8">
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Period
+          </p>
+          <p className="text-lg text-white">{period}</p>
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Medium
+          </p>
+          <p className="text-lg text-white">{medium}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+            Artist
+          </p>
+          <p className="text-lg text-white">Joseph Laoutaris</p>
         </div>
       </div>
     </div>
@@ -312,6 +523,293 @@ export const CollectionMagazineCard4 = ({
             <button className="text-sm font-medium hover:underline">
               View Collection →
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCardA = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+  curator = "Eleanor Winters",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl pt-12 bg-gray-900">
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-8 px-12">
+          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+            {title}
+          </h1>
+          <p className="text-3xl text-gray-400 font-light">Joseph Laoutaris</p>
+        </div>
+
+        <div className="col-span-4 space-y-6 px-12">
+          <div className="border-l-4 border-white pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-400">
+              Period
+            </p>
+            <p className="text-xl text-white">{period}</p>
+          </div>
+
+          <div className="border-l-4 border-white pl-4 px-12">
+            <p className="text-sm uppercase tracking-wider text-gray-400">
+              Medium
+            </p>
+            <p className="text-xl text-white">{medium}</p>
+          </div>
+        </div>
+
+        <div className="col-span-12 bg-white">
+          <hr className="mb-8 border-gray-700 bg-white" />
+        </div>
+        <div className="w-full h-full col-span-12 grid grid-cols-12 bg-white px-12 pb-12">
+          <div className="col-span-6">
+            <div className="space-y-0">
+              <p className="text-sm uppercase tracking-wider text-gray-400">
+                Collection Summary:
+              </p>
+            </div>
+          </div>
+
+          <div className="col-span-6 flex items-start justify-start space-x-8">
+            <div className="text-right">
+              <p className="text-sm uppercase tracking-wider text-black">
+                Artworks
+              </p>
+              <p className="text-2xl font-light text-black">{artworkCount}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm uppercase tracking-wider text-black">
+                Curator
+              </p>
+              <p className="text-base font-light text-black">{curator}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCardB = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+  curator = "Eleanor Winters",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-black">
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12 mb-8">
+          <h1 className="font-archivoBlack text-5xl leading-tight mb-4 text-white">
+            {title}
+          </h1>
+          <div className="flex justify-between items-end">
+            <p className="text-2xl text-gray-400 font-light">
+              Joseph Laoutaris
+            </p>
+            <p className="text-6xl font-light text-white">{artworkCount}</p>
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <hr className="my-8 border-gray-800" />
+        </div>
+
+        <div className="col-span-4">
+          <div className="border-l-4 border-gray-700 pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Period
+            </p>
+            <p className="text-xl text-white">{period}</p>
+          </div>
+        </div>
+
+        <div className="col-span-4">
+          <div className="border-l-4 border-gray-700 pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Medium
+            </p>
+            <p className="text-xl text-white">{medium}</p>
+          </div>
+        </div>
+
+        <div className="col-span-4">
+          <div className="border-l-4 border-gray-700 pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Curator
+            </p>
+            <p className="text-xl text-white">{curator}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCardC = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+  curator = "Eleanor Winters",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-gradient-to-br from-gray-900 to-black">
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-8">
+          <p className="text-sm uppercase tracking-wider text-gray-400 mb-2">
+            Collection
+          </p>
+          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+            {title}
+          </h1>
+        </div>
+
+        <div className="col-span-4">
+          <div className="w-24 h-24 ml-auto rounded-full bg-white flex flex-col items-center justify-center">
+            <p className="text-3xl font-light">{artworkCount}</p>
+            <p className="text-xs uppercase tracking-wider">Works</p>
+          </div>
+        </div>
+
+        <div className="col-span-12">
+          <hr className="my-8 border-gray-700" />
+        </div>
+
+        <div className="col-span-4">
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Artist
+          </p>
+          <p className="text-xl text-white">Joseph Laoutaris</p>
+        </div>
+
+        <div className="col-span-4">
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Period
+          </p>
+          <p className="text-xl text-white">{period}</p>
+        </div>
+
+        <div className="col-span-4">
+          <p className="text-sm uppercase tracking-wider text-gray-400">
+            Curator
+          </p>
+          <p className="text-xl text-white">{curator}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCardD = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+  curator = "Eleanor Winters",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl bg-white">
+      <div className="bg-black px-12 pt-12 pb-8">
+        <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+          {title}
+        </h1>
+        <p className="text-2xl text-gray-400 font-light">Joseph Laoutaris</p>
+      </div>
+
+      <div className="px-12 py-8 grid grid-cols-12 gap-4">
+        <div className="col-span-4">
+          <div className="border-l-4 border-black pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Period
+            </p>
+            <p className="text-xl">{period}</p>
+          </div>
+        </div>
+
+        <div className="col-span-4">
+          <div className="border-l-4 border-black pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Artworks
+            </p>
+            <p className="text-xl">{artworkCount}</p>
+          </div>
+        </div>
+
+        <div className="col-span-4">
+          <div className="border-l-4 border-black pl-4">
+            <p className="text-sm uppercase tracking-wider text-gray-500">
+              Curator
+            </p>
+            <p className="text-xl">{curator}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CollectionMagazineCardE = ({
+  title,
+  subtitle,
+  artworkCount = 0,
+  period = "1950s",
+  medium = "Oil on Canvas",
+  curator = "Eleanor Winters",
+}: CollectionCardProps) => {
+  return (
+    <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-7">
+          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+            {title}
+          </h1>
+          <p className="text-2xl text-gray-400 font-light mb-8">
+            Joseph Laoutaris
+          </p>
+
+          <div className="space-y-6">
+            <div className="border-l-4 border-gray-700 pl-4">
+              <p className="text-sm uppercase tracking-wider text-gray-400">
+                Period
+              </p>
+              <p className="text-xl text-white">{period}</p>
+            </div>
+            <div className="border-l-4 border-gray-700 pl-4">
+              <p className="text-sm uppercase tracking-wider text-gray-400">
+                Medium
+              </p>
+              <p className="text-xl text-white">{medium}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-5">
+          <div className="flex flex-col items-end">
+            <div className="text-right mb-8">
+              <p className="text-7xl font-light text-white mb-2">
+                {artworkCount}
+              </p>
+              <p className="text-sm uppercase tracking-wider text-gray-400">
+                Artworks in Collection
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm uppercase tracking-wider text-gray-400 mb-1">
+                Curator
+              </p>
+              <p className="text-xl text-white">{curator}</p>
+            </div>
           </div>
         </div>
       </div>

@@ -100,7 +100,7 @@ export const TabbedCollectionInfo: React.FC<CollectionInfoProps> = (props) => {
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-md overflow-hidden p-8 h-full">
       <div className="p-4 border-b border-gray-200">
         <h3 className="text-lg font-medium">{title}</h3>
       </div>

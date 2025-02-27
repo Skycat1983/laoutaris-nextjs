@@ -4,8 +4,17 @@ import {
   CollectionMagazineCard,
   CollectionMagazineCard2,
   CollectionMagazineCard3,
+  CollectionMagazineCard3a,
   CollectionMagazineCard3b,
+  CollectionMagazineCard3c,
+  CollectionMagazineCard3d,
+  CollectionMagazineCard3e,
   CollectionMagazineCard4,
+  CollectionMagazineCardA,
+  CollectionMagazineCardB,
+  CollectionMagazineCardC,
+  CollectionMagazineCardD,
+  CollectionMagazineCardE,
 } from "@/components/modules/cards/CollectionMagazineCards";
 import { TabbedCollectionInfo } from "@/components/modules/CollectionInfoVariations";
 import BlogSectionHeading from "@/components/elements/typography/BlogSectionHeading";
@@ -35,7 +44,7 @@ const CollectionInfoLayout = () => {
       <div className="flex flex-row w-full justify-center">
         <div className="flex flex-row justify-center gap-16">
           <div className="w-1/3">
-            <CollectionMagazineCard4 {...defaultProps} />
+            <CollectionMagazineCard3 {...defaultProps} />
           </div>
           <div className="w-1/3">
             <ArtistProfile imageUrl={url} />

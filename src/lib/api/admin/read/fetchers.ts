@@ -98,7 +98,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
 
   //! List fetchers
   // Artworks
-  artworks: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  artworks: async ({ page = 1, limit = 50 }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),

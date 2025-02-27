@@ -22,7 +22,7 @@ export const ArtistProfile: React.FC<ArtistProfileProps> = ({ imageUrl }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <div className="w-full mx-auto p-8 bg-white h-full">
+    <div className="w-full mx-auto p-8 bg-white h-full  ">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
         <div className="relative w-48 h-48 rounded-xl overflow-hidden flex-shrink-0 border-4 border-gray-50 shadow-lg">
           <Image
