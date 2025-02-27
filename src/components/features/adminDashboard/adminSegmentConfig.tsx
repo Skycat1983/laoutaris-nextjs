@@ -1,30 +1,22 @@
-import { ReadArtworkList } from "@/components/admin/crud/read/ReadArtworkList";
+import { ReadArticleList } from "./crudForms/read/ReadArticleList";
+import { ReadArtworkList } from "./crudForms/read/ReadArtworkList";
+import { ArtworkListSkeleton } from "./crudForms/read/ReadArtworkList";
 import { Suspense } from "react";
-import { ArtworkListSkeleton } from "@/components/admin/crud/read/ReadArtworkList";
-import { ReadArticleList } from "@/components/admin/crud/read/ReadArticleList";
-import { ArticleListSkeleton } from "@/components/admin/crud/read/ReadArticleList";
-import {
-  BlogListSkeleton,
-  ReadBlogList,
-} from "@/components/admin/crud/read/ReadBlogList";
-import { ArtworkOperations } from "@/components/features/adminDashboard/ArtworkOperations";
-import { BlogOperations } from "@/components/features/adminDashboard/BlogOperations";
-import { ArticleOperations } from "./ArticleOperations";
-import { CollectionOperations } from "@/components/features/adminDashboard/CollectionOperations";
-import {
-  CollectionListSkeleton,
-  ReadCollectionList,
-} from "@/components/admin/crud/read/ReadCollectionList";
-import { UserOperations } from "./UserOperations";
-import { CommentOperations } from "./CommentOperations";
-import {
-  UserListSkeleton,
-  ReadUserList,
-} from "@/components/admin/crud/read/ReadUserList";
-import {
-  CommentListSkeleton,
-  ReadCommentList,
-} from "@/components/admin/crud/read/ReadCommentList";
+import { ArticleListSkeleton } from "./crudForms/read/ReadArticleList";
+import { ArticleOperations } from "./operationTabs/ArticleOperations";
+import { ArtworkOperations } from "./operationTabs/ArtworkOperations";
+import { ReadCollectionList } from "./crudForms/read/ReadCollectionList";
+import { ReadBlogList } from "./crudForms/read/ReadBlogList";
+import { BlogListSkeleton } from "./crudForms/read/ReadBlogList";
+import { CollectionListSkeleton } from "./crudForms/read/ReadCollectionList";
+import { BlogOperations } from "./operationTabs/BlogOperations";
+import { CollectionOperations } from "./operationTabs/CollectionOperations";
+import { CommentOperations } from "./operationTabs/CommentOperations";
+import { ReadCommentList } from "./crudForms/read/ReadCommentList";
+import { CommentListSkeleton } from "./crudForms/read/ReadCommentList";
+import { ReadUserList } from "./crudForms/read/ReadUserList";
+import { UserListSkeleton } from "./crudForms/read/ReadUserList";
+import { UserOperations } from "./operationTabs/UserOperations";
 
 export const adminSegmentConfig = {
   articles: {

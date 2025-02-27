@@ -1,4 +1,4 @@
-import { FeedTabs } from "@/components/admin/feeds/FeedTabs";
+import { FeedTabs } from "@/components/features/adminDashboard/feeds/FeedTabs";
 
 export default function Default() {
   return <FeedTabs />;

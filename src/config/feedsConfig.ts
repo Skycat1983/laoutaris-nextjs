@@ -1,7 +1,7 @@
-import { ArticleFeed } from "@/components/admin/feeds/ArticleFeed";
-import { ArtworkFeed } from "@/components/admin/feeds/ArtworkFeed";
-import { BlogFeed } from "@/components/admin/feeds/BlogFeed";
-import { CollectionFeed } from "@/components/admin/feeds/CollectionFeed";
+import { ArticleFeed } from "@/components/features/feeds/ArticleFeed";
+import { ArtworkFeed } from "@/components/features/feeds/ArtworkFeed";
+import { BlogFeed } from "@/components/features/feeds/BlogFeed";
+import { CollectionFeed } from "@/components/features/feeds/CollectionFeed";
 
 // ! Unused
 //? could be used if we go baack to generating feed components again instead of hardcoding them
