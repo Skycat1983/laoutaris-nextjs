@@ -10,7 +10,7 @@ export const createCommentsFetchers = (fetcher: Fetcher) => ({
 
   // Create comment
   createComment: async (comment: CreateCommentFormValues) => {
-    return fetcher<FrontendComment>(`/api/v2/comment`, {
+    return fetcher<FrontendComment>(`/api/v2/user/comment`, {
       method: "POST",
       body: JSON.stringify(comment),
     });
@@ -19,7 +19,7 @@ export const createCommentsFetchers = (fetcher: Fetcher) => ({
   // Update comment
   updateComment: async (commentId: string, text: string) => {
     const encodedId = encodeURIComponent(commentId);
-    return fetcher<FrontendComment>(`/api/v2/comment/${encodedId}`, {
+    return fetcher<FrontendComment>(`/api/v2/user/comment/${encodedId}`, {
       method: "PATCH",
       body: JSON.stringify({ text }),
     });
@@ -29,7 +29,7 @@ export const createCommentsFetchers = (fetcher: Fetcher) => ({
   deleteComment: async (commentId: string) => {
     const encodedId = encodeURIComponent(commentId);
     return fetcher<{ success: boolean; message: string }>(
-      `/api/v2/comment/${encodedId}`,
+      `/api/v2/user/comment/${encodedId}`,
       {
         method: "DELETE",
       }

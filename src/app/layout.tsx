@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
-import { GlobalFeaturesProvider } from "@/contexts/GlobalFeaturesContext";
-import { SessionContextProvider } from "@/contexts/SessionProvider";
 import Modal from "@/components/modules/modal/Modal";
 import Footer from "@/components/modules/footer/Footer";
 import {
@@ -15,6 +13,7 @@ import {
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
 import { Header } from "@/components/modules/navigation/header/Header";
+import ClientContextBoundary from "@/contexts/ClientContextBoundary";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,16 +36,14 @@ export default async function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="bg-whitish">
-        <SessionContextProvider session={session}>
-          <GlobalFeaturesProvider>
-            <Modal />
-            <Header className="fixed top-0 left-0 right-0 z-50" />
-            <main className="mt-[140px] sm:mt-[210px] md:mt-[220px] lg:mt-[160px] min-h-[calc(100vh-130px)] flex flex-col">
-              {children}
-            </main>
-            <Footer />
-          </GlobalFeaturesProvider>
-        </SessionContextProvider>
+        <ClientContextBoundary session={session}>
+          <Modal />
+          <Header className="fixed top-0 left-0 right-0 z-50" />
+          <main className="mt-[140px] sm:mt-[210px] md:mt-[220px] lg:mt-[160px] min-h-[calc(100vh-130px)] flex flex-col">
+            {children}
+          </main>
+          <Footer />
+        </ClientContextBoundary>
       </body>
     </html>
   );

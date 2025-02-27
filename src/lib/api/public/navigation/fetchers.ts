@@ -39,8 +39,8 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   },
 
   // Add the user navigation fetcher
-  fetchUserNavigationList: async () =>
-    fetcher<UserNavFields>(`/api/v2/public/navigation/user`),
+  // fetchUserNavigationList: async () =>
+  //   fetcher<UserNavFields>(`/api/v2/public/navigation/user`),
 });
 
 // Type for our navigation fetchers object

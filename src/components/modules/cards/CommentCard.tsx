@@ -23,19 +23,24 @@ import {
   updateCommentSchema,
   type UpdateCommentFormValues,
 } from "@/lib/data/schemas/commentSchema";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 interface CommentCardProps {
   comment: FrontendCommentWithAuthor;
   onCommentUpdated?: () => void;
+  onCommentDeleted?: () => void;
 }
 
 export const CommentCard = ({
   comment,
   onCommentUpdated,
+  onCommentDeleted,
 }: CommentCardProps) => {
   const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { openModal } = useGlobalFeatures();
 
   const form = useForm<UpdateCommentFormValues>({
     resolver: zodResolver(updateCommentSchema),
@@ -56,7 +61,7 @@ export const CommentCard = ({
     try {
       setIsLoading(true);
       const values = form.getValues();
-      const result = await clientApi.public.comment.updateComment(
+      const result = await clientApi.user.comments.updateComment(
         values.commentId,
         values.text
       );
@@ -73,17 +78,22 @@ export const CommentCard = ({
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
-
     try {
       setIsLoading(true);
-      const result = await clientApi.public.comment.deleteComment(comment._id);
+      const result = await clientApi.user.comments.deleteComment(comment._id);
 
       if (result.success) {
-        onCommentUpdated?.();
+        onCommentDeleted?.();
+      } else {
+        openModal(
+          <ModalMessage message="Failed to delete comment" type="error" />
+        );
       }
     } catch (error) {
       console.error("Failed to delete comment:", error);
+      openModal(
+        <ModalMessage message="Failed to delete comment" type="error" />
+      );
     } finally {
       setIsLoading(false);
     }

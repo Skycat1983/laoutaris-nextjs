@@ -11,6 +11,8 @@ import { clientApi } from "@/lib/api/clientApi";
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "../shadcn/skeleton";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 interface BlogDetailProps extends FrontendBlogEntry {
   showComments?: boolean;
@@ -32,6 +34,7 @@ const BlogDetail = ({
   >([]);
   const [hasLoadedComments, setHasLoadedComments] = useState(false);
   const router = useRouter();
+  const { openModal } = useGlobalFeatures();
 
   const loadComments = async () => {
     setIsLoadingComments(true);
@@ -43,6 +46,9 @@ const BlogDetail = ({
       }
     } catch (error) {
       console.error("Failed to load comments:", error);
+      openModal(
+        <ModalMessage message="Failed to load comments" type="error" />
+      );
     } finally {
       setIsLoadingComments(false);
     }
@@ -53,14 +59,33 @@ const BlogDetail = ({
       const result = await clientApi.user.comments.createComment(comment);
       if (result.success) {
         loadComments();
+        openModal(
+          <ModalMessage message="Comment posted successfully" type="success" />
+        );
+      } else {
+        openModal(
+          <ModalMessage message="Failed to post comment" type="error" />
+        );
       }
-      console.log("result", result);
     } catch (error) {
       console.error("Error posting comment:", error);
+      openModal(<ModalMessage message="Failed to post comment" type="error" />);
     }
   };
 
-  console.log("comments", comments);
+  const handleCommentUpdated = async () => {
+    await loadComments();
+    openModal(
+      <ModalMessage message="Comment updated successfully" type="success" />
+    );
+  };
+
+  const handleCommentDeleted = async () => {
+    await loadComments();
+    openModal(
+      <ModalMessage message="Comment deleted successfully" type="success" />
+    );
+  };
 
   const paragraphs = text.replace(/\r\n/g, "\n").split(/\n\n+/);
 
@@ -133,7 +158,8 @@ const BlogDetail = ({
                       ? populatedComments
                       : (comments as FrontendCommentWithAuthor[])
                   }
-                  onCommentUpdated={loadComments}
+                  onCommentUpdated={handleCommentUpdated}
+                  onCommentDeleted={handleCommentDeleted}
                 />
               )}
             </div>

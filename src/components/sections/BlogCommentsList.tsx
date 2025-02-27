@@ -7,11 +7,13 @@ import { CommentCard } from "../modules/cards/CommentCard";
 interface CommentsListProps {
   comments: FrontendCommentWithAuthor[];
   onCommentUpdated: () => void;
+  onCommentDeleted: () => void;
 }
 
 export function BlogCommentsList({
   comments,
   onCommentUpdated,
+  onCommentDeleted,
 }: CommentsListProps) {
   if (comments.length === 0) {
     return (
@@ -28,6 +30,7 @@ export function BlogCommentsList({
           key={comment._id}
           comment={comment}
           onCommentUpdated={onCommentUpdated}
+          onCommentDeleted={onCommentDeleted}
         />
       ))}
     </div>

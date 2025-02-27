@@ -72,7 +72,7 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
                 />
               </div>
               <div>
-                <span className="text-sm text-emerald-600">March 2024</span>
+                <span className="text-sm text-emerald-600">Featured</span>
                 <h2 className="text-xl font-bold mt-2 group-hover:text-emerald-600 transition-colors">
                   {blog.title}
                 </h2>
