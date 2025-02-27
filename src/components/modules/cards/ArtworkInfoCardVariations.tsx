@@ -8,6 +8,7 @@ import {
   WatchlistButton,
 } from "@/components/elements/buttons";
 import { Bookmark, Heart } from "lucide-react";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 
 // Classic Museum Card
 export const ClassicMuseumCard = ({
@@ -18,13 +19,25 @@ export const ClassicMuseumCard = ({
   isLoggedIn: boolean;
 }) => {
   return (
-    <div className="w-5/8 max-w-2xl p-12 bg-cream-50 border border-gray-200">
+    <div className="w-5/8 max-w-2xl pb-12 px-12 bg-cream-50 border border-gray-200">
       <div className="space-y-8">
-        <div className="text-left border-b pb-6">
+        {/* <div className="text-left border-b pb-6">
           <h1 className="font-serif text-3xl mb-2">Joseph Laoutaris</h1>
           <h2 className="font-serif text-xl italic text-gray-700">
             {artwork.title}
           </h2>
+        </div> */}
+
+        <div className="">
+          <div className="py-8 container mx-auto">
+            <HorizontalDivider />
+          </div>
+          <h1 className="text-4xl text-center font-thin fontface-crimson">
+            Artwork info
+          </h1>
+          <div className="py-8 container mx-auto">
+            <HorizontalDivider />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">

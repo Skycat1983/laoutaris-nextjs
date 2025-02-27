@@ -1,18 +1,8 @@
-import Image from "next/image";
-import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
-import {
-  ClassicMuseumCard,
-  ContemporaryGridCard,
-  MagazineCard,
-  TimelineCard,
-} from "../modules/cards/ArtworkInfoCardVariations";
-import {
-  ArtworkMagazineCard,
-  ArtworkMagazineCard2,
-} from "../modules/cards/ArtworkMagazineCard";
+
 import { MagnifierImage } from "../modules/MagnifierImage";
+import CollectionInfoLayout from "../layouts/public/CollectionInfoLayout";
 
 const ArtworkView = (artwork: PublicArtwork) => {
   const Card = () => {
@@ -20,14 +10,6 @@ const ArtworkView = (artwork: PublicArtwork) => {
     return (
       <>
         <ArtworkInfoCard {...artwork} />
-        {/* <TimelineCard artwork={artwork} isLoggedIn={false} /> */}
-
-        {/* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */}
-        {/* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */}
-
-        {/* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */}
-
-        {/* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */}
       </>
     );
   };
@@ -40,6 +22,7 @@ const ArtworkView = (artwork: PublicArtwork) => {
       gap-10
       lg:grid-cols-[1fr,1fr]
       lg:gap-4
+      
     "
       >
         <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end">
@@ -59,9 +42,10 @@ const ArtworkView = (artwork: PublicArtwork) => {
           <Card />
         </div>
       </div>
-      <div className="p-6">
+      {/* <div className="p-6">
         <HorizontalDivider />
-      </div>
+      </div> */}
+      <CollectionInfoLayout />
 
       {/* <div className="flex flex-row max-w-full  h-[200px] justify-center px-4"></div> */}
     </>
@@ -69,3 +53,19 @@ const ArtworkView = (artwork: PublicArtwork) => {
 };
 
 export { ArtworkView };
+
+{
+  /* <TimelineCard artwork={artwork} isLoggedIn={false} /> */
+}
+{
+  /* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */
+}
+{
+  /* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */
+}
+{
+  /* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */
+}
+{
+  /* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */
+}

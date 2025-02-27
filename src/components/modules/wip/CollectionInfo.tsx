@@ -8,7 +8,7 @@ type Props = {
 const CollectionInfo = ({ heading, subheading }: Props) => {
   return (
     <>
-      <div className="w-full px-4 py-4">
+      <div className="w-full px-16 py-4">
         <h1 className="px-4 py-6 text-3xl font-bold">
           {heading}{" "}
           {/* <span className="text-gray-400 block sm:inline font-semibold">

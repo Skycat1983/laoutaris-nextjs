@@ -4,6 +4,7 @@ import dbConnect from "@/lib/db/mongodb";
 import { Suspense } from "react";
 import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";
 import { CollectionArtworksPaginationLoader } from "@/components/loaders/componentLoaders/CollectionArtworksPaginationLoader";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 
 export default async function CollectionSlugLayout({
   params,
@@ -18,12 +19,50 @@ export default async function CollectionSlugLayout({
   return (
     <section className="">
       {children}
-
+      {/* <div className="w-full flex flex-row justify-center"> */}
+      {/* <div className="w-4/5"> */}
       <Suspense fallback={<PaginationSkeleton />}>
         <CollectionArtworksPaginationLoader slug={slug} />
       </Suspense>
+      {/* </div> */}
+      {/* </div> */}
+
+      <div className="px-4 pb-16">
+        <HorizontalDivider />
+      </div>
     </section>
   );
+}
+
+{
+  /* <div className="flex flex-row w-full justify-center">
+        <div className="px-4 py-4">
+          <ArtistProfile imageUrl={url} />
+        </div>
+        <div className="px-4 py-4 w-1/3">
+          <TabbedCollectionInfo {...defaultProps} />
+          <CollectionMagazineCard4 {...defaultProps} />
+        </div>
+      </div> */
+}
+
+{
+  /* <TimelineCard artwork={artwork} isLoggedIn={false} /> */
+}
+
+{
+  /* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */
+}
+{
+  /* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */
+}
+
+{
+  /* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */
+}
+
+{
+  /* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */
 }
 
 {

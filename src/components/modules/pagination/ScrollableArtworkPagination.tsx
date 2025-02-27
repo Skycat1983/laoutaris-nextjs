@@ -9,6 +9,8 @@ import CollectionInfo from "../wip/CollectionInfo";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import BlogSectionHeading from "@/components/elements/typography/BlogSectionHeading";
+import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 
 interface ScrollablePaginationProps {
   items: (ArtworkNavFields & { link: string })[];
@@ -55,7 +57,7 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <div className="relative w-full group">
+    <div className="relative w-full group px-16">
       {showLeftButton && (
         <motion.button
           initial={{ opacity: 0 }}
@@ -141,9 +143,22 @@ export function ScrollableArtworkPagination({
     return () => clearTimeout(loadingTimer);
   }, [items]);
 
+  // TODO: heading with Collection Info or others
   return (
     <>
-      <CollectionInfo heading={heading} subheading={`${items.length} pieces`} />
+      <div className="py-8">
+        <div className="py-8 container mx-auto">
+          <HorizontalDivider />
+        </div>
+        <h1 className="text-5xl text-left font-thin fontface-crimson pl-24">
+          {heading}
+        </h1>
+        <div className="py-8 container mx-auto">
+          <HorizontalDivider />
+        </div>
+      </div>
+
+      {/* <CollectionInfo heading={heading} subheading={`${items.length} pieces`} /> */}
       <ScrollableLayout>
         <AnimatePresence mode="wait">
           {isLoading ? (
@@ -224,7 +239,7 @@ export function ScrollableArtworkPagination({
 export const ScrollablePaginationSkeleton = () => {
   return (
     <div className="flex items-start justify-start pl-4 gap-8 overflow-x-auto min-h-[400px]">
-      {Array.from({ length: 5 }).map((_, index) => (
+      {Array.from({ length: 8 }).map((_, index) => (
         <ArtworkPaginationItemSkeleton key={index} />
       ))}
     </div>
