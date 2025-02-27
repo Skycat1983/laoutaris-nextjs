@@ -6,7 +6,7 @@ import { serverApi } from "@/lib/api/serverApi";
 
 export const UserCommentsLoader = async () => {
   const result: ApiResponse<FrontendUserWithComments> =
-    await serverApi.public.user.fetchUserComments();
+    await serverApi.user.comments.getUserComments();
   if (!result.success) {
     throw new Error(result.error);
   }

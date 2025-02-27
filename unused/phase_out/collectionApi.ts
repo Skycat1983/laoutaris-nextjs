@@ -26,7 +26,7 @@ export async function fetchCollections({
   if (page) params.append("page", page.toString());
 
   const response = await fetch(
-    `${process.env.BASEURL}/api/v2/collection?${params}`,
+    `${process.env.BASEURL}/api/v2/public/collection?${params}`,
     {
       method: "GET",
       headers: headers(),
@@ -47,7 +47,7 @@ export async function fetchCollectionArtwork(
 ): Promise<FrontendCollectionWithArtworks> {
   try {
     const response = await fetch(
-      `${process.env.BASEURL}/api/v2/collection/${slug}/artwork/${artworkId}`,
+      `${process.env.BASEURL}/api/v2/public/collection/${slug}/artwork/${artworkId}`,
       {
         method: "GET",
         headers: headers(),

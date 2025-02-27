@@ -16,7 +16,9 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get one collection by slug
   fetchCollection: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendCollection>(`/api/v2/collection/${encodedSlug}`);
+    return fetcher<FrontendCollection>(
+      `/api/v2/public/collection/${encodedSlug}`
+    );
   },
 
   // Get multiple collections by params
@@ -33,7 +35,7 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
     if (page) params.append("page", page.toString());
 
     return fetcher<FrontendCollection[]>(
-      `/api/v2/collection?${params.toString()}`
+      `/api/v2/public/collection?${params.toString()}`
     );
   },
 
@@ -42,7 +44,7 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
     const encodedSlug = encodeURIComponent(slug);
     const encodedArtworkId = encodeURIComponent(artworkId);
     return fetcher<FrontendCollectionWithArtworks>(
-      `/api/v2/collection/${encodedSlug}/artwork/${encodedArtworkId}`
+      `/api/v2/public/collection/${encodedSlug}/artwork/${encodedArtworkId}`
     );
   },
 });

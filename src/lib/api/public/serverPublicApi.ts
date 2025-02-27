@@ -4,8 +4,8 @@ import { createArticleFetchers } from "@/lib/api/public/article/fetchers";
 import { createCollectionFetchers } from "@/lib/api/public/collection/fetchers";
 import { createNavigationFetchers } from "@/lib/api/public/navigation/fetchers";
 import { createBlogFetchers } from "@/lib/api/public/blog/fetchers";
-import { createUserFetchers } from "@/lib/api/public/user/fetchers";
-import { createCommentFetchers } from "./comment/fetchers";
+// import { createUserFetchers } from "@/lib/api/public/user/fetchers";
+// import { createCommentFetchers } from "./comment/fetchers";
 
 const serverFetcher = createFetcher({
   getUrl: (path) => {
@@ -22,6 +22,6 @@ export const serverPublicApi = {
   blog: createBlogFetchers(serverFetcher),
   collection: createCollectionFetchers(serverFetcher),
   navigation: createNavigationFetchers(serverFetcher),
-  user: createUserFetchers(serverFetcher),
-  comment: createCommentFetchers(serverFetcher),
+  // user: createUserFetchers(serverFetcher),
+  // comment: createCommentFetchers(serverFetcher),
 };

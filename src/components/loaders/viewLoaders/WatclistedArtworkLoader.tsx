@@ -1,12 +1,12 @@
 import { ArtworkView } from "@/components/views/ArtworkView";
-import { fetchUserWatchlistArtwork } from "../../../../phase_out/userApi";
+import { serverApi } from "@/lib/api/serverApi";
 
 export async function WatchlistedArtworkLoader({
   artworkId,
 }: {
   artworkId: string;
 }) {
-  const result = await fetchUserWatchlistArtwork(artworkId);
+  const result = await serverApi.user.watchlist.getWatchlistArtwork(artworkId);
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch watchlisted artwork");

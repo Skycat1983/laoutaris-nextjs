@@ -26,7 +26,7 @@ export async function fetchBlogEntries({
     if (page) params.append("page", page.toString());
 
     const response = await fetch(
-      `${process.env.BASEURL}/api/v2/blog?${params}`,
+      `${process.env.BASEURL}/api/v2/public/blog?${params}`,
       {
         method: "GET",
         headers: headers(),
@@ -56,11 +56,14 @@ export async function fetchBlog(
   slug: string
 ): Promise<ApiResponse<FrontendBlogEntry>> {
   try {
-    const response = await fetch(`${process.env.BASEURL}/api/v2/blog/${slug}`, {
-      method: "GET",
-      headers: headers(),
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${process.env.BASEURL}/api/v2/public/blog/${slug}`,
+      {
+        method: "GET",
+        headers: headers(),
+        cache: "no-store",
+      }
+    );
 
     const result = await response.json();
 
@@ -85,7 +88,7 @@ export async function fetchBlogComments(
   slug: string
 ): Promise<FrontendBlogEntryWithComments> {
   const response = await fetch(
-    `${process.env.BASEURL}/api/v2/blog/${slug}/comments`,
+    `${process.env.BASEURL}/api/v2/public/blog/${slug}/comments`,
     {
       method: "GET",
       headers: headers(),
@@ -107,7 +110,7 @@ export async function fetchBlogWithCommentAuthor(
 ): Promise<ApiResponse<FrontendBlogEntryWithCommentAuthor>> {
   try {
     const response = await fetch(
-      `${process.env.BASEURL}/api/v2/blog/${slug}/comments/author`,
+      `${process.env.BASEURL}/api/v2/public/blog/${slug}/comments/author`,
       {
         method: "GET",
         headers: headers(),

@@ -37,7 +37,7 @@ const UpdateBlogEntry = () => {
   async function onSubmit(data: ReadFormValues) {
     console.log("data :>> ", data);
     try {
-      const url = `/api/v2/blog/${encodeURIComponent(data.objectId)}`;
+      const url = `/api/v2/public/blog/${encodeURIComponent(data.objectId)}`;
       const response = await fetch(url);
 
       console.log("response :>> ", response);

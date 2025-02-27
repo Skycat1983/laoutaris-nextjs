@@ -6,9 +6,9 @@ For example, when we click 'collection' from our navbar, we will navigate to /co
 
 It is not known in advance what the latest collection/article name is, nor what the first artwork in the collection is.
 
-The data necessary to generate these URLs could also be fetched from one of our base routes (api/v2/collections, api/v2/articles, api/v2/biography). However, these endpoints return substantially larger payloads than is necessary for the navigation data.
+The data necessary to generate these URLs could also be fetched from one of our base routes (api/v2/public/collections, api/v2/public/articles, api/v2/biography). However, these endpoints return substantially larger payloads than is necessary for the navigation data.
 
-Conversely, the /api/v2/navigation endpoints return only the data necessary for navigation and no more.
+Conversely, the /api/v2/public/navigation endpoints return only the data necessary for navigation and no more.
 
 The fetchers that call these endpoints are located in the `src/lib/api/public/navigationApi.ts` file.
 
@@ -29,6 +29,6 @@ Within the controller function, we:
 
 THOUGHTS & TODOS:
 
-- shouldthe api/navigation endpoints be asset oriented? so instead of /api/v2/navigation/articles, it would be /api/v2/navigation/biography/:assetId or /api/v2/navigation/collection/pagination?
-- at present, when i fetch 'articles', for example, the endpoint must be /api/v2/navigation/articles/[section], because we can potentially have articles belonging to /biograph or /project or /collection
+- shouldthe api/navigation endpoints be asset oriented? so instead of /api/v2/public/navigation/articles, it would be /api/v2/public/navigation/biography/:assetId or /api/v2/public/navigation/collection/pagination?
+- at present, when i fetch 'articles', for example, the endpoint must be /api/v2/public/navigation/articles/[section], because we can potentially have articles belonging to /biograph or /project or /collection
 <!-- ? is this what is known as declarative routing? or is that what i have already?-->

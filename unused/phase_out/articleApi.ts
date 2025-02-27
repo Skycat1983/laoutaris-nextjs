@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 
 export async function fetchArticle(slug: string) {
   const response = await fetch(
-    `${process.env.BASEURL}/api/v2/article/${slug}`,
+    `${process.env.BASEURL}/api/v2/public/article/${slug}`,
     {
       method: "GET",
       headers: headers(),
@@ -43,7 +43,7 @@ export async function fetchArticles({
   if (page) params.append("page", page.toString());
 
   const response = await fetch(
-    `${process.env.BASEURL}/api/v2/article?${params}`,
+    `${process.env.BASEURL}/api/v2/public/article?${params}`,
     {
       method: "GET",
       headers: headers(),
@@ -60,7 +60,7 @@ export async function fetchArticles({
 
 export async function fetchArticleArtwork(slug: string) {
   const response = await fetch(
-    `${process.env.BASEURL}/api/v2/article/${slug}/artwork`,
+    `${process.env.BASEURL}/api/v2/public/article/${slug}/artwork`,
     {
       method: "GET",
       headers: headers(),

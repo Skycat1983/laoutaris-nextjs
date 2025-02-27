@@ -5,9 +5,9 @@ import type {
 } from "@/lib/data/types/userTypes";
 import type { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import type { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
-import { Fetcher } from "../../core/createFetcher";
+import { Fetcher } from "../../src/lib/api/core/createFetcher";
 
-export const createUserFetchers = (fetcher: Fetcher) => ({
+const createUserFetchers = (fetcher: Fetcher) => ({
   // Get user settings
   fetchUserSettings: async () => fetcher<FrontendUser>(`/api/v2/user`),
 

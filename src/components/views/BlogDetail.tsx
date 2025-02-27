@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import CommentForm from "@/components/forms/CommentForm";
-import { createComment } from "@/lib/api/public/commentApi";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogCommentsList } from "@/components/sections";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
-import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
 import { clientApi } from "@/lib/api/clientApi";
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { useRouter } from "next/navigation";
@@ -38,7 +36,7 @@ const BlogDetail = ({
   const loadComments = async () => {
     setIsLoadingComments(true);
     try {
-      const result = await clientPublicApi.blog.fetchBlogCommentsAuthor(slug);
+      const result = await clientApi.public.blog.fetchBlogCommentsAuthor(slug);
       if (result.success) {
         setPopulatedComments(result.data.comments);
         setHasLoadedComments(true);
@@ -52,7 +50,7 @@ const BlogDetail = ({
 
   const handleCommentSubmit = async (comment: CreateCommentFormValues) => {
     try {
-      const result = await clientPublicApi.comment.createComment(comment);
+      const result = await clientApi.user.comments.createComment(comment);
       if (result.success) {
         loadComments();
       }

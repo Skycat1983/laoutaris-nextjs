@@ -22,7 +22,7 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
   // get one blog by slug
   fetchBlog: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendBlogEntry>(`/api/v2/blog/${encodedSlug}`);
+    return fetcher<FrontendBlogEntry>(`/api/v2/public/blog/${encodedSlug}`);
   },
 
   // get multiple blogs by params
@@ -39,7 +39,7 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
     if (page) params.append("page", page.toString());
 
     return fetcher<PaginatedBlogResponse["data"]>(
-      `/api/v2/blog?${params.toString()}`
+      `/api/v2/public/blog?${params.toString()}`
     );
   },
 
@@ -47,7 +47,7 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
   fetchBlogCommentsAuthor: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<FrontendBlogEntryWithCommentAuthor>(
-      `/api/v2/blog/${encodedSlug}/comments/author`
+      `/api/v2/public/blog/${encodedSlug}/comments/author`
     );
   },
 });

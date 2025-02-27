@@ -1,14 +1,14 @@
 import { AccountSettings } from "@/components/sections/AccountSettings";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { serverApi } from "@/lib/api/serverApi";
 import { FrontendUser } from "@/lib/data/types/userTypes";
 import React from "react";
 
 export const UserSettingsLoader = async () => {
   const settings: ApiResponse<FrontendUser> =
-    await serverPublicApi.user.fetchUserSettings();
+    await serverApi.user.profile.getProfile();
 
   if (!settings.success) {
-    throw new Error("Failed to fetch user settings");
+    throw new Error(settings.error || "Failed to fetch user settings");
   }
 
   const { data } = settings as ApiSuccessResponse<FrontendUser>;

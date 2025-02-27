@@ -7,26 +7,26 @@ import type {
   UserNavResponse,
   UserNavFields,
 } from "@/lib/data/types/navigationTypes";
-import { Fetcher } from "../../core/createFetcher";
+import { Fetcher } from "@/lib/api/core/createFetcher";
 
 export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get article navigation list
   fetchArticleNavigationList: async (section: ValidSection) => {
     const encodedSection = encodeURIComponent(section);
     return fetcher<ArticleNavItem[]>(
-      `/api/v2/navigation/articles/${encodedSection}`
+      `/api/v2/public/navigation/articles/${encodedSection}`
     );
   },
 
   // Get collection navigation list
   fetchCollectionNavigationList: async () =>
-    fetcher<CollectionNavItem[]>(`/api/v2/navigation/collections`),
+    fetcher<CollectionNavItem[]>(`/api/v2/public/navigation/collections`),
 
   // Get single collection navigation item
   fetchCollectionNavigationItem: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<CollectionNavItem>(
-      `/api/v2/navigation/collections/${encodedSlug}`
+      `/api/v2/public/navigation/collections/${encodedSlug}`
     );
   },
 
@@ -34,13 +34,13 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   fetchCollectionArtworksNavigation: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<CollectionArtworkNavList>(
-      `/api/v2/navigation/collections/${encodedSlug}/artworks`
+      `/api/v2/public/navigation/collections/${encodedSlug}/artworks`
     );
   },
 
   // Add the user navigation fetcher
   fetchUserNavigationList: async () =>
-    fetcher<UserNavFields>(`/api/v2/navigation/user`),
+    fetcher<UserNavFields>(`/api/v2/public/navigation/user`),
 });
 
 // Type for our navigation fetchers object

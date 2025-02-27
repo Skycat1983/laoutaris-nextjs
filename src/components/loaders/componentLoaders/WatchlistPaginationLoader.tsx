@@ -1,10 +1,10 @@
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
+import { serverApi } from "@/lib/api/serverApi";
 
 export async function WatchlistPaginationLoader() {
-  const result = await serverPublicApi.user.fetchUserWatchlist();
+  const result = await serverApi.user.watchlist.getWatchlist();
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch user watchlist");

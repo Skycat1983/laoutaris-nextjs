@@ -4,8 +4,6 @@ import { createArticleFetchers } from "@/lib/api/public/article/fetchers";
 import { createBlogFetchers } from "@/lib/api/public/blog/fetchers";
 import { createCollectionFetchers } from "@/lib/api/public/collection/fetchers";
 import { createNavigationFetchers } from "@/lib/api/public/navigation/fetchers";
-import { createUserFetchers } from "@/lib/api/public/user/fetchers";
-import { createCommentFetchers } from "./comment/fetchers";
 
 const clientFetcher = createFetcher({
   getUrl: (path) => path,
@@ -19,6 +17,4 @@ export const clientPublicApi = {
   blog: createBlogFetchers(clientFetcher),
   collection: createCollectionFetchers(clientFetcher),
   navigation: createNavigationFetchers(clientFetcher),
-  user: createUserFetchers(clientFetcher),
-  comment: createCommentFetchers(clientFetcher),
 };

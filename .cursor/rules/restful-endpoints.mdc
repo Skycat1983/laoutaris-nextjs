@@ -15,10 +15,10 @@ globs: src/app/api/v2/**/*.ts
 
 Using these guidelines, we can determine the appropriate endpoint based on the type of data to be fetched and the relationships to be populated, ensuring a consistent and predictable API design. This blueprint defines how endpoints are structured to reflect both the type of resource being returned and its associated relationships. For example:
 
-- **Plural Endpoints:** `/v2/articles` returns multiple articles.
-- **Dynamic Endpoints:** `/v2/article/[slug]` returns a single article identified by its slug.
-- **Nested Endpoints:** `/v2/article/[slug]/artwork` returns a single article with its related artwork populated.
-- The same pattern applies to collections, where `/v2/collections` returns multiple collections, `/v2/collection/[slug]` returns one collection, and `/v2/collections/[slug]/artwork` returns one collection with its artworks populated.
+- **Plural Endpoints:** `/v2/public/articles` returns multiple articles.
+- **Dynamic Endpoints:** `/v2/public/article/[slug]` returns a single article identified by its slug.
+- **Nested Endpoints:** `/v2/public/article/[slug]/artwork` returns a single article with its related artwork populated.
+- The same pattern applies to collections, where `/v2/public/collections` returns multiple collections, `/v2/public/collection/[slug]` returns one collection, and `/v2/public/collections/[slug]/artwork` returns one collection with its artworks populated.
 
 **Note on Admin vs. Public Endpoints:**  
 Admin routes (under `/v2/admin`) fetch the complete data items, whereas GET requests made by users are sanitized, filtered, or limited by design for security and performance.
@@ -31,8 +31,8 @@ Our naming convention inherently indicates:
   Nested endpoints (e.g., `/artwork`, `/comments`) specify that related data should be populated.
   
 For example, in theory:
-- `/v2/collections/artwork` could return multiple collections with all artworks populated.
-- `/v2/collections/[slug]/artwork/[id]` might return a specific collection with only a single artwork populated.
+- `/v2/public/collections/artwork` could return multiple collections with all artworks populated.
+- `/v2/public/collections/[slug]/artwork/[id]` might return a specific collection with only a single artwork populated.
 
 This approach allows us to intuitively deduce which endpoints are possible and what they infer about the data relationships on our backend.
 

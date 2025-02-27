@@ -9,12 +9,12 @@ import {
   CollectionArtworksNavResponse,
   ArtworkNavFields,
   UserNavResponse,
-} from "../src/lib/data/types/navigationTypes";
+} from "@/lib/data/types/navigationTypes";
 
 export async function fetchArticleNavigationList(
   section: ValidSection
 ): Promise<ArticleNavItem[]> {
-  const url = `${process.env.BASEURL}/api/v2/navigation/articles/${section}`;
+  const url = `${process.env.BASEURL}/api/v2/public/navigation/articles/${section}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -47,7 +47,7 @@ export async function fetchArticleNavigationList(
 export async function fetchCollectionNavigationList(
   section: ValidSection
 ): Promise<CollectionNavItem[]> {
-  const url = `${process.env.BASEURL}/api/v2/navigation/collections`;
+  const url = `${process.env.BASEURL}/api/v2/public/navigation/collections`;
   console.log("Fetching from in fetchCollectionNavigationList:", url);
 
   const response = await fetch(url, {
@@ -79,7 +79,7 @@ export async function fetchCollectionNavigationList(
 export async function fetchCollectionNavigationItem(
   slug: string
 ): Promise<CollectionNavItem> {
-  const url = `${process.env.BASEURL}/api/v2/navigation/collections/${slug}`;
+  const url = `${process.env.BASEURL}/api/v2/public/navigation/collections/${slug}`;
   // console.log("Fetching from in fetchCollectionNavigationItem:", url);
 
   const response = await fetch(url, {
@@ -110,7 +110,7 @@ export async function fetchCollectionNavigationItem(
 export async function fetchCollectionArtworksNavigation(
   slug: string
 ): Promise<ArtworkNavFields[]> {
-  const url = `${process.env.BASEURL}/api/v2/navigation/collections/${slug}/artworks`;
+  const url = `${process.env.BASEURL}/api/v2/public/navigation/collections/${slug}/artworks`;
   console.log("Fetching from:", url);
 
   const response = await fetch(url, {
@@ -136,7 +136,7 @@ export async function fetchCollectionArtworksNavigation(
 }
 
 export async function fetchUserNavigationList(): Promise<UserNavResponse> {
-  const url = `${process.env.BASEURL}/api/v2/navigation/user`;
+  const url = `${process.env.BASEURL}/api/v2/public/navigation/user`;
 
   try {
     const response = await fetch(url, {

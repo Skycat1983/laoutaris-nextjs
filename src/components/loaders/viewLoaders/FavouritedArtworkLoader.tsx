@@ -1,5 +1,6 @@
 import { ArtworkView } from "@/components/views/ArtworkView";
-import { fetchUserFavouriteArtwork } from "../../../../phase_out/userApi";
+import { clientApi } from "@/lib/api/clientApi";
+import { serverApi } from "@/lib/api/serverApi";
 import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 
 export const FavouritedArtworkLoader = async ({
@@ -7,9 +8,8 @@ export const FavouritedArtworkLoader = async ({
 }: {
   artworkId: string;
 }) => {
-  const result: ApiResponse<PublicArtwork> = await fetchUserFavouriteArtwork(
-    artworkId
-  );
+  const result: ApiResponse<PublicArtwork> =
+    await serverApi.user.favourites.getFavouriteArtwork(artworkId);
   if (!result.success) {
     throw new Error(result.error);
   }

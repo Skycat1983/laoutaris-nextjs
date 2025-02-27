@@ -16,7 +16,7 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug
   fetchArticle: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendArticle>(`/api/v2/article/${encodedSlug}`);
+    return fetcher<FrontendArticle>(`/api/v2/public/article/${encodedSlug}`);
   },
 
   // Get multiple articles by params
@@ -32,14 +32,14 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<FrontendArticle[]>(`/api/v2/article?${params}`);
+    return fetcher<FrontendArticle[]>(`/api/v2/public/article?${params}`);
   },
 
   // Get article with artwork
   fetchArticleArtwork: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<FrontendArticleWithArtwork>(
-      `/api/v2/article/${encodedSlug}/artwork`
+      `/api/v2/public/article/${encodedSlug}/artwork`
     );
   },
 });
