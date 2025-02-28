@@ -78,6 +78,7 @@ interface BasicAccordionFilterProps {
   onClearFilters: () => void;
   filterMode: FilterMode;
   onFilterModeChange: (mode: FilterMode) => void;
+  onApply?: () => void; // Optional callback for mobile drawer
 }
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
@@ -89,6 +90,7 @@ export const BasicAccordionFilter = ({
   onClearFilters,
   filterMode,
   onFilterModeChange,
+  onApply,
 }: BasicAccordionFilterProps) => {
   const [pendingFilters, setPendingFilters] = useState<ArtworkFilterParams>({
     decade: [],
@@ -132,6 +134,7 @@ export const BasicAccordionFilter = ({
 
   const handleApplyFilters = () => {
     onFilterChange(pendingFilters);
+    onApply?.(); // Call onApply if it exists (mobile only)
   };
 
   const handleClearFilters = () => {
@@ -236,8 +239,9 @@ export const BasicAccordionFilter = ({
   };
 
   return (
-    <aside className="w-[300px] bg-white p-4 border-r h-full bg-whitish shadow-md p-8">
-      <div className="flex items-center gap-2 mb-4">
+    <aside className="fixed left-0 w-full md:w-[290px] md:shadow-md bg-whitish">
+      {/* <aside className="fixed top-[170px] left-0 w-[290px] h-[calc(100vh-64px)] bg-whitish"> */}
+      <div className="flex items-center gap-2 p-8 pb-4">
         <Switch
           checked={filterMode === "ALL"}
           onCheckedChange={handleFilterModeChange}
@@ -247,7 +251,7 @@ export const BasicAccordionFilter = ({
         </span>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-180px)]">
+      <ScrollArea className="h-[calc(100vh-180px)] px-8">
         <Accordion type="multiple" className="w-full">
           <AccordionItem value="decade">
             <AccordionTrigger>Decade</AccordionTrigger>
