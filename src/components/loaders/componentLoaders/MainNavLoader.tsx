@@ -42,6 +42,10 @@ export const MainNavLoader = async () => {
 
   const navLinks: NavBarLink[] = [
     {
+      label: "Artwork",
+      path: buildUrl(["artwork"]),
+    },
+    {
       label: "Biography",
       path: buildUrl(["biography", articleNavigationList[0].slug]),
     },

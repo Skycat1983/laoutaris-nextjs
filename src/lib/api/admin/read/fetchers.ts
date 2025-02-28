@@ -4,7 +4,7 @@ import type {
   ArticleFilterParams,
 } from "@/lib/data/types/articleTypes";
 import type {
-  ArtworkFilterParams,
+  DynamicArtworkFilterParams,
   FrontendArtwork,
 } from "@/lib/data/types/artworkTypes";
 import type {
@@ -26,7 +26,7 @@ import type { Fetcher } from "../../core/createFetcher";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
-  | ArtworkFilterParams
+  | DynamicArtworkFilterParams
   | CollectionFilterParams
   | BlogFilterParams;
 

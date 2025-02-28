@@ -119,9 +119,21 @@ export interface ImageColorData {
   predominantColors: PredominantColors;
 }
 
-export interface ArtworkFilterParams {
+export interface DynamicArtworkFilterParams {
   key: "decade" | "artstyle" | "medium" | "surface" | null;
   value: string | null;
+}
+
+export type FilterMode = "ALL" | "ANY";
+
+export interface ArtworkFilterParams {
+  decade?: Decade;
+  artstyle?: ArtStyle;
+  medium?: Medium;
+  surface?: Surface;
+  limit?: number;
+  page?: number;
+  filterMode?: FilterMode;
 }
 
 // export const updateArtworkSchema = z.object({

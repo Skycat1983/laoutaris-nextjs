@@ -21,7 +21,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
       />
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-50" />
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-white text-4xl font-cormorant">
+        <span className="text-white text-4xl font-cormorant text-center p-4">
           {collection.title}
         </span>
       </div>
