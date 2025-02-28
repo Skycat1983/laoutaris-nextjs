@@ -51,7 +51,7 @@ const NewLogoLight2 = () => {
   const className = `w-[${size}px] h-[${size}px]`;
 
   return (
-    <div className="h-[200px] w-[200px] overflow-hidden relative items-center justify-center flex z-10 bg-black p-6">
+    <div className="h-[250px] w-[250px] overflow-hidden relative items-center justify-center flex z-10 p-6">
       <Image
         src={logo1}
         alt="logo"

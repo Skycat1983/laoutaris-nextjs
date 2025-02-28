@@ -6,5 +6,9 @@ export async function SubscribeSectionLoader() {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session;
 
-  return <SubscribeSection isLoggedIn={isLoggedIn} />;
+  return (
+    <>
+      <SubscribeSection isLoggedIn={isLoggedIn} />
+    </>
+  );
 }

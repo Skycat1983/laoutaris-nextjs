@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";
 import { CollectionArtworksPaginationLoader } from "@/components/loaders/componentLoaders/CollectionArtworksPaginationLoader";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import { SubscribeSection } from "@/components/sections";
 
 export default async function CollectionSlugLayout({
   params,
@@ -29,6 +30,9 @@ export default async function CollectionSlugLayout({
 
       <div className="px-4 pb-16">
         <HorizontalDivider />
+      </div>
+      <div className="container mx-auto pb-16">
+        <SubscribeSection isLoggedIn={false} />
       </div>
     </section>
   );
