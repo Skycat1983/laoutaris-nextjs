@@ -35,14 +35,17 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
         />
       </div>
       <div className="max-w-6xl mx-auto grid grid-cols-12 gap-8 py-16 px-8 relative">
-        <div className="col-span-6 flex flex-col justify-center">
+        <div className="col-span-9 md:col-span-6 flex flex-col justify-center">
+          <div className="flex justify-end w-full block md:hidden">
+            <NewLogoLight2 />
+          </div>
           <h2 className="text-5xl font-light mb-6">Join Our Mailing List</h2>
           <p className="text-gray-300 text-lg mb-8">
             {isLoggedIn
               ? "To receive our newsletter, please enter your email below."
               : "Experience art through our curator's lens"}
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col md:flex-row ">
             <input
               type="email"
               placeholder="Enter your email"
@@ -53,7 +56,7 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
             </button>
           </div>
         </div>
-        <div className="col-span-6 flex justify-end">
+        <div className="hidden md:flex md:col-span-6 md:items-center md:justify-end">
           <NewLogoLight2 />
         </div>
       </div>
