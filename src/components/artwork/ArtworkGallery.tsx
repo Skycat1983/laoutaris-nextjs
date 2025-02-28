@@ -21,7 +21,9 @@ interface ArtworkGalleryProps {
 export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
   const [artworks, setArtworks] = useState(initialArtworks);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState<ArtworkFilterParams>({});
+  const [filters, setFilters] = useState<ArtworkFilterParams>({
+    filterMode: "ALL",
+  });
   const [filterMode, setFilterMode] = useState<FilterMode>("ALL");
 
   const handleFilterChange = async (
@@ -64,7 +66,9 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
   };
 
   const clearFilters = () => {
-    setFilters({});
+    setFilters({
+      filterMode: "ALL",
+    });
     setArtworks(initialArtworks);
   };
 

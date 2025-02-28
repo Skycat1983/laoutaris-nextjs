@@ -127,13 +127,13 @@ export interface DynamicArtworkFilterParams {
 export type FilterMode = "ALL" | "ANY";
 
 export interface ArtworkFilterParams {
-  decade?: Decade;
-  artstyle?: ArtStyle;
-  medium?: Medium;
-  surface?: Surface;
+  decade?: Decade[];
+  artstyle?: ArtStyle[];
+  medium?: Medium[];
+  surface?: Surface[];
   limit?: number;
   page?: number;
-  filterMode?: FilterMode;
+  filterMode: FilterMode;
 }
 
 // export const updateArtworkSchema = z.object({

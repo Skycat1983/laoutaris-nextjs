@@ -6,33 +6,25 @@ import {
   Medium,
   Surface,
   FilterMode,
+  ArtworkFilterParams,
 } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
 
-interface FetchArtworkParams {
-  decade?: Decade;
-  artstyle?: ArtStyle;
-  medium?: Medium;
-  surface?: Surface;
-  filterMode?: FilterMode;
-  fields?: readonly string[];
-  limit?: number;
-  page?: number;
-}
-
 export const createArtworkFetchers = (fetcher: Fetcher) => ({
-  fetchArtworks: async ({
-    fields,
-    limit = 10,
-    page = 1,
-    decade,
-    artstyle,
-    medium,
-    surface,
-    filterMode,
-  }: FetchArtworkParams = {}) => {
+  fetchArtworks: async (
+    {
+      limit = 10,
+      page = 1,
+      decade,
+      artstyle,
+      medium,
+      surface,
+      filterMode,
+    }: ArtworkFilterParams = {
+      filterMode: "ALL",
+    }
+  ) => {
     console.log("fetchArtworks", {
-      fields,
       limit,
       page,
       decade,
@@ -45,16 +37,26 @@ export const createArtworkFetchers = (fetcher: Fetcher) => ({
 
     if (filterMode) params.append("filterMode", filterMode);
 
+    // Handle arrays of values
+    const appendArrayParam = (
+      key: string,
+      value: string | string[] | undefined
+    ) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else if (value) {
+        params.append(key, value);
+      }
+    };
+
+    appendArrayParam("decade", decade);
+    appendArrayParam("artstyle", artstyle);
+    appendArrayParam("medium", medium);
+    appendArrayParam("surface", surface);
+
     // Add pagination and field selection
-    if (fields) params.append("fields", fields.join(","));
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
-
-    // Add filter parameters
-    if (decade) params.append("decade", decade);
-    if (artstyle) params.append("artstyle", artstyle);
-    if (medium) params.append("medium", medium);
-    if (surface) params.append("surface", surface);
 
     return fetcher<FrontendArtworkUnpopulated[]>(
       `/api/v2/public/artwork?${params.toString()}`

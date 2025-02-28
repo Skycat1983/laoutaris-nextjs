@@ -11,33 +11,27 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const filterMode = searchParams.get("filterMode") || "ALL";
 
-    // Collect all filter conditions
     const conditions = [];
-    if (searchParams.get("decade"))
-      conditions.push({ decade: searchParams.get("decade") });
-    if (searchParams.get("artstyle"))
-      conditions.push({ artstyle: searchParams.get("artstyle") });
-    if (searchParams.get("medium"))
-      conditions.push({ medium: searchParams.get("medium") });
-    if (searchParams.get("surface"))
-      conditions.push({ surface: searchParams.get("surface") });
 
-    // Build the query based on filter mode
+    // handle as arrays
+    for (const key of ["decade", "artstyle", "medium", "surface"]) {
+      const values = searchParams.getAll(key);
+      if (values.length) {
+        conditions.push({ [key]: { $in: values } });
+      }
+    }
+
     const query =
       conditions.length > 0
         ? filterMode === "ALL"
-          ? { $and: conditions } // All conditions must match
-          : { $or: conditions } // Any condition can match
+          ? { $and: conditions }
+          : { $or: conditions }
         : {};
 
-    // Handle field selection
     const fields = searchParams.get("fields")?.split(",").join(" ") || "";
 
-    // Handle pagination
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-
-    console.log("Query:", query); // Debug log
 
     const [artworks, total] = await Promise.all([
       ArtworkModel.find(query)
@@ -58,7 +52,7 @@ export async function GET(
       },
     } satisfies PaginatedResponse<FrontendArtwork[]>);
   } catch (error) {
-    console.error("Error in artwork route:", error); // Debug log
+    console.error("Error in artwork route:", error);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },
       { status: 500 }
