@@ -6,25 +6,32 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   console.log("Middleware - Path:", path);
 
-  // console.log("Middleware - Cookie header:", request.headers.get("cookie"));
+  // Don't run middleware on auth-related paths
+  if (path.startsWith("/api/auth")) {
+    console.log("Skipping middleware for auth route");
+    return NextResponse.next();
+  }
 
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const role = token?.role;
-  console.log("user role in middleware", role);
+  console.log("Middleware - Token exists:", !!token);
+  console.log("Middleware - Path being checked:", path);
 
   if (isProtectedRoute(path)) {
-    console.log("isProtectedRoute", isProtectedRoute(path));
+    console.log("Route requires protection");
 
     if (!token) {
+      console.log("No token found, redirecting to signin");
       return NextResponse.redirect(new URL("/api/auth/signin", request.url));
     }
 
     if (isAdminRoute(path)) {
-      console.log("isAdminRoute", isAdminRoute(path));
+      const role = token?.role;
+      console.log("Admin route check - User role:", role);
+
       if (role !== "admin") {
         if (path.startsWith("/api")) {
           return NextResponse.json(
@@ -39,3 +46,16 @@ export async function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all paths except:
+     * 1. /api/auth/* (auth endpoints)
+     * 2. /_next/* (Next.js internals)
+     * 3. /static/* (static files)
+     * 4. /favicon.ico, /sitemap.xml (public files)
+     */
+    "/((?!api/auth|_next/static|_next/image|favicon.ico).*)",
+  ],
+};

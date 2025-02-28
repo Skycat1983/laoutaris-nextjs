@@ -10,6 +10,11 @@ const ArtworkView = (artwork: PublicArtwork) => {
     return (
       <>
         <ArtworkInfoCard {...artwork} />
+        {/* <TimelineCard artwork={artwork} isLoggedIn={false} /> */}
+        {/* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */}
+        {/* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */}
+        {/* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */}
+        {/* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */}
       </>
     );
   };
@@ -53,19 +58,3 @@ const ArtworkView = (artwork: PublicArtwork) => {
 };
 
 export { ArtworkView };
-
-{
-  /* <TimelineCard artwork={artwork} isLoggedIn={false} /> */
-}
-{
-  /* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */
-}
-{
-  /* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */
-}
-{
-  /* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */
-}
-{
-  /* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */
-}
