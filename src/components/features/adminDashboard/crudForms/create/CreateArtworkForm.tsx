@@ -24,11 +24,11 @@ import { Input } from "@/components/shadcn/input";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { BaseArtwork } from "@/lib/data/models";
 import { clientApi } from "@/lib/api/clientApi";
-import { createArtworkSchema } from "@/lib/data/schemas";
+import { artworkFormSchema, ArtworkFormValues } from "@/lib/data/schemas";
 
 interface CreateArtworkFormProps {
   uploadInfo: ArtworkImage | null;
@@ -40,14 +40,22 @@ export function CreateArtworkForm({
   onSuccess,
 }: CreateArtworkFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<z.infer<typeof createArtworkSchema>>({
-    resolver: zodResolver(createArtworkSchema),
+  console.log("isSubmitting", isSubmitting);
+  console.log("uploadInfo", uploadInfo);
+  const form = useForm<ArtworkFormValues>({
+    resolver: zodResolver(artworkFormSchema),
     defaultValues: {
+      title: "",
+      decade: "1950s",
+      artstyle: "abstract",
+      medium: "oil",
+      surface: "canvas",
       featured: false,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof createArtworkSchema>) {
+  async function onSubmit(values: ArtworkFormValues) {
+    console.log("values", values);
     if (!uploadInfo) return;
     setIsSubmitting(true);
 
@@ -73,14 +81,6 @@ export function CreateArtworkForm({
       console.error("Form submission failed:", error);
     } finally {
       setIsSubmitting(false);
-      // form.reset({
-      //   title: "",
-      //   decade: undefined,
-      //   artstyle: undefined,
-      //   medium: undefined,
-      //   surface: undefined,
-      //   featured: false,
-      // });
     }
   }
 
