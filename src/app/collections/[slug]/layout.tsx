@@ -28,12 +28,12 @@ export default async function CollectionSlugLayout({
       {/* </div> */}
       {/* </div> */}
 
-      <div className="px-4 pb-16">
+      {/* <div className="px-4 pb-16">
         <HorizontalDivider />
-      </div>
-      <div className="container mx-auto pb-16">
+      </div> */}
+      {/* <div className="container mx-auto pb-16">
         <SubscribeSection isLoggedIn={false} />
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -42,7 +42,6 @@ export interface SortedBlogData {
   metadata: PaginationMetadata;
 }
 
-// Loader Function
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
   try {
     let blogData: SortedBlogData;

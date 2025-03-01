@@ -6,6 +6,10 @@ type Props = {
 };
 
 const BlogSectionHeading = ({ heading }: Props) => {
+  // first letter of heading is uppercase
+  const firstLetter = heading.charAt(0).toUpperCase();
+  const restOfHeading = heading.slice(1);
+  const formattedHeading = firstLetter + restOfHeading;
   return (
     <>
       <div className="py-8">
@@ -13,7 +17,7 @@ const BlogSectionHeading = ({ heading }: Props) => {
           <HorizontalDivider />
         </div>
         <h1 className="text-6xl text-center font-thin fontface-crimson">
-          {heading}
+          {formattedHeading}
         </h1>
         <div className="py-8 container mx-auto">
           <HorizontalDivider />

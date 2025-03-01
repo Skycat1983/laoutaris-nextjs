@@ -25,5 +25,9 @@ export async function CollectionArtworkLoader({
 
   const publicArtwork: PublicArtwork = artworkToPublic(result.data.artworks[0]);
 
-  return <ArtworkView {...publicArtwork} />;
+  return (
+    <>
+      <ArtworkView {...publicArtwork} />
+    </>
+  );
 }

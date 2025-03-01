@@ -75,13 +75,6 @@ export async function updateUserWatchlist(
         ? "Added to watchlist"
         : "Removed from watchlist";
 
-      // artworkStem
-      // TODO: fix this. otherwise updates not showing
-      // ! NOT WORKING. might be fixed with Suspense boundary
-      // revalidatePath(
-      //   "http://localhost:3000/artwork/[collectionSlug]/[artworkId]",
-      //   "page"
-      // );
       return {
         success: true,
         message: successMessage,

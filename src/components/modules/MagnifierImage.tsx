@@ -12,6 +12,8 @@ interface MagnifierImageProps {
   magnificationLevel?: number;
 }
 
+// TODO: maybe magnify the whole image, not just a portions? see list at https://www.artsy.net/artwork/ben-weiner-unique-drawing
+
 const MagnifierImage = ({
   src,
   width,

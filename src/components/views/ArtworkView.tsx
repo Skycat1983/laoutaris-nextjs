@@ -50,7 +50,7 @@ const ArtworkView = (artwork: PublicArtwork) => {
       {/* <div className="p-6">
         <HorizontalDivider />
       </div> */}
-      <CollectionInfoLayout />
+      {/* <CollectionInfoLayout /> */}
 
       {/* <div className="flex flex-row max-w-full  h-[200px] justify-center px-4"></div> */}
     </>

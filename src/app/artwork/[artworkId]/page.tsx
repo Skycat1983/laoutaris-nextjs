@@ -1,9 +1,8 @@
 import React from "react";
+import ArtworkLoader from "@/components/loaders/viewLoaders/ArtworkLoader";
 
-type Props = {};
-
-const ArtworkView = (props: Props) => {
-  return <div>ArtworkView</div>;
+const ArtworkView = ({ params }: { params: { artworkId: string } }) => {
+  return <ArtworkLoader params={{ id: params.artworkId }} />;
 };
 
 export default ArtworkView;
