@@ -19,6 +19,11 @@ import { CollectionSectionSkeleton } from "../sections/CollectionSection";
 import { BiographySectionSkeleton } from "@/components/sections/BiographySection";
 import { SubscribeSectionSkeleton } from "../sections/SubscribeSection";
 import { ProjectSectionSkeleton } from "@/components/sections/ProjectSection";
+import {
+  SecurityBannerWhite,
+  SecurityBannerGrey,
+  SecurityBannerBlack,
+} from "../modules/banners/SecurityBanners";
 
 export async function Home() {
   return (
@@ -53,6 +58,12 @@ export async function Home() {
         <Suspense fallback={<BlogSectionSkeleton />}>
           <BlogSectionLoader data-testid="home-blog-section" />
         </Suspense>
+      </ContentLayout>
+
+      <ContentLayout>
+        {/* <SecurityBannerWhite /> */}
+        <SecurityBannerGrey />
+        {/* <SecurityBannerBlack /> */}
       </ContentLayout>
     </div>
   );
