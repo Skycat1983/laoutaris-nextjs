@@ -20,6 +20,8 @@ export const GET = async (
   try {
     const { section } = params;
 
+    console.log("section", section);
+
     // Validate section
     if (!VALID_SECTIONS.includes(section as ValidSection)) {
       return NextResponse.json({
@@ -30,11 +32,13 @@ export const GET = async (
     }
 
     // Fetch only what we need
-    const articles = await ArticleModel.find({ section })
+    const articles = await ArticleModel.find({ section: section })
       .select("title slug")
       .sort({ displayDate: -1 })
       .lean()
       .exec();
+
+    // console.log("articles", articles);
 
     if (!articles.length) {
       return NextResponse.json({

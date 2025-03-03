@@ -1,6 +1,7 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { FrontendArtwork } from "@/lib/data/types";
+import { FrontendArtwork, ColorInfo } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
+import { findSimilarColors } from "@/lib/utils/colorUtils";
 
 type ArtworkApiResponse = ApiResponse<FrontendArtwork[]>;
 
@@ -10,10 +11,16 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const filterMode = searchParams.get("filterMode") || "ALL";
+    const sortBy = searchParams.get("sortBy") || "mostRecent";
+    const targetColor = searchParams.get("sortColor");
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+
+    console.log("route params:", { filterMode, sortBy, targetColor });
 
     const conditions = [];
 
-    // handle as arrays
+    // handle regular filters
     for (const key of ["decade", "artstyle", "medium", "surface"]) {
       const values = searchParams.getAll(key);
       if (values.length) {
@@ -28,29 +35,84 @@ export async function GET(
           : { $or: conditions }
         : {};
 
-    const fields = searchParams.get("fields")?.split(",").join(" ") || "";
+    // Get base query with filters - but don't paginate yet
+    let artworksQuery = ArtworkModel.find(query);
 
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    // Apply appropriate sorting based on sortBy parameter
+    switch (sortBy) {
+      case "mostRecent":
+        artworksQuery = artworksQuery.sort({ createdAt: -1 });
+        break;
+      case "mostPopular":
+        artworksQuery = artworksQuery.sort({ "favourited.length": -1 });
+        break;
+      case "mostFeatured":
+        artworksQuery = artworksQuery.sort({ featured: -1, createdAt: -1 });
+        break;
+      // colorProximity case is handled separately below
+    }
 
-    const [artworks, total] = await Promise.all([
-      ArtworkModel.find(query)
-        .select(fields)
-        .skip((page - 1) * limit)
-        .limit(limit),
-      ArtworkModel.countDocuments(query),
-    ]);
+    // Get total count for pagination
+    const total = await ArtworkModel.countDocuments(query);
+
+    // Get all matching artworks (for color sorting) or paginated results (for other sorts)
+    const allArtworks = await artworksQuery;
+
+    let finalArtworks;
+
+    // Handle color proximity sorting
+    if (sortBy === "colorProximity" && targetColor) {
+      const artworksWithSimilarity = allArtworks.map((artwork) => {
+        const artworkColors = artwork.image.hexColors.map(
+          (hc: ColorInfo) => hc.color
+        );
+
+        const similarColors = findSimilarColors(
+          targetColor,
+          artworkColors,
+          100
+        );
+        const bestMatch = similarColors[0] || { similarity: 100 };
+
+        return {
+          artwork: {
+            ...artwork.toObject(),
+            image: {
+              ...artwork.image,
+              hexColors: [
+                artwork.image.hexColors.find(
+                  (hc: ColorInfo) => hc.color === bestMatch.color
+                ),
+              ],
+              similarityScore: bestMatch.similarity,
+            },
+          },
+          similarity: bestMatch.similarity,
+        };
+      });
+
+      // Sort all artworks by color similarity
+      const sortedArtworks = artworksWithSimilarity
+        .sort((a, b) => a.similarity - b.similarity)
+        .map((item) => item.artwork);
+
+      // Then paginate the results
+      finalArtworks = sortedArtworks.slice((page - 1) * limit, page * limit);
+    } else {
+      // For non-color sorting, paginate the already sorted results
+      finalArtworks = allArtworks.slice((page - 1) * limit, page * limit);
+    }
 
     return NextResponse.json({
       success: true,
-      data: artworks,
+      data: finalArtworks,
       metadata: {
         page,
         limit,
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies PaginatedResponse<FrontendArtwork[]>);
+    });
   } catch (error) {
     console.error("Error in artwork route:", error);
     return NextResponse.json(

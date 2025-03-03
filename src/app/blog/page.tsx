@@ -1,4 +1,5 @@
 import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
+import { BlogsSectionFeaturedSkeleton } from "@/components/sections/BlogsSectionFeatured";
 import { Suspense } from "react";
 
 const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
@@ -19,7 +20,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const page = Math.max(1, parseInt(searchParams.page || "1", 10));
 
   return (
-    <Suspense fallback={<></>}>
+    <Suspense
+      fallback={
+        <>
+          <BlogsSectionFeaturedSkeleton />
+        </>
+      }
+    >
       <BlogListLoader sortby={sortby} page={page} />
     </Suspense>
   );

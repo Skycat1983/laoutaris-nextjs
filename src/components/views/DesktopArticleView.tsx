@@ -1,3 +1,5 @@
+"use client";
+
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Button } from "@/components/shadcn/button";
@@ -5,6 +7,7 @@ import { FrontendArticleWithArtworkTooltip } from "@/lib/transforms/articleToPub
 import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 // import { ImQuotesLeft } from "react-icons/im";
 
 interface ArticleProps {
@@ -18,6 +21,10 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
   nextArticle,
   prevArticle,
 }) => {
+  const pathname = usePathname();
+  const firstSegment = pathname.split("/")[1];
+  const title = firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1);
+  console.log("title", title);
   const paragraphs = article.text.replace(/\r\n/g, "\n").split(/\n\n+/);
   return (
     <>
@@ -49,7 +56,7 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
         </div>
         <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
           <h1 className="text-5xl font-bold font-cormorant">
-            Biography{" "}
+            {title}
             {/* <span className="text-neutral-500">Joseph Laoutaris</span> */}
           </h1>
           {/* <h1 className="text-neutral-500 italic text-xl py-6 fontface-decorative">

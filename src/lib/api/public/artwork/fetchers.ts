@@ -1,12 +1,6 @@
 import {
-  ArtStyle,
-  Decade,
-  FrontendArtwork,
   FrontendArtworkUnpopulated,
-  Medium,
-  Surface,
-  FilterMode,
-  ArtworkFilterParams,
+  ArtworkQueryParams,
 } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
 
@@ -20,32 +14,27 @@ export const createArtworkFetchers = (fetcher: Fetcher) => ({
       medium,
       surface,
       filterMode,
-    }: ArtworkFilterParams = {
+      sortBy,
+      sortColor,
+    }: ArtworkQueryParams = {
       filterMode: "ALL",
     }
   ) => {
-    console.log("fetchArtworks", {
-      limit,
-      page,
-      decade,
-      artstyle,
-      medium,
-      surface,
-      filterMode,
-    });
     const params = new URLSearchParams();
 
+    // Add sort params first for clarity
+    if (sortBy) params.append("sortBy", sortBy);
+    if (sortColor && sortBy === "colorProximity") {
+      params.append("sortColor", sortColor);
+    }
+
+    // Add filter mode
     if (filterMode) params.append("filterMode", filterMode);
 
     // Handle arrays of values
-    const appendArrayParam = (
-      key: string,
-      value: string | string[] | undefined
-    ) => {
+    const appendArrayParam = (key: string, value: string[] | undefined) => {
       if (Array.isArray(value)) {
         value.forEach((v) => params.append(key, v));
-      } else if (value) {
-        params.append(key, value);
       }
     };
 
@@ -54,13 +43,14 @@ export const createArtworkFetchers = (fetcher: Fetcher) => ({
     appendArrayParam("medium", medium);
     appendArrayParam("surface", surface);
 
-    // Add pagination and field selection
+    // Add pagination
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<FrontendArtworkUnpopulated[]>(
-      `/api/v2/public/artwork?${params.toString()}`
-    );
+    const url = `/api/v2/public/artwork?${params.toString()}`;
+    console.log("Fetching URL:", url);
+
+    return fetcher<FrontendArtworkUnpopulated[]>(url);
   },
 
   // Get one artwork by id

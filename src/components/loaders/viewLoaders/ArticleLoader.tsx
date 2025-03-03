@@ -7,10 +7,11 @@ import {
   FrontendArticle,
   FrontendArticleWithArtwork,
 } from "@/lib/data/types/articleTypes";
-import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
+import { ArticleNavItem, ValidSection } from "@/lib/data/types/navigationTypes";
 
 interface ArticleLoaderProps {
   slug: string;
+  section: ValidSection;
 }
 
 type ArticleLoaderResponse = [
@@ -18,11 +19,11 @@ type ArticleLoaderResponse = [
   ApiResponse<ArticleNavItem[]>
 ];
 
-export async function ArticleLoader({ slug }: ArticleLoaderProps) {
+export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
   const [articleResponse, navigationResponse]: ArticleLoaderResponse =
     await Promise.all([
       serverPublicApi.article.fetchArticleArtwork(slug),
-      serverPublicApi.navigation.fetchArticleNavigationList("biography"),
+      serverPublicApi.navigation.fetchArticleNavigationList(section),
     ]);
 
   if (!articleResponse.success) {

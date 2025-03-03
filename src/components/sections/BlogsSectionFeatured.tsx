@@ -7,6 +7,8 @@ import { useState } from "react";
 import { NewLogoDark, NewLogoLight } from "../elements/icons/NewLogos";
 import { Button } from "../shadcn/button";
 import { ChevronRight } from "lucide-react";
+import { Skeleton } from "../shadcn/skeleton";
+import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryData[];
@@ -99,3 +101,72 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
     </>
   );
 };
+
+// Direct Skeleton Approach
+export const BlogsSectionFeaturedSkeleton = () => {
+  return (
+    <div className="container mx-auto p-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Featured Article Skeleton */}
+        <div className="lg:col-span-4">
+          <div className="relative h-[630px] rounded-2xl overflow-hidden">
+            <Skeleton className="w-full h-full" />
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <Skeleton className="w-24 h-4 mb-2" />
+              <Skeleton className="w-2/3 h-12 mb-4" />
+              <Skeleton className="w-1/2 h-6" />
+            </div>
+          </div>
+        </div>
+
+        {/* Secondary Articles Skeletons */}
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index} className="space-y-4">
+            <Skeleton className="aspect-[5/3] w-full rounded-xl" />
+            <div>
+              <Skeleton className="w-16 h-4 mb-2" />
+              <Skeleton className="w-3/4 h-6" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// SkeletonFactory Approach
+const BlogCardSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton className="aspect-[5/3] w-full rounded-xl" />
+    <div>
+      <Skeleton className="w-16 h-4 mb-2" />
+      <Skeleton className="w-3/4 h-6" />
+    </div>
+  </div>
+);
+
+const BlogLayoutSkeleton = ({ children }: { children: React.ReactNode }) => (
+  <div className="container mx-auto p-4">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="lg:col-span-4">
+        <div className="relative h-[630px] rounded-2xl overflow-hidden">
+          <Skeleton className="w-full h-full" />
+          <div className="absolute bottom-0 left-0 right-0 p-8">
+            <Skeleton className="w-24 h-4 mb-2" />
+            <Skeleton className="w-2/3 h-12 mb-4" />
+            <Skeleton className="w-1/2 h-6" />
+          </div>
+        </div>
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
+export const BlogsSectionFeaturedSkeletonFactory = () => (
+  <SkeletonFactory
+    Layout={BlogLayoutSkeleton}
+    Card={BlogCardSkeleton}
+    count={4}
+  />
+);

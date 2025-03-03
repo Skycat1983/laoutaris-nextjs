@@ -10,32 +10,83 @@ import {
 } from "@/lib/transforms/artworkToPublic";
 import { BasicAccordionFilter } from "./filters/BasicAccordionFilter";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
+import { ArtworkSortConfig } from "@/lib/data/types";
+import { useRouter } from "next/navigation";
 
 interface ArtworkGalleryProps {
   initialArtworks: PublicArtwork[];
+  initialSort?: ArtworkSortConfig;
+  initialFilters?: ArtworkFilterParams;
 }
 
-export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
+export const ArtworkGallery = ({
+  initialArtworks,
+  initialSort,
+  initialFilters,
+}: ArtworkGalleryProps) => {
+  const router = useRouter();
   const [artworks, setArtworks] = useState(initialArtworks);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<ArtworkFilterParams>({
-    filterMode: "ALL",
-  });
-  const [filterMode, setFilterMode] = useState<FilterMode>("ALL");
+  const [filters, setFilters] = useState<ArtworkFilterParams>(
+    initialFilters || {
+      filterMode: "ALL",
+    }
+  );
+  const [filterMode, setFilterMode] = useState<FilterMode>(
+    initialFilters?.filterMode || "ALL"
+  );
+  // const [sortConfig, setSortConfig] = useState<ArtworkSortConfig>(
+  //   initialSort || {
+  //     by: "colorProximity",
+  //     color: "#000000",
+  //   }
+  // );
 
   const handleFilterChange = async (
-    newFilters: Partial<ArtworkFilterParams>
+    newFilters: ArtworkFilterParams & { sort?: ArtworkSortConfig }
   ) => {
     try {
       setIsLoading(true);
+
+      const { sort, ...filterParams } = newFilters;
+
+      // Helper function to check if a value should be included
+      const isValidValue = (value: any): boolean => {
+        if (value === undefined || value === null) return false;
+        if (Array.isArray(value)) return value.length > 0;
+        if (typeof value === "number") return true;
+        if (typeof value === "string") return value !== "";
+        return true;
+      };
+
       const cleanFilters = {
         ...Object.fromEntries(
-          Object.entries(newFilters).filter(([_, value]) => value !== undefined)
+          Object.entries(filterParams).filter(([_, value]) =>
+            isValidValue(value)
+          )
         ),
         filterMode,
-      } as ArtworkFilterParams;
+        ...(sort?.by && {
+          sortBy: sort.by,
+          ...(sort.color && { sortColor: sort.color }),
+        }),
+      };
+
+      // Update URL parameters
+      const searchParams = new URLSearchParams();
+      Object.entries(cleanFilters).forEach(([key, value]) => {
+        if (isValidValue(value)) {
+          if (Array.isArray(value)) {
+            value.forEach((v) => searchParams.append(key, v));
+          } else {
+            searchParams.append(key, value as string);
+          }
+        }
+      });
+
+      router.push(`/artwork?${searchParams.toString()}`, { scroll: false });
 
       setFilters(cleanFilters);
 
@@ -47,7 +98,7 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
       const response = await clientApi.public.artwork.fetchArtworks(
         cleanFilters
       );
-      console.log("response", response);
+
       if (!response.success) {
         throw new Error("Failed to fetch artworks");
       }
@@ -58,7 +109,6 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
       setArtworks(publicArtworks);
     } catch (error) {
       console.error("Error fetching filtered artworks:", error);
-      // Handle error state
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +130,7 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
       const newArtworks = await clientApi.public.artwork.fetchArtworks({
         ...filters,
         page: nextPage,
-        limit: 10, // or whatever your limit is
+        limit: 10,
       });
 
       if (!newArtworks.success) {
@@ -94,7 +144,20 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
       if (publicArtworks.length === 0) {
         setHasMore(false);
       } else {
-        setArtworks((prev) => [...prev, ...publicArtworks]);
+        // Add new artworks while preventing duplicates
+        setArtworks((prev) => {
+          const existingIds = new Set(prev.map((artwork) => artwork._id));
+          const uniqueNewArtworks = publicArtworks.filter(
+            (artwork) => !existingIds.has(artwork._id)
+          );
+
+          if (uniqueNewArtworks.length === 0) {
+            setHasMore(false);
+            return prev;
+          }
+
+          return [...prev, ...uniqueNewArtworks];
+        });
         setPage(nextPage);
       }
     } catch (error) {
@@ -112,6 +175,7 @@ export const ArtworkGallery = ({ initialArtworks }: ArtworkGalleryProps) => {
         onClearFilters: clearFilters,
         filterMode,
         onFilterModeChange: (mode: FilterMode) => setFilterMode(mode),
+        initialSort,
       }}
     >
       <MasonryLayout

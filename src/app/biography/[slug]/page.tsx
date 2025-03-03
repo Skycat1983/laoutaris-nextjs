@@ -11,7 +11,7 @@ export default async function BiographySlugPage({
   return (
     <>
       <Suspense fallback={<ArticleViewSkeleton />}>
-        <ArticleLoader slug={slug} />
+        <ArticleLoader slug={slug} section="biography" />
       </Suspense>
     </>
   );

@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
         bytes: validatedData.image.bytes,
         public_id: validatedData.image.public_id,
         secure_url: validatedData.image.secure_url,
+        hexColors: validatedData.image.hexColors,
+        predominantColors: validatedData.image.predominantColors,
       },
     };
 

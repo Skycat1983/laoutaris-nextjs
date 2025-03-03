@@ -6,10 +6,17 @@ import {
   DrawerContent,
   DrawerOverlay,
   DrawerPortal,
+  DrawerTitle,
+  DrawerDescription,
 } from "@/components/shadcn/drawer";
 import { useState } from "react";
 import { FilterIcon } from "lucide-react";
-import { ArtworkFilterParams, FilterMode } from "@/lib/data/types/artworkTypes";
+import {
+  ArtworkFilterParams,
+  ArtworkSortConfig,
+  FilterMode,
+} from "@/lib/data/types/artworkTypes";
+import { SortByProps } from "./SortBy";
 
 interface FilterProps {
   onApply?: () => void;
@@ -17,6 +24,7 @@ interface FilterProps {
   onClearFilters: () => void;
   filterMode: FilterMode;
   onFilterModeChange: (mode: FilterMode) => void;
+  initialSort?: ArtworkSortConfig;
 }
 
 const FilterButton = ({ onClick }: { onClick: () => void }) => {
@@ -27,6 +35,7 @@ const FilterButton = ({ onClick }: { onClick: () => void }) => {
         size="sm"
         className="rounded-full px-6 opacity-80"
         onClick={onClick}
+        aria-label="Open filters"
       >
         <FilterIcon className="mr-2 h-4 w-4" />
         Filter Gallery
@@ -45,7 +54,9 @@ export const FilterDrawerWrapper = ({
   children,
   filterComponent: FilterComponent,
   filterProps,
-}: FilterDrawerWrapperProps) => {
+}: // sortComponent: SortComponent,
+// sortProps,
+FilterDrawerWrapperProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -57,12 +68,18 @@ export const FilterDrawerWrapper = ({
 
       {/* Mobile Filter */}
       <div className="md:hidden">
+        {/* Desktop Sort */}
+
         <FilterButton onClick={() => setIsOpen(true)} />
 
         <Drawer open={isOpen} onOpenChange={setIsOpen} direction="left">
           <DrawerPortal>
             <DrawerOverlay className="fixed inset-0 bg-black/10" />
             <DrawerContent className="fixed inset-y-0 left-0 h-50vh w-3/4 bg-whitish">
+              <DrawerTitle className="sr-only">Gallery Filters</DrawerTitle>
+              <DrawerDescription className="sr-only">
+                Adjust filters and sorting options for the artwork gallery
+              </DrawerDescription>
               <div className="h-full overflow-auto">
                 <FilterComponent
                   {...filterProps}

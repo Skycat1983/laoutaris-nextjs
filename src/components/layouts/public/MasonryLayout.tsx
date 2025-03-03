@@ -43,7 +43,7 @@ export const MasonryLayout = ({
   return (
     <div className="container mx-auto p-4">
       <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
-        {artworks.map((artwork) => (
+        {artworks.map((artwork, index) => (
           <Link
             href={`/artwork/${artwork._id}`}
             key={artwork._id}
@@ -67,6 +67,14 @@ export const MasonryLayout = ({
                   <h2 className="text-white text-xl font-bold mb-2">
                     {artwork.title}
                   </h2>
+                  <div
+                    className="h-8 w-8 rounded-full"
+                    style={{
+                      backgroundColor: artwork.image.hexColors[0].color,
+                    }}
+                  >
+                    {" "}
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="text-white/80 text-sm">
                       {artwork.decade}

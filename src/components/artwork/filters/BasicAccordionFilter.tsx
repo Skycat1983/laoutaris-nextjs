@@ -11,8 +11,17 @@ import { ArtStyle, Decade, Medium, Surface } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useState } from "react";
 import { Switch } from "@/components/shadcn/switch";
-import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
+import { ArtworkFilterParams } from "@/lib/data/types";
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/shadcn/select";
+import { ArtworkSortConfig, SortOption } from "@/lib/data/types";
+import { ColorPicker } from "./ColorPicker";
 
 type FilterMode = "ALL" | "ANY";
 
@@ -36,7 +45,6 @@ interface SurfaceOption {
   label: string;
 }
 
-// Update the constants with their specific types
 const decades: DecadeOption[] = [
   { value: "1950s", label: "1950s" },
   { value: "1960s", label: "1960s" },
@@ -74,11 +82,14 @@ const surfaces: SurfaceOption[] = [
 ];
 
 interface BasicAccordionFilterProps {
-  onFilterChange: (filters: ArtworkFilterParams) => void;
+  onFilterChange: (
+    filters: ArtworkFilterParams & { sort?: ArtworkSortConfig }
+  ) => void;
   onClearFilters: () => void;
   filterMode: FilterMode;
   onFilterModeChange: (mode: FilterMode) => void;
-  onApply?: () => void; // Optional callback for mobile drawer
+  onApply?: () => void;
+  initialSort?: ArtworkSortConfig;
 }
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
@@ -91,6 +102,7 @@ export const BasicAccordionFilter = ({
   filterMode,
   onFilterModeChange,
   onApply,
+  initialSort,
 }: BasicAccordionFilterProps) => {
   const [pendingFilters, setPendingFilters] = useState<ArtworkFilterParams>({
     decade: [],
@@ -99,6 +111,13 @@ export const BasicAccordionFilter = ({
     surface: [],
     filterMode: "ALL",
   });
+
+  const [pendingSort, setPendingSort] = useState<ArtworkSortConfig>(
+    initialSort || {
+      by: "colorProximity",
+      color: "#000000",
+    }
+  );
 
   const handleCheckboxChange = (key: FilterKey, value: FilterValue) => {
     setPendingFilters((prev) => {
@@ -133,8 +152,11 @@ export const BasicAccordionFilter = ({
   };
 
   const handleApplyFilters = () => {
-    onFilterChange(pendingFilters);
-    onApply?.(); // Call onApply if it exists (mobile only)
+    onFilterChange({
+      ...pendingFilters,
+      sort: pendingSort,
+    });
+    onApply?.();
   };
 
   const handleClearFilters = () => {
@@ -144,6 +166,10 @@ export const BasicAccordionFilter = ({
       medium: [],
       surface: [],
       filterMode: "ALL",
+    });
+    setPendingSort({
+      by: "colorProximity",
+      color: "#e81111",
     });
     onClearFilters();
   };
@@ -187,15 +213,24 @@ export const BasicAccordionFilter = ({
     if (filterMode === "ALL") {
       return (
         <RadioGroup
-          value={pendingFilters[key]?.[0] || ""}
+          value={pendingFilters[key]?.[0] || "none"}
           onValueChange={(value: string) => {
             setPendingFilters((prev) => ({
               ...prev,
-              [key]: value ? [value as FilterValue] : [],
+              [key]: value === "none" ? [] : [value as FilterValue],
             }));
           }}
         >
           <div className="flex flex-col gap-2">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id={`${key}-none`} />
+              <label
+                htmlFor={`${key}-none`}
+                className="text-sm font-medium leading-none"
+              >
+                None
+              </label>
+            </div>
             {options.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -221,7 +256,10 @@ export const BasicAccordionFilter = ({
           <div key={option.value} className="flex items-center space-x-2">
             <Checkbox
               id={`${key}-${option.value}`}
-              checked={isValueInArray(pendingFilters[key], option.value)}
+              checked={isValueInArray(
+                pendingFilters[key] as FilterValue[],
+                option.value
+              )}
               onCheckedChange={() => {
                 handleCheckboxChange(key, option.value as FilterValue);
               }}
@@ -240,63 +278,111 @@ export const BasicAccordionFilter = ({
 
   return (
     <aside className="fixed left-0 w-full md:w-[290px] md:shadow-md bg-whitish">
-      {/* <aside className="fixed top-[170px] left-0 w-[290px] h-[calc(100vh-64px)] bg-whitish"> */}
-      <div className="flex items-center gap-2 p-8 pb-4">
-        <Switch
-          checked={filterMode === "ALL"}
-          onCheckedChange={handleFilterModeChange}
-        />
-        <span className="text-sm">
-          {filterMode === "ALL" ? "Match All" : "Match Any"}
-        </span>
+      {/* Sort Controls Section */}
+      <div className="border-b">
+        <div className="p-8 pb-4">
+          <h3 className="font-medium mb-4 text-gray-900">Sort Results By</h3>
+          <Select
+            value={pendingSort.by}
+            onValueChange={(newValue: SortOption) => {
+              setPendingSort({
+                by: newValue,
+                // Set default color (#000000) when switching to colorProximity
+                color: newValue === "colorProximity" ? "#000000" : undefined,
+              });
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Sort by..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="mostRecent">Most Recent</SelectItem>
+              <SelectItem value="mostPopular">Most Popular</SelectItem>
+              <SelectItem value="mostFeatured">Most Featured</SelectItem>
+              <SelectItem value="colorProximity">Color Proximity</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {pendingSort.by === "colorProximity" && (
+            <div className="mt-4">
+              <ColorPicker
+                onColorSelect={(color) => {
+                  setPendingSort((prev) => ({ ...prev, color }));
+                }}
+                selectedColor={pendingSort.color || "#000000"}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      <ScrollArea className="h-[calc(100vh-180px)] px-8">
-        <Accordion type="multiple" className="w-full">
-          <AccordionItem value="decade">
-            <AccordionTrigger>Decade</AccordionTrigger>
-            <AccordionContent>
-              {renderFilterOptions(decades, "decade")}
-            </AccordionContent>
-          </AccordionItem>
+      {/* Filters Section */}
+      <div className="p-8 pb-4">
+        <h3 className="font-medium mb-4 text-gray-900">Filters</h3>
 
-          <AccordionItem value="style">
-            <AccordionTrigger>Art Style</AccordionTrigger>
-            <AccordionContent>
-              {renderFilterOptions(artStyles, "artstyle")}
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="medium">
-            <AccordionTrigger>Medium</AccordionTrigger>
-            <AccordionContent>
-              {renderFilterOptions(mediums, "medium")}
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="surface">
-            <AccordionTrigger>Surface</AccordionTrigger>
-            <AccordionContent>
-              {renderFilterOptions(surfaces, "surface")}
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-
-        <div className="pt-4 border-t mt-4 space-y-2">
-          <button
-            onClick={handleApplyFilters}
-            className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
-          >
-            Apply Filters
-          </button>
-          <button
-            onClick={handleClearFilters}
-            className="w-full border border-gray-300 text-gray-600 py-2 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            Clear All
-          </button>
+        {/* Filter Mode Toggle */}
+        <div className="mb-6 pb-4 border-b">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={filterMode === "ALL"}
+              onCheckedChange={handleFilterModeChange}
+            />
+            <span className="text-sm">
+              {filterMode === "ALL" ? "Match All Filters" : "Match Any Filter"}
+            </span>
+          </div>
         </div>
-      </ScrollArea>
+
+        {/* Filter Accordion */}
+        <ScrollArea className="h-[calc(100vh-320px)]">
+          <Accordion type="multiple" className="w-full">
+            <AccordionItem value="decade">
+              <AccordionTrigger>Decade</AccordionTrigger>
+              <AccordionContent>
+                {renderFilterOptions(decades, "decade")}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="style">
+              <AccordionTrigger>Art Style</AccordionTrigger>
+              <AccordionContent>
+                {renderFilterOptions(artStyles, "artstyle")}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="medium">
+              <AccordionTrigger>Medium</AccordionTrigger>
+              <AccordionContent>
+                {renderFilterOptions(mediums, "medium")}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="surface">
+              <AccordionTrigger>Surface</AccordionTrigger>
+              <AccordionContent>
+                {renderFilterOptions(surfaces, "surface")}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          {/* Action Buttons */}
+          <div className="pt-4 pb-8 border-t mt-auto">
+            <div className="space-y-2">
+              <button
+                onClick={handleApplyFilters}
+                className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
+              >
+                Update
+              </button>
+              <button
+                onClick={handleClearFilters}
+                className="w-full border border-gray-300 text-gray-600 py-2 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        </ScrollArea>
+      </div>
     </aside>
   );
 };
