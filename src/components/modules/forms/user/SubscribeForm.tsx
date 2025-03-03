@@ -14,82 +14,73 @@ import { Input } from "@/components/shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { submitSubscription } from "@/lib/actions/submitSubscription";
+import { useFormState } from "react-dom";
+import {
+  submitSubscription,
+  type SubscribeFormState,
+} from "@/lib/actions/submitSubscription";
+import { subscriberSchema } from "@/lib/data/schemas/subscriberSchema";
+import { SubmitButton } from "@/components/elements/buttons/SubmitButton";
 
-// TODO: this form does not reflect nor return the errors from submission as we do not make use of useFormState
+// TODO: this form does not reflect nor return the errors from submission as we do not make use of useFormState?
 // TODO: add modal to show success message after submission
 const SubscribeForm = () => {
-  // Define the schema using zod
-  const formSchema = z.object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-  });
+  const initialState: SubscribeFormState = {
+    success: false,
+    message: "",
+  };
 
-  // Initialize the form with react-hook-form and zod
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [state, formAction] = useFormState(submitSubscription, initialState);
+
+  const form = useForm<z.infer<typeof subscriberSchema>>({
+    resolver: zodResolver(subscriberSchema),
     defaultValues: {
-      name: "",
       email: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("email", values.email);
-
-    try {
-      const result = await submitSubscription(formData);
-      console.log("result of attempted subscription", result);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
-      console.log(errorMessage);
-    }
-  }
-
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 px-4 bg-slate-100 px-16 py-16"
-      >
-        <FormField
-          name="name"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Name" {...field} />
-              </FormControl>
-              <FormDescription className="hidden">Your name.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form action={formAction} className="flex gap-4 flex-col md:flex-row">
         <FormField
           name="email"
           control={form.control}
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Email" {...field} />
+            <FormItem className="w-full">
+              <FormControl className="w-full">
+                <Input
+                  placeholder="Enter your email"
+                  {...field}
+                  className="bg-white/10 border border-white/20 rounded-lg px-4 py-6 text-white placeholder:text-gray-400 w-full"
+                />
               </FormControl>
-              <FormDescription className="hidden">Your email</FormDescription>
-              <FormMessage />
+              <FormMessage>
+                {state?.message && (
+                  <span
+                    className={
+                      state.success ? "text-green-500" : "text-red-500"
+                    }
+                  >
+                    {state.message}
+                  </span>
+                )}
+              </FormMessage>
             </FormItem>
           )}
         />
-        <Button type="submit" size={"full"}>
+        {/* <Button
+          type="submit"
+          className="px-6 py-6 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+        >
           Subscribe
-        </Button>
+        </Button> */}
+        <SubmitButton
+          label="Subscribe"
+          className={
+            "px-6 py-6 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          }
+          size={"sm"}
+        />
       </form>
     </Form>
   );

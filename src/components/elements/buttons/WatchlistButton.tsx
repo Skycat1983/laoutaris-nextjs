@@ -81,7 +81,7 @@ const WatchlistButton = ({
               }}
             >
               <input type="hidden" name="artworkId" value={artworkId} />
-              <SubmitButton label={label} />
+              <SubmitButton label={label} size={"full"} />
             </div>
           </TooltipTrigger>
           <TooltipContent>

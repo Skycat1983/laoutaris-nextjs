@@ -37,12 +37,6 @@ export const ArtworkGallery = ({
   const [filterMode, setFilterMode] = useState<FilterMode>(
     initialFilters?.filterMode || "ALL"
   );
-  // const [sortConfig, setSortConfig] = useState<ArtworkSortConfig>(
-  //   initialSort || {
-  //     by: "colorProximity",
-  //     color: "#000000",
-  //   }
-  // );
 
   const handleFilterChange = async (
     newFilters: ArtworkFilterParams & { sort?: ArtworkSortConfig }

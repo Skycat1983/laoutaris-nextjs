@@ -4,52 +4,52 @@ import { replaceMongoId } from "@/lib/shared/helpers/transformData";
 import { SubscriberModel } from "../data/models";
 import { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
 
+export interface SubscribeFormState {
+  success: boolean;
+  message: string;
+  data?: FrontendSubscriber;
+}
+
 export async function submitSubscription(
+  prevState: SubscribeFormState,
   formData: FormData
-): Promise<ApiResponse<FrontendSubscriber>> {
+): Promise<SubscribeFormState> {
   try {
     const email = formData.get("email") as string;
-    const name = formData.get("name") as string;
 
-    // Ensure both name and email are provided
-    if (!email || !name) {
-      throw new Error("Name and email are required.");
+    if (!email) {
+      return {
+        success: false,
+        message: "Email is required.",
+      };
     }
 
     const existingSubscriber = await SubscriberModel.findOne({ email });
 
     if (existingSubscriber) {
-      throw new Error("You are already subscribed.");
+      return {
+        success: false,
+        message: "You are already subscribed.",
+      };
     }
 
-    const newSubscriber = await SubscriberModel.create({ name, email });
+    console.log("Attempting to create subscriber with data:", { email });
 
+    const newSubscriber = await SubscriberModel.create({ email });
     const subscriber = replaceMongoId(newSubscriber.toObject());
 
-    console.log("subscriber :>> ", subscriber);
-
-    // ! failed attempts to fetch using route handler. problem with POST request
-    // const existingSubscriber = await fetchSubscriber(email);
-
-    // if (existingSubscriber.success) {
-    //   throw new Error("You are already subscribed.");
-    // }
-
-    // Create and save the new subscriber
-    // const newSubscriber = await postSubscriber(name, email);
-
-    // if (!newSubscriber.success) {
-    //   return {
-    //     success: false,
-    //     message:
-    //       newSubscriber.message ||
-    //       "An error occurred while creating the subscriber.",
-    //   };
-    // }
-
-    return { success: true, data: subscriber as FrontendSubscriber };
+    return {
+      success: true,
+      message: "Successfully subscribed!",
+      data: subscriber as FrontendSubscriber,
+    };
   } catch (error) {
-    console.error("Error creating subscriber:", error);
+    console.error("Error creating subscriber:", {
+      error,
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     return {
       success: false,
       message:

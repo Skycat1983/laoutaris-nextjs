@@ -1,6 +1,6 @@
 export interface FrontendSubscriber {
   id: string;
-  name: string;
+  // name: string;
   email: string;
   unsubscribed: boolean;
 }

@@ -15,16 +15,19 @@ interface SubmitButtonProps {
     | "link"
     | null
     | undefined;
+  className?: string;
+  size?: "full" | "default" | "icon" | "sm" | "lg" | "icon" | "default";
 }
 
-function SubmitButton({ label, variant }: SubmitButtonProps) {
+function SubmitButton({ label, variant, className, size }: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
     <Button
       shape={"rounded"}
       variant={variant}
-      size={"full"}
+      size={size}
       disabled={pending}
+      className={className}
     >
       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {pending ? "Loading..." : label}

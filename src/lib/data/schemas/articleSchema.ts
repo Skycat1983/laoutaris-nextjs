@@ -13,7 +13,6 @@ export const articleBaseFields = {
 
 export const createArticleSchema = z.object({
   ...articleBaseFields,
-  // artwork: z.string(),
 });
 
 export type CreateArticleFormValues = z.infer<typeof createArticleSchema>;

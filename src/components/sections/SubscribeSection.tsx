@@ -45,16 +45,7 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
               ? "To receive our newsletter, please enter your email below."
               : "Experience art through our curator's lens"}
           </p>
-          <div className="flex gap-4 flex-col md:flex-row ">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-gray-400"
-            />
-            <button className="px-6 py-3 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-              Subscribe
-            </button>
-          </div>
+          <SubscribeForm />
         </div>
         <div className="hidden md:flex md:col-span-6 md:items-center md:justify-end">
           <NewLogoLight2 />
@@ -63,6 +54,19 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
     </div>
   );
 };
+
+{
+  /* <div className="flex gap-4 flex-col md:flex-row ">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-gray-400"
+            />
+            <button className="px-6 py-3 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+              Subscribe
+            </button>
+          </div> */
+}
 
 // export function SubscribeSection({ isLoggedIn }: { isLoggedIn: boolean }) {
 //   const message = isLoggedIn

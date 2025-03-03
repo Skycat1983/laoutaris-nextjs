@@ -76,7 +76,7 @@ const FavouritesButton = ({
               }}
             >
               <input type="hidden" name="artworkId" value={artworkId} />
-              <SubmitButton label={label} variant={"outline"} />
+              <SubmitButton label={label} variant={"outline"} size={"full"} />
             </div>
           </TooltipTrigger>
           <TooltipContent>

@@ -1,14 +1,12 @@
 import mongoose, { Document } from "mongoose";
 
-export interface ISubscriberContent extends Document {
-  name: string;
+export interface DBSubscriber extends Document {
   email: string;
   unsubscribed: boolean;
 }
 
-const subscriberContentSchema = new mongoose.Schema<ISubscriberContent>(
+const subscriberContentSchema = new mongoose.Schema<DBSubscriber>(
   {
-    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     unsubscribed: { type: Boolean, default: false },
   },
@@ -20,6 +18,6 @@ const subscriberContentSchema = new mongoose.Schema<ISubscriberContent>(
 
 const SubscriberModel =
   mongoose.models.Subscriber ||
-  mongoose.model<ISubscriberContent>("Subscriber", subscriberContentSchema);
+  mongoose.model<DBSubscriber>("Subscriber", subscriberContentSchema);
 
 export { SubscriberModel };

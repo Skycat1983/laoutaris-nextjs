@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import CommentForm from "@/components/forms/CommentForm";
+import CommentForm from "@/components/modules/forms/user/CommentForm";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogCommentsList } from "@/components/sections";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
