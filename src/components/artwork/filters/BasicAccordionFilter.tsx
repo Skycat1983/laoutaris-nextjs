@@ -299,7 +299,7 @@ export const BasicAccordionFilter = ({
               <SelectItem value="mostRecent">Most Recent</SelectItem>
               <SelectItem value="mostPopular">Most Popular</SelectItem>
               <SelectItem value="mostFeatured">Most Featured</SelectItem>
-              <SelectItem value="colorProximity">Color Proximity</SelectItem>
+              <SelectItem value="colorProximity">Colour Proximity</SelectItem>
             </SelectContent>
           </Select>
 

@@ -5,8 +5,7 @@ import { createCollectionFetchers } from "@/lib/api/public/collection/fetchers";
 import { createNavigationFetchers } from "@/lib/api/public/navigation/fetchers";
 import { createBlogFetchers } from "@/lib/api/public/blog/fetchers";
 import { createArtworkFetchers } from "./artwork/fetchers";
-// import { createUserFetchers } from "@/lib/api/public/user/fetchers";
-// import { createCommentFetchers } from "./comment/fetchers";
+import { createSearchFetchers } from "./search/fetchers";
 
 const serverFetcher = createFetcher({
   getUrl: (path) => {
@@ -24,6 +23,5 @@ export const serverPublicApi = {
   collection: createCollectionFetchers(serverFetcher),
   navigation: createNavigationFetchers(serverFetcher),
   artwork: createArtworkFetchers(serverFetcher),
-  // user: createUserFetchers(serverFetcher),
-  // comment: createCommentFetchers(serverFetcher),
+  search: createSearchFetchers(serverFetcher),
 };

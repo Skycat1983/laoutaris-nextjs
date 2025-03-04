@@ -3,7 +3,7 @@
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { formatDateImproved } from "@/lib/utils/formatDate";
 import { CopyIcon } from "lucide-react";
-import { copy_id } from "@/lib/shared/helpers/copy_id";
+import { copy_id } from "@/lib/helpers/copy_id";
 
 interface CommentFeedCardProps {
   item: FrontendCommentWithAuthor;

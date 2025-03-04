@@ -1,5 +1,5 @@
 import { LoginFormSchema, LoginWithUsernameSchema } from "@/lib/data/schemas";
-import { formatFieldErrors } from "@/lib/shared/helpers/formatFieldErrors";
+import { formatFieldErrors } from "@/lib/helpers/formatFieldErrors";
 
 // type LoginFormData = {
 //   email: string;

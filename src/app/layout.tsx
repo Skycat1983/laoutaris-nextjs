@@ -9,7 +9,7 @@ import {
   cinzelDecorative,
   crimson,
   cormorant,
-} from "@/lib/shared/styles/fonts";
+} from "@/lib/styles/fonts";
 import "./globals.css";
 import { authOptions } from "@/lib/config/authOptions";
 import { Header } from "@/components/modules/navigation/header/Header";

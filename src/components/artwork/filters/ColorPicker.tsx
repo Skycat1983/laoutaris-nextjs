@@ -12,19 +12,6 @@ interface ColorPickerProps {
   selectedColor?: string;
 }
 
-const presetColors = [
-  "#000000", // Black
-  "#FFFFFF", // White
-  "#FF0000", // Red
-  "#00FF00", // Green
-  "#0000FF", // Blue
-  "#FFFF00", // Yellow
-  "#FF00FF", // Magenta
-  "#00FFFF", // Cyan
-  "#808080", // Gray
-  "#800000", // Maroon
-];
-
 export const ColorPicker = ({
   onColorSelect,
   className,
@@ -48,7 +35,7 @@ export const ColorPicker = ({
     <div className={cn("space-y-4", className)}>
       {/* Main color input */}
       <div className="space-y-2">
-        <Label htmlFor="color-input">Select Color</Label>
+        <Label htmlFor="color-input">Select Colour</Label>
         <div className="flex gap-2">
           <Input
             id="color-input"
@@ -57,13 +44,13 @@ export const ColorPicker = ({
             onChange={(e) => handleColorSelect(e.target.value)}
             className="h-10 w-20 p-1 cursor-pointer"
           />
-          <Input
+          {/* <Input
             type="text"
             value={selectedColor}
             onChange={(e) => handleColorSelect(e.target.value)}
             className="uppercase"
             placeholder="#000000"
-          />
+          /> */}
         </div>
       </div>
 

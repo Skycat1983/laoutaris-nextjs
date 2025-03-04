@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { updateUserWatchlist } from "@/lib/actions/updateUserWatchlist";
-import { Button } from "@/components/shadcn/button";
-import { Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,

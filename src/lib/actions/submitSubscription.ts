@@ -1,6 +1,6 @@
 "use server";
 
-import { replaceMongoId } from "@/lib/shared/helpers/transformData";
+import { replaceMongoId } from "@/lib/helpers/transformData";
 import { SubscriberModel } from "../data/models";
 import { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
 

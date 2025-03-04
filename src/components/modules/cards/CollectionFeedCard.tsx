@@ -1,7 +1,7 @@
 "use client";
 
 import { FrontendCollection } from "@/lib/data/types/collectionTypes";
-import copy_id from "@/lib/shared/helpers/copy_id";
+import copy_id from "@/lib/helpers/copy_id";
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 

@@ -1,5 +1,5 @@
 import { UserModel } from "@/lib/data/models";
-import { verifyPassword } from "@/lib/shared/helpers/bcrypt";
+import { verifyPassword } from "@/lib/helpers/bcrypt";
 import { LoginFormData, LoginWithUsernameFormData } from "./processLogin";
 import dbConnect from "@/lib/db/mongodb";
 import { RequestInternal } from "next-auth";

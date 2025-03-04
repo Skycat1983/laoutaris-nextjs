@@ -1,5 +1,5 @@
 import { SignupFormSchema } from "@/lib/data/schemas/definitions";
-import { formatFieldErrors } from "@/lib/shared/helpers/formatFieldErrors";
+import { formatFieldErrors } from "@/lib/helpers/formatFieldErrors";
 
 type SignupFormData = {
   email: string;

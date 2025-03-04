@@ -3,7 +3,7 @@
 import { FrontendEnquiry } from "@/lib/data/types/enquiryTypes";
 import { headers } from "next/headers";
 import { EnquiryModel } from "../data/models";
-import { replaceMongoId } from "@/lib/shared/helpers/transformData";
+import { replaceMongoId } from "@/lib/helpers/transformData";
 
 export async function submitEnquiry(
   formData: FormData

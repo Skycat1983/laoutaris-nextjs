@@ -1,7 +1,7 @@
 import { SignUpFormData } from "@/lib/actions/processRegistration";
 import { UserModel } from "@/lib/data/models";
-import { encryptPassword } from "@/lib/shared/helpers/bcrypt";
-import { getErrorMessage } from "@/lib/shared/helpers/getErrorMessage";
+import { encryptPassword } from "@/lib/helpers/bcrypt";
+import { getErrorMessage } from "@/lib/helpers/getErrorMessage";
 
 interface RegisterUserSuccess {
   success: true;

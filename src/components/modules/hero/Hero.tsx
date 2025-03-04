@@ -10,6 +10,7 @@ import {
 } from "@/components/modules/hero/carousel";
 import LargeScaleWorks from "./LargeScaleWorks";
 import FamilyFavourites from "./FamilyFavourites";
+import { FilterableArtworks } from "./FilterableArtworks";
 
 export function Hero() {
   return (
@@ -22,11 +23,14 @@ export function Hero() {
     >
       <CarouselContent className="">
         <CarouselItem className="">
-          <LargeScaleWorks />
+          <FilterableArtworks />
         </CarouselItem>
 
         <CarouselItem className="">
           <FamilyFavourites />
+        </CarouselItem>
+        <CarouselItem className="">
+          <LargeScaleWorks />
         </CarouselItem>
       </CarouselContent>
       <div>

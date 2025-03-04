@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/db/mongodb";
-import { getErrorMessage } from "@/lib/shared/helpers/getErrorMessage";
+import { getErrorMessage } from "@/lib/helpers/getErrorMessage";
 import { validateRegistrationData } from "../validation/validateRegistrationData";
 import { registerUser } from "./registerUser";
 

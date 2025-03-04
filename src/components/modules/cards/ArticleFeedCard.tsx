@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
-import copy_id from "@/lib/shared/helpers/copy_id";
+import copy_id from "@/lib/helpers/copy_id";
 import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 
 interface ArticleFeedCardProps {

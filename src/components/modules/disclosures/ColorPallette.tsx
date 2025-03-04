@@ -1,4 +1,3 @@
-import { HexColorIcon } from "@/components/elements/icons";
 import { TailwindColorIcon } from "@/components/elements/icons";
 import { ColorInfo } from "@/lib/data/types/artworkTypes";
 import {
@@ -7,11 +6,48 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/shadcn/tooltip";
+import Link from "next/link";
+import { buildArtworkSearchUrl } from "@/lib/utils/urlHelpers";
 
 interface HexColorPaletteProps {
   colors: ColorInfo[];
   label: string;
 }
+
+const HexColorIcon = ({ hexColor }: { hexColor: ColorInfo }) => {
+  const searchUrl = buildArtworkSearchUrl({
+    sortBy: "colorProximity",
+    sortColor: hexColor.color,
+  });
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={searchUrl}
+            className="block w-8 h-8 rounded-full cursor-pointer hover:scale-110 transition-transform"
+            style={{ backgroundColor: hexColor.color }}
+            aria-label={`Find artworks with color ${hexColor.color}`}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>
+            {hexColor.color} ({hexColor.percentage.toFixed(1)}%)
+            <br />
+            Click to find artworks with similar colours
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
   return (
@@ -40,6 +76,7 @@ interface CloudinaryColorPaletteProps {
   label: string;
 }
 
+// UNUSED
 const CloudinaryColorPalette: React.FC<CloudinaryColorPaletteProps> = ({
   colors,
   label,

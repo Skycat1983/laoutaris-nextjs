@@ -8,7 +8,7 @@ import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import { BlogsViewCardSkeleton } from "../modules/cards/BlogsViewCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
 import { BlogsViewPagination } from "../modules/pagination/BlogsViewPagination";
-import { BLOG_NAV_LINKS } from "@/lib/shared/constants/navigationLinks";
+import { BLOG_NAV_LINKS } from "@/lib/constants/navigationLinks";
 import { Subnav } from "../modules/navigation/subnav/Subnav";
 import { BlogsSectionFeatured } from "../sections/BlogsSectionFeatured";
 import { BlogSectionSplitScreen } from "../sections/BlogSectionSplitScreen";
