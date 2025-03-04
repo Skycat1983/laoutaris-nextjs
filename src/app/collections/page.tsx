@@ -3,24 +3,6 @@ import { CollectionNavItem } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-/**
- * Collections Page Route
- *
- * Handles the `/collections` route by redirecting to the first available collection's first artwork.
- *
- * @route GET /collections
- *
- * Flow:
- * 1. Fetches list of collection navigation items
- * 2. Redirects to the first collection's path with its first artwork ID
- *
- * Error Handling:
- * - Throws if no collections are found
- * - Throws if API request fails
- * - Handled by Next.js error boundary
- *
- * @throws {Error} When no collections are found or API fails
- */
 export default async function Collections() {
   try {
     // Fetch the list of collections

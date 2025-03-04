@@ -6,6 +6,7 @@ import type {
 } from "@/lib/data/types/navigationTypes";
 import { Fetcher } from "@/lib/api/core/createFetcher";
 
+//TODO: rename these to identify use case, e.g. pagination, subnav link etc
 export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get article navigation list
   fetchArticleNavigationList: async (section: ValidSection) => {

@@ -41,7 +41,6 @@ export function AccountNav() {
   return (
     <>
       <div className="flex flex-row bg-whitish items-center justify-center">
-        {/* <AccountMenu session={session} /> */}
         <AccountNavDropdown />
 
         <Menubar className="flex flex-row w-auto gap-0 items-center bg-whitish">

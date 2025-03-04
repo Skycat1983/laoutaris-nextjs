@@ -17,19 +17,42 @@ import Link from "next/link";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Logo } from "@/components/elements/icons";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import { useSession } from "next-auth/react";
 
 interface NavMenuProps {
   navLinks: NavBarLink[];
 }
 
 export function MobileNavDrawer({ navLinks }: NavMenuProps) {
+  console.log("navLinks in MobileNavDrawer", navLinks);
+  const session = useSession();
+
+  const isLoggedIn = session.status === "authenticated";
+
+  console.log("isLoggedIn>>>>>", isLoggedIn);
   // console.log("navLinks", navLinks);
 
   const accountNavLinks = [
-    { label: "Sign Up", path: "http://localhost:3000/api/auth/signin" },
-    { label: "Log In", path: "http://localhost:3000/api/auth/signin" },
-    { label: "Logout", path: "/sign-out" },
+    {
+      label: "Account",
+      path: "/account",
+      disabled: !isLoggedIn,
+    },
+    {
+      label: "Sign Up",
+      path: "http://localhost:3000/api/auth/signin",
+      disabled: isLoggedIn,
+    },
+    {
+      label: "Log In",
+      path: "http://localhost:3000/api/auth/signin",
+      disabled: isLoggedIn,
+    },
+    { label: "Logout", path: "/sign-out", disabled: !isLoggedIn },
   ];
+
+  console.log("navLinks", navLinks);
+  console.log("accountNavLinks", accountNavLinks);
   return (
     <Drawer direction="right">
       <DrawerTrigger asChild>
@@ -83,13 +106,21 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
 
           {accountNavLinks.map((link, index) => (
             <div key={index} className="md:flex flex-row items-center px-4">
-              <Link href={link.path}>
+              {!link.disabled ? (
+                <Link href={link.path}>
+                  <DrawerClose asChild>
+                    <h2 className="font-face-default subheading text-primary">
+                      {link.label}
+                    </h2>
+                  </DrawerClose>
+                </Link>
+              ) : (
                 <DrawerClose asChild>
-                  <h2 className="font-face-default subheading text-primary">
+                  <h2 className="font-face-default subheading text-gray-400">
                     {link.label}
                   </h2>
                 </DrawerClose>
-              </Link>
+              )}
               {index < accountNavLinks.length - 1 && (
                 <div className="py-6">{/* <HorizontalDivider /> */}</div>
               )}

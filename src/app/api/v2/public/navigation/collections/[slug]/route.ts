@@ -25,7 +25,7 @@ export const GET = async (
       slug,
     })
       .select<CollectionNavData>("title slug artworks")
-      .lean<CollectionNavData>(); // Add type to lean()
+      .lean<CollectionNavData>(); //? add type to lean() ?
 
     if (!collection) {
       return NextResponse.json({
