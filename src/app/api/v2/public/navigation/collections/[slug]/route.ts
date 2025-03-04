@@ -21,7 +21,7 @@ export const GET = async (
     const { slug } = params;
 
     const collection = await CollectionModel.findOne({
-      section: "artwork",
+      section: "collections",
       slug,
     })
       .select<CollectionNavData>("title slug artworks")

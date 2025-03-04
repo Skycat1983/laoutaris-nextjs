@@ -150,7 +150,7 @@ export async function GET(request: NextRequest) {
         "imageUrl",
         "slug",
       ]),
-      linkTo: `/collection/${item.slug}`,
+      linkTo: `/collections/${item.slug}`,
     })) as SearchResultItem[];
 
     const total =

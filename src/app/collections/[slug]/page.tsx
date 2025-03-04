@@ -1,36 +1,27 @@
 "use server";
 
-import { fetchCollectionNavigationItem } from "../../../../phase_out/navigationApi";
+import { serverApi } from "@/lib/api/serverApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-/**
- * Collection Slug Page Route
- *
- * Handles the `/collections/[slug]` route by redirecting to the collection's first artwork.
- *
- * @route GET /collections/[slug]
- *
- * Flow:
- * 1. Fetches single collection navigation item by slug
- * 2. Redirects to the collection's path with its first artwork ID
- *
- * Error Handling:
- * - Throws if collection not found
- * - Throws if API request fails
- * - Handled by Next.js error boundary
- *
- * @param {Object} params - Route parameters
- * @param {string} params.slug - Collection slug
- */
 export default async function CollectionSlug({
   params,
 }: {
   params: { slug: string };
 }) {
   try {
+    console.log("params slug in collection slug page", params.slug);
     // Fetch the specific collection
-    const collection = await fetchCollectionNavigationItem(params.slug);
+    const result =
+      await serverApi.public.navigation.fetchCollectionNavigationItem(
+        params.slug
+      );
+
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+
+    const collection = result.data;
 
     // Build and redirect to the full path
     const redirectPath = buildUrl([

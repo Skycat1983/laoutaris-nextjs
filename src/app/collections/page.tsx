@@ -1,4 +1,4 @@
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { serverApi } from "@/lib/api/serverApi";
 import { CollectionNavItem } from "@/lib/data/types/navigationTypes";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
@@ -25,7 +25,7 @@ export default async function Collections() {
   try {
     // Fetch the list of collections
     const result: ApiResponse<CollectionNavItem[]> =
-      await serverPublicApi.navigation.fetchCollectionNavigationList();
+      await serverApi.public.navigation.fetchCollectionNavigationList();
 
     if (!result.success) {
       throw new Error(result.error || "Failed to fetch collections");
