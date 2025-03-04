@@ -1,29 +1,19 @@
-import { fetchArticleNavigationList } from "../../../phase_out/navigationApi";
+import { serverApi } from "@/lib/api/serverApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 
-/**
- * Biography Page Route
- *
- * Handles the `/biography` route by redirecting to the first available biography article.
- *
- * @route GET /biography
- *
- * Flow:
- * 1. Fetches list of biography articles using navigation API
- * 2. Redirects to the first article's full path
- *
- * Error Handling:
- * - Throws if no articles are found
- * - Throws if API request fails
- * - Handled by Next.js error boundary
- *
- * @throws {Error} When no articles are found or API fails
- */
 export default async function BiographyPage() {
   try {
     // Fetch the list of biography articles
-    const articles = await fetchArticleNavigationList("biography");
+    const result = await serverApi.public.navigation.fetchArticleNavigationList(
+      "biography"
+    );
+
+    if (!result.success) {
+      throw new Error(result.message);
+    }
+
+    const articles = result.data;
 
     // If no articles found, throw an error
     if (!articles.length) {

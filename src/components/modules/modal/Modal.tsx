@@ -19,24 +19,23 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
  */
 
 import { Dialog, DialogPanel, Transition } from "@headlessui/react";
-import { useEffect } from "react";
 
 function Modal() {
   const { isOpen, openModal, closeModal, setModalContent, modalContent } =
     useGlobalFeatures();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!modalContent && !isOpen) {
-        // setModalContent(<SignUpForm />);
-        // openModal();
-      }
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (!modalContent && !isOpen) {
+  //       // setModalContent(<SignUpForm />);
+  //       // openModal();
+  //     }
+  //   }, 1000);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }, []);
 
   return (
     <>

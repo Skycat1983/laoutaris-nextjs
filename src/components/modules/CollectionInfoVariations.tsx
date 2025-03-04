@@ -64,9 +64,9 @@ export const TabbedCollectionInfo: React.FC<CollectionInfoProps> = (props) => {
     <div key="overview" className="py-3">
       <p className="text-sm text-gray-700 mb-3">{subtitle}</p>
       <p className="text-sm text-gray-700">
-        This collection showcases the evolution of Laoutaris's unique style,
-        characterized by bold brushstrokes and muted color palettes that evoke a
-        profound sense of isolation.
+        This collection showcases the evolution of Laoutaris&apos;s unique
+        style, characterized by bold brushstrokes and muted color palettes that
+        evoke a profound sense of isolation.
       </p>
     </div>,
     <div key="details" className="py-3">
@@ -91,9 +91,9 @@ export const TabbedCollectionInfo: React.FC<CollectionInfoProps> = (props) => {
     </div>,
     <div key="curator" className="py-3">
       <p className="text-sm text-gray-700 mb-3">
-        "This collection represents the pinnacle of Laoutaris's exploration of
-        human solitude. Each piece invites the viewer to experience the artist's
-        profound isolation."
+        &quot;This collection represents the pinnacle of Laoutaris&apos;s
+        exploration of human solitude. Each piece invites the viewer to
+        experience the artist&apos;s profound isolation.&quot;
       </p>
       <p className="text-sm font-medium">— Eleanor Winters, Curator</p>
     </div>,
