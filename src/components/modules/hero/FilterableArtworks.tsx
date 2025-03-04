@@ -34,13 +34,13 @@ const FilterSelects = ({
     }>
   >;
 }) => (
-  <div className="flex gap-4">
+  <div className="flex flex-col gap-4 sm:flex-row">
     <Select
       onValueChange={(value: Decade) =>
         setFilters((prev) => ({ ...prev, decade: value }))
       }
     >
-      <SelectTrigger className="w-[180px] bg-white">
+      <SelectTrigger className="w-full sm:w-[180px] bg-white">
         <SelectValue placeholder="Select Decade" />
       </SelectTrigger>
       <SelectContent>
@@ -57,7 +57,7 @@ const FilterSelects = ({
         setFilters((prev) => ({ ...prev, artstyle: value }))
       }
     >
-      <SelectTrigger className="w-[180px] bg-white">
+      <SelectTrigger className="w-full sm:w-[180px] bg-white">
         <SelectValue placeholder="Select Style" />
       </SelectTrigger>
       <SelectContent>
@@ -74,7 +74,7 @@ const FilterSelects = ({
         setFilters((prev) => ({ ...prev, surface: value }))
       }
     >
-      <SelectTrigger className="w-[180px] bg-white">
+      <SelectTrigger className="w-full sm:w-[180px] bg-white">
         <SelectValue placeholder="Select Surface" />
       </SelectTrigger>
       <SelectContent>
@@ -110,7 +110,7 @@ const FilterableArtworks = () => {
   };
 
   return (
-    <div className="relative h-[850px] w-full">
+    <div className="relative h-[850px] w-full overflow-hidden">
       <Image
         src={PLACEHOLDER_URL}
         layout="fill"
@@ -121,14 +121,12 @@ const FilterableArtworks = () => {
         className="scale-110"
       />
 
-      <div className="absolute inset-0 flex items-end justify-center pb-24 bg-gradient-to-r ">
-        {/* 
-      <div className="absolute inset-0 flex items-end justify-center pb-24 bg-gradient-to-r from-transparent to-black/70"> */}
-        <div className="bg-white/90 backdrop-blur-sm p-8 rounded-lg w-[600px] shadow-xl text-center">
-          <h1 className="text-3xl font-cormorant text-gray-900 mb-6">
+      <div className="absolute inset-0 flex items-end justify-center pb-48 sm:pb-24 p-8">
+        <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-8 rounded-lg w-[90%] sm:w-[600px] shadow-xl text-center mx-4">
+          <h1 className="text-2xl sm:text-3xl font-cormorant text-gray-900 mb-4 sm:mb-6">
             Explore the Collection
           </h1>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <FilterSelects filters={filters} setFilters={setFilters} />
             <button
               onClick={handleSearch}
@@ -142,7 +140,5 @@ const FilterableArtworks = () => {
     </div>
   );
 };
-
-// Variation 5: Minimal with Animated Entrance
 
 export { FilterableArtworks };

@@ -37,48 +37,54 @@ const FamilyFavourites = () => {
     overlay: <DimmedOverlay />,
   };
   const { image, backgroundAdjustments, overlay } = slide;
-  //  <div className="relative h-auto max-h-[700px]  w-full overflow-hidden">
+
   return (
-    <div className="relative h-auto max-h-[700px] w-full overflow-hidden 2xl:max-h-[850px]">
-      <Image
-        src={image.url}
-        height={slide.height}
-        width={slide.width}
-        className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[250px] cover z-0"
-        alt="Image of a landscape painting"
-        quality={100}
-        priority={true}
-      />
+    <div className="relative h-[850px] w-full overflow-hidden">
+      <div className="absolute inset-0">
+        <Image
+          src={image.url}
+          alt="Image of a landscape painting"
+          fill
+          quality={100}
+          priority={true}
+          className="object-cover"
+          sizes="100vw"
+          style={{
+            objectPosition: "center center", // Adjust this if needed for specific images
+          }}
+        />
+      </div>
+
       <div
-        className="absolute top-0 left-0 w-full h-full grid grid-cols-12 z-0"
+        className="absolute inset-0 grid grid-cols-12 z-10"
         style={{ gridTemplateRows: "repeat(12, minmax(0, auto))" }}
       >
         <DimmedOverlay />
 
         {image.heading && (
           <h1
-            className={`${image.heading.className} col-span-4 row-start-1 row-end-2 z-0`}
+            className={`${image.heading.className} col-span-4 row-start-1 row-end-2`}
           >
             {image.heading.text}
           </h1>
         )}
         {image.subheading && (
           <h2
-            className={`${image.subheading.className} col-span-4 row-start-2 row-end-3 z-0`}
+            className={`${image.subheading.className} col-span-4 row-start-2 row-end-3`}
           >
             {image.subheading.text}
           </h2>
         )}
         {image.summary && (
           <p
-            className={`${image.summary.className} col-span-4 row-start-3 row-end-4 z-0`}
+            className={`${image.summary.className} col-span-4 row-start-3 row-end-4`}
           >
             {image.summary.text}
           </p>
         )}
         <Link
           href={image.link.path}
-          className={`${image.link.className} col-span-4 row-start-5 row-end-6 z-0`}
+          className={`${image.link.className} col-span-4 row-start-5 row-end-6`}
         >
           {image.link.text}
         </Link>

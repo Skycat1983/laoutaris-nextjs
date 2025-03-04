@@ -2,40 +2,35 @@ import Image from "next/image";
 import Link from "next/link";
 import { RadialGradientOverlay } from "./Overlays";
 
-// ! not sure if needed
-// export interface IHeroSlide {
-//   image: HeroContent;
-//   backgroundAdjustments: HeroBackground;
-//   overlay: React.ReactElement | null;
-//   height: number;
-//   width: number;
-// }
+// const LargeScaleWorks = () => {
+//   const PLACEHOLDER_URL =
+//     "https://res.cloudinary.com/dzncmfirr/image/upload/v1713359817/artwork/lapbp1anawjzvayajq3s.jpg";
 
-// interface HeroContent {
-//   url: string;
-//   heading: HeroTextItem | null;
-//   subheading: HeroTextItem | null;
-//   summary: HeroTextItem | null;
-//   link: HeroLink;
-// }
+//   return (
+//     <div className="relative h-[850px] w-screen overflow-hidden">
+//       <Image
+//         src={PLACEHOLDER_URL}
+//         layout="fill"
+//         objectFit="cover"
+//         alt="Browse our collection"
+//         quality={100}
+//         priority={true}
+//         className="scale-110"
+//       />
 
-// interface HeroTextItem {
-//   text: string;
-//   className: string;
-// }
+//       <div className="absolute inset-0 flex items-end justify-center pb-48 sm:pb-24 p-8">
+//         <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-8 rounded-lg w-[90%] sm:w-[600px] shadow-xl text-center mx-4">
+//           <h1 className="text-2xl sm:text-3xl font-cormorant text-gray-900 mb-4 sm:mb-6">
+//             Explore the Collection
+//           </h1>
+//           <div className="space-y-4 sm:space-y-6">{/*  */}</div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-// interface HeroLink extends HeroTextItem {
-//   path: string;
-// }
-
-// interface HeroBackground {
-//   position: string;
-//   size: string;
-// }
-
-// interface HeroSlideProps {
-//   slide: IHeroSlide;
-// }
+// export { LargeScaleWorks };
 const LargeScaleWorks = () => {
   const originalImg =
     "https://res.cloudinary.com/dzncmfirr/image/upload/v1713359817/artwork/lapbp1anawjzvayajq3s.jpg";
@@ -50,7 +45,6 @@ const LargeScaleWorks = () => {
         className:
           "text-4xl col-start-2 col-end-10 row-start-5 row-end-6 md:col-start-2 md:col-end-8 lg:col-start-2 lg:col-end-5 lg:row-start-5 lg:row-end-6 text-left z-10 md:text-5xl font-archivoBlack text-white",
       },
-
       subheading: "text",
       summary: "text",
       link: {
@@ -69,32 +63,33 @@ const LargeScaleWorks = () => {
   const { image } = slide;
 
   return (
-    <div className="relative h-auto max-h-[700px] w-full overflow-hidden 2xl:max-h-[850px]">
+    <div className="relative h-[850px] w-screen overflow-hidden">
       <Image
         src={image.url}
-        height={slide.height}
-        width={slide.width}
-        className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[210px] cover z-0"
-        alt="Image of a large scale artwork"
+        // height={slide.height}
+        // width={slide.width}
+        // alt="Image of a large scale artwork"
+        // quality={100}
+        // sizes="100vw"
+        // priority={true}
+        layout="fill"
+        objectFit="cover"
+        alt="Browse our collection"
         quality={100}
         priority={true}
+        className="scale-110"
       />
       <RadialGradientOverlay />
       <div
-        className="absolute top-0 left-0 w-full h-full grid grid-cols-12 z-0"
+        className="absolute inset-0 grid grid-cols-12 z-10"
         style={{ gridTemplateRows: "repeat(12, minmax(0, auto))" }}
       >
+        <RadialGradientOverlay />
+
         {image.heading && (
-          <h1
-            className={`${image.heading.className} col-span-4 row-start-1 row-end-2 z-0`}
-          >
-            {image.heading.text}
-          </h1>
+          <h1 className={image.heading.className}>{image.heading.text}</h1>
         )}
-        <Link
-          href={image.link.path}
-          className={`${image.link.className} col-span-4 row-start-5 row-end-6 z-0`}
-        >
+        <Link href={image.link.path} className={image.link.className}>
           {image.link.text}
         </Link>
       </div>
@@ -102,4 +97,4 @@ const LargeScaleWorks = () => {
   );
 };
 
-export default LargeScaleWorks;
+export { LargeScaleWorks };

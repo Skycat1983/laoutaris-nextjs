@@ -8,9 +8,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/modules/hero/carousel";
-import LargeScaleWorks from "./LargeScaleWorks";
 import FamilyFavourites from "./FamilyFavourites";
 import { FilterableArtworks } from "./FilterableArtworks";
+import { LargeScaleWorks } from "./LargeScaleWorks";
 
 export function Hero() {
   return (
@@ -21,15 +21,15 @@ export function Hero() {
         loop: true,
       }}
     >
-      <CarouselContent className="">
-        <CarouselItem className="">
+      <CarouselContent className="w-full">
+        <CarouselItem className="w-full">
           <FilterableArtworks />
         </CarouselItem>
 
-        <CarouselItem className="">
+        <CarouselItem className="w-full">
           <FamilyFavourites />
         </CarouselItem>
-        <CarouselItem className="">
+        <CarouselItem className="w-full ">
           <LargeScaleWorks />
         </CarouselItem>
       </CarouselContent>
