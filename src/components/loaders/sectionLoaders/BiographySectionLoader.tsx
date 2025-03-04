@@ -13,7 +13,7 @@ const BIOGRAPHY_FETCH_CONFIG = {
 } as const;
 
 // Type Definitions
-type BiographyCardData = Pick<
+export type BiographyCardData = Pick<
   FrontendArticle,
   "title" | "subtitle" | "imageUrl" | "slug"
 >;

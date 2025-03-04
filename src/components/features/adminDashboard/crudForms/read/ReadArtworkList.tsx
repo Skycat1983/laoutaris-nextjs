@@ -9,12 +9,14 @@ import { ArtworkFilterDropdowns } from "../../inputs/ArtworkFilterDropdowns";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { clientApi } from "@/lib/api/clientApi";
 
+type ArtworkFilterKey = "decade" | "artstyle" | "medium" | "surface";
+
 export function ReadArtworkList() {
   const [artworks, setArtworks] = useState<FrontendArtwork[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<{
-    key: "decade" | "artstyle" | "medium" | "surface" | null;
+    key: ArtworkFilterKey | null;
     value: string | null;
   }>({ key: null, value: null });
 
@@ -52,7 +54,7 @@ export function ReadArtworkList() {
 
   const handleFilterChange = (key: string | null, value: string | null) => {
     setActiveFilter({
-      key: key as "decade" | "artstyle" | "medium" | "surface" | null,
+      key: key as ArtworkFilterKey | null,
       value,
     });
   };

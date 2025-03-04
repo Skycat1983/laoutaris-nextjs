@@ -2,7 +2,7 @@
 import { FrontendBlogEntry } from "./blogTypes";
 import { FrontendUser } from "./userTypes";
 
-interface BaseFrontendComment {
+export interface BaseFrontendComment {
   _id: string;
   text: string;
   displayDate: Date;
@@ -45,6 +45,13 @@ export interface FrontendCommentWithBlogPost extends BaseFrontendComment {
   author: string;
   blog: FrontendBlogEntry;
 }
+
+// type FrontendComment = PopulatedComment | UnpopulatedComment;
+
+// Usage:
+// const isOwner = comment.populated
+//   ? session?.user?.id === comment.author._id
+//   : session?.user?.id === comment.author;
 
 // export type FrontendComment =
 //   | FrontendCommentUnpopulated

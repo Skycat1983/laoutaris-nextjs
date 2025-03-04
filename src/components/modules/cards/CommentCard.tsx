@@ -3,7 +3,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import {
+  FrontendCommentWithAuthor,
+  FrontendCommentWithBlogNav,
+} from "@/lib/data/types/commentTypes";
 import { useSession } from "next-auth/react";
 import { Pencil, Trash2, X, Check } from "lucide-react";
 import { clientApi } from "@/lib/api/clientApi";
@@ -25,9 +28,10 @@ import {
 } from "@/lib/data/schemas/commentSchema";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import { isFrontendUser } from "@/lib/typeGuards";
 
 interface CommentCardProps {
-  comment: FrontendCommentWithAuthor;
+  comment: FrontendCommentWithAuthor | FrontendCommentWithBlogNav;
   onCommentUpdated?: () => void;
   onCommentDeleted?: () => void;
 }
@@ -50,7 +54,11 @@ export const CommentCard = ({
     },
   });
 
-  const isOwner = session?.user?.id === comment.author._id;
+  const isOwner =
+    session?.user?.id &&
+    (isFrontendUser(comment.author)
+      ? session.user.id === comment.author._id
+      : session.user.id === comment.author);
 
   const handleEdit = async () => {
     if (!isEditing) {

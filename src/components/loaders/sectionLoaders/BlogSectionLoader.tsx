@@ -13,7 +13,7 @@ const BLOG_FETCH_CONFIG = {
 } as const;
 
 // 2. Type Definitions
-type BlogCardData = Pick<
+export type BlogCardData = Pick<
   FrontendBlogEntry,
   (typeof BLOG_FETCH_CONFIG.fields)[number]
 >;

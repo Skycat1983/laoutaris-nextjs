@@ -2,11 +2,13 @@ import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
-import { CollectionArtworkNav } from "@/lib/data/types/navigationTypes";
+import {
+  CollectionArtworkNavList,
+  CollectionArtworksNavResponse,
+} from "@/lib/data/types/navigationTypes";
 
 // Define the shape we want using Pick
-
-type CollectionArtworksNavResponse = ApiResponse<CollectionArtworkNav>;
+// ! did i break this?
 
 export const GET = async (
   req: NextRequest,
@@ -35,7 +37,7 @@ export const GET = async (
     }
 
     const collection =
-      transformMongooseDoc<CollectionArtworkNav>(rawCollection);
+      transformMongooseDoc<CollectionArtworkNavList>(rawCollection);
 
     // console.log("rawCollection", rawCollection);
     // console.log("collection in route", collection);
@@ -43,7 +45,7 @@ export const GET = async (
     return NextResponse.json({
       success: true,
       data: collection,
-    } satisfies ApiSuccessResponse<CollectionArtworkNav>);
+    } satisfies ApiSuccessResponse<CollectionArtworkNavList>);
   } catch (error) {
     console.error("Error fetching collection artworks navigation:", error);
     return NextResponse.json({

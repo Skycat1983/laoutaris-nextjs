@@ -3,10 +3,7 @@ import type {
   FrontendArticleWithArtwork,
   ArticleFilterParams,
 } from "@/lib/data/types/articleTypes";
-import type {
-  DynamicArtworkFilterParams,
-  FrontendArtwork,
-} from "@/lib/data/types/artworkTypes";
+import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type {
   CollectionFilterParams,
   FrontendCollection,
@@ -26,15 +23,22 @@ import type { Fetcher } from "../../core/createFetcher";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
-  | DynamicArtworkFilterParams
   | CollectionFilterParams
-  | BlogFilterParams;
+  | BlogFilterParams
+  | ArtworkFilterParams;
 
 interface ReadListParams {
   page?: number;
   limit?: number;
   search?: string;
   filter?: FilterParams;
+}
+
+type ArtworkFilterKey = "decade" | "artstyle" | "medium" | "surface";
+
+interface ArtworkFilterParams {
+  key: ArtworkFilterKey | null;
+  value: string | null;
 }
 
 /*
@@ -98,11 +102,16 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
 
   //! List fetchers
   // Artworks
-  artworks: async ({ page = 1, limit = 50 }: ReadListParams = {}) => {
+  artworks: async ({ page = 1, limit = 50, filter }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
+
+    if (filter?.key && filter?.value) {
+      params.append("filterKey", filter.key);
+      params.append("filterValue", filter.value);
+    }
 
     return fetcher<FrontendArtwork[]>(`/api/v2/admin/artwork/read?${params}`);
   },

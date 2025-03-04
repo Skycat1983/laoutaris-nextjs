@@ -6,20 +6,22 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "100");
     const page = parseInt(searchParams.get("page") || "1");
-    const search = searchParams.get("search") || "";
-    const filterKey = searchParams.get("filterKey");
+    const filterKey = searchParams.get("filterKey") as
+      | "decade"
+      | "artstyle"
+      | "medium"
+      | "surface"
+      | null;
     const filterValue = searchParams.get("filterValue");
 
     // Build query object
-    const query: any = {};
-
-    if (search) {
-      query.title = new RegExp(search, "i");
-    }
+    const query: Record<string, any> = {};
 
     if (filterKey && filterValue) {
       query[filterKey] = filterValue;
     }
+
+    console.log("Query:", query); // Debug log
 
     const artworks = await ArtworkModel.find(query)
       .limit(limit)

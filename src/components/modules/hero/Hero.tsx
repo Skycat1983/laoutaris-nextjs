@@ -11,6 +11,7 @@ import {
 import FamilyFavourites from "./FamilyFavourites";
 import { FilterableArtworks } from "./FilterableArtworks";
 import { LargeScaleWorks } from "./LargeScaleWorks";
+import { Skeleton } from "@/components/shadcn/skeleton";
 
 export function Hero() {
   return (
@@ -42,3 +43,14 @@ export function Hero() {
     </Carousel>
   );
 }
+
+const HeroSkeleton = () => {
+  return (
+    <div className="w-full h-auto p-4 flex flex-col gap-0 justify-center items-center pt-[20px]">
+      <div className="relative h-[600px] max-h-[700px] w-full overflow-hidden ">
+        <Skeleton className="relative min-w-[200px] lg:bottom-[100px] xl:bottom-[210px] h-[800px] max-h-[800px]" />
+      </div>
+    </div>
+  );
+};
+export default HeroSkeleton;

@@ -1,9 +1,12 @@
-import { ArticleFeed } from "@/components/features/feeds/ArticleFeed";
-import { ArtworkFeed } from "@/components/features/feeds/ArtworkFeed";
-import { BlogFeed } from "@/components/features/feeds/BlogFeed";
-import { CollectionFeed } from "@/components/features/feeds/CollectionFeed";
-
 // ! Unused
+
+import {
+  ArticleFeed,
+  CollectionFeed,
+  ArtworkFeed,
+  BlogFeed,
+} from "@/components/features/adminDashboard/feeds";
+
 //? could be used if we go baack to generating feed components again instead of hardcoding them
 type FeedConfig = {
   key: "articles" | "collections" | "artwork" | "blog";

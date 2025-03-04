@@ -20,27 +20,6 @@ export async function submitEnquiry(
       throw new Error("All fields are required.");
     }
 
-    // ! Problems with POST request
-    // const result = await fetch("http://localhost:3000/api/enquiry", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     ...headers(),
-    //   },
-    //   body: JSON.stringify({ name, email, enquiryType, message }),
-    // }).then((res) => {
-    //   console.log("Response received:", res);
-    //   return res.json();
-    // });
-    // console.log("result in submitEnquiry", JSON.stringify(result, null, 2));
-
-    // if (!result || !result.success) {
-    //   return {
-    //     success: false,
-    //     message: result.message || "Failed to submit enquiry.",
-    //   };
-    // }
-
     const newEnquiry = await EnquiryModel.create({
       name,
       email,

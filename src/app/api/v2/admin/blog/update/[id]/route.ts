@@ -13,7 +13,7 @@ export async function PATCH(
 ): Promise<NextResponse<ApiResponse<FrontendBlogEntry>>> {
   try {
     // console.log("request", request);
-    const userId = await getUserIdFromSession(request);
+    const userId = await getUserIdFromSession();
     const userRole = await getRoleFromSession(request);
 
     console.log("userid in blog update route", userId);
