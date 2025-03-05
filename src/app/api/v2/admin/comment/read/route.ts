@@ -1,52 +1,53 @@
 import { CommentModel } from "@/lib/data/models";
-import { FrontendComment } from "@/lib/data/types/commentTypes";
+import {
+  FrontendComment,
+  FrontendCommentWithAuthor,
+} from "@/lib/data/types/commentTypes";
 import { NextRequest, NextResponse } from "next/server";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<ApiResponse<ReadCommentListResult>> {
+  const { searchParams } = new URL(request.url);
+  const limit = parseInt(searchParams.get("limit") || "10");
+  const page = parseInt(searchParams.get("page") || "1");
+  const skip = (page - 1) * limit;
   try {
-    const { pathname, searchParams } = new URL(request.url);
-    const segments = pathname.split("/");
-    const id = segments[segments.length - 1];
+    const total = await CommentModel.countDocuments();
 
-    // If no ID, return paginated list
-    if (id === "read") {
-      const limit = parseInt(searchParams.get("limit") || "10");
-      const page = parseInt(searchParams.get("page") || "1");
-      const skip = (page - 1) * limit;
-      const total = await CommentModel.countDocuments();
+    const rawComments = await CommentModel.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("author");
 
-      const comments = await CommentModel.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .populate("author");
-
-      return NextResponse.json({
-        success: true,
-        data: comments,
-        metadata: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      }) satisfies NextResponse<ApiSuccessResponse<FrontendComment[]>>;
-    }
-
-    // If ID provided, return single item
-    const comment = await CommentModel.findById(id).populate("author");
-
-    if (!comment) {
+    if (rawComments.length === 0) {
       return NextResponse.json(
-        { success: false, error: "Comment not found" },
+        {
+          success: false,
+          error: "No comments found",
+        } satisfies ApiErrorResponse,
         { status: 404 }
-      ) satisfies NextResponse<ApiErrorResponse>;
+      );
     }
+
+    const comments = rawComments.map((comment) =>
+      transformMongooseDoc<FrontendCommentWithAuthor>(comment)
+    );
 
     return NextResponse.json({
       success: true,
-      data: comment,
-    }) satisfies NextResponse<ApiSuccessResponse<FrontendComment>>;
+      data: comments,
+      metadata: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    } satisfies ReadCommentListResult);
   } catch (error) {
     console.error("[COMMENT_READ]", error);
     return NextResponse.json(

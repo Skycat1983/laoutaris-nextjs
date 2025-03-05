@@ -18,6 +18,9 @@ import type {
   FrontendCommentWithAuthor,
 } from "@/lib/data/types/commentTypes";
 import type { Fetcher } from "../../core/createFetcher";
+import { ListResponse, SingleResponse } from "@/lib/data/types/apiTypes";
+import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
+import { ApiResponse } from "@/lib/data/types/apiTypes";
 
 // Filter types
 type FilterParams =
@@ -40,20 +43,32 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-export type ReadSingleResponse<T> = ApiSuccessResponse<T>;
+// Result types (what we get back from the API)
+export type ReadArtworkResult = SingleResult<FrontendArtwork>;
+export type ReadArtworkListResult = ListResult<FrontendArtwork>;
+export type ReadArticleResult =
+  SingleResult<FrontendArticleWithArtworkAndAuthor>;
+export type ReadArticleListResult = ListResult<FrontendArticleWithArtwork>;
 
-export type ReadListResponse<T> = ApiSuccessResponse<T[]> & {
-  metadata: Required<PaginationMetadata>;
-};
+export type ReadCollectionResult = SingleResult<FrontendCollectionWithArtworks>;
+export type ReadCollectionListResult =
+  ListResult<FrontendCollectionWithArtworks>;
 
-export type ReadResponse<T> = ApiResponse<T>;
+export type ReadBlogResult = SingleResult<FrontendBlogEntry>;
+export type ReadBlogListResult = ListResult<FrontendBlogEntry>;
+
+export type ReadUserResult = SingleResult<FrontendUser>;
+export type ReadUserListResult = ListResult<FrontendUser>;
+
+export type ReadCommentResult = SingleResult<FrontendCommentWithAuthor>;
+export type ReadCommentListResult = ListResult<FrontendCommentWithAuthor>;
 
 export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
   // Artworks
   artwork: async (artworkId: string) => {
     const encodedId = encodeURIComponent(artworkId);
-    return fetcher<ReadSingleResponse<FrontendArtwork>>(
+    return fetcher<ReadArtworkResult>(
       `/api/v2/admin/artwork/read/${encodedId}`
     );
   },
@@ -61,7 +76,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   // Articles
   article: async (articleId: string) => {
     const encodedId = encodeURIComponent(articleId);
-    return fetcher<ReadSingleResponse<FrontendArticleWithArtworkAndAuthor>>(
+    return fetcher<ReadArticleResult>(
       `/api/v2/admin/article/read/${encodedId}`
     );
   },
@@ -69,7 +84,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   // Collections
   collection: async (collectionId: string) => {
     const encodedId = encodeURIComponent(collectionId);
-    return fetcher<ReadSingleResponse<FrontendCollectionWithArtworks>>(
+    return fetcher<ReadCollectionResult>(
       `/api/v2/admin/collection/read/${encodedId}`
     );
   },
@@ -77,23 +92,19 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   // Blogs
   blog: async (blogId: string) => {
     const encodedId = encodeURIComponent(blogId);
-    return fetcher<ReadSingleResponse<FrontendBlogEntry>>(
-      `/api/v2/admin/blog/read/${encodedId}`
-    );
+    return fetcher<ReadBlogResult>(`/api/v2/admin/blog/read/${encodedId}`);
   },
 
   // Users
   user: async (userId: string) => {
     const encodedId = encodeURIComponent(userId);
-    return fetcher<ReadSingleResponse<FrontendUser>>(
-      `/api/v2/admin/user/read/${encodedId}`
-    );
+    return fetcher<ReadUserResult>(`/api/v2/admin/user/read/${encodedId}`);
   },
 
   // Comments
   comment: async (commentId: string) => {
     const encodedId = encodeURIComponent(commentId);
-    return fetcher<ReadSingleResponse<FrontendComment>>(
+    return fetcher<ReadCommentResult>(
       `/api/v2/admin/comment/read/${encodedId}`
     );
   },
@@ -111,7 +122,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       params.append("filterValue", filter.value);
     }
 
-    return fetcher<ReadListResponse<FrontendArtwork>>(
+    return fetcher<ReadArtworkListResult>(
       `/api/v2/admin/artwork/read?${params}`
     );
   },
@@ -123,7 +134,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<ReadListResponse<FrontendArticleWithArtwork>>(
+    return fetcher<ReadArticleListResult>(
       `/api/v2/admin/article/read?${params}`
     );
   },
@@ -135,7 +146,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<ReadListResponse<FrontendCollectionWithArtworks>>(
+    return fetcher<ReadCollectionListResult>(
       `/api/v2/admin/collection/read?${params}`
     );
   },
@@ -147,9 +158,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<ReadListResponse<FrontendBlogEntry>>(
-      `/api/v2/admin/blog/read?${params}`
-    );
+    return fetcher<ReadBlogListResult>(`/api/v2/admin/blog/read?${params}`);
   },
 
   // Users
@@ -159,9 +168,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<ReadListResponse<FrontendUser>>(
-      `/api/v2/admin/user/read?${params}`
-    );
+    return fetcher<ReadUserListResult>(`/api/v2/admin/user/read?${params}`);
   },
 
   // Comments
@@ -171,10 +178,39 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<ReadListResponse<FrontendCommentWithAuthor>>(
+    return fetcher<ReadCommentListResult>(
       `/api/v2/admin/comment/read?${params}`
     );
   },
 });
 
 export type ReadFetchers = ReturnType<typeof createReadFetchers>;
+
+// export type ReadSingleResponse<T> = ApiSuccessResponse<T>;
+
+// export type ReadListResponse<T> = ApiSuccessResponse<T[]> & {
+//   metadata: Required<PaginationMetadata>;
+// };
+
+// export type ReadResponse<T> = ApiResponse<T>;
+
+// Single item response types
+// export type ReadArtworkResponse = ApiResponse<SingleResult<FrontendArtwork>>;
+// export type ReadArtworkListResponse = ApiResponse<ListResult<FrontendArtwork>>;
+
+// export type ReadArticleResponse =
+//   SingleResponse<FrontendArticleWithArtworkAndAuthor>;
+// export type ReadCollectionResponse =
+//   SingleResponse<FrontendCollectionWithArtworks>;
+// export type ReadBlogResponse = SingleResponse<FrontendBlogEntry>;
+// export type ReadUserResponse = SingleResponse<FrontendUser>;
+// export type ReadCommentResponse = SingleResponse<FrontendComment>;
+
+// // List response types
+
+// export type ReadArticleListResponse = ListResponse<FrontendArticleWithArtwork>;
+// export type ReadCollectionListResponse =
+//   ListResponse<FrontendCollectionWithArtworks>;
+// export type ReadBlogListResponse = ListResponse<FrontendBlogEntry>;
+// export type ReadUserListResponse = ListResponse<FrontendUser>;
+// export type ReadCommentListResponse = ListResponse<FrontendCommentWithAuthor>;

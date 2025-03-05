@@ -16,10 +16,7 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import {
-  FrontendCollection,
-  FrontendCollectionWithArtworks,
-} from "@/lib/data/types/collectionTypes";
+import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import {
   Tabs,
@@ -80,23 +77,23 @@ export const UpdateCollectionForm = ({
 
     setIsLoadingArtwork(true);
     try {
-      const artwork = await clientApi.admin.read.artwork(artworkId);
-      if (artwork.success) {
+      const result = await clientApi.admin.read.artwork(artworkId);
+      if (result.success) {
+        const artwork = result.data;
         // Check if artwork is already in the collection
-        if (artworks.some((a) => a._id === artwork.data._id)) {
+        if (artworks.some((a) => a._id === artwork._id)) {
           // TODO: Show error message - artwork already exists
           return;
         }
-        setArtworks((current) => [...current, artwork.data]);
-        setArtworksToAdd((current) => [...current, artwork.data._id]);
-        // If this artwork was previously removed, remove it from artworksToRemove
+        setArtworks((current) => [...current, artwork]);
+        setArtworksToAdd((current) => [...current, artwork._id]);
         setArtworksToRemove((current) =>
-          current.filter((id) => id !== artwork.data._id)
+          current.filter((id) => id !== artwork._id)
         );
         setArtworkToAdd(null);
         if (artworkIdRef.current) artworkIdRef.current.value = "";
       } else {
-        console.error("Error fetching artwork:", artwork.error);
+        console.error("Error fetching artwork:", result.error);
       }
     } catch (error) {
       console.error("Error fetching artwork:", error);

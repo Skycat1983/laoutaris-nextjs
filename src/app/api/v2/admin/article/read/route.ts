@@ -1,59 +1,62 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
+import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<ApiResponse<ReadArticleListResult>> {
+  const { searchParams } = request.nextUrl;
+  const limit = parseInt(searchParams.get("limit") || "10");
+  const page = parseInt(searchParams.get("page") || "1");
+
   try {
-    const { pathname, searchParams } = new URL(request.url);
-    const segments = pathname.split("/");
-    const id = segments[segments.length - 1];
-
-    // If no ID, return paginated list
-    if (id === "read") {
-      const limit = parseInt(searchParams.get("limit") || "10");
-      const page = parseInt(searchParams.get("page") || "1");
-      const skip = (page - 1) * limit;
-      const total = await ArticleModel.countDocuments();
-
-      const articles = await ArticleModel.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
+    const [rawArticles, total] = await Promise.all([
+      ArticleModel.find()
         .limit(limit)
-        .populate(["artwork", "author"]);
-
-      return NextResponse.json({
-        success: true,
-        data: articles,
-        metadata: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      });
-    }
-
-    // If ID provided, return single item
-    const article = await ArticleModel.findById(id).populate([
-      "artwork",
-      "author",
+        .skip((page - 1) * limit)
+        .sort({ createdAt: -1 })
+        .populate("artwork")
+        .lean(),
+      ArticleModel.countDocuments(),
     ]);
 
-    if (!article) {
+    if (rawArticles.length === 0) {
       return NextResponse.json(
-        { success: false, error: "Article not found" },
+        {
+          success: false,
+          error: "No articles found",
+        } satisfies ApiErrorResponse,
         { status: 404 }
       );
     }
 
+    const articles = rawArticles.map((article) =>
+      transformMongooseDoc<FrontendArticleWithArtwork>(article)
+    );
+
     return NextResponse.json({
       success: true,
-      data: article,
-    });
+      data: articles,
+      metadata: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    } satisfies ReadArticleListResult);
   } catch (error) {
-    console.error("[ARTICLE_READ]", error);
+    console.error("Error reading articles:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch article(s)" },
-      { status: 500 }
+      {
+        success: false,
+        error: "Failed to read articles",
+      } satisfies ApiErrorResponse,
+      {
+        status: 500,
+      }
     );
   }
 }

@@ -1,58 +1,60 @@
 import { ArticleModel, CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import {
+  FrontendCollection,
+  FrontendCollectionWithArtworks,
+} from "@/lib/data/types/collectionTypes";
+import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  ApiSuccessResponse,
+} from "@/lib/data/types/apiTypes";
 
 // TODO: remove the 'return one item' logic
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<ApiResponse<ReadCollectionListResult>> {
+  const { searchParams } = request.nextUrl;
+  const limit = parseInt(searchParams.get("limit") || "10");
+  const page = parseInt(searchParams.get("page") || "1");
+  const skip = (page - 1) * limit;
+
   try {
-    const { pathname, searchParams } = new URL(request.url);
-    const segments = pathname.split("/");
-    const id = segments[segments.length - 1];
+    const total = await CollectionModel.countDocuments();
 
-    console.log("id", id);
+    const rawCollections = await CollectionModel.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("artworks");
 
-    // If no ID, return paginated list
-    if (id === "read") {
-      const limit = parseInt(searchParams.get("limit") || "10");
-      const page = parseInt(searchParams.get("page") || "1");
-      const skip = (page - 1) * limit;
-      const total = await CollectionModel.countDocuments();
-
-      const collections = await CollectionModel.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-
-      return NextResponse.json({
-        success: true,
-        data: collections,
-        metadata: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit),
-        },
-      }) satisfies NextResponse<ApiSuccessResponse<FrontendCollection[]>>;
-    }
-
-    // If ID provided, return single item
-    const collection = await CollectionModel.findById(id).populate([
-      "artworks",
-    ]);
-
-    if (!collection) {
+    if (rawCollections.length === 0) {
       return NextResponse.json(
-        { success: false, error: "Collection not found" },
+        {
+          success: false,
+          error: "No collections found",
+        } satisfies ApiErrorResponse,
         { status: 404 }
-      ) satisfies NextResponse<ApiErrorResponse>;
+      );
     }
+
+    const collections = rawCollections.map((collection) =>
+      transformMongooseDoc<FrontendCollectionWithArtworks>(collection)
+    );
 
     return NextResponse.json({
       success: true,
-      data: collection,
-    }) satisfies NextResponse<ApiSuccessResponse<FrontendCollection>>;
+      data: collections,
+      metadata: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    } satisfies ReadCollectionListResult);
   } catch (error) {
     console.error("[ARTICLE_READ]", error);
     return NextResponse.json(

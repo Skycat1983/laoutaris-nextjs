@@ -1,14 +1,15 @@
-import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import type { ReadSingleResponse } from "@/lib/api/admin/read/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkModel } from "@/lib/data/models";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { ApiResponse } from "@/lib/data/types/apiTypes";
+import { ReadArtworkResult } from "@/lib/api/admin/read/fetchers";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<ApiResponse<ReadArtworkResult>> {
   const { id } = params;
 
   try {
@@ -31,7 +32,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: artwork,
-    } satisfies ReadSingleResponse<FrontendArtwork>);
+    } satisfies ReadArtworkResult);
   } catch (error) {
     console.error("Error reading artwork:", error);
     return NextResponse.json(

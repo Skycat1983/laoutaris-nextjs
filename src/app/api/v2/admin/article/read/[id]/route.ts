@@ -1,34 +1,51 @@
+import { NextRequest, NextResponse } from "next/server";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { ArticleModel } from "@/lib/data/models";
-import { NextResponse } from "next/server";
+import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { ReadArticleResult } from "@/lib/api/admin/read/fetchers";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<ApiResponse<ReadArticleResult>> {
+  const { id } = params;
+
   try {
-    const { id } = params;
+    const rawArticle = await ArticleModel.findById(id)
+      .populate(["artwork", "author"])
+      .lean()
+      .exec();
 
-    const article = await ArticleModel.findById(id).populate([
-      "artwork",
-      "author",
-    ]);
-
-    if (!article) {
+    if (!rawArticle) {
       return NextResponse.json(
-        { success: false, message: "Article not found" },
-        { status: 404 }
+        {
+          success: false,
+          error: "Article not found",
+        } satisfies ApiErrorResponse,
+        {
+          status: 404,
+        }
       );
     }
+
+    const article =
+      transformMongooseDoc<FrontendArticleWithArtworkAndAuthor>(rawArticle);
 
     return NextResponse.json({
       success: true,
       data: article,
-    });
+    } satisfies ReadArticleResult);
   } catch (error) {
     console.error("Error reading article:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to read article" },
-      { status: 500 }
+      {
+        success: false,
+        error: "Failed to read article",
+      } satisfies ApiErrorResponse,
+      {
+        status: 500,
+      }
     );
   }
 }

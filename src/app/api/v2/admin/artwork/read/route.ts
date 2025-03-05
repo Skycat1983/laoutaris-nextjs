@@ -1,10 +1,13 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import type { ReadListResponse } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { ReadArtworkListResult } from "@/lib/api/admin/read/fetchers";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest
+): Promise<ApiResponse<ReadArtworkListResult>> {
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "100");
   const page = parseInt(searchParams.get("page") || "1");
@@ -32,6 +35,16 @@ export async function GET(request: NextRequest) {
       ArtworkModel.countDocuments(query),
     ]);
 
+    if (rawArtworks.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No artworks found",
+        } satisfies ApiErrorResponse,
+        { status: 404 }
+      );
+    }
+
     const artworks = rawArtworks.map((artwork) =>
       transformMongooseDoc<FrontendArtwork>(artwork)
     );
@@ -45,7 +58,7 @@ export async function GET(request: NextRequest) {
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies ReadListResponse<FrontendArtwork>);
+    } satisfies ReadArtworkListResult);
   } catch (error) {
     console.error("Error reading artworks:", error);
     return NextResponse.json(
@@ -59,21 +72,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-// const { searchParams } = new URL(request.nextUrl);
-// const limit = parseInt(searchParams.get("limit") || "100");
-// const page = parseInt(searchParams.get("page") || "1");
-// const filterKey = searchParams.get("filterKey") as
-//   | "decade"
-//   | "artstyle"
-//   | "medium"
-//   | "surface"
-//   | null;
-// const filterValue = searchParams.get("filterValue");
-
-// // Build query object
-// const query: Record<string, any> = {};
-
-// if (filterKey && filterValue) {
-//   query[filterKey] = filterValue;
-// }
