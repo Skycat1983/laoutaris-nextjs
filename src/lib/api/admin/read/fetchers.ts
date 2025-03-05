@@ -6,7 +6,6 @@ import type {
 import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import type {
   CollectionFilterParams,
-  FrontendCollection,
   FrontendCollectionWithArtworks,
 } from "@/lib/data/types/collectionTypes";
 import type {
@@ -41,35 +40,28 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-/*
-! Single Item Blueprint
-model: async (modelId: string) => {
-  const encodedId = encodeURIComponent(modelId);
-  return fetcher<FrontendModel>(`/api/v2/admin/model/read/${encodedId}`);
+export type ReadSingleResponse<T> = ApiSuccessResponse<T>;
+
+export type ReadListResponse<T> = ApiSuccessResponse<T[]> & {
+  metadata: Required<PaginationMetadata>;
 };
 
-! List Blueprint
-models: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
-  return fetcher<FrontendModel[]>(`/api/v2/admin/model/read?${params}`);
-};
-*/
+export type ReadResponse<T> = ApiResponse<T>;
 
 export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
   // Artworks
   artwork: async (artworkId: string) => {
     const encodedId = encodeURIComponent(artworkId);
-    return fetcher<FrontendArtwork>(`/api/v2/admin/artwork/read/${encodedId}`);
+    return fetcher<ReadSingleResponse<FrontendArtwork>>(
+      `/api/v2/admin/artwork/read/${encodedId}`
+    );
   },
 
   // Articles
   article: async (articleId: string) => {
     const encodedId = encodeURIComponent(articleId);
-    return fetcher<FrontendArticleWithArtworkAndAuthor>(
+    return fetcher<ReadSingleResponse<FrontendArticleWithArtworkAndAuthor>>(
       `/api/v2/admin/article/read/${encodedId}`
     );
   },
@@ -77,7 +69,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   // Collections
   collection: async (collectionId: string) => {
     const encodedId = encodeURIComponent(collectionId);
-    return fetcher<FrontendCollectionWithArtworks>(
+    return fetcher<ReadSingleResponse<FrontendCollectionWithArtworks>>(
       `/api/v2/admin/collection/read/${encodedId}`
     );
   },
@@ -85,19 +77,25 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   // Blogs
   blog: async (blogId: string) => {
     const encodedId = encodeURIComponent(blogId);
-    return fetcher<FrontendBlogEntry>(`/api/v2/admin/blog/read/${encodedId}`);
+    return fetcher<ReadSingleResponse<FrontendBlogEntry>>(
+      `/api/v2/admin/blog/read/${encodedId}`
+    );
   },
 
   // Users
   user: async (userId: string) => {
     const encodedId = encodeURIComponent(userId);
-    return fetcher<FrontendUser>(`/api/v2/admin/user/read/${encodedId}`);
+    return fetcher<ReadSingleResponse<FrontendUser>>(
+      `/api/v2/admin/user/read/${encodedId}`
+    );
   },
 
   // Comments
   comment: async (commentId: string) => {
     const encodedId = encodeURIComponent(commentId);
-    return fetcher<FrontendComment>(`/api/v2/admin/comment/read/${encodedId}`);
+    return fetcher<ReadSingleResponse<FrontendComment>>(
+      `/api/v2/admin/comment/read/${encodedId}`
+    );
   },
 
   //! List fetchers
@@ -113,7 +111,9 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       params.append("filterValue", filter.value);
     }
 
-    return fetcher<FrontendArtwork[]>(`/api/v2/admin/artwork/read?${params}`);
+    return fetcher<ReadListResponse<FrontendArtwork>>(
+      `/api/v2/admin/artwork/read?${params}`
+    );
   },
 
   // Articles
@@ -123,7 +123,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendArticleWithArtwork[]>(
+    return fetcher<ReadListResponse<FrontendArticleWithArtwork>>(
       `/api/v2/admin/article/read?${params}`
     );
   },
@@ -135,7 +135,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendCollectionWithArtworks[]>(
+    return fetcher<ReadListResponse<FrontendCollectionWithArtworks>>(
       `/api/v2/admin/collection/read?${params}`
     );
   },
@@ -147,7 +147,9 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendBlogEntry[]>(`/api/v2/admin/blog/read?${params}`);
+    return fetcher<ReadListResponse<FrontendBlogEntry>>(
+      `/api/v2/admin/blog/read?${params}`
+    );
   },
 
   // Users
@@ -157,7 +159,9 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendUser[]>(`/api/v2/admin/user/read?${params}`);
+    return fetcher<ReadListResponse<FrontendUser>>(
+      `/api/v2/admin/user/read?${params}`
+    );
   },
 
   // Comments
@@ -167,7 +171,7 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
       limit: limit.toString(),
     });
 
-    return fetcher<FrontendCommentWithAuthor[]>(
+    return fetcher<ReadListResponse<FrontendCommentWithAuthor>>(
       `/api/v2/admin/comment/read?${params}`
     );
   },

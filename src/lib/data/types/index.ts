@@ -6,3 +6,4 @@ export * from "./collectionTypes";
 export * from "./enquiryTypes";
 export * from "./userTypes";
 export * from "./searchTypes";
+export * from "./apiTypes";

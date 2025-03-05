@@ -144,7 +144,6 @@ export interface ArtworkFilterParams {
   filterMode: FilterMode;
 }
 
-// Combined type for API requests
 export interface ArtworkQueryParams extends ArtworkFilterParams {
   sortBy?: SortOption;
   sortColor?: string;

@@ -10,7 +10,7 @@ Reusable fetching logic
 export type Fetcher = <T>(
   endpoint: string,
   options?: RequestInit
-) => Promise<ApiResponse<T>>;
+) => Promise<T | ApiErrorResponse>;
 
 export type FetcherConfig = {
   getUrl: (path: string) => string;
@@ -21,7 +21,7 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
   return async <T>(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<ApiResponse<T>> => {
+  ): Promise<T | ApiErrorResponse> => {
     try {
       const baseHeaders = config.getHeaders();
       const combinedHeaders = {
@@ -49,7 +49,7 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
         } satisfies ApiErrorResponse;
       }
 
-      return result satisfies ApiSuccessResponse<T>;
+      return result satisfies T;
     } catch (error) {
       console.error(`Fetch error for ${endpoint}:`, error);
       return {

@@ -68,12 +68,14 @@ export const UpdateArticleForm = ({
 
     setIsLoadingArtwork(true);
     try {
-      const artwork = await clientApi.admin.read.artwork(artworkId);
-      if (artwork.success) {
-        setNewArtwork(artwork.data);
-        setImagePreview(artwork.data.image.secure_url);
+      const result = await clientApi.admin.read.artwork(artworkId);
+      if (result.success) {
+        const artwork = result.data;
+
+        setNewArtwork(artwork);
+        setImagePreview(artwork.image.secure_url);
       } else {
-        console.error("Error fetching artwork:", artwork.error);
+        console.error("Error fetching artwork:", result.error);
       }
     } catch (error) {
       console.error("Error fetching artwork:", error);
