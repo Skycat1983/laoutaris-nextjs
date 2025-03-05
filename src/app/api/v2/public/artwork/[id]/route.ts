@@ -31,7 +31,7 @@ export async function GET(
     const artwork = transformMongooseDoc<FrontendArtwork>(rawArtwork);
 
     // 2. Sanitize the image
-    const sanitizedImage = sanitizeImage(artwork.image);
+    const sanitizedImage: PublicArtworkImage = sanitizeImage(artwork.image);
 
     // 3. Calculate public properties
     const isWatchlisted = userId ? artwork.watcherlist.includes(userId) : false;
