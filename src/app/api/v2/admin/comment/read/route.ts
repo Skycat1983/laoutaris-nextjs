@@ -1,16 +1,25 @@
 import { CommentModel } from "@/lib/data/models";
-import {
-  FrontendComment,
-  FrontendCommentWithAuthor,
-} from "@/lib/data/types/commentTypes";
+import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function GET(
   request: NextRequest
 ): Promise<ApiResponse<ReadCommentListResult>> {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
   const { searchParams } = new URL(request.url);
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");

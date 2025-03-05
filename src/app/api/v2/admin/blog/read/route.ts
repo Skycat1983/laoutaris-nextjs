@@ -4,11 +4,23 @@ import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogListResult } from "@/lib/api/admin/read/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 
 export async function GET(
   request: NextRequest
 ): Promise<ApiResponse<ReadBlogListResult>> {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");

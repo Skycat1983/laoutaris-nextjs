@@ -4,23 +4,24 @@ import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/config/authOptions";
+import { isAdmin } from "@/lib/session/isAdmin";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
 ): Promise<ApiResponse<CreateBlogResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json<ApiErrorResponse>(
+  const hasPermission = await isAdmin();
+  const userId = await getUserIdFromSession();
+  if (!hasPermission || !userId) {
+    return NextResponse.json(
       {
         success: false,
+        message: "Unauthorized",
         error: "Unauthorized",
       } satisfies ApiErrorResponse,
       { status: 401 }
     );
   }
-
   try {
     const body = await request.json();
     const validatedData = createBlogFormSchema.parse(body);
@@ -30,7 +31,7 @@ export async function POST(
     const blogData = {
       ...validatedData,
       slug,
-      author: session.user.id,
+      author: userId,
     };
 
     const blog = new BlogModel(blogData);

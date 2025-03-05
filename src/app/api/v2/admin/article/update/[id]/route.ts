@@ -1,17 +1,16 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/config/authOptions";
 import slugify from "slugify";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<ApiResponse<UpdateArticleResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
     return NextResponse.json(
       {
         success: false,

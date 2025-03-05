@@ -11,6 +11,7 @@ import {
   ApiResponse,
   ApiSuccessResponse,
 } from "@/lib/data/types/apiTypes";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 // TODO: remove the 'return one item' logic
 
@@ -21,6 +22,18 @@ export async function GET(
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");
   const skip = (page - 1) * limit;
+
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
 
   try {
     const total = await CollectionModel.countDocuments();

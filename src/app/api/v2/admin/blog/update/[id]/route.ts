@@ -6,30 +6,26 @@ import slugify from "slugify";
 import { getRoleFromSession } from "@/lib/session/getRoleFromSession";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<ApiResponse<UpdateBlogResult>> {
+  const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
-  const userRole = await getRoleFromSession(request);
 
-  if (!userId) {
+  if (!hasPermission || !userId) {
     return NextResponse.json(
-      { success: false, error: "Unauthorized" } satisfies ApiErrorResponse,
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
       { status: 401 }
     );
   }
 
-  if (userRole !== "admin") {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Forbidden: Admin access required",
-      } satisfies ApiErrorResponse,
-      { status: 403 }
-    );
-  }
   try {
     const { id } = params;
     if (!id) {

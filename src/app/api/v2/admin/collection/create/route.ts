@@ -5,20 +5,26 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: Request
 ): Promise<ApiResponse<CreateCollectionResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json<ApiErrorResponse>(
+  const hasPermission = await isAdmin();
+  const userId = await getUserIdFromSession();
+
+  if (!hasPermission || !userId) {
+    return NextResponse.json(
       {
         success: false,
+        message: "Unauthorized",
         error: "Unauthorized",
       } satisfies ApiErrorResponse,
       { status: 401 }
     );
   }
+
   try {
     const body = await request.json();
 
@@ -27,7 +33,7 @@ export async function POST(
     const collectionData = {
       ...body,
       slug,
-      author: session.user.id,
+      author: userId,
     };
 
     console.log("collectionData", collectionData);

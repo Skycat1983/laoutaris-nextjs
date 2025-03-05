@@ -1,17 +1,18 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/config/authOptions";
 import slugify from "slugify";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
 import { createArticleSchema } from "@/lib/data/schemas";
+import { isAdmin } from "@/lib/session/isAdmin";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
 ): Promise<ApiResponse<CreateArticleResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const hasPermission = await isAdmin();
+  const userId = await getUserIdFromSession();
+  if (!hasPermission || !userId) {
     return NextResponse.json(
       {
         success: false,
@@ -32,7 +33,7 @@ export async function POST(
     const articleData = {
       ...validatedData,
       slug,
-      author: session.user.id,
+      author: userId,
     };
 
     const article = new ArticleModel(articleData);

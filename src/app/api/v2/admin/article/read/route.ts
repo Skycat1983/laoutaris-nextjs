@@ -4,10 +4,22 @@ import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function GET(
   request: NextRequest
 ): Promise<ApiResponse<ReadArticleListResult>> {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");

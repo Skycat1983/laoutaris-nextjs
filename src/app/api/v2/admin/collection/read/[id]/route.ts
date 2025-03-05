@@ -4,14 +4,25 @@ import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { FrontendCollectionWithArtworks } from "@/lib/data/types";
-
+import { isAdmin } from "@/lib/session/isAdmin";
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<ApiResponse<ReadCollectionResult>> {
-  try {
-    const { id } = params;
+  const { id } = params;
 
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
+  try {
     const rawCollection = await CollectionModel.findById(id)
       .populate("artworks")
       .lean()

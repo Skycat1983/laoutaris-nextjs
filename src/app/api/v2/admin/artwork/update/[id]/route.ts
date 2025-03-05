@@ -1,16 +1,15 @@
-import { authOptions } from "@/lib/config/authOptions";
 import { ArtworkModel } from "@/lib/data/models";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<ApiResponse<UpdateArtworkResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
     return NextResponse.json(
       {
         success: false,
@@ -20,9 +19,9 @@ export async function PATCH(
       { status: 401 }
     );
   }
-  try {
-    const { id } = params;
+  const { id } = params;
 
+  try {
     const updateData = await request.json();
 
     const updatedArtwork = await ArtworkModel.findByIdAndUpdate(

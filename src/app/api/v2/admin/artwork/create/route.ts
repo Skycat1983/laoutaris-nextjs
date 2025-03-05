@@ -10,12 +10,15 @@ import {
   ApiSuccessResponse,
 } from "@/lib/data/types";
 import { CreateArtworkResult } from "@/lib/api/admin/create/fetchers";
+import { isAdmin } from "@/lib/session/isAdmin";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
 ): Promise<ApiResponse<CreateArtworkResult>> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const hasPermission = await isAdmin();
+  const userId = await getUserIdFromSession();
+  if (!hasPermission || !userId) {
     return NextResponse.json<ApiErrorResponse>(
       {
         success: false,
@@ -32,7 +35,7 @@ export async function POST(
     // Ensure image data is properly structured
     const artworkData = {
       ...validatedData,
-      author: session.user.id,
+      author: userId,
       image: {
         format: validatedData.image.format,
         pixelWidth: validatedData.image.pixelWidth,
@@ -52,7 +55,7 @@ export async function POST(
     return NextResponse.json<ApiSuccessResponse<FrontendArtwork>>({
       success: true,
       data: artwork,
-    });
+    } satisfies CreateArtworkResult);
   } catch (error) {
     console.error("Error creating artwork:", error);
     return NextResponse.json<ApiErrorResponse>(
@@ -60,7 +63,7 @@ export async function POST(
         success: false,
         error:
           error instanceof Error ? error.message : "Failed to create artwork",
-      },
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }

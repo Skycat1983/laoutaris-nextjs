@@ -16,6 +16,8 @@ import type { FrontendUser } from "@/lib/data/types/userTypes";
 import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import type { Fetcher } from "../../core/createFetcher";
 import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
+import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { PaginationMetadata } from "@/lib/data/types/apiTypes";
 
 // Filter types
 type FilterParams =
