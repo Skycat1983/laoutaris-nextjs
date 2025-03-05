@@ -4,17 +4,28 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/lib/config/authOptions";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { createArtworkSchema } from "@/lib/data/schemas";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  ApiSuccessResponse,
+} from "@/lib/data/types";
+import { CreateArtworkResult } from "@/lib/api/admin/create/fetchers";
 
-export async function POST(request: NextRequest) {
+export async function POST(
+  request: NextRequest
+): Promise<ApiResponse<CreateArtworkResult>> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json<ApiErrorResponse>(
+      {
+        success: false,
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json<ApiErrorResponse>(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
     const validatedData = createArtworkSchema.parse(body);
 

@@ -28,6 +28,7 @@ function ensureSingleDocument(
  * Get authenticated user from either JWT token or test headers
  * Works in both middleware and API routes
  */
+// ! unused?
 export async function getAuthUser(req: NextRequest): Promise<AuthUser | null> {
   // Check for test headers first (development only)
   if (process.env.NODE_ENV === "development") {

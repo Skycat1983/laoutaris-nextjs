@@ -1,35 +1,27 @@
 import { BlogModel } from "@/lib/data/models";
 import { createBlogFormSchema } from "@/lib/data/schemas";
-import { FrontendBlogEntry } from "@/lib/data/types";
-import { getAuthUser } from "@/lib/session/getAuthUser";
 import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/config/authOptions";
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(
+  request: NextRequest
+): Promise<ApiResponse<CreateBlogResult>> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json<ApiErrorResponse>(
+      {
+        success: false,
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
+
   try {
-    const user = await getAuthUser(request);
-
-    console.log("user in blog create route", user);
-
-    // The middleware already checked authentication,
-    // but we double-check here for safety
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" } satisfies ApiErrorResponse,
-        { status: 401 }
-      );
-    }
-
-    if (user.role !== "admin") {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Forbidden: Admin access required",
-        } satisfies ApiErrorResponse,
-        { status: 403 }
-      );
-    }
-
     const body = await request.json();
     const validatedData = createBlogFormSchema.parse(body);
 
@@ -38,7 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const blogData = {
       ...validatedData,
       slug,
-      author: user.id,
+      author: session.user.id,
     };
 
     const blog = new BlogModel(blogData);
@@ -47,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({
       success: true,
       data: blog,
-    } satisfies ApiSuccessResponse<FrontendBlogEntry>);
+    } satisfies CreateBlogResult);
   } catch (error) {
     console.error("Error in blog create route:", error);
 
