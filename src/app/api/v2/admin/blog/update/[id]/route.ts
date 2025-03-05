@@ -1,41 +1,36 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextResponse, NextRequest } from "next/server";
-import { getAuthUser } from "@/lib/session/getAuthUser";
 import { apiUpdateBlogSchema } from "@/lib/data/schemas";
-import { FrontendBlogEntry } from "@/lib/data/types";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
 import slugify from "slugify";
 import { getRoleFromSession } from "@/lib/session/getRoleFromSession";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<FrontendBlogEntry>>> {
+): Promise<ApiResponse<UpdateBlogResult>> {
+  const userId = await getUserIdFromSession();
+  const userRole = await getRoleFromSession(request);
+
+  if (!userId) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized" } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
+
+  if (userRole !== "admin") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Forbidden: Admin access required",
+      } satisfies ApiErrorResponse,
+      { status: 403 }
+    );
+  }
   try {
-    // console.log("request", request);
-    const userId = await getUserIdFromSession();
-    const userRole = await getRoleFromSession(request);
-
-    console.log("userid in blog update route", userId);
-    console.log("userrole in blog update route", userRole);
-
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" } satisfies ApiErrorResponse,
-        { status: 401 }
-      );
-    }
-
-    if (userRole !== "admin") {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Forbidden: Admin access required",
-        } satisfies ApiErrorResponse,
-        { status: 403 }
-      );
-    }
-
     const { id } = params;
     if (!id) {
       return NextResponse.json(
@@ -100,7 +95,7 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       data: updatedBlog,
-    } satisfies ApiSuccessResponse<FrontendBlogEntry>);
+    } satisfies UpdateBlogResult);
   } catch (error) {
     console.error("Error updating blog:", error);
     return NextResponse.json(

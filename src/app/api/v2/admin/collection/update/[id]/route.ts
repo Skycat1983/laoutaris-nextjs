@@ -1,10 +1,12 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
+import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { UpdateCollectionResult } from "@/lib/api/admin/update/fetchers";
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
-) {
+): Promise<ApiResponse<UpdateCollectionResult>> {
   try {
     const { artworksToAdd, artworksToRemove, ...updateData } =
       await request.json();
@@ -13,7 +15,11 @@ export async function PATCH(
     const collection = await CollectionModel.findById(params.id);
     if (!collection) {
       return NextResponse.json(
-        { success: false, message: "Collection not found" },
+        {
+          success: false,
+          message: "Collection not found",
+          error: "Collection not found",
+        } satisfies ApiErrorResponse,
         { status: 404 }
       );
     }
@@ -32,11 +38,18 @@ export async function PATCH(
     Object.assign(collection, updateData);
     await collection.save();
 
-    return NextResponse.json({ success: true, data: collection });
+    return NextResponse.json({
+      success: true,
+      data: collection,
+    } satisfies UpdateCollectionResult);
   } catch (error) {
     console.error("Error updating collection:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to update collection" },
+      {
+        success: false,
+        message: "Failed to update collection",
+        error: "Failed to update collection",
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }

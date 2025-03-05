@@ -13,14 +13,9 @@ import type {
   FrontendBlogEntry,
 } from "@/lib/data/types/blogTypes";
 import type { FrontendUser } from "@/lib/data/types/userTypes";
-import type {
-  FrontendComment,
-  FrontendCommentWithAuthor,
-} from "@/lib/data/types/commentTypes";
+import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import type { Fetcher } from "../../core/createFetcher";
-import { ListResponse, SingleResponse } from "@/lib/data/types/apiTypes";
 import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
-import { ApiResponse } from "@/lib/data/types/apiTypes";
 
 // Filter types
 type FilterParams =
@@ -43,9 +38,9 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-// Result types (what we get back from the API)
 export type ReadArtworkResult = SingleResult<FrontendArtwork>;
 export type ReadArtworkListResult = ListResult<FrontendArtwork>;
+
 export type ReadArticleResult =
   SingleResult<FrontendArticleWithArtworkAndAuthor>;
 export type ReadArticleListResult = ListResult<FrontendArticleWithArtwork>;

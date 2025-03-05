@@ -6,6 +6,8 @@ Clear separation between client and server code
 Reusable fetching logic
 */
 
+import { ApiErrorResponse } from "@/lib/data/types";
+
 // Fetcher types
 export type Fetcher = <T>(
   endpoint: string,
