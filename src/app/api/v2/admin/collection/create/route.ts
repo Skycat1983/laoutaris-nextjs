@@ -1,16 +1,14 @@
-import { authOptions } from "@/lib/config/authOptions";
 import { CollectionModel } from "@/lib/data/models";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: Request
-): Promise<ApiResponse<CreateCollectionResult>> {
+): Promise<RouteResponse<CreateCollectionResult>> {
   const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
 

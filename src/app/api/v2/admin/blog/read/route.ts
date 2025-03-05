@@ -2,14 +2,14 @@ import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogListResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 
 export async function GET(
   request: NextRequest
-): Promise<ApiResponse<ReadBlogListResult>> {
+): Promise<RouteResponse<ReadBlogListResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

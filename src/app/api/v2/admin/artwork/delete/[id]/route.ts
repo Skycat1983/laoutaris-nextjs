@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { ArtworkModel, ArticleModel, CollectionModel } from "@/lib/data/models";
 import mongoose from "mongoose";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<DeleteDocumentResult>> {
+): Promise<RouteResponse<DeleteDocumentResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

@@ -3,11 +3,12 @@ import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 import { ArticleModel } from "@/lib/data/models";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { NextRequest, NextResponse } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<DeleteDocumentResult>> {
+): Promise<RouteResponse<DeleteDocumentResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

@@ -1,13 +1,13 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<UpdateArtworkResult>> {
+): Promise<RouteResponse<UpdateArtworkResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

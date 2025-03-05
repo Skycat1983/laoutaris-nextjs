@@ -1,14 +1,14 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<UpdateArticleResult>> {
+): Promise<RouteResponse<UpdateArticleResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(
@@ -32,7 +32,7 @@ export async function PATCH(
     const updatedArticle = await ArticleModel.findByIdAndUpdate(
       id,
       { $set: updateData },
-      { new: true } // Return the updated document
+      { new: true } // return  updated doc
     );
 
     if (!updatedArticle) {

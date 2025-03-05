@@ -1,21 +1,14 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "@/lib/config/authOptions";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { createArtworkSchema } from "@/lib/data/schemas";
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  ApiSuccessResponse,
-} from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateArtworkResult } from "@/lib/api/admin/create/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
-): Promise<ApiResponse<CreateArtworkResult>> {
+): Promise<RouteResponse<CreateArtworkResult>> {
   const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
   if (!hasPermission || !userId) {
@@ -52,7 +45,7 @@ export async function POST(
     const artwork = new ArtworkModel(artworkData);
     await artwork.save();
 
-    return NextResponse.json<ApiSuccessResponse<FrontendArtwork>>({
+    return NextResponse.json<CreateArtworkResult>({
       success: true,
       data: artwork,
     } satisfies CreateArtworkResult);

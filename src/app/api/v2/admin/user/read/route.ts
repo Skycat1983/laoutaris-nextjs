@@ -1,15 +1,27 @@
 import { UserModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { FrontendUser } from "@/lib/data/types";
+import { isAdmin } from "@/lib/session/isAdmin";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(
   request: NextRequest
-): Promise<ApiResponse<ReadUserListResult>> {
-  const { searchParams } = new URL(request.url);
+): Promise<RouteResponse<ReadUserListResult>> {
+  const hasPermission = await isAdmin();
+  if (!hasPermission) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unauthorized",
+        error: "Unauthorized",
+      } satisfies ApiErrorResponse,
+      { status: 401 }
+    );
+  }
+  const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");
   const skip = (page - 1) * limit;

@@ -13,11 +13,6 @@ import {
   FrontendBlogEntry,
 } from "@/lib/data/types";
 
-interface UpdateResponse {
-  success: boolean;
-  message: string;
-}
-
 export type UpdateArticleResult = SingleResult<FrontendArticle>;
 export type UpdateCollectionResult = SingleResult<FrontendCollection>;
 export type UpdateArtworkResult = SingleResult<FrontendArtwork>;

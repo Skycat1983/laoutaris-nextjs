@@ -1,14 +1,14 @@
 import { CommentModel } from "@/lib/data/models";
 import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function GET(
   request: NextRequest
-): Promise<ApiResponse<ReadCommentListResult>> {
+): Promise<RouteResponse<ReadCommentListResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

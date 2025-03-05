@@ -4,7 +4,7 @@ import { FrontendCollection } from "./collectionTypes";
 interface BaseFrontendArtwork {
   _id: string;
   title: string;
-  image: ArtworkImage;
+  // image: ArtworkImage;
   decade: Decade;
   artstyle: ArtStyle;
   medium: Medium;
@@ -14,46 +14,68 @@ interface BaseFrontendArtwork {
   updatedAt: Date;
 }
 
+export interface ArtworkImage {
+  secure_url: string;
+  public_id: string;
+  bytes: number;
+  pixelHeight: number;
+  pixelWidth: number;
+  format: string;
+  hexColors: ColorInfo[];
+  predominantColors: PredominantColors;
+}
+
+export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+
 type PopulatedField<T> = string | T | Partial<T>;
 
 export interface FrontendArtwork extends BaseFrontendArtwork {
+  image: PublicArtworkImage;
   watcherlist: PopulatedField<FrontendUser>[];
   favourited: PopulatedField<FrontendUser>[];
 }
 
 export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
+  image: PublicArtworkImage;
   collections: string[];
   watcherlist: string[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithCollections extends FrontendArtwork {
+  image: PublicArtworkImage;
   collections: FrontendCollection[];
   watcherlist: string[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithWatcherlist extends FrontendArtwork {
+  image: PublicArtworkImage;
   collections: string[];
   watcherlist: FrontendUserUnpopulated[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithFavourited extends FrontendArtwork {
+  image: PublicArtworkImage;
   collections: string[];
   watcherlist: string[];
   favourited: FrontendUserUnpopulated[];
 }
 
 export interface FrontendArtworkFull extends FrontendArtwork {
+  image: PublicArtworkImage;
   collections: FrontendCollection[];
   watcherlist: FrontendUserUnpopulated[];
   favourited: FrontendUserUnpopulated[];
 }
 
 export interface PublicFrontendArtwork extends BaseFrontendArtwork {
-  favouriteCount: number;
+  image: PublicArtworkImage;
+  isWatchlisted: boolean;
+  isFavourited: boolean;
   watchCount: number;
+  favouriteCount: number;
 }
 
 export type Decade =
@@ -81,17 +103,6 @@ export type Medium =
 
 export type Surface = "paper" | "canvas" | "wood" | "film";
 
-export interface ArtworkImage {
-  secure_url: string;
-  public_id: string;
-  bytes: number;
-  pixelHeight: number;
-  pixelWidth: number;
-  format: string;
-  hexColors: ColorInfo[];
-  predominantColors: PredominantColors;
-}
-
 export interface CloudinaryColor {
   color: string;
   percentage: number;
@@ -112,11 +123,6 @@ export interface ColorInfo {
 export interface PredominantColors {
   cloudinary: ColorInfo[];
   google: ColorInfo[];
-}
-
-export interface ImageColorData {
-  hexColors: ColorInfo[];
-  predominantColors: PredominantColors;
 }
 
 export type FilterMode = "ALL" | "ANY";

@@ -2,12 +2,12 @@ import { ArtworkModel } from "@/lib/data/models";
 import { FrontendArtwork, ColorInfo } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
 import { findSimilarColors } from "@/lib/utils/colorUtils";
-
-type ArtworkApiResponse = ApiResponse<FrontendArtwork[]>;
+import { RouteResponse } from "@/lib/data/types/apiTypes";
+import { PublicArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 
 export async function GET(
   request: NextRequest
-): Promise<NextResponse<ArtworkApiResponse>> {
+): Promise<RouteResponse<PublicArtworkListResult>> {
   try {
     const { searchParams } = new URL(request.url);
     const filterMode = searchParams.get("filterMode") || "ALL";

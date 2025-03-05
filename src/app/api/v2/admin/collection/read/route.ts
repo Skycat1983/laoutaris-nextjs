@@ -1,23 +1,16 @@
-import { ArticleModel, CollectionModel } from "@/lib/data/models";
+import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import {
-  FrontendCollection,
-  FrontendCollectionWithArtworks,
-} from "@/lib/data/types/collectionTypes";
+import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  ApiSuccessResponse,
-} from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 // TODO: remove the 'return one item' logic
 
 export async function GET(
   request: NextRequest
-): Promise<ApiResponse<ReadCollectionListResult>> {
+): Promise<RouteResponse<ReadCollectionListResult>> {
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");

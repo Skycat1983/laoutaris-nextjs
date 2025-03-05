@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { ArtworkModel } from "@/lib/data/models";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
-import { ApiResponse } from "@/lib/data/types/apiTypes";
 import { ReadArtworkResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<ReadArtworkResult>> {
+): Promise<RouteResponse<ReadArtworkResult>> {
   const hasPermission = await isAdmin();
   if (!hasPermission) {
     return NextResponse.json(

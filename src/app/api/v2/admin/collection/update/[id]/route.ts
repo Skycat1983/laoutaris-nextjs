@@ -1,13 +1,13 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateCollectionResult } from "@/lib/api/admin/update/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<UpdateCollectionResult>> {
+): Promise<RouteResponse<UpdateCollectionResult>> {
   const { id } = params;
 
   const hasPermission = await isAdmin();

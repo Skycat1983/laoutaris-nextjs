@@ -1,7 +1,7 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
 import { createArticleSchema } from "@/lib/data/schemas";
 import { isAdmin } from "@/lib/session/isAdmin";
@@ -9,7 +9,7 @@ import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
-): Promise<ApiResponse<CreateArticleResult>> {
+): Promise<RouteResponse<CreateArticleResult>> {
   const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
   if (!hasPermission || !userId) {

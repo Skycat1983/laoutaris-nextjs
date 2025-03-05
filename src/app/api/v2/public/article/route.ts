@@ -1,15 +1,22 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { FrontendArticle } from "@/lib/data/types/articleTypes";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  PaginatedResponse,
+  RouteResponse,
+} from "@/lib/data/types/apiTypes";
+import { PublicArticlesResult } from "@/lib/api/public/article/fetchers";
 
-type ArticleApiResponse = ApiResponse<FrontendArticle[]>;
+// type ArticleApiResponse = RouteResponse<FrontendArticle[]>;
 
 export const GET = async (
   req: NextRequest
-): Promise<NextResponse<ArticleApiResponse>> => {
-  try {
-    const { searchParams } = new URL(req.url);
+): Promise<RouteResponse<PublicArticlesResult>> => {
+  const { searchParams } = req.nextUrl;
 
+  try {
     // Build query object
     const query: any = {};
     if (searchParams.get("section")) {
@@ -31,6 +38,12 @@ export const GET = async (
       ArticleModel.countDocuments(query),
     ]);
 
+    if (articles.length === 0) {
+      return NextResponse.json({
+        success: false,
+        error: "No articles found",
+      } satisfies ApiErrorResponse);
+    }
     return NextResponse.json({
       success: true,
       data: articles,
@@ -40,7 +53,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies PaginatedResponse<FrontendArticle[]>);
+    } satisfies PublicArticlesResult);
   } catch (error) {
     console.error("Article fetch error:", error);
     return NextResponse.json(

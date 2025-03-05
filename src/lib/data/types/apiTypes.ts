@@ -25,31 +25,38 @@ export interface ApiErrorResponse extends BaseApiResponse {
   errorCode?: number;
 }
 
-// Base API response type - can be either success with data or error
-// export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
 // Extends ApiSuccessResponse to always include metadata - used for paginated lists
 export type PaginatedResponse<T> = ApiSuccessResponse<T> & {
   metadata: PaginationMetadata;
 };
 
-export type SingleResponse<T> = ApiSuccessResponse<T>;
+export interface SingleResult<T> extends ApiSuccessResponse<T> {
+  metadata?: never;
+}
 
-export type ListResponse<T> = ApiSuccessResponse<T[]> & {
+export interface ListResult<T> extends ApiSuccessResponse<T[]> {
   metadata: Required<PaginationMetadata>;
-};
+}
 
+// What routes return (with NextResponse)
+export type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
+
+// What fetchers return (raw data)
+export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// What components receive (raw data)
+export type FetchResult<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// Base API response type - can be either success with data or error
+// export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 // Base result types
-export type SingleResult<T> = {
-  success: true;
-  data: T;
-};
+// export type SingleResult<T> = {
+//   success: true;
+//   data: T;
+// };
 
-export type ListResult<T> = {
-  success: true;
-  data: T[];
-  metadata: Required<PaginationMetadata>;
-};
-
-// Response types for routes
-export type ApiResponse<T> = NextResponse<T | ApiErrorResponse>;
+// export type ListResult<T> = {
+//   success: true;
+//   data: T[];
+//   metadata: Required<PaginationMetadata>;
+// };

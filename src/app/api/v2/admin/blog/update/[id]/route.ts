@@ -1,7 +1,7 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextResponse, NextRequest } from "next/server";
 import { apiUpdateBlogSchema } from "@/lib/data/schemas";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import slugify from "slugify";
 import { getRoleFromSession } from "@/lib/session/getRoleFromSession";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
@@ -11,7 +11,7 @@ import { isAdmin } from "@/lib/session/isAdmin";
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<UpdateBlogResult>> {
+): Promise<RouteResponse<UpdateBlogResult>> {
   const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
 

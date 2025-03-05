@@ -2,14 +2,14 @@ import { BlogModel } from "@/lib/data/models";
 import { createBlogFormSchema } from "@/lib/data/schemas";
 import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function POST(
   request: NextRequest
-): Promise<ApiResponse<CreateBlogResult>> {
+): Promise<RouteResponse<CreateBlogResult>> {
   const hasPermission = await isAdmin();
   const userId = await getUserIdFromSession();
   if (!hasPermission || !userId) {

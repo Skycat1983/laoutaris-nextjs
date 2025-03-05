@@ -1,6 +1,6 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { FrontendCollectionWithArtworks } from "@/lib/data/types";
@@ -8,7 +8,7 @@ import { isAdmin } from "@/lib/session/isAdmin";
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
-): Promise<ApiResponse<ReadCollectionResult>> {
+): Promise<RouteResponse<ReadCollectionResult>> {
   const { id } = params;
 
   const hasPermission = await isAdmin();
