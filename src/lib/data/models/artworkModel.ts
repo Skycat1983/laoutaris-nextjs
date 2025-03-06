@@ -1,5 +1,4 @@
-import mongoose, { Document } from "mongoose";
-import { z } from "zod";
+import mongoose, { Document, InferSchemaType } from "mongoose";
 import { ColorInfo, PredominantColors } from "../types";
 
 export interface BaseArtwork {
@@ -13,16 +12,6 @@ export interface BaseArtwork {
     | "2000s"
     | "2010s"
     | "2020s";
-  image: {
-    secure_url: string;
-    public_id: string;
-    bytes: number;
-    pixelHeight: number;
-    pixelWidth: number;
-    format: string;
-    hexColors: ColorInfo[];
-    predominantColors: PredominantColors;
-  };
   artstyle: "abstract" | "semi-abstract" | "figurative";
   medium:
     | "oil"
@@ -38,13 +27,96 @@ export interface BaseArtwork {
   featured: boolean;
 }
 
+export interface DBImage {
+  secure_url: string;
+  public_id: string;
+  bytes: number;
+  pixelHeight: number;
+  pixelWidth: number;
+  format: string;
+  hexColors: ColorInfo[];
+  predominantColors: PredominantColors;
+}
+
 export interface DBArtwork extends Document, BaseArtwork {
+  image: DBImage;
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type LeanArtwork = Omit<DBArtwork, keyof Document> & {
+  _id: string;
+  collections: string[];
+  watcherlist: string[];
+  favourited: string[];
+};
+
+export interface ArtworkImage {
+  secure_url: string;
+  public_id: string;
+  bytes: number;
+  pixelHeight: number;
+  pixelWidth: number;
+  format: string;
+  hexColors: ColorInfo[];
+  predominantColors: PredominantColors;
+}
+
+//! causes problems due to structural typing
+export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+
+// ! PublicArtworkImage with Pick
+/*
+export type PublicArtworkImage = Pick<
+  ArtworkImage,
+  | "secure_url"
+  | "bytes"
+  | "pixelHeight"
+  | "pixelWidth"
+  | "format"
+  | "hexColors"
+  | "predominantColors"
+>;
+
+export type PublicArtwork = Pick<
+  LeanArtwork,
+  | "title"
+  | "decade"
+  | "artstyle"
+  | "medium"
+  | "surface"
+  | "featured"
+  | "createdAt"
+  | "updatedAt"
+  | "collections"
+> & {
+  _id: string;
+  image: PublicArtworkImage;
+  favouritedCount: number;
+  watchlistCount: number;
+  isFavourited: boolean;
+  isWatchlisted: boolean;
+};
+*/
+
+// ! PublicArtwork with Omit
+/*
+export type PublicArtwork = Omit<
+  LeanArtwork,
+  "watcherlist" | "favourited" | "image"
+> & {
+  image: PublicArtworkImage;
+  favouritedCount: number;
+  watchlistCount: number;
+  isFavourited: boolean;
+  isWatchlisted: boolean;
+};
+*/
+
+export type ArtworkSchemaType = InferSchemaType<typeof artworkSchema>;
 
 const artworkSchema = new mongoose.Schema(
   {
@@ -134,3 +206,17 @@ const artworkSchema = new mongoose.Schema(
 export const ArtworkModel =
   mongoose.models.Artwork ||
   mongoose.model<DBArtwork>("Artwork", artworkSchema);
+
+// export type LeanDocument<T> = T & { $locals?: never };
+
+// export type LeanArtwork = LeanDocument<DBArtwork>;
+// image: {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: ColorInfo[];
+//   predominantColors: PredominantColors;
+// };

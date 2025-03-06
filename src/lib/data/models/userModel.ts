@@ -13,6 +13,13 @@ export interface DBUser extends BaseUser, Document {
   favourites: mongoose.Schema.Types.ObjectId[];
 }
 
+export type LeanUser = Omit<DBUser, keyof Document> & {
+  _id: string;
+  comments: string[];
+  watchlist: string[];
+  favourites: string[];
+};
+
 // Create the user schema
 const userSchema = new mongoose.Schema<DBUser>(
   {

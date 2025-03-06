@@ -5,6 +5,12 @@ export interface DBSubscriber extends Document {
   unsubscribed: boolean;
 }
 
+export type LeanSubscriber = Omit<DBSubscriber, keyof Document> & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const subscriberContentSchema = new mongoose.Schema<DBSubscriber>(
   {
     email: { type: String, required: true, unique: true },

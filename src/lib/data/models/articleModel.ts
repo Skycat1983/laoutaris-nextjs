@@ -21,6 +21,14 @@ export interface DBArticle extends Document, BaseArticle {
   updatedAt: Date;
 }
 
+export type LeanArticle = Omit<DBArticle, keyof Document> & {
+  _id: string;
+  author: string;
+  artwork: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const articleContentSchema = new mongoose.Schema<DBArticle>(
   {
     title: { type: String, required: true },

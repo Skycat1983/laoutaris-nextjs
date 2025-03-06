@@ -1,10 +1,15 @@
 import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
 import { FrontendCollection } from "./collectionTypes";
+import {
+  ArtworkImage,
+  LeanArtwork,
+  PublicArtworkImage,
+} from "../models/artworkModel";
 
 interface BaseFrontendArtwork {
   _id: string;
   title: string;
-  // image: ArtworkImage;
+  image: ArtworkImage;
   decade: Decade;
   artstyle: ArtStyle;
   medium: Medium;
@@ -14,64 +19,79 @@ interface BaseFrontendArtwork {
   updatedAt: Date;
 }
 
-export interface ArtworkImage {
-  secure_url: string;
-  public_id: string;
-  bytes: number;
-  pixelHeight: number;
-  pixelWidth: number;
-  format: string;
-  hexColors: ColorInfo[];
-  predominantColors: PredominantColors;
-}
+export type SanitizedArtworkDocument = Omit<
+  LeanArtwork,
+  "collections" | "watcherlist" | "favourited" | "image"
+>;
 
-export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+export type SanitizedImage = Omit<ArtworkImage, "public_id">;
+export interface SanitizedArtwork {}
+
+export type PublicArtwork = Omit<
+  LeanArtwork,
+  "collections" | "watcherlist" | "favourited" | "image"
+> & {
+  image: PublicArtworkImage;
+};
+
+// export interface ArtworkImage {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: ColorInfo[];
+//   predominantColors: PredominantColors;
+// }
+
+// export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
 
 type PopulatedField<T> = string | T | Partial<T>;
 
 export interface FrontendArtwork extends BaseFrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   watcherlist: PopulatedField<FrontendUser>[];
   favourited: PopulatedField<FrontendUser>[];
 }
 
 export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   collections: string[];
   watcherlist: string[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithCollections extends FrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   collections: FrontendCollection[];
   watcherlist: string[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithWatcherlist extends FrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   collections: string[];
   watcherlist: FrontendUserUnpopulated[];
   favourited: string[];
 }
 
 export interface FrontendArtworkWithFavourited extends FrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   collections: string[];
   watcherlist: string[];
   favourited: FrontendUserUnpopulated[];
 }
 
 export interface FrontendArtworkFull extends FrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   collections: FrontendCollection[];
   watcherlist: FrontendUserUnpopulated[];
   favourited: FrontendUserUnpopulated[];
 }
 
 export interface PublicFrontendArtwork extends BaseFrontendArtwork {
-  image: PublicArtworkImage;
+  // image: PublicArtworkImage;
   isWatchlisted: boolean;
   isFavourited: boolean;
   watchCount: number;

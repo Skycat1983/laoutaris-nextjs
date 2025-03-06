@@ -18,6 +18,13 @@ export interface DBCollection extends Document, BaseCollection {
   artworks: mongoose.Schema.Types.ObjectId[];
 }
 
+export type LeanCollection = Omit<DBCollection, keyof Document> & {
+  _id: string;
+  artworks: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const collectionSchema = new mongoose.Schema<DBCollection>(
   {
     title: { type: String, required: true },

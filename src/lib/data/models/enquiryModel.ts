@@ -7,6 +7,12 @@ export interface DBEnquiry extends Document {
   message: string;
 }
 
+export type LeanEnquiry = Omit<DBEnquiry, keyof Document> & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const enquiryContentSchema = new mongoose.Schema<DBEnquiry>(
   {
     name: { type: String, required: true },

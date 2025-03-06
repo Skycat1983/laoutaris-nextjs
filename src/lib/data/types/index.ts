@@ -7,3 +7,4 @@ export * from "./enquiryTypes";
 export * from "./userTypes";
 export * from "./searchTypes";
 export * from "./apiTypes";
+export * from "./utilTypes";

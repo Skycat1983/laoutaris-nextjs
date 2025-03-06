@@ -12,6 +12,14 @@ export interface DBComment extends Document, BaseComment {
   updatedAt: Date;
 }
 
+export type LeanComment = Omit<DBComment, keyof Document> & {
+  _id: string;
+  author: string;
+  blog: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const commentSchema = new mongoose.Schema<DBComment>(
   {
     text: { type: String, required: true },

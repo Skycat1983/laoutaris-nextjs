@@ -20,6 +20,14 @@ export interface DBBlogEntry extends Document, BaseBlogEntry {
   comments: mongoose.Schema.Types.ObjectId[];
 }
 
+export type LeanBlogEntry = Omit<DBBlogEntry, keyof Document> & {
+  _id: string;
+  author: string;
+  comments: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const blogSchema = new mongoose.Schema<DBBlogEntry>(
   {
     title: { type: String, required: true },
