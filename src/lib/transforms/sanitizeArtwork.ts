@@ -1,7 +1,7 @@
-import { ArtworkImage, LeanArtwork, PublicArtworkImage } from "../data/models";
-import { Merge } from "../data/types";
+import { Merge, LeanArtwork, PublicImage } from "@/lib/data/types";
+import { DBImage } from "@/lib/data/models";
 
-export function sanitizeImage(image: ArtworkImage): PublicArtworkImage {
+export function sanitizeImage(image: DBImage): PublicImage {
   return {
     secure_url: image.secure_url,
     bytes: image.bytes,
@@ -14,7 +14,7 @@ export function sanitizeImage(image: ArtworkImage): PublicArtworkImage {
 }
 
 type PublicArtworkOverride = {
-  image: PublicArtworkImage;
+  image: PublicImage;
   favouritedCount: number;
   watchlistCount: number;
   isFavourited: boolean;

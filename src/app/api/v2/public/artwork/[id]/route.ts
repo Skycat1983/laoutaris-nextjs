@@ -1,19 +1,8 @@
-import {
-  ArtworkModel,
-  ArtworkSchemaType,
-  DBArtwork,
-  LeanArtwork,
-} from "@/lib/data/models";
+import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { PublicArtworkResult } from "@/lib/api/public/artwork/fetchers";
-import {
-  PublicArtworkImage,
-  ArtworkImage,
-  FrontendArtwork,
-  PublicFrontendArtwork,
-  PublicArtwork,
-} from "@/lib/data/types";
+import { LeanArtwork, PublicArtwork } from "@/lib/data/types";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { sanitizeArtwork } from "@/lib/transforms/sanitizeArtwork";

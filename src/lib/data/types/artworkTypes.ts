@@ -1,15 +1,20 @@
 import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
 import { FrontendCollection } from "./collectionTypes";
-import {
-  ArtworkImage,
-  LeanArtwork,
-  PublicArtworkImage,
-} from "../models/artworkModel";
+import { DBArtwork, DBImage } from "../models/artworkModel";
+
+export type LeanArtwork = Omit<DBArtwork, keyof Document> & {
+  _id: string;
+  collections: string[];
+  watcherlist: string[];
+  favourited: string[];
+};
+
+export type PublicImage = Omit<DBImage, "public_id">;
 
 interface BaseFrontendArtwork {
   _id: string;
   title: string;
-  image: ArtworkImage;
+  image: PublicImage;
   decade: Decade;
   artstyle: ArtStyle;
   medium: Medium;
@@ -19,33 +24,12 @@ interface BaseFrontendArtwork {
   updatedAt: Date;
 }
 
-export type SanitizedArtworkDocument = Omit<
-  LeanArtwork,
-  "collections" | "watcherlist" | "favourited" | "image"
->;
-
-export type SanitizedImage = Omit<ArtworkImage, "public_id">;
-export interface SanitizedArtwork {}
-
 export type PublicArtwork = Omit<
   LeanArtwork,
   "collections" | "watcherlist" | "favourited" | "image"
 > & {
-  image: PublicArtworkImage;
+  image: PublicImage;
 };
-
-// export interface ArtworkImage {
-//   secure_url: string;
-//   public_id: string;
-//   bytes: number;
-//   pixelHeight: number;
-//   pixelWidth: number;
-//   format: string;
-//   hexColors: ColorInfo[];
-//   predominantColors: PredominantColors;
-// }
-
-// export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
 
 type PopulatedField<T> = string | T | Partial<T>;
 
@@ -174,3 +158,5 @@ export interface ArtworkQueryParams extends ArtworkFilterParams {
   sortBy?: SortOption;
   sortColor?: string;
 }
+
+// export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;

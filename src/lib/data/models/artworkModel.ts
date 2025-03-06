@@ -47,26 +47,16 @@ export interface DBArtwork extends Document, BaseArtwork {
   updatedAt: Date;
 }
 
-export type LeanArtwork = Omit<DBArtwork, keyof Document> & {
-  _id: string;
-  collections: string[];
-  watcherlist: string[];
-  favourited: string[];
-};
-
-export interface ArtworkImage {
-  secure_url: string;
-  public_id: string;
-  bytes: number;
-  pixelHeight: number;
-  pixelWidth: number;
-  format: string;
-  hexColors: ColorInfo[];
-  predominantColors: PredominantColors;
-}
-
-//! causes problems due to structural typing
-export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+// export interface PublicImage {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: ColorInfo[];
+//   predominantColors: PredominantColors;
+// }
 
 // ! PublicArtworkImage with Pick
 /*
@@ -116,7 +106,7 @@ export type PublicArtwork = Omit<
 };
 */
 
-export type ArtworkSchemaType = InferSchemaType<typeof artworkSchema>;
+// export type ArtworkSchemaType = InferSchemaType<typeof artworkSchema>;
 
 const artworkSchema = new mongoose.Schema(
   {
