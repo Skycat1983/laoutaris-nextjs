@@ -1,6 +1,49 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
-import { FrontendBlogEntry } from "./blogTypes";
-import { FrontendUser } from "./userTypes";
+import {
+  BlogEntryFrontend,
+  BlogEntrySanitized,
+  FrontendBlogEntry,
+} from "./blogTypes";
+import { FrontendUser, UserFrontend, UserSanitized } from "./userTypes";
+import { MongoDocumentLean } from "./utilTypes";
+import { CommentDB } from "../models";
+import { UserLean } from "./userTypes";
+import { BlogEntryLean } from "./blogTypes";
+
+export type CommentLean = MongoDocumentLean<CommentDB> & {
+  author: string;
+  blog: string;
+};
+
+export type CommentLeanPopulated = CommentLean & {
+  author: UserLean;
+  blog: BlogEntryLean;
+};
+
+export type CommentSanitized = Omit<CommentLean, "author" | "blog"> & {
+  author: UserSanitized;
+  blog: BlogEntrySanitized;
+};
+
+export type CommentSanitizedPopulated = Omit<
+  CommentLeanPopulated,
+  "author" | "blog"
+> & {
+  author: UserSanitized;
+  blog: BlogEntrySanitized;
+};
+
+export type CommentFrontend = CommentSanitized;
+
+export type CommentFrontendPopulated = Omit<
+  CommentLeanPopulated,
+  "author" | "blog"
+> & {
+  author: UserFrontend;
+  blog: BlogEntryFrontend;
+};
+
+export type CommentPublic = CommentSanitizedPopulated;
 
 export interface BaseFrontendComment {
   _id: string;

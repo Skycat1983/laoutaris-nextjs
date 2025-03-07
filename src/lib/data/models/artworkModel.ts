@@ -40,16 +40,7 @@ export interface DBImage {
 
 export interface ArtworkDB extends Document, BaseArtwork {
   image: DBImage;
-  // image: {
-  //   secure_url: string;
-  //   public_id: string;
-  //   bytes: number;
-  //   pixelHeight: number;
-  //   pixelWidth: number;
-  //   format: string;
-  //   hexColors: ColorInfo[];
-  //   predominantColors: PredominantColors;
-  // };
+
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];
@@ -210,6 +201,16 @@ export const ArtworkModel =
 // export type LeanDocument<T> = T & { $locals?: never };
 
 // export type LeanArtwork = LeanDocument<ArtworkDB>;
+// image: {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: ColorInfo[];
+//   predominantColors: PredominantColors;
+// };
 // image: {
 //   secure_url: string;
 //   public_id: string;

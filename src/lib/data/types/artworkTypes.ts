@@ -1,6 +1,17 @@
-import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
-import { FrontendCollection } from "./collectionTypes";
+import {
+  FrontendUser,
+  FrontendUserUnpopulated,
+  UserFrontend,
+  UserLean,
+  UserSanitized,
+} from "./userTypes";
+import { CollectionFrontend, FrontendCollection } from "./collectionTypes";
 import { ArtworkDB, DBImage } from "../models/artworkModel";
+import {
+  CloudinaryImageFrontend,
+  CloudinaryImageSanitized,
+} from "./cloudinaryTypes";
+// import { CollectionLean } from "./collectionTypes";
 
 export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   _id: string;
@@ -9,12 +20,43 @@ export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   favourited: string[];
 };
 
-export type PublicImage = Omit<DBImage, "public_id">;
+export type ArtworkLeanPopulated = ArtworkLean & {
+  // collections: CollectionLean[];
+  watcherlist: UserLean[];
+  favourited: UserLean[];
+};
+
+export type ArtworkSanitized = Omit<
+  ArtworkLean,
+  "collections" | "watcherlist" | "favourited" | "image"
+> & {
+  image: CloudinaryImageSanitized;
+};
+
+export type ArtworkSanitizedPopulated = Omit<
+  ArtworkLeanPopulated,
+  "collections" | "watcherlist" | "favourited"
+> & {
+  // collections: CollectionSanitized[];
+  watcherlist: UserSanitized[];
+  favourited: UserSanitized[];
+};
+
+export type ArtworkFrontend = ArtworkSanitized;
+
+export type ArtworkFrontendPopulated = Omit<
+  ArtworkLeanPopulated,
+  "collections" | "watcherlist" | "favourited"
+> & {
+  collections: CollectionFrontend[];
+  watcherlist: UserFrontend[];
+  favourited: UserFrontend[];
+};
 
 interface BaseFrontendArtwork {
   _id: string;
   title: string;
-  image: PublicImage;
+  image: CloudinaryImageFrontend;
   decade: Decade;
   artstyle: ArtStyle;
   medium: Medium;
@@ -28,7 +70,7 @@ export type ArtworkPublic = Omit<
   ArtworkLean,
   "collections" | "watcherlist" | "favourited" | "image"
 > & {
-  image: PublicImage;
+  image: CloudinaryImageFrontend;
 };
 
 type PopulatedField<T> = string | T | Partial<T>;

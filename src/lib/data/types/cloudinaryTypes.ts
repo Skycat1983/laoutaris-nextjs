@@ -24,3 +24,28 @@ export interface CloudinaryUploadInfo {
     google: CloudinaryColorTuple[];
   };
 }
+
+export interface CloudinaryImageDB {
+  secure_url: string;
+  public_id: string;
+  bytes: number;
+  pixelHeight: number;
+  pixelWidth: number;
+  format: string;
+  hexColors: ColourInfo[];
+  predominantColors: PredominantColors;
+}
+
+export interface PredominantColors {
+  cloudinary: ColourInfo[];
+  google: ColourInfo[];
+}
+
+export interface ColourInfo {
+  color: string;
+  percentage: number;
+}
+
+export type CloudinaryImageSanitized = Omit<CloudinaryImageDB, "public_id">;
+
+export type CloudinaryImageFrontend = CloudinaryImageSanitized;

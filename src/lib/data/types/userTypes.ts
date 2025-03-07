@@ -1,7 +1,51 @@
 import { UserDB } from "../models";
-import { FrontendArtwork } from "./artworkTypes";
-import { FrontendBlogEntry } from "./blogTypes";
-import { FrontendComment, FrontendCommentWithBlogNav } from "./commentTypes";
+import {
+  ArtworkFrontend,
+  ArtworkLean,
+  ArtworkSanitized,
+  FrontendArtwork,
+} from "./artworkTypes";
+import {
+  CommentFrontend,
+  CommentLean,
+  CommentSanitized,
+  FrontendComment,
+  FrontendCommentWithBlogNav,
+} from "./commentTypes";
+import { MongoDocumentLean } from "./utilTypes";
+
+export type UserLean = MongoDocumentLean<UserDB>;
+
+export type UserLeanPopulated = UserLean & {
+  comments: CommentLean[];
+  watchlist: ArtworkLean[];
+  favourites: ArtworkLean[];
+};
+
+export type UserSanitized = Omit<
+  UserLean,
+  "password" | "email" | "comments" | "watchlist" | "favourites"
+>;
+
+export type UserSanitizedPopulated = Omit<
+  UserLeanPopulated,
+  "comments" | "watchlist" | "favourites"
+> & {
+  comments: CommentSanitized[];
+  watchlist: ArtworkSanitized[];
+  favourites: ArtworkSanitized[];
+};
+
+export type UserFrontend = UserSanitized;
+
+export type UserFrontendPopulated = Omit<
+  UserLeanPopulated,
+  "comments" | "watchlist" | "favourites"
+> & {
+  comments: CommentFrontend[];
+  watchlist: ArtworkFrontend[];
+  favourites: ArtworkFrontend[];
+};
 
 export type SerializableUser = Omit<
   UserDB,

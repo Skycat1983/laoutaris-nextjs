@@ -1,19 +1,35 @@
-import { ArticleDB, LeanArticle } from "../models";
-import { FrontendArtwork } from "./artworkTypes";
-import { FrontendUser } from "./userTypes";
+import { ArticleDB } from "../models";
+import { MongoDocumentLean } from "./utilTypes";
+import { ArtworkSanitized, FrontendArtwork } from "./artworkTypes";
+import { FrontendUser, UserSanitized } from "./userTypes";
+import { UserLean } from "./userTypes";
+import { ArtworkLean } from "./artworkTypes";
 
-export type ArticleLean = Omit<ArticleDB, keyof Document> & {
-  _id: string;
+// the Article as it is retrieved from the DB, using 'lean()' to strip out the Mongoose metadata
+export type ArticleLean = MongoDocumentLean<ArticleDB> & {
   author: string;
   artwork: string;
-  createdAt: Date;
-  updatedAt: Date;
 };
 
-export type ArticlePublic = LeanArticle & {
-  author: PopulatedField<FrontendUser>;
-  artwork: PopulatedField<FrontendArtwork>;
+// the Article as it is retrieved from the DB, using 'populate()' to add the author and artwork
+export type ArticleLeanPopulated = ArticleLean & {
+  author: UserLean;
+  artwork: ArtworkLean;
 };
+
+// the unpopulated Article as it is retrieved from the DB, with sensitive data removed
+export type ArticleSanitized = ArticleLean;
+
+// the populated Article as it is retrieved from the DB, with sensitive data removed
+export type ArticleSanitizedPopulated = Omit<
+  ArticleLeanPopulated,
+  "author" | "artwork"
+> & {
+  author: UserSanitized;
+  artwork: ArtworkSanitized;
+};
+
+export type ArticlePublic = ArticleLeanPopulated;
 
 interface BaseFrontendArticle {
   _id: string;
@@ -62,3 +78,10 @@ export interface ArticleFilterParams {
 
 export type Section = "artwork" | "biography" | "project" | "collections";
 export type OverlayColour = "white" | "black";
+// export type ArticleLean = Omit<ArticleDB, keyof Document> & {
+//   _id: string;
+//   author: string;
+//   artwork: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+// };
