@@ -1,11 +1,17 @@
 import { ArticleDB } from "../models";
 import { MongoDocumentLean } from "./utilTypes";
 import {
+  ArtworkExtended,
   ArtworkFrontend,
   ArtworkSanitized,
   FrontendArtwork,
 } from "./artworkTypes";
-import { FrontendUser, UserFrontend, UserSanitized } from "./userTypes";
+import {
+  FrontendUser,
+  UserExtended,
+  UserFrontend,
+  UserSanitized,
+} from "./userTypes";
 import { UserLean } from "./userTypes";
 import { ArtworkLean } from "./artworkTypes";
 
@@ -16,12 +22,16 @@ export type ArticleLean = MongoDocumentLean<ArticleDB> & {
   artwork: string;
 };
 
-// export type ArticleExtended = ArticleLean & {};
+// the additional fields of interest to the frontend
+export type ArticleExtensionFields = {};
+
+// the Article as it is retrieved from the DB, with the additional fields of interest to the frontend
+export type ArticleExtended = ArticleLean & ArticleExtensionFields;
 
 // the unpopulated Article as it is retrieved from the DB, with sensitive data removed
 export type ArticleSanitized = Omit<ArticleLean, "_id" | "author" | "artwork">;
 
-// the frontend Article as it is retrieved from the DB, with sensitive data removed
+// the frontend Article as it is sent to the client
 export type ArticleFrontend = ArticleSanitized;
 
 // ! Populated Article Return
@@ -30,9 +40,15 @@ export type ArticleLeanPopulated = ArticleLean & {
   author: UserLean;
   artwork: ArtworkLean;
 };
+
+export type ArticleExtendedPopulated = ArticleLeanPopulated & {
+  artwork: ArtworkExtended;
+  author: UserExtended;
+} & ArticleExtensionFields;
+
 // the populated Article as it is retrieved from the DB, with sensitive data removed from the author and artwork
 export type ArticleSanitizedPopulated = Omit<
-  ArticleLeanPopulated,
+  ArticleExtendedPopulated,
   "_id" | "author" | "artwork"
 > & {
   author: UserSanitized;

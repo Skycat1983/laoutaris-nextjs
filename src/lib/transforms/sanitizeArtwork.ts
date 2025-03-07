@@ -1,4 +1,4 @@
-import { Merge, ArtworkLean } from "@/lib/data/types";
+import { Merge, ArtworkLean, ArtworkExtended } from "@/lib/data/types";
 import { DBImage } from "@/lib/data/models";
 import { CloudinaryImageFrontend } from "@/lib/data/types";
 

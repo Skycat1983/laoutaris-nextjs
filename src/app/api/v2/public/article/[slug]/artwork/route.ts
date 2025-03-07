@@ -4,12 +4,14 @@ import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import {
+  ArticleExtendedPopulated,
   ArticleFrontendPopulated,
   ArticleLeanPopulated,
   ArticleSanitizedPopulated,
 } from "@/lib/data/types";
 import { ApiArticlePopulatedPublicResult } from "@/lib/api/public/article/fetchers";
 import { sanitizeArticlePopulated } from "@/lib/transforms/sanitizeArticle";
+import { extendArticlePopulated } from "@/lib/transforms/extendArticle";
 
 export const GET = async (
   req: NextRequest,
@@ -30,15 +32,24 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const leanArticle: ArticleLeanPopulated =
+    // Step 1: Convert raw DB object into a proper TypeScript type
+    const articleLean: ArticleLeanPopulated =
       transformMongooseDoc<ArticleLeanPopulated>(mongoArticle);
 
-    const sanitizedArticle: ArticleSanitizedPopulated =
-      sanitizeArticlePopulated(leanArticle);
+    // Step 2: Extend the entire article (author + artwork)
+    const articleExtended: ArticleExtendedPopulated =
+      extendArticlePopulated(articleLean);
+
+    // Step 3: Sanitize the entire article (including extended artwork and author)
+    const articleSanitized: ArticleSanitizedPopulated =
+      sanitizeArticlePopulated(articleExtended);
+
+    // Step 4: Final frontend version (optional, if needed)
+    const articleFrontend: ArticleFrontendPopulated = articleSanitized;
 
     return NextResponse.json({
       success: true,
-      data: sanitizedArticle,
+      data: articleFrontend,
     } satisfies ApiArticlePopulatedPublicResult);
   } catch (error) {
     console.error("Error fetching article artwork:", error);

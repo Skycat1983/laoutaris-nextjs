@@ -4,7 +4,12 @@ import {
   BlogEntrySanitized,
   FrontendBlogEntry,
 } from "./blogTypes";
-import { FrontendUser, UserFrontend, UserSanitized } from "./userTypes";
+import {
+  FrontendUser,
+  UserExtended,
+  UserFrontend,
+  UserSanitized,
+} from "./userTypes";
 import { MongoDocumentLean } from "./utilTypes";
 import { CommentDB } from "../models";
 import { UserLean } from "./userTypes";
@@ -15,15 +20,28 @@ export type CommentLean = MongoDocumentLean<CommentDB> & {
   blog: string;
 };
 
+export type CommentExtensionFields = {};
+
+export type CommentExtended = CommentLean & CommentExtensionFields;
+
+export type CommentSanitized = Omit<CommentExtended, "author" | "blog"> & {
+  author: UserSanitized;
+  blog: BlogEntrySanitized;
+};
+
+export type CommentFrontend = CommentSanitized;
+
+//! Populated Types
+
 export type CommentLeanPopulated = CommentLean & {
   author: UserLean;
   blog: BlogEntryLean;
 };
 
-export type CommentSanitized = Omit<CommentLean, "author" | "blog"> & {
-  author: UserSanitized;
-  blog: BlogEntrySanitized;
-};
+export type CommentExtendedPopulated = CommentLeanPopulated & {
+  author: UserExtended;
+  blog: BlogEntryExtended;
+} & CommentExtensionFields;
 
 export type CommentSanitizedPopulated = Omit<
   CommentLeanPopulated,
@@ -32,8 +50,6 @@ export type CommentSanitizedPopulated = Omit<
   author: UserSanitized;
   blog: BlogEntrySanitized;
 };
-
-export type CommentFrontend = CommentSanitized;
 
 export type CommentFrontendPopulated = Omit<
   CommentSanitizedPopulated,

@@ -5,13 +5,20 @@ import {
   UserLean,
   UserSanitized,
 } from "./userTypes";
-import { CollectionFrontend, FrontendCollection } from "./collectionTypes";
+import { FrontendCollection } from "./collectionTypes";
 import { ArtworkDB, DBImage } from "../models/artworkModel";
 import {
   CloudinaryImageFrontend,
   CloudinaryImageSanitized,
 } from "./cloudinaryTypes";
 // import { CollectionLean } from "./collectionTypes";
+
+interface ArtworkExtensionFields {
+  isFavourited: boolean;
+  favouriteCount: number;
+  isWatchlisted: boolean;
+  watchlistCount: number;
+}
 
 export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   _id: string;
@@ -20,12 +27,7 @@ export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   favourited: string[];
 };
 
-export type ArtworkExtended = ArtworkLean & {
-  isFavourited: boolean;
-  favouriteCount: number;
-  isWatchlisted: boolean;
-  watchlistCount: number;
-};
+export type ArtworkExtended = ArtworkLean & ArtworkExtensionFields;
 
 export type ArtworkSanitized = Omit<
   ArtworkExtended,
@@ -42,12 +44,8 @@ export type ArtworkLeanPopulated = ArtworkLean & {
   favourited: UserLean[];
 };
 
-export type ArtworkExtendedPopulated = ArtworkLeanPopulated & {
-  isFavourited: boolean;
-  favouriteCount: number;
-  isWatchlisted: boolean;
-  watchlistCount: number;
-};
+export type ArtworkExtendedPopulated = ArtworkLeanPopulated &
+  ArtworkExtensionFields;
 
 export type ArtworkSanitizedPopulated = Omit<
   ArtworkExtendedPopulated,

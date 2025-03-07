@@ -1,5 +1,6 @@
 import { UserDB } from "../models";
 import {
+  ArtworkExtended,
   ArtworkFrontend,
   ArtworkLean,
   ArtworkSanitized,
@@ -16,19 +17,31 @@ import { MongoDocumentLean } from "./utilTypes";
 
 export type UserLean = MongoDocumentLean<UserDB>;
 
+export type UserExtensionFields = {};
+
+export type UserExtended = UserLean & UserExtensionFields;
+
+export type UserSanitized = Omit<
+  UserExtended,
+  "password" | "email" | "comments" | "watchlist" | "favourites"
+>;
+
+//! Populated Types
+
 export type UserLeanPopulated = UserLean & {
   comments: CommentLean[];
   watchlist: ArtworkLean[];
   favourites: ArtworkLean[];
 };
 
-export type UserSanitized = Omit<
-  UserLean,
-  "password" | "email" | "comments" | "watchlist" | "favourites"
->;
+export type UserExtendedPopulated = UserLeanPopulated & {
+  comments: CommentExtended[];
+  watchlist: ArtworkExtended[];
+  favourites: ArtworkExtended[];
+} & UserExtensionFields;
 
 export type UserSanitizedPopulated = Omit<
-  UserLeanPopulated,
+  UserExtendedPopulated,
   "comments" | "watchlist" | "favourites"
 > & {
   comments: CommentSanitized[];
