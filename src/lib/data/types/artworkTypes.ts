@@ -20,33 +20,39 @@ export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   favourited: string[];
 };
 
+export type ArtworkExtended = ArtworkLean & {
+  isFavourited: boolean;
+  favouriteCount: number;
+  isWatchlisted: boolean;
+  watchlistCount: number;
+};
+
 export type ArtworkSanitized = Omit<
-  ArtworkLean,
+  ArtworkExtended,
   "collections" | "watcherlist" | "favourited" | "image"
 > & {
   image: CloudinaryImageSanitized;
 };
 
-export interface ArtworkExtendedFields {
-  isFavourited: boolean;
-  favouriteCount: number;
-  isWatchlisted: boolean;
-  watchlistCount: number;
-}
+export type ArtworkFrontend = ArtworkSanitized;
 
-export type ArtworkFrontend = ArtworkSanitized & ArtworkExtendedFields;
-
+//! Populated Types
 export type ArtworkLeanPopulated = ArtworkLean & {
-  // collections: CollectionLean[];
   watcherlist: UserLean[];
   favourited: UserLean[];
 };
 
+export type ArtworkExtendedPopulated = ArtworkLeanPopulated & {
+  isFavourited: boolean;
+  favouriteCount: number;
+  isWatchlisted: boolean;
+  watchlistCount: number;
+};
+
 export type ArtworkSanitizedPopulated = Omit<
-  ArtworkLeanPopulated,
+  ArtworkExtendedPopulated,
   "collections" | "watcherlist" | "favourited"
 > & {
-  // collections: CollectionSanitized[];
   watcherlist: UserSanitized[];
   favourited: UserSanitized[];
 };
@@ -55,10 +61,9 @@ export type ArtworkFrontendPopulated = Omit<
   ArtworkSanitizedPopulated,
   "collections" | "watcherlist" | "favourited"
 > & {
-  // collections: CollectionFrontend[];
   watcherlist: UserFrontend[];
   favourited: UserFrontend[];
-} & ArtworkExtendedFields;
+};
 
 interface BaseFrontendArtwork {
   _id: string;

@@ -36,23 +36,9 @@ export const GET = async (
     const sanitizedArticle: ArticleSanitizedPopulated =
       sanitizeArticlePopulated(leanArticle);
 
-    const frontendArticle: ArticleFrontendPopulated = {
-      ...sanitizedArticle,
-      artwork: {
-        isFavourited: leanArticle.artwork.favourited.includes(
-          leanArticle.author._id
-        ),
-        favouriteCount: leanArticle.artwork.favourited.length,
-        isWatchlisted: leanArticle.artwork.watcherlist.includes(
-          leanArticle.author._id
-        ),
-        watchlistCount: leanArticle.artwork.watcherlist.length,
-      },
-    };
-
     return NextResponse.json({
       success: true,
-      data: frontendArticle,
+      data: sanitizedArticle,
     } satisfies ApiArticlePopulatedPublicResult);
   } catch (error) {
     console.error("Error fetching article artwork:", error);

@@ -16,6 +16,8 @@ export type ArticleLean = MongoDocumentLean<ArticleDB> & {
   artwork: string;
 };
 
+// export type ArticleExtended = ArticleLean & {};
+
 // the unpopulated Article as it is retrieved from the DB, with sensitive data removed
 export type ArticleSanitized = Omit<ArticleLean, "_id" | "author" | "artwork">;
 

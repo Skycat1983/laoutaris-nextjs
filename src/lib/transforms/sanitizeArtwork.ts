@@ -16,7 +16,7 @@ export function sanitizeImage(image: DBImage): CloudinaryImageFrontend {
 
 type PublicArtworkOverride = {
   image: CloudinaryImageFrontend;
-  favouritedCount: number;
+  favouriteCount: number;
   watchlistCount: number;
   isFavourited: boolean;
   isWatchlisted: boolean;
@@ -31,7 +31,7 @@ export const sanitizeArtwork = (
   return {
     ...artwork,
     image: sanitizeImage(artwork.image),
-    favouritedCount: artwork.favourited.length,
+    favouriteCount: artwork.favourited.length,
     watchlistCount: artwork.watcherlist.length,
     isFavourited: userId ? artwork.favourited.includes(userId) : false,
     isWatchlisted: userId ? artwork.watcherlist.includes(userId) : false,
