@@ -7,13 +7,16 @@ import {
   PaginatedResponse,
   RouteResponse,
 } from "@/lib/data/types/apiTypes";
-import { PublicArticlesResult } from "@/lib/api/public/article/fetchers";
+import {
+  ApiArticlePopulatedPublicResult,
+  ApiArticlesPublicResult,
+} from "@/lib/api/public/article/fetchers";
 
 // type ArticleApiResponse = RouteResponse<FrontendArticle[]>;
 
 export const GET = async (
   req: NextRequest
-): Promise<RouteResponse<PublicArticlesResult>> => {
+): Promise<RouteResponse<ApiArticlePopulatedPublicResult>> => {
   const { searchParams } = req.nextUrl;
 
   try {
@@ -53,7 +56,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies PublicArticlesResult);
+    } satisfies ApiArticlesPublicResult);
   } catch (error) {
     console.error("Article fetch error:", error);
     return NextResponse.json(

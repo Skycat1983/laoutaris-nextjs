@@ -39,7 +39,7 @@ export type UserSanitizedPopulated = Omit<
 export type UserFrontend = UserSanitized;
 
 export type UserFrontendPopulated = Omit<
-  UserLeanPopulated,
+  UserSanitizedPopulated,
   "comments" | "watchlist" | "favourites"
 > & {
   comments: CommentFrontend[];

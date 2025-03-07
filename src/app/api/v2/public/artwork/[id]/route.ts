@@ -2,13 +2,13 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { PublicArtworkResult } from "@/lib/api/public/artwork/fetchers";
-import { LeanArtwork, PublicArtwork } from "@/lib/data/types";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import {
   sanitizeArtwork,
   SanitizedArtwork,
 } from "@/lib/transforms/sanitizeArtwork";
+import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 
 export async function GET(
   request: NextRequest,
@@ -28,7 +28,7 @@ export async function GET(
         { status: 404 }
       );
 
-    const artwork: LeanArtwork = transformMongooseDoc<LeanArtwork>(rawDoc);
+    const artwork: ArtworkLean = transformMongooseDoc<ArtworkLean>(rawDoc);
 
     const publicArtwork: SanitizedArtwork = sanitizeArtwork(artwork, userId);
 

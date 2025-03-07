@@ -46,7 +46,7 @@ export type BlogEntrySanitizedPopulated = Omit<
 export type BlogEntryFrontend = BlogEntrySanitized;
 
 export type BlogEntryFrontendPopulated = Omit<
-  BlogEntryLeanPopulated,
+  BlogEntrySanitizedPopulated,
   "author" | "comments"
 > & {
   author: UserFrontend;

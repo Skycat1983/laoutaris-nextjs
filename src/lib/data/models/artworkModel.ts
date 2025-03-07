@@ -73,7 +73,7 @@ export type PublicArtworkImage = Pick<
 >;
 
 export type PublicArtwork = Pick<
-  LeanArtwork,
+  ArtworkLean,
   | "title"
   | "decade"
   | "artstyle"
@@ -96,7 +96,7 @@ export type PublicArtwork = Pick<
 // ! PublicArtwork with Omit
 /*
 export type PublicArtwork = Omit<
-  LeanArtwork,
+  ArtworkLean,
   "watcherlist" | "favourited" | "image"
 > & {
   image: PublicArtworkImage;
@@ -200,7 +200,7 @@ export const ArtworkModel =
 
 // export type LeanDocument<T> = T & { $locals?: never };
 
-// export type LeanArtwork = LeanDocument<ArtworkDB>;
+// export type ArtworkLean = LeanDocument<ArtworkDB>;
 // image: {
 //   secure_url: string;
 //   public_id: string;

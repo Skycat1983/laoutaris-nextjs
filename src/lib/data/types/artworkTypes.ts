@@ -20,17 +20,26 @@ export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   favourited: string[];
 };
 
-export type ArtworkLeanPopulated = ArtworkLean & {
-  // collections: CollectionLean[];
-  watcherlist: UserLean[];
-  favourited: UserLean[];
-};
-
 export type ArtworkSanitized = Omit<
   ArtworkLean,
   "collections" | "watcherlist" | "favourited" | "image"
 > & {
   image: CloudinaryImageSanitized;
+};
+
+export interface ArtworkExtendedFields {
+  isFavourited: boolean;
+  favouriteCount: number;
+  isWatchlisted: boolean;
+  watchlistCount: number;
+}
+
+export type ArtworkFrontend = ArtworkSanitized & ArtworkExtendedFields;
+
+export type ArtworkLeanPopulated = ArtworkLean & {
+  // collections: CollectionLean[];
+  watcherlist: UserLean[];
+  favourited: UserLean[];
 };
 
 export type ArtworkSanitizedPopulated = Omit<
@@ -42,16 +51,14 @@ export type ArtworkSanitizedPopulated = Omit<
   favourited: UserSanitized[];
 };
 
-export type ArtworkFrontend = ArtworkSanitized;
-
 export type ArtworkFrontendPopulated = Omit<
-  ArtworkLeanPopulated,
+  ArtworkSanitizedPopulated,
   "collections" | "watcherlist" | "favourited"
 > & {
-  collections: CollectionFrontend[];
+  // collections: CollectionFrontend[];
   watcherlist: UserFrontend[];
   favourited: UserFrontend[];
-};
+} & ArtworkExtendedFields;
 
 interface BaseFrontendArtwork {
   _id: string;

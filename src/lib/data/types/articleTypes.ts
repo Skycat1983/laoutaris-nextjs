@@ -1,35 +1,50 @@
 import { ArticleDB } from "../models";
 import { MongoDocumentLean } from "./utilTypes";
-import { ArtworkSanitized, FrontendArtwork } from "./artworkTypes";
-import { FrontendUser, UserSanitized } from "./userTypes";
+import {
+  ArtworkFrontend,
+  ArtworkSanitized,
+  FrontendArtwork,
+} from "./artworkTypes";
+import { FrontendUser, UserFrontend, UserSanitized } from "./userTypes";
 import { UserLean } from "./userTypes";
 import { ArtworkLean } from "./artworkTypes";
 
+// ! Base Article Return
 // the Article as it is retrieved from the DB, using 'lean()' to strip out the Mongoose metadata
 export type ArticleLean = MongoDocumentLean<ArticleDB> & {
   author: string;
   artwork: string;
 };
 
+// the unpopulated Article as it is retrieved from the DB, with sensitive data removed
+export type ArticleSanitized = Omit<ArticleLean, "_id" | "author" | "artwork">;
+
+// the frontend Article as it is retrieved from the DB, with sensitive data removed
+export type ArticleFrontend = ArticleSanitized;
+
+// ! Populated Article Return
 // the Article as it is retrieved from the DB, using 'populate()' to add the author and artwork
 export type ArticleLeanPopulated = ArticleLean & {
   author: UserLean;
   artwork: ArtworkLean;
 };
-
-// the unpopulated Article as it is retrieved from the DB, with sensitive data removed
-export type ArticleSanitized = ArticleLean;
-
-// the populated Article as it is retrieved from the DB, with sensitive data removed
+// the populated Article as it is retrieved from the DB, with sensitive data removed from the author and artwork
 export type ArticleSanitizedPopulated = Omit<
   ArticleLeanPopulated,
-  "author" | "artwork"
+  "_id" | "author" | "artwork"
 > & {
   author: UserSanitized;
   artwork: ArtworkSanitized;
 };
 
-export type ArticlePublic = ArticleLeanPopulated;
+// the sanitized and populated frontend Article as it is retrieved from the DB, with new properties added (where applicable)sensitive data removed from the author and artwork
+export type ArticleFrontendPopulated = Omit<
+  ArticleSanitizedPopulated,
+  "author" | "artwork"
+> & {
+  author: UserFrontend;
+  artwork: ArtworkFrontend;
+};
 
 interface BaseFrontendArticle {
   _id: string;

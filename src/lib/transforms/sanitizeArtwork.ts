@@ -1,7 +1,8 @@
-import { Merge, LeanArtwork, PublicImage } from "@/lib/data/types";
+import { Merge, ArtworkLean } from "@/lib/data/types";
 import { DBImage } from "@/lib/data/models";
+import { CloudinaryImageFrontend } from "@/lib/data/types";
 
-export function sanitizeImage(image: DBImage): PublicImage {
+export function sanitizeImage(image: DBImage): CloudinaryImageFrontend {
   return {
     secure_url: image.secure_url,
     bytes: image.bytes,
@@ -14,17 +15,17 @@ export function sanitizeImage(image: DBImage): PublicImage {
 }
 
 type PublicArtworkOverride = {
-  image: PublicImage;
+  image: CloudinaryImageFrontend;
   favouritedCount: number;
   watchlistCount: number;
   isFavourited: boolean;
   isWatchlisted: boolean;
 };
 
-export type SanitizedArtwork = Merge<LeanArtwork, PublicArtworkOverride>;
+export type SanitizedArtwork = Merge<ArtworkLean, PublicArtworkOverride>;
 
 export const sanitizeArtwork = (
-  artwork: LeanArtwork,
+  artwork: ArtworkLean,
   userId?: string | null
 ): SanitizedArtwork => {
   return {
@@ -38,7 +39,7 @@ export const sanitizeArtwork = (
 };
 
 // export type PublicArtwork = Omit<
-//   LeanArtwork,
+//   ArtworkLean,
 //   "watcherlist" | "favourited" | "image"
 // > & {
 //   image: PublicArtworkImage;
@@ -49,7 +50,7 @@ export const sanitizeArtwork = (
 // };
 
 // export const sanitizeArtwork = (
-//   artwork: LeanArtwork,
+//   artwork: ArtworkLean,
 //   userId?: string | null
 // ): PublicArtwork => {
 //   const isFavourited = userId ? artwork.favourited.includes(userId) : false;

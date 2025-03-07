@@ -1,4 +1,6 @@
 import type {
+  ArticleFrontend,
+  ArticleFrontendPopulated,
   FrontendArticle,
   FrontendArticleWithArtwork,
   Section,
@@ -17,16 +19,16 @@ interface FetchArticlesParams {
   page?: number;
 }
 
-export type FetchPublicArticleResult = SingleResult<FrontendArticle>;
-export type PublicArticlesResult = ListResult<FrontendArticle>;
-export type FetchPublicArticleArtworkResult =
-  SingleResult<FrontendArticleWithArtwork>;
+export type ApiArticlePublicResult = SingleResult<ArticleFrontend>;
+export type ApiArticlesPublicResult = ListResult<ArticleFrontend>;
+export type ApiArticlePopulatedPublicResult =
+  SingleResult<ArticleFrontendPopulated>;
 
 export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug
   fetchArticle: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FetchPublicArticleResult>(
+    return fetcher<ApiArticlePublicResult>(
       `/api/v2/public/article/${encodedSlug}`
     );
   },
@@ -44,13 +46,13 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<PublicArticlesResult>(`/api/v2/public/article?${params}`);
+    return fetcher<ApiArticlesPublicResult>(`/api/v2/public/article?${params}`);
   },
 
   // Get article with artwork
   fetchArticleArtwork: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FetchPublicArticleArtworkResult>(
+    return fetcher<ApiArticlePopulatedPublicResult>(
       `/api/v2/public/article/${encodedSlug}/artwork`
     );
   },

@@ -36,7 +36,7 @@ export type CommentSanitizedPopulated = Omit<
 export type CommentFrontend = CommentSanitized;
 
 export type CommentFrontendPopulated = Omit<
-  CommentLeanPopulated,
+  CommentSanitizedPopulated,
   "author" | "blog"
 > & {
   author: UserFrontend;
