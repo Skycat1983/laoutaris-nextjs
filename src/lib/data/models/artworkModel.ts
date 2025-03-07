@@ -38,8 +38,18 @@ export interface DBImage {
   predominantColors: PredominantColors;
 }
 
-export interface DBArtwork extends Document, BaseArtwork {
+export interface ArtworkDB extends Document, BaseArtwork {
   image: DBImage;
+  // image: {
+  //   secure_url: string;
+  //   public_id: string;
+  //   bytes: number;
+  //   pixelHeight: number;
+  //   pixelWidth: number;
+  //   format: string;
+  //   hexColors: ColorInfo[];
+  //   predominantColors: PredominantColors;
+  // };
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];
@@ -195,11 +205,11 @@ const artworkSchema = new mongoose.Schema(
 
 export const ArtworkModel =
   mongoose.models.Artwork ||
-  mongoose.model<DBArtwork>("Artwork", artworkSchema);
+  mongoose.model<ArtworkDB>("Artwork", artworkSchema);
 
 // export type LeanDocument<T> = T & { $locals?: never };
 
-// export type LeanArtwork = LeanDocument<DBArtwork>;
+// export type LeanArtwork = LeanDocument<ArtworkDB>;
 // image: {
 //   secure_url: string;
 //   public_id: string;

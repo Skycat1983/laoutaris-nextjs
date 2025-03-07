@@ -7,13 +7,13 @@ export interface BaseUser {
   role: "user" | "admin";
 }
 
-export interface DBUser extends BaseUser, Document {
+export interface UserDB extends BaseUser, Document {
   comments: mongoose.Schema.Types.ObjectId[];
   watchlist: mongoose.Schema.Types.ObjectId[];
   favourites: mongoose.Schema.Types.ObjectId[];
 }
 
-export type LeanUser = Omit<DBUser, keyof Document> & {
+export type LeanUser = Omit<UserDB, keyof Document> & {
   _id: string;
   comments: string[];
   watchlist: string[];
@@ -21,7 +21,7 @@ export type LeanUser = Omit<DBUser, keyof Document> & {
 };
 
 // Create the user schema
-const userSchema = new mongoose.Schema<DBUser>(
+const userSchema = new mongoose.Schema<UserDB>(
   {
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema<DBUser>(
 
 // Create the User model using the discriminator
 export const UserModel =
-  mongoose.models.User || mongoose.model<DBUser>("User", userSchema);
+  mongoose.models.User || mongoose.model<UserDB>("User", userSchema);
 
 //! with descriminator
 // export interface IUser extends IBaseUser {

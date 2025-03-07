@@ -1,8 +1,8 @@
 import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
 import { FrontendCollection } from "./collectionTypes";
-import { DBArtwork, DBImage } from "../models/artworkModel";
+import { ArtworkDB, DBImage } from "../models/artworkModel";
 
-export type LeanArtwork = Omit<DBArtwork, keyof Document> & {
+export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
   _id: string;
   collections: string[];
   watcherlist: string[];
@@ -24,8 +24,8 @@ interface BaseFrontendArtwork {
   updatedAt: Date;
 }
 
-export type PublicArtwork = Omit<
-  LeanArtwork,
+export type ArtworkPublic = Omit<
+  ArtworkLean,
   "collections" | "watcherlist" | "favourited" | "image"
 > & {
   image: PublicImage;

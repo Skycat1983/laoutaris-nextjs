@@ -5,7 +5,10 @@ import { PublicArtworkResult } from "@/lib/api/public/artwork/fetchers";
 import { LeanArtwork, PublicArtwork } from "@/lib/data/types";
 import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { sanitizeArtwork } from "@/lib/transforms/sanitizeArtwork";
+import {
+  sanitizeArtwork,
+  SanitizedArtwork,
+} from "@/lib/transforms/sanitizeArtwork";
 
 export async function GET(
   request: NextRequest,
@@ -27,7 +30,7 @@ export async function GET(
 
     const artwork: LeanArtwork = transformMongooseDoc<LeanArtwork>(rawDoc);
 
-    const publicArtwork: PublicArtwork = sanitizeArtwork(artwork, userId);
+    const publicArtwork: SanitizedArtwork = sanitizeArtwork(artwork, userId);
 
     // 2. Sanitize the image
     // const sanitizedImage: PublicArtworkImage = sanitizeImage(artwork.image);

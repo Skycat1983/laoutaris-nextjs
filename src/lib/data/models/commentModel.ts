@@ -5,14 +5,14 @@ export interface BaseComment {
   displayDate: Date;
 }
 
-export interface DBComment extends Document, BaseComment {
+export interface CommentDB extends Document, BaseComment {
   author: mongoose.Schema.Types.ObjectId;
   blog: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type LeanComment = Omit<DBComment, keyof Document> & {
+export type LeanComment = Omit<CommentDB, keyof Document> & {
   _id: string;
   author: string;
   blog: string;
@@ -20,7 +20,7 @@ export type LeanComment = Omit<DBComment, keyof Document> & {
   updatedAt: Date;
 };
 
-const commentSchema = new mongoose.Schema<DBComment>(
+const commentSchema = new mongoose.Schema<CommentDB>(
   {
     text: { type: String, required: true },
     author: {
@@ -42,6 +42,6 @@ const commentSchema = new mongoose.Schema<DBComment>(
 
 const CommentModel =
   mongoose.models.Comment ||
-  mongoose.model<DBComment>("Comment", commentSchema);
+  mongoose.model<CommentDB>("Comment", commentSchema);
 
 export { CommentModel };

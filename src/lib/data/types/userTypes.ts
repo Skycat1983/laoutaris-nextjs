@@ -1,10 +1,10 @@
-import { DBUser } from "../models";
+import { UserDB } from "../models";
 import { FrontendArtwork } from "./artworkTypes";
 import { FrontendBlogEntry } from "./blogTypes";
 import { FrontendComment, FrontendCommentWithBlogNav } from "./commentTypes";
 
 export type SerializableUser = Omit<
-  DBUser,
+  UserDB,
   "comments" | "watchlist" | "favourites"
 > & {
   _id: string;

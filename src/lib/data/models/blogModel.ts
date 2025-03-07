@@ -13,14 +13,14 @@ interface BaseBlogEntry {
   tags: string[];
 }
 
-export interface DBBlogEntry extends Document, BaseBlogEntry {
+export interface BlogEntryDB extends Document, BaseBlogEntry {
   createdAt: Date;
   updatedAt: Date;
   author: mongoose.Schema.Types.ObjectId;
   comments: mongoose.Schema.Types.ObjectId[];
 }
 
-export type LeanBlogEntry = Omit<DBBlogEntry, keyof Document> & {
+export type LeanBlogEntry = Omit<BlogEntryDB, keyof Document> & {
   _id: string;
   author: string;
   comments: string[];
@@ -28,7 +28,7 @@ export type LeanBlogEntry = Omit<DBBlogEntry, keyof Document> & {
   updatedAt: Date;
 };
 
-const blogSchema = new mongoose.Schema<DBBlogEntry>(
+const blogSchema = new mongoose.Schema<BlogEntryDB>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -53,7 +53,7 @@ const blogSchema = new mongoose.Schema<DBBlogEntry>(
 );
 
 const BlogModel =
-  mongoose.models.Blog || mongoose.model<DBBlogEntry>("Blog", blogSchema);
+  mongoose.models.Blog || mongoose.model<BlogEntryDB>("Blog", blogSchema);
 
 export { BlogModel };
 

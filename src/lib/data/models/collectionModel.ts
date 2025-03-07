@@ -12,20 +12,20 @@ interface BaseCollection {
   section: Section;
 }
 
-export interface DBCollection extends Document, BaseCollection {
+export interface CollectionDB extends Document, BaseCollection {
   createdAt: Date;
   updatedAt: Date;
   artworks: mongoose.Schema.Types.ObjectId[];
 }
 
-export type LeanCollection = Omit<DBCollection, keyof Document> & {
+export type LeanCollection = Omit<CollectionDB, keyof Document> & {
   _id: string;
   artworks: string[];
   createdAt: Date;
   updatedAt: Date;
 };
 
-const collectionSchema = new mongoose.Schema<DBCollection>(
+const collectionSchema = new mongoose.Schema<CollectionDB>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -49,6 +49,6 @@ const collectionSchema = new mongoose.Schema<DBCollection>(
 
 const CollectionModel =
   mongoose.models.Collection ||
-  mongoose.model<DBCollection>("Collection", collectionSchema);
+  mongoose.model<CollectionDB>("Collection", collectionSchema);
 
 export { CollectionModel };

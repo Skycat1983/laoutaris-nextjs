@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { DBUser, UserModel } from "./userModel";
+import { UserDB, UserModel } from "./userModel";
 
 // Define the interface for the Admin user
-export interface IAdmin extends DBUser {
+export interface IAdmin extends UserDB {
   biography: string;
   blogEntries: mongoose.Schema.Types.ObjectId[];
   role: "admin";

@@ -1,9 +1,20 @@
+import { ArticleDB, LeanArticle } from "../models";
 import { FrontendArtwork } from "./artworkTypes";
 import { FrontendUser } from "./userTypes";
-import { z } from "zod";
 
-export type Section = "artwork" | "biography" | "project" | "collections";
-type OverlayColour = "white" | "black";
+export type ArticleLean = Omit<ArticleDB, keyof Document> & {
+  _id: string;
+  author: string;
+  artwork: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ArticlePublic = LeanArticle & {
+  author: PopulatedField<FrontendUser>;
+  artwork: PopulatedField<FrontendArtwork>;
+};
+
 interface BaseFrontendArticle {
   _id: string;
   title: string;
@@ -48,3 +59,6 @@ export interface ArticleFilterParams {
   key: "section" | null;
   value: string | null;
 }
+
+export type Section = "artwork" | "biography" | "project" | "collections";
+export type OverlayColour = "white" | "black";

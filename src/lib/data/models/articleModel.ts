@@ -1,7 +1,5 @@
 import mongoose, { Document } from "mongoose";
-
-type Section = "artwork" | "biography" | "project" | "collections";
-type OverlayColour = "white" | "black";
+import { OverlayColour, Section } from "../types";
 
 export interface BaseArticle {
   title: string;
@@ -14,14 +12,14 @@ export interface BaseArticle {
   overlayColour: OverlayColour;
 }
 
-export interface DBArticle extends Document, BaseArticle {
+export interface ArticleDB extends Document, BaseArticle {
   author: mongoose.Schema.Types.ObjectId;
   artwork: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type LeanArticle = Omit<DBArticle, keyof Document> & {
+export type LeanArticle = Omit<ArticleDB, keyof Document> & {
   _id: string;
   author: string;
   artwork: string;
@@ -29,7 +27,7 @@ export type LeanArticle = Omit<DBArticle, keyof Document> & {
   updatedAt: Date;
 };
 
-const articleContentSchema = new mongoose.Schema<DBArticle>(
+const articleContentSchema = new mongoose.Schema<ArticleDB>(
   {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
@@ -58,6 +56,6 @@ const articleContentSchema = new mongoose.Schema<DBArticle>(
 
 const ArticleModel =
   mongoose.models.Article ||
-  mongoose.model<DBArticle>("Article", articleContentSchema);
+  mongoose.model<ArticleDB>("Article", articleContentSchema);
 
 export { ArticleModel };
