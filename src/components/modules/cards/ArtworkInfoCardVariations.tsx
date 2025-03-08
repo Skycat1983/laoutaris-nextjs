@@ -1,4 +1,4 @@
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import {
   CloudinaryColorPalette,
   HexColorPalette,

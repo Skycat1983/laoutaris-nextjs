@@ -1,7 +1,7 @@
 import { FavouritesButton } from "@/components/elements/buttons/FavouritesButton";
 import { Heart, Bookmark } from "lucide-react";
 
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import { HexColorPalette } from "../disclosures/ColorPallette";
 import { WatchlistButton } from "@/components/elements/buttons";
 import { Logo } from "@/components/elements/icons";

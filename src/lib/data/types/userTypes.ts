@@ -1,12 +1,20 @@
 import { UserDB } from "../models";
-import { Merge, TransformedDocument } from "./utilTypes";
+import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
 
+// Individual types for direct use
+export type UserLean = LeanDocument<UserDB>;
+export type UserRaw = TransformedDocument<UserLean>;
+export type UserExtended = Merge<UserRaw, { isOnline?: boolean }>;
+export type UserSanitized = Omit<UserExtended, "password" | "email">;
+
+// Transformation object for pipeline operations
 export type UserTransformations = {
   DB: UserDB;
-  Raw: TransformedDocument<UserDB>;
-  Extended: Merge<TransformedDocument<UserDB>, { isOnline?: boolean }>;
-  Sanitized: Omit<UserTransformations["Extended"], "password" | "email">;
-  Frontend: UserTransformations["Sanitized"];
+  Lean: UserLean;
+  Raw: UserRaw;
+  Extended: UserExtended;
+  Sanitized: UserSanitized;
+  Frontend: UserSanitized;
 };
 
 //! Frontend-specific types (safe)

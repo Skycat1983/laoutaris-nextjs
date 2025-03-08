@@ -1,13 +1,14 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { FrontendArtwork, ColorInfo } from "@/lib/data/types";
+import { ArtworkTransformations, ColorInfo } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
 import { findSimilarColors } from "@/lib/utils/colorUtils";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
-import { PublicArtworkListResult } from "@/lib/api/public/artwork/fetchers";
+import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
+import { transformArtwork } from "@/lib/transforms/transformArtwork";
 
 export async function GET(
   request: NextRequest
-): Promise<RouteResponse<PublicArtworkListResult>> {
+): Promise<RouteResponse<ApiArtworkListResult>> {
   try {
     const { searchParams } = new URL(request.url);
     const filterMode = searchParams.get("filterMode") || "ALL";
@@ -103,16 +104,19 @@ export async function GET(
       finalArtworks = allArtworks.slice((page - 1) * limit, page * limit);
     }
 
+    const transformedArtworks: ArtworkTransformations["Frontend"][] =
+      finalArtworks.map((artwork) => transformArtwork(artwork, null));
+
     return NextResponse.json({
       success: true,
-      data: finalArtworks,
+      data: transformedArtworks,
       metadata: {
         page,
         limit,
         total,
         totalPages: Math.ceil(total / limit),
       },
-    });
+    } satisfies ApiArtworkListResult);
   } catch (error) {
     console.error("Error in artwork route:", error);
     return NextResponse.json(

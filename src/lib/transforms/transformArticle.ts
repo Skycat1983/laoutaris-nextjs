@@ -1,15 +1,20 @@
 import { ArticleDB, ArtworkDB, UserDB } from "../data/models";
-import {
-  ArticlePopulatedFrontend,
-  ArticleTransformations,
-} from "../data/types/transformationTypes";
+
 import { calculateReadTime } from "../utils/calcReadTime";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformArtwork } from "./transformArtwork";
 import { transformUser } from "./transformUser";
+import {
+  ArticlePopulated,
+  ArticleTransformations,
+  ArtworkTransformations,
+  UserTransformations,
+} from "../data/types";
+import { ArticlePopulatedFrontend } from "../data/types/populatedTypes";
 
 export function transformArticle(
-  document: ArticleDB
+  document: ArticleTransformations["Lean"],
+  userId?: string | null
 ): ArticleTransformations["Frontend"] {
   // 1. To Lean
   const transformedDoc =
@@ -30,15 +35,19 @@ export function transformArticle(
 }
 
 export function transformArticlePopulated(
-  article: ArticleDB & { author: UserDB; artwork: ArtworkDB }
-): ArticlePopulatedFrontend {
-  const transformedArticle = transformArticle(article);
-  const transformedAuthor = transformUser(article.author);
-  const transformedArtwork = transformArtwork(article.artwork);
+  article: ArticleTransformations["Lean"] & {
+    author: UserTransformations["Lean"];
+    artwork: ArtworkTransformations["Lean"];
+  },
+  userId: string | null
+): ArticlePopulated {
+  const transformedArticle = transformArticle(article, userId);
+  const transformedAuthor = transformUser(article.author, userId);
+  const transformedArtwork = transformArtwork(article.artwork, userId);
 
   return {
     ...transformedArticle,
     author: transformedAuthor,
     artwork: transformedArtwork,
-  } satisfies ArticlePopulatedFrontend;
+  } satisfies ArticlePopulated;
 }

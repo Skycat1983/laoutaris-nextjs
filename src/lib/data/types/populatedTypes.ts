@@ -1,8 +1,6 @@
-import {
-  ArticleTransformations,
-  UserTransformations,
-  ArtworkTransformations,
-} from "./transformationTypes";
+import { ArticleTransformations } from "./articleTypes";
+import { UserTransformations } from "./userTypes";
+import { ArtworkTransformations } from "./artworkTypes";
 import { WithPopulated } from "./utilTypes";
 
 export type ArticlePopulatedFrontend = WithPopulated<

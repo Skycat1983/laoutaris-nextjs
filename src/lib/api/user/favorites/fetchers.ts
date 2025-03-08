@@ -1,5 +1,5 @@
 import type { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
-import type { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import type { PublicArtwork } from "../../../../../unused/artworkToPublic";
 import type { Fetcher } from "../../core/createFetcher";
 
 export const createFavoritesFetchers = (fetcher: Fetcher) => ({

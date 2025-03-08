@@ -6,7 +6,7 @@ import { FrontendArtworkUnpopulated } from "@/lib/data/types/artworkTypes";
 import {
   artworkToPublic,
   PublicArtwork,
-} from "@/lib/transforms/artworkToPublic";
+} from "../../../../../../../unused/artworkToPublic";
 
 export async function GET(
   request: Request,

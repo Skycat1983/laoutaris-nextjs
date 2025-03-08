@@ -1,5 +1,5 @@
 import type { FrontendUserWithWatchlist } from "@/lib/data/types/userTypes";
-import type { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import type { PublicArtwork } from "../../../../../unused/artworkToPublic";
 import type { Fetcher } from "../../core/createFetcher";
 
 export const createWatchlistFetchers = (fetcher: Fetcher) => ({

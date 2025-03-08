@@ -1,17 +1,28 @@
 import { ArticleDB } from "../models";
 import { ArticlePopulatedFrontend } from "./populatedTypes";
-import { Merge, TransformedDocument, WithPopulated } from "./utilTypes";
+import {
+  LeanDocument,
+  Merge,
+  TransformedDocument,
+  WithPopulated,
+} from "./utilTypes";
+
+export type ArticleLean = LeanDocument<ArticleDB>;
+export type ArticleRaw = TransformedDocument<ArticleLean>;
+export type ArticleExtended = Merge<ArticleRaw, { readTime?: number }>;
+export type ArticleSanitized = Omit<
+  ArticleExtended,
+  "_id" | "createdAt" | "updatedAt"
+>;
 
 //! doc-specific transformation definitions
 export type ArticleTransformations = {
   DB: ArticleDB;
-  Raw: TransformedDocument<ArticleDB>;
-  Extended: Merge<TransformedDocument<ArticleDB>, { readTime?: number }>;
-  Sanitized: Omit<
-    ArticleTransformations["Extended"],
-    "_id" | "createdAt" | "updatedAt"
-  >;
-  Frontend: ArticleTransformations["Sanitized"];
+  Lean: ArticleLean;
+  Raw: ArticleRaw;
+  Extended: ArticleExtended;
+  Sanitized: ArticleSanitized;
+  Frontend: ArticleSanitized;
 };
 
 //! Frontend-specific types (safe)

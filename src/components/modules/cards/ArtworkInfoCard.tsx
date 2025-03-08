@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import {
   CloudinaryColorPalette,
   HexColorPalette,
@@ -8,8 +8,9 @@ import {
 import { FavouritesButton } from "@/components/elements/buttons";
 import { WatchlistButton } from "@/components/elements/buttons";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import { Artwork } from "@/lib/data/types/artworkTypes";
 
-export async function ArtworkInfoCard({ ...artwork }: PublicArtwork) {
+export async function ArtworkInfoCard({ ...artwork }: Artwork) {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session?.user;
 

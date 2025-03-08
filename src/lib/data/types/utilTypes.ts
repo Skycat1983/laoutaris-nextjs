@@ -1,7 +1,9 @@
-import { Document as MongoDocument } from "mongoose";
+import { Document as MongoDocument, ObjectId } from "mongoose";
 
 // For Mongoose's .lean() operation
-export type LeanDocument<T> = T & { $locals?: never };
+export type LeanDocument<T> = Omit<T, "$locals"> & {
+  _id: string | ObjectId; // Could be either
+};
 
 // for our transformation pipeline
 export type TransformedDocument<T> = Omit<T, keyof MongoDocument> & {

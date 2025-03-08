@@ -1,10 +1,9 @@
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 
 import { MagnifierImage } from "../modules/MagnifierImage";
-import CollectionInfoLayout from "../layouts/public/CollectionInfoLayout";
+import { Artwork } from "@/lib/data/types/artworkTypes";
 
-const ArtworkView = (artwork: PublicArtwork) => {
+const ArtworkView = (artwork: Artwork) => {
   const Card = () => {
     // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
     return (

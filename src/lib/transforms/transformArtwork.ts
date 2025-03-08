@@ -1,23 +1,34 @@
 import { ArtworkDB } from "../data/models";
-import { ArtworkTransformations } from "../data/types/transformationTypes";
+import { ArtworkTransformations } from "../data/types";
+import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { transformImage } from "./transformImage";
 import { transformMongooseDoc } from "./transformMongooseDoc";
+import {
+  ArtworkLean,
+  ArtworkRaw,
+  ArtworkExtended,
+} from "../data/types/artworkTypes";
+import { ObjectId } from "mongoose";
+import { isUserInArray } from "../utils/isUserInArray";
 
 export function transformArtwork(
-  document: ArtworkDB
+  document: ArtworkTransformations["Lean"],
+  userId: string | null
 ): ArtworkTransformations["Frontend"] {
-  // 1. To Lean
-  const transformedDoc =
+  // Convert ObjectIds to strings and strip Mongoose properties
+  const transformedDoc: ArtworkTransformations["Raw"] =
     transformMongooseDoc<ArtworkTransformations["Raw"]>(document);
 
-  // 2. Add extensions with explicit type assertion
-  const extendedDoc = {
+  // 2. Add extensions
+  const isFavourited = isUserInArray(document.favourited, userId);
+  const isWatchlisted = isUserInArray(document.watcherlist, userId);
+  const extendedDoc: ArtworkExtended = {
     ...transformedDoc,
-    favouriteCount: 0,
-    watchlistCount: 0,
-    isFavourited: false,
-    isWatchlisted: false,
-  } satisfies ArtworkTransformations["Extended"];
+    favouriteCount: document.favourited.length,
+    watchlistCount: document.watcherlist.length,
+    isFavourited,
+    isWatchlisted,
+  };
 
   // 3. Remove sensitive fields
   const { favourited, watcherlist, image, ...sanitizedFields } = extendedDoc;

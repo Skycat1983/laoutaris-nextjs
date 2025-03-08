@@ -1,29 +1,38 @@
-import { ArticleDB, ArticleModel, ArtworkDB, UserDB } from "@/lib/data/models";
+import {
+  ArticleDB,
+  ArticleModel,
+  ArtworkDB,
+  LeanUser,
+  UserDB,
+} from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
-import { LeanDocument } from "@/lib/data/types";
+import { ArticleLean, ArtworkLean, UserLean } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
-import { ArticlePopulatedFrontend } from "@/lib/data/types/transformationTypes";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { ArticlePopulatedFrontend } from "@/lib/data/types/populatedTypes";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
-
-type LeanAuthor = LeanDocument<UserDB>;
-type LeanArtwork = LeanDocument<ArtworkDB>;
-type LeanArticle = LeanDocument<ArticleDB>;
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiArticlePopulatedResult>> => {
+  const userId = await getUserIdFromSession();
   try {
     // populate both artwork and author
     const articleDB = await ArticleModel.findOne({ slug: params.slug })
       .populate<{
-        author: LeanAuthor;
-        artwork: LeanArtwork;
+        author: UserLean;
+        artwork: ArtworkLean;
       }>("author artwork")
-      .lean<LeanArticle>();
+      .lean<
+        ArticleLean & {
+          author: UserLean;
+          artwork: ArtworkLean;
+        }
+      >();
 
     if (!articleDB) {
       return NextResponse.json({
@@ -33,8 +42,10 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const articlePublic: ArticlePopulatedFrontend =
-      transformArticlePopulated(articleDB);
+    const articlePublic: ArticlePopulatedFrontend = transformArticlePopulated(
+      articleDB,
+      userId
+    );
 
     return NextResponse.json({
       success: true,

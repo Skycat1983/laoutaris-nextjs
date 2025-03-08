@@ -2,7 +2,7 @@ import { ArtworkView } from "@/components/views";
 import {
   artworkToPublic,
   PublicArtwork,
-} from "@/lib/transforms/artworkToPublic";
+} from "../../../../unused/artworkToPublic";
 import { delay } from "@/lib/utils/debug";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 

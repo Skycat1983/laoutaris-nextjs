@@ -1,7 +1,7 @@
 import { ArtworkView } from "@/components/views/ArtworkView";
 import { clientApi } from "@/lib/api/clientApi";
 import { serverApi } from "@/lib/api/serverApi";
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 
 export const FavouritedArtworkLoader = async ({
   artworkId,

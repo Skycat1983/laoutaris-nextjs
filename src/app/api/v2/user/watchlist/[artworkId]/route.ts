@@ -4,7 +4,7 @@ import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import {
   artworkToPublic,
   PublicArtwork,
-} from "@/lib/transforms/artworkToPublic";
+} from "../../../../../../../unused/artworkToPublic";
 import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { NextRequest, NextResponse } from "next/server";
 

@@ -3,7 +3,7 @@
 
 import { ArtworkInfoCard } from "@/components/modules/cards/ArtworkInfoCard";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import Image from "next/image";
 
 // TODO: refactor the image zooming logic

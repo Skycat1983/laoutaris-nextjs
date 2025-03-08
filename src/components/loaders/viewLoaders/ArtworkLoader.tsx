@@ -5,19 +5,19 @@ import { serverApi } from "@/lib/api/serverApi";
 import {
   artworkToPublic,
   PublicArtwork,
-} from "@/lib/transforms/artworkToPublic";
+} from "../../../../unused/artworkToPublic";
 import React from "react";
 
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
-  const result = await serverApi.public.artwork.fetchArtwork(params.id);
+  const result = await serverApi.public.artwork.single(params.id);
   if (!result.success) {
     throw new Error("Failed to fetch artwork");
   }
-  const publicArtwork: PublicArtwork = artworkToPublic(result.data);
+  const { data: artwork } = result;
   return (
     <>
       <div className="py-16">
-        <ArtworkView {...publicArtwork} />
+        <ArtworkView {...artwork} />
       </div>
       {/* <CollectionInfoLayout /> */}
       <div className="pt-16">

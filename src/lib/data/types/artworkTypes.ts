@@ -1,26 +1,33 @@
 import { ArtworkDB } from "../models/artworkModel";
 import { CloudinaryImageSanitized } from "./cloudinaryTypes";
-import { Merge, TransformedDocument } from "./utilTypes";
+import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
+
+export interface ArtworkFields {
+  favouriteCount: number;
+  watchlistCount: number;
+  isFavourited?: boolean;
+  isWatchlisted?: boolean;
+}
+
+// From Mongoose Document to Lean
+export type ArtworkLean = LeanDocument<ArtworkDB>;
+// From Lean to Transformed (stripped of all Mongoose properties)
+export type ArtworkRaw = TransformedDocument<ArtworkLean>; // Should stay as ArtworkDB, not ArtworkLean
+export type ArtworkExtended = Merge<ArtworkRaw, ArtworkFields>;
+export type ArtworkSanitized = Omit<
+  ArtworkExtended,
+  "favourited" | "watcherlist" | "image"
+> & {
+  image: CloudinaryImageSanitized;
+};
 
 //! doc-specific transformation definitions
 export type ArtworkTransformations = {
   DB: ArtworkDB;
-  Raw: TransformedDocument<ArtworkDB>;
-  Extended: Merge<
-    TransformedDocument<ArtworkDB>,
-    {
-      favouriteCount: number;
-      watchlistCount: number;
-      isFavourited?: boolean;
-      isWatchlisted?: boolean;
-    }
-  >;
-  Sanitized: Omit<
-    ArtworkTransformations["Extended"],
-    "favourited" | "watcherlist" | "image"
-  > & {
-    image: CloudinaryImageSanitized;
-  };
+  Lean: ArtworkLean;
+  Raw: ArtworkRaw;
+  Extended: ArtworkExtended;
+  Sanitized: ArtworkSanitized;
   Frontend: ArtworkTransformations["Sanitized"];
 };
 

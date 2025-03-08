@@ -1,9 +1,10 @@
 import { UserDB } from "../data/models";
-import { UserTransformations } from "../data/types/transformationTypes";
+import { UserTransformations } from "../data/types";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 
 export function transformUser(
-  document: UserDB
+  document: UserTransformations["Lean"],
+  userId?: string | null
 ): UserTransformations["Frontend"] {
   // 1. To Lean
   const transformedDoc =
