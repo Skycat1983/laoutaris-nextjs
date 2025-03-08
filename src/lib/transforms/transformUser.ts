@@ -1,16 +1,17 @@
 import { UserDB } from "../data/models";
 import { UserTransformations } from "../data/types/transformationTypes";
-import { transformMongooseDoc } from "./mongooseTransforms";
+import { transformMongooseDoc } from "./transformMongooseDoc";
 
 export function transformUser(
   document: UserDB
 ): UserTransformations["Frontend"] {
   // 1. To Lean
-  const leanDoc = transformMongooseDoc<UserTransformations["Lean"]>(document);
+  const transformedDoc =
+    transformMongooseDoc<UserTransformations["Raw"]>(document);
 
   // 2. Add extensions
   const extendedDoc: UserTransformations["Extended"] = {
-    ...leanDoc,
+    ...transformedDoc,
     isOnline: false,
   };
   // 3. Remove sensitive fields

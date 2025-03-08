@@ -2,12 +2,12 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { PublicArtworkResult } from "@/lib/api/public/artwork/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import {
   sanitizeArtwork,
   SanitizedArtwork,
-} from "@/lib/transforms/sanitizeArtwork";
+} from "../../../../../../../unused/sanitizeArtwork";
 import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 
 export async function GET(

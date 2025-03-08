@@ -4,9 +4,9 @@ import {
   ArticleTransformations,
   UserTransformations,
   ArtworkTransformations,
-  ArticlePopulatedPublic,
+  ArticlePopulatedFrontend,
 } from "../data/types/transformationTypes";
-import { transformMongooseDoc } from "../transforms/mongooseTransforms";
+import { transformMongooseDoc } from "../transforms/transformMongooseDoc";
 
 // Article transformations
 export function transformArticle(
@@ -74,7 +74,7 @@ export function transformArtwork(
 // Helper for populated articles
 export function transformArticlePopulated(
   article: ArticleDB & { author: UserDB; artwork: ArtworkDB }
-): ArticlePopulatedPublic {
+): ArticlePopulatedFrontend {
   const transformedArticle = transformArticle(article);
   const transformedAuthor = transformUser(article.author);
   const transformedArtwork = transformArtwork(article.artwork);
@@ -83,7 +83,7 @@ export function transformArticlePopulated(
     ...transformedArticle,
     author: transformedAuthor,
     artwork: transformedArtwork,
-  } satisfies ArticlePopulatedPublic;
+  } satisfies ArticlePopulatedFrontend;
 }
 
 // Utility function

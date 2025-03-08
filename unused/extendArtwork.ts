@@ -1,5 +1,5 @@
-import { ArtworkExtended } from "../data/types";
-import { ArtworkLean } from "../data/types";
+import { ArtworkExtended } from "../src/lib/data/types";
+import { ArtworkLean } from "../src/lib/data/types";
 
 export function extendArtwork(artwork: ArtworkLean): ArtworkExtended {
   return {

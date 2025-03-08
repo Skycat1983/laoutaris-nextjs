@@ -1,6 +1,6 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 
 import {
   CollectionArtworkNavList,

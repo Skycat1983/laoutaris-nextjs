@@ -1,17 +1,18 @@
 import { ArtworkDB } from "../data/models";
 import { ArtworkTransformations } from "../data/types/transformationTypes";
-import { transformMongooseDoc } from "./mongooseTransforms";
+import { transformImage } from "./transformImage";
+import { transformMongooseDoc } from "./transformMongooseDoc";
 
 export function transformArtwork(
   document: ArtworkDB
 ): ArtworkTransformations["Frontend"] {
   // 1. To Lean
-  const leanDoc =
-    transformMongooseDoc<ArtworkTransformations["Lean"]>(document);
+  const transformedDoc =
+    transformMongooseDoc<ArtworkTransformations["Raw"]>(document);
 
   // 2. Add extensions with explicit type assertion
   const extendedDoc = {
-    ...leanDoc,
+    ...transformedDoc,
     favouriteCount: 0,
     watchlistCount: 0,
     isFavourited: false,
@@ -19,9 +20,12 @@ export function transformArtwork(
   } satisfies ArtworkTransformations["Extended"];
 
   // 3. Remove sensitive fields
-  const { favourited, watcherlist, ...sanitizedFields } = extendedDoc;
-  const sanitizedDoc =
-    sanitizedFields satisfies ArtworkTransformations["Sanitized"];
+  const { favourited, watcherlist, image, ...sanitizedFields } = extendedDoc;
+  const sanitizedImage = transformImage(image);
+  const sanitizedDoc = {
+    ...sanitizedFields,
+    image: sanitizedImage,
+  } satisfies ArtworkTransformations["Sanitized"];
 
   return sanitizedDoc; // Frontend is same as sanitized for artworks
 }

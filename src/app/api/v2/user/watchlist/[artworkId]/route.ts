@@ -5,7 +5,7 @@ import {
   artworkToPublic,
   PublicArtwork,
 } from "@/lib/transforms/artworkToPublic";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

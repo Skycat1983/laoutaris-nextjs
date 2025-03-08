@@ -1,22 +1,19 @@
-import { ArticleModel } from "@/lib/data/models";
+import { ArticleDB, ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type { FrontendArticle } from "@/lib/data/types/articleTypes";
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  PaginatedResponse,
-  RouteResponse,
-} from "@/lib/data/types/apiTypes";
-import {
-  ApiArticlePopulatedPublicResult,
-  ApiArticlesPublicResult,
-} from "@/lib/api/public/article/fetchers";
+import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
+import { LeanDocument } from "@/lib/data/types/utilTypes";
+import { transformArticle } from "@/lib/transforms/transformArticle";
 
 // type ArticleApiResponse = RouteResponse<FrontendArticle[]>;
 
+type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
+
+type LeanArticle = LeanDocument<ArticleDB>;
+
 export const GET = async (
   req: NextRequest
-): Promise<RouteResponse<ApiArticlePopulatedPublicResult>> => {
+): Promise<RouteResponse<ApiArticleListResult>> => {
   const { searchParams } = req.nextUrl;
 
   try {
@@ -37,7 +34,8 @@ export const GET = async (
       ArticleModel.find(query)
         .select(fields)
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean<LeanArticle[]>(),
       ArticleModel.countDocuments(query),
     ]);
 
@@ -47,6 +45,8 @@ export const GET = async (
         error: "No articles found",
       } satisfies ApiErrorResponse);
     }
+
+    const transformedArticles = articles.map(transformArticle);
     return NextResponse.json({
       success: true,
       data: articles,
@@ -56,7 +56,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies ApiArticlesPublicResult);
+    } satisfies ApiArticleListResult);
   } catch (error) {
     console.error("Article fetch error:", error);
     return NextResponse.json(

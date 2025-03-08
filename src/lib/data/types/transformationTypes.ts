@@ -1,14 +1,13 @@
 import { Document as MongoDocument } from "mongoose";
 import { ArticleDB, UserDB, ArtworkDB } from "../models";
-import { UserLean } from "./userTypes";
-import { ArtworkLean } from "./artworkTypes";
-import { Merge, MongoDocumentLean } from "./utilTypes";
+import { Merge, TransformedDocument } from "./utilTypes";
+import { CloudinaryImageSanitized } from "./cloudinaryTypes";
 
 // doc-specific transformation definitions
 export type ArticleTransformations = {
   DB: ArticleDB;
-  Lean: MongoDocumentLean<ArticleDB>;
-  Extended: Merge<MongoDocumentLean<ArticleDB>, { readTime?: number }>;
+  Raw: TransformedDocument<ArticleDB>;
+  Extended: Merge<TransformedDocument<ArticleDB>, { readTime?: number }>;
   Sanitized: Omit<
     ArticleTransformations["Extended"],
     "_id" | "createdAt" | "updatedAt"
@@ -18,17 +17,17 @@ export type ArticleTransformations = {
 
 export type UserTransformations = {
   DB: UserDB;
-  Lean: MongoDocumentLean<UserDB>;
-  Extended: Merge<MongoDocumentLean<UserDB>, { isOnline?: boolean }>;
+  Raw: TransformedDocument<UserDB>;
+  Extended: Merge<TransformedDocument<UserDB>, { isOnline?: boolean }>;
   Sanitized: Omit<UserTransformations["Extended"], "password" | "email">;
   Frontend: UserTransformations["Sanitized"];
 };
 
 export type ArtworkTransformations = {
   DB: ArtworkDB;
-  Lean: MongoDocumentLean<ArtworkDB>;
+  Raw: TransformedDocument<ArtworkDB>;
   Extended: Merge<
-    MongoDocumentLean<ArtworkDB>,
+    TransformedDocument<ArtworkDB>,
     {
       favouriteCount: number;
       watchlistCount: number;
@@ -38,8 +37,10 @@ export type ArtworkTransformations = {
   >;
   Sanitized: Omit<
     ArtworkTransformations["Extended"],
-    "favourited" | "watcherlist"
-  >;
+    "favourited" | "watcherlist" | "image"
+  > & {
+    image: CloudinaryImageSanitized;
+  };
   Frontend: ArtworkTransformations["Sanitized"];
 };
 
@@ -52,7 +53,7 @@ type WithPopulated<
   [K in keyof PopulatedKeys]: PopulatedKeys[K][Stage];
 };
 
-export type ArticlePopulatedPublic = WithPopulated<
+export type ArticlePopulatedFrontend = WithPopulated<
   ArticleTransformations,
   "Frontend",
   {

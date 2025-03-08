@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { ArticleModel } from "@/lib/data/models";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ReadArticleResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 

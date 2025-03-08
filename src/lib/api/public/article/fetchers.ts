@@ -4,6 +4,8 @@ import type {
   FrontendArticle,
   FrontendArticleWithArtwork,
   Section,
+  Article,
+  ArticlePopulated,
 } from "@/lib/data/types/articleTypes";
 import { Fetcher } from "../../core/createFetcher";
 import {
@@ -11,7 +13,10 @@ import {
   ListResult,
   ApiResponse,
 } from "@/lib/data/types/apiTypes";
-import { ArticlePopulatedPublic } from "@/lib/data/types/transformationTypes";
+import {
+  ArticlePopulatedFrontend,
+  ArticleTransformations,
+} from "@/lib/data/types/transformationTypes";
 
 interface FetchArticlesParams {
   section?: Section;
@@ -20,17 +25,12 @@ interface FetchArticlesParams {
   page?: number;
 }
 
-// export type ApiArticlePublicResult = SingleResult<ArticleFrontend>;
-// export type ApiArticlesPublicResult = ListResult<ArticleFrontend>;
-// export type ArticleFrontend = SingleResult<ArticlePopulatedPublic>;
-
-export type ApiSingleArticleResult = SingleResult<ArticleFrontend>;
-export type ApiSingleArticlePopulatedResult =
-  SingleResult<ArticlePopulatedPublic>;
+export type ApiSingleArticleResult = SingleResult<Article>;
+export type ApiSingleArticlePopulatedResult = SingleResult<ArticlePopulated>;
 
 // Multiple articles response types
-export type ApiArticleListResult = ListResult<ArticleFrontend>;
-export type ApiArticlePopulatedListResult = ListResult<ArticlePopulatedPublic>;
+export type ApiArticleListResult = ListResult<Article>;
+export type ApiArticlePopulatedListResult = ListResult<ArticlePopulated>;
 
 export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug

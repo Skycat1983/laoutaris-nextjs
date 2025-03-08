@@ -1,10 +1,10 @@
 import { ArticleDB, ArtworkDB, UserDB } from "../data/models";
 import {
-  ArticlePopulatedPublic,
+  ArticlePopulatedFrontend,
   ArticleTransformations,
 } from "../data/types/transformationTypes";
 import { calculateReadTime } from "../utils/calcReadTime";
-import { transformMongooseDoc } from "./mongooseTransforms";
+import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformArtwork } from "./transformArtwork";
 import { transformUser } from "./transformUser";
 
@@ -12,13 +12,13 @@ export function transformArticle(
   document: ArticleDB
 ): ArticleTransformations["Frontend"] {
   // 1. To Lean
-  const leanDoc =
-    transformMongooseDoc<ArticleTransformations["Lean"]>(document);
+  const transformedDoc =
+    transformMongooseDoc<ArticleTransformations["Raw"]>(document);
 
   // 2. Add extensions
   const extendedDoc = {
-    ...leanDoc,
-    readTime: calculateReadTime(leanDoc.text),
+    ...transformedDoc,
+    readTime: calculateReadTime(transformedDoc.text),
   } satisfies ArticleTransformations["Extended"];
 
   // 3. Remove sensitive fields with type assertion
@@ -31,7 +31,7 @@ export function transformArticle(
 
 export function transformArticlePopulated(
   article: ArticleDB & { author: UserDB; artwork: ArtworkDB }
-): ArticlePopulatedPublic {
+): ArticlePopulatedFrontend {
   const transformedArticle = transformArticle(article);
   const transformedAuthor = transformUser(article.author);
   const transformedArtwork = transformArtwork(article.artwork);
@@ -40,5 +40,5 @@ export function transformArticlePopulated(
     ...transformedArticle,
     author: transformedAuthor,
     artwork: transformedArtwork,
-  } satisfies ArticlePopulatedPublic;
+  } satisfies ArticlePopulatedFrontend;
 }

@@ -1,8 +1,12 @@
-import { CloudinaryImageDB, CloudinaryImageFrontend } from "../data/types";
+import {
+  CloudinaryImageDB,
+  CloudinaryImageFrontend,
+  CloudinaryImageSanitized,
+} from "../src/lib/data/types";
 
 export function sanitizeCloudinaryImage(
   image: CloudinaryImageDB
-): CloudinaryImageFrontend {
+): CloudinaryImageSanitized {
   return {
     secure_url: image.secure_url,
     bytes: image.bytes,

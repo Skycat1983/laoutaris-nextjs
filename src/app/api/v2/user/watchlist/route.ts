@@ -1,7 +1,7 @@
 import { UserModel } from "@/lib/data/models";
 import { FrontendUserWithWatchlist } from "@/lib/data/types/userTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

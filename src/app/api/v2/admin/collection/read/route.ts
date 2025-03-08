@@ -1,6 +1,6 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";

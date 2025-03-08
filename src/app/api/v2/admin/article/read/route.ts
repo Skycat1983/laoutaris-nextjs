@@ -1,7 +1,7 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";

@@ -1,7 +1,7 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import dbConnect from "@/lib/db/mongodb";
 
 type BlogApiResponse = ApiResponse<FrontendBlogEntry[]>;

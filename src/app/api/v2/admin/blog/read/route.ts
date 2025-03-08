@@ -1,7 +1,7 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogListResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";

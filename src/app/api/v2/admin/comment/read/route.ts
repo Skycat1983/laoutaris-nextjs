@@ -3,7 +3,7 @@ import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/mongooseTransforms";
+import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { isAdmin } from "@/lib/session/isAdmin";
 
 export async function GET(

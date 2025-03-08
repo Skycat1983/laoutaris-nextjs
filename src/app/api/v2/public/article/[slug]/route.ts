@@ -3,10 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { LeanDocument } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
-import { ArticlePopulatedPublic } from "@/lib/data/types/transformationTypes";
+import { ArticlePopulatedFrontend } from "@/lib/data/types/transformationTypes";
 import { ApiSingleArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
+
+type LeanAuthor = LeanDocument<UserDB>;
+type LeanArtwork = LeanDocument<ArtworkDB>;
+type LeanArticle = LeanDocument<ArticleDB>;
 
 export const GET = async (
   req: NextRequest,
@@ -16,10 +20,10 @@ export const GET = async (
     // populate both artwork and author
     const articleDB = await ArticleModel.findOne({ slug: params.slug })
       .populate<{
-        author: LeanDocument<UserDB>;
-        artwork: LeanDocument<ArtworkDB>;
+        author: LeanAuthor;
+        artwork: LeanArtwork;
       }>("author artwork")
-      .lean<ArticleDB & { author: UserDB; artwork: ArtworkDB }>();
+      .lean<LeanArticle>();
 
     if (!articleDB) {
       return NextResponse.json({
@@ -29,7 +33,7 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const articlePublic: ArticlePopulatedPublic =
+    const articlePublic: ArticlePopulatedFrontend =
       transformArticlePopulated(articleDB);
 
     return NextResponse.json({

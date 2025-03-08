@@ -3,7 +3,7 @@ import {
   ArticleExtendedPopulated,
   ArticleSanitized,
   ArticleSanitizedPopulated,
-} from "../data/types";
+} from "../src/lib/data/types";
 import { sanitizeArtwork } from "./sanitizeArtwork";
 import { sanitizeUser } from "./sanitizeUser";
 
