@@ -1,17 +1,18 @@
-import {
-  FrontendArtworkUnpopulated,
-  ArtworkQueryParams,
-  PublicFrontendArtwork,
-  ListResult,
-  SingleResult,
-} from "@/lib/data/types";
+import { ArtworkQueryParams, ListResult, SingleResult } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
+import { Artwork } from "@/lib/data/types/artworkTypes";
 
-export type PublicArtworkResult = SingleResult<PublicFrontendArtwork>;
-export type PublicArtworkListResult = ListResult<PublicFrontendArtwork>;
+export type ApiArtworkResult = SingleResult<Artwork>;
+export type ApiArtworkListResult = ListResult<Artwork>;
 
 export const createArtworkFetchers = (fetcher: Fetcher) => ({
-  fetchArtworks: async (
+  // Get one artwork by id
+  single: async (id: string) => {
+    return fetcher<ApiArtworkResult>(`/api/v2/public/artwork/${id}`);
+  },
+
+  // Get multiple artworks by params
+  multiple: async (
     {
       limit = 10,
       page = 1,
@@ -56,11 +57,6 @@ export const createArtworkFetchers = (fetcher: Fetcher) => ({
     const url = `/api/v2/public/artwork?${params.toString()}`;
     console.log("Fetching URL:", url);
 
-    return fetcher<PublicArtworkListResult>(url);
-  },
-
-  // Get one artwork by id
-  fetchArtwork: async (id: string) => {
-    return fetcher<PublicArtworkResult>(`/api/v2/public/artwork/${id}`);
+    return fetcher<ApiArtworkListResult>(url);
   },
 });

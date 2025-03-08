@@ -4,17 +4,14 @@ import { useState } from "react";
 import { MasonryLayout } from "../layouts/public/MasonryLayout";
 import { ArtworkFilterParams, FilterMode } from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
-import {
-  artworkToPublic,
-  PublicArtwork,
-} from "@/lib/transforms/artworkToPublic";
 import { BasicAccordionFilter } from "./filters/BasicAccordionFilter";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
+import { Artwork } from "@/lib/data/types/artworkTypes";
 
 interface ArtworkGalleryProps {
-  initialArtworks: PublicArtwork[];
+  initialArtworks: Artwork[];
   initialSort?: ArtworkSortConfig;
   initialFilters?: ArtworkFilterParams;
 }
@@ -89,18 +86,14 @@ export const ArtworkGallery = ({
         return;
       }
 
-      const response = await clientApi.public.artwork.fetchArtworks(
-        cleanFilters
-      );
+      const response = await clientApi.public.artwork.multiple(cleanFilters);
 
       if (!response.success) {
         throw new Error("Failed to fetch artworks");
       }
+      const { data: artworks, metadata } = response;
 
-      const publicArtworks = response.data.map((artwork) =>
-        artworkToPublic(artwork)
-      );
-      setArtworks(publicArtworks);
+      setArtworks(artworks);
     } catch (error) {
       console.error("Error fetching filtered artworks:", error);
     } finally {
@@ -121,7 +114,7 @@ export const ArtworkGallery = ({
     setIsLoading(true);
     try {
       const nextPage = page + 1;
-      const newArtworks = await clientApi.public.artwork.fetchArtworks({
+      const newArtworks = await clientApi.public.artwork.multiple({
         ...filters,
         page: nextPage,
         limit: 10,
@@ -130,18 +123,19 @@ export const ArtworkGallery = ({
       if (!newArtworks.success) {
         throw new Error("Failed to fetch artworks");
       }
+      const { data: artworks, metadata } = newArtworks;
 
-      const publicArtworks = newArtworks.data.map((artwork) =>
-        artworkToPublic(artwork)
-      );
+      // const publicArtworks = newArtworks.data.map((artwork) =>
+      //   ar tworkToPublic(artwork)
+      // );
 
-      if (publicArtworks.length === 0) {
+      if (artworks.length === 0) {
         setHasMore(false);
       } else {
         // Add new artworks while preventing duplicates
         setArtworks((prev) => {
           const existingIds = new Set(prev.map((artwork) => artwork._id));
-          const uniqueNewArtworks = publicArtworks.filter(
+          const uniqueNewArtworks = artworks.filter(
             (artwork) => !existingIds.has(artwork._id)
           );
 

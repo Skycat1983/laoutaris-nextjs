@@ -1,12 +1,8 @@
 import { ArticleDB } from "../models";
 import { ArticlePopulatedFrontend } from "./populatedTypes";
-import {
-  ArtworkTransformations,
-  UserTransformations,
-} from "./transformationTypes";
 import { Merge, TransformedDocument, WithPopulated } from "./utilTypes";
 
-// doc-specific transformation definitions
+//! doc-specific transformation definitions
 export type ArticleTransformations = {
   DB: ArticleDB;
   Raw: TransformedDocument<ArticleDB>;
@@ -27,13 +23,13 @@ export interface ArticleFilterParams {
   value: string | null;
 }
 
-// Article fields
+//! Article fields
 export type Section = "artwork" | "biography" | "project" | "collections";
 export type OverlayColour = "white" | "black";
 
 // Request/Response types (if needed)
-export type ArticleCreateInput = Pick<Article, "title" | "text" | "slug">;
-export type ArticleUpdateInput = Partial<ArticleCreateInput>;
+// export type ArticleCreateInput = Pick<Article, "title" | "text" | "slug">;
+// export type ArticleUpdateInput = Partial<ArticleCreateInput>;
 
 // ! Base Article Return
 // the Article as it is retrieved from the DB, using 'lean()' to strip out the Mongoose metadata

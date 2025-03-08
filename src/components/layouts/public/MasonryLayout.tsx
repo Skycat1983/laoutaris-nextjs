@@ -1,10 +1,10 @@
-import { PublicArtwork } from "@/lib/transforms/artworkToPublic";
+import { Artwork } from "@/lib/data/types/artworkTypes";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useCallback } from "react";
 
 interface ArtworkLayoutProps {
-  artworks: PublicArtwork[];
+  artworks: Artwork[];
   hasMore: boolean;
   onLoadMore: () => void;
   isLoading?: boolean;
@@ -87,7 +87,7 @@ export const MasonryLayout = ({
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-white/80 text-sm">
-                        ♥ {artwork.favouritedCount}
+                        ♥ {artwork.favouriteCount}
                       </span>
                       <span className="text-white/80 text-sm">
                         👁 {artwork.watchlistCount}

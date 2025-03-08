@@ -1,139 +1,33 @@
-import {
-  FrontendUser,
-  FrontendUserUnpopulated,
-  UserFrontend,
-  UserLean,
-  UserSanitized,
-} from "./userTypes";
-import { FrontendCollection } from "./collectionTypes";
-import { ArtworkDB, DBImage } from "../models/artworkModel";
-import {
-  CloudinaryImageFrontend,
-  CloudinaryImageSanitized,
-} from "./cloudinaryTypes";
-// import { CollectionLean } from "./collectionTypes";
+import { ArtworkDB } from "../models/artworkModel";
+import { CloudinaryImageSanitized } from "./cloudinaryTypes";
+import { Merge, TransformedDocument } from "./utilTypes";
 
-interface ArtworkExtensionFields {
-  isFavourited: boolean;
-  favouriteCount: number;
-  isWatchlisted: boolean;
-  watchlistCount: number;
-}
-
-export type ArtworkLean = Omit<ArtworkDB, keyof Document> & {
-  _id: string;
-  collections: string[];
-  watcherlist: string[];
-  favourited: string[];
+//! doc-specific transformation definitions
+export type ArtworkTransformations = {
+  DB: ArtworkDB;
+  Raw: TransformedDocument<ArtworkDB>;
+  Extended: Merge<
+    TransformedDocument<ArtworkDB>,
+    {
+      favouriteCount: number;
+      watchlistCount: number;
+      isFavourited?: boolean;
+      isWatchlisted?: boolean;
+    }
+  >;
+  Sanitized: Omit<
+    ArtworkTransformations["Extended"],
+    "favourited" | "watcherlist" | "image"
+  > & {
+    image: CloudinaryImageSanitized;
+  };
+  Frontend: ArtworkTransformations["Sanitized"];
 };
 
-export type ArtworkExtended = ArtworkLean & ArtworkExtensionFields;
+//! Frontend-specific types (safe)
+export type Artwork = ArtworkTransformations["Frontend"];
 
-export type ArtworkSanitized = Omit<
-  ArtworkExtended,
-  "collections" | "watcherlist" | "favourited" | "image"
-> & {
-  image: CloudinaryImageSanitized;
-};
-
-export type ArtworkFrontend = ArtworkSanitized;
-
-//! Populated Types
-export type ArtworkLeanPopulated = ArtworkLean & {
-  watcherlist: UserLean[];
-  favourited: UserLean[];
-};
-
-export type ArtworkExtendedPopulated = ArtworkLeanPopulated &
-  ArtworkExtensionFields;
-
-export type ArtworkSanitizedPopulated = Omit<
-  ArtworkExtendedPopulated,
-  "collections" | "watcherlist" | "favourited"
-> & {
-  watcherlist: UserSanitized[];
-  favourited: UserSanitized[];
-};
-
-export type ArtworkFrontendPopulated = Omit<
-  ArtworkSanitizedPopulated,
-  "collections" | "watcherlist" | "favourited"
-> & {
-  watcherlist: UserFrontend[];
-  favourited: UserFrontend[];
-};
-
-interface BaseFrontendArtwork {
-  _id: string;
-  title: string;
-  image: CloudinaryImageFrontend;
-  decade: Decade;
-  artstyle: ArtStyle;
-  medium: Medium;
-  surface: Surface;
-  featured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export type ArtworkPublic = Omit<
-  ArtworkLean,
-  "collections" | "watcherlist" | "favourited" | "image"
-> & {
-  image: CloudinaryImageFrontend;
-};
-
-type PopulatedField<T> = string | T | Partial<T>;
-
-export interface FrontendArtwork extends BaseFrontendArtwork {
-  // image: PublicArtworkImage;
-  watcherlist: PopulatedField<FrontendUser>[];
-  favourited: PopulatedField<FrontendUser>[];
-}
-
-export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
-  // image: PublicArtworkImage;
-  collections: string[];
-  watcherlist: string[];
-  favourited: string[];
-}
-
-export interface FrontendArtworkWithCollections extends FrontendArtwork {
-  // image: PublicArtworkImage;
-  collections: FrontendCollection[];
-  watcherlist: string[];
-  favourited: string[];
-}
-
-export interface FrontendArtworkWithWatcherlist extends FrontendArtwork {
-  // image: PublicArtworkImage;
-  collections: string[];
-  watcherlist: FrontendUserUnpopulated[];
-  favourited: string[];
-}
-
-export interface FrontendArtworkWithFavourited extends FrontendArtwork {
-  // image: PublicArtworkImage;
-  collections: string[];
-  watcherlist: string[];
-  favourited: FrontendUserUnpopulated[];
-}
-
-export interface FrontendArtworkFull extends FrontendArtwork {
-  // image: PublicArtworkImage;
-  collections: FrontendCollection[];
-  watcherlist: FrontendUserUnpopulated[];
-  favourited: FrontendUserUnpopulated[];
-}
-
-export interface PublicFrontendArtwork extends BaseFrontendArtwork {
-  // image: PublicArtworkImage;
-  isWatchlisted: boolean;
-  isFavourited: boolean;
-  watchCount: number;
-  favouriteCount: number;
-}
-
+//! Artwork fields
 export type Decade =
   | "1950s"
   | "1960s"
@@ -158,18 +52,6 @@ export type Medium =
   | "sand";
 
 export type Surface = "paper" | "canvas" | "wood" | "film";
-
-export interface CloudinaryColor {
-  color: string;
-  percentage: number;
-  // _id: string;
-}
-
-export interface GoogleColor {
-  color: string;
-  percentage: number;
-  // _id: string;
-}
 
 export interface ColorInfo {
   color: string;
@@ -211,4 +93,74 @@ export interface ArtworkQueryParams extends ArtworkFilterParams {
   sortColor?: string;
 }
 
+// export interface CloudinaryColor {
+//   color: string;
+//   percentage: number;
+//   // _id: string;
+// }
+
+// export interface GoogleColor {
+//   color: string;
+//   percentage: number;
+//   // _id: string;
+// }
+
 // export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+
+// export type ArtworkPublic = Omit<
+//   ArtworkLean,
+//   "collections" | "watcherlist" | "favourited" | "image"
+// > & {
+//   image: CloudinaryImageFrontend;
+// };
+
+// type PopulatedField<T> = string | T | Partial<T>;
+
+// export interface FrontendArtwork extends BaseFrontendArtwork {
+//   // image: PublicArtworkImage;
+//   watcherlist: PopulatedField<FrontendUser>[];
+//   favourited: PopulatedField<FrontendUser>[];
+// }
+
+// export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
+//   // image: PublicArtworkImage;
+//   collections: string[];
+//   watcherlist: string[];
+//   favourited: string[];
+// }
+
+// export interface FrontendArtworkWithCollections extends FrontendArtwork {
+//   // image: PublicArtworkImage;
+//   collections: FrontendCollection[];
+//   watcherlist: string[];
+//   favourited: string[];
+// }
+
+// export interface FrontendArtworkWithWatcherlist extends FrontendArtwork {
+//   // image: PublicArtworkImage;
+//   collections: string[];
+//   watcherlist: FrontendUserUnpopulated[];
+//   favourited: string[];
+// }
+
+// export interface FrontendArtworkWithFavourited extends FrontendArtwork {
+//   // image: PublicArtworkImage;
+//   collections: string[];
+//   watcherlist: string[];
+//   favourited: FrontendUserUnpopulated[];
+// }
+
+// export interface FrontendArtworkFull extends FrontendArtwork {
+//   // image: PublicArtworkImage;
+//   collections: FrontendCollection[];
+//   watcherlist: FrontendUserUnpopulated[];
+//   favourited: FrontendUserUnpopulated[];
+// }
+
+// export interface PublicFrontendArtwork extends BaseFrontendArtwork {
+//   // image: PublicArtworkImage;
+//   isWatchlisted: boolean;
+//   isFavourited: boolean;
+//   watchCount: number;
+//   favouriteCount: number;
+// }

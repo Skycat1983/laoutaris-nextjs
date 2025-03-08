@@ -6,7 +6,7 @@ import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import { ArticleNavItem, ValidSection } from "@/lib/data/types/navigationTypes";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
-import { ApiSingleArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
+import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 
 interface ArticleLoaderProps {
   slug: string;

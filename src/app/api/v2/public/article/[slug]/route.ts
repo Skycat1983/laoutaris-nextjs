@@ -4,7 +4,7 @@ import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { LeanDocument } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
 import { ArticlePopulatedFrontend } from "@/lib/data/types/transformationTypes";
-import { ApiSingleArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
+import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
@@ -15,7 +15,7 @@ type LeanArticle = LeanDocument<ArticleDB>;
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<RouteResponse<ApiSingleArticlePopulatedResult>> => {
+): Promise<RouteResponse<ApiArticlePopulatedResult>> => {
   try {
     // populate both artwork and author
     const articleDB = await ArticleModel.findOne({ slug: params.slug })
@@ -39,7 +39,7 @@ export const GET = async (
     return NextResponse.json({
       success: true,
       data: articlePublic,
-    } satisfies ApiSingleArticlePopulatedResult);
+    } satisfies ApiArticlePopulatedResult);
   } catch (error) {
     console.error("Error fetching article artwork:", error);
     return NextResponse.json({

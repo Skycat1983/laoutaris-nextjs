@@ -1,122 +1,113 @@
 import { UserDB } from "../models";
-import {
-  ArtworkExtended,
-  ArtworkFrontend,
-  ArtworkLean,
-  ArtworkSanitized,
-  FrontendArtwork,
-} from "./artworkTypes";
-import {
-  CommentFrontend,
-  CommentLean,
-  CommentSanitized,
-  FrontendComment,
-  FrontendCommentWithBlogNav,
-} from "./commentTypes";
-import { MongoDocumentLean } from "./utilTypes";
+import { Merge, TransformedDocument } from "./utilTypes";
 
-export type UserLean = MongoDocumentLean<UserDB> & {
-  comments: string[];
-  watchlist: string[];
-  favourites: string[];
+export type UserTransformations = {
+  DB: UserDB;
+  Raw: TransformedDocument<UserDB>;
+  Extended: Merge<TransformedDocument<UserDB>, { isOnline?: boolean }>;
+  Sanitized: Omit<UserTransformations["Extended"], "password" | "email">;
+  Frontend: UserTransformations["Sanitized"];
 };
 
-export type UserExtensionFields = {};
+//! Frontend-specific types (safe)
+export type User = UserTransformations["Frontend"];
 
-export type UserExtended = UserLean & UserExtensionFields;
+// export type UserExtensionFields = {};
 
-export type UserSanitized = Omit<
-  UserExtended,
-  "_id" | "password" | "email" | "comments" | "watchlist" | "favourites"
->;
+// export type UserExtended = UserLean & UserExtensionFields;
 
-//! Populated Types
+// export type UserSanitized = Omit<
+//   UserExtended,
+//   "_id" | "password" | "email" | "comments" | "watchlist" | "favourites"
+// >;
 
-export type UserLeanPopulated = UserLean & {
-  comments: CommentLean[];
-  watchlist: ArtworkLean[];
-  favourites: ArtworkLean[];
-};
+// //! Populated Types
 
-export type UserExtendedPopulated = Omit<
-  UserLeanPopulated,
-  "comments" | "watchlist" | "favourites"
-> & {
-  comments: CommentExtended[];
-  watchlist: ArtworkExtended[];
-  favourites: ArtworkExtended[];
-} & UserExtensionFields;
+// export type UserLeanPopulated = UserLean & {
+//   comments: CommentLean[];
+//   watchlist: ArtworkLean[];
+//   favourites: ArtworkLean[];
+// };
 
-export type UserSanitizedPopulated = Omit<
-  UserExtendedPopulated,
-  "comments" | "watchlist" | "favourites"
-> & {
-  comments: CommentSanitized[];
-  watchlist: ArtworkSanitized[];
-  favourites: ArtworkSanitized[];
-};
+// export type UserExtendedPopulated = Omit<
+//   UserLeanPopulated,
+//   "comments" | "watchlist" | "favourites"
+// > & {
+//   comments: CommentExtended[];
+//   watchlist: ArtworkExtended[];
+//   favourites: ArtworkExtended[];
+// } & UserExtensionFields;
 
-export type UserFrontend = UserSanitized;
+// export type UserSanitizedPopulated = Omit<
+//   UserExtendedPopulated,
+//   "comments" | "watchlist" | "favourites"
+// > & {
+//   comments: CommentSanitized[];
+//   watchlist: ArtworkSanitized[];
+//   favourites: ArtworkSanitized[];
+// };
 
-export type UserFrontendPopulated = Omit<
-  UserSanitizedPopulated,
-  "comments" | "watchlist" | "favourites"
-> & {
-  comments: CommentFrontend[];
-  watchlist: ArtworkFrontend[];
-  favourites: ArtworkFrontend[];
-};
+// export type UserFrontend = UserSanitized;
 
-export type SerializableUser = Omit<
-  UserDB,
-  "comments" | "watchlist" | "favourites"
-> & {
-  _id: string;
-  comments: string[];
-  watchlist: string[];
-  favourites: string[];
-};
+// export type UserFrontendPopulated = Omit<
+//   UserSanitizedPopulated,
+//   "comments" | "watchlist" | "favourites"
+// > & {
+//   comments: CommentFrontend[];
+//   watchlist: ArtworkFrontend[];
+//   favourites: ArtworkFrontend[];
+// };
 
-export interface BaseFrontendUser {
-  _id: string;
-  email: string;
-  username: string;
-  role: "user" | "admin";
-  createdAt: Date;
-  updatedAt: Date;
-}
+// export type SerializableUser = Omit<
+//   UserDB,
+//   "comments" | "watchlist" | "favourites"
+// > & {
+//   _id: string;
+//   comments: string[];
+//   watchlist: string[];
+//   favourites: string[];
+// };
 
-// Each field can be either unpopulated or populated
-type PopulatedField<T> = string | T | Partial<T>;
+// export interface BaseFrontendUser {
+//   _id: string;
+//   email: string;
+//   username: string;
+//   role: "user" | "admin";
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
-// Base user type with flexible population
-export interface FrontendUser extends BaseFrontendUser {
-  comments: PopulatedField<FrontendComment>[];
-  watchlist: PopulatedField<FrontendArtwork>[];
-  favourites: PopulatedField<FrontendArtwork>[];
-}
+// // Each field can be either unpopulated or populated
+// type PopulatedField<T> = string | T | Partial<T>;
 
-// Specific user type for the comments view
-export interface FrontendUserWithComments extends BaseFrontendUser {
-  comments: FrontendCommentWithBlogNav[]; // Using the nav-specific comment type
-  watchlist: string[];
-  favourites: string[];
-}
+// // Base user type with flexible population
+// export interface FrontendUser extends BaseFrontendUser {
+//   comments: PopulatedField<FrontendComment>[];
+//   watchlist: PopulatedField<FrontendArtwork>[];
+//   favourites: PopulatedField<FrontendArtwork>[];
+// }
 
-export interface FrontendUserWithWatchlist extends FrontendUser {
-  comments: string[];
-  watchlist: FrontendArtwork[];
-  favourites: string[];
-}
+// // Specific user type for the comments view
+// export interface FrontendUserWithComments extends BaseFrontendUser {
+//   comments: FrontendCommentWithBlogNav[]; // Using the nav-specific comment type
+//   watchlist: string[];
+//   favourites: string[];
+// }
 
-export interface FrontendUserWithFavourites extends FrontendUser {
-  comments: string[];
-  watchlist: string[];
-  favourites: FrontendArtwork[];
-}
+// export interface FrontendUserWithWatchlist extends FrontendUser {
+//   comments: string[];
+//   watchlist: FrontendArtwork[];
+//   favourites: string[];
+// }
 
-export interface FrontendUserUnpopulated extends BaseFrontendUser {
-  comments: string[];
-  watchlist: string[];
-  favourites: string[];
-}
+// export interface FrontendUserWithFavourites extends FrontendUser {
+//   comments: string[];
+//   watchlist: string[];
+//   favourites: FrontendArtwork[];
+// }
+
+// export interface FrontendUserUnpopulated extends BaseFrontendUser {
+//   comments: string[];
+//   watchlist: string[];
+//   favourites: string[];
+// }

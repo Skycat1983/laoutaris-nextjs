@@ -3,12 +3,13 @@
 import { ArtworkFeedCard } from "@/components/modules/cards/ArtworkFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
+import { Artwork } from "@/lib/data/types/artworkTypes";
+
 export function ArtworkFeed() {
-  const [artworks, setArtworks] = useState<FrontendArtwork[]>([]);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

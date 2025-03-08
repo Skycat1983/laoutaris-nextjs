@@ -1,8 +1,4 @@
 import type {
-  ArticleFrontend,
-  ArticleFrontendPopulated,
-  FrontendArticle,
-  FrontendArticleWithArtwork,
   Section,
   Article,
   ArticlePopulated,
@@ -13,10 +9,6 @@ import {
   ListResult,
   ApiResponse,
 } from "@/lib/data/types/apiTypes";
-import {
-  ArticlePopulatedFrontend,
-  ArticleTransformations,
-} from "@/lib/data/types/transformationTypes";
 
 interface FetchArticlesParams {
   section?: Section;
@@ -25,8 +17,8 @@ interface FetchArticlesParams {
   page?: number;
 }
 
-export type ApiSingleArticleResult = SingleResult<Article>;
-export type ApiSingleArticlePopulatedResult = SingleResult<ArticlePopulated>;
+export type ApiArticleResult = SingleResult<Article>;
+export type ApiArticlePopulatedResult = SingleResult<ArticlePopulated>;
 
 // Multiple articles response types
 export type ApiArticleListResult = ListResult<Article>;
@@ -36,9 +28,7 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug
   single: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<ApiSingleArticleResult>(
-      `/api/v2/public/article/${encodedSlug}`
-    );
+    return fetcher<ApiArticleResult>(`/api/v2/public/article/${encodedSlug}`);
   },
 
   // Get multiple articles by params
@@ -60,7 +50,7 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get article with artwork
   singlePopulated: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<ApiSingleArticlePopulatedResult>(
+    return fetcher<ApiArticlePopulatedResult>(
       `/api/v2/public/article/${encodedSlug}`
     );
   },

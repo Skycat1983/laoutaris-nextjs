@@ -1,6 +1,5 @@
 import { serverApi } from "@/lib/api/serverApi";
 import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
-import { artworkToPublic } from "@/lib/transforms/artworkToPublic";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
 
@@ -13,7 +12,7 @@ export const ArtworkListLoader = async ({
   initialSort,
   initialFilters,
 }: ArtworkListLoaderProps) => {
-  const initialArtworks = await serverApi.public.artwork.fetchArtworks({
+  const initialArtworks = await serverApi.public.artwork.multiple({
     ...initialFilters,
     filterMode: initialFilters?.filterMode || "ALL",
     sortBy: initialSort?.by,
@@ -24,13 +23,11 @@ export const ArtworkListLoader = async ({
     throw new Error("No artworks found");
   }
 
-  const publicArtworks = initialArtworks.data.map((artwork) =>
-    artworkToPublic(artwork)
-  );
+  const { data: artworks, metadata } = initialArtworks;
 
   return (
     <ArtworkGallery
-      initialArtworks={publicArtworks}
+      initialArtworks={artworks}
       initialSort={initialSort}
       initialFilters={initialFilters}
     />
