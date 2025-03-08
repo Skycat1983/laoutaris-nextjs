@@ -17,7 +17,7 @@ export const extendArticlePopulated = (
   const { author, artwork, ...rest } = article;
 
   return {
-    ...rest, // Spread the remaining fields
+    ...rest,
     author: extendUser(author), // Ensure author is properly extended
     artwork: extendArtwork(artwork), // Extend artwork
   };

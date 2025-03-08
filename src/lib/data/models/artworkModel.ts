@@ -40,7 +40,6 @@ export interface DBImage {
 
 export interface ArtworkDB extends Document, BaseArtwork {
   image: DBImage;
-
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];

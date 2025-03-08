@@ -25,16 +25,16 @@ type PublicArtworkOverride = {
 export type SanitizedArtwork = Merge<ArtworkLean, PublicArtworkOverride>;
 
 export const sanitizeArtwork = (
-  artwork: ArtworkLean,
+  artwork: ArtworkExtended,
   userId?: string | null
 ): SanitizedArtwork => {
   return {
     ...artwork,
     image: sanitizeImage(artwork.image),
-    favouriteCount: artwork.favourited.length,
-    watchlistCount: artwork.watcherlist.length,
-    isFavourited: userId ? artwork.favourited.includes(userId) : false,
-    isWatchlisted: userId ? artwork.watcherlist.includes(userId) : false,
+    // favouriteCount: artwork.favourited.length,
+    // watchlistCount: artwork.watcherlist.length,
+    // isFavourited: userId ? artwork.favourited.includes(userId) : false,
+    // isWatchlisted: userId ? artwork.watcherlist.includes(userId) : false,
   };
 };
 

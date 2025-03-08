@@ -15,7 +15,11 @@ import {
 } from "./commentTypes";
 import { MongoDocumentLean } from "./utilTypes";
 
-export type UserLean = MongoDocumentLean<UserDB>;
+export type UserLean = MongoDocumentLean<UserDB> & {
+  comments: string[];
+  watchlist: string[];
+  favourites: string[];
+};
 
 export type UserExtensionFields = {};
 
@@ -23,7 +27,7 @@ export type UserExtended = UserLean & UserExtensionFields;
 
 export type UserSanitized = Omit<
   UserExtended,
-  "password" | "email" | "comments" | "watchlist" | "favourites"
+  "_id" | "password" | "email" | "comments" | "watchlist" | "favourites"
 >;
 
 //! Populated Types
@@ -34,7 +38,10 @@ export type UserLeanPopulated = UserLean & {
   favourites: ArtworkLean[];
 };
 
-export type UserExtendedPopulated = UserLeanPopulated & {
+export type UserExtendedPopulated = Omit<
+  UserLeanPopulated,
+  "comments" | "watchlist" | "favourites"
+> & {
   comments: CommentExtended[];
   watchlist: ArtworkExtended[];
   favourites: ArtworkExtended[];

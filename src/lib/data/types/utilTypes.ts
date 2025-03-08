@@ -1,5 +1,7 @@
 import { Document as MongoDocument } from "mongoose";
 
+export type LeanDocument<T> = T & { $locals?: never };
+
 // Utility to make a LeanDocument from a DBDocument
 export type MongoDocumentLean<T> = Omit<T, keyof MongoDocument> & {
   _id: string;

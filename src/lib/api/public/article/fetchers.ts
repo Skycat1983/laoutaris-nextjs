@@ -11,6 +11,7 @@ import {
   ListResult,
   ApiResponse,
 } from "@/lib/data/types/apiTypes";
+import { ArticlePopulatedPublic } from "@/lib/data/types/transformationTypes";
 
 interface FetchArticlesParams {
   section?: Section;
@@ -19,22 +20,29 @@ interface FetchArticlesParams {
   page?: number;
 }
 
-export type ApiArticlePublicResult = SingleResult<ArticleFrontend>;
-export type ApiArticlesPublicResult = ListResult<ArticleFrontend>;
-export type ApiArticlePopulatedPublicResult =
-  SingleResult<ArticleFrontendPopulated>;
+// export type ApiArticlePublicResult = SingleResult<ArticleFrontend>;
+// export type ApiArticlesPublicResult = ListResult<ArticleFrontend>;
+// export type ArticleFrontend = SingleResult<ArticlePopulatedPublic>;
+
+export type ApiSingleArticleResult = SingleResult<ArticleFrontend>;
+export type ApiSingleArticlePopulatedResult =
+  SingleResult<ArticlePopulatedPublic>;
+
+// Multiple articles response types
+export type ApiArticleListResult = ListResult<ArticleFrontend>;
+export type ApiArticlePopulatedListResult = ListResult<ArticlePopulatedPublic>;
 
 export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug
-  fetchArticle: async (slug: string) => {
+  single: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<ApiArticlePublicResult>(
+    return fetcher<ApiSingleArticleResult>(
       `/api/v2/public/article/${encodedSlug}`
     );
   },
 
   // Get multiple articles by params
-  fetchArticles: async ({
+  multiple: async ({
     section,
     fields,
     limit = 10,
@@ -46,14 +54,14 @@ export const createArticleFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<ApiArticlesPublicResult>(`/api/v2/public/article?${params}`);
+    return fetcher<ApiArticleListResult>(`/api/v2/public/article?${params}`);
   },
 
   // Get article with artwork
-  fetchArticleArtwork: async (slug: string) => {
+  singlePopulated: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<ApiArticlePopulatedPublicResult>(
-      `/api/v2/public/article/${encodedSlug}/artwork`
+    return fetcher<ApiSingleArticlePopulatedResult>(
+      `/api/v2/public/article/${encodedSlug}`
     );
   },
 });

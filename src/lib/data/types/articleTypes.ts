@@ -22,8 +22,10 @@ export type ArticleLean = MongoDocumentLean<ArticleDB> & {
   artwork: string;
 };
 
-// the additional fields of interest to the frontend
-export type ArticleExtensionFields = {};
+// Convert to interface since it's a base contract
+export interface ArticleExtensionFields {
+  // Add any extension fields here
+}
 
 // the Article as it is retrieved from the DB, with the additional fields of interest to the frontend
 export type ArticleExtended = ArticleLean & ArticleExtensionFields;
@@ -35,34 +37,39 @@ export type ArticleSanitized = Omit<ArticleLean, "_id" | "author" | "artwork">;
 export type ArticleFrontend = ArticleSanitized;
 
 // ! Populated Article Return
-// the Article as it is retrieved from the DB, using 'populate()' to add the author and artwork
-export type ArticleLeanPopulated = ArticleLean & {
-  author: UserLean;
-  artwork: ArtworkLean;
+// Base type for populated fields at each stage
+type PopulatedFields<TUser, TArtwork> = {
+  author: TUser;
+  artwork: TArtwork;
 };
 
-export type ArticleExtendedPopulated = ArticleLeanPopulated & {
-  artwork: ArtworkExtended;
-  author: UserExtended;
-} & ArticleExtensionFields;
+// Lean stage
+export type ArticleLeanPopulated = Omit<
+  MongoDocumentLean<ArticleDB>,
+  "author" | "artwork"
+> &
+  PopulatedFields<UserLean, ArtworkLean>;
 
-// the populated Article as it is retrieved from the DB, with sensitive data removed from the author and artwork
+// Extended stage
+export type ArticleExtendedPopulated = Omit<
+  ArticleLeanPopulated,
+  "author" | "artwork"
+> &
+  PopulatedFields<UserExtended, ArtworkExtended>;
+
+// Sanitized stage
 export type ArticleSanitizedPopulated = Omit<
   ArticleExtendedPopulated,
-  "_id" | "author" | "artwork"
-> & {
-  author: UserSanitized;
-  artwork: ArtworkSanitized;
-};
+  "author" | "artwork"
+> &
+  PopulatedFields<UserSanitized, ArtworkSanitized>;
 
-// the sanitized and populated frontend Article as it is retrieved from the DB, with new properties added (where applicable)sensitive data removed from the author and artwork
+// Frontend stage
 export type ArticleFrontendPopulated = Omit<
   ArticleSanitizedPopulated,
   "author" | "artwork"
-> & {
-  author: UserFrontend;
-  artwork: ArtworkFrontend;
-};
+> &
+  PopulatedFields<UserFrontend, ArtworkFrontend>;
 
 interface BaseFrontendArticle {
   _id: string;

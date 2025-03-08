@@ -1,13 +1,13 @@
 import {
-  ArticleLean,
-  ArticleLeanPopulated,
+  ArticleExtended,
+  ArticleExtendedPopulated,
   ArticleSanitized,
   ArticleSanitizedPopulated,
 } from "../data/types";
 import { sanitizeArtwork } from "./sanitizeArtwork";
 import { sanitizeUser } from "./sanitizeUser";
 
-export function sanitizeArticle(article: ArticleLean): ArticleSanitized {
+export function sanitizeArticle(article: ArticleExtended): ArticleSanitized {
   return {
     // _id: article._id,
     // author: article.author,
@@ -26,11 +26,14 @@ export function sanitizeArticle(article: ArticleLean): ArticleSanitized {
 }
 
 export function sanitizeArticlePopulated(
-  article: ArticleLeanPopulated
+  articleExtended: ArticleExtendedPopulated
 ): ArticleSanitizedPopulated {
+  const { _id, author, artwork, ...rest } = articleExtended;
+
+  const article = { ...rest };
   return {
     ...sanitizeArticle(article),
     author: sanitizeUser(article.author),
-    artwork: sanitizeArtwork(article.artwork),
+    artwork: sanitizeArtwork(article.artwork, article.author._id),
   };
 }

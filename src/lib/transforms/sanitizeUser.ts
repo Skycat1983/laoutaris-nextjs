@@ -1,8 +1,8 @@
-import { UserLean, UserSanitized } from "@/lib/data/types";
+import { UserExtended, UserSanitized } from "@/lib/data/types";
 
-export const sanitizeUser = (user: UserLean): UserSanitized => {
+export const sanitizeUser = (user: UserExtended): UserSanitized => {
   return {
-    _id: user._id,
+    // _id: user._id,
     username: user.username,
     role: user.role,
     // email: user.email,

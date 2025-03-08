@@ -2,29 +2,27 @@
 
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArticleView } from "@/components/views/ArticleView";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
-import {
-  FrontendArticle,
-  FrontendArticleWithArtwork,
-} from "@/lib/data/types/articleTypes";
+import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
 import { ArticleNavItem, ValidSection } from "@/lib/data/types/navigationTypes";
+import { serverApi } from "@/lib/api/serverApi";
+import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
+import { ApiSingleArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 
 interface ArticleLoaderProps {
   slug: string;
   section: ValidSection;
 }
 
-type ArticleLoaderResponse = [
-  ApiResponse<FrontendArticleWithArtwork>,
+type FetcherResponses = [
+  ApiResponse<ApiSingleArticlePopulatedResult>,
   ApiResponse<ArticleNavItem[]>
 ];
 
 export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
-  const [articleResponse, navigationResponse]: ArticleLoaderResponse =
-    await Promise.all([
-      serverPublicApi.article.fetchArticleArtwork(slug),
-      serverPublicApi.navigation.fetchArticleNavigationList(section),
-    ]);
+  const [articleResponse, navigationResponse] = (await Promise.all([
+    serverApi.public.article.singlePopulated(slug),
+    serverApi.public.navigation.fetchArticleNavigationList(section),
+  ])) as FetcherResponses;
 
   if (!articleResponse.success) {
     throw new Error(articleResponse.error || "Failed to fetch article artwork");
@@ -37,7 +35,8 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
   }
 
   const { data: article } =
-    articleResponse as ApiSuccessResponse<FrontendArticleWithArtwork>;
+    articleResponse as ApiSuccessResponse<ApiSingleArticlePopulatedResult>;
+
   const { data: navigationList } = navigationResponse as ApiSuccessResponse<
     ArticleNavItem[]
   >;
@@ -59,5 +58,5 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
 
   console.log("article in loader", article);
 
-  return <ArticleView article={article} navigation={navigation} />;
+  return <ArticleView article={article.data} navigation={navigation} />;
 }
