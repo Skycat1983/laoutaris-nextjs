@@ -1,109 +1,118 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
-import {
-  BlogEntryFrontend,
-  BlogEntrySanitized,
-  FrontendBlogEntry,
-} from "./blogTypes";
-import {
-  FrontendUser,
-  UserExtended,
-  UserFrontend,
-  UserSanitized,
-} from "./userTypes";
-import { MongoDocumentLean } from "./utilTypes";
 import { CommentDB } from "../models";
-import { UserLean } from "./userTypes";
-import { BlogEntryLean } from "./blogTypes";
+import { LeanDocument, TransformedDocument, Merge } from "./utilTypes";
 
-export type CommentLean = MongoDocumentLean<CommentDB> & {
-  author: string;
-  blog: string;
+interface CommentExtensionFields {
+  // readTime?: number;
+}
+
+export type CommentLean = LeanDocument<CommentDB>;
+export type CommentRaw = TransformedDocument<CommentLean>;
+export type CommentExtended = Merge<CommentRaw, CommentExtensionFields>;
+export type CommentSanitized = Omit<CommentExtended, "_id" | "email">;
+
+//! doc-specific transformation definitions
+export type CommentTransformations = {
+  DB: CommentDB;
+  Lean: CommentLean;
+  Raw: CommentRaw;
+  Extended: CommentExtended;
+  Sanitized: CommentSanitized;
+  Frontend: CommentSanitized;
 };
 
-export type CommentExtensionFields = {};
+//! Frontend-specific types (safe)
+export type Comment = CommentTransformations["Frontend"];
 
-export type CommentExtended = CommentLean & CommentExtensionFields;
+// export type CommentLean = MongoDocumentLean<CommentDB> & {
+//   author: string;
+//   blog: string;
+// };
 
-export type CommentSanitized = Omit<CommentExtended, "author" | "blog"> & {
-  author: UserSanitized;
-  blog: BlogEntrySanitized;
-};
+// export type CommentExtensionFields = {};
 
-export type CommentFrontend = CommentSanitized;
+// export type CommentExtended = CommentLean & CommentExtensionFields;
 
-//! Populated Types
+// export type CommentSanitized = Omit<CommentExtended, "author" | "blog"> & {
+//   author: UserSanitized;
+//   blog: BlogEntrySanitized;
+// };
 
-export type CommentLeanPopulated = CommentLean & {
-  author: UserLean;
-  blog: BlogEntryLean;
-};
+// export type CommentFrontend = CommentSanitized;
 
-export type CommentExtendedPopulated = CommentLeanPopulated & {
-  author: UserExtended;
-  blog: BlogEntryExtended;
-} & CommentExtensionFields;
+// //! Populated Types
 
-export type CommentSanitizedPopulated = Omit<
-  CommentLeanPopulated,
-  "author" | "blog"
-> & {
-  author: UserSanitized;
-  blog: BlogEntrySanitized;
-};
+// export type CommentLeanPopulated = CommentLean & {
+//   author: UserLean;
+//   blog: BlogEntryLean;
+// };
 
-export type CommentFrontendPopulated = Omit<
-  CommentSanitizedPopulated,
-  "author" | "blog"
-> & {
-  author: UserFrontend;
-  blog: BlogEntryFrontend;
-};
+// export type CommentExtendedPopulated = CommentLeanPopulated & {
+//   author: UserExtended;
+//   blog: BlogEntryExtended;
+// } & CommentExtensionFields;
 
-export type CommentPublic = CommentSanitizedPopulated;
+// export type CommentSanitizedPopulated = Omit<
+//   CommentLeanPopulated,
+//   "author" | "blog"
+// > & {
+//   author: UserSanitized;
+//   blog: BlogEntrySanitized;
+// };
 
-export interface BaseFrontendComment {
-  _id: string;
-  text: string;
-  displayDate: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+// export type CommentFrontendPopulated = Omit<
+//   CommentSanitizedPopulated,
+//   "author" | "blog"
+// > & {
+//   author: UserFrontend;
+//   blog: BlogEntryFrontend;
+// };
 
-// type CommentAuthorType = FrontendUser | string;
-type PopulatedField<T> = string | T | Partial<T>;
+// export type CommentPublic = CommentSanitizedPopulated;
 
-// Base comment type with flexible population
-export interface FrontendComment extends BaseFrontendComment {
-  author: PopulatedField<FrontendUser>;
-  blog: PopulatedField<FrontendBlogEntry>;
-}
+// export interface BaseFrontendComment {
+//   _id: string;
+//   text: string;
+//   displayDate: Date;
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
-// Specific comment types for different use cases
-export interface FrontendCommentUnpopulated extends BaseFrontendComment {
-  author: string;
-  blog: string;
-}
+// // type CommentAuthorType = FrontendUser | string;
+// type PopulatedField<T> = string | T | Partial<T>;
 
-export interface FrontendCommentWithAuthor extends BaseFrontendComment {
-  author: FrontendUser;
-  blog: string;
-}
+// // Base comment type with flexible population
+// export interface FrontendComment extends BaseFrontendComment {
+//   author: PopulatedField<FrontendUser>;
+//   blog: PopulatedField<FrontendBlogEntry>;
+// }
 
-type BlogNavFields = Pick<
-  FrontendBlogEntry,
-  "slug" | "title" | "imageUrl" | "subtitle"
->;
+// // Specific comment types for different use cases
+// export interface FrontendCommentUnpopulated extends BaseFrontendComment {
+//   author: string;
+//   blog: string;
+// }
 
-export interface FrontendCommentWithBlogNav extends BaseFrontendComment {
-  author: string;
-  blog: BlogNavFields;
-}
+// export interface FrontendCommentWithAuthor extends BaseFrontendComment {
+//   author: FrontendUser;
+//   blog: string;
+// }
 
-// Full blog population
-export interface FrontendCommentWithBlogPost extends BaseFrontendComment {
-  author: string;
-  blog: FrontendBlogEntry;
-}
+// type BlogNavFields = Pick<
+//   FrontendBlogEntry,
+//   "slug" | "title" | "imageUrl" | "subtitle"
+// >;
+
+// export interface FrontendCommentWithBlogNav extends BaseFrontendComment {
+//   author: string;
+//   blog: BlogNavFields;
+// }
+
+// // Full blog population
+// export interface FrontendCommentWithBlogPost extends BaseFrontendComment {
+//   author: string;
+//   blog: FrontendBlogEntry;
+// }
 
 // type FrontendComment = PopulatedComment | UnpopulatedComment;
 
