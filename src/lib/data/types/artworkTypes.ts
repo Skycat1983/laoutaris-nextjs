@@ -11,7 +11,6 @@ export interface ArtworkFields {
 
 // From Mongoose Document to Lean
 export type ArtworkLean = LeanDocument<ArtworkDB>;
-// From Lean to Transformed (stripped of all Mongoose properties)
 export type ArtworkRaw = TransformedDocument<ArtworkLean>; // Should stay as ArtworkDB, not ArtworkLean
 export type ArtworkExtended = Merge<ArtworkRaw, ArtworkFields>;
 export type ArtworkSanitized = Omit<
