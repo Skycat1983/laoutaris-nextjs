@@ -1,35 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CollectionModel } from "@/lib/data/models";
-import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
-
-type CollectionApiResponse = ApiResponse<FrontendCollection[]>;
+import { CollectionModel, LeanCollection } from "@/lib/data/models";
+import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
+import {
+  ApiErrorResponse,
+  CollectionTransformations,
+  RouteResponse,
+} from "@/lib/data/types";
 
 export const GET = async (
   req: NextRequest
-): Promise<NextResponse<CollectionApiResponse>> => {
+): Promise<RouteResponse<ApiCollectionListResult>> => {
+  // const { searchParams } = new URL(req.url);
+  const { searchParams } = req.nextUrl;
+  // Build query object
+  const query: any = {};
+  if (searchParams.get("section")) {
+    query.section = searchParams.get("section");
+  }
+
+  // Handle field selection
+  // const fields = searchParams.get("fields")?.split(",").join(" ") || "";
+  // Handle pagination
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
+
   try {
-    const { searchParams } = new URL(req.url);
-
-    // Build query object
-    const query: any = {};
-    if (searchParams.get("section")) {
-      query.section = searchParams.get("section");
-    }
-
-    // Handle field selection
-    const fields = searchParams.get("fields")?.split(",").join(" ") || "";
-
-    // Handle pagination
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-
-    const [collections, total] = await Promise.all([
+    const [leanCollections, total] = await Promise.all([
       CollectionModel.find(query)
-        .select(fields)
+        // .select(fields)
         .skip((page - 1) * limit)
-        .limit(limit),
+        .limit(limit)
+        .lean<CollectionTransformations["Lean"][]>(),
       CollectionModel.countDocuments(query),
     ]);
+
+    if (!leanCollections) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No collections found",
+        } satisfies ApiErrorResponse,
+        { status: 404 }
+      );
+    }
+
+    const collections = leanCollections.map((collection) =>
+      transformToPick(collection, COLLECTIONS_FETCH_CONFIG.fields)
+    );
 
     return NextResponse.json({
       success: true,
@@ -40,7 +57,7 @@ export const GET = async (
         total,
         totalPages: Math.ceil(total / limit),
       },
-    } satisfies PaginatedResponse<FrontendCollection[]>);
+    } satisfies ApiCollectionListResult);
   } catch (error) {
     console.error("Collection fetch error:", error);
     return NextResponse.json(

@@ -23,7 +23,7 @@ export async function BlogSectionLoader() {
   try {
     // Fetch data using API layer
     const response: ApiResponse<FrontendBlogEntry[]> =
-      await serverPublicApi.blog.fetchBlogs({
+      await serverPublicApi.blog.multiple({
         sortby: BLOG_FETCH_CONFIG.sortby,
         limit: BLOG_FETCH_CONFIG.limit,
         fields: BLOG_FETCH_CONFIG.fields,

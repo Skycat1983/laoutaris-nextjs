@@ -1,6 +1,12 @@
 import { ArtworkDB } from "../models/artworkModel";
 import { CloudinaryImageSanitized } from "./cloudinaryTypes";
-import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
+import {
+  DocumentTransformations,
+  LeanDocument,
+  Merge,
+  TransformConfig,
+  TransformedDocument,
+} from "./utilTypes";
 
 export interface ArtworkFields {
   favouriteCount: number;
@@ -23,12 +29,26 @@ export type ArtworkSanitized = Omit<
 //! doc-specific transformation definitions
 export type ArtworkTransformations = {
   DB: ArtworkDB;
-  Lean: ArtworkLean;
-  Raw: ArtworkRaw;
-  Extended: ArtworkExtended;
-  Sanitized: ArtworkSanitized;
+  Lean: LeanDocument<ArtworkTransformations["DB"]>;
+  Raw: TransformedDocument<ArtworkTransformations["Lean"]>;
+  Extended: Merge<ArtworkTransformations["Raw"], ArtworkFields>;
+  Sanitized: Omit<
+    ArtworkTransformations["Extended"],
+    "favourited" | "watcherlist" | "image"
+  > & {
+    image: CloudinaryImageSanitized;
+  };
   Frontend: ArtworkTransformations["Sanitized"];
 };
+
+// export type ArtworkTransformations = {
+//   DB: ArtworkDB;
+//   Lean: ArtworkLean;
+//   Raw: ArtworkRaw;
+//   Extended: ArtworkExtended;
+//   Sanitized: ArtworkSanitized;
+//   Frontend: ArtworkTransformations["Sanitized"];
+// };
 
 //! Frontend-specific types (safe)
 export type Artwork = ArtworkTransformations["Frontend"];

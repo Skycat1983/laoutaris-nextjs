@@ -1,8 +1,6 @@
-import {
-  FrontendBlogEntry,
-  FrontendBlogEntryWithCommentAuthor,
-} from "@/lib/data/types/blogTypes";
+import { BlogEntryPopulatedFrontend } from "@/lib/data/types/populatedTypes";
 import { Fetcher } from "../../core/createFetcher";
+import { ListResult, SingleResult } from "@/lib/data/types";
 
 interface FetchBlogsParams {
   sortby?: "latest" | "oldest" | "popular" | "featured";
@@ -11,22 +9,19 @@ interface FetchBlogsParams {
   page?: number;
 }
 
-// Add this type for paginated responses
-type PaginatedBlogResponse = {
-  success: true;
-  data: FrontendBlogEntry[];
-  metadata: PaginationMetadata; // Note: not optional here
-};
+export type ApiBlogResult = SingleResult<BlogEntryPopulatedFrontend>;
+export type ApiBlogListResult = ListResult<BlogEntryPopulatedFrontend>;
+export type ApiBlogPopulatedResult = SingleResult<BlogEntryPopulatedFrontend>;
 
 export const createBlogFetchers = (fetcher: Fetcher) => ({
   // get one blog by slug
-  fetchBlog: async (slug: string) => {
+  single: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendBlogEntry>(`/api/v2/public/blog/${encodedSlug}`);
+    return fetcher<ApiBlogResult>(`/api/v2/public/blog/${encodedSlug}`);
   },
 
   // get multiple blogs by params
-  fetchBlogs: async ({
+  multiple: async ({
     sortby,
     fields,
     limit = 10,
@@ -38,15 +33,15 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<PaginatedBlogResponse["data"]>(
+    return fetcher<ApiBlogListResult>(
       `/api/v2/public/blog?${params.toString()}`
     );
   },
 
   // get one blog by slug. populate blog comments. populate comment author
-  fetchBlogCommentsAuthor: async (slug: string) => {
+  singlePopulated: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendBlogEntryWithCommentAuthor>(
+    return fetcher<ApiBlogPopulatedResult>(
       `/api/v2/public/blog/${encodedSlug}/comments/author`
     );
   },
@@ -54,3 +49,9 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
 
 // Type for our blog fetchers object
 export type BlogFetchers = ReturnType<typeof createBlogFetchers>;
+// // Add this type for paginated responses
+// type PaginatedBlogResponse = {
+//   success: true;
+//   data: FrontendBlogEntry[];
+//   metadata: PaginationMetadata; // Note: not optional here
+// };

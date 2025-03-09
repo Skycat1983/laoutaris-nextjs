@@ -1,9 +1,10 @@
 import type {
-  FrontendCollection,
-  FrontendCollectionWithArtworks,
+  Collection,
+  CollectionPopulated,
 } from "@/lib/data/types/collectionTypes";
 import { Fetcher } from "../../core/createFetcher";
 import { Section } from "@/lib/data/types/articleTypes";
+import { ListResult, SingleResult } from "@/lib/data/types";
 
 interface FetchCollectionsParams {
   section?: Section;
@@ -12,17 +13,21 @@ interface FetchCollectionsParams {
   page?: number;
 }
 
+export type ApiCollectionResult = SingleResult<Collection>;
+export type ApiCollectionListResult = ListResult<Collection>;
+export type ApiCollectionPopulatedResult = SingleResult<CollectionPopulated>;
+
 export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get one collection by slug
-  fetchCollection: async (slug: string) => {
+  single: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<FrontendCollection>(
+    return fetcher<ApiCollectionResult>(
       `/api/v2/public/collection/${encodedSlug}`
     );
   },
 
   // Get multiple collections by params
-  fetchCollections: async ({
+  multiple: async ({
     section,
     fields,
     limit = 10,
@@ -34,16 +39,16 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 
-    return fetcher<FrontendCollection[]>(
+    return fetcher<ApiCollectionListResult>(
       `/api/v2/public/collection?${params.toString()}`
     );
   },
 
   // Get collection with specific artwork
-  fetchCollectionArtwork: async (slug: string, artworkId: string) => {
+  singlePopulated: async (slug: string, artworkId: string) => {
     const encodedSlug = encodeURIComponent(slug);
     const encodedArtworkId = encodeURIComponent(artworkId);
-    return fetcher<FrontendCollectionWithArtworks>(
+    return fetcher<ApiCollectionPopulatedResult>(
       `/api/v2/public/collection/${encodedSlug}/artwork/${encodedArtworkId}`
     );
   },

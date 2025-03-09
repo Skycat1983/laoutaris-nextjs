@@ -1,10 +1,10 @@
 "use server";
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import { Collection } from "@/lib/data/types/collectionTypes";
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { delay } from "@/lib/utils/debug";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { serverApi } from "@/lib/api/serverApi";
 
 // Config Constants
 const COLLECTIONS_FETCH_CONFIG = {
@@ -14,7 +14,7 @@ const COLLECTIONS_FETCH_CONFIG = {
 
 // Type Definitions
 export type CollectionCardData = Pick<
-  FrontendCollection,
+  Collection,
   "title" | "imageUrl" | "slug" | "artworks"
 >;
 
@@ -23,12 +23,11 @@ export async function CollectionsSectionLoader() {
   await delay(2000);
   try {
     // Fetch data using API layer
-    const result: ApiResponse<FrontendCollection[]> =
-      await serverPublicApi.collection.fetchCollections({
-        section: COLLECTIONS_FETCH_CONFIG.section,
-        fields: COLLECTIONS_FETCH_CONFIG.fields,
-        limit: 9,
-      });
+    const result = await serverApi.public.collection.multiple({
+      section: COLLECTIONS_FETCH_CONFIG.section,
+      fields: COLLECTIONS_FETCH_CONFIG.fields,
+      limit: 9,
+    });
 
     if (!result.success) {
       throw new Error(result.error || "Failed to fetch collections");

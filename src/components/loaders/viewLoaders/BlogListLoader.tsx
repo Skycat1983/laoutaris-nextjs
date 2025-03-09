@@ -5,6 +5,7 @@ import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { serverApi } from "@/lib/api/serverApi";
 
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
@@ -48,7 +49,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
 
     if (sortby) {
       // Single sort type fetch
-      const result = await serverPublicApi.blog.fetchBlogs({
+      const result = await serverApi.public.blog.multiple({
         sortby,
         page,
         limit: BLOG_ENTRIES_CONFIG.limit,

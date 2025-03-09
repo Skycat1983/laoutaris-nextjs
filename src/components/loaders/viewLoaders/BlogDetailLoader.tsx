@@ -10,8 +10,8 @@ export async function BlogDetailLoader({ slug, showComments = false }: Props) {
   await delay(2000);
   try {
     const result = showComments
-      ? await serverPublicApi.blog.fetchBlogCommentsAuthor(slug)
-      : await serverPublicApi.blog.fetchBlog(slug);
+      ? await serverPublicApi.blog.singlePopulated(slug)
+      : await serverPublicApi.blog.single(slug);
     console.log("result", result);
 
     if (!result.success) {

@@ -1,13 +1,16 @@
 import { CollectionDB } from "../models";
 
 import { ArtworkLean } from "./artworkTypes";
-import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
+import { CollectionPopulatedFrontend } from "./populatedTypes";
+import {
+  LeanDocument,
+  Merge,
+  TransformedDocument,
+  TransformConfig,
+  DocumentTransformations,
+} from "./utilTypes";
 
-export interface CollectionFields {
-  // artworks: string[];
-}
-
-export type CollectionLean = LeanDocument<CollectionDB> & CollectionFields;
+export type CollectionLean = LeanDocument<CollectionDB>;
 export type CollectionRaw = TransformedDocument<CollectionLean>;
 export type CollectionExtended = Merge<CollectionRaw, CollectionFields>;
 export type CollectionSanitized = Omit<
@@ -15,14 +18,34 @@ export type CollectionSanitized = Omit<
   "_id" | "createdAt" | "updatedAt"
 >;
 
+export interface CollectionFields {
+  // artworks: string[];
+  firstArtwork: string;
+}
+
 export type CollectionTransformations = {
   DB: CollectionDB;
-  Lean: CollectionLean;
-  Raw: CollectionRaw;
-  Extended: CollectionExtended;
-  Sanitized: CollectionSanitized;
+  Lean: LeanDocument<CollectionTransformations["DB"]>;
+  Raw: TransformedDocument<CollectionTransformations["Lean"]>;
+  Extended: Merge<CollectionTransformations["Raw"], CollectionFields>;
+  Sanitized: Omit<
+    CollectionTransformations["Extended"],
+    "_id" | "createdAt" | "updatedAt"
+  >;
   Frontend: CollectionTransformations["Sanitized"];
 };
+
+// export type CollectionTransformations = {
+//   DB: CollectionDB;
+//   Lean: CollectionLean;
+//   Raw: CollectionRaw;
+//   Extended: CollectionExtended;
+//   Sanitized: CollectionSanitized;
+//   Frontend: CollectionTransformations["Sanitized"];
+// };
+
+export type Collection = CollectionTransformations["Frontend"];
+export type CollectionPopulated = CollectionPopulatedFrontend;
 
 export interface CollectionFilterParams {
   key: "section" | null;

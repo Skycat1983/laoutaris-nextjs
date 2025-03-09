@@ -1,11 +1,6 @@
-import CollectionInfoLayout from "@/components/layouts/public/CollectionInfoLayout";
 import { SubscribeSection } from "@/components/sections";
 import { ArtworkView } from "@/components/views";
 import { serverApi } from "@/lib/api/serverApi";
-import {
-  artworkToPublic,
-  PublicArtwork,
-} from "../../../../unused/artworkToPublic";
 import React from "react";
 
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {

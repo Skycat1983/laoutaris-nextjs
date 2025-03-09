@@ -5,6 +5,7 @@ import {
 } from "../../../../unused/artworkToPublic";
 import { delay } from "@/lib/utils/debug";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { serverApi } from "@/lib/api/serverApi";
 
 export async function CollectionArtworkLoader({
   slug,
@@ -14,7 +15,7 @@ export async function CollectionArtworkLoader({
   artworkId: string;
 }) {
   await delay(1000);
-  const result = await serverPublicApi.collection.fetchCollectionArtwork(
+  const result = await serverApi.public.collection.singlePopulated(
     slug,
     artworkId
   );
