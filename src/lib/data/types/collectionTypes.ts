@@ -4,31 +4,33 @@ import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
 
 export type CollectionLean = LeanDocument<CollectionDB>;
 export type CollectionRaw = TransformedDocument<CollectionLean>;
-export type CollectionExtended = Merge<CollectionRaw, CollectionFields>;
+export type CollectionExtended = Merge<CollectionRaw, PublicCollectionFields>;
 export type CollectionSanitized = Omit<
   CollectionExtended,
   "_id" | "createdAt" | "updatedAt"
 >;
 
-export interface CollectionFields {
-  // artworks: string[];
+export interface PublicCollectionFields {
   firstArtwork: string;
 }
 
-export type CollectionTransformations = {
+export type PublicCollectionTransformations = {
   DB: CollectionDB;
-  Lean: LeanDocument<CollectionTransformations["DB"]>;
-  Raw: TransformedDocument<CollectionTransformations["Lean"]>;
-  Extended: Merge<CollectionTransformations["Raw"], CollectionFields>;
+  Lean: LeanDocument<PublicCollectionTransformations["DB"]>;
+  Raw: TransformedDocument<PublicCollectionTransformations["Lean"]>;
+  Extended: Merge<
+    PublicCollectionTransformations["Raw"],
+    PublicCollectionFields
+  >;
   Sanitized: Omit<
-    CollectionTransformations["Extended"],
+    PublicCollectionTransformations["Extended"],
     "_id" | "createdAt" | "updatedAt"
   >;
-  Frontend: CollectionTransformations["Sanitized"];
+  Frontend: PublicCollectionTransformations["Sanitized"];
 };
 
-export type Collection = CollectionTransformations["Frontend"];
-export type CollectionPopulated = CollectionPopulatedFrontend;
+export type PublicCollection = PublicCollectionTransformations["Frontend"];
+export type PublicCollectionPopulated = CollectionPopulatedFrontend;
 
 export interface CollectionFilterParams {
   key: "section" | null;

@@ -1,12 +1,10 @@
 import { ArticleDB } from "../models";
-import { ArtworkTransformations } from "./artworkTypes";
-import { PublicArticlePopulated } from "./populatedTypes";
+import { PublicArtworkTransformations } from "./artworkTypes";
 import { UserTransformations } from "./userTypes";
 import {
   LeanDocument,
   Merge,
   TransformedDocument,
-  WithPopulated,
   WithPopulatedFields,
 } from "./utilTypes";
 
@@ -18,29 +16,51 @@ export type ArticleSanitized = Omit<
   "_id" | "createdAt" | "updatedAt"
 >;
 
+export interface PublicArticleFields {
+  readTime?: number;
+}
+
 //! doc-specific transformation definitions
-export type ArticleTransformations = {
+export type PublicArticleTransformations = {
   DB: ArticleDB;
-  Lean: LeanDocument<ArticleTransformations["DB"]>;
-  Raw: TransformedDocument<ArticleTransformations["Lean"]>;
-  Extended: Merge<ArticleTransformations["Raw"], { readTime?: number }>;
+  Lean: LeanDocument<PublicArticleTransformations["DB"]>;
+  Raw: TransformedDocument<PublicArticleTransformations["Lean"]>;
+  Extended: Merge<PublicArticleTransformations["Raw"], PublicArticleFields>;
   Sanitized: Omit<
-    ArticleTransformations["Extended"],
+    PublicArticleTransformations["Extended"],
     "_id" | "createdAt" | "updatedAt"
   >;
-  Frontend: ArticleTransformations["Sanitized"];
-  Populated: WithPopulatedFields<
-    ArticleTransformations["Frontend"],
+  Frontend: PublicArticleTransformations["Sanitized"];
+};
+
+export type PublicArticleTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    PublicArticleTransformations["Lean"],
+    {
+      author: UserTransformations["Lean"];
+      artwork: PublicArtworkTransformations["Lean"];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    PublicArticleTransformations["Raw"],
+    {
+      author: UserTransformations["Raw"];
+      artwork: PublicArtworkTransformations["Raw"];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    PublicArticleTransformations["Frontend"],
     {
       author: UserTransformations["Frontend"];
-      artwork: ArtworkTransformations["Frontend"];
+      artwork: PublicArtworkTransformations["Frontend"];
     }
   >;
 };
 
 //! Frontend-specific types
-export type Article = ArticleTransformations["Frontend"];
-export type ArticlePopulated = ArticleTransformations["Populated"];
+export type PublicArticle = PublicArticleTransformations["Frontend"];
+export type PublicArticlePopulated =
+  PublicArticleTransformationsPopulated["Frontend"];
 
 export interface ArticleFilterParams {
   key: "section" | null;
@@ -50,16 +70,3 @@ export interface ArticleFilterParams {
 //! Article fields
 export type Section = "artwork" | "biography" | "project" | "collections";
 export type OverlayColour = "white" | "black";
-
-// export type ArticleTransformations = {
-//   DB: ArticleDB;
-//   Lean: LeanDocument<ArticleTransformations["DB"]>;
-//   Raw: TransformedDocument<ArticleTransformations["Lean"]>;
-//   Extended: Merge<ArticleTransformations["Raw"], { readTime?: number }>;
-//   Sanitized: Omit<
-//     ArticleTransformations["Extended"],
-//     "_id" | "createdAt" | "updatedAt"
-//   >;
-//   Frontend: ArticleTransformations["Sanitized"];
-//   Populated: PublicArticlePopulated;
-// };

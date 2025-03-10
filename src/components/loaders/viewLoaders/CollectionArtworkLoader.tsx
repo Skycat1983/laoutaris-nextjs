@@ -1,11 +1,8 @@
 import { ArtworkView } from "@/components/views";
-import {
-  artworkToPublic,
-  PublicArtwork,
-} from "../../../../unused/artworkToPublic";
+import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import { delay } from "@/lib/utils/debug";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
+import { ApiSuccessResponse } from "@/lib/data/types";
 
 export async function CollectionArtworkLoader({
   slug,
@@ -24,11 +21,13 @@ export async function CollectionArtworkLoader({
     throw new Error(result.error || "Failed to fetch collection artwork");
   }
 
-  const publicArtwork: PublicArtwork = artworkToPublic(result.data.artworks[0]);
+  // const publicArtwork: PublicArtwork = artworkToPublic(result.data.artworks[0]);
+
+  const { data: artwork } = result as ApiSuccessResponse<PublicArtwork>;
 
   return (
     <>
-      <ArtworkView {...publicArtwork} />
+      <ArtworkView {...artwork} />
     </>
   );
 }

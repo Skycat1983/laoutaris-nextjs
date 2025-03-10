@@ -10,14 +10,14 @@ export type UserRaw = TransformedDocument<UserLean>;
 export type UserExtended = Merge<UserRaw, UserExtensionFields>;
 export type UserSanitized = Omit<UserExtended, "password" | "email">;
 
-export type UserTransformations = {
+export type PublicUserTransformations = {
   DB: UserDB;
-  Lean: LeanDocument<UserTransformations["DB"]>;
-  Raw: TransformedDocument<UserTransformations["Lean"]>;
-  Extended: Merge<UserTransformations["Raw"], UserExtensionFields>;
-  Sanitized: Omit<UserTransformations["Extended"], "password" | "email">;
-  Frontend: UserTransformations["Sanitized"];
+  Lean: LeanDocument<PublicUserTransformations["DB"]>;
+  Raw: TransformedDocument<PublicUserTransformations["Lean"]>;
+  Extended: Merge<PublicUserTransformations["Raw"], UserExtensionFields>;
+  Sanitized: Omit<PublicUserTransformations["Extended"], "password" | "email">;
+  Frontend: PublicUserTransformations["Sanitized"];
 };
 
 //! Frontend-specific types (safe)
-export type User = UserTransformations["Frontend"];
+export type PublicUser = PublicUserTransformations["Frontend"];

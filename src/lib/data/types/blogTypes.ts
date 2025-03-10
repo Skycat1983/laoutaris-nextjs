@@ -11,18 +11,21 @@ export type BlogEntrySanitized = Omit<
 >;
 
 //! doc-specific transformation definitions
-export type BlogEntryTransformations = {
+export type PublicBlogEntryTransformations = {
   DB: BlogEntryDB;
-  Lean: BlogEntryLean;
-  Raw: BlogEntryRaw;
-  Extended: BlogEntryExtended;
-  Sanitized: BlogEntrySanitized;
-  Frontend: BlogEntrySanitized;
+  Lean: LeanDocument<PublicBlogEntryTransformations["DB"]>;
+  Raw: TransformedDocument<PublicBlogEntryTransformations["Lean"]>;
+  Extended: Merge<PublicBlogEntryTransformations["Raw"], { readTime?: number }>;
+  Sanitized: Omit<
+    PublicBlogEntryTransformations["Extended"],
+    "_id" | "createdAt" | "updatedAt"
+  >;
+  Frontend: PublicBlogEntryTransformations["Sanitized"];
 };
 
 //! Frontend-specific types (safe)
-export type BlogEntry = BlogEntryTransformations["Frontend"];
-export type BlogEntryPopulated = BlogEntryPopulatedFrontend;
+export type PublicBlogEntry = PublicBlogEntryTransformations["Frontend"];
+export type PublicBlogEntryPopulated = BlogEntryPopulatedFrontend;
 
 export interface BlogFilterParams {
   key: "featured" | "pinned" | "tags" | null;

@@ -1,10 +1,7 @@
-import { ArticleTransformations } from "./articleTypes";
-import { UserTransformations } from "./userTypes";
-import { ArtworkTransformations } from "./artworkTypes";
+import { PublicArticleTransformations } from "./articleTypes";
+import { PublicUserTransformations } from "./userTypes";
+import { PublicArtworkTransformations } from "./artworkTypes";
 import { WithPopulated, WithPopulatedArray, Merge } from "./utilTypes";
-import { CollectionTransformations } from "./collectionTypes";
-import { BlogEntryTransformations } from "./blogTypes";
-import { CommentTransformations } from "./commentTypes";
 
 // First handle the single author population
 type BlogEntryWithAuthor = WithPopulated<

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CollectionModel, LeanCollection } from "@/lib/data/models";
+import { CollectionModel } from "@/lib/data/models";
 import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
 import {
   ApiErrorResponse,
-  CollectionTransformations,
+  PublicCollectionTransformations,
   RouteResponse,
 } from "@/lib/data/types";
-import { transformToPick } from "@/lib/transforms/transformToPick";
 import { transformCollection } from "@/lib/transforms/transformCollection";
 export const GET = async (
   req: NextRequest
@@ -30,7 +29,7 @@ export const GET = async (
         // .select(fields)
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean<CollectionTransformations["Lean"][]>(),
+        .lean<PublicCollectionTransformations["Lean"][]>(),
       CollectionModel.countDocuments(query),
     ]);
 

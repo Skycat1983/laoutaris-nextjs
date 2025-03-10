@@ -1,28 +1,70 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
 import { CommentDB } from "../models";
-import { LeanDocument, TransformedDocument, Merge } from "./utilTypes";
+import { PublicBlogEntryTransformations } from "./blogTypes";
+import { PublicUserTransformations } from "./userTypes";
+import {
+  LeanDocument,
+  TransformedDocument,
+  Merge,
+  WithPopulatedFields,
+} from "./utilTypes";
 
-interface CommentExtensionFields {
+interface PublicCommentExtensionFields {
   // readTime?: number;
 }
 
-export type CommentLean = LeanDocument<CommentDB>;
-export type CommentRaw = TransformedDocument<CommentLean>;
-export type CommentExtended = Merge<CommentRaw, CommentExtensionFields>;
-export type CommentSanitized = Omit<CommentExtended, "_id" | "email">;
+export type PublicCommentLean = LeanDocument<CommentDB>;
+export type PublicCommentRaw = TransformedDocument<PublicCommentLean>;
+export type PublicCommentExtended = Merge<
+  PublicCommentRaw,
+  PublicCommentExtensionFields
+>;
+export type PublicCommentSanitized = Omit<
+  PublicCommentExtended,
+  "_id" | "email"
+>;
 
 //! doc-specific transformation definitions
-export type CommentTransformations = {
+export type PublicCommentTransformations = {
   DB: CommentDB;
-  Lean: CommentLean;
-  Raw: CommentRaw;
-  Extended: CommentExtended;
-  Sanitized: CommentSanitized;
-  Frontend: CommentSanitized;
+  Lean: LeanDocument<PublicCommentTransformations["DB"]>;
+  Raw: TransformedDocument<PublicCommentTransformations["Lean"]>;
+  Extended: Merge<
+    PublicCommentTransformations["Raw"],
+    PublicCommentExtensionFields
+  >;
+  Sanitized: Omit<PublicCommentTransformations["Extended"], "_id" | "email">;
+  Frontend: PublicCommentTransformations["Sanitized"];
+};
+
+export type PublicCommentTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    PublicCommentTransformations["Lean"],
+    {
+      author: PublicUserTransformations["Lean"];
+      blog: PublicBlogEntryTransformations["Lean"];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    PublicCommentTransformations["Raw"],
+    {
+      author: PublicUserTransformations["Raw"];
+      blog: PublicBlogEntryTransformations["Raw"];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    PublicCommentTransformations["Frontend"],
+    {
+      author: PublicUserTransformations["Frontend"];
+      blog: PublicBlogEntryTransformations["Frontend"];
+    }
+  >;
 };
 
 //! Frontend-specific types (safe)
-export type Comment = CommentTransformations["Frontend"];
+export type PublicComment = PublicCommentTransformations["Frontend"];
+export type PublicCommentPopulated =
+  PublicCommentTransformationsPopulated["Frontend"];
 
 // export type CommentLean = MongoDocumentLean<CommentDB> & {
 //   author: string;

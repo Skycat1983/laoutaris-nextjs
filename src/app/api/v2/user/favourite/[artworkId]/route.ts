@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { NextRequest } from "next/server";
+
 import {
   ApiErrorResponse,
   ApiSuccessResponse,
-  Artwork,
+  PublicArtwork,
+  PublicArtworkTransformations,
 } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/transformArtwork";
-import { NextRequest } from "next/server";
-import { ArtworkTransformations } from "@/lib/data/types/artworkTypes";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
@@ -27,7 +29,7 @@ export async function GET(
     const { artworkId } = params;
 
     const leanArtwork = (await ArtworkModel.findById(artworkId).lean()) as
-      | ArtworkTransformations["Lean"]
+      | PublicArtworkTransformations["Lean"]
       | null;
 
     if (!leanArtwork) {
@@ -37,7 +39,7 @@ export async function GET(
       } satisfies ApiErrorResponse);
     }
 
-    const data: Artwork = transformArtwork(leanArtwork, userId);
+    const data: PublicArtwork = transformArtwork(leanArtwork, userId);
 
     if (!data.isFavourited) {
       return NextResponse.json({
@@ -49,7 +51,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: data,
-    } satisfies ApiSuccessResponse<Artwork>);
+    } satisfies ApiSuccessResponse<PublicArtwork>);
   } catch (error) {
     console.error("Error in GET /user/favourites/:artworkId:", error);
     return new Response("Internal Server Error", { status: 500 });

@@ -39,7 +39,7 @@
  * type Article = { title: string; slug: string };
  * type SubNavBarLink = { title: string; slug: string; url: string };
  *
- * const fetcher: Fetcher<Article> = async (key, value, fields) => {
+ * const fetcher: Fetcher<PublicArticle> = async (key, value, fields) => {
  *   // Simulate fetching articles
  *   return { success: true, data: [{ title: "My Article", slug: "my-article" }] };
  * };

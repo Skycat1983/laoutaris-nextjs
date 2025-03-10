@@ -1,6 +1,11 @@
 import { BlogEntryPopulatedFrontend } from "@/lib/data/types/populatedTypes";
 import { Fetcher } from "../../core/createFetcher";
-import { ListResult, SingleResult } from "@/lib/data/types";
+import {
+  ListResult,
+  PublicBlogEntry,
+  PublicBlogEntryPopulated,
+  SingleResult,
+} from "@/lib/data/types";
 
 interface FetchBlogsParams {
   sortby?: "latest" | "oldest" | "popular" | "featured";
@@ -9,9 +14,9 @@ interface FetchBlogsParams {
   page?: number;
 }
 
-export type ApiBlogResult = SingleResult<BlogEntryPopulatedFrontend>;
-export type ApiBlogListResult = ListResult<BlogEntryPopulatedFrontend>;
-export type ApiBlogPopulatedResult = SingleResult<BlogEntryPopulatedFrontend>;
+export type ApiBlogResult = SingleResult<PublicBlogEntry>;
+export type ApiBlogListResult = ListResult<PublicBlogEntry>;
+export type ApiBlogPopulatedResult = SingleResult<PublicBlogEntryPopulated>;
 
 export const createBlogFetchers = (fetcher: Fetcher) => ({
   // get one blog by slug
@@ -47,11 +52,4 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
   },
 });
 
-// Type for our blog fetchers object
 export type BlogFetchers = ReturnType<typeof createBlogFetchers>;
-// // Add this type for paginated responses
-// type PaginatedBlogResponse = {
-//   success: true;
-//   data: FrontendBlogEntry[];
-//   metadata: PaginationMetadata; // Note: not optional here
-// };

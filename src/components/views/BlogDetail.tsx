@@ -2,19 +2,22 @@
 
 import Image from "next/image";
 import CommentForm from "@/components/modules/forms/user/CommentForm";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogCommentsList } from "@/components/sections";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
-import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { clientApi } from "@/lib/api/clientApi";
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import {
+  PublicBlogEntry,
+  PublicBlogEntryPopulated,
+  PublicCommentPopulated,
+} from "@/lib/data/types";
 
-interface BlogDetailProps extends FrontendBlogEntry {
+interface BlogDetailProps extends PublicBlogEntry {
   showComments?: boolean;
 }
 
@@ -30,7 +33,7 @@ const BlogDetail = ({
 }: BlogDetailProps) => {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [populatedComments, setPopulatedComments] = useState<
-    FrontendCommentWithAuthor[]
+    PublicCommentPopulated[]
   >([]);
   const [hasLoadedComments, setHasLoadedComments] = useState(false);
   const router = useRouter();
@@ -156,7 +159,7 @@ const BlogDetail = ({
                   comments={
                     hasLoadedComments
                       ? populatedComments
-                      : (comments as FrontendCommentWithAuthor[])
+                      : (comments as unknown as PublicCommentPopulated[])
                   }
                   onCommentUpdated={handleCommentUpdated}
                   onCommentDeleted={handleCommentDeleted}

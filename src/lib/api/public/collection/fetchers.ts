@@ -13,8 +13,8 @@ interface FetchCollectionsParams {
   page?: number;
 }
 
-export type ApiCollectionResult = SingleResult<Collection>;
-export type ApiCollectionListResult = ListResult<Collection>;
+export type ApiCollectionResult = SingleResult<PublicCollection>;
+export type ApiCollectionListResult = ListResult<PublicCollection>;
 export type ApiCollectionPopulatedResult = SingleResult<CollectionPopulated>;
 
 export const createCollectionFetchers = (fetcher: Fetcher) => ({

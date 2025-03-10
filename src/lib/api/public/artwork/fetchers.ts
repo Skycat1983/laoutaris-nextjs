@@ -1,9 +1,13 @@
-import { ArtworkQueryParams, ListResult, SingleResult } from "@/lib/data/types";
+import {
+  ArtworkQueryParams,
+  ListResult,
+  PublicArtwork,
+  SingleResult,
+} from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
-import { Artwork } from "@/lib/data/types/artworkTypes";
 
-export type ApiArtworkResult = SingleResult<Artwork>;
-export type ApiArtworkListResult = ListResult<Artwork>;
+export type ApiArtworkResult = SingleResult<PublicArtwork>;
+export type ApiArtworkListResult = ListResult<PublicArtwork>;
 
 export const createArtworkFetchers = (fetcher: Fetcher) => ({
   // Get one artwork by id

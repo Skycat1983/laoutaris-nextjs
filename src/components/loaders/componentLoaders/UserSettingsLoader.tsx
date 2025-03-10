@@ -5,7 +5,7 @@ import React from "react";
 
 export const UserSettingsLoader = async () => {
   const settings: ApiResponse<FrontendUser> =
-    await serverApi.user.profile.getProfile();
+    await serverApi.user.profile.get();
 
   if (!settings.success) {
     throw new Error(settings.error || "Failed to fetch user settings");

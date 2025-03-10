@@ -101,7 +101,7 @@ export async function GET(request: Request) {
 
 1. Component needs data:
 ```typescript
-function ArtworkView({ getArtwork }: { getArtwork: () => Promise<Artwork> }) {
+function ArtworkView({ getArtwork }: { getArtwork: () => Promise<PublicArtwork> }) {
   // Component receives data fetching function as prop
 }
 ```

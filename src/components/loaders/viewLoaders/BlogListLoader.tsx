@@ -1,11 +1,15 @@
 "use server";
 
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
+import { PublicBlogEntry } from "@/lib/data/types/blogTypes";
+import {
+  ApiSuccessResponse,
+  PaginationMetadata,
+} from "@/lib/data/types/apiTypes";
 
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
@@ -23,7 +27,7 @@ const BLOG_ENTRIES_CONFIG = {
 
 // Type Definitions
 export type BlogEntryData = Pick<
-  FrontendBlogEntry,
+  PublicBlogEntry,
   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
 >;
 
@@ -68,7 +72,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
           total: blogs.length,
           totalPages: 1,
         },
-      } = result as PaginatedResponse<FrontendBlogEntry[]>;
+      } = result as ApiSuccessResponse<PublicBlogEntry[]>;
 
       blogData = {
         single: {
@@ -82,19 +86,19 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     } else {
       // Multiple sort types fetch
       const [featuredResult, latestResult, popularResult] = await Promise.all([
-        serverPublicApi.blog.fetchBlogs({
+        serverPublicApi.blog.multiple({
           sortby: "featured",
           page: 1,
           limit: 5,
           fields: BLOG_ENTRIES_CONFIG.fields,
         }),
-        serverPublicApi.blog.fetchBlogs({
+        serverPublicApi.blog.multiple({
           sortby: "latest",
           page: 1,
           limit: 6,
           fields: BLOG_ENTRIES_CONFIG.fields,
         }),
-        serverPublicApi.blog.fetchBlogs({
+        serverPublicApi.blog.multiple({
           sortby: "popular",
           page: 1,
           limit: 8,

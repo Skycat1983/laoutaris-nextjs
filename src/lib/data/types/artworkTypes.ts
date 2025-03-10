@@ -1,12 +1,6 @@
 import { ArtworkDB } from "../models/artworkModel";
 import { CloudinaryImageSanitized } from "./cloudinaryTypes";
-import {
-  DocumentTransformations,
-  LeanDocument,
-  Merge,
-  TransformConfig,
-  TransformedDocument,
-} from "./utilTypes";
+import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
 
 export interface ArtworkFields {
   favouriteCount: number;
@@ -26,19 +20,24 @@ export type ArtworkSanitized = Omit<
   image: CloudinaryImageSanitized;
 };
 
+const ARTWORK_CONFIG = {
+  SENSITIVE_FIELDS: ["favourited", "watcherlist"],
+};
+
+export type SensitiveFields = (typeof ARTWORK_CONFIG)["SENSITIVE_FIELDS"];
 //! doc-specific transformation definitions
-export type ArtworkTransformations = {
+export type PublicArtworkTransformations = {
   DB: ArtworkDB;
-  Lean: LeanDocument<ArtworkTransformations["DB"]>;
-  Raw: TransformedDocument<ArtworkTransformations["Lean"]>;
-  Extended: Merge<ArtworkTransformations["Raw"], ArtworkFields>;
+  Lean: LeanDocument<PublicArtworkTransformations["DB"]>;
+  Raw: TransformedDocument<PublicArtworkTransformations["Lean"]>;
+  Extended: Merge<PublicArtworkTransformations["Raw"], ArtworkFields>;
   Sanitized: Omit<
-    ArtworkTransformations["Extended"],
+    PublicArtworkTransformations["Extended"],
     "favourited" | "watcherlist" | "image"
   > & {
     image: CloudinaryImageSanitized;
   };
-  Frontend: ArtworkTransformations["Sanitized"];
+  Frontend: PublicArtworkTransformations["Sanitized"];
 };
 
 // export type ArtworkTransformations = {
@@ -51,7 +50,7 @@ export type ArtworkTransformations = {
 // };
 
 //! Frontend-specific types (safe)
-export type Artwork = ArtworkTransformations["Frontend"];
+export type PublicArtwork = PublicArtworkTransformations["Frontend"];
 
 //! Artwork fields
 export type Decade =
