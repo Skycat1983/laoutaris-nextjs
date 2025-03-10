@@ -8,7 +8,7 @@ import { ListResult, SingleResult } from "@/lib/data/types";
 
 interface FetchCollectionsParams {
   section?: Section;
-  fields?: readonly string[];
+  // fields?: readonly string[];
   limit?: number;
   page?: number;
 }
@@ -29,13 +29,13 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get multiple collections by params
   multiple: async ({
     section,
-    fields,
+    // fields,
     limit = 10,
     page = 1,
   }: FetchCollectionsParams = {}) => {
     const params = new URLSearchParams();
     if (section) params.append("section", section);
-    if (fields) params.append("fields", fields.join(","));
+    // if (fields) params.append("fields", fields.join(","));
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 

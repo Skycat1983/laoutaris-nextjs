@@ -1,13 +1,13 @@
 import { CollectionModel } from "@/lib/data/models";
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
 import { NextRequest, NextResponse } from "next/server";
-
-type SingleCollectionResponse = ApiResponse<FrontendCollection>;
+import { ApiCollectionResult } from "@/lib/api/public/collection/fetchers";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<NextResponse<SingleCollectionResponse>> => {
+): Promise<RouteResponse<ApiCollectionResult>> => {
   try {
     const collection = await CollectionModel.findOne({
       slug: params.slug,
@@ -27,7 +27,7 @@ export const GET = async (
     return NextResponse.json({
       success: true,
       data: collection,
-    } satisfies ApiSuccessResponse<FrontendCollection>);
+    } satisfies ApiSuccessResponse<ApiCollectionResult>);
   } catch (error) {
     console.error("Collection fetch error:", error);
     return NextResponse.json(

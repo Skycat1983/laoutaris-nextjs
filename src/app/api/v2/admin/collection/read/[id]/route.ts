@@ -2,9 +2,13 @@ import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
-import { FrontendCollectionWithArtworks } from "@/lib/data/types";
 import { isAdmin } from "@/lib/session/isAdmin";
+import {
+  AdminCollectionTransformationsPopulated,
+  AdminArtworkTransformations,
+} from "@/lib/data/types";
+import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdmin";
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -23,12 +27,13 @@ export async function GET(
     );
   }
   try {
-    const rawCollection = await CollectionModel.findById(id)
-      .populate("artworks")
-      .lean()
-      .exec();
+    const leanCollection = await CollectionModel.findById(id)
+      .populate<{
+        artworks: AdminArtworkTransformations["Lean"][];
+      }>("artworks")
+      .lean<AdminCollectionTransformationsPopulated["Lean"]>();
 
-    if (!rawCollection) {
+    if (!leanCollection) {
       return NextResponse.json(
         {
           success: false,
@@ -38,8 +43,8 @@ export async function GET(
       );
     }
 
-    const collection =
-      transformMongooseDoc<FrontendCollectionWithArtworks>(rawCollection);
+    const collection: AdminCollectionTransformationsPopulated["Frontend"] =
+      transformAdminCollectionPopulated(leanCollection);
 
     return NextResponse.json({
       success: true,

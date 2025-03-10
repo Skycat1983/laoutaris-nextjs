@@ -1,15 +1,13 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { isAdmin } from "@/lib/session/isAdmin";
 import {
   AdminArtworkTransformations,
-  AdminCollectionTransformations,
   AdminCollectionTransformationsPopulated,
 } from "@/lib/data/types";
-import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdminCollection";
+import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdmin";
 
 // TODO: remove the 'return one item' logic
 

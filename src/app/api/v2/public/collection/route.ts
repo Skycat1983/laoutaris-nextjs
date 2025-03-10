@@ -6,7 +6,8 @@ import {
   CollectionTransformations,
   RouteResponse,
 } from "@/lib/data/types";
-
+import { transformToPick } from "@/lib/transforms/transformToPick";
+import { transformCollection } from "@/lib/transforms/transformCollection";
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {
@@ -19,7 +20,6 @@ export const GET = async (
   }
 
   // Handle field selection
-  // const fields = searchParams.get("fields")?.split(",").join(" ") || "";
   // Handle pagination
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
@@ -45,7 +45,7 @@ export const GET = async (
     }
 
     const collections = leanCollections.map((collection) =>
-      transformToPick(collection, COLLECTIONS_FETCH_CONFIG.fields)
+      transformCollection(collection)
     );
 
     return NextResponse.json({

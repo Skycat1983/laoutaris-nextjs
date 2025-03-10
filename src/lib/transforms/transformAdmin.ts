@@ -1,5 +1,6 @@
 import {
   AdminBlogTransformationsPopulated,
+  AdminCollectionTransformationsPopulated,
   AdminUserTransformations,
 } from "../data/types";
 import { AdminArtworkTransformations } from "../data/types";
@@ -58,6 +59,17 @@ export function transformAdminCollection(
 ): AdminCollectionTransformations["Frontend"] {
   const transformedDoc: AdminCollectionTransformations["Raw"] =
     transformMongooseDoc<AdminCollectionTransformations["Raw"]>(document);
+
+  return transformedDoc;
+}
+
+export function transformAdminCollectionPopulated(
+  document: AdminCollectionTransformationsPopulated["Lean"]
+): AdminCollectionTransformationsPopulated["Frontend"] {
+  const transformedDoc: AdminCollectionTransformationsPopulated["Raw"] =
+    transformMongooseDoc<AdminCollectionTransformationsPopulated["Raw"]>(
+      document
+    );
 
   return transformedDoc;
 }
