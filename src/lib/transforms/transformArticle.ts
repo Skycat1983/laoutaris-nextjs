@@ -1,5 +1,3 @@
-import { ArticleDB, ArtworkDB, UserDB } from "../data/models";
-
 import { calculateReadTime } from "../utils/calcReadTime";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformArtwork } from "./transformArtwork";
@@ -10,7 +8,6 @@ import {
   ArtworkTransformations,
   UserTransformations,
 } from "../data/types";
-import { ArticlePopulatedFrontend } from "../data/types/populatedTypes";
 
 export function transformArticle(
   document: ArticleTransformations["Lean"],

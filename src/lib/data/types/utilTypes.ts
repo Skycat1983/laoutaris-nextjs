@@ -67,30 +67,30 @@ export type DocumentTransformations<
   Frontend: TConfig["sanitize"];
 };
 
-export const ArtworkConfig = {
-  extend: {
-    favouriteCount: 0,
-    watchlistCount: 0,
-    isFavourited: false,
-    isWatchlisted: false,
-  },
-  sanitize: ["favourited", "watcherlist", "image"] as const,
-} satisfies TransformConfig<ArtworkDB>;
+// export const ArtworkConfig = {
+//   extend: {
+//     favouriteCount: 0,
+//     watchlistCount: 0,
+//     isFavourited: false,
+//     isWatchlisted: false,
+//   },
+//   sanitize: ["favourited", "watcherlist", "image"] as const,
+// } satisfies TransformConfig<ArtworkDB>;
 
-export type ArtworkTransformations = DocumentTransformations<
-  ArtworkDB,
-  typeof ArtworkConfig
->;
+// export type ArtworkTransformations = DocumentTransformations<
+//   ArtworkDB,
+//   typeof ArtworkConfig
+// >;
 
-export const CollectionConfig = {
-  extend: {
-    firstArtwork: "" as string,
-  },
-  sanitize: ["_id", "createdAt", "updatedAt"] as const,
-} satisfies TransformConfig<CollectionDB>;
+// export const CollectionConfig = {
+//   extend: {
+//     firstArtwork: "" as string,
+//   },
+//   sanitize: ["_id", "createdAt", "updatedAt"] as const,
+// } satisfies TransformConfig<CollectionDB>;
 
-// Type using the config
-export type CollectionTransformations = DocumentTransformations<
-  CollectionDB,
-  typeof CollectionConfig
->;
+// // Type using the config
+// export type CollectionTransformations = DocumentTransformations<
+//   CollectionDB,
+//   typeof CollectionConfig
+// >;

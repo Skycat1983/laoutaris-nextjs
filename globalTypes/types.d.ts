@@ -1,3 +1,5 @@
+type TODO = any;
+
 //! Generic API Response Types
 // interface BaseApiResponse {
 //   success: boolean;

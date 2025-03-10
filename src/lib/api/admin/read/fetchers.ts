@@ -1,23 +1,18 @@
-import type {
-  FrontendArticleWithArtworkAndAuthor,
-  FrontendArticleWithArtwork,
-  ArticleFilterParams,
-} from "@/lib/data/types/articleTypes";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import type {
-  CollectionFilterParams,
-  FrontendCollectionWithArtworks,
-} from "@/lib/data/types/collectionTypes";
-import type {
-  BlogFilterParams,
-  FrontendBlogEntry,
-} from "@/lib/data/types/blogTypes";
-import type { FrontendUser } from "@/lib/data/types/userTypes";
-import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import type { ArticleFilterParams } from "@/lib/data/types/articleTypes";
+import type { CollectionFilterParams } from "@/lib/data/types/collectionTypes";
+import type { BlogFilterParams } from "@/lib/data/types/blogTypes";
 import type { Fetcher } from "../../core/createFetcher";
 import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
-import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
-import { PaginationMetadata } from "@/lib/data/types/apiTypes";
+import {
+  AdminArtwork,
+  AdminArticle,
+  AdminCollection,
+  AdminBlog,
+  AdminArticlePopulated,
+  AdminCollectionPopulated,
+  AdminUser,
+  AdminBlogPopulated,
+} from "@/lib/data/types/adminTypes";
 
 // Filter types
 type FilterParams =
@@ -40,25 +35,23 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-export type ReadArtworkResult = SingleResult<FrontendArtwork>;
-export type ReadArtworkListResult = ListResult<FrontendArtwork>;
+export type ReadArtworkResult = SingleResult<AdminArtwork>;
+export type ReadArtworkListResult = ListResult<AdminArtwork>;
 
-export type ReadArticleResult =
-  SingleResult<FrontendArticleWithArtworkAndAuthor>;
-export type ReadArticleListResult = ListResult<FrontendArticleWithArtwork>;
+export type ReadArticleResult = SingleResult<AdminArticlePopulated>;
+export type ReadArticleListResult = ListResult<AdminArticlePopulated>;
 
-export type ReadCollectionResult = SingleResult<FrontendCollectionWithArtworks>;
-export type ReadCollectionListResult =
-  ListResult<FrontendCollectionWithArtworks>;
+export type ReadCollectionResult = SingleResult<AdminCollectionPopulated>;
+export type ReadCollectionListResult = ListResult<AdminCollectionPopulated>;
 
-export type ReadBlogResult = SingleResult<FrontendBlogEntry>;
-export type ReadBlogListResult = ListResult<FrontendBlogEntry>;
+export type ReadBlogResult = SingleResult<AdminBlog>;
+export type ReadBlogListResult = ListResult<AdminBlog>;
 
-export type ReadUserResult = SingleResult<FrontendUser>;
-export type ReadUserListResult = ListResult<FrontendUser>;
+export type ReadUserResult = SingleResult<AdminUser>;
+export type ReadUserListResult = ListResult<AdminUser>;
 
-export type ReadCommentResult = SingleResult<FrontendCommentWithAuthor>;
-export type ReadCommentListResult = ListResult<FrontendCommentWithAuthor>;
+export type ReadCommentResult = SingleResult<AdminBlogPopulated>;
+export type ReadCommentListResult = ListResult<AdminBlogPopulated>;
 
 export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
@@ -182,32 +175,3 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
 });
 
 export type ReadFetchers = ReturnType<typeof createReadFetchers>;
-
-// export type ReadSingleResponse<T> = ApiSuccessResponse<T>;
-
-// export type ReadListResponse<T> = ApiSuccessResponse<T[]> & {
-//   metadata: Required<PaginationMetadata>;
-// };
-
-// export type ReadResponse<T> = ApiResponse<T>;
-
-// Single item response types
-// export type ReadArtworkResponse = ApiResponse<SingleResult<FrontendArtwork>>;
-// export type ReadArtworkListResponse = ApiResponse<ListResult<FrontendArtwork>>;
-
-// export type ReadArticleResponse =
-//   SingleResponse<FrontendArticleWithArtworkAndAuthor>;
-// export type ReadCollectionResponse =
-//   SingleResponse<FrontendCollectionWithArtworks>;
-// export type ReadBlogResponse = SingleResponse<FrontendBlogEntry>;
-// export type ReadUserResponse = SingleResponse<FrontendUser>;
-// export type ReadCommentResponse = SingleResponse<FrontendComment>;
-
-// // List response types
-
-// export type ReadArticleListResponse = ListResponse<FrontendArticleWithArtwork>;
-// export type ReadCollectionListResponse =
-//   ListResponse<FrontendCollectionWithArtworks>;
-// export type ReadBlogListResponse = ListResponse<FrontendBlogEntry>;
-// export type ReadUserListResponse = ListResponse<FrontendUser>;
-// export type ReadCommentListResponse = ListResponse<FrontendCommentWithAuthor>;

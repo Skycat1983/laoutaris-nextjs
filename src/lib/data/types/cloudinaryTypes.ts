@@ -1,5 +1,3 @@
-import { CloudinaryUploadWidgetInfo } from "next-cloudinary";
-
 type CloudinaryColorTuple = [string, number]; // [color, percentage]
 type CloudinaryColorObject = {
   color: string;

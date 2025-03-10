@@ -6,17 +6,17 @@ import {
 } from "@/lib/data/schemas";
 import { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 import {
-  SingleResult,
-  FrontendArticle,
-  FrontendCollection,
-  FrontendArtwork,
-  FrontendBlogEntry,
-} from "@/lib/data/types";
+  AdminArticle,
+  AdminCollection,
+  AdminArtwork,
+  AdminBlog,
+} from "@/lib/data/types/adminTypes";
+import { SingleResult } from "@/lib/data/types/apiTypes";
 
-export type UpdateArticleResult = SingleResult<FrontendArticle>;
-export type UpdateCollectionResult = SingleResult<FrontendCollection>;
-export type UpdateArtworkResult = SingleResult<FrontendArtwork>;
-export type UpdateBlogResult = SingleResult<FrontendBlogEntry>;
+export type UpdateArticleResult = SingleResult<AdminArticle>;
+export type UpdateCollectionResult = SingleResult<AdminCollection>;
+export type UpdateArtworkResult = SingleResult<AdminArtwork>;
+export type UpdateBlogResult = SingleResult<AdminBlog>;
 
 export const createUpdateFetchers = (fetcher: Fetcher) => ({
   // Patch article

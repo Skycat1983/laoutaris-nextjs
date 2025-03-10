@@ -1,14 +1,7 @@
-import { ArtworkDB } from "../data/models";
 import { ArtworkTransformations } from "../data/types";
-import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { transformImage } from "./transformImage";
 import { transformMongooseDoc } from "./transformMongooseDoc";
-import {
-  ArtworkLean,
-  ArtworkRaw,
-  ArtworkExtended,
-} from "../data/types/artworkTypes";
-import { ObjectId } from "mongoose";
+import { ArtworkExtended } from "../data/types/artworkTypes";
 import { isUserInArray } from "../utils/isUserInArray";
 
 export function transformArtwork(

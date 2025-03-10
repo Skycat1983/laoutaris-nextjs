@@ -18,14 +18,17 @@ export type ArticleSanitized = Omit<
 //! doc-specific transformation definitions
 export type ArticleTransformations = {
   DB: ArticleDB;
-  Lean: ArticleLean;
-  Raw: ArticleRaw;
-  Extended: ArticleExtended;
-  Sanitized: ArticleSanitized;
-  Frontend: ArticleSanitized;
+  Lean: LeanDocument<ArticleTransformations["DB"]>;
+  Raw: TransformedDocument<ArticleTransformations["Lean"]>;
+  Extended: Merge<ArticleTransformations["Raw"], { readTime?: number }>;
+  Sanitized: Omit<
+    ArticleTransformations["Extended"],
+    "_id" | "createdAt" | "updatedAt"
+  >;
+  Frontend: ArticleTransformations["Sanitized"];
 };
 
-//! Frontend-specific types (safe)
+//! Frontend-specific types
 export type Article = ArticleTransformations["Frontend"];
 export type ArticlePopulated = ArticlePopulatedFrontend;
 
