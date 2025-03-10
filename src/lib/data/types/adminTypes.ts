@@ -12,17 +12,10 @@ import {
   CommentDB,
   UserDB,
 } from "../models";
-import { Merge, WithPopulatedArray } from "./utilTypes";
-
-// TODO: something like this
-export type AdminTransformations<TDB> = {
-  DB: TDB;
-  Lean: LeanDocument<TDB>;
-  Raw: TransformedDocument<TDB>;
-  Frontend: TransformedDocument<TDB>;
-};
+import { Merge, WithPopulatedArray, WithPopulatedFields } from "./utilTypes";
 
 // ! Admin Transofromation types
+//* ARTICLE
 export type AdminArticleTransformations = {
   DB: ArticleDB;
   Lean: LeanDocument<AdminArticleTransformations["DB"]>;
@@ -30,6 +23,31 @@ export type AdminArticleTransformations = {
   Frontend: TransformedDocument<AdminArticleTransformations["Raw"]>;
 };
 
+export type AdminArticleTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    AdminArticleTransformations["Lean"],
+    {
+      author: AdminUserTransformations["Lean"];
+      artwork: AdminArtworkTransformations["Lean"];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    AdminArticleTransformations["Raw"],
+    {
+      author: AdminUserTransformations["Raw"];
+      artwork: AdminArtworkTransformations["Raw"];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    AdminArticleTransformations["Frontend"],
+    {
+      author: AdminUserTransformations["Frontend"];
+      artwork: AdminArtworkTransformations["Frontend"];
+    }
+  >;
+};
+
+//* ARTWORK
 export type AdminArtworkTransformations = {
   DB: ArtworkDB;
   Lean: LeanDocument<AdminArtworkTransformations["DB"]>;
@@ -37,6 +55,7 @@ export type AdminArtworkTransformations = {
   Frontend: TransformedDocument<AdminArtworkTransformations["Raw"]>;
 };
 
+//* COLLECTION
 export type AdminCollectionTransformations = {
   DB: CollectionDB;
   Lean: LeanDocument<AdminCollectionTransformations["DB"]>;
@@ -44,11 +63,57 @@ export type AdminCollectionTransformations = {
   Frontend: TransformedDocument<AdminCollectionTransformations["Raw"]>;
 };
 
+export type AdminCollectionTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    AdminCollectionTransformations["Lean"],
+    {
+      artworks: AdminArtworkTransformations["Lean"][];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    AdminCollectionTransformations["Raw"],
+    {
+      artworks: AdminArtworkTransformations["Raw"][];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    AdminCollectionTransformations["Frontend"],
+    {
+      artworks: AdminArtworkTransformations["Frontend"][];
+    }
+  >;
+};
+
+//* BLOG
 export type AdminBlogTransformations = {
   DB: BlogEntryDB;
   Lean: LeanDocument<AdminBlogTransformations["DB"]>;
   Raw: TransformedDocument<AdminBlogTransformations["Lean"]>;
   Frontend: TransformedDocument<AdminBlogTransformations["Raw"]>;
+};
+
+export type AdminBlogTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    AdminBlogTransformations["Lean"],
+    {
+      author: AdminUserTransformations["Lean"];
+      comments: AdminCommentTransformations["Lean"][];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    AdminBlogTransformations["Raw"],
+    {
+      author: AdminUserTransformations["Raw"];
+      comments: AdminCommentTransformations["Raw"][];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    AdminBlogTransformations["Frontend"],
+    {
+      author: AdminUserTransformations["Frontend"];
+      comments: AdminCommentTransformations["Frontend"][];
+    }
+  >;
 };
 
 export type AdminCommentTransformations = {
@@ -72,6 +137,8 @@ export type AdminCollection = AdminCollectionTransformations["Frontend"];
 export type AdminBlog = AdminBlogTransformations["Frontend"];
 export type AdminComment = AdminCommentTransformations["Frontend"];
 export type AdminUser = AdminUserTransformations["Frontend"];
+
+export type AdminBlogPopulated = AdminBlogTransformationsPopulated["Frontend"];
 
 //! admin populated types
 export type AdminArticlePopulated = WithPopulated<
@@ -108,10 +175,10 @@ export type AdminBlogCommentsPopulated = WithPopulatedArray<
   }
 >;
 
-export type AdminBlogPopulated = Merge<
-  AdminBlogAuthorPopulated,
-  AdminBlogCommentsPopulated
->;
+// export type AdminBlogPopulated = Merge<
+//   AdminBlogAuthorPopulated,
+//   AdminBlogCommentsPopulated
+// >;
 
 export type AdminCommentPopulated = WithPopulated<
   AdminCommentTransformations,

@@ -1,4 +1,7 @@
-import { ArtworkTransformations } from "../data/types";
+import {
+  AdminArtworkTransformations,
+  ArtworkTransformations,
+} from "../data/types";
 import { transformImage } from "./transformImage";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 import { ArtworkExtended } from "../data/types/artworkTypes";

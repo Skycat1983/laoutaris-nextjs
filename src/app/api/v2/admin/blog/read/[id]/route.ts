@@ -1,10 +1,14 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
+import {
+  AdminBlogTransformationsPopulated,
+  AdminCommentTransformations,
+  AdminUserTransformations,
+} from "@/lib/data/types";
+import { transformAdminBlogPopulated } from "@/lib/transforms/transformAdmin";
 
 export async function GET(
   request: NextRequest,
@@ -24,12 +28,14 @@ export async function GET(
   const { id } = params;
 
   try {
-    const rawBlog = await BlogModel.findById(id)
-      .populate(["author", "comments"])
-      .lean()
-      .exec();
+    const leanDocument = await BlogModel.findById(id)
+      .populate<{
+        author: AdminUserTransformations["Lean"];
+        comments: AdminCommentTransformations["Lean"][];
+      }>("author comments")
+      .lean<AdminBlogTransformationsPopulated["Lean"]>();
 
-    if (!rawBlog) {
+    if (!leanDocument) {
       return NextResponse.json(
         {
           success: false,
@@ -39,7 +45,8 @@ export async function GET(
       );
     }
 
-    const blog = transformMongooseDoc<FrontendBlogEntry>(rawBlog);
+    const blog: AdminBlogTransformationsPopulated["Frontend"] =
+      transformAdminBlogPopulated(leanDocument);
 
     return NextResponse.json({
       success: true,

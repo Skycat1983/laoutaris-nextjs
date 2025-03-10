@@ -30,28 +30,15 @@ export type BlogEntryPopulatedFrontend = Merge<
   BlogEntryWithComments
 >;
 
-type ArticleWithAuthor = WithPopulated<
-  ArticleTransformations,
-  "Frontend",
-  {
-    author: UserTransformations;
-  }
+type ArticleBase = Omit<
+  ArticleTransformations["Frontend"],
+  "author" | "artwork"
 >;
 
-type ArticleWithArtwork = WithPopulated<
-  ArticleTransformations,
-  "Frontend",
-  {
-    artwork: ArtworkTransformations;
-  }
->;
-
-// Merge both populated types, omitting overlapping fields
-export type ArticlePopulatedFrontend = Merge<
-  ArticleWithAuthor,
-  ArticleWithArtwork
->;
-
+export type PublicArticlePopulated = ArticleBase & {
+  author: UserTransformations["Frontend"];
+  artwork: ArtworkTransformations["Frontend"];
+};
 export type CollectionPopulatedFrontend = WithPopulatedArray<
   CollectionTransformations,
   "Frontend",
@@ -61,6 +48,36 @@ export type CollectionPopulatedFrontend = WithPopulatedArray<
 >;
 
 // export type ArticlePopulatedFrontend = WithPopulated<
+//   ArticleTransformations,
+//   "Frontend",
+//   {
+//     author: UserTransformations;
+//     artwork: ArtworkTransformations;
+//   }
+// >;
+
+// type ArticleWithAuthor = WithPopulated<
+//   ArticleTransformations,
+//   "Frontend",
+//   {
+//     author: UserTransformations;
+//   }
+// >;
+
+// type ArticleWithArtwork = WithPopulated<
+//   ArticleTransformations,
+//   "Frontend",
+//   {
+//     artwork: ArtworkTransformations;
+//   }
+// >;
+
+// export type FailedPublicArticlePopulated = Merge<
+//   ArticleWithAuthor,
+//   ArticleWithArtwork
+// >;
+
+// export type PublicArticlePopulated = WithPopulated<
 //   ArticleTransformations,
 //   "Frontend",
 //   {

@@ -1,9 +1,10 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ReadArtworkListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { isAdmin } from "@/lib/session/isAdmin";
+import { AdminArtwork, AdminArtworkTransformations } from "@/lib/data/types";
+import { transformAdminArtwork } from "@/lib/transforms/transformAdmin";
 
 export async function GET(
   request: NextRequest
@@ -42,7 +43,7 @@ export async function GET(
         .limit(limit)
         .skip((page - 1) * limit)
         .sort({ createdAt: -1 })
-        .lean(),
+        .lean<AdminArtworkTransformations["Lean"][]>(),
       ArtworkModel.countDocuments(query),
     ]);
 
@@ -56,8 +57,8 @@ export async function GET(
       );
     }
 
-    const artworks = rawArtworks.map((artwork) =>
-      transformMongooseDoc<FrontendArtwork>(artwork)
+    const artworks: AdminArtwork[] = rawArtworks.map((artwork) =>
+      transformAdminArtwork(artwork)
     );
 
     return NextResponse.json({

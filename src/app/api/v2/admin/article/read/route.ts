@@ -1,10 +1,10 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
+import { AdminArticleTransformationsPopulated } from "@/lib/data/types";
+import { transformAdminArticlePopulated } from "@/lib/transforms/transformAdmin";
 
 export async function GET(
   request: NextRequest
@@ -26,17 +26,17 @@ export async function GET(
   }
 
   try {
-    const [rawArticles, total] = await Promise.all([
+    const [leanArticles, total] = await Promise.all([
       ArticleModel.find()
         .limit(limit)
         .skip((page - 1) * limit)
         .sort({ createdAt: -1 })
         .populate("artwork")
-        .lean(),
+        .lean<AdminArticleTransformationsPopulated["Lean"][]>(),
       ArticleModel.countDocuments(),
     ]);
 
-    if (rawArticles.length === 0) {
+    if (leanArticles.length === 0) {
       return NextResponse.json(
         {
           success: false,
@@ -46,9 +46,8 @@ export async function GET(
       );
     }
 
-    const articles = rawArticles.map((article) =>
-      transformMongooseDoc<FrontendArticleWithArtwork>(article)
-    );
+    const articles: AdminArticleTransformationsPopulated["Frontend"][] =
+      leanArticles.map((article) => transformAdminArticlePopulated(article));
 
     return NextResponse.json({
       success: true,

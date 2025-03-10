@@ -19,6 +19,12 @@ export type Prettify<T> = {
 // Utility to merge two object types
 export type Merge<T1, T2> = Prettify<Omit<T1, keyof T2> & T2>;
 
+// Helper to create populated types
+export type WithPopulatedFields<
+  TBase,
+  TPopulated extends Record<string, any>
+> = Omit<TBase, keyof TPopulated> & TPopulated;
+
 // For handling single transformations
 export type WithPopulated<
   T extends { [K in Stage]: any },
@@ -94,3 +100,5 @@ export type DocumentTransformations<
 //   CollectionDB,
 //   typeof CollectionConfig
 // >;
+
+// Usage in transformations:

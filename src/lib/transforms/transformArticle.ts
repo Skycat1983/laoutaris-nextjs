@@ -3,9 +3,9 @@ import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformArtwork } from "./transformArtwork";
 import { transformUser } from "./transformUser";
 import {
-  ArticlePopulated,
   ArticleTransformations,
   ArtworkTransformations,
+  PublicArticlePopulated,
   UserTransformations,
 } from "../data/types";
 
@@ -37,14 +37,19 @@ export function transformArticlePopulated(
     artwork: ArtworkTransformations["Lean"];
   },
   userId: string | null
-): ArticlePopulated {
-  const transformedArticle = transformArticle(article, userId);
-  const transformedAuthor = transformUser(article.author, userId);
-  const transformedArtwork = transformArtwork(article.artwork, userId);
+): ArticleTransformations["Populated"] {
+  const transformedArticle: ArticleTransformations["Frontend"] =
+    transformArticle(article, userId);
+  const transformedAuthor: UserTransformations["Frontend"] = transformUser(
+    article.author,
+    userId
+  );
+  const transformedArtwork: ArtworkTransformations["Frontend"] =
+    transformArtwork(article.artwork, userId);
 
   return {
     ...transformedArticle,
     author: transformedAuthor,
     artwork: transformedArtwork,
-  } satisfies ArticlePopulated;
+  } satisfies ArticleTransformations["Populated"];
 }

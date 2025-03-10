@@ -44,8 +44,8 @@ export type ReadArticleListResult = ListResult<AdminArticlePopulated>;
 export type ReadCollectionResult = SingleResult<AdminCollectionPopulated>;
 export type ReadCollectionListResult = ListResult<AdminCollectionPopulated>;
 
-export type ReadBlogResult = SingleResult<AdminBlog>;
-export type ReadBlogListResult = ListResult<AdminBlog>;
+export type ReadBlogResult = SingleResult<AdminBlogPopulated>;
+export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
 
 export type ReadUserResult = SingleResult<AdminUser>;
 export type ReadUserListResult = ListResult<AdminUser>;

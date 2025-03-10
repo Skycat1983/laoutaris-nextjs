@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { ArticleModel } from "@/lib/data/models";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ReadArticleResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
+import {
+  AdminArticleTransformationsPopulated,
+  AdminArtworkTransformations,
+  AdminUserTransformations,
+} from "@/lib/data/types";
+import { transformAdminArticlePopulated } from "@/lib/transforms/transformAdmin";
 
 export async function GET(
   request: NextRequest,
@@ -24,12 +28,14 @@ export async function GET(
   const { id } = params;
 
   try {
-    const rawArticle = await ArticleModel.findById(id)
-      .populate(["artwork", "author"])
-      .lean()
-      .exec();
+    const leanArticle = await ArticleModel.findById(id)
+      .populate<{
+        artwork: AdminArtworkTransformations["Lean"];
+        author: AdminUserTransformations["Lean"];
+      }>(["artwork", "author"])
+      .lean<AdminArticleTransformationsPopulated["Lean"]>();
 
-    if (!rawArticle) {
+    if (!leanArticle) {
       return NextResponse.json(
         {
           success: false,
@@ -41,12 +47,12 @@ export async function GET(
       );
     }
 
-    const article =
-      transformMongooseDoc<FrontendArticleWithArtworkAndAuthor>(rawArticle);
+    const frontendArticle: AdminArticleTransformationsPopulated["Frontend"] =
+      transformAdminArticlePopulated(leanArticle);
 
     return NextResponse.json({
       success: true,
-      data: article,
+      data: frontendArticle,
     } satisfies ReadArticleResult);
   } catch (error) {
     console.error("Error reading article:", error);

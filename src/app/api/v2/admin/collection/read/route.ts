@@ -1,10 +1,15 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
-import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { isAdmin } from "@/lib/session/isAdmin";
+import {
+  AdminArtworkTransformations,
+  AdminCollectionTransformations,
+  AdminCollectionTransformationsPopulated,
+} from "@/lib/data/types";
+import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdminCollection";
 
 // TODO: remove the 'return one item' logic
 
@@ -35,7 +40,10 @@ export async function GET(
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("artworks");
+      .populate<{
+        artworks: AdminArtworkTransformations["Lean"][];
+      }>("artworks")
+      .lean<Array<AdminCollectionTransformationsPopulated["Lean"]>>();
 
     if (rawCollections.length === 0) {
       return NextResponse.json(
@@ -47,9 +55,10 @@ export async function GET(
       );
     }
 
-    const collections = rawCollections.map((collection) =>
-      transformMongooseDoc<FrontendCollectionWithArtworks>(collection)
-    );
+    const collections: AdminCollectionTransformationsPopulated["Frontend"][] =
+      rawCollections.map((collection) =>
+        transformAdminCollectionPopulated(collection)
+      );
 
     return NextResponse.json({
       success: true,

@@ -3,7 +3,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { apiUpdateBlogSchema } from "@/lib/data/schemas";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import slugify from "slugify";
-import { getRoleFromSession } from "@/lib/session/getRoleFromSession";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";

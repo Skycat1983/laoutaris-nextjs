@@ -7,7 +7,7 @@ export function transformUser(
   userId?: string | null
 ): UserTransformations["Frontend"] {
   // 1. To Lean
-  const transformedDoc =
+  const transformedDoc: UserTransformations["Raw"] =
     transformMongooseDoc<UserTransformations["Raw"]>(document);
 
   // 2. Add extensions

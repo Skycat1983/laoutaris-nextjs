@@ -1,5 +1,5 @@
 import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
-import { ApiErrorResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ArticleModel } from "@/lib/data/models";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { NextRequest, NextResponse } from "next/server";

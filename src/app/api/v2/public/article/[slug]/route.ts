@@ -1,17 +1,15 @@
-import {
-  ArticleDB,
-  ArticleModel,
-  ArtworkDB,
-  LeanUser,
-  UserDB,
-} from "@/lib/data/models";
+import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
-import { ArticleLean, ArtworkLean, UserLean } from "@/lib/data/types";
+import {
+  ArticleLean,
+  ArticleTransformations,
+  ArtworkLean,
+  UserLean,
+} from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { ArticlePopulatedFrontend } from "@/lib/data/types/populatedTypes";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
@@ -42,10 +40,8 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const articlePublic: ArticlePopulatedFrontend = transformArticlePopulated(
-      articleDB,
-      userId
-    );
+    const articlePublic: ArticleTransformations["Populated"] =
+      transformArticlePopulated(articleDB, userId);
 
     return NextResponse.json({
       success: true,

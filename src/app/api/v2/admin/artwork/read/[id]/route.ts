@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
 import { ArtworkModel } from "@/lib/data/models";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { ReadArtworkResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
+import { AdminArtworkTransformations } from "@/lib/data/types";
+import { transformAdminArtwork } from "@/lib/transforms/transformAdmin";
 
 export async function GET(
   request: NextRequest,
@@ -24,9 +24,11 @@ export async function GET(
   const { id } = params;
 
   try {
-    const rawArtwork = await ArtworkModel.findById(id).lean().exec();
+    const leanArtwork = await ArtworkModel.findById(id)
+      .lean<AdminArtworkTransformations["Lean"]>()
+      .exec();
 
-    if (!rawArtwork) {
+    if (!leanArtwork) {
       return NextResponse.json(
         {
           success: false,
@@ -38,11 +40,12 @@ export async function GET(
       );
     }
 
-    const artwork = transformMongooseDoc<FrontendArtwork>(rawArtwork);
+    const frontendArtwork: AdminArtworkTransformations["Frontend"] =
+      transformAdminArtwork(leanArtwork);
 
     return NextResponse.json({
       success: true,
-      data: artwork,
+      data: frontendArtwork,
     } satisfies ReadArtworkResult);
   } catch (error) {
     console.error("Error reading artwork:", error);
