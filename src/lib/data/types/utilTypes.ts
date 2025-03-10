@@ -19,6 +19,10 @@ export type Prettify<T> = {
 // Utility to merge two object types
 export type Merge<T1, T2> = Prettify<Omit<T1, keyof T2> & T2>;
 
+type OmitFields<T, K extends keyof T> = Omit<T, K>;
+
+type PickFields<T, K extends keyof T> = Pick<T, K>;
+
 // Helper to create populated types
 export type WithPopulatedFields<
   TBase,

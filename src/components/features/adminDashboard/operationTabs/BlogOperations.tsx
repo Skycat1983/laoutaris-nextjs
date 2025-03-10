@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { DocumentReader } from "../DocumentReader";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
@@ -10,6 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateBlogForm } from "../crudForms/create";
 import { UpdateBlogForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
+import { AdminBlogPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -18,7 +18,7 @@ interface BlogOperationsProps {
 }
 
 export function BlogOperations({ operationType }: BlogOperationsProps) {
-  const [blogInfo, setBlogInfo] = useState<FrontendBlogEntry | null>(null);
+  const [blogInfo, setBlogInfo] = useState<AdminBlogPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -64,7 +64,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
     update: (
       <>
         {!blogInfo && (
-          <DocumentReader<FrontendBlogEntry>
+          <DocumentReader<AdminBlogPopulated>
             onDocumentFound={setBlogInfo}
             readDocument={(id) => clientAdminApi.read.blog(id)}
             documentType="Blog"
@@ -83,7 +83,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
     delete: (
       <>
         {!blogInfo && (
-          <DocumentReader<FrontendBlogEntry>
+          <DocumentReader<AdminBlogPopulated>
             onDocumentFound={setBlogInfo}
             readDocument={(id) => clientApi.admin.read.blog(id)}
             documentType="Blog"

@@ -1,17 +1,13 @@
-import { FrontendArticle } from "./articleTypes";
-import { FrontendArtwork } from "./artworkTypes";
-import { FrontendCollection } from "./collectionTypes";
-import { FrontendUser, FrontendUserUnpopulated } from "./userTypes";
-
 // TypeFields = the properties that are used to generate the navigation items
-
+import { Article, Artwork, Collection, User } from "@/lib/data/types";
+import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
 // Article Navigation
-export type ArticleNavFields = Pick<FrontendArticle, "title" | "slug">;
+export type ArticleNavFields = Pick<Article, "title" | "slug">;
 export type ArticleNavItem = ArticleNavFields;
 
 // Collection Navigation
 export type CollectionNavFields = Pick<
-  FrontendCollection,
+  Collection,
   "title" | "slug" | "artworks"
 >;
 export type CollectionNavItem = {
@@ -21,16 +17,13 @@ export type CollectionNavItem = {
 };
 
 // Artwork Navigation (for collection pagination)
-export type ArtworkNavFields = Pick<FrontendArtwork, "title" | "_id" | "image">;
+export type ArtworkNavFields = Pick<Artwork, "title" | "_id" | "image">;
 export type CollectionArtworkNavList = {
   artworks: ArtworkNavFields[];
 };
 
 // User Account Navigation
-export type UserNavFields = Pick<
-  FrontendUserUnpopulated,
-  "favourites" | "watchlist" | "comments"
->;
+export type UserNavFields = Pick<User, "favourites" | "watchlist" | "comments">;
 export type UserNavItem = UserNavFields;
 
 // Valid sections
@@ -43,9 +36,9 @@ export const VALID_SECTIONS = [
 export type ValidSection = (typeof VALID_SECTIONS)[number];
 
 // API response types
-export type ArticleNavResponse = ApiResponse<ArticleNavItem[]>;
-export type CollectionNavListResponse = ApiResponse<CollectionNavItem[]>;
-export type CollectionNavItemResponse = ApiResponse<CollectionNavItem>;
+export type ArticleNavResponse = ApiSuccessResponse<ArticleNavItem[]>;
+export type CollectionNavListResponse = ApiSuccessResponse<CollectionNavItem[]>;
+export type CollectionNavItemResponse = ApiSuccessResponse<CollectionNavItem>;
 export type CollectionArtworksNavResponse =
   ApiResponse<CollectionArtworkNavList>;
 export type UserNavResponse = ApiResponse<UserNavItem>;

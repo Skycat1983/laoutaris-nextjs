@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
+import { ApiResponse } from "@/lib/data/types";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),

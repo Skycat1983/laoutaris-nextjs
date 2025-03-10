@@ -3,18 +3,20 @@
 import { useState } from "react";
 import { DocumentReader } from "../DocumentReader";
 import { UploadButton } from "@/components/elements/buttons";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import type { ArtworkImage } from "@/lib/data/types/artworkTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";
-import type { CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
+import type {
+  CloudinaryImageFrontend,
+  CloudinaryUploadInfo,
+} from "@/lib/data/types/cloudinaryTypes";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { clientApi } from "@/lib/api/clientApi";
 import { CreateArtworkForm } from "../crudForms/create";
 import { UpdateArtworkForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
+import { AdminArtwork } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -23,8 +25,10 @@ interface ArtworkOperationsProps {
 }
 
 export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
-  const [uploadInfo, setUploadInfo] = useState<ArtworkImage | null>(null);
-  const [artworkInfo, setArtworkInfo] = useState<FrontendArtwork | null>(null);
+  const [uploadInfo, setUploadInfo] = useState<CloudinaryImageFrontend | null>(
+    null
+  );
+  const [artworkInfo, setArtworkInfo] = useState<AdminArtwork | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -111,7 +115,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
     update: (
       <>
         {!artworkInfo && (
-          <DocumentReader<FrontendArtwork>
+          <DocumentReader<AdminArtwork>
             onDocumentFound={setArtworkInfo}
             readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
@@ -129,9 +133,9 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
     delete: (
       <>
         {!artworkInfo && (
-          <DocumentReader<FrontendArtwork>
+          <DocumentReader<AdminArtwork>
             onDocumentFound={setArtworkInfo}
-            readDocument={(id) => clientApi.admin.read.artwork(id)}
+            readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
             buttonVariant="destructive"
           />

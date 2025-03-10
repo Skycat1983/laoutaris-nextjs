@@ -21,19 +21,3 @@ export type UserTransformations = {
 
 //! Frontend-specific types (safe)
 export type User = UserTransformations["Frontend"];
-
-// Individual types for direct use
-// export type UserLean = LeanDocument<UserDB>;
-// export type UserRaw = TransformedDocument<UserLean>;
-// export type UserExtended = Merge<UserRaw, { isOnline?: boolean }>;
-// export type UserSanitized = Omit<UserExtended, "password" | "email">;
-
-// Transformation object for pipeline operations
-// export type UserTransformations = {
-//   DB: UserDB;
-//   Lean: UserLean;
-//   Raw: UserRaw;
-//   Extended: UserExtended;
-//   Sanitized: UserSanitized;
-//   Frontend: UserSanitized;
-// };

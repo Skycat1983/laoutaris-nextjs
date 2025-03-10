@@ -7,12 +7,8 @@ import {
 } from "@/lib/data/types/searchTypes";
 import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import { transformToPick } from "@/lib/transforms/transformToPick";
-import {
-  FrontendArticle,
-  FrontendBlogEntry,
-  FrontendCollection,
-} from "@/lib/data/types";
-
+import { ApiErrorResponse, ApiSuccessResponse } from "@/lib/data/types";
+import { Article, BlogEntry, Collection } from "@/lib/data/types";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -78,7 +74,6 @@ export async function GET(request: NextRequest) {
         transformMongooseDoc<SearchableContent[]>(results);
       const searchResults = transformedResults.map((item) =>
         transformToPick(item, [
-          "_id",
           "title",
           "subtitle",
           "summary",
@@ -111,39 +106,39 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Transform each result set
-    const transformedArticles = transformMongooseDoc<FrontendArticle[]>(
-      articles
-    ).map((item) => ({
-      ...transformToPick(item, [
-        "_id",
-        "title",
-        "subtitle",
-        "summary",
-        "imageUrl",
-        "slug",
-      ]),
-      linkTo: `/${item.section}/${item.slug}`,
-    })) as SearchResultItem[];
+    const transformedArticles = transformMongooseDoc<Article[]>(articles).map(
+      (item) => ({
+        ...transformToPick(item, [
+          // "_id",
+          "title",
+          "subtitle",
+          "summary",
+          "imageUrl",
+          "slug",
+        ]),
+        linkTo: `/${item.section}/${item.slug}`,
+      })
+    ) as SearchResultItem[];
 
-    const transformedBlogs = transformMongooseDoc<FrontendBlogEntry[]>(
-      blogs
-    ).map((item) => ({
-      ...transformToPick(item, [
-        "_id",
-        "title",
-        "subtitle",
-        "summary",
-        "imageUrl",
-        "slug",
-      ]),
-      linkTo: `/blog/${item.slug}`,
-    })) as SearchResultItem[];
+    const transformedBlogs = transformMongooseDoc<BlogEntry[]>(blogs).map(
+      (item) => ({
+        ...transformToPick(item, [
+          // "_id",
+          "title",
+          "subtitle",
+          "summary",
+          "imageUrl",
+          "slug",
+        ]),
+        linkTo: `/blog/${item.slug}`,
+      })
+    ) as SearchResultItem[];
 
-    const transformedCollections = transformMongooseDoc<FrontendCollection[]>(
+    const transformedCollections = transformMongooseDoc<Collection[]>(
       collections
     ).map((item) => ({
       ...transformToPick(item, [
-        "_id",
+        // "_id",
         "title",
         "subtitle",
         "summary",

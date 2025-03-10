@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { DocumentReader } from "../DocumentReader";
-import type { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
@@ -10,6 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateCollectionForm } from "../crudForms/create";
 import { UpdateCollectionForm } from "../crudForms/update/UpdateCollectionForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
+import { AdminCollectionPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -21,7 +21,7 @@ export function CollectionOperations({
   operationType,
 }: CollectionOperationsProps) {
   const [collectionInfo, setCollectionInfo] =
-    useState<FrontendCollectionWithArtworks | null>(null);
+    useState<AdminCollectionPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -75,7 +75,7 @@ export function CollectionOperations({
     update: (
       <>
         {!collectionInfo && (
-          <DocumentReader<FrontendCollectionWithArtworks>
+          <DocumentReader<AdminCollectionPopulated>
             onDocumentFound={setCollectionInfo}
             readDocument={(id) => clientAdminApi.read.collection(id)}
             documentType="Collection"
@@ -93,7 +93,7 @@ export function CollectionOperations({
     delete: (
       <>
         {!collectionInfo && (
-          <DocumentReader<FrontendCollectionWithArtworks>
+          <DocumentReader<AdminCollectionPopulated>
             onDocumentFound={setCollectionInfo}
             readDocument={(id) => clientApi.admin.read.collection(id)}
             documentType="Collection"

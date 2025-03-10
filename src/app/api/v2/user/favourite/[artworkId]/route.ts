@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
-import { FrontendArtworkUnpopulated } from "@/lib/data/types/artworkTypes";
 import {
-  artworkToPublic,
-  PublicArtwork,
-} from "../../../../../../../unused/artworkToPublic";
-
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  Artwork,
+} from "@/lib/data/types";
+import { transformArtwork } from "@/lib/transforms/transformArtwork";
+import { NextRequest } from "next/server";
+import { ArtworkTransformations } from "@/lib/data/types/artworkTypes";
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { artworkId: string } }
 ) {
   try {
@@ -25,18 +26,18 @@ export async function GET(
 
     const { artworkId } = params;
 
-    const rawArtwork = await ArtworkModel.findById(artworkId).lean();
+    const leanArtwork = (await ArtworkModel.findById(artworkId).lean()) as
+      | ArtworkTransformations["Lean"]
+      | null;
 
-    if (!rawArtwork) {
+    if (!leanArtwork) {
       return NextResponse.json({
         success: false,
         error: "Artwork not found",
       } satisfies ApiErrorResponse);
     }
 
-    const artwork =
-      transformMongooseDoc<FrontendArtworkUnpopulated>(rawArtwork);
-    const data: PublicArtwork = artworkToPublic(artwork, userId);
+    const data: Artwork = transformArtwork(leanArtwork, userId);
 
     if (!data.isFavourited) {
       return NextResponse.json({
@@ -48,7 +49,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: data,
-    } satisfies ApiSuccessResponse<PublicArtwork>);
+    } satisfies ApiSuccessResponse<Artwork>);
   } catch (error) {
     console.error("Error in GET /user/favourites/:artworkId:", error);
     return new Response("Internal Server Error", { status: 500 });

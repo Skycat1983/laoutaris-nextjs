@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
-import type { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
@@ -10,6 +8,7 @@ import { DocumentReader } from "../DocumentReader";
 import { UpdateArticleForm } from "../crudForms/update/UpdateArticleForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
 import { CreateArticleForm } from "../crudForms/create";
+import { AdminArticlePopulated, AdminArtwork } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -18,9 +17,10 @@ interface ArticleOperationsProps {
 }
 
 export function ArticleOperations({ operationType }: ArticleOperationsProps) {
-  const [artworkInfo, setArtworkInfo] = useState<FrontendArtwork | null>(null);
-  const [articleInfo, setArticleInfo] =
-    useState<FrontendArticleWithArtworkAndAuthor | null>(null);
+  const [artworkInfo, setArtworkInfo] = useState<AdminArtwork | null>(null);
+  const [articleInfo, setArticleInfo] = useState<AdminArticlePopulated | null>(
+    null
+  );
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -68,7 +68,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     create: (
       <>
         {!artworkInfo && (
-          <DocumentReader<FrontendArtwork>
+          <DocumentReader<AdminArtwork>
             onDocumentFound={setArtworkInfo}
             readDocument={(id) => clientApi.admin.read.artwork(id)}
             documentType="Artwork"
@@ -85,7 +85,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     update: (
       <>
         {!articleInfo && (
-          <DocumentReader<FrontendArticleWithArtworkAndAuthor>
+          <DocumentReader<AdminArticlePopulated>
             onDocumentFound={setArticleInfo}
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
@@ -103,7 +103,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     delete: (
       <>
         {!articleInfo && (
-          <DocumentReader<FrontendArticleWithArtworkAndAuthor>
+          <DocumentReader<AdminArticlePopulated>
             onDocumentFound={setArticleInfo}
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"

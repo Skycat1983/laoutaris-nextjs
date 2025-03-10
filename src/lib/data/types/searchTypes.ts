@@ -1,6 +1,6 @@
-import { FrontendCollection } from "./collectionTypes";
-import { FrontendBlogEntry } from "./blogTypes";
-import { FrontendArticle } from "./articleTypes";
+import { Collection } from "./collectionTypes";
+import { BlogEntry } from "./blogTypes";
+import { Article } from "./articleTypes";
 
 // Content type literal
 export type SearchableContentType = "articles" | "blogs" | "collections";
@@ -24,10 +24,7 @@ export interface SearchableFields {
 }
 
 // Union type for all searchable content
-export type SearchableContent =
-  | FrontendArticle
-  | FrontendBlogEntry
-  | FrontendCollection;
+export type SearchableContent = Article | BlogEntry | Collection;
 
 // Add a type for the URL
 export type LinkTo = `/${string}`; // Template literal type to ensure it starts with /
@@ -35,7 +32,7 @@ export type LinkTo = `/${string}`; // Template literal type to ensure it starts 
 // Base search result type
 export type BaseSearchResultItem = Pick<
   SearchableContent,
-  keyof SearchableFields
+  "title" | "subtitle" | "summary" | "text" | "imageUrl" | "slug"
 >;
 
 // Extended search result with link

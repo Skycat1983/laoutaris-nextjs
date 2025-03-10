@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { DocumentReader } from "../DocumentReader";
-import type { FrontendUser } from "@/lib/data/types/userTypes";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete";
+import { AdminUser } from "@/lib/data/types";
 
 type OperationType = "read" | "delete";
 
@@ -15,7 +15,7 @@ interface UserOperationsProps {
 }
 
 export function UserOperations({ operationType }: UserOperationsProps) {
-  const [userInfo, setUserInfo] = useState<FrontendUser | null>(null);
+  const [userInfo, setUserInfo] = useState<AdminUser | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -57,7 +57,7 @@ export function UserOperations({ operationType }: UserOperationsProps) {
     delete: (
       <>
         {!userInfo && (
-          <DocumentReader<FrontendUser>
+          <DocumentReader<AdminUser>
             onDocumentFound={setUserInfo}
             readDocument={(id) => clientApi.admin.read.user(id)}
             documentType="User"
