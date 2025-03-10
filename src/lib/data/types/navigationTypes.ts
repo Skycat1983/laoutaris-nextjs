@@ -13,7 +13,7 @@ export type CollectionNavFields = Pick<
 export type CollectionNavItem = {
   title: string;
   slug: string;
-  artworkId: string; // Transformed from artworks[0]
+  artworkId: string;
 };
 
 // Artwork Navigation (for collection pagination)
