@@ -11,9 +11,11 @@ import {
 import { calculateReadTime } from "../utils/calcReadTime";
 import { PublicTransformationsGeneric } from "../data/types";
 import { ArticleDB } from "../data/models";
+import { Schema, Types } from "mongoose";
 
 type PublicArticleTransformations = PublicTransformationsGeneric<
-  Partial<ArticleDB>,
+  // Partial<ArticleDB>,
+  ArticleDB,
   ExtendedPublicArticleFields,
   SensitivePublicArticleFields
 >;
@@ -58,12 +60,21 @@ export const transformArticle = {
     doc: PublicArticleTransformationsPopulated["Lean"]
   ): PublicArticleTransformationsPopulated["Frontend"] => {
     const { author, artwork, ...baseDoc } = doc;
-    const transformedBase = transformArticle.toFrontend(baseDoc);
+
     const transformedAuthor = transformUser.toFrontend(author);
     const transformedArtwork = transformArtwork.toFrontend(artwork);
 
+    const sanitizedBase = transformUtils.removeSensitive(
+      {
+        ...baseDoc,
+        ...EXTENDED_PUBLIC_ARTICLE_FIELDS,
+        readTime: calculateReadTime(baseDoc.text),
+      },
+      SENSITIVE_PUBLIC_ARTICLE_FIELDS
+    );
+
     return {
-      ...transformedBase,
+      ...sanitizedBase,
       author: transformedAuthor,
       artwork: transformedArtwork,
     } satisfies PublicArticleTransformationsPopulated["Frontend"];

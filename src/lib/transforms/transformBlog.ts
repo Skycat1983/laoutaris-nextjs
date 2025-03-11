@@ -5,17 +5,25 @@ import {
   ExtendedPublicBlogFields,
 } from "../constants";
 import {
+  AdminBlogTransformations,
+  AdminBlogTransformationsPopulated,
+  AdminCommentTransformations,
+  AdminUserTransformations,
   PublicBlogEntryTransformationsPopulated,
+  PublicCommentTransformations,
   PublicTransformationsGeneric,
+  PublicUserTransformations,
 } from "../data/types";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformUtils } from "./transformUtils";
 import { transformUser } from "./transformUser";
 import { transformComment } from "./transformComment";
 import { BlogEntryDB } from "../data/models";
+import { calculateReadTime } from "../utils/calcReadTime";
 
 type PublicBlogEntryTransformations = PublicTransformationsGeneric<
-  Partial<BlogEntryDB>,
+  // Partial<BlogEntryDB>,
+  BlogEntryDB,
   ExtendedPublicBlogFields,
   SensitivePublicBlogFields
 >;
@@ -51,53 +59,51 @@ export const transformBlog = {
     doc: PublicBlogEntryTransformationsPopulated["Lean"]
   ): PublicBlogEntryTransformationsPopulated["Frontend"] => {
     const { author, comments, ...baseDoc } = doc;
-    const transformedBase = transformBlog.toFrontend(baseDoc);
     const transformedAuthor = transformUser.toFrontend(author);
     const transformedComments = comments.map((comment) =>
       transformComment.toFrontend(comment)
     );
+
+    const transformedBase = transformBlog.toRaw(baseDoc);
+    const sanitizedBase = transformUtils.removeSensitive(
+      {
+        ...transformedBase,
+        ...EXTENDED_PUBLIC_BLOG_FIELDS,
+        readTime: calculateReadTime(baseDoc.text),
+      },
+      SENSITIVE_PUBLIC_BLOG_FIELDS
+    );
+
     return {
-      ...transformedBase,
+      ...sanitizedBase,
       author: transformedAuthor,
       comments: transformedComments,
     } satisfies PublicBlogEntryTransformationsPopulated["Frontend"];
   },
 };
 
-// export function transformBlog(
-//   document: BlogEntryTransformations["Lean"]
-// ): BlogEntryTransformations["Frontend"] {
-//   const transformedDoc: BlogEntryTransformations["Raw"] =
-//     transformMongooseDoc<BlogEntryTransformations["Raw"]>(document);
+export function transformBlogPopulated(
+  document: AdminBlogTransformationsPopulated["Lean"]
+): AdminBlogTransformationsPopulated["Frontend"] {
+  const { author, comments, ...rest } = document;
 
-//   return transformedDoc;
-// }
+  // Transform the base document
+  const transformedBlog: AdminBlogTransformations["Raw"] =
+    transformMongooseDoc<AdminBlogTransformations["Raw"]>(rest);
 
-// export function transformBlogPopulated(
-//   document: BlogEntryTransformations["Lean"] & {
-//     author: UserTransformations["Lean"];
-//     comments: CommentTransformations["Lean"][];
-//   }
-// ): AdminBlogTransformations["Populated"] {
-//   const { author, comments, ...rest } = document;
+  // Transform the author
+  const transformedAuthor: AdminUserTransformations["Raw"] =
+    transformMongooseDoc<AdminUserTransformations["Raw"]>(author);
 
-//   // Transform the base document
-//   const transformedBlog: AdminBlogTransformations["Raw"] =
-//     transformMongooseDoc<AdminBlogTransformations["Raw"]>(rest);
+  // Transform the comments array
+  const transformedComments: AdminCommentTransformations["Raw"][] =
+    comments.map((comment) =>
+      transformMongooseDoc<AdminCommentTransformations["Raw"]>(comment)
+    );
 
-//   // Transform the author
-//   const transformedAuthor: AdminUserTransformations["Raw"] =
-//     transformMongooseDoc<AdminUserTransformations["Raw"]>(author);
-
-//   // Transform the comments array
-//   const transformedComments: AdminCommentTransformations["Raw"][] =
-//     comments.map((comment) =>
-//       transformMongooseDoc<AdminCommentTransformations["Raw"]>(comment)
-//     );
-
-//   return {
-//     ...transformedBlog,
-//     author: transformedAuthor,
-//     comments: transformedComments,
-//   } satisfies AdminBlogTransformations["Populated"];
-// }
+  return {
+    ...transformedBlog,
+    author: transformedAuthor,
+    comments: transformedComments,
+  } satisfies AdminBlogTransformationsPopulated["Frontend"];
+}

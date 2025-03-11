@@ -4,6 +4,7 @@ import { ArtworkDB } from "../models";
 // For Mongoose's .lean() operation
 export type LeanDocument<T> = Omit<T, "$locals"> & {
   _id: string | ObjectId; // Could be either
+  // _id: ObjectId;
 };
 
 // for our transformation pipeline
