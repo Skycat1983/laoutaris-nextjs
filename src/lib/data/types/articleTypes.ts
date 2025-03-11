@@ -13,7 +13,6 @@ import {
   WithPopulatedFields,
 } from "./utilTypes";
 
-//! doc-specific transformation definitions
 export type PublicArticleTransformations = {
   DB: ArticleDB;
   Lean: LeanDocument<PublicArticleTransformations["DB"]>;
@@ -24,7 +23,7 @@ export type PublicArticleTransformations = {
   >;
   Sanitized: Omit<
     PublicArticleTransformations["Extended"],
-    SensitivePublicArticleFields
+    SensitivePublicArticleFields[number]
   >;
   Frontend: PublicArticleTransformations["Sanitized"];
 };

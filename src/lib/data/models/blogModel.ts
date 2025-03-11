@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 import { BLOG_TAGS, BlogTag } from "@/lib/constants";
 
-interface BaseBlogEntry {
+export interface BaseBlogEntry {
   title: string;
   subtitle: string;
   summary: string;

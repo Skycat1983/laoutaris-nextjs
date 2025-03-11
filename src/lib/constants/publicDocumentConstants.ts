@@ -24,13 +24,13 @@ export const SENSITIVE_PUBLIC_ARTWORK_FIELDS = [
   "watcherlist",
 ] as const;
 // Additional fields
-export const EXTENDED_PUBLIC_ARTWORK_FIELDS = {
-  favouriteCount: { type: "number", default: 0 },
-  watchlistCount: { type: "number", default: 0 },
-  isFavourited: { type: "boolean", default: false },
-  isWatchlisted: { type: "boolean", default: false },
+export const EXTENDED_PUBLIC_ARTWORK_FIELDS: ExtendedPublicArtworkFields = {
+  favouriteCount: 0,
+  watchlistCount: 0,
+  isFavourited: false,
+  isWatchlisted: false,
 } as const;
-export type ExtendedArtworkFields = {
+export type ExtendedPublicArtworkFields = {
   favouriteCount: number;
   watchlistCount: number;
   isFavourited: boolean;
@@ -44,12 +44,12 @@ export type SensitivePublicBlogFields =
   (typeof SENSITIVE_PUBLIC_BLOG_FIELDS)[number];
 export const SENSITIVE_PUBLIC_BLOG_FIELDS = ["createdAt", "updatedAt"] as const;
 // Additional fields
-export const EXTENDED_PUBLIC_BLOG_FIELDS = {
-  readTime: { type: "number", default: 0 },
-  commentCount: { type: "number", default: 0 },
+export const EXTENDED_PUBLIC_BLOG_FIELDS: ExtendedPublicBlogFields = {
+  readTime: 0,
+  commentCount: 0,
 } as const;
 // export type ExtendedPublicBlogFields = typeof EXTENDED_PUBLIC_BLOG_FIELDS;
-export type ExtendedBlogFields = {
+export type ExtendedPublicBlogFields = {
   readTime: number;
   commentCount: number;
 };
@@ -63,9 +63,9 @@ export const SENSITIVE_PUBLIC_COLLECTION_FIELDS = [
   "updatedAt",
 ] as const;
 // Additional fields
-export const EXTENDED_PUBLIC_COLLECTION_FIELDS = {
-  artworkCount: { type: "number", default: 0 },
-  firstArtworkId: { type: "string", default: "" },
+export const EXTENDED_PUBLIC_COLLECTION_FIELDS: ExtendedCollectionFields = {
+  artworkCount: 0,
+  firstArtworkId: "",
 } as const;
 // export type ExtendedPublicCollectionFields =
 //   typeof EXTENDED_PUBLIC_COLLECTION_FIELDS;
@@ -80,8 +80,8 @@ export type SensitivePublicCommentFields =
   (typeof SENSITIVE_PUBLIC_COMMENT_FIELDS)[number];
 export const SENSITIVE_PUBLIC_COMMENT_FIELDS = [] as const;
 // Additional fields
-export const EXTENDED_PUBLIC_COMMENT_FIELDS = {
-  isOwner: { type: "boolean", default: false },
+export const EXTENDED_PUBLIC_COMMENT_FIELDS: ExtendedCommentFields = {
+  isOwner: false,
 } as const;
 // export type ExtendedPublicCommentFields = typeof EXTENDED_PUBLIC_COMMENT_FIELDS;
 export type ExtendedCommentFields = {
@@ -100,8 +100,8 @@ export type SensitivePublicUserFields =
   (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number];
 export const SENSITIVE_PUBLIC_USER_FIELDS = ["password", "email"] as const;
 // Additional fields
-export const EXTENDED_PUBLIC_USER_FIELDS = {
-  isOwner: { type: "boolean", default: false },
+export const EXTENDED_PUBLIC_USER_FIELDS: ExtendedUserFields = {
+  isOwner: false,
 } as const;
 export type ExtendedUserFields = {
   isOwner: boolean;

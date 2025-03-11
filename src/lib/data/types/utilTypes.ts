@@ -90,6 +90,33 @@ export type DocumentTransformations<
   Frontend: TConfig["sanitize"];
 };
 
+export type PublicTransformationsGeneric<
+  TDocument,
+  TExtended extends Record<string, any>,
+  TSensitive extends string
+> = {
+  DB: TDocument;
+  Lean: LeanDocument<
+    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["DB"]
+  >;
+  Raw: TransformedDocument<
+    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Lean"]
+  >;
+  Extended: Merge<
+    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Raw"],
+    TExtended
+  >;
+  Sanitized: Omit<
+    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Extended"],
+    TSensitive
+  >;
+  Frontend: PublicTransformationsGeneric<
+    TDocument,
+    TExtended,
+    TSensitive
+  >["Sanitized"];
+};
+
 // export const ArtworkConfig = {
 //   extend: {
 //     favouriteCount: 0,

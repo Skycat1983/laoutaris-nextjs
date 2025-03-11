@@ -1,6 +1,6 @@
 import {
-  ExtendedPublicArtworkFields,
   SensitivePublicArtworkFields,
+  ExtendedPublicArtworkFields,
 } from "@/lib/constants/publicDocumentConstants";
 import { ArtworkDB } from "../models/artworkModel";
 import { CloudinaryImageSanitized } from "./cloudinaryTypes";
