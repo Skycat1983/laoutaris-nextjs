@@ -1,8 +1,12 @@
+import {
+  ExtendedPublicArticleFields,
+  SENSITIVE_PUBLIC_ARTICLE_FIELDS,
+  SensitivePublicArticleFields,
+} from "@/lib/constants";
 import { ArticleDB } from "../models";
 import { PublicArtworkTransformations } from "./artworkTypes";
 import { PublicUserTransformations } from "./userTypes";
 import {
-  ExtendedFields,
   LeanDocument,
   Merge,
   Prettify,
@@ -10,44 +14,18 @@ import {
   WithPopulatedFields,
 } from "./utilTypes";
 
-export type PublicArticleLean = LeanDocument<ArticleDB>;
-export type PublicArticleRaw = TransformedDocument<PublicArticleLean>;
-export type PublicArticleExtended = Merge<
-  PublicArticleRaw,
-  { readTime?: number }
->;
-export type PublicArticleSanitized = Omit<
-  PublicArticleExtended,
-  "_id" | "createdAt" | "updatedAt"
->;
-
-export interface PublicArticleFields {
-  readTime?: number;
-}
-
-const SENSITIVE_PUBLIC_ARTICLE_FIELDS = [
-  "_id",
-  "createdAt",
-  "updatedAt",
-] as const;
-const EXTENDED_PUBLIC_ARTICLE_FIELDS = {
-  readTime: { type: "number", default: 0 },
-} as const;
-
-export type PublicArticleExtendedFields = ExtendedFields<
-  typeof EXTENDED_PUBLIC_ARTICLE_FIELDS
->;
-export type PublicArticleSensitiveFields =
-  (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
 //! doc-specific transformation definitions
 export type PublicArticleTransformations = {
   DB: ArticleDB;
   Lean: LeanDocument<PublicArticleTransformations["DB"]>;
   Raw: TransformedDocument<PublicArticleTransformations["Lean"]>;
-  Extended: Merge<PublicArticleTransformations["Raw"], PublicArticleFields>;
+  Extended: Merge<
+    PublicArticleTransformations["Raw"],
+    ExtendedPublicArticleFields
+  >;
   Sanitized: Omit<
     PublicArticleTransformations["Extended"],
-    "_id" | "createdAt" | "updatedAt"
+    SensitivePublicArticleFields
   >;
   Frontend: PublicArticleTransformations["Sanitized"];
 };
@@ -89,3 +67,14 @@ export interface ArticleFilterParams {
 //! Article fields
 export type Section = "artwork" | "biography" | "project" | "collections";
 export type OverlayColour = "white" | "black";
+
+// export type PublicArticleLean = LeanDocument<ArticleDB>;
+// export type PublicArticleRaw = TransformedDocument<PublicArticleLean>;
+// export type PublicArticleExtended = Merge<
+//   PublicArticleRaw,
+//   { readTime?: number }
+// >;
+// export type PublicArticleSanitized = Omit<
+//   PublicArticleExtended,
+//   "_id" | "createdAt" | "updatedAt"
+// >;

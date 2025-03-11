@@ -1,7 +1,5 @@
 import mongoose, { Document } from "mongoose";
-
-type Section = "artwork" | "biography" | "project" | "collections";
-
+import { COLLECTION_SECTIONS, CollectionSection } from "@/lib/constants";
 interface BaseCollection {
   title: string;
   subtitle: string;
@@ -9,7 +7,7 @@ interface BaseCollection {
   text: string;
   imageUrl: string;
   slug: string;
-  section: Section;
+  section: CollectionSection;
 }
 
 export interface CollectionDB extends Document, BaseCollection {
@@ -17,13 +15,6 @@ export interface CollectionDB extends Document, BaseCollection {
   updatedAt: Date;
   artworks: mongoose.Schema.Types.ObjectId[];
 }
-
-export type LeanCollection = Omit<CollectionDB, keyof Document> & {
-  _id: string;
-  artworks: string[];
-  createdAt: Date;
-  updatedAt: Date;
-};
 
 const collectionSchema = new mongoose.Schema<CollectionDB>(
   {
@@ -37,7 +28,7 @@ const collectionSchema = new mongoose.Schema<CollectionDB>(
       type: String,
       required: false,
       default: "collections",
-      enum: ["artwork", "biography", "project", "collections"],
+      enum: COLLECTION_SECTIONS,
     },
     artworks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
   },

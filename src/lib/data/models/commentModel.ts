@@ -12,14 +12,6 @@ export interface CommentDB extends Document, BaseComment {
   updatedAt: Date;
 }
 
-export type LeanComment = Omit<CommentDB, keyof Document> & {
-  _id: string;
-  author: string;
-  blog: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 const commentSchema = new mongoose.Schema<CommentDB>(
   {
     text: { type: String, required: true },

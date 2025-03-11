@@ -1,4 +1,5 @@
 import mongoose, { Document } from "mongoose";
+import { BLOG_TAGS, BlogTag } from "@/lib/constants";
 
 interface BaseBlogEntry {
   title: string;
@@ -10,7 +11,7 @@ interface BaseBlogEntry {
   displayDate: Date;
   featured: boolean;
   pinned: boolean;
-  tags: string[];
+  tags: BlogTag[];
 }
 
 export interface BlogEntryDB extends Document, BaseBlogEntry {
@@ -19,14 +20,6 @@ export interface BlogEntryDB extends Document, BaseBlogEntry {
   author: mongoose.Schema.Types.ObjectId;
   comments: mongoose.Schema.Types.ObjectId[];
 }
-
-export type LeanBlogEntry = Omit<BlogEntryDB, keyof Document> & {
-  _id: string;
-  author: string;
-  comments: string[];
-  createdAt: Date;
-  updatedAt: Date;
-};
 
 const blogSchema = new mongoose.Schema<BlogEntryDB>(
   {
@@ -45,7 +38,7 @@ const blogSchema = new mongoose.Schema<BlogEntryDB>(
     featured: { type: Boolean, default: false },
     pinned: { type: Boolean, default: false },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-    tags: [{ type: String }],
+    tags: [{ type: String, enum: BLOG_TAGS }],
   },
   {
     timestamps: true,
@@ -56,12 +49,3 @@ const BlogModel =
   mongoose.models.Blog || mongoose.model<BlogEntryDB>("Blog", blogSchema);
 
 export { BlogModel };
-
-// likes: { type: Number, default: 0 },
-// comments: [
-//   {
-//     user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-//     text: { type: String },
-//     date: { type: Date, default: Date.now },
-//   },
-// ],

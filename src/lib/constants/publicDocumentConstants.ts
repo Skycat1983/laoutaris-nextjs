@@ -1,7 +1,7 @@
 //! ARTICLE
 // Sensitive data
 export type SensitivePublicArticleFields =
-  typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS;
+  (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
 export const SENSITIVE_PUBLIC_ARTICLE_FIELDS = [
   "createdAt",
   "updatedAt",
@@ -11,6 +11,12 @@ export const EXTENDED_PUBLIC_ARTICLE_FIELDS = {
   readTime: { type: "number", default: 0 },
 } as const;
 export type ExtendedPublicArticleFields = typeof EXTENDED_PUBLIC_ARTICLE_FIELDS;
+
+// export const ARTICLE_FIELDS_PUBLIC = {
+//   SENSITIVE: SENSITIVE_PUBLIC_ARTICLE_FIELDS,
+//   EXTENDED: EXTENDED_PUBLIC_ARTICLE_FIELDS,
+// } as const;
+// export type ArticleFieldsPublic = typeof ARTICLE_FIELDS_PUBLIC;
 
 //! ARTWORK
 // Sensitive data

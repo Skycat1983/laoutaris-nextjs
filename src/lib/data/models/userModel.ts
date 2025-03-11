@@ -1,10 +1,10 @@
 import mongoose, { Document } from "mongoose";
-
+import { USER_ROLES, UserRole } from "@/lib/constants";
 export interface BaseUser {
   email: string;
   username: string;
   password: string;
-  role: "user" | "admin";
+  role: UserRole;
 }
 
 export interface UserDB extends BaseUser, Document {
@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema<UserDB>(
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: false },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+    role: { type: String, enum: USER_ROLES, default: "user" },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     watchlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
     favourites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Artwork" }],
