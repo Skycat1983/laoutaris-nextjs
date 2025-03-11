@@ -1,3 +1,9 @@
+import {
+  ExtendedPublicUserFields,
+  SensitivePublicUserFields,
+  ExtendedOwnUserFields,
+  SensitiveOwnUserFields,
+} from "@/lib/constants";
 import { UserDB } from "../models";
 import { PublicArtworkTransformations } from "./artworkTypes";
 import {
@@ -7,44 +13,30 @@ import {
   WithPopulatedFields,
 } from "./utilTypes";
 
-export type UserExtensionFields = {
-  isOnline?: boolean;
-};
-
-const SENSITIVE_PUBLIC_USER_FIELDS = ["password", "email"] as const;
-const SENSITIVE_OWN_USER_FIELDS = ["password"] as const;
-
-export type PublicUserLean = LeanDocument<UserDB>;
-export type PublicUserRaw = TransformedDocument<PublicUserLean>;
-export type PublicUserExtended = Merge<PublicUserRaw, UserExtensionFields>;
-export type PublicUserSanitized = Omit<
-  PublicUserExtended,
-  (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number]
->;
-
 export type PublicUserTransformations = {
   DB: UserDB;
   Lean: LeanDocument<PublicUserTransformations["DB"]>;
   Raw: TransformedDocument<PublicUserTransformations["Lean"]>;
-  Extended: Merge<PublicUserTransformations["Raw"], UserExtensionFields>;
+  Extended: Merge<PublicUserTransformations["Raw"], ExtendedPublicUserFields>;
   Sanitized: Omit<
     PublicUserTransformations["Extended"],
-    (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number]
+    SensitivePublicUserFields
   >;
   Frontend: PublicUserTransformations["Sanitized"];
 };
+
+export type PublicUser = PublicUserTransformations["Frontend"];
 
 export type OwnUserTransformations = {
   DB: UserDB;
   Lean: LeanDocument<OwnUserTransformations["DB"]>;
   Raw: TransformedDocument<OwnUserTransformations["Lean"]>;
-  Extended: Merge<OwnUserTransformations["Raw"], UserExtensionFields>;
-  Sanitized: Omit<
-    OwnUserTransformations["Extended"],
-    (typeof SENSITIVE_OWN_USER_FIELDS)[number]
-  >;
+  Extended: Merge<OwnUserTransformations["Raw"], ExtendedOwnUserFields>;
+  Sanitized: Omit<OwnUserTransformations["Extended"], SensitiveOwnUserFields>;
   Frontend: OwnUserTransformations["Sanitized"];
 };
+
+export type OwnUser = OwnUserTransformations["Frontend"];
 
 export type OwnUserTransformationsPopulated = {
   Lean: WithPopulatedFields<
@@ -67,5 +59,13 @@ export type OwnUserTransformationsPopulated = {
   >;
 };
 
+export type OwnUserPopulated = OwnUserTransformationsPopulated["Frontend"];
+
 //! Frontend-specific types (safe)
-export type PublicUser = PublicUserTransformations["Frontend"];
+// export type PublicUserLean = LeanDocument<UserDB>;
+// export type PublicUserRaw = TransformedDocument<PublicUserLean>;
+// export type PublicUserExtended = Merge<PublicUserRaw, ExtendedPublicUserFields>;
+// export type PublicUserSanitized = Omit<
+//   PublicUserExtended,
+//   SensitivePublicUserFields
+// >;

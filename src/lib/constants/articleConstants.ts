@@ -1,3 +1,4 @@
+// Article Fields
 export const ARTICLE_SECTION_OPTIONS = [
   "artwork",
   "biography",

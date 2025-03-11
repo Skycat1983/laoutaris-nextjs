@@ -1,6 +1,6 @@
 //! OWN USER
 // Sensitive data
-export type SensitiveOwnUserFields = typeof SENSITIVE_OWN_USER_FIELDS;
+export type SensitiveOwnUserFields = (typeof SENSITIVE_OWN_USER_FIELDS)[number];
 export const SENSITIVE_OWN_USER_FIELDS = ["password"] as const;
 // Additional fields
 export const EXTENDED_OWN_USER_FIELDS = {

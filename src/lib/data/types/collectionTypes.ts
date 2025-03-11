@@ -1,38 +1,74 @@
 import { CollectionDB } from "../models";
-import { CollectionPopulatedFrontend } from "./populatedTypes";
-import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
+import { PublicArtworkTransformations } from "./artworkTypes";
+import {
+  LeanDocument,
+  Merge,
+  TransformedDocument,
+  WithPopulatedFields,
+} from "./utilTypes";
+import {
+  ExtendedPublicCollectionFields,
+  SensitivePublicCollectionFields,
+} from "@/lib/constants";
 
-export type CollectionLean = LeanDocument<CollectionDB>;
-export type CollectionRaw = TransformedDocument<CollectionLean>;
-export type CollectionExtended = Merge<CollectionRaw, PublicCollectionFields>;
-export type CollectionSanitized = Omit<
-  CollectionExtended,
-  "_id" | "createdAt" | "updatedAt"
->;
-
-export interface PublicCollectionFields {
-  firstArtwork: string;
-}
-
+//! PUBLIC COLLECTION
 export type PublicCollectionTransformations = {
   DB: CollectionDB;
   Lean: LeanDocument<PublicCollectionTransformations["DB"]>;
   Raw: TransformedDocument<PublicCollectionTransformations["Lean"]>;
   Extended: Merge<
     PublicCollectionTransformations["Raw"],
-    PublicCollectionFields
+    ExtendedPublicCollectionFields
   >;
   Sanitized: Omit<
     PublicCollectionTransformations["Extended"],
-    "_id" | "createdAt" | "updatedAt"
+    SensitivePublicCollectionFields
   >;
   Frontend: PublicCollectionTransformations["Sanitized"];
 };
 
 export type PublicCollection = PublicCollectionTransformations["Frontend"];
-export type PublicCollectionPopulated = CollectionPopulatedFrontend;
+
+//! PUBLIC COLLECTION POPULATED
+export type PublicCollectionTransformationsPopulated = {
+  Lean: WithPopulatedFields<
+    PublicCollectionTransformations["Lean"],
+    {
+      artworks: PublicArtworkTransformations["Lean"][];
+    }
+  >;
+  Raw: WithPopulatedFields<
+    PublicCollectionTransformations["Raw"],
+    {
+      artworks: PublicArtworkTransformations["Raw"][];
+    }
+  >;
+  Extended: WithPopulatedFields<
+    PublicCollectionTransformations["Extended"],
+    {
+      artworks: PublicArtworkTransformations["Extended"][];
+    }
+  >;
+  Frontend: WithPopulatedFields<
+    PublicCollectionTransformations["Frontend"],
+    {
+      artworks: PublicArtworkTransformations["Frontend"][];
+    }
+  >;
+};
+
+export type PublicCollectionPopulated =
+  PublicCollectionTransformationsPopulated["Frontend"];
 
 export interface CollectionFilterParams {
   key: "section" | null;
   value: string | null;
 }
+
+// export type CollectionLean = LeanDocument<CollectionDB>;
+// export type CollectionRaw = TransformedDocument<CollectionLean>;
+// export type CollectionExtended = Merge<CollectionRaw, PublicCollectionFields>;
+// export type CollectionSanitized = Omit<
+//   CollectionExtended,
+//   "_id" | "createdAt" | "updatedAt"
+// >;

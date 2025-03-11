@@ -7,20 +7,30 @@ import {
 import { BlogEntryDB } from "../models";
 import { PublicUserTransformations } from "./userTypes";
 import { PublicCommentTransformations } from "./commentTypes";
+import {
+  ExtendedPublicBlogFields,
+  SensitivePublicBlogFields,
+} from "@/lib/constants";
 
-//! BLOG ENTRY
+//! PUBLIC BLOG ENTRY
 export type PublicBlogEntryTransformations = {
   DB: BlogEntryDB;
   Lean: LeanDocument<PublicBlogEntryTransformations["DB"]>;
   Raw: TransformedDocument<PublicBlogEntryTransformations["Lean"]>;
-  Extended: Merge<PublicBlogEntryTransformations["Raw"], { readTime?: number }>;
+  Extended: Merge<
+    PublicBlogEntryTransformations["Raw"],
+    ExtendedPublicBlogFields
+  >;
   Sanitized: Omit<
     PublicBlogEntryTransformations["Extended"],
-    "_id" | "createdAt" | "updatedAt"
+    SensitivePublicBlogFields
   >;
   Frontend: PublicBlogEntryTransformations["Sanitized"];
 };
 
+export type PublicBlogEntry = PublicBlogEntryTransformations["Frontend"];
+
+// ! PUBLIC BLOG ENTRY POPULATED
 export type PublicBlogEntryTransformationsPopulated = {
   Lean: WithPopulatedFields<
     PublicBlogEntryTransformations["Lean"],
@@ -51,25 +61,27 @@ export type PublicBlogEntryTransformationsPopulated = {
     }
   >;
 };
-//! Frontend-specific types (safe)
-export type PublicBlogEntryLean = LeanDocument<BlogEntryDB>;
-export type PublicBlogEntryRaw = TransformedDocument<PublicBlogEntryLean>;
-export type PublicBlogEntryExtended = Merge<
-  PublicBlogEntryRaw,
-  { readTime?: number }
->;
-export type PublicBlogEntrySanitized = Omit<
-  PublicBlogEntryExtended,
-  "_id" | "createdAt" | "updatedAt"
->;
-export type PublicBlogEntry = PublicBlogEntryTransformations["Frontend"];
+
 export type PublicBlogEntryPopulated =
   PublicBlogEntryTransformationsPopulated["Frontend"];
 
+//! PUBLIC BLOG ENTRY FILTER PARAMS
 export interface BlogFilterParams {
   key: "featured" | "pinned" | "tags" | null;
   value: string | null;
 }
+
+//! Frontend-specific types (safe)
+// export type PublicBlogEntryLean = LeanDocument<BlogEntryDB>;
+// export type PublicBlogEntryRaw = TransformedDocument<PublicBlogEntryLean>;
+// export type PublicBlogEntryExtended = Merge<
+//   PublicBlogEntryRaw,
+//   ExtendedPublicBlogFields
+// >;
+// export type PublicBlogEntrySanitized = Omit<
+//   PublicBlogEntryExtended,
+//   SensitivePublicBlogFields
+// >;
 
 // export type BlogEntryFrontend = BlogEntrySanitized;
 // export type BlogEntryFrontendPopulated = Omit<

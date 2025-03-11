@@ -1,6 +1,5 @@
 import {
   ExtendedPublicArticleFields,
-  SENSITIVE_PUBLIC_ARTICLE_FIELDS,
   SensitivePublicArticleFields,
 } from "@/lib/constants";
 import { ArticleDB } from "../models";
@@ -43,6 +42,13 @@ export type PublicArticleTransformationsPopulated = {
     {
       author: PublicUserTransformations["Raw"];
       artwork: PublicArtworkTransformations["Raw"];
+    }
+  >;
+  Extended: WithPopulatedFields<
+    PublicArticleTransformations["Extended"],
+    {
+      author: PublicUserTransformations["Extended"];
+      artwork: PublicArtworkTransformations["Extended"];
     }
   >;
   Frontend: WithPopulatedFields<

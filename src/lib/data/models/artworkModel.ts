@@ -1,5 +1,5 @@
 import mongoose, { Document } from "mongoose";
-import { ColourInfo, PredominantColors } from "../types";
+import { CloudinaryImageDB, ColourInfo, PredominantColors } from "../types";
 import {
   ArtStyle,
   Medium,
@@ -20,19 +20,8 @@ export interface BaseArtwork {
   featured: boolean;
 }
 
-export interface DBImage {
-  secure_url: string;
-  public_id: string;
-  bytes: number;
-  pixelHeight: number;
-  pixelWidth: number;
-  format: string;
-  hexColors: ColourInfo[];
-  predominantColors: PredominantColors;
-}
-
 export interface ArtworkDB extends Document, BaseArtwork {
-  image: DBImage;
+  image: CloudinaryImageDB;
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];
@@ -109,3 +98,14 @@ const artworkSchema = new mongoose.Schema(
 export const ArtworkModel =
   mongoose.models.Artwork ||
   mongoose.model<ArtworkDB>("Artwork", artworkSchema);
+
+// export interface DBImage {
+//   secure_url: string;
+//   public_id: string;
+//   bytes: number;
+//   pixelHeight: number;
+//   pixelWidth: number;
+//   format: string;
+//   hexColors: ColourInfo[];
+//   predominantColors: PredominantColors;
+// }
