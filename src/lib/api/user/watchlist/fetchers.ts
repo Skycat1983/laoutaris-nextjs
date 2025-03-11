@@ -1,22 +1,32 @@
-import type { FrontendUserWithWatchlist } from "@/lib/data/types/userTypes";
-import type { PublicArtwork } from "../../../../../unused/artworkToPublic";
 import type { Fetcher } from "../../core/createFetcher";
+import type { ListResult, PublicArtwork, SingleResult } from "@/lib/data/types";
+
+type AddRemoveResult = {
+  success: boolean;
+  message: string;
+};
+
+export type ApiWatchlistListResult = ListResult<PublicArtwork>;
+export type ApiWatchlistItemResult = SingleResult<PublicArtwork>;
+export type ApiAddRemoveResult = SingleResult<AddRemoveResult>;
 
 export const createWatchlistFetchers = (fetcher: Fetcher) => ({
   // Get user watchlist
-  getWatchlist: async () =>
-    fetcher<FrontendUserWithWatchlist>(`/api/v2/user/watchlist`),
+  getList: async () =>
+    fetcher<ApiWatchlistListResult>(`/api/v2/user/watchlist`),
 
   // Get specific watchlist artwork
-  getWatchlistArtwork: async (artworkId: string) => {
+  getOne: async (artworkId: string) => {
     const encodedArtworkId = encodeURIComponent(artworkId);
-    return fetcher<PublicArtwork>(`/api/v2/user/watchlist/${encodedArtworkId}`);
+    return fetcher<ApiWatchlistItemResult>(
+      `/api/v2/user/watchlist/${encodedArtworkId}`
+    );
   },
 
   // Add artwork to watchlist (assuming this endpoint exists or will be created)
   addToWatchlist: async (artworkId: string) => {
     const encodedArtworkId = encodeURIComponent(artworkId);
-    return fetcher<{ success: boolean; message: string }>(
+    return fetcher<ApiAddRemoveResult>(
       `/api/v2/user/watchlist/${encodedArtworkId}`,
       {
         method: "POST",
@@ -27,7 +37,7 @@ export const createWatchlistFetchers = (fetcher: Fetcher) => ({
   // Remove artwork from watchlist (assuming this endpoint exists or will be created)
   removeFromWatchlist: async (artworkId: string) => {
     const encodedArtworkId = encodeURIComponent(artworkId);
-    return fetcher<{ success: boolean; message: string }>(
+    return fetcher<ApiAddRemoveResult>(
       `/api/v2/user/watchlist/${encodedArtworkId}`,
       {
         method: "DELETE",

@@ -1,6 +1,22 @@
+import {
+  ExtendedPublicArtworkFields,
+  SensitivePublicArtworkFields,
+} from "@/lib/constants/publicDocumentConstants";
 import { ArtworkDB } from "../models/artworkModel";
 import { CloudinaryImageSanitized } from "./cloudinaryTypes";
 import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
+import {
+  SENSITIVE_PUBLIC_ARTWORK_FIELDS,
+  EXTENDED_PUBLIC_ARTWORK_FIELDS,
+} from "@/lib/constants/publicDocumentConstants";
+import {
+  ArtStyle,
+  FilterMode,
+  Medium,
+  SortOption,
+  Surface,
+} from "@/lib/constants/artworkConstants";
+import { Decade } from "@/lib/constants/artworkConstants";
 
 export interface ArtworkFields {
   favouriteCount: number;
@@ -9,94 +25,26 @@ export interface ArtworkFields {
   isWatchlisted?: boolean;
 }
 
-// From Mongoose Document to Lean
-export type ArtworkLean = LeanDocument<ArtworkDB>;
-export type ArtworkRaw = TransformedDocument<ArtworkLean>; // Should stay as ArtworkDB, not ArtworkLean
-export type ArtworkExtended = Merge<ArtworkRaw, ArtworkFields>;
-export type ArtworkSanitized = Omit<
-  ArtworkExtended,
-  "favourited" | "watcherlist" | "image"
-> & {
-  image: CloudinaryImageSanitized;
-};
-
-const ARTWORK_CONFIG = {
-  SENSITIVE_FIELDS: ["favourited", "watcherlist"],
-};
-
-export type SensitiveFields = (typeof ARTWORK_CONFIG)["SENSITIVE_FIELDS"];
 //! doc-specific transformation definitions
 export type PublicArtworkTransformations = {
   DB: ArtworkDB;
   Lean: LeanDocument<PublicArtworkTransformations["DB"]>;
   Raw: TransformedDocument<PublicArtworkTransformations["Lean"]>;
-  Extended: Merge<PublicArtworkTransformations["Raw"], ArtworkFields>;
+  Extended: Merge<
+    PublicArtworkTransformations["Raw"],
+    ExtendedPublicArtworkFields
+  >;
   Sanitized: Omit<
     PublicArtworkTransformations["Extended"],
-    "favourited" | "watcherlist" | "image"
+    SensitivePublicArtworkFields[number]
   > & {
     image: CloudinaryImageSanitized;
   };
   Frontend: PublicArtworkTransformations["Sanitized"];
 };
 
-// export type ArtworkTransformations = {
-//   DB: ArtworkDB;
-//   Lean: ArtworkLean;
-//   Raw: ArtworkRaw;
-//   Extended: ArtworkExtended;
-//   Sanitized: ArtworkSanitized;
-//   Frontend: ArtworkTransformations["Sanitized"];
-// };
-
 //! Frontend-specific types (safe)
 export type PublicArtwork = PublicArtworkTransformations["Frontend"];
-
-//! Artwork fields
-export type Decade =
-  | "1950s"
-  | "1960s"
-  | "1970s"
-  | "1980s"
-  | "1990s"
-  | "2000s"
-  | "2010s"
-  | "2020s";
-
-export type ArtStyle = "abstract" | "semi-abstract" | "figurative";
-
-export type Medium =
-  | "oil"
-  | "acrylic"
-  | "paint"
-  | "watercolour"
-  | "pastel"
-  | "pencil"
-  | "charcoal"
-  | "ink"
-  | "sand";
-
-export type Surface = "paper" | "canvas" | "wood" | "film";
-
-export interface ColorInfo {
-  color: string;
-  percentage: number;
-}
-
-export interface PredominantColors {
-  cloudinary: ColorInfo[];
-  google: ColorInfo[];
-}
-
-export type FilterMode = "ALL" | "ANY";
-
-export type FilterKey = "decade" | "artstyle" | "medium" | "surface";
-
-export type SortOption =
-  | "colorProximity"
-  | "mostRecent"
-  | "mostPopular"
-  | "mostFeatured";
 
 export interface ArtworkSortConfig {
   by: SortOption;
@@ -118,74 +66,57 @@ export interface ArtworkQueryParams extends ArtworkFilterParams {
   sortColor?: string;
 }
 
-// export interface CloudinaryColor {
+// export interface ColorInfo {
 //   color: string;
 //   percentage: number;
-//   // _id: string;
 // }
 
-// export interface GoogleColor {
-//   color: string;
-//   percentage: number;
-//   // _id: string;
+// export interface PredominantColors {
+//   cloudinary: ColorInfo[];
+//   google: ColorInfo[];
 // }
 
-// export type PublicArtworkImage = Omit<ArtworkImage, "public_id">;
+// export type SortOption =
+//   | "colorProximity"
+//   | "mostRecent"
+//   | "mostPopular"
+//   | "mostFeatured";
 
-// export type ArtworkPublic = Omit<
-//   ArtworkLean,
-//   "collections" | "watcherlist" | "favourited" | "image"
+// From Mongoose Document to Lean
+// export type ArtworkLean = LeanDocument<ArtworkDB>;
+// export type ArtworkRaw = TransformedDocument<ArtworkLean>; // Should stay as ArtworkDB, not ArtworkLean
+// export type ArtworkExtended = Merge<ArtworkRaw, ArtworkFields>;
+// export type ArtworkSanitized = Omit<
+//   ArtworkExtended,
+//   "favourited" | "watcherlist" | "image"
 // > & {
-//   image: CloudinaryImageFrontend;
+//   image: CloudinaryImageSanitized;
 // };
+//! Artwork fields
+// export type Decade =
+//   | "1950s"
+//   | "1960s"
+//   | "1970s"
+//   | "1980s"
+//   | "1990s"
+//   | "2000s"
+//   | "2010s"
+//   | "2020s";
 
-// type PopulatedField<T> = string | T | Partial<T>;
+// export type ArtStyle = "abstract" | "semi-abstract" | "figurative";
 
-// export interface FrontendArtwork extends BaseFrontendArtwork {
-//   // image: PublicArtworkImage;
-//   watcherlist: PopulatedField<FrontendUser>[];
-//   favourited: PopulatedField<FrontendUser>[];
-// }
+// export type Medium =
+//   | "oil"
+//   | "acrylic"
+//   | "paint"
+//   | "watercolour"
+//   | "pastel"
+//   | "pencil"
+//   | "charcoal"
+//   | "ink"
+//   | "sand";
 
-// export interface FrontendArtworkUnpopulated extends BaseFrontendArtwork {
-//   // image: PublicArtworkImage;
-//   collections: string[];
-//   watcherlist: string[];
-//   favourited: string[];
-// }
+// export type Surface = "paper" | "canvas" | "wood" | "film";
+// export type FilterMode = "ALL" | "ANY";
 
-// export interface FrontendArtworkWithCollections extends FrontendArtwork {
-//   // image: PublicArtworkImage;
-//   collections: FrontendCollection[];
-//   watcherlist: string[];
-//   favourited: string[];
-// }
-
-// export interface FrontendArtworkWithWatcherlist extends FrontendArtwork {
-//   // image: PublicArtworkImage;
-//   collections: string[];
-//   watcherlist: FrontendUserUnpopulated[];
-//   favourited: string[];
-// }
-
-// export interface FrontendArtworkWithFavourited extends FrontendArtwork {
-//   // image: PublicArtworkImage;
-//   collections: string[];
-//   watcherlist: string[];
-//   favourited: FrontendUserUnpopulated[];
-// }
-
-// export interface FrontendArtworkFull extends FrontendArtwork {
-//   // image: PublicArtworkImage;
-//   collections: FrontendCollection[];
-//   watcherlist: FrontendUserUnpopulated[];
-//   favourited: FrontendUserUnpopulated[];
-// }
-
-// export interface PublicFrontendArtwork extends BaseFrontendArtwork {
-//   // image: PublicArtworkImage;
-//   isWatchlisted: boolean;
-//   isFavourited: boolean;
-//   watchCount: number;
-//   favouriteCount: number;
-// }
+// export type FilterKey = "decade" | "artstyle" | "medium" | "surface";

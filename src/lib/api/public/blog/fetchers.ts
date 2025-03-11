@@ -1,4 +1,3 @@
-import { BlogEntryPopulatedFrontend } from "@/lib/data/types/populatedTypes";
 import { Fetcher } from "../../core/createFetcher";
 import {
   ListResult,

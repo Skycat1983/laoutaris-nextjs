@@ -1,18 +1,23 @@
 import { ArticleDB } from "../models";
 import { PublicArtworkTransformations } from "./artworkTypes";
-import { UserTransformations } from "./userTypes";
+import { PublicUserTransformations } from "./userTypes";
 import {
+  ExtendedFields,
   LeanDocument,
   Merge,
+  Prettify,
   TransformedDocument,
   WithPopulatedFields,
 } from "./utilTypes";
 
-export type ArticleLean = LeanDocument<ArticleDB>;
-export type ArticleRaw = TransformedDocument<ArticleLean>;
-export type ArticleExtended = Merge<ArticleRaw, { readTime?: number }>;
-export type ArticleSanitized = Omit<
-  ArticleExtended,
+export type PublicArticleLean = LeanDocument<ArticleDB>;
+export type PublicArticleRaw = TransformedDocument<PublicArticleLean>;
+export type PublicArticleExtended = Merge<
+  PublicArticleRaw,
+  { readTime?: number }
+>;
+export type PublicArticleSanitized = Omit<
+  PublicArticleExtended,
   "_id" | "createdAt" | "updatedAt"
 >;
 
@@ -20,6 +25,20 @@ export interface PublicArticleFields {
   readTime?: number;
 }
 
+const SENSITIVE_PUBLIC_ARTICLE_FIELDS = [
+  "_id",
+  "createdAt",
+  "updatedAt",
+] as const;
+const EXTENDED_PUBLIC_ARTICLE_FIELDS = {
+  readTime: { type: "number", default: 0 },
+} as const;
+
+export type PublicArticleExtendedFields = ExtendedFields<
+  typeof EXTENDED_PUBLIC_ARTICLE_FIELDS
+>;
+export type PublicArticleSensitiveFields =
+  (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
 //! doc-specific transformation definitions
 export type PublicArticleTransformations = {
   DB: ArticleDB;
@@ -37,21 +56,21 @@ export type PublicArticleTransformationsPopulated = {
   Lean: WithPopulatedFields<
     PublicArticleTransformations["Lean"],
     {
-      author: UserTransformations["Lean"];
+      author: PublicUserTransformations["Lean"];
       artwork: PublicArtworkTransformations["Lean"];
     }
   >;
   Raw: WithPopulatedFields<
     PublicArticleTransformations["Raw"],
     {
-      author: UserTransformations["Raw"];
+      author: PublicUserTransformations["Raw"];
       artwork: PublicArtworkTransformations["Raw"];
     }
   >;
   Frontend: WithPopulatedFields<
     PublicArticleTransformations["Frontend"],
     {
-      author: UserTransformations["Frontend"];
+      author: PublicUserTransformations["Frontend"];
       artwork: PublicArtworkTransformations["Frontend"];
     }
   >;

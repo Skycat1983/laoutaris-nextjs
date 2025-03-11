@@ -19,10 +19,6 @@ export type Prettify<T> = {
 // Utility to merge two object types
 export type Merge<T1, T2> = Prettify<Omit<T1, keyof T2> & T2>;
 
-type OmitFields<T, K extends keyof T> = Omit<T, K>;
-
-type PickFields<T, K extends keyof T> = Pick<T, K>;
-
 // Helper to create populated types
 export type WithPopulatedFields<
   TBase,
@@ -106,3 +102,25 @@ export type DocumentTransformations<
 // >;
 
 // Usage in transformations:
+// type FieldConfig = {
+//   type: "string" | "number" | "boolean" | "date";
+//   default: any;
+//   optional?: boolean;
+// };
+
+// // Helper type to infer the actual type from the config
+// type InferFieldType<T extends FieldConfig> = T["type"] extends "string"
+//   ? string
+//   : T["type"] extends "number"
+//   ? number
+//   : T["type"] extends "boolean"
+//   ? boolean
+//   : T["type"] extends "date"
+//   ? Date
+//   : never;
+
+// export type ExtendedFields<T extends Record<string, FieldConfig>> = {
+//   [K in keyof T]: T[K]["optional"] extends true
+//     ? InferFieldType<T[K]> | undefined
+//     : InferFieldType<T[K]>;
+// };

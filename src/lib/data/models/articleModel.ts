@@ -1,5 +1,10 @@
+import {
+  ArticleOverlayColour,
+  ArticleSection,
+  ARTICLE_OVERLAY_COLOUR_OPTIONS,
+  ARTICLE_SECTION_OPTIONS,
+} from "@/lib/constants/articleConstants";
 import mongoose, { Document } from "mongoose";
-import { OverlayColour, Section } from "../types";
 
 export interface ArticleBase {
   title: string;
@@ -8,8 +13,8 @@ export interface ArticleBase {
   text: string;
   imageUrl: string;
   slug: string;
-  section: Section;
-  overlayColour: OverlayColour;
+  section: ArticleSection;
+  overlayColour: ArticleOverlayColour;
 }
 
 export interface ArticleDB extends Document, ArticleBase {
@@ -18,14 +23,6 @@ export interface ArticleDB extends Document, ArticleBase {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// export type LeanArticle = Omit<ArticleDB, keyof Document> & {
-//   _id: string;
-//   author: string;
-//   artwork: string;
-//   createdAt: Date;
-//   updatedAt: Date;
-// };
 
 const articleContentSchema = new mongoose.Schema<ArticleDB>(
   {
@@ -40,12 +37,12 @@ const articleContentSchema = new mongoose.Schema<ArticleDB>(
     section: {
       type: String,
       required: true,
-      enum: ["artwork", "biography", "project"],
+      enum: ARTICLE_SECTION_OPTIONS,
     },
     overlayColour: {
       type: String,
       required: true,
-      enum: ["white", "black"],
+      enum: ARTICLE_OVERLAY_COLOUR_OPTIONS,
     },
   },
   {

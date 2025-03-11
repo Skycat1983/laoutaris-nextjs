@@ -4,45 +4,45 @@ import { PublicArtworkTransformations } from "./artworkTypes";
 import { WithPopulated, WithPopulatedArray, Merge } from "./utilTypes";
 
 // First handle the single author population
-type BlogEntryWithAuthor = WithPopulated<
-  BlogEntryTransformations,
-  "Frontend",
-  {
-    author: UserTransformations;
-  }
->;
+// type BlogEntryWithAuthor = WithPopulated<
+//   BlogEntryTransformations,
+//   "Frontend",
+//   {
+//     author: UserTransformations;
+//   }
+// >;
 
-// Then handle the comments array population
-type BlogEntryWithComments = WithPopulatedArray<
-  BlogEntryTransformations,
-  "Frontend",
-  {
-    comments: CommentTransformations[];
-  }
->;
+// // Then handle the comments array population
+// type BlogEntryWithComments = WithPopulatedArray<
+//   BlogEntryTransformations,
+//   "Frontend",
+//   {
+//     comments: CommentTransformations[];
+//   }
+// >;
 
-// Use our Merge utility instead of manual Omit & intersection
-export type BlogEntryPopulatedFrontend = Merge<
-  BlogEntryWithAuthor,
-  BlogEntryWithComments
->;
+// // Use our Merge utility instead of manual Omit & intersection
+// export type BlogEntryPopulatedFrontend = Merge<
+//   BlogEntryWithAuthor,
+//   BlogEntryWithComments
+// >;
 
-type ArticleBase = Omit<
-  ArticleTransformations["Frontend"],
-  "author" | "artwork"
->;
+// type ArticleBase = Omit<
+//   ArticleTransformations["Frontend"],
+//   "author" | "artwork"
+// >;
 
-export type PublicArticlePopulated = ArticleBase & {
-  author: UserTransformations["Frontend"];
-  artwork: ArtworkTransformations["Frontend"];
-};
-export type CollectionPopulatedFrontend = WithPopulatedArray<
-  CollectionTransformations,
-  "Frontend",
-  {
-    artworks: ArtworkTransformations[];
-  }
->;
+// export type PublicArticlePopulated = ArticleBase & {
+//   author: UserTransformations["Frontend"];
+//   artwork: ArtworkTransformations["Frontend"];
+// };
+// export type CollectionPopulatedFrontend = WithPopulatedArray<
+//   CollectionTransformations,
+//   "Frontend",
+//   {
+//     artworks: ArtworkTransformations[];
+//   }
+// >;
 
 // export type ArticlePopulatedFrontend = WithPopulated<
 //   ArticleTransformations,
