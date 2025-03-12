@@ -5,26 +5,30 @@ import {
 import { ArticleDB } from "../models";
 import { ArtworkFrontend, ArtworkLean } from "./artworkTypes";
 import { UserFrontend, UserLean } from "./userTypes";
-import { LeanDocument, WithPopulatedFields } from "./utilTypes";
+import { LeanDocument, Prettify, WithPopulatedFields } from "./utilTypes";
 import { transformArticle } from "@/lib/transforms/transformArticle";
 
 export type ArticleLean = LeanDocument<ArticleDB>;
 export type ArticleFrontend = ReturnType<typeof transformArticle.toFrontend>;
 
-export type ArticleLeanPopulated = WithPopulatedFields<
-  ArticleLean,
-  {
-    author: UserLean;
-    artwork: ArtworkLean;
-  }
+export type ArticleLeanPopulated = Prettify<
+  WithPopulatedFields<
+    ArticleLean,
+    {
+      author: UserLean;
+      artwork: ArtworkLean;
+    }
+  >
 >;
 
-export type ArticleFrontendPopulated = WithPopulatedFields<
-  ArticleFrontend,
-  {
-    author: UserFrontend;
-    artwork: ArtworkFrontend;
-  }
+export type ArticleFrontendPopulated = Prettify<
+  WithPopulatedFields<
+    ArticleFrontend,
+    {
+      author: UserFrontend;
+      artwork: ArtworkFrontend;
+    }
+  >
 >;
 // export type PublicArticleTransformations = {
 //   DB: ArticleDB;

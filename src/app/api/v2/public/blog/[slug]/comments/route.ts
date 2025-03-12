@@ -40,6 +40,8 @@ export const GET = async (
     const blog: BlogEntryPopulatedCommentsPopulatedFrontend =
       transformBlogPopulatedWithCommentsPopulated(rawBlog);
 
+    //   const test = blog.text
+
     return NextResponse.json({
       success: true,
       data: blog,

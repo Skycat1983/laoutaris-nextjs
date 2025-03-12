@@ -41,16 +41,27 @@ export const transformUtils = {
   },
 
   // Remove sensitive fields
-  removeSensitive: <T extends Record<string, any>>(
+  removeSensitive: <T extends Record<string, any>, S extends string>(
     doc: T,
-    sensitiveFields: readonly string[]
-  ): Omit<T, keyof typeof sensitiveFields> => {
+    sensitiveFields: readonly S[]
+  ): Omit<T, S> => {
     const sanitized = { ...doc };
     for (const field of sensitiveFields) {
       delete sanitized[field];
     }
-    return sanitized as Omit<T, keyof typeof sensitiveFields>;
+    return sanitized;
   },
+  // !DO NOT DELETE THIS
+  // removeSensitive: <T extends Record<string, any>>(
+  //   doc: T,
+  //   sensitiveFields: readonly string[]
+  // ): Omit<T, keyof typeof sensitiveFields> => {
+  //   const sanitized = { ...doc };
+  //   for (const field of sensitiveFields) {
+  //     delete sanitized[field];
+  //   }
+  //   return sanitized as Omit<T, keyof typeof sensitiveFields>;
+  // },
 
   // Helper to check if a field exists in a document
   hasField: <T extends Record<string, any>>(

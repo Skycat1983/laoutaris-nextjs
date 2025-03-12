@@ -7,10 +7,9 @@ import {
 } from "../constants";
 import { ArticleBase, ArticleDB } from "../data/models";
 import { createTransformer } from "./createTransformer";
-import { PublicArticleTransformationsPopulated } from "../data/types";
 import { transformUser } from "./transformUser";
 import { transformArtwork } from "./transformArtwork";
-
+import { ArticleLeanPopulated, ArticleFrontendPopulated } from "../data/types";
 export type TransformedArticle = ReturnType<typeof transformArticle.toFrontend>;
 
 export const transformArticle = createTransformer<
@@ -25,7 +24,7 @@ export const transformArticle = createTransformer<
 );
 
 export const transformArticlePopulated = (
-  doc: PublicArticleTransformationsPopulated["Lean"],
+  doc: ArticleLeanPopulated,
   userId?: string | null
 ) => {
   const articlePublic = transformArticle.toFrontend(doc, userId);
@@ -38,12 +37,17 @@ export const transformArticlePopulated = (
     ...articlePublic,
     author: transformedAuthor,
     artwork: transformedArtwork,
-  } satisfies PublicArticleTransformationsPopulated["Frontend"];
+  } satisfies ArticleFrontendPopulated;
 
   return populatedArticle;
 };
 
 // ! DO NOT DELETE. THIS IS THE OLD WAY OF DOING THINGS.... THAT WORKS. IMPORTANT FALLBACK
+
+// type ToRaw = Prettify<ReturnType<typeof transformArticle.toRaw>>;
+// type ToExtended = Prettify<ReturnType<typeof transformArticle.toExtended>>;
+// type ToSanitized = Prettify<ReturnType<typeof transformArticle.toSanitized>>;
+// type ToFrontend = Prettify<ReturnType<typeof transformArticle.toFrontend>>;
 
 // import { transformUtils } from "./transformUtils";
 // import { transformUser } from "./transformUser";

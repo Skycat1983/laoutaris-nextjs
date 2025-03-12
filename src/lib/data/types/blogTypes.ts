@@ -1,4 +1,4 @@
-import { LeanDocument, WithPopulatedFields } from "./utilTypes";
+import { LeanDocument, Prettify, WithPopulatedFields } from "./utilTypes";
 import { BlogEntryDB } from "../models";
 import { UserFrontend, UserLean } from "./userTypes";
 import {
@@ -28,14 +28,31 @@ export type BlogEntryFrontendPopulated = WithPopulatedFields<
   }
 >;
 
-export type BlogEntryPopulatedCommentsPopulatedLean = BlogEntryLeanPopulated & {
-  comments: CommentLeanPopulated[];
-};
+// export type BlogEntryPopulatedCommentsPopulatedLean = BlogEntryLeanPopulated & {
+//   comments: CommentLeanPopulated[];
+// };
 
-export type BlogEntryPopulatedCommentsPopulatedFrontend =
-  BlogEntryFrontendPopulated & {
+export type BlogEntryPopulatedCommentsPopulatedLean = WithPopulatedFields<
+  BlogEntryLeanPopulated,
+  {
+    comments: CommentLeanPopulated[];
+  }
+>;
+
+// export type BlogEntryPopulatedCommentsPopulatedFrontend =
+//   BlogEntryFrontendPopulated & {
+//     comments: CommentFrontendPopulated[];
+//   };
+
+export type BlogEntryPopulatedCommentsPopulatedFrontend = WithPopulatedFields<
+  BlogEntryFrontendPopulated,
+  {
     comments: CommentFrontendPopulated[];
-  };
+  }
+>;
+
+export type BlogEntry = Prettify<BlogEntryPopulatedCommentsPopulatedFrontend>;
+
 // //! PUBLIC BLOG ENTRY
 // export type PublicBlogEntryTransformations = {
 //   DB: BlogEntryDB;

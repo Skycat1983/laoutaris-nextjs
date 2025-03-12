@@ -45,11 +45,11 @@ export const transformArtwork = createTransformer<
 //     }) satisfies PublicArtworkTransformations["Sanitized"];
 //   },
 
-//   toFrontend: (
-//     doc: PublicArtworkTransformations["Lean"]
-//   ): PublicArtworkTransformations["Frontend"] => {
-//     return transformArtwork.toSanitized(
-//       transformArtwork.toExtended(transformArtwork.toRaw(doc))
-//     ) satisfies PublicArtworkTransformations["Frontend"];
-//   },
+// toFrontend: (
+//   doc: PublicArtworkTransformations["Lean"]
+// ): PublicArtworkTransformations["Frontend"] => {
+//   return transformArtwork.toSanitized(
+//     transformArtwork.toExtended(transformArtwork.toRaw(doc))
+//   ) satisfies PublicArtworkTransformations["Frontend"];
+// },
 // };
