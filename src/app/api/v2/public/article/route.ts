@@ -1,14 +1,11 @@
-import { ArticleDB, ArticleModel } from "@/lib/data/models";
+import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
-import { LeanDocument } from "@/lib/data/types/utilTypes";
 import { transformArticle } from "@/lib/transforms/transformArticle";
 import { ArticleLean, ArticleFrontend } from "@/lib/data/types";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
-
-type LeanArticle = LeanDocument<ArticleDB>;
 
 export const GET = async (
   req: NextRequest

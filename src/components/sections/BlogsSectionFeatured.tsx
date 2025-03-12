@@ -2,16 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 import { useState } from "react";
-import { NewLogoDark, NewLogoLight } from "../elements/icons/NewLogos";
-import { Button } from "../shadcn/button";
 import { ChevronRight } from "lucide-react";
 import { Skeleton } from "../shadcn/skeleton";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 
 interface BlogLayoutProps {
-  blogEntries: BlogEntryData[];
+  blogEntries: BlogEntryFrontend[];
   // next: string | null;
   // prev: string | null;
 }

@@ -24,7 +24,7 @@ export const BlogSectionContinuous = ({
   const handleLoadMore = useCallback(async () => {
     try {
       const nextPage = page + 1;
-      const response = await clientApi.public.blog.fetchBlogs({
+      const response = await clientApi.public.blog.multiple({
         page: nextPage,
         limit: 10,
       });

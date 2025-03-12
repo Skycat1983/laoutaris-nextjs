@@ -1,10 +1,10 @@
 import { formatDate } from "@/lib/utils/formatDate";
 import React from "react";
 import LogoutForm from "../modules/forms/user/LogoutForm";
-import { FrontendUser } from "@/lib/data/types/userTypes";
 import { Button } from "../shadcn/button";
+import { UserFrontend } from "@/lib/data/types/userTypes";
 
-export const AccountSettings = async (props: FrontendUser) => {
+export const AccountSettings = async (props: UserFrontend) => {
   const { email, username, favourites, watchlist, createdAt } = props;
 
   return (
@@ -16,7 +16,7 @@ export const AccountSettings = async (props: FrontendUser) => {
   );
 };
 
-export const AccountSettingsV1 = async (props: FrontendUser) => {
+export const AccountSettingsV1 = async (props: UserFrontend) => {
   const { email, username, favourites, watchlist, createdAt } = props;
 
   return (

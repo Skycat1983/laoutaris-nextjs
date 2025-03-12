@@ -1,19 +1,20 @@
 import { BlogDetail } from "@/components/views/BlogDetail";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { ApiResponse } from "@/lib/data/types/apiTypes";
 import {
-  ApiResponse,
-  PublicBlogEntry,
-  PublicBlogEntryPopulated,
-} from "@/lib/data/types";
+  BlogEntryFrontend,
+  BlogEntryFrontendPopulated,
+} from "@/lib/data/types/blogTypes";
 import { delay } from "@/lib/utils/debug";
+
 interface Props {
   slug: string;
   showComments?: boolean;
 }
 
 export type BlogDetailLoaderResult =
-  | ApiResponse<PublicBlogEntryPopulated>
-  | ApiResponse<PublicBlogEntry>;
+  | ApiResponse<BlogEntryFrontendPopulated>
+  | ApiResponse<BlogEntryFrontend>;
 
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
   await delay(2000);
@@ -24,12 +25,7 @@ export async function BlogDetailLoader({ slug, showComments = false }: Props) {
     console.log("result", result);
 
     if (!result.success) {
-      const errorMessage =
-        typeof result.error === "object"
-          ? JSON.stringify(result.error)
-          : result.error;
-
-      throw new Error(errorMessage);
+      throw new Error(result.error);
     }
 
     return <BlogDetail {...result.data} showComments={showComments} />;

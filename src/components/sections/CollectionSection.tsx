@@ -1,12 +1,11 @@
 import { SectionLayout } from "../layouts/public/SectionLayout";
-import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import { ReactNode } from "react";
 import {
   CollectionCard,
   CollectionCardSkeleton,
 } from "../modules/cards/CollectionCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
-
+import { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 interface GridLayoutProps {
   children: ReactNode;
 }
@@ -20,7 +19,7 @@ export const CollectionGrid = ({ children }: GridLayoutProps) => {
 };
 
 interface CollectionSectionProps {
-  collections: CollectionCardData[];
+  collections: CollectionFrontend[];
 }
 
 export const CollectionSection = ({ collections }: CollectionSectionProps) => {

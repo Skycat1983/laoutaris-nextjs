@@ -7,10 +7,9 @@ import {
   BiographyCardSkeleton,
 } from "@/components/modules/cards/BiographyCard";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
-import { BiographyCardData } from "../loaders/sectionLoaders/BiographySectionLoader";
-
+import { ArticleFrontend } from "@/lib/data/types/articleTypes";
 interface BiographySectionProps {
-  articles: BiographyCardData[];
+  articles: ArticleFrontend[];
 }
 
 interface ScrollLayoutProps {

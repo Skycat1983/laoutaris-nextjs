@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 
 interface BlogLayoutProps {
-  blogEntries: BlogEntryData[];
-  // next: string | null;
-  // prev: string | null;
+  blogEntries: BlogEntryFrontend[];
 }
 
 export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {

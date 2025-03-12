@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 import { Calendar, ChevronRight } from "lucide-react";
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 
 interface BlogLayoutProps {
-  blogEntries: BlogEntryData[];
+  blogEntries: BlogEntryFrontend[];
   // next: string | null;
   // prev: string | null;
 }

@@ -1,11 +1,10 @@
 import React from "react";
 import { MobileArticleView } from "./MobileArticleView";
 import { DesktopArticleView } from "./DesktopArticleView";
-import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
-import { ArticlePopulatedFrontend } from "@/lib/data/types/transformationTypes";
+import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 
 interface ArticleViewProps {
-  article: ArticlePopulatedFrontend;
+  article: ArticleFrontendPopulated;
   navigation: {
     prev: string | null;
     next: string | null;

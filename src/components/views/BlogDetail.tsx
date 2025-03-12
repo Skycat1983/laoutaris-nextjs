@@ -12,14 +12,33 @@ import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import {
-  PublicBlogEntry,
-  PublicBlogEntryPopulated,
-  PublicCommentPopulated,
-} from "@/lib/data/types";
+  BlogEntryFrontend,
+  BlogEntryFrontendPopulated,
+  BlogEntryPopulatedCommentsPopulatedFrontend,
+} from "@/lib/data/types/blogTypes";
+import { CommentFrontend } from "@/lib/data/types/commentTypes";
 
-interface BlogDetailProps extends PublicBlogEntry {
+// First, define what props we expect based on whether comments are populated
+interface BlogDetailBaseProps {
+  title: string;
+  subtitle: string;
+  text: string;
+  imageUrl: string;
+  displayDate: string;
+  slug: string;
   showComments?: boolean;
 }
+
+interface BlogDetailUnpopulatedProps extends BlogDetailBaseProps {
+  showComments?: false;
+}
+
+interface BlogDetailPopulatedProps extends BlogDetailBaseProps {
+  showComments: true;
+  comments: CommentFrontend[];
+}
+
+type BlogDetailProps = BlogDetailUnpopulatedProps | BlogDetailPopulatedProps;
 
 const BlogDetail = ({
   title,
@@ -28,14 +47,14 @@ const BlogDetail = ({
   imageUrl,
   displayDate,
   slug,
-  comments = [],
   showComments = false,
+  ...props
 }: BlogDetailProps) => {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [populatedComments, setPopulatedComments] = useState<
-    PublicCommentPopulated[]
-  >([]);
-  const [hasLoadedComments, setHasLoadedComments] = useState(false);
+  const [populatedComments, setPopulatedComments] = useState<CommentFrontend[]>(
+    showComments && "comments" in props ? props.comments : []
+  );
+  const [hasLoadedComments, setHasLoadedComments] = useState(showComments);
   const router = useRouter();
   const { openModal } = useGlobalFeatures();
 
@@ -156,11 +175,7 @@ const BlogDetail = ({
                 <div className="animate-pulse">Loading comments...</div>
               ) : (
                 <BlogCommentsList
-                  comments={
-                    hasLoadedComments
-                      ? populatedComments
-                      : (comments as unknown as PublicCommentPopulated[])
-                  }
+                  comments={populatedComments}
                   onCommentUpdated={handleCommentUpdated}
                   onCommentDeleted={handleCommentDeleted}
                 />

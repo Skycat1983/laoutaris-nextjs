@@ -2,7 +2,6 @@ import { Fetcher } from "../../core/createFetcher";
 import { ListResult, SingleResult } from "@/lib/data/types";
 import {
   BlogEntryFrontend,
-  BlogEntryFrontendPopulated,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
 interface FetchBlogsParams {
@@ -25,15 +24,9 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
   },
 
   // get multiple blogs by params
-  multiple: async ({
-    sortby,
-    fields,
-    limit = 10,
-    page = 1,
-  }: FetchBlogsParams = {}) => {
+  multiple: async ({ sortby, limit = 10, page = 1 }: FetchBlogsParams = {}) => {
     const params = new URLSearchParams();
     if (sortby) params.append("sortby", sortby);
-    if (fields) params.append("fields", fields.join(","));
     if (limit) params.append("limit", limit.toString());
     if (page) params.append("page", page.toString());
 

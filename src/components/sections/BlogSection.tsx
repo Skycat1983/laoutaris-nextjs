@@ -1,10 +1,9 @@
 import { SectionLayout } from "../layouts/public/SectionLayout";
 
-import { BlogCardData } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
 import { ReactNode } from "react";
 import { BlogCard, BlogCardSkeleton } from "../modules/cards/BlogCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
-
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 interface GridLayoutProps {
   children: ReactNode;
 }
@@ -18,7 +17,7 @@ export const BlogGrid = ({ children }: GridLayoutProps) => {
 };
 
 interface BlogSectionProps {
-  blogs: BlogCardData[];
+  blogs: BlogEntryFrontend[];
 }
 
 export const BlogSection = ({ blogs }: BlogSectionProps) => {

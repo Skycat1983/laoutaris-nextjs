@@ -1,23 +1,10 @@
 "use server";
 
-import { transformToPick } from "@/lib/transforms/transformToPick";
-import { Collection } from "@/lib/data/types/collectionTypes";
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { delay } from "@/lib/utils/debug";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
-
-// Config Constants
-const COLLECTIONS_FETCH_CONFIG = {
-  section: "collections",
-  // fields: ["title", "slug", "imageUrl", "artworks"] as const,
-} as const;
-
-// Type Definitions
-export type CollectionCardData = Pick<
-  Collection,
-  "title" | "imageUrl" | "slug" | "artworks"
->;
+import { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 
 // Loader Function
 export async function CollectionsSectionLoader() {
@@ -25,8 +12,7 @@ export async function CollectionsSectionLoader() {
   try {
     // Fetch data using API layer
     const result = await serverApi.public.collection.multiple({
-      section: COLLECTIONS_FETCH_CONFIG.section,
-      // fields: COLLECTIONS_FETCH_CONFIG.fields,
+      section: "collections",
       limit: 9,
     });
 
@@ -34,7 +20,9 @@ export async function CollectionsSectionLoader() {
       throw new Error(result.error || "Failed to fetch collections");
     }
 
-    const { data: collections } = result as ApiSuccessResponse<Collection[]>;
+    const { data: collections } = result as ApiSuccessResponse<
+      CollectionFrontend[]
+    >;
 
     // Return component with transformed data
     return <CollectionSection collections={collections} />;
@@ -43,3 +31,9 @@ export async function CollectionsSectionLoader() {
     return null;
   }
 }
+
+// Config Constants
+// const COLLECTIONS_FETCH_CONFIG = {
+//   section: "collections",
+//   // fields: ["title", "slug", "imageUrl", "artworks"] as const,
+// } as const;

@@ -1,9 +1,9 @@
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 
 import { MagnifierImage } from "../modules/MagnifierImage";
-import { Artwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
-const ArtworkView = (artwork: Artwork) => {
+const ArtworkView = (artwork: ArtworkFrontend) => {
   const Card = () => {
     // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
     return (

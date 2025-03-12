@@ -1,11 +1,10 @@
 "use client";
 
 import React from "react";
-import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { CommentCard } from "../modules/cards/CommentCard";
-
+import { CommentFrontend } from "@/lib/data/types/commentTypes";
 interface CommentsListProps {
-  comments: FrontendCommentWithAuthor[];
+  comments: CommentFrontend[];
   onCommentUpdated: () => void;
   onCommentDeleted: () => void;
 }
@@ -25,9 +24,9 @@ export function BlogCommentsList({
 
   return (
     <div className="space-y-6 mt-8">
-      {comments.map((comment) => (
+      {comments.map((comment, i) => (
         <CommentCard
-          key={comment._id}
+          key={i}
           comment={comment}
           onCommentUpdated={onCommentUpdated}
           onCommentDeleted={onCommentDeleted}
