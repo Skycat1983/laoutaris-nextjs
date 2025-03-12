@@ -6,6 +6,7 @@ import { ArticleNavItem, ValidSection } from "@/lib/data/types/navigationTypes";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
+import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 
 interface ArticleLoaderProps {
   slug: string;
@@ -13,7 +14,7 @@ interface ArticleLoaderProps {
 }
 
 type FetcherResponses = [
-  ApiResponse<ApiArticlePopulatedResult>,
+  ApiResponse<ArticleFrontendPopulated>,
   ApiResponse<ArticleNavItem[]>
 ];
 
@@ -34,7 +35,7 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
   }
 
   const { data: article } =
-    articleResponse as ApiSuccessResponse<ApiArticlePopulatedResult>;
+    articleResponse as ApiSuccessResponse<ArticleFrontendPopulated>;
 
   const { data: navigationList } = navigationResponse as ApiSuccessResponse<
     ArticleNavItem[]
@@ -57,5 +58,5 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
 
   console.log("article in loader", article);
 
-  return <ArticleView article={article.data} navigation={navigation} />;
+  return <ArticleView article={article} navigation={navigation} />;
 }

@@ -1,13 +1,12 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
-import Image from "next/image";
+import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 interface ArticleProps {
-  article: FrontendArticleWithArtwork;
+  article: ArticleFrontendPopulated;
   nextUrl: string | null;
   prevUrl: string | null;
 }

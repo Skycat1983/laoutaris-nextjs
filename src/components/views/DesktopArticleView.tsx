@@ -3,15 +3,14 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArticleWithArtworkTooltip } from "../../../unused/articleToPublic";
-import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
+import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSelectedLayoutSegments } from "next/navigation";
 // import { ImQuotesLeft } from "react-icons/im";
 
 interface ArticleProps {
-  article: FrontendArticleWithArtwork;
+  article: ArticleFrontendPopulated;
   nextArticle: string | null;
   prevArticle: string | null;
 }
