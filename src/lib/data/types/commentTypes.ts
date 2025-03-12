@@ -1,8 +1,8 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
 import { transformComment } from "@/lib/transforms/transformComment";
 import { CommentDB } from "../models";
-import { BlogEntryLean } from "./blogTypes";
-import { UserLean } from "./userTypes";
+import { BlogEntryFrontend, BlogEntryLean } from "./blogTypes";
+import { UserFrontend, UserLean } from "./userTypes";
 import { LeanDocument, WithPopulatedFields } from "./utilTypes";
 
 export type CommentLean = LeanDocument<CommentDB>;
@@ -15,6 +15,18 @@ export type CommentLeanPopulated = WithPopulatedFields<
     blog: BlogEntryLean;
   }
 >;
+
+export type CommentFrontendPopulated = WithPopulatedFields<
+  CommentFrontend,
+  {
+    author: UserFrontend;
+    blog: BlogEntryFrontend;
+  }
+>;
+// export type CommentFrontendPopulated = ReturnType<
+//   typeof transformCommentPopulated
+// >;
+
 // export type PublicCommentLean = LeanDocument<CommentDB>;
 // export type PublicCommentRaw = TransformedDocument<PublicCommentLean>;
 // export type PublicCommentExtended = Merge<

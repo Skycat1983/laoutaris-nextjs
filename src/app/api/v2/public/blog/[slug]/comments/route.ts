@@ -1,15 +1,19 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import dbConnect from "@/lib/db/mongodb";
-
-type BlogWithPopulatedCommentsResponse = ApiResponse<FrontendBlogEntry>;
+import {
+  ApiErrorResponse,
+  BlogEntryPopulatedCommentsPopulatedLean,
+  BlogEntryPopulatedCommentsPopulatedFrontend,
+  RouteResponse,
+} from "@/lib/data/types";
+import { ApiBlogPopulatedResult } from "@/lib/api/public/blog/fetchers";
+import { transformBlogPopulatedWithCommentsPopulated } from "@/lib/transforms/transformBlog";
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<NextResponse<BlogWithPopulatedCommentsResponse>> => {
+): Promise<RouteResponse<ApiBlogPopulatedResult>> => {
   await dbConnect();
 
   try {
@@ -21,10 +25,9 @@ export const GET = async (
         path: "comments",
         populate: {
           path: "author",
-          select: "username role", // Only select needed fields
         },
       })
-      .lean();
+      .lean<BlogEntryPopulatedCommentsPopulatedLean>();
 
     if (!rawBlog) {
       return NextResponse.json({
@@ -34,12 +37,13 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const blog = transformMongooseDoc<FrontendBlogEntry>(rawBlog);
+    const blog: BlogEntryPopulatedCommentsPopulatedFrontend =
+      transformBlogPopulatedWithCommentsPopulated(rawBlog);
 
     return NextResponse.json({
       success: true,
       data: blog,
-    } satisfies ApiSuccessResponse<FrontendBlogEntry>);
+    } satisfies ApiBlogPopulatedResult);
   } catch (error) {
     console.error("Error fetching blog with comments and authors:", error);
     return NextResponse.json({

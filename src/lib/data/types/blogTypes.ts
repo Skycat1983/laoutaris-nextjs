@@ -1,7 +1,12 @@
 import { LeanDocument, WithPopulatedFields } from "./utilTypes";
 import { BlogEntryDB } from "../models";
 import { UserFrontend, UserLean } from "./userTypes";
-import { CommentFrontend, CommentLean } from "./commentTypes";
+import {
+  CommentFrontend,
+  CommentFrontendPopulated,
+  CommentLean,
+  CommentLeanPopulated,
+} from "./commentTypes";
 import { transformBlog } from "@/lib/transforms/transformBlog";
 
 export type BlogEntryLean = LeanDocument<BlogEntryDB>;
@@ -22,6 +27,15 @@ export type BlogEntryFrontendPopulated = WithPopulatedFields<
     comments: CommentFrontend[];
   }
 >;
+
+export type BlogEntryPopulatedCommentsPopulatedLean = BlogEntryLeanPopulated & {
+  comments: CommentLeanPopulated[];
+};
+
+export type BlogEntryPopulatedCommentsPopulatedFrontend =
+  BlogEntryFrontendPopulated & {
+    comments: CommentFrontendPopulated[];
+  };
 // //! PUBLIC BLOG ENTRY
 // export type PublicBlogEntryTransformations = {
 //   DB: BlogEntryDB;

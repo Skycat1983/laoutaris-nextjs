@@ -1,11 +1,10 @@
 import { Fetcher } from "../../core/createFetcher";
+import { ListResult, SingleResult } from "@/lib/data/types";
 import {
-  ListResult,
-  PublicBlogEntry,
-  PublicBlogEntryPopulated,
-  SingleResult,
-} from "@/lib/data/types";
-
+  BlogEntryFrontend,
+  BlogEntryFrontendPopulated,
+  BlogEntryPopulatedCommentsPopulatedFrontend,
+} from "@/lib/data/types/blogTypes";
 interface FetchBlogsParams {
   sortby?: "latest" | "oldest" | "popular" | "featured";
   fields?: readonly string[];
@@ -13,9 +12,10 @@ interface FetchBlogsParams {
   page?: number;
 }
 
-export type ApiBlogResult = SingleResult<PublicBlogEntry>;
-export type ApiBlogListResult = ListResult<PublicBlogEntry>;
-export type ApiBlogPopulatedResult = SingleResult<PublicBlogEntryPopulated>;
+export type ApiBlogResult = SingleResult<BlogEntryFrontend>;
+export type ApiBlogListResult = ListResult<BlogEntryFrontend>;
+export type ApiBlogPopulatedResult =
+  SingleResult<BlogEntryPopulatedCommentsPopulatedFrontend>;
 
 export const createBlogFetchers = (fetcher: Fetcher) => ({
   // get one blog by slug

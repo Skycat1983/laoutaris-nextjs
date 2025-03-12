@@ -3,15 +3,25 @@ import {
   ExtendedPublicBlogFields,
   ExtendedPublicCollectionFields,
   ExtendedPublicArticleFields,
+  ExtendedPublicCommentFields,
+  ExtendedPublicUserFields,
 } from "../constants";
 import {
   ArtworkDB,
   ArticleDB,
   BlogEntryDB,
   CollectionDB,
+  CommentDB,
+  UserDB,
 } from "../data/models";
 import { calculateReadTime } from "../utils/calcReadTime";
 import { isUserInArray } from "../utils/isUserInArray";
+
+export const extendArticleFields = (doc: ArticleDB, userId?: string | null) => {
+  return {
+    readTime: calculateReadTime(doc.text),
+  } satisfies Partial<ExtendedPublicArticleFields>;
+};
 
 export const extendArtworkFields = (
   artwork: ArtworkDB,
@@ -25,6 +35,12 @@ export const extendArtworkFields = (
   } satisfies Partial<ExtendedPublicArtworkFields>;
 };
 
+export const extendBlogFields = (doc: BlogEntryDB, userId?: string | null) => {
+  return {
+    commentCount: doc.comments.length,
+  } satisfies Partial<ExtendedPublicBlogFields>;
+};
+
 export const extendCollectionFields = (
   doc: CollectionDB,
   userId?: string | null
@@ -35,14 +51,14 @@ export const extendCollectionFields = (
   } satisfies Partial<ExtendedPublicCollectionFields>;
 };
 
-export const extendBlogFields = (doc: BlogEntryDB, userId?: string | null) => {
+export const extendCommentFields = (doc: CommentDB, userId?: string | null) => {
   return {
-    commentCount: doc.comments.length,
-  } satisfies Partial<ExtendedPublicBlogFields>;
+    isOwner: doc.author.toString() === userId,
+  } satisfies Partial<ExtendedPublicCommentFields>;
 };
 
-export const extendArticleFields = (doc: ArticleDB, userId?: string | null) => {
+export const extendUserFields = (doc: UserDB, userId?: string | null) => {
   return {
-    readTime: calculateReadTime(doc.text),
-  } satisfies Partial<ExtendedPublicArticleFields>;
+    isOwner: doc.toString() === userId,
+  } satisfies Partial<ExtendedPublicUserFields>;
 };

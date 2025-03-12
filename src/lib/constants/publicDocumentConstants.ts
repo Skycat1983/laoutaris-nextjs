@@ -5,12 +5,16 @@ import {
   ArtworkDB,
   BlogEntryDB,
   CollectionDB,
+  CommentDB,
+  UserDB,
 } from "../data/models";
 import {
   extendArtworkFields,
   extendBlogFields,
   extendCollectionFields,
   extendArticleFields,
+  extendCommentFields,
+  extendUserFields,
 } from "../transforms/transformHelpers";
 
 // Sensitive data
@@ -119,6 +123,10 @@ export const EXTENDED_PUBLIC_COMMENT_FIELDS: ExtendedPublicCommentFields = {
 export type ExtendedPublicCommentFields = {
   isOwner: boolean;
 };
+export const COMMENT_FIELD_EXTENDER = extendCommentFields as (
+  doc: CommentDB,
+  userId?: string | null
+) => ExtendedPublicCommentFields;
 
 //! SUBSCRIBER
 // Sensitive data
@@ -138,3 +146,7 @@ export const EXTENDED_PUBLIC_USER_FIELDS: ExtendedPublicUserFields = {
 export type ExtendedPublicUserFields = {
   isOwner: boolean;
 };
+export const USER_FIELD_EXTENDER = extendUserFields as (
+  doc: UserDB,
+  userId?: string | null
+) => ExtendedPublicUserFields;

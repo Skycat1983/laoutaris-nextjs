@@ -1,30 +1,22 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import dbConnect from "@/lib/db/mongodb";
-
-type BlogApiResponse = ApiResponse<FrontendBlogEntry[]>;
+import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { BlogEntryFrontend, BlogEntryLean } from "@/lib/data/types/blogTypes";
+import { transformBlog } from "@/lib/transforms/transformBlog";
 type SortByType = "latest" | "oldest" | "popular" | "featured";
 
 export const GET = async (
   req: NextRequest
-): Promise<NextResponse<BlogApiResponse>> => {
+): Promise<RouteResponse<ApiBlogListResult>> => {
+  await dbConnect();
+
+  const { searchParams } = new URL(req.url);
   try {
-    // Ensure DB connection
-    await dbConnect();
-
-    const { searchParams } = new URL(req.url);
-    // console.log(
-    //   "Search params in blog route:",
-    //   Object.fromEntries(searchParams)
-    // );
-
-    // Check total blogs in collection first
     const totalBlogs = await BlogModel.countDocuments({});
-    console.log("Total blogs in collection:", totalBlogs);
 
-    // Build filter query object (separate from sort)
     const filterQuery: any = {};
     const sortQuery: any = {};
 
@@ -62,27 +54,18 @@ export const GET = async (
       limit,
     });
 
-    // Try a simple find first to verify query works
-    const simpleFind = await BlogModel.find({}).lean();
-    // console.log("Simple find count:", simpleFind.length);
-
     const [rawBlogs, total] = await Promise.all([
       BlogModel.find(filterQuery) // Use filter query here
         .sort(sortQuery) // Use sort query here
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean()
-        .exec(),
+        .lean<BlogEntryLean[]>(),
       BlogModel.countDocuments(filterQuery), // Use same filter query for count
     ]);
 
-    // console.log("rawBlogs", rawBlogs);
+    const blogs = rawBlogs.map((blog) => transformBlog.toFrontend(blog));
 
-    const blogs = transformMongooseDoc<FrontendBlogEntry[]>(rawBlogs);
-
-    // console.log("blogs transofrmed", blogs);
-
-    const metadata: PaginationMetadata = {
+    const metadata = {
       page,
       limit,
       total,
@@ -93,7 +76,7 @@ export const GET = async (
       success: true,
       data: blogs,
       metadata,
-    } satisfies PaginatedResponse<FrontendBlogEntry[]>);
+    } satisfies ApiBlogListResult);
   } catch (error) {
     console.error("Blog fetch error:", error);
     console.error(

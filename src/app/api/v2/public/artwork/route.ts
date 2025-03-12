@@ -1,10 +1,10 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { ArtworkTransformations, ColorInfo } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
 import { findSimilarColors } from "@/lib/utils/colorUtils";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { transformArtwork } from "@/lib/transforms/transformArtwork";
+import { ColourInfo, ArtworkFrontend } from "@/lib/data/types";
 
 export async function GET(
   request: NextRequest
@@ -65,7 +65,7 @@ export async function GET(
     if (sortBy === "colorProximity" && targetColor) {
       const artworksWithSimilarity = allArtworks.map((artwork) => {
         const artworkColors = artwork.image.hexColors.map(
-          (hc: ColorInfo) => hc.color
+          (hc: ColourInfo) => hc.color
         );
 
         const similarColors = findSimilarColors(
@@ -82,7 +82,7 @@ export async function GET(
               ...artwork.image,
               hexColors: [
                 artwork.image.hexColors.find(
-                  (hc: ColorInfo) => hc.color === bestMatch.color
+                  (hc: ColourInfo) => hc.color === bestMatch.color
                 ),
               ],
               similarityScore: bestMatch.similarity,
@@ -104,8 +104,9 @@ export async function GET(
       finalArtworks = allArtworks.slice((page - 1) * limit, page * limit);
     }
 
-    const transformedArtworks: ArtworkTransformations["Frontend"][] =
-      finalArtworks.map((artwork) => transformArtwork(artwork, null));
+    const transformedArtworks: ArtworkFrontend[] = finalArtworks.map(
+      (artwork) => transformArtwork.toFrontend(artwork, null)
+    );
 
     return NextResponse.json({
       success: true,

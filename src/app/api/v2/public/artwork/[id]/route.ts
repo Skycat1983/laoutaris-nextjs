@@ -2,7 +2,7 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { Artwork, ArtworkLean } from "@/lib/data/types/artworkTypes";
+import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";
 import { transformArtwork } from "@/lib/transforms/transformArtwork";
 
@@ -24,7 +24,10 @@ export async function GET(
         { status: 404 }
       );
 
-    const artwork: Artwork = transformArtwork(leanDoc, userId);
+    const artwork: ArtworkFrontend = transformArtwork.toFrontend(
+      leanDoc,
+      userId
+    );
 
     return NextResponse.json({
       success: true,
@@ -41,27 +44,3 @@ export async function GET(
     );
   }
 }
-
-// 3. Calculate public properties
-// const isWatchlisted = userId ? artwork.watcherlist.includes(userId) : false;
-// const isFavourited = userId ? artwork.favourited.includes(userId) : false;
-// const watchCount = artwork.watcherlist.length;
-// const favouriteCount = artwork.favourited.length;
-
-// // 4. Construct public artwork
-// const publicArtwork: PublicFrontendArtwork = {
-//   _id: artwork._id,
-//   title: artwork.title,
-//   image: sanitizedImage,
-//   decade: artwork.decade,
-//   artstyle: artwork.artstyle,
-//   medium: artwork.medium,
-//   surface: artwork.surface,
-//   featured: artwork.featured,
-//   createdAt: artwork.createdAt,
-//   updatedAt: artwork.updatedAt,
-//   isWatchlisted,
-//   isFavourited,
-//   watchCount,
-//   favouriteCount,
-// };

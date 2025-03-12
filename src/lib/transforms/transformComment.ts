@@ -2,34 +2,27 @@ import {
   EXTENDED_PUBLIC_COMMENT_FIELDS,
   SENSITIVE_PUBLIC_COMMENT_FIELDS,
 } from "../constants";
-import { PublicCommentTransformations } from "../data/types";
-import { transformMongooseDoc } from "./transformMongooseDoc";
-import { transformUtils } from "./transformUtils";
+import { COMMENT_FIELD_EXTENDER } from "../constants";
+import { createTransformer } from "./createTransformer";
+import { CommentLeanPopulated, CommentFrontendPopulated } from "../data/types";
+import { transformBlog } from "./transformBlog";
+import { transformUser } from "./transformUser";
 
-export const transformComment = {
-  toRaw: (
-    doc: PublicCommentTransformations["Lean"]
-  ): PublicCommentTransformations["Raw"] => {
-    return transformMongooseDoc<PublicCommentTransformations["Raw"]>(doc);
-  },
+export const transformComment = createTransformer(
+  EXTENDED_PUBLIC_COMMENT_FIELDS,
+  SENSITIVE_PUBLIC_COMMENT_FIELDS,
+  COMMENT_FIELD_EXTENDER
+);
 
-  toExtended: (
-    doc: PublicCommentTransformations["Raw"]
-  ): PublicCommentTransformations["Extended"] => {
-    return transformUtils.extend(doc, EXTENDED_PUBLIC_COMMENT_FIELDS);
-  },
-
-  toSanitized: (
-    doc: PublicCommentTransformations["Extended"]
-  ): PublicCommentTransformations["Sanitized"] => {
-    return transformUtils.removeSensitive(doc, SENSITIVE_PUBLIC_COMMENT_FIELDS);
-  },
-
-  toFrontend: (
-    doc: PublicCommentTransformations["Lean"]
-  ): PublicCommentTransformations["Frontend"] => {
-    return transformComment.toSanitized(
-      transformComment.toExtended(transformComment.toRaw(doc))
-    );
-  },
+export const transformCommentPopulated = (
+  doc: CommentLeanPopulated,
+  userId?: string | null
+): CommentFrontendPopulated => {
+  const comment = transformComment.toFrontend(doc, userId);
+  const { author, blog, ...rest } = doc;
+  return {
+    ...comment,
+    author: transformUser.toFrontend(author),
+    blog: transformBlog.toFrontend(blog),
+  } satisfies CommentFrontendPopulated;
 };
