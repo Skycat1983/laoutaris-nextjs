@@ -4,11 +4,13 @@ import { findSimilarColors } from "@/lib/utils/colorUtils";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { transformArtwork } from "@/lib/transforms/transformArtwork";
-import { ColourInfo, ArtworkFrontend } from "@/lib/data/types";
+import { ColourInfo, ArtworkFrontend, ArtworkLean } from "@/lib/data/types";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
+  const userId = await getUserIdFromSession();
   try {
     const { searchParams } = new URL(request.url);
     const filterMode = searchParams.get("filterMode") || "ALL";
@@ -17,7 +19,13 @@ export async function GET(
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
-    console.log("route params:", { filterMode, sortBy, targetColor });
+    console.log("route params:", {
+      filterMode,
+      sortBy,
+      targetColor,
+      page,
+      limit,
+    });
 
     const conditions = [];
 
@@ -56,10 +64,13 @@ export async function GET(
     // Get total count for pagination
     const total = await ArtworkModel.countDocuments(query);
 
-    // Get all matching artworks (for color sorting) or paginated results (for other sorts)
-    const allArtworks = await artworksQuery;
+    console.log("total", total);
 
-    let finalArtworks;
+    // Get all matching artworks (for color sorting) or paginated results (for other sorts)
+    const allArtworks = await artworksQuery.lean<ArtworkLean[]>();
+    console.log("allArtworks count:", allArtworks.length);
+
+    let finalArtworks: ArtworkLean[];
 
     // Handle color proximity sorting
     if (sortBy === "colorProximity" && targetColor) {
@@ -75,16 +86,22 @@ export async function GET(
         );
         const bestMatch = similarColors[0] || { similarity: 100 };
 
+        // Find the matching color info
+        const matchingColorInfo = artwork.image.hexColors.find(
+          (hc: ColourInfo) => hc.color === bestMatch.color
+        );
+
+        // Ensure we always have a valid ColourInfo
+        const hexColors: ColourInfo[] = matchingColorInfo
+          ? [matchingColorInfo]
+          : artwork.image.hexColors;
+
         return {
           artwork: {
-            ...artwork.toObject(),
+            ...artwork,
             image: {
               ...artwork.image,
-              hexColors: [
-                artwork.image.hexColors.find(
-                  (hc: ColourInfo) => hc.color === bestMatch.color
-                ),
-              ],
+              hexColors, // Now guaranteed to be ColourInfo[]
               similarityScore: bestMatch.similarity,
             },
           },
@@ -104,20 +121,42 @@ export async function GET(
       finalArtworks = allArtworks.slice((page - 1) * limit, page * limit);
     }
 
-    const transformedArtworks: ArtworkFrontend[] = finalArtworks.map(
-      (artwork) => transformArtwork.toFrontend(artwork, null)
+    console.log("Starting artwork transformation");
+    console.log(
+      "Sample artwork structure:",
+      JSON.stringify(finalArtworks[0], null, 2)
     );
 
-    return NextResponse.json({
-      success: true,
-      data: transformedArtworks,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ApiArtworkListResult);
+    try {
+      const transformedArtworks: ArtworkFrontend[] = finalArtworks.map(
+        (artwork, index) => {
+          console.log(
+            `Transforming artwork ${index + 1} of ${finalArtworks.length}`
+          );
+          const transformed = transformArtwork.toFrontend(artwork, userId);
+          console.log(`Successfully transformed artwork ${index + 1}`);
+          return transformed;
+        }
+      );
+
+      console.log("All artworks transformed successfully");
+      return NextResponse.json({
+        success: true,
+        data: transformedArtworks,
+        metadata: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      } satisfies ApiArtworkListResult);
+    } catch (transformError) {
+      console.error("Error in artwork route:", transformError);
+      return NextResponse.json(
+        { success: false, error: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error("Error in artwork route:", error);
     return NextResponse.json(

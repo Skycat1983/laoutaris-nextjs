@@ -1,35 +1,25 @@
 "use server";
 
-import { transformToPick } from "@/lib/transforms/transformToPick";
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
-import { PublicBlogEntry } from "@/lib/data/types/blogTypes";
-import {
-  ApiSuccessResponse,
-  PaginationMetadata,
-} from "@/lib/data/types/apiTypes";
-
+import { PaginationMetadata } from "@/lib/data/types/apiTypes";
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
-  fields: [
-    "title",
-    "subtitle",
-    "slug",
-    "imageUrl",
-    "summary",
-    "displayDate",
-    // "tags",
-  ] as const,
+  // fields: [
+  //   "title",
+  //   "subtitle",
+  //   "slug",
+  //   "imageUrl",
+  //   "summary",
+  //   "displayDate",
+  //   // "tags",
+  // ] as const,
   limit: 10,
 } as const;
-
-// Type Definitions
-export type BlogEntryData = Pick<
-  PublicBlogEntry,
-  (typeof BLOG_ENTRIES_CONFIG.fields)[number]
->;
 
 interface BlogEntriesLoaderProps {
   sortby?: "latest" | "oldest" | "popular" | "featured";
@@ -37,12 +27,12 @@ interface BlogEntriesLoaderProps {
 }
 
 export interface SortedBlogData {
-  featured?: BlogEntryData[];
-  latest?: BlogEntryData[];
-  popular?: BlogEntryData[];
+  featured?: BlogEntryFrontend[];
+  latest?: BlogEntryFrontend[];
+  popular?: BlogEntryFrontend[];
   single?: {
     type: "latest" | "oldest" | "popular" | "featured";
-    data: BlogEntryData[];
+    data: BlogEntryFrontend[];
   };
   metadata: PaginationMetadata;
 }
@@ -57,7 +47,6 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
         sortby,
         page,
         limit: BLOG_ENTRIES_CONFIG.limit,
-        fields: BLOG_ENTRIES_CONFIG.fields,
       });
 
       if (!result.success) {
@@ -72,14 +61,12 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
           total: blogs.length,
           totalPages: 1,
         },
-      } = result as ApiSuccessResponse<PublicBlogEntry[]>;
+      } = result as ApiBlogListResult;
 
       blogData = {
         single: {
           type: sortby,
-          data: blogs.map((blog) =>
-            transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
-          ),
+          data: blogs,
         },
         metadata,
       };
@@ -90,19 +77,16 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
           sortby: "featured",
           page: 1,
           limit: 5,
-          fields: BLOG_ENTRIES_CONFIG.fields,
         }),
         serverPublicApi.blog.multiple({
           sortby: "latest",
           page: 1,
           limit: 6,
-          fields: BLOG_ENTRIES_CONFIG.fields,
         }),
         serverPublicApi.blog.multiple({
           sortby: "popular",
           page: 1,
           limit: 8,
-          fields: BLOG_ENTRIES_CONFIG.fields,
         }),
       ]);
 
@@ -114,25 +98,19 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
         throw new Error("Failed to fetch one or more blog sets");
       }
 
-      // Ensure we have valid metadata
-      const defaultMetadata: PaginationMetadata = {
-        page: 1,
-        limit: BLOG_ENTRIES_CONFIG.limit,
-        total: latestResult.data.length,
-        totalPages: 1,
-      };
-
       blogData = {
-        featured: featuredResult.data.map((blog) =>
-          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
-        ),
-        latest: latestResult.data.map((blog) =>
-          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
-        ),
-        popular: popularResult.data.map((blog) =>
-          transformToPick(blog, BLOG_ENTRIES_CONFIG.fields)
-        ),
-        metadata: latestResult.metadata ?? defaultMetadata,
+        featured: featuredResult.data,
+        latest: latestResult.data,
+        popular: popularResult.data,
+        metadata: {
+          page: 1,
+          limit: BLOG_ENTRIES_CONFIG.limit,
+          total:
+            featuredResult.data.length +
+            latestResult.data.length +
+            popularResult.data.length,
+          totalPages: 1,
+        },
       };
     }
 
@@ -151,3 +129,9 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     throw error;
   }
 }
+
+// Type Definitions
+// export type BlogEntryData = Pick<
+//   BlogEntryFrontend,
+//   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
+// >;

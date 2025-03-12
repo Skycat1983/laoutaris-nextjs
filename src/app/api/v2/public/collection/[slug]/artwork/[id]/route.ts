@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CollectionModel } from "@/lib/data/models";
 import { Types } from "mongoose";
-import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
+import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string; id: string } }
-): Promise<NextResponse<ApiResponse<FrontendCollectionWithArtworks>>> {
+): Promise<RouteResponse<ApiCollectionPopulatedResult>> {
   try {
     const { slug, id } = params;
 
@@ -14,9 +15,6 @@ export async function GET(
     const collection = await CollectionModel.findOne({ slug }).populate({
       path: "artworks",
       match: { _id: new Types.ObjectId(id) },
-      //! previously returned just the artwork
-      //   select:
-      //     "image title decade artstyle medium surface featured favourited watcherlist",
     });
 
     if (!collection) {
@@ -41,7 +39,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: collection,
-    });
+    }) satisfies ApiCollectionPopulatedResult;
   } catch (error) {
     console.error("Error fetching collection artwork:", error);
     return NextResponse.json(

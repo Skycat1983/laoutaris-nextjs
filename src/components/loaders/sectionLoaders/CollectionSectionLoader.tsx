@@ -31,9 +31,3 @@ export async function CollectionsSectionLoader() {
     return null;
   }
 }
-
-// Config Constants
-// const COLLECTIONS_FETCH_CONFIG = {
-//   section: "collections",
-//   // fields: ["title", "slug", "imageUrl", "artworks"] as const,
-// } as const;

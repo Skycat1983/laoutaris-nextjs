@@ -2,7 +2,7 @@ import { serverApi } from "@/lib/api/serverApi";
 import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
-
+import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 interface ArtworkListLoaderProps {
   initialSort?: ArtworkSortConfig;
   initialFilters?: ArtworkFilterParams;
@@ -12,18 +12,21 @@ export const ArtworkListLoader = async ({
   initialSort,
   initialFilters,
 }: ArtworkListLoaderProps) => {
-  const initialArtworks = await serverApi.public.artwork.multiple({
+  const result = await serverApi.public.artwork.multiple({
     ...initialFilters,
     filterMode: initialFilters?.filterMode || "ALL",
     sortBy: initialSort?.by,
     sortColor: initialSort?.color,
   });
 
-  if (!initialArtworks.success) {
-    throw new Error("No artworks found");
+  if (!result.success) {
+    console.log("result.error", result.error);
+    throw new Error(result.error || "Failed to fetch artworks");
   }
 
-  const { data: artworks, metadata } = initialArtworks;
+  const { data: artworks, metadata } = result as ApiArtworkListResult;
+
+  console.log("artworks in loader", artworks);
 
   return (
     <ArtworkGallery

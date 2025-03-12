@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import { MasonryLayout } from "../layouts/public/MasonryLayout";
-import { ArtworkFilterParams, FilterMode } from "@/lib/data/types/artworkTypes";
+import {
+  ArtworkFilterParams,
+  ArtworkFrontend,
+} from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
 import { BasicAccordionFilter } from "./filters/BasicAccordionFilter";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
-import { Artwork } from "@/lib/data/types/artworkTypes";
+import { FilterMode } from "@/lib/constants";
 
 interface ArtworkGalleryProps {
-  initialArtworks: Artwork[];
+  initialArtworks: ArtworkFrontend[];
   initialSort?: ArtworkSortConfig;
   initialFilters?: ArtworkFilterParams;
 }

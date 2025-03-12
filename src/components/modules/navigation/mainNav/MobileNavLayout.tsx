@@ -12,7 +12,6 @@ interface MobileNavLayoutProps {
 }
 
 export function MobileNavLayout({ navLinks }: MobileNavLayoutProps) {
-  console.log("navLinks in MobileNavLayout", navLinks);
   return (
     <>
       <div className="flex flex-row max-w-full justify-between my-2 bg-whitish">

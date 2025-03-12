@@ -3,7 +3,7 @@ import { CollectionModel } from "@/lib/data/models";
 import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
 import {
   ApiErrorResponse,
-  PublicCollectionTransformations,
+  CollectionLean,
   RouteResponse,
 } from "@/lib/data/types";
 import { transformCollection } from "@/lib/transforms/transformCollection";
@@ -29,7 +29,7 @@ export const GET = async (
         // .select(fields)
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean<PublicCollectionTransformations["Lean"][]>(),
+        .lean<CollectionLean[]>(),
       CollectionModel.countDocuments(query),
     ]);
 
@@ -44,7 +44,7 @@ export const GET = async (
     }
 
     const collections = leanCollections.map((collection) =>
-      transformCollection(collection)
+      transformCollection.toFrontend(collection)
     );
 
     return NextResponse.json({

@@ -10,12 +10,15 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { useState } from "react";
-import { ArtStyle, Decade, Surface } from "@/lib/data/types";
+
 import {
-  DECADES,
-  ART_STYLES,
-  SURFACES,
-} from "@/lib/constants/artworkFilterOptions";
+  ArtStyle,
+  ARTSTYLE_OPTIONS,
+  DECADE_OPTIONS,
+  Surface,
+  SURFACE_OPTIONS,
+} from "@/lib/constants/artworkConstants";
+import { Decade } from "@/lib/constants/artworkConstants";
 
 const FilterSelects = ({
   filters,
@@ -44,7 +47,7 @@ const FilterSelects = ({
         <SelectValue placeholder="Select Decade" />
       </SelectTrigger>
       <SelectContent>
-        {DECADES.map((decade) => (
+        {DECADE_OPTIONS.map((decade) => (
           <SelectItem key={decade} value={decade}>
             {decade}
           </SelectItem>
@@ -61,7 +64,7 @@ const FilterSelects = ({
         <SelectValue placeholder="Select Style" />
       </SelectTrigger>
       <SelectContent>
-        {ART_STYLES.map((style) => (
+        {ARTSTYLE_OPTIONS.map((style) => (
           <SelectItem key={style} value={style}>
             {style.charAt(0).toUpperCase() + style.slice(1)}
           </SelectItem>
@@ -78,7 +81,7 @@ const FilterSelects = ({
         <SelectValue placeholder="Select Surface" />
       </SelectTrigger>
       <SelectContent>
-        {SURFACES.map((surface) => (
+        {SURFACE_OPTIONS.map((surface) => (
           <SelectItem key={surface} value={surface}>
             {surface.charAt(0).toUpperCase() + surface.slice(1)}
           </SelectItem>

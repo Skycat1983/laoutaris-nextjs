@@ -63,7 +63,8 @@ const MagnifierImage = ({
         width={width}
         height={height}
         alt={alt}
-        className="object-contain max-h-full w-auto shadow-2xl fade-in"
+        className="block mx-auto object-contain max-h-full w-auto shadow-2xl fade-in"
+        // className="object-contain max-h-full w-auto shadow-2xl fade-in"
       />
 
       {showMagnifier && (
@@ -78,10 +79,6 @@ const MagnifierImage = ({
           }}
         >
           {!isZoomedImageLoaded ? (
-            // <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-            //   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-            //   <span className="text-xs text-gray-600">Loading zoom...</span>
-            // </div>
             <div className="w-full h-full flex flex-col items-center justify-center gap-2">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
               <span className="text-xs text-gray-600">Loading zoom...</span>
@@ -106,3 +103,7 @@ const MagnifierImage = ({
 };
 
 export { MagnifierImage };
+// <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+//   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+//   <span className="text-xs text-gray-600">Loading zoom...</span>
+// </div>

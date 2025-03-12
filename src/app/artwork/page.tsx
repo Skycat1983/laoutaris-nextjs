@@ -1,13 +1,10 @@
 import { ArtworkListLoader } from "@/components/loaders/viewLoaders/ArtworkListLoader";
 import React from "react";
-import { ArtworkSortConfig, SortOption } from "@/lib/data/types";
-import {
-  ArtworkFilterParams,
-  Decade,
-  ArtStyle,
-  Medium,
-  Surface,
-} from "@/lib/data/types/artworkTypes";
+import { ArtworkSortConfig } from "@/lib/data/types";
+import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
+import { SortOption } from "@/lib/constants/artworkConstants";
+import { ArtStyle, Medium, Surface } from "@/lib/constants/artworkConstants";
+import { Decade } from "@/lib/constants";
 
 interface SearchParams {
   sortBy?: string;
