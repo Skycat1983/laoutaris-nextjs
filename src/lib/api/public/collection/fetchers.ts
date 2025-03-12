@@ -1,21 +1,21 @@
-import type {
-  Collection,
-  CollectionPopulated,
-} from "@/lib/data/types/collectionTypes";
+import { CollectionSection } from "@/lib/constants";
 import { Fetcher } from "../../core/createFetcher";
-import { Section } from "@/lib/data/types/articleTypes";
 import { ListResult, SingleResult } from "@/lib/data/types";
-
+import {
+  CollectionFrontend,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types/collectionTypes";
 interface FetchCollectionsParams {
-  section?: Section;
+  section?: CollectionSection;
   // fields?: readonly string[];
   limit?: number;
   page?: number;
 }
 
-export type ApiCollectionResult = SingleResult<PublicCollection>;
-export type ApiCollectionListResult = ListResult<PublicCollection>;
-export type ApiCollectionPopulatedResult = SingleResult<CollectionPopulated>;
+export type ApiCollectionResult = SingleResult<CollectionFrontend>;
+export type ApiCollectionListResult = ListResult<CollectionFrontend>;
+export type ApiCollectionPopulatedResult =
+  SingleResult<CollectionFrontendPopulated>;
 
 export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get one collection by slug

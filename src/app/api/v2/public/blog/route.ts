@@ -1,10 +1,9 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import dbConnect from "@/lib/db/mongodb";
 import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { BlogEntryFrontend, BlogEntryLean } from "@/lib/data/types/blogTypes";
+import { BlogEntryLean } from "@/lib/data/types/blogTypes";
 import { transformBlog } from "@/lib/transforms/transformBlog";
 type SortByType = "latest" | "oldest" | "popular" | "featured";
 

@@ -28,21 +28,12 @@ export type BlogEntryFrontendPopulated = WithPopulatedFields<
   }
 >;
 
-// export type BlogEntryPopulatedCommentsPopulatedLean = BlogEntryLeanPopulated & {
-//   comments: CommentLeanPopulated[];
-// };
-
 export type BlogEntryPopulatedCommentsPopulatedLean = WithPopulatedFields<
   BlogEntryLeanPopulated,
   {
     comments: CommentLeanPopulated[];
   }
 >;
-
-// export type BlogEntryPopulatedCommentsPopulatedFrontend =
-//   BlogEntryFrontendPopulated & {
-//     comments: CommentFrontendPopulated[];
-//   };
 
 export type BlogEntryPopulatedCommentsPopulatedFrontend = WithPopulatedFields<
   BlogEntryFrontendPopulated,

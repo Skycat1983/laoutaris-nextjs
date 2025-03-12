@@ -6,9 +6,14 @@ import {
   BlogEntryPopulatedCommentsPopulatedLean,
   BlogEntryPopulatedCommentsPopulatedFrontend,
   RouteResponse,
+  BlogEntryFrontendPopulated,
+  Prettify,
 } from "@/lib/data/types";
 import { ApiBlogPopulatedResult } from "@/lib/api/public/blog/fetchers";
-import { transformBlogPopulatedWithCommentsPopulated } from "@/lib/transforms/transformBlog";
+import {
+  transformBlogPopulated,
+  transformBlogPopulatedWithCommentsPopulated,
+} from "@/lib/transforms/transformBlog";
 
 export const GET = async (
   req: NextRequest,
@@ -37,8 +42,13 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const blog: BlogEntryPopulatedCommentsPopulatedFrontend =
+    const blog: Prettify<BlogEntryPopulatedCommentsPopulatedFrontend> =
       transformBlogPopulatedWithCommentsPopulated(rawBlog);
+
+    // const blog: Prettify<BlogEntryFrontendPopulated> =
+    //   transformBlogPopulated(rawBlog);
+
+    // const test = blog.comments[0].author.
 
     //   const test = blog.text
 

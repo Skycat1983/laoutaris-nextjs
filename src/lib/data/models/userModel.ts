@@ -1,13 +1,13 @@
 import mongoose, { Document } from "mongoose";
 import { USER_ROLES, UserRole } from "@/lib/constants";
-export interface BaseUser {
+export interface UserBase {
   email: string;
   username: string;
   password: string;
   role: UserRole;
 }
 
-export interface UserDB extends BaseUser, Document {
+export interface UserDB extends UserBase, Document {
   comments: mongoose.Schema.Types.ObjectId[];
   watchlist: mongoose.Schema.Types.ObjectId[];
   favourites: mongoose.Schema.Types.ObjectId[];
