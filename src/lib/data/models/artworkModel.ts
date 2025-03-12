@@ -11,17 +11,17 @@ import {
   SURFACE_OPTIONS,
 } from "@/lib/constants/artworkConstants";
 
-export interface BaseArtwork {
+export interface ArtworkBase {
   title: string;
   decade: Decade;
   artstyle: ArtStyle;
   medium: Medium;
   surface: Surface;
   featured: boolean;
+  image: CloudinaryImageDB;
 }
 
-export interface ArtworkDB extends Document, BaseArtwork {
-  image: CloudinaryImageDB;
+export interface ArtworkDB extends Document, ArtworkBase {
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];

@@ -1,6 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import { COLLECTION_SECTIONS, CollectionSection } from "@/lib/constants";
-interface BaseCollection {
+export interface CollectionBase {
   title: string;
   subtitle: string;
   summary: string;
@@ -10,7 +10,7 @@ interface BaseCollection {
   section: CollectionSection;
 }
 
-export interface CollectionDB extends Document, BaseCollection {
+export interface CollectionDB extends Document, CollectionBase {
   createdAt: Date;
   updatedAt: Date;
   artworks: mongoose.Schema.Types.ObjectId[];

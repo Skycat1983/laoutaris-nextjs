@@ -1,58 +1,96 @@
 import {
   EXTENDED_PUBLIC_COLLECTION_FIELDS,
+  ExtendedPublicCollectionFields,
   SENSITIVE_PUBLIC_COLLECTION_FIELDS,
+  SensitivePublicCollectionFields,
 } from "../constants";
-import { PublicCollectionTransformations } from "../data/types";
-import { transformMongooseDoc } from "./transformMongooseDoc";
-import { transformUtils } from "./transformUtils";
+import { CollectionFrontend, CollectionLeanPopulated } from "../data/types";
+import { createTransformer } from "./createTransformer";
+import { CollectionDB, CollectionBase } from "../data/models";
+import { transformArtwork } from "./transformArtwork";
+import { extendCollectionFields } from "./transformHelpers";
 
-export const transformCollection = {
-  toRaw: (
-    doc: PublicCollectionTransformations["Lean"]
-  ): PublicCollectionTransformations["Raw"] => {
-    return transformMongooseDoc<PublicCollectionTransformations["Raw"]>(doc);
-  },
+export type TransformedCollection = ReturnType<
+  typeof transformCollection.toFrontend
+>;
 
-  toExtended: (
-    doc: PublicCollectionTransformations["Raw"]
-  ): PublicCollectionTransformations["Extended"] => {
-    return transformUtils.extend(doc, EXTENDED_PUBLIC_COLLECTION_FIELDS);
-  },
+export const transformCollection = createTransformer<
+  CollectionDB,
+  CollectionBase,
+  ExtendedPublicCollectionFields,
+  SensitivePublicCollectionFields
+>(
+  EXTENDED_PUBLIC_COLLECTION_FIELDS,
+  SENSITIVE_PUBLIC_COLLECTION_FIELDS,
+  (doc) => ({
+    ...extendCollectionFields(doc),
+  })
+);
 
-  toSanitized: (
-    doc: PublicCollectionTransformations["Extended"]
-  ): PublicCollectionTransformations["Sanitized"] => {
-    return transformUtils.removeSensitive(
-      doc,
-      SENSITIVE_PUBLIC_COLLECTION_FIELDS
-    );
-  },
+export const transformCollectionPopulated = (
+  doc: CollectionLeanPopulated,
+  userId?: string | null
+): CollectionFrontend => {
+  const collectionPublic = transformCollection.toFrontend(doc, userId);
+  const { artworks, ...baseDoc } = doc;
+  const transformedArtworks = artworks.map((artwork) =>
+    transformArtwork.toFrontend(artwork, userId)
+  );
 
-  toFrontend: (
-    doc: PublicCollectionTransformations["Sanitized"]
-  ): PublicCollectionTransformations["Frontend"] => {
-    return transformUtils.removeSensitive(
-      doc,
-      SENSITIVE_PUBLIC_COLLECTION_FIELDS
-    );
-  },
+  const populatedCollection = {
+    ...collectionPublic,
+    artworks: transformedArtworks,
+  } satisfies CollectionFrontend;
+
+  return populatedCollection;
 };
 
-// export const transformCollection = (
-//   collection: CollectionTransformations["Lean"]
-// ): CollectionTransformations["Frontend"] => {
-//   const transformedDoc: CollectionTransformations["Raw"] =
-//     transformMongooseDoc<CollectionTransformations["Raw"]>(collection);
+//export const transformCollectionPopulated = (
+//   doc: PublicCollectionTransformationsPopulated["Lean"],
+//   userId?: string | null
+// ) => {
+//   const collectionPublic = transformCollection.toFrontend(doc, userId);
+//   const { artworks, ...baseDoc } = doc;
+//   const transformedArtworks = artworks.map((artwork) =>
+//     transformArtwork.toFrontend(artwork, userId)
+//   );
 
-//   const extendedDoc: CollectionTransformations["Extended"] = {
-//     ...transformedDoc,
-//     firstArtwork: transformedDoc.artworks[0].toString(),
-//   };
+//   const populatedCollection = {
+//     ...collectionPublic,
+//     artworks: transformedArtworks,
+//   } satisfies PublicCollectionTransformationsPopulated["Frontend"];
 
-//   const { createdAt, updatedAt, _id, ...sanitizedFields } = extendedDoc;
-//   const sanitizedDoc: CollectionTransformations["Sanitized"] = {
-//     ...sanitizedFields,
-//   } satisfies CollectionTransformations["Sanitized"];
+//   return populatedCollection;
+// };
 
-//   return sanitizedDoc;
+// export const transformCollection = {
+//   toRaw: (
+//     doc: PublicCollectionTransformations["Lean"]
+//   ): PublicCollectionTransformations["Raw"] => {
+//     return transformMongooseDoc<PublicCollectionTransformations["Raw"]>(doc);
+//   },
+
+//   toExtended: (
+//     doc: PublicCollectionTransformations["Raw"]
+//   ): PublicCollectionTransformations["Extended"] => {
+//     return transformUtils.extend(doc, EXTENDED_PUBLIC_COLLECTION_FIELDS);
+//   },
+
+//   toSanitized: (
+//     doc: PublicCollectionTransformations["Extended"]
+//   ): PublicCollectionTransformations["Sanitized"] => {
+//     return transformUtils.removeSensitive(
+//       doc,
+//       SENSITIVE_PUBLIC_COLLECTION_FIELDS
+//     );
+//   },
+
+//   toFrontend: (
+//     doc: PublicCollectionTransformations["Sanitized"]
+//   ): PublicCollectionTransformations["Frontend"] => {
+//     return transformUtils.removeSensitive(
+//       doc,
+//       SENSITIVE_PUBLIC_COLLECTION_FIELDS
+//     );
+//   },
 // };

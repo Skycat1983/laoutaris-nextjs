@@ -59,6 +59,37 @@ export type PublicArticleTransformationsPopulated = {
   >;
 };
 
+export type LeanArticlePopulated =
+  PublicArticleTransformationsPopulated["Lean"];
+export type FrontendArticlePopulated =
+  PublicArticleTransformationsPopulated["Frontend"];
+
+// export type PublicArticleTransformationsPopulated = {
+//   Lean: WithPopulatedFields<
+//     PublicArticleTransformations["Lean"],
+//     {
+//       author: PublicUserTransformations["Lean"];
+//       artwork: PublicArtworkTransformations["Lean"];
+//     }
+//   >;
+//   Raw: PublicArticleTransformations["Raw"];
+
+//   Extended: WithPopulatedFields<
+//     PublicArticleTransformations["Extended"],
+//     {
+//       author: PublicUserTransformations["Extended"];
+//       artwork: PublicArtworkTransformations["Extended"];
+//     }
+//   >;
+//   Frontend: WithPopulatedFields<
+//     PublicArticleTransformations["Frontend"],
+//     {
+//       author: PublicUserTransformations["Frontend"];
+//       artwork: PublicArtworkTransformations["Frontend"];
+//     }
+//   >;
+// };
+
 //! Frontend-specific types
 export type PublicArticle = PublicArticleTransformations["Frontend"];
 export type PublicArticlePopulated =

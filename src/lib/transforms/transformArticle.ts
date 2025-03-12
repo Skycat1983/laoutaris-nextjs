@@ -1,7 +1,3 @@
-import { transformUtils } from "./transformUtils";
-import type { PublicArticleTransformationsPopulated } from "../data/types/articleTypes";
-import { transformUser } from "./transformUser";
-import { transformArtwork } from "./transformArtwork";
 import {
   EXTENDED_PUBLIC_ARTICLE_FIELDS,
   ExtendedPublicArticleFields,
@@ -9,288 +5,191 @@ import {
   SensitivePublicArticleFields,
 } from "../constants";
 import { calculateReadTime } from "../utils/calcReadTime";
-import { PublicTransformationsGeneric } from "../data/types";
-import { ArticleDB } from "../data/models";
-import { Schema, Types } from "mongoose";
+import { ArticleBase, ArticleDB } from "../data/models";
+import { createTransformer } from "./createTransformer";
+import { PublicArticleTransformationsPopulated } from "../data/types";
+import { transformUser } from "./transformUser";
+import { transformArtwork } from "./transformArtwork";
 
-type PublicArticleTransformations = PublicTransformationsGeneric<
-  // Partial<ArticleDB>,
+export type TransformedArticle = ReturnType<typeof transformArticle.toFrontend>;
+
+export const transformArticle = createTransformer<
   ArticleDB,
+  ArticleBase,
   ExtendedPublicArticleFields,
   SensitivePublicArticleFields
->;
+>(EXTENDED_PUBLIC_ARTICLE_FIELDS, SENSITIVE_PUBLIC_ARTICLE_FIELDS, (doc) => ({
+  readTime: calculateReadTime(doc.text),
+}));
 
-export const transformArticle = {
-  toRaw: (
-    doc: PublicArticleTransformations["Lean"]
-  ): PublicArticleTransformations["Raw"] => {
-    return transformUtils.toRaw<PublicArticleTransformations["Raw"]>(doc);
-  },
+export const transformArticlePopulated = (
+  doc: PublicArticleTransformationsPopulated["Lean"],
+  userId?: string | null
+) => {
+  const articlePublic = transformArticle.toFrontend(doc, userId);
 
-  toExtended: (
-    doc: PublicArticleTransformations["Raw"]
-  ): PublicArticleTransformations["Extended"] => {
-    const extended = {
-      ...doc,
-      ...EXTENDED_PUBLIC_ARTICLE_FIELDS,
-      readTime: calculateReadTime(doc.text),
-    };
+  const { author, artwork, ...baseDoc } = doc;
+  const transformedAuthor = transformUser.toFrontend(author);
+  const transformedArtwork = transformArtwork.toFrontend(artwork, userId);
 
-    return extended satisfies PublicArticleTransformations["Extended"];
-  },
+  const populatedArticle = {
+    ...articlePublic,
+    author: transformedAuthor,
+    artwork: transformedArtwork,
+  } satisfies PublicArticleTransformationsPopulated["Frontend"];
 
-  toSanitized: (
-    doc: PublicArticleTransformations["Extended"]
-  ): PublicArticleTransformations["Sanitized"] => {
-    return transformUtils.removeSensitive(
-      doc,
-      SENSITIVE_PUBLIC_ARTICLE_FIELDS
-    ) satisfies PublicArticleTransformations["Sanitized"];
-  },
-
-  toFrontend: (
-    doc: PublicArticleTransformations["Lean"]
-  ): PublicArticleTransformations["Frontend"] => {
-    return transformArticle.toSanitized(
-      transformArticle.toExtended(transformArticle.toRaw(doc))
-    ) satisfies PublicArticleTransformations["Frontend"];
-  },
-
-  toPopulated: (
-    doc: PublicArticleTransformationsPopulated["Lean"]
-  ): PublicArticleTransformationsPopulated["Frontend"] => {
-    const { author, artwork, ...baseDoc } = doc;
-
-    const transformedAuthor = transformUser.toFrontend(author);
-    const transformedArtwork = transformArtwork.toFrontend(artwork);
-
-    const sanitizedBase = transformUtils.removeSensitive(
-      {
-        ...baseDoc,
-        ...EXTENDED_PUBLIC_ARTICLE_FIELDS,
-        readTime: calculateReadTime(baseDoc.text),
-      },
-      SENSITIVE_PUBLIC_ARTICLE_FIELDS
-    );
-
-    return {
-      ...sanitizedBase,
-      author: transformedAuthor,
-      artwork: transformedArtwork,
-    } satisfies PublicArticleTransformationsPopulated["Frontend"];
-  },
-
-  // type PublicArticlePopulated = PublicTransformationsGeneric<
-  //   Partial<PublicArticleTransformationsPopulated["Lean"]>,
-  //   ExtendedPublicArticleFields,
-  //   SensitivePublicArticleFields
-  // >;
-
-  // type PublicArticleTransformationsPopulated = PublicTransformationsGeneric<
-  //   Partial<ArticleDB>,
-  //   ExtendedPublicArticleFields,
-  //   SensitivePublicArticleFields,
-  //   {
-  //     author: PublicTransformationsGeneric<
-  //       UserDB,
-  //       ExtendedUserFields,
-  //       SensitivePublicUserFields
-  //     >;
-  //     artwork: PublicTransformationsGeneric<
-  //       ArtworkDB,
-  //       ExtendedPublicArtworkFields,
-  //       SensitivePublicArtworkFields
-  //     >;
-  //   }
-  // >;
-
-  // // First define a generic populated version
-  // export type PublicTransformationsPopulatedGeneric<
-  //   TDocument,
-  //   TExtended extends Record<string, any>,
-  //   TSensitive extends string,
-  //   TPopulated extends Record<string, PublicTransformationsGeneric<any, any, any>>
-  // > = {
-  //   Lean: WithPopulatedFields<
-  //     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Lean"],
-  //     { [K in keyof TPopulated]: TPopulated[K]["Lean"] }
-  //   >;
-  //   Raw: WithPopulatedFields<
-  //     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Raw"],
-  //     { [K in keyof TPopulated]: TPopulated[K]["Raw"] }
-  //   >;
-  //   Extended: WithPopulatedFields<
-  //     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Extended"],
-  //     { [K in keyof TPopulated]: TPopulated[K]["Extended"] }
-  //   >;
-  //   Frontend: WithPopulatedFields<
-  //     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Frontend"],
-  //     { [K in keyof TPopulated]: TPopulated[K]["Frontend"] }
-  //   >;
-  // };
-
-  // // Then use it for Article
-  // type PublicArticleTransformationsPopulated =
-  //   PublicTransformationsPopulatedGeneric<
-  //     ArticleDB,
-  //     ExtendedPublicArticleFields,
-  //     SensitivePublicArticleFields,
-  //     {
-  //       author: PublicTransformationsGeneric<
-  //         UserDB,
-  //         ExtendedUserFields,
-  //         SensitivePublicUserFields
-  //       >;
-  //       artwork: PublicTransformationsGeneric<
-  //         ArtworkDB,
-  //         ExtendedPublicArtworkFields,
-  //         SensitivePublicArtworkFields
-  //       >;
-  //     }
-  //   >;
-
-  // toPopulatedRaw: (
-  //   doc: PublicArticleTransformationsPopulated["Lean"]
-  // ): PublicArticleTransformationsPopulated["Raw"] => {
-  //   // transform the entire base document
-  //   const transformedBase =
-  //     transformUtils.toRaw<PublicArticleTransformations["Raw"]>(doc);
-
-  //   // ...then transform the populated fields
-  //   return {
-  //     ...transformedBase, // This preserves ALL article fields
-  //     author: transformUtils.toRaw<PublicUserTransformations["Raw"]>(
-  //       doc.author
-  //     ),
-  //     artwork: transformUtils.toRaw<PublicArtworkTransformations["Raw"]>(
-  //       doc.artwork
-  //     ),
-  //   };
-  // },
-
-  // toPopulatedExtended: (
-  //   doc: PublicArticleTransformationsPopulated["Raw"]
-  // ): PublicArticleTransformationsPopulated["Extended"] => {
-  //   // Separate populated fields from base document
-  //   const { author, artwork, ...baseFields } = doc;
-
-  //   // Transform base document
-  //   const transformedBase = transformArticle.toExtended(doc);
-
-  //   return transformUtils.merge(transformedBase, {
-  //     author: transformUser.toExtended(author),
-  //     artwork: transformArtwork.toExtended(artwork),
-  //   }) satisfies PublicArticleTransformationsPopulated["Extended"];
-  // },
-
-  // toPopulatedFrontend: (
-  //   doc: PublicArticleTransformationsPopulated["Extended"]
-  // ): PublicArticleTransformationsPopulated["Frontend"] => {
-  //   // Transform the base document without populated fields
-  //   const {
-  //     author: extendedAuthor,
-  //     artwork: extendedArtwork,
-  //     ...baseDoc
-  //   } = doc;
-  //   const transformedBase = transformArticle.toFrontend(baseDoc);
-
-  //   // Transform the populated fields separately
-  //   return {
-  //     ...transformedBase,
-  //     author: transformUser(extendedAuthor),
-  //     artwork: transformArtwork(extendedArtwork),
-  //   } satisfies PublicArticleTransformationsPopulated["Frontend"];
-  // },
+  return populatedArticle;
 };
 
-//   userId: string | null
-// ): PublicArticleTransformationsPopulated["Frontend"] {
-//   const transformedArticle: PublicArticleTransformations["Frontend"] =
-//     transformArticle(article, userId);
-//   const transformedAuthor: PublicUserTransformations["Frontend"] =
-//     transformUser(article.author, userId);
-//   const transformedArtwork: PublicArtworkTransformations["Frontend"] =
-//     transformArtwork(article.artwork, userId);
+// ! DO NOT DELETE. THIS IS THE OLD WAY OF DOING THINGS.... THAT WORKS. IMPORTANT FALLBACK
 
-//   return {
-//     ...transformedArticle,
+// import { transformUtils } from "./transformUtils";
+// import { transformUser } from "./transformUser";
+// import { transformArtwork } from "./transformArtwork";
+// import { UserDB } from "../data/models";
+// import { ArtworkDB } from "../data/models";
+// import { Schema, Types } from "mongoose";
+// import {
+//   FrontendArticlePopulated,
+//   LeanArticlePopulated,
+//   LeanDocument,
+//   Merge,
+//   TransformedDocument,
+// } from "../data/types";
+
+// export type PublicTransformationsGeneric<
+//   TDocument,
+//   TExtended extends Record<string, any>,
+//   TSensitive extends string
+// > = {
+//   DB: TDocument;
+//   Lean: LeanDocument<
+//     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["DB"]
+//   >;
+//   Raw: TransformedDocument<
+//     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Lean"]
+//   >;
+//   Extended: Merge<
+//     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Raw"],
+//     TExtended
+//   >;
+//   Sanitized: Omit<
+//     PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Extended"],
+//     TSensitive
+//   >;
+//   Frontend: PublicTransformationsGeneric<
+//     TDocument,
+//     TExtended,
+//     TSensitive
+//   >["Sanitized"];
+// };
+
+// type PublicArticleTransformations = PublicTransformationsGeneric<
+//   ArticleDB,
+//   ExtendedPublicArticleFields,
+//   SensitivePublicArticleFields
+// >;
+
+// type WithoutPopulated<T, K extends keyof T> = Omit<T, K>;
+
+// type ArticleBase = WithoutPopulated<ArticleDB, "author" | "artwork">;
+
+// type PublicArticleTransformationsPopulated = PublicTransformationsGeneric<
+//   ArticleBase,
+//   ExtendedPublicArticleFields,
+//   SensitivePublicArticleFields
+// >;
+
+// export const transformArticle = {
+//   toRaw: (
+//     doc: PublicArticleTransformations["Lean"]
+//   ): PublicArticleTransformations["Raw"] => {
+//     return transformUtils.toRaw<PublicArticleTransformations["Raw"]>(doc);
+//   },
+
+//   toExtended: (
+//     doc: PublicArticleTransformations["Raw"]
+//   ): PublicArticleTransformations["Extended"] => {
+//     const extended = {
+//       ...doc,
+//       ...EXTENDED_PUBLIC_ARTICLE_FIELDS,
+//       readTime: calculateReadTime(doc.text),
+//     };
+
+//     return extended satisfies PublicArticleTransformations["Extended"];
+//   },
+
+//   toSanitized: (
+//     doc: PublicArticleTransformations["Extended"]
+//   ): PublicArticleTransformations["Sanitized"] => {
+//     return transformUtils.removeSensitive(
+//       doc,
+//       SENSITIVE_PUBLIC_ARTICLE_FIELDS
+//     ) satisfies PublicArticleTransformations["Sanitized"];
+//   },
+
+//   toFrontend: (
+//     doc: PublicArticleTransformations["Lean"]
+//   ): PublicArticleTransformations["Frontend"] => {
+//     return transformArticle.toSanitized(
+//       transformArticle.toExtended(transformArticle.toRaw(doc))
+//     ) satisfies PublicArticleTransformations["Frontend"];
+//   },
+// };
+
+// const transformArticlePopulated = {
+//   toRaw: (
+//     doc: PublicArticleTransformationsPopulated["Lean"]
+//   ): PublicArticleTransformationsPopulated["Raw"] => {
+//     return transformUtils.toRaw<PublicArticleTransformationsPopulated["Raw"]>(
+//       doc
+//     );
+//   },
+
+//   toExtended: (
+//     doc: PublicArticleTransformationsPopulated["Raw"]
+//   ): PublicArticleTransformationsPopulated["Extended"] => {
+//     const extended = {
+//       ...doc,
+//       ...EXTENDED_PUBLIC_ARTICLE_FIELDS,
+//       readTime: calculateReadTime(doc.text),
+//     };
+
+//     return extended satisfies PublicArticleTransformationsPopulated["Extended"];
+//   },
+
+//   toSanitized: (
+//     doc: PublicArticleTransformationsPopulated["Extended"]
+//   ): PublicArticleTransformationsPopulated["Sanitized"] => {
+//     return transformUtils.removeSensitive(
+//       doc,
+//       SENSITIVE_PUBLIC_ARTICLE_FIELDS
+//     ) satisfies PublicArticleTransformationsPopulated["Sanitized"];
+//   },
+
+//   toFrontend: (
+//     doc: PublicArticleTransformationsPopulated["Lean"]
+//   ): PublicArticleTransformationsPopulated["Frontend"] => {
+//     return transformArticlePopulated.toSanitized(
+//       transformArticlePopulated.toExtended(transformArticlePopulated.toRaw(doc))
+//     ) satisfies PublicArticleTransformationsPopulated["Frontend"];
+//   },
+// };
+
+// export const transformPopulatedArticle = (
+//   doc: LeanArticlePopulated
+// ): FrontendArticlePopulated => {
+//   const { author, artwork, ...baseDoc } = doc;
+
+//   const transformedAuthor = transformUser.toFrontend(author);
+//   const transformedArtwork = transformArtwork.toFrontend(artwork);
+//   const transformedBase = transformArticlePopulated.toFrontend(baseDoc);
+
+//   const transformed = {
 //     author: transformedAuthor,
 //     artwork: transformedArtwork,
-//   } satisfies PublicArticleTransformationsPopulated["Frontend"];
-// }
-
-// Populated transformations
-// toPopulatedRaw: (
-//   doc: PublicArticleTransformationsPopulated["Lean"]
-// ): PublicArticleTransformationsPopulated["Raw"] => {
-//   // transform the entire base document
-//   const transformedBase =
-//     transformUtils.toRaw<PublicArticleTransformations["Raw"]>(doc);
-
-//   // ...then transform the populated fields
-//   return {
-//     ...transformedBase, // This preserves ALL article fields
-//     author: transformUtils.toRaw<PublicUserTransformations["Raw"]>(
-//       doc.author
-//     ),
-//     artwork: transformUtils.toRaw<PublicArtworkTransformations["Raw"]>(
-//       doc.artwork
-//     ),
-//   };
-// },
-
-// toPopulatedExtended: (
-//   doc: PublicArticleTransformationsPopulated["Raw"]
-// ): PublicArticleTransformationsPopulated["Extended"] => {
-//   // Separate populated fields from base document
-//   const { author, artwork, ...baseFields } = doc;
-
-//   // Transform base document
-//   const transformedBase = transformArticle.toExtended(baseFields);
-
-//   return transformUtils.merge(transformedBase, {
-//     author: transformUser(author),
-//     artwork: transformArtwork(artwork),
-//   }) satisfies PublicArticleTransformationsPopulated["Extended"];
-// },
-
-// toPopulatedFrontend: (
-//   doc: PublicArticleTransformationsPopulated["Extended"]
-// ): PublicArticleTransformationsPopulated["Frontend"] => {
-//   // Transform the base document without populated fields
-//   const {
-//     author: extendedAuthor,
-//     artwork: extendedArtwork,
-//     ...baseDoc
-//   } = doc;
-//   const transformedBase = transformArticle.toFrontend(baseDoc);
-
-//   // Transform the populated fields separately
-//   return {
 //     ...transformedBase,
-//     author: transformUser(extendedAuthor),
-//     artwork: transformArtwork(extendedArtwork),
-//   } satisfies PublicArticleTransformationsPopulated["Frontend"];
-// },
+//   };
 
-// // Convenience method
-// rawToPopulatedFrontend: (
-//   doc: PublicArticleTransformations["Lean"] & {
-//     author: PublicUserTransformations["Lean"];
-//     artwork: PublicArtworkTransformations["Lean"];
-//   }
-// ): PublicArticleTransformationsPopulated["Frontend"] => {
-//   return transformArticle.toPopulatedFrontend(
-//     transformArticle.toPopulatedExtended(transformArticle.toPopulatedRaw(doc))
-//   );
-// },
-// export const transformArticlePopulated = (
-//   article: PublicArticleTransformationsPopulated["Lean"],
-//   userId: string | null
-// ): PublicArticleTransformationsPopulated["Frontend"] => {
-//   return transformArticle.toPopulatedFrontend(
-//     transformArticle.toPopulatedExtended(
-//       transformArticle.toPopulatedRaw(article)
-//     )
-//   );
+//   return transformed satisfies FrontendArticlePopulated;
 // };

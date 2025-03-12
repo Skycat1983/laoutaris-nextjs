@@ -4,7 +4,7 @@ import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
 import { LeanDocument } from "@/lib/data/types/utilTypes";
 import { transformArticle } from "@/lib/transforms/transformArticle";
-import { Article, ArticleTransformations } from "@/lib/data/types";
+import { PublicArticleTransformations } from "@/lib/data/types";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
@@ -34,7 +34,7 @@ export const GET = async (
         .select(fields)
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean<ArticleTransformations["Lean"][]>(),
+        .lean<PublicArticleTransformations["Lean"][]>(),
       ArticleModel.countDocuments(query),
     ]);
 
@@ -45,8 +45,8 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const transformedArticles: ArticleTransformations["Frontend"][] =
-      articles.map((article) => transformArticle(article, null));
+    const transformedArticles: PublicArticleTransformations["Frontend"][] =
+      articles.map((article) => transformArticle.toFrontend(article, null));
     return NextResponse.json({
       success: true,
       data: transformedArticles,

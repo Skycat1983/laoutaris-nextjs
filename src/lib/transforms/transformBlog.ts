@@ -9,16 +9,17 @@ import {
   AdminBlogTransformationsPopulated,
   AdminCommentTransformations,
   AdminUserTransformations,
-  PublicBlogEntryTransformationsPopulated,
+  // PublicBlogEntryTransformationsPopulated,
   PublicCommentTransformations,
   PublicTransformationsGeneric,
   PublicUserTransformations,
+  WithPopulatedFields,
 } from "../data/types";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 import { transformUtils } from "./transformUtils";
 import { transformUser } from "./transformUser";
 import { transformComment } from "./transformComment";
-import { BlogEntryDB } from "../data/models";
+import { BlogEntryDB, CommentDB, UserDB } from "../data/models";
 import { calculateReadTime } from "../utils/calcReadTime";
 
 type PublicBlogEntryTransformations = PublicTransformationsGeneric<
@@ -28,82 +29,94 @@ type PublicBlogEntryTransformations = PublicTransformationsGeneric<
   SensitivePublicBlogFields
 >;
 
-export const transformBlog = {
-  toRaw: (
-    doc: PublicBlogEntryTransformations["Lean"]
-  ): PublicBlogEntryTransformations["Raw"] => {
-    return transformMongooseDoc<PublicBlogEntryTransformations["Raw"]>(doc);
-  },
+// type PublicBlogEntryTransformationsPopulated = PublicTransformationsGeneric<
+//   WithPopulatedFields<
+//     BlogEntryDB,
+//     {
+//       author: PublicUserTransformations["Lean"];
+//       comments: PublicCommentTransformations["Lean"][];
+//     }
+//   >,
+//   ExtendedPublicBlogFields,
+//   SensitivePublicBlogFields
+// >;
 
-  toExtended: (
-    doc: PublicBlogEntryTransformations["Raw"]
-  ): PublicBlogEntryTransformations["Extended"] => {
-    return transformUtils.extend(doc, EXTENDED_PUBLIC_BLOG_FIELDS);
-  },
+// export const transformBlog = {
+//   toRaw: (
+//     doc: PublicBlogEntryTransformations["Lean"]
+//   ): PublicBlogEntryTransformations["Raw"] => {
+//     return transformMongooseDoc<PublicBlogEntryTransformations["Raw"]>(doc);
+//   },
 
-  toSanitized: (
-    doc: PublicBlogEntryTransformations["Extended"]
-  ): PublicBlogEntryTransformations["Sanitized"] => {
-    return transformUtils.removeSensitive(doc, SENSITIVE_PUBLIC_BLOG_FIELDS);
-  },
+//   toExtended: (
+//     doc: PublicBlogEntryTransformations["Raw"]
+//   ): PublicBlogEntryTransformations["Extended"] => {
+//     return transformUtils.extend(doc, EXTENDED_PUBLIC_BLOG_FIELDS);
+//   },
 
-  toFrontend: (
-    doc: PublicBlogEntryTransformations["Lean"]
-  ): PublicBlogEntryTransformations["Frontend"] => {
-    return transformBlog.toSanitized(
-      transformBlog.toExtended(transformBlog.toRaw(doc))
-    ) satisfies PublicBlogEntryTransformations["Frontend"];
-  },
+//   toSanitized: (
+//     doc: PublicBlogEntryTransformations["Extended"]
+//   ): PublicBlogEntryTransformations["Sanitized"] => {
+//     return transformUtils.removeSensitive(doc, SENSITIVE_PUBLIC_BLOG_FIELDS);
+//   },
 
-  toPopulated: (
-    doc: PublicBlogEntryTransformationsPopulated["Lean"]
-  ): PublicBlogEntryTransformationsPopulated["Frontend"] => {
-    const { author, comments, ...baseDoc } = doc;
-    const transformedAuthor = transformUser.toFrontend(author);
-    const transformedComments = comments.map((comment) =>
-      transformComment.toFrontend(comment)
-    );
+//   toFrontend: (
+//     doc: PublicBlogEntryTransformations["Lean"]
+//   ): PublicBlogEntryTransformations["Frontend"] => {
+//     return transformBlog.toSanitized(
+//       transformBlog.toExtended(transformBlog.toRaw(doc))
+//     ) satisfies PublicBlogEntryTransformations["Frontend"];
+//   },
 
-    const transformedBase = transformBlog.toRaw(baseDoc);
-    const sanitizedBase = transformUtils.removeSensitive(
-      {
-        ...transformedBase,
-        ...EXTENDED_PUBLIC_BLOG_FIELDS,
-        readTime: calculateReadTime(baseDoc.text),
-      },
-      SENSITIVE_PUBLIC_BLOG_FIELDS
-    );
+//   toPopulated: (
+//     doc: PublicBlogEntryTransformationsPopulated["Lean"]
+//   ): PublicBlogEntryTransformationsPopulated["Frontend"] => {
+//     const { author, comments, ...baseDoc } = doc;
+//     const transformedAuthor = transformUser.toFrontend(author);
+//     const transformedComments = comments.map((comment) =>
+//       transformComment.toFrontend(comment)
+//     );
 
-    return {
-      ...sanitizedBase,
-      author: transformedAuthor,
-      comments: transformedComments,
-    } satisfies PublicBlogEntryTransformationsPopulated["Frontend"];
-  },
-};
+//     const transformedBase = transformBlog.toRaw(baseDoc);
+//     const sanitizedBase = transformUtils.removeSensitive(
+//       {
+//         ...baseDoc,
+//         ...EXTENDED_PUBLIC_BLOG_FIELDS,
+//         readTime: calculateReadTime(baseDoc.text),
+//       },
+//       SENSITIVE_PUBLIC_BLOG_FIELDS
+//     );
 
-export function transformBlogPopulated(
-  document: AdminBlogTransformationsPopulated["Lean"]
-): AdminBlogTransformationsPopulated["Frontend"] {
-  const { author, comments, ...rest } = document;
+//     return {
+//       ...sanitizedBase,
+//       author: transformedAuthor,
+//       comments: transformedComments,
+//     } satisfies PublicBlogEntryTransformationsPopulated["Frontend"];
+//   },
+// };
 
-  // Transform the base document
-  const transformedBlog: AdminBlogTransformations["Raw"] =
-    transformMongooseDoc<AdminBlogTransformations["Raw"]>(rest);
+// export function transformBlogPopulated(
+//   document: AdminBlogTransformationsPopulated["Lean"]
+// ): AdminBlogTransformationsPopulated["Frontend"] {
+//   const { author, comments, ...rest } = document;
 
-  // Transform the author
-  const transformedAuthor: AdminUserTransformations["Raw"] =
-    transformMongooseDoc<AdminUserTransformations["Raw"]>(author);
+//   // Transform the base document
+//   const transformedBlog: AdminBlogTransformations["Raw"] =
+//     transformMongooseDoc<AdminBlogTransformations["Raw"]>(rest);
 
-  // Transform the comments array
-  const transformedComments: AdminCommentTransformations["Raw"][] =
-    comments.map((comment) =>
-      transformMongooseDoc<AdminCommentTransformations["Raw"]>(comment)
-    );
+//   // Transform the author
+//   const transformedAuthor: AdminUserTransformations["Raw"] =
+//     transformMongooseDoc<AdminUserTransformations["Raw"]>(author);
 
-  return {
-    ...transformedBlog,
-    author: transformedAuthor,
-    comments: transformedComments,
-  } satisfies AdminBlogTransformationsPopulated["Frontend"];
-}
+//   // Transform the comments array
+//   const transformedComments: AdminCommentTransformations["Raw"][] =
+//     comments.map((comment) =>
+//       transformMongooseDoc<AdminCommentTransformations["Raw"]>(comment)
+//     );
+
+//   return {
+//     ...transformedBlog,
+//     author: transformedAuthor,
+//     comments: transformedComments,
+//   } satisfies AdminBlogTransformationsPopulated["Frontend"];
+// }

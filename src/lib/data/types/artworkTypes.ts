@@ -3,7 +3,6 @@ import {
   ExtendedPublicArtworkFields,
 } from "@/lib/constants/publicDocumentConstants";
 import { ArtworkDB } from "../models/artworkModel";
-import { CloudinaryImageSanitized } from "./cloudinaryTypes";
 import { LeanDocument, Merge, TransformedDocument } from "./utilTypes";
 import {
   ArtStyle,
@@ -14,13 +13,14 @@ import {
 } from "@/lib/constants/artworkConstants";
 import { Decade } from "@/lib/constants/artworkConstants";
 
+export type ArtworkLean = LeanDocument<ArtworkDB>;
+
 export interface ArtworkFields {
   favouriteCount: number;
   watchlistCount: number;
   isFavourited?: boolean;
   isWatchlisted?: boolean;
 }
-
 //! doc-specific transformation definitions
 export type PublicArtworkTransformations = {
   DB: ArtworkDB;
@@ -34,7 +34,7 @@ export type PublicArtworkTransformations = {
     PublicArtworkTransformations["Extended"],
     SensitivePublicArtworkFields[number]
   > & {
-    image: CloudinaryImageSanitized;
+    // image: CloudinaryImageSanitized;
   };
   Frontend: PublicArtworkTransformations["Sanitized"];
 };
