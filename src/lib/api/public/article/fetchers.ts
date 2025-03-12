@@ -1,29 +1,25 @@
 import type {
-  Section,
-  PublicArticle,
-  PublicArticleTransformations,
-  PublicArticlePopulated,
+  ArticleFrontend,
+  ArticleFrontendPopulated,
 } from "@/lib/data/types/articleTypes";
 import { Fetcher } from "../../core/createFetcher";
-import {
-  SingleResult,
-  ListResult,
-  ApiResponse,
-} from "@/lib/data/types/apiTypes";
+import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
+import { ArticleSection } from "@/lib/constants";
 
 interface FetchArticlesParams {
-  section?: Section;
+  section?: ArticleSection;
   fields?: readonly string[];
   limit?: number;
   page?: number;
 }
 
-export type ApiArticleResult = SingleResult<PublicArticle>;
-export type ApiArticlePopulatedResult = SingleResult<PublicArticlePopulated>;
+export type ApiArticleResult = SingleResult<ArticleFrontend>;
+export type ApiArticlePopulatedResult = SingleResult<ArticleFrontendPopulated>;
 
 // Multiple articles response types
-export type ApiArticleListResult = ListResult<PublicArticle>;
-export type ApiArticlePopulatedListResult = ListResult<PublicArticlePopulated>;
+export type ApiArticleListResult = ListResult<ArticleFrontend>;
+export type ApiArticlePopulatedListResult =
+  ListResult<ArticleFrontendPopulated>;
 
 export const createArticleFetchers = (fetcher: Fetcher) => ({
   // Get one article by slug

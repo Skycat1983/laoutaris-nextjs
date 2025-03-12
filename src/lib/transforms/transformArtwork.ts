@@ -3,6 +3,7 @@ import {
   ExtendedPublicArtworkFields,
   SENSITIVE_PUBLIC_ARTWORK_FIELDS,
   SensitivePublicArtworkFields,
+  ARTWORK_FIELD_EXTENDER,
 } from "../constants";
 import { createTransformer } from "./createTransformer";
 import { ArtworkBase, ArtworkDB } from "../data/models";
@@ -15,9 +16,11 @@ export const transformArtwork = createTransformer<
   ArtworkBase,
   ExtendedPublicArtworkFields,
   SensitivePublicArtworkFields
->(EXTENDED_PUBLIC_ARTWORK_FIELDS, SENSITIVE_PUBLIC_ARTWORK_FIELDS, (doc) => ({
-  ...extendArtworkFields(doc),
-}));
+>(
+  EXTENDED_PUBLIC_ARTWORK_FIELDS,
+  SENSITIVE_PUBLIC_ARTWORK_FIELDS,
+  ARTWORK_FIELD_EXTENDER
+);
 
 // export const transformArtwork = {
 //   toRaw: (

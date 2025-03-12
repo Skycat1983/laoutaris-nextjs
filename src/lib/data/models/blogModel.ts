@@ -1,7 +1,7 @@
 import mongoose, { Document } from "mongoose";
 import { BLOG_TAGS, BlogTag } from "@/lib/constants";
 
-export interface BaseBlogEntry {
+export interface BlogEntryBase {
   title: string;
   subtitle: string;
   summary: string;
@@ -14,7 +14,7 @@ export interface BaseBlogEntry {
   tags: BlogTag[];
 }
 
-export interface BlogEntryDB extends Document, BaseBlogEntry {
+export interface BlogEntryDB extends Document, BlogEntryBase {
   createdAt: Date;
   updatedAt: Date;
   author: mongoose.Schema.Types.ObjectId;

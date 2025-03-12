@@ -1,69 +1,79 @@
-import {
-  LeanDocument,
-  Merge,
-  TransformedDocument,
-  WithPopulatedFields,
-} from "./utilTypes";
+import { LeanDocument, WithPopulatedFields } from "./utilTypes";
 import { BlogEntryDB } from "../models";
-import { PublicUserTransformations } from "./userTypes";
-import { PublicCommentTransformations } from "./commentTypes";
-import {
-  ExtendedPublicBlogFields,
-  SensitivePublicBlogFields,
-} from "@/lib/constants";
+import { UserFrontend, UserLean } from "./userTypes";
+import { CommentFrontend, CommentLean } from "./commentTypes";
+import { transformBlog } from "@/lib/transforms/transformBlog";
 
-//! PUBLIC BLOG ENTRY
-export type PublicBlogEntryTransformations = {
-  DB: BlogEntryDB;
-  Lean: LeanDocument<PublicBlogEntryTransformations["DB"]>;
-  Raw: TransformedDocument<PublicBlogEntryTransformations["Lean"]>;
-  Extended: Merge<
-    PublicBlogEntryTransformations["Raw"],
-    ExtendedPublicBlogFields
-  >;
-  Sanitized: Omit<
-    PublicBlogEntryTransformations["Extended"],
-    SensitivePublicBlogFields
-  >;
-  Frontend: PublicBlogEntryTransformations["Sanitized"];
-};
+export type BlogEntryLean = LeanDocument<BlogEntryDB>;
+export type BlogEntryFrontend = ReturnType<typeof transformBlog.toFrontend>;
 
-export type PublicBlogEntry = PublicBlogEntryTransformations["Frontend"];
+export type BlogEntryLeanPopulated = WithPopulatedFields<
+  BlogEntryLean,
+  {
+    author: UserLean;
+    comments: CommentLean[];
+  }
+>;
 
-// ! PUBLIC BLOG ENTRY POPULATED
-export type PublicBlogEntryTransformationsPopulated = {
-  Lean: WithPopulatedFields<
-    PublicBlogEntryTransformations["Lean"],
-    {
-      author: PublicUserTransformations["Lean"];
-      comments: PublicCommentTransformations["Lean"][];
-    }
-  >;
-  Raw: WithPopulatedFields<
-    PublicBlogEntryTransformations["Raw"],
-    {
-      author: PublicUserTransformations["Raw"];
-      comments: PublicCommentTransformations["Raw"][];
-    }
-  >;
-  Extended: WithPopulatedFields<
-    PublicBlogEntryTransformations["Extended"],
-    {
-      author: PublicUserTransformations["Extended"];
-      comments: PublicCommentTransformations["Extended"][];
-    }
-  >;
-  Frontend: WithPopulatedFields<
-    PublicBlogEntryTransformations["Frontend"],
-    {
-      author: PublicUserTransformations["Frontend"];
-      comments: PublicCommentTransformations["Frontend"][];
-    }
-  >;
-};
+export type BlogEntryFrontendPopulated = WithPopulatedFields<
+  BlogEntryFrontend,
+  {
+    author: UserFrontend;
+    comments: CommentFrontend[];
+  }
+>;
+// //! PUBLIC BLOG ENTRY
+// export type PublicBlogEntryTransformations = {
+//   DB: BlogEntryDB;
+//   Lean: LeanDocument<PublicBlogEntryTransformations["DB"]>;
+//   Raw: TransformedDocument<PublicBlogEntryTransformations["Lean"]>;
+//   Extended: Merge<
+//     PublicBlogEntryTransformations["Raw"],
+//     ExtendedPublicBlogFields
+//   >;
+//   Sanitized: Omit<
+//     PublicBlogEntryTransformations["Extended"],
+//     SensitivePublicBlogFields
+//   >;
+//   Frontend: PublicBlogEntryTransformations["Sanitized"];
+// };
 
-export type PublicBlogEntryPopulated =
-  PublicBlogEntryTransformationsPopulated["Frontend"];
+// export type PublicBlogEntry = PublicBlogEntryTransformations["Frontend"];
+
+// // ! PUBLIC BLOG ENTRY POPULATED
+// export type PublicBlogEntryTransformationsPopulated = {
+//   Lean: WithPopulatedFields<
+//     PublicBlogEntryTransformations["Lean"],
+//     {
+//       author: PublicUserTransformations["Lean"];
+//       comments: PublicCommentTransformations["Lean"][];
+//     }
+//   >;
+//   Raw: WithPopulatedFields<
+//     PublicBlogEntryTransformations["Raw"],
+//     {
+//       author: PublicUserTransformations["Raw"];
+//       comments: PublicCommentTransformations["Raw"][];
+//     }
+//   >;
+//   Extended: WithPopulatedFields<
+//     PublicBlogEntryTransformations["Extended"],
+//     {
+//       author: PublicUserTransformations["Extended"];
+//       comments: PublicCommentTransformations["Extended"][];
+//     }
+//   >;
+//   Frontend: WithPopulatedFields<
+//     PublicBlogEntryTransformations["Frontend"],
+//     {
+//       author: PublicUserTransformations["Frontend"];
+//       comments: PublicCommentTransformations["Frontend"][];
+//     }
+//   >;
+// };
+
+// export type PublicBlogEntryPopulated =
+//   PublicBlogEntryTransformationsPopulated["Frontend"];
 
 //! PUBLIC BLOG ENTRY FILTER PARAMS
 export interface BlogFilterParams {

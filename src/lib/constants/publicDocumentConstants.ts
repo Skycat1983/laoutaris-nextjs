@@ -1,4 +1,18 @@
 //! ARTICLE
+
+import {
+  ArticleDB,
+  ArtworkDB,
+  BlogEntryDB,
+  CollectionDB,
+} from "../data/models";
+import {
+  extendArtworkFields,
+  extendBlogFields,
+  extendCollectionFields,
+  extendArticleFields,
+} from "../transforms/transformHelpers";
+
 // Sensitive data
 export type SensitivePublicArticleFields =
   (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
@@ -14,6 +28,11 @@ export type ExtendedPublicArticleFields = {
 export const EXTENDED_PUBLIC_ARTICLE_FIELDS: ExtendedPublicArticleFields = {
   readTime: 0,
 } as const;
+
+export const ARTICLE_FIELD_EXTENDER = extendArticleFields as (
+  doc: ArticleDB,
+  userId?: string | null
+) => ExtendedPublicArticleFields;
 
 //! ARTWORK
 // Sensitive data
@@ -36,6 +55,10 @@ export type ExtendedPublicArtworkFields = {
   isFavourited: boolean;
   isWatchlisted: boolean;
 };
+export const ARTWORK_FIELD_EXTENDER = extendArtworkFields as (
+  artwork: ArtworkDB,
+  userId?: string | null
+) => ExtendedPublicArtworkFields;
 // export type ExtendedPublicArtworkFields = typeof EXTENDED_PUBLIC_ARTWORK_FIELDS;
 
 //! BLOG
@@ -53,6 +76,10 @@ export type ExtendedPublicBlogFields = {
   readTime: number;
   commentCount: number;
 };
+export const BLOG_FIELD_EXTENDER = extendBlogFields as (
+  doc: BlogEntryDB,
+  userId?: string | null
+) => ExtendedPublicBlogFields;
 
 //! COLLECTION
 // Sensitive data
@@ -74,6 +101,10 @@ export type ExtendedPublicCollectionFields = {
   artworkCount: number;
   firstArtworkId: string;
 };
+export const COLLECTION_FIELD_EXTENDER = extendCollectionFields as (
+  doc: CollectionDB,
+  userId?: string | null
+) => ExtendedPublicCollectionFields;
 
 //! COMMENTS
 // Sensitive data

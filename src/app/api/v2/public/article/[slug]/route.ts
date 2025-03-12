@@ -1,15 +1,15 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
-import {
-  PublicArtworkTransformations,
-  PublicUserTransformations,
-} from "@/lib/data/types";
-// import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { PublicArticleTransformationsPopulated } from "@/lib/data/types/articleTypes";
 import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
+import { UserLean } from "@/lib/data/types/userTypes";
+import { ArtworkLean } from "@/lib/data/types/artworkTypes";
+import {
+  ArticleLeanPopulated,
+  ArticleFrontendPopulated,
+} from "@/lib/data/types/articleTypes";
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
 export const GET = async (
@@ -21,10 +21,10 @@ export const GET = async (
     // populate both artwork and author
     const articleDB = await ArticleModel.findOne({ slug: params.slug })
       .populate<{
-        author: PublicUserTransformations["Lean"];
-        artwork: PublicArtworkTransformations["Lean"];
+        author: UserLean;
+        artwork: ArtworkLean;
       }>("author artwork")
-      .lean<PublicArticleTransformationsPopulated["Lean"]>();
+      .lean<ArticleLeanPopulated>();
 
     if (!articleDB) {
       return NextResponse.json({
@@ -34,7 +34,7 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const articlePublic: PublicArticleTransformationsPopulated["Frontend"] =
+    const articlePublic: ArticleFrontendPopulated =
       transformArticlePopulated(articleDB);
 
     return NextResponse.json({

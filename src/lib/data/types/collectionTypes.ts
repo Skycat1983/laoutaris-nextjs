@@ -1,10 +1,12 @@
-import { TransformedArtwork } from "@/lib/transforms/transformArtwork";
-import { ArtworkDB, CollectionDB } from "../models";
-import { ArtworkLean } from "./artworkTypes";
+import { CollectionDB } from "../models";
+import { ArtworkFrontend, ArtworkLean } from "./artworkTypes";
 import { LeanDocument, WithPopulatedFields } from "./utilTypes";
-import { TransformedCollection } from "@/lib/transforms/transformCollection";
+import { transformCollection } from "@/lib/transforms/transformCollection";
 
 export type CollectionLean = LeanDocument<CollectionDB>;
+export type CollectionFrontend = ReturnType<
+  typeof transformCollection.toFrontend
+>;
 
 export type CollectionLeanPopulated = WithPopulatedFields<
   CollectionLean,
@@ -13,10 +15,10 @@ export type CollectionLeanPopulated = WithPopulatedFields<
   }
 >;
 
-export type CollectionFrontend = WithPopulatedFields<
-  TransformedCollection,
+export type CollectionFrontendPopulated = WithPopulatedFields<
+  CollectionFrontend,
   {
-    artworks: TransformedArtwork[];
+    artworks: ArtworkFrontend[];
   }
 >;
 

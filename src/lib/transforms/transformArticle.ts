@@ -3,8 +3,8 @@ import {
   ExtendedPublicArticleFields,
   SENSITIVE_PUBLIC_ARTICLE_FIELDS,
   SensitivePublicArticleFields,
+  ARTICLE_FIELD_EXTENDER,
 } from "../constants";
-import { calculateReadTime } from "../utils/calcReadTime";
 import { ArticleBase, ArticleDB } from "../data/models";
 import { createTransformer } from "./createTransformer";
 import { PublicArticleTransformationsPopulated } from "../data/types";
@@ -18,9 +18,11 @@ export const transformArticle = createTransformer<
   ArticleBase,
   ExtendedPublicArticleFields,
   SensitivePublicArticleFields
->(EXTENDED_PUBLIC_ARTICLE_FIELDS, SENSITIVE_PUBLIC_ARTICLE_FIELDS, (doc) => ({
-  readTime: calculateReadTime(doc.text),
-}));
+>(
+  EXTENDED_PUBLIC_ARTICLE_FIELDS,
+  SENSITIVE_PUBLIC_ARTICLE_FIELDS,
+  ARTICLE_FIELD_EXTENDER
+);
 
 export const transformArticlePopulated = (
   doc: PublicArticleTransformationsPopulated["Lean"],

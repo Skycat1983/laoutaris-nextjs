@@ -3,31 +3,64 @@ import {
   SENSITIVE_PUBLIC_BLOG_FIELDS,
   SensitivePublicBlogFields,
   ExtendedPublicBlogFields,
+  BLOG_FIELD_EXTENDER,
 } from "../constants";
-import {
-  AdminBlogTransformations,
-  AdminBlogTransformationsPopulated,
-  AdminCommentTransformations,
-  AdminUserTransformations,
-  // PublicBlogEntryTransformationsPopulated,
-  PublicCommentTransformations,
-  PublicTransformationsGeneric,
-  PublicUserTransformations,
-  WithPopulatedFields,
-} from "../data/types";
-import { transformMongooseDoc } from "./transformMongooseDoc";
-import { transformUtils } from "./transformUtils";
-import { transformUser } from "./transformUser";
-import { transformComment } from "./transformComment";
-import { BlogEntryDB, CommentDB, UserDB } from "../data/models";
-import { calculateReadTime } from "../utils/calcReadTime";
 
-type PublicBlogEntryTransformations = PublicTransformationsGeneric<
-  // Partial<BlogEntryDB>,
+import { BlogEntryBase, BlogEntryDB } from "../data/models";
+import {
+  BlogEntryFrontendPopulated,
+  BlogEntryLeanPopulated,
+} from "../data/types";
+import { createTransformer } from "./createTransformer";
+import { transformComment } from "./transformComment";
+import { transformUser } from "./transformUser";
+
+export const transformBlog = createTransformer<
   BlogEntryDB,
+  BlogEntryBase,
   ExtendedPublicBlogFields,
   SensitivePublicBlogFields
->;
+>(
+  EXTENDED_PUBLIC_BLOG_FIELDS,
+  SENSITIVE_PUBLIC_BLOG_FIELDS,
+  BLOG_FIELD_EXTENDER
+);
+
+export const transformBlogPopulated = (
+  doc: BlogEntryLeanPopulated,
+  userId?: string | null
+): BlogEntryFrontendPopulated => {
+  const blogPublic = transformBlog.toFrontend(doc, userId);
+  const { author, comments, ...baseDoc } = doc;
+  const transformedAuthor = transformUser.toFrontend(author);
+  const transformedComments = comments.map((comment) =>
+    transformComment.toFrontend(comment)
+  );
+  const populatedBlog = {
+    ...blogPublic,
+    author: transformedAuthor,
+    comments: transformedComments,
+  } satisfies BlogEntryFrontendPopulated;
+  return populatedBlog;
+};
+
+// import {
+//   AdminBlogTransformations,
+//   AdminBlogTransformationsPopulated,
+//   AdminCommentTransformations,
+//   AdminUserTransformations,
+//   // PublicBlogEntryTransformationsPopulated,
+//   PublicCommentTransformations,
+//   PublicTransformationsGeneric,
+//   PublicUserTransformations,
+//   WithPopulatedFields,
+// } from "../data/types";
+// import { transformMongooseDoc } from "./transformMongooseDoc";
+// import { transformUtils } from "./transformUtils";
+// import { transformUser } from "./transformUser";
+// import { transformComment } from "./transformComment";
+// import { calculateReadTime } from "../utils/calcReadTime";
+// import { extendBlogFields } from "./transformHelpers";
 
 // type PublicBlogEntryTransformationsPopulated = PublicTransformationsGeneric<
 //   WithPopulatedFields<

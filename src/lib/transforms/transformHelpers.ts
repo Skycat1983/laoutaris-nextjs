@@ -1,8 +1,16 @@
 import {
   ExtendedPublicArtworkFields,
+  ExtendedPublicBlogFields,
   ExtendedPublicCollectionFields,
+  ExtendedPublicArticleFields,
 } from "../constants";
-import { ArtworkDB, CollectionDB } from "../data/models";
+import {
+  ArtworkDB,
+  ArticleDB,
+  BlogEntryDB,
+  CollectionDB,
+} from "../data/models";
+import { calculateReadTime } from "../utils/calcReadTime";
 import { isUserInArray } from "../utils/isUserInArray";
 
 export const extendArtworkFields = (
@@ -25,4 +33,16 @@ export const extendCollectionFields = (
     artworkCount: doc.artworks.length,
     firstArtworkId: doc.artworks[0]?.toString(),
   } satisfies Partial<ExtendedPublicCollectionFields>;
+};
+
+export const extendBlogFields = (doc: BlogEntryDB, userId?: string | null) => {
+  return {
+    commentCount: doc.comments.length,
+  } satisfies Partial<ExtendedPublicBlogFields>;
+};
+
+export const extendArticleFields = (doc: ArticleDB, userId?: string | null) => {
+  return {
+    readTime: calculateReadTime(doc.text),
+  } satisfies Partial<ExtendedPublicArticleFields>;
 };
