@@ -4,12 +4,14 @@ import { useState } from "react";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { UploadButton } from "@/components/elements/buttons";
 import { CreateArtworkForm } from "./CreateArtworkForm";
-import { CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
-import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/cloudinaryResponseToArtworkImageData";
-import { ArtworkImage } from "@/lib/data/types/artworkTypes";
+import {
+  CloudinaryImageDB,
+  CloudinaryUploadInfo,
+} from "@/lib/data/types/cloudinaryTypes";
+import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/transformCloudinary";
 
 export function CreateArtworkWithUpload() {
-  const [uploadInfo, setUploadInfo] = useState<ArtworkImage | null>(null);
+  const [uploadInfo, setUploadInfo] = useState<CloudinaryImageDB | null>(null);
 
   const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
     try {

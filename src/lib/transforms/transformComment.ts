@@ -10,6 +10,7 @@ import { CommentLeanPopulated, CommentFrontendPopulated } from "../data/types";
 import { transformBlog } from "./transformBlog";
 import { transformUser } from "./transformUser";
 import { CommentDB, CommentBase } from "../data/models";
+
 export const transformComment = createTransformer<
   CommentDB,
   CommentBase,

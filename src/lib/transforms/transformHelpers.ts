@@ -5,6 +5,7 @@ import {
   ExtendedPublicArticleFields,
   ExtendedPublicCommentFields,
   ExtendedPublicUserFields,
+  ExtendedOwnUserFields,
 } from "../constants";
 import {
   ArtworkDB,
@@ -61,4 +62,12 @@ export const extendUserFields = (doc: UserDB, userId?: string | null) => {
   return {
     isOwner: doc.toString() === userId,
   } satisfies Partial<ExtendedPublicUserFields>;
+};
+
+export const extendOwnUserFields = (doc: UserDB, userId?: string | null) => {
+  return {
+    favouritedCount: doc.favourites.length,
+    watchlistCount: doc.watchlist.length,
+    commentCount: doc.comments.length,
+  } satisfies Partial<ExtendedOwnUserFields>;
 };

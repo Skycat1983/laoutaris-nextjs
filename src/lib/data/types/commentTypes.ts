@@ -6,7 +6,16 @@ import { UserFrontend, UserLean } from "./userTypes";
 import { LeanDocument, WithPopulatedFields, Prettify } from "./utilTypes";
 
 export type CommentLean = LeanDocument<CommentDB>;
-export type CommentFrontend = ReturnType<typeof transformComment.toFrontend>;
+export type CommentRaw = Prettify<ReturnType<typeof transformComment.toRaw>>;
+export type CommentExtended = Prettify<
+  ReturnType<typeof transformComment.toExtended>
+>;
+export type CommentSanitized = Prettify<
+  ReturnType<typeof transformComment.toSanitized>
+>;
+export type CommentFrontend = Prettify<
+  ReturnType<typeof transformComment.toFrontend>
+>;
 
 export type CommentLeanPopulated = WithPopulatedFields<
   CommentLean,

@@ -4,8 +4,17 @@ import { LeanDocument, Prettify, WithPopulatedFields } from "./utilTypes";
 import { transformCollection } from "@/lib/transforms/transformCollection";
 
 export type CollectionLean = LeanDocument<CollectionDB>;
-export type CollectionFrontend = ReturnType<
-  typeof transformCollection.toFrontend
+export type CollectionRaw = Prettify<
+  ReturnType<typeof transformCollection.toRaw>
+>;
+export type CollectionExtended = Prettify<
+  ReturnType<typeof transformCollection.toExtended>
+>;
+export type CollectionSanitized = Prettify<
+  ReturnType<typeof transformCollection.toSanitized>
+>;
+export type CollectionFrontend = Prettify<
+  ReturnType<typeof transformCollection.toFrontend>
 >;
 
 export type CollectionLeanPopulated = WithPopulatedFields<
@@ -21,6 +30,7 @@ export type CollectionFrontendPopulated = Prettify<
     {
       artworks: ArtworkFrontend[];
     }
+  >
 >;
 
 export interface CollectionFilterParams {

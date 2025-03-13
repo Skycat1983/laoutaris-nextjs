@@ -36,13 +36,13 @@ export function transformMongooseDoc<T>(
       // Skip Mongoose internal fields if specified (e.g. __v)
       if (options.removeMongooseFields && key === "__v") continue;
 
-      // If the value is a Mongoose ObjectId, convert it to a string.
+      // If = Mongoose ObjectId, convert it to a string.
       if (options.stringifyIds && value instanceof Types.ObjectId) {
         transformed[key] = value.toString();
         continue;
       }
 
-      // In some lean documents, ObjectId may appear as an object with a `buffer` property.
+      //? ObjectId may appear as an object with a `buffer` property.
       if (
         options.stringifyIds &&
         typeof value === "object" &&

@@ -1,33 +1,16 @@
 import {
   COLLECTION_FIELD_EXTENDER,
   EXTENDED_PUBLIC_COLLECTION_FIELDS,
-  ExtendedPublicCollectionFields,
   SENSITIVE_PUBLIC_COLLECTION_FIELDS,
+  ExtendedPublicCollectionFields,
   SensitivePublicCollectionFields,
-} from "../constants";
+} from "@/lib/constants";
 import {
   CollectionFrontendPopulated,
   CollectionLeanPopulated,
-  Prettify,
-} from "../data/types";
-import { createTransformer } from "./createTransformer";
-import { CollectionDB, CollectionBase } from "../data/models";
-import { transformArtwork } from "./transformArtwork";
-
-export type TransformedCollection = ReturnType<
-  typeof transformCollection.toFrontend
->;
-
-type RawReturn = Prettify<ReturnType<typeof transformCollection.toRaw>>;
-type ExtendedReturn = Prettify<
-  ReturnType<typeof transformCollection.toExtended>
->;
-type SanitizedReturn = Prettify<
-  ReturnType<typeof transformCollection.toSanitized>
->;
-type FrontendReturn = Prettify<
-  ReturnType<typeof transformCollection.toFrontend>
->;
+} from "@/lib/data/types";
+import { CollectionDB, CollectionBase } from "@/lib/data/models";
+import { createTransformer, transformArtwork } from "@/lib/transforms";
 
 export const transformCollection = createTransformer<
   CollectionDB,
