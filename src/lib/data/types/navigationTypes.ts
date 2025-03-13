@@ -1,16 +1,18 @@
 // TypeFields = the properties that are used to generate the navigation items
 import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
-import { ArticleFrontend } from "./articleTypes";
-import { CollectionFrontend } from "./collectionTypes";
-import { ArtworkFrontend } from "./artworkTypes";
-import { UserFrontend } from "./userTypes";
+import {
+  ArtworkFrontend,
+  CollectionFrontendPopulated,
+  ArticleFrontend,
+  OwnUserFrontendPopulated,
+} from "@/lib/data/types";
 // Article Navigation
 export type ArticleNavFields = Pick<ArticleFrontend, "title" | "slug">;
 export type ArticleNavItem = ArticleNavFields;
 
 // Collection Navigation
 export type CollectionNavFields = Pick<
-  CollectionFrontend,
+  CollectionFrontendPopulated,
   "title" | "slug" | "artworks"
 >;
 export type CollectionNavItem = {
@@ -27,7 +29,7 @@ export type CollectionArtworkNavList = {
 
 // User Account Navigation
 export type UserNavFields = Pick<
-  UserFrontend,
+  OwnUserFrontendPopulated,
   "favourites" | "watchlist" | "comments"
 >;
 export type UserNavItem = UserNavFields;

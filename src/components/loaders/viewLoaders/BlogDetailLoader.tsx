@@ -3,7 +3,7 @@ import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { ApiResponse } from "@/lib/data/types/apiTypes";
 import {
   BlogEntryFrontend,
-  BlogEntryFrontendPopulated,
+  BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
 import { delay } from "@/lib/utils/debug";
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export type BlogDetailLoaderResult =
-  | ApiResponse<BlogEntryFrontendPopulated>
+  | ApiResponse<BlogEntryPopulatedCommentsPopulatedFrontend>
   | ApiResponse<BlogEntryFrontend>;
 
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
@@ -27,8 +27,21 @@ export async function BlogDetailLoader({ slug, showComments = false }: Props) {
     if (!result.success) {
       throw new Error(result.error);
     }
+    console.log("result in blog loader", result);
+    const { data } = result;
 
-    return <BlogDetail {...result.data} showComments={showComments} />;
+    if (showComments) {
+      return (
+        <BlogDetail
+          blog={data as BlogEntryPopulatedCommentsPopulatedFrontend}
+          showComments={true}
+        />
+      );
+    } else {
+      return (
+        <BlogDetail blog={data as BlogEntryFrontend} showComments={false} />
+      );
+    }
   } catch (error) {
     console.error("Error in BlogDetailLoader:", error);
     throw error;

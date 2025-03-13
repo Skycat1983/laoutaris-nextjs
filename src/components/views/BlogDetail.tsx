@@ -7,58 +7,46 @@ import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { clientApi } from "@/lib/api/clientApi";
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { CommentFrontend } from "@/lib/data/types/commentTypes";
+import {
+  BlogEntryFrontend,
+  BlogEntryPopulatedCommentsPopulatedFrontend,
+} from "@/lib/data/types/blogTypes";
 
-// First, define what props we expect based on whether comments are populated
-interface BlogDetailBaseProps {
-  title: string;
-  subtitle: string;
-  text: string;
-  imageUrl: string;
-  displayDate: string;
-  slug: string;
-  showComments?: boolean;
-}
-
-interface BlogDetailUnpopulatedProps extends BlogDetailBaseProps {
-  showComments?: false;
-}
-
-interface BlogDetailPopulatedProps extends BlogDetailBaseProps {
+type WithComments = {
   showComments: true;
-  comments: CommentFrontend[];
-}
+  blog: BlogEntryPopulatedCommentsPopulatedFrontend;
+};
 
-type BlogDetailProps = BlogDetailUnpopulatedProps | BlogDetailPopulatedProps;
+type WithoutComments = {
+  showComments: false;
+  blog: BlogEntryFrontend;
+};
 
-const BlogDetail = ({
-  title,
-  subtitle,
-  text,
-  imageUrl,
-  displayDate,
-  slug,
-  showComments = false,
-  ...props
-}: BlogDetailProps) => {
+type BlogDetailProps = WithComments | WithoutComments;
+
+const BlogDetail = ({ blog, showComments = false }: BlogDetailProps) => {
+  const { title, subtitle, text, imageUrl, displayDate, slug } = blog;
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [populatedComments, setPopulatedComments] = useState<CommentFrontend[]>(
-    showComments && "comments" in props ? props.comments : []
+    showComments && "comments" in blog ? blog.comments : []
   );
   const [hasLoadedComments, setHasLoadedComments] = useState(showComments);
-  const router = useRouter();
   const { openModal } = useGlobalFeatures();
 
   const loadComments = async () => {
     setIsLoadingComments(true);
     try {
-      const result = await clientApi.public.blog.singlePopulated(slug);
+      const result: Awaited<
+        ReturnType<typeof clientApi.public.blog.singlePopulated>
+      > = await clientApi.public.blog.singlePopulated(slug);
       if (result.success) {
-        setPopulatedComments(result.data.comments);
+        console.log("result", result);
+        const { comments } = result.data;
+        setPopulatedComments(comments);
         setHasLoadedComments(true);
       }
     } catch (error) {
@@ -159,7 +147,7 @@ const BlogDetail = ({
               onClick={loadComments}
               className="w-full py-2 text-center text-gray-600 hover:text-gray-900"
             >
-              Show Comments
+              Show Comments ({blog.commentCount})
             </button>
           ) : (
             <div className="space-y-6">
@@ -199,6 +187,18 @@ const BlogDetailSkeleton = () => {
 };
 export { BlogDetail, BlogDetailSkeleton };
 
+// First, define what props we expect based on whether comments are populated
+
+// interface BlogDetailUnpopulatedProps extends BlogDetailBaseProps {
+//   showComments?: false;
+// }
+
+// interface BlogDetailPopulatedProps extends BlogDetailBaseProps {
+//   showComments: true;
+//   comments: CommentFrontend[];
+// }
+
+// type BlogDetailProps = BlogDetailUnpopulatedProps | BlogDetailPopulatedProps;
 // AUTHOR INFO IF NEEDED
 {
   /* <div className="flex flex-row w-full gap-4 justify-end items-center px-4">

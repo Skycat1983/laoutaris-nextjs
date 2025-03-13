@@ -35,7 +35,7 @@ export const transformBlog = createTransformer<
 export const transformBlogPopulated = (
   doc: BlogEntryLeanPopulated,
   userId?: string | null
-): BlogEntryFrontendPopulated => {
+) => {
   const blogPublic = transformBlog.toFrontend(doc, userId);
   const { author, comments, ...baseDoc } = doc;
   const transformedAuthor = transformUser.toFrontend(author);
@@ -46,8 +46,8 @@ export const transformBlogPopulated = (
     ...blogPublic,
     author: transformedAuthor,
     comments: transformedComments,
-  } satisfies BlogEntryFrontendPopulated;
-  return populatedBlog;
+  };
+  return populatedBlog as BlogEntryFrontendPopulated;
 };
 
 export const transformBlogPopulatedWithCommentsPopulated = (

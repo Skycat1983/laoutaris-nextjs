@@ -8,24 +8,32 @@ import {
   CommentLeanPopulated,
 } from "./commentTypes";
 import { transformBlog } from "@/lib/transforms/transformBlog";
-
+import { transformBlogPopulated } from "@/lib/transforms/transformBlog";
 export type BlogEntryLean = LeanDocument<BlogEntryDB>;
 export type BlogEntryFrontend = ReturnType<typeof transformBlog.toFrontend>;
 
-export type BlogEntryLeanPopulated = WithPopulatedFields<
-  BlogEntryLean,
-  {
-    author: UserLean;
-    comments: CommentLean[];
-  }
+export type BlogEntryLeanPopulated = Prettify<
+  WithPopulatedFields<
+    BlogEntryLean,
+    {
+      author: UserLean;
+      comments: CommentLean[];
+    }
+  >
 >;
 
-export type BlogEntryFrontendPopulated = WithPopulatedFields<
-  BlogEntryFrontend,
-  {
-    author: UserFrontend;
-    comments: CommentFrontend[];
-  }
+// export type BlogEntryFrontendReturn = Prettify<
+//   ReturnType<typeof transformBlogPopulated>
+// >;
+
+export type BlogEntryFrontendPopulated = Prettify<
+  WithPopulatedFields<
+    BlogEntryFrontend,
+    {
+      author: UserFrontend;
+      comments: CommentFrontend[];
+    }
+  >
 >;
 
 export type BlogEntryPopulatedCommentsPopulatedLean = WithPopulatedFields<

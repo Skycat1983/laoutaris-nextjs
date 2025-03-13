@@ -1,7 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
 import { buildArtworkSearchUrl } from "@/lib/utils/urlHelpers";
-import { DimmedOverlay } from "./Overlays";
 import {
   Select,
   SelectContent,
@@ -12,13 +10,11 @@ import {
 import { useState } from "react";
 
 import {
-  ArtStyle,
   ARTSTYLE_OPTIONS,
   DECADE_OPTIONS,
-  Surface,
   SURFACE_OPTIONS,
-} from "@/lib/constants/artworkConstants";
-import { Decade } from "@/lib/constants/artworkConstants";
+} from "@/lib/constants";
+import { Decade, ArtStyle, Surface } from "@/lib/data/types";
 
 const FilterSelects = ({
   filters,
@@ -124,7 +120,7 @@ const FilterableArtworks = () => {
         className="scale-110"
       />
 
-      <div className="absolute inset-0 flex items-end justify-center pb-48 sm:pb-24 p-8">
+      <div className="absolute inset-0 flex items-end justify-center mb-24 pb-48 sm:pb-24 sm:mb-0 p-8">
         <div className="bg-white/90 backdrop-blur-sm p-4 sm:p-8 rounded-lg w-[90%] sm:w-[600px] shadow-xl text-center mx-4">
           <h1 className="text-2xl sm:text-3xl font-cormorant text-gray-900 mb-4 sm:mb-6">
             Explore the Collection

@@ -39,7 +39,7 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
   singlePopulated: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<ApiBlogPopulatedResult>(
-      `/api/v2/public/blog/${encodedSlug}/comments/author`
+      `/api/v2/public/blog/${encodedSlug}/comments`
     );
   },
 });
