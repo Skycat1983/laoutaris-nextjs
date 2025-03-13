@@ -18,142 +18,190 @@ import {
   extendUserFields,
 } from "../transforms/transformHelpers";
 
-// Sensitive data
-export type SensitivePublicArticleFields =
-  (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
-export const SENSITIVE_PUBLIC_ARTICLE_FIELDS = [
+//! ARTICLE
+// all possible article document fields
+export type ArticleFields = keyof ArticleDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_ARTICLE_FIELDS: readonly ArticleFields[] = [
   "createdAt",
   "updatedAt",
 ] as const;
 
-export type ExtendedPublicArticleFields = {
-  readTime: number;
-};
+// indexable type of sensitive fields
+export type SensitivePublicArticleFields =
+  (typeof SENSITIVE_PUBLIC_ARTICLE_FIELDS)[number];
 
+// fields to extend
 export const EXTENDED_PUBLIC_ARTICLE_FIELDS: ExtendedPublicArticleFields = {
   readTime: 0,
 } as const;
 
+// type of extended fields
+export type ExtendedPublicArticleFields = {
+  readTime: number;
+};
+
+// function to extend fields
 export const ARTICLE_FIELD_EXTENDER = extendArticleFields as (
   doc: ArticleDB,
   userId?: string | null
 ) => ExtendedPublicArticleFields;
 
 //! ARTWORK
-// Sensitive data
-export type SensitivePublicArtworkFields =
-  (typeof SENSITIVE_PUBLIC_ARTWORK_FIELDS)[number];
-export const SENSITIVE_PUBLIC_ARTWORK_FIELDS = [
+// all possible artwork document fields
+export type ArtworkFields = keyof ArtworkDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_ARTWORK_FIELDS: readonly ArtworkFields[] = [
   "favourited",
   "watcherlist",
 ] as const;
-// Additional fields
+
+// indexable type of sensitive fields
+export type SensitivePublicArtworkFields =
+  (typeof SENSITIVE_PUBLIC_ARTWORK_FIELDS)[number];
+
+// fields to extend
 export const EXTENDED_PUBLIC_ARTWORK_FIELDS: ExtendedPublicArtworkFields = {
   favouriteCount: 0,
   watchlistCount: 0,
   isFavourited: false,
   isWatchlisted: false,
 } as const;
+
+// type of extended fields
 export type ExtendedPublicArtworkFields = {
   favouriteCount: number;
   watchlistCount: number;
   isFavourited: boolean;
   isWatchlisted: boolean;
 };
+
+// function to extend fields
 export const ARTWORK_FIELD_EXTENDER = extendArtworkFields as (
   artwork: ArtworkDB,
   userId?: string | null
 ) => ExtendedPublicArtworkFields;
-// export type ExtendedPublicArtworkFields = typeof EXTENDED_PUBLIC_ARTWORK_FIELDS;
 
 //! BLOG
-// Sensitive data
+// all possible blog document fields
+export type BlogFields = keyof BlogEntryDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_BLOG_FIELDS: readonly BlogFields[] = [
+  "createdAt",
+  "updatedAt",
+] as const;
+
+// indexable type of sensitive fields
 export type SensitivePublicBlogFields =
   (typeof SENSITIVE_PUBLIC_BLOG_FIELDS)[number];
-export const SENSITIVE_PUBLIC_BLOG_FIELDS = ["createdAt", "updatedAt"] as const;
-// Additional fields
+
+// fields to extend
 export const EXTENDED_PUBLIC_BLOG_FIELDS: ExtendedPublicBlogFields = {
   readTime: 0,
   commentCount: 0,
 } as const;
-// export type ExtendedPublicBlogFields = typeof EXTENDED_PUBLIC_BLOG_FIELDS;
+
+// type of extended fields
 export type ExtendedPublicBlogFields = {
   readTime: number;
   commentCount: number;
 };
+
+// function to extend fields
 export const BLOG_FIELD_EXTENDER = extendBlogFields as (
   doc: BlogEntryDB,
   userId?: string | null
 ) => ExtendedPublicBlogFields;
 
 //! COLLECTION
-// Sensitive data
-export type SensitivePublicCollectionFields =
-  (typeof SENSITIVE_PUBLIC_COLLECTION_FIELDS)[number];
-export const SENSITIVE_PUBLIC_COLLECTION_FIELDS = [
+// all possible collection document fields
+export type CollectionFields = keyof CollectionDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_COLLECTION_FIELDS: readonly CollectionFields[] = [
   "createdAt",
   "updatedAt",
 ] as const;
-// Additional fields
+
+// indexable type of sensitive fields
+export type SensitivePublicCollectionFields =
+  (typeof SENSITIVE_PUBLIC_COLLECTION_FIELDS)[number];
+
+// fields to extend
 export const EXTENDED_PUBLIC_COLLECTION_FIELDS: ExtendedPublicCollectionFields =
   {
     artworkCount: 0,
     firstArtworkId: "",
   } as const;
-// export type ExtendedPublicCollectionFields =
-//   typeof EXTENDED_PUBLIC_COLLECTION_FIELDS;
+
+// type of extended fields
 export type ExtendedPublicCollectionFields = {
   artworkCount: number;
   firstArtworkId: string;
 };
+
+// function to extend fields
 export const COLLECTION_FIELD_EXTENDER = extendCollectionFields as (
   doc: CollectionDB,
   userId?: string | null
 ) => ExtendedPublicCollectionFields;
 
 //! COMMENTS
-// Sensitive data
+// all possible comment document fields
+export type CommentFields = keyof CommentDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_COMMENT_FIELDS: readonly CommentFields[] =
+  [] as const;
+
+// indexable type of sensitive fields
 export type SensitivePublicCommentFields =
   (typeof SENSITIVE_PUBLIC_COMMENT_FIELDS)[number];
-export const SENSITIVE_PUBLIC_COMMENT_FIELDS = [] as const;
-// Additional fields
+
+// fields to extend
 export const EXTENDED_PUBLIC_COMMENT_FIELDS: ExtendedPublicCommentFields = {
   isOwner: false,
 } as const;
-// export type ExtendedPublicCommentFields = typeof EXTENDED_PUBLIC_COMMENT_FIELDS;
+
+// type of extended fields
 export type ExtendedPublicCommentFields = {
   isOwner: boolean;
 };
+
+// function to extend fields
 export const COMMENT_FIELD_EXTENDER = extendCommentFields as (
   doc: CommentDB,
   userId?: string | null
 ) => ExtendedPublicCommentFields;
 
-//! SUBSCRIBER
-// Sensitive data
-export type SensitivePublicSubscriberFields =
-  (typeof SENSITIVE_PUBLIC_SUBSCRIBER_FIELDS)[number];
-export const SENSITIVE_PUBLIC_SUBSCRIBER_FIELDS = [] as const;
-
-type AvailableKeys<T> = keyof T;
-
 //! USER
-// Sensitive data
-export type SensitivePublicUserFields =
-  (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number];
-type PublicUserFields = AvailableKeys<UserLean>;
-// export type SensitivePublicUserFields = Partial<keyof UserLean>;
-export const SENSITIVE_PUBLIC_USER_FIELDS: PublicUserFields = [
+// all possible user document fields
+export type UserFields = keyof UserDB;
+
+// fields to actually sanitize
+export const SENSITIVE_PUBLIC_USER_FIELDS: readonly UserFields[] = [
   "password",
   "email",
 ] as const;
-// Additional fields
+
+// indexable type of sensitive fields
+export type SensitivePublicUserFields =
+  (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number];
+
+// fields to extend
 export const EXTENDED_PUBLIC_USER_FIELDS: ExtendedPublicUserFields = {
   isOwner: false,
 } as const;
+
+// type of extended fields
 export type ExtendedPublicUserFields = {
   isOwner: boolean;
 };
+
+// function to extend fields
 export const USER_FIELD_EXTENDER = extendUserFields as (
   doc: UserDB,
   userId?: string | null
