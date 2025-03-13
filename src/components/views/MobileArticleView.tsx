@@ -84,14 +84,13 @@ const MobileArticleView: React.FC<ArticleProps> = ({
             ))}
         </article>
         {/* INSERT HERE */}
-        <div
+        {/* <div
           className="w-full bg-cover bg-fixed h-[400px] fade-in"
           style={{
             backgroundImage: `url(${article.artwork.image.secure_url})`,
             backgroundPosition: "50% 50%",
           }}
         >
-          {/* Overlay text container */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div
               className={`text-center p-8 ${overlayStyles.container} backdrop-blur-sm w-full m-16`}
@@ -103,12 +102,12 @@ const MobileArticleView: React.FC<ArticleProps> = ({
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <article className="prose-xl text-left p-24 bg-white fade-in">
+        {/* <article className="prose-xl text-left p-24 bg-white fade-in">
           {article.text
-            .replace(/\r\n/g, "\n") // Normalize to \n
-            .split(/\n\n+/) // Split on blank lines
+            .replace(/\r\n/g, "\n")
+            .split(/\n\n+/)
             .map((paragraph, index) => (
               <p
                 key={index}
@@ -119,7 +118,7 @@ const MobileArticleView: React.FC<ArticleProps> = ({
                 {paragraph.trim()}
               </p>
             ))}
-        </article>
+        </article> */}
       </div>
 
       <div className="flex flex-row w-full justify-center items-center px-[80px] gap-5">

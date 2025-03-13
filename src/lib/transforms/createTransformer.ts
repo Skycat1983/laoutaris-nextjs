@@ -1,34 +1,7 @@
-import { LeanDocument, Merge, TransformedDocument } from "../data/types";
+import { LeanDocument, TransformedDocument } from "../data/types";
 import { transformUtils } from "./transformUtils";
 
 type ValidFieldType = string | number | boolean | Date;
-
-export type PublicTransformationsGeneric<
-  TDocument,
-  TExtended extends Record<string, ValidFieldType>,
-  TSensitive extends string
-> = {
-  DB: TDocument;
-  Lean: LeanDocument<
-    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["DB"]
-  >;
-  Raw: TransformedDocument<
-    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Lean"]
-  >;
-  Extended: Merge<
-    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Raw"],
-    TExtended
-  >;
-  Sanitized: Omit<
-    PublicTransformationsGeneric<TDocument, TExtended, TSensitive>["Extended"],
-    TSensitive
-  >;
-  Frontend: PublicTransformationsGeneric<
-    TDocument,
-    TExtended,
-    TSensitive
-  >["Sanitized"];
-};
 
 /**
  * Generic transformer factory for document transformations
@@ -62,6 +35,7 @@ export type PublicTransformationsGeneric<
  * );
  * ```
  */
+
 export const createTransformer = <
   TBase,
   TBasePopulated,
@@ -89,8 +63,8 @@ export const createTransformer = <
     },
 
     toSanitized: <T extends TBase | TBasePopulated>(
-      doc: any
-    ): Omit<T, TSensitive> => {
+      doc: TransformedDocument<LeanDocument<T>> & TExtended
+    ): Omit<TransformedDocument<LeanDocument<T>> & TExtended, TSensitive> => {
       return transformUtils.removeSensitive(doc, sensitiveFields);
     },
 
@@ -106,6 +80,7 @@ export const createTransformer = <
 
   return transformer;
 };
+
 // export const createTransformer = <
 //   TBase,
 //   TBasePopulated,
@@ -115,39 +90,38 @@ export const createTransformer = <
 //   extendedFields: TExtended,
 //   sensitiveFields: readonly TSensitive[],
 //   calculateFields?: (doc: any, userId?: string | null) => Partial<TExtended>
-// ) => ({
-//   toRaw: <T extends TBase | TBasePopulated>(
-//     doc: LeanDocument<T>
-//   ): TransformedDocument<LeanDocument<T>> => {
-//     return transformUtils.toRaw(doc);
-//   },
+// ) => {
+//   const transformer = {
+//     toRaw: <T extends TBase | TBasePopulated>(
+//       doc: LeanDocument<T>
+//     ): TransformedDocument<LeanDocument<T>> => {
+//       return transformUtils.toRaw(doc);
+//     },
 
-//   toExtended: <T extends TBase | TBasePopulated>(
-//     doc: TransformedDocument<LeanDocument<T>>,
-//     userId?: string | null
-//   ) => {
-//     return {
-//       ...doc,
-//       ...extendedFields,
-//       ...(calculateFields ? calculateFields(doc, userId) : {}),
-//     };
-//   },
-//   toSanitized: <T extends TBase | TBasePopulated>(
-//     doc: any
-//   ): Omit<T, TSensitive> => {
-//     return transformUtils.removeSensitive(doc, sensitiveFields);
-//   },
+//     toExtended: <T extends TBase | TBasePopulated>(
+//       doc: TransformedDocument<LeanDocument<T>>,
+//       userId?: string | null
+//     ) => {
+//       return transformUtils.extend(doc, extendedFields, (d) =>
+//         calculateFields ? calculateFields(d, userId) : {}
+//       );
+//     },
 
-//   toFrontend: <T extends TBase | TBasePopulated>(
-//     doc: LeanDocument<T>,
-//     userId?: string | null
-//   ) => {
-//     const rawDoc = transformUtils.toRaw(doc);
-//     const extendedDoc = {
-//       ...rawDoc,
-//       ...extendedFields,
-//       ...(calculateFields ? calculateFields(rawDoc, userId) : {}),
-//     };
-//     return transformUtils.removeSensitive(extendedDoc, sensitiveFields);
-//   },
-// });
+//     toSanitized: <T extends TBase | TBasePopulated>(
+//       doc: any
+//     ): Omit<T, TSensitive> => {
+//       return transformUtils.removeSensitive(doc, sensitiveFields);
+//     },
+
+//     toFrontend: <T extends TBase | TBasePopulated>(
+//       doc: LeanDocument<T>,
+//       userId?: string | null
+//     ) => {
+//       const raw = transformer.toRaw(doc);
+//       const extended = transformer.toExtended(raw, userId);
+//       return transformer.toSanitized(extended);
+//     },
+//   };
+
+//   return transformer;
+// };

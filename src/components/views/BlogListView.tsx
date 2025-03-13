@@ -1,9 +1,6 @@
 "use server";
 
-import {
-  BlogEntryData,
-  SortedBlogData,
-} from "../loaders/viewLoaders/BlogListLoader";
+import { SortedBlogData } from "../loaders/viewLoaders/BlogListLoader";
 import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import { BlogsViewCardSkeleton } from "../modules/cards/BlogsViewCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";

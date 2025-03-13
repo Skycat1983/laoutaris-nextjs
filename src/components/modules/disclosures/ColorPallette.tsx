@@ -1,5 +1,4 @@
 import { TailwindColorIcon } from "@/components/elements/icons";
-import { ColorInfo } from "@/lib/data/types/artworkTypes";
 import {
   Disclosure,
   DisclosureButton,
@@ -14,13 +13,14 @@ import {
 } from "@/components/shadcn/tooltip";
 import Link from "next/link";
 import { buildArtworkSearchUrl } from "@/lib/utils/urlHelpers";
+import { ColourInfo } from "@/lib/data/types";
 
 interface HexColorPaletteProps {
-  colors: ColorInfo[];
+  colors: ColourInfo[];
   label: string;
 }
 
-const HexColorIcon = ({ hexColor }: { hexColor: ColorInfo }) => {
+const HexColorIcon = ({ hexColor }: { hexColor: ColourInfo }) => {
   const searchUrl = buildArtworkSearchUrl({
     sortBy: "colorProximity",
     sortColor: hexColor.color,
@@ -72,7 +72,7 @@ const HexColorPalette: React.FC<HexColorPaletteProps> = ({ colors, label }) => {
 };
 
 interface CloudinaryColorPaletteProps {
-  colors: ColorInfo[];
+  colors: ColourInfo[];
   label: string;
 }
 

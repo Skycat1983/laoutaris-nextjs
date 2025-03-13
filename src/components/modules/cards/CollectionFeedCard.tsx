@@ -1,12 +1,12 @@
 "use client";
 
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import { CollectionFrontend } from "@/lib/data/types";
 import copy_id from "@/lib/helpers/copy_id";
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 
 interface CollectionFeedCardProps {
-  item: FrontendCollection;
+  item: CollectionFrontend;
 }
 
 export function CollectionFeedCard({ item }: CollectionFeedCardProps) {
@@ -28,8 +28,7 @@ export function CollectionFeedCard({ item }: CollectionFeedCardProps) {
           <h2 className="text-white text-xl font-bold">{item.title}</h2>
           <p className="text-white/80 text-sm">{item.subtitle}</p>
           <h1 className="text-white text-sm font-bold">
-            Artworks:{" "}
-            <span className="text-white/80">{item.artworks.length}</span>
+            Artworks: <span className="text-white/80">{item.artworkCount}</span>
           </h1>
         </div>
       </div>

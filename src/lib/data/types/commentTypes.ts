@@ -3,7 +3,7 @@ import { transformComment } from "@/lib/transforms/transformComment";
 import { CommentDB } from "../models";
 import { BlogEntryFrontend, BlogEntryLean } from "./blogTypes";
 import { UserFrontend, UserLean } from "./userTypes";
-import { LeanDocument, WithPopulatedFields } from "./utilTypes";
+import { LeanDocument, WithPopulatedFields, Prettify } from "./utilTypes";
 
 export type CommentLean = LeanDocument<CommentDB>;
 export type CommentFrontend = ReturnType<typeof transformComment.toFrontend>;
@@ -16,12 +16,14 @@ export type CommentLeanPopulated = WithPopulatedFields<
   }
 >;
 
-export type CommentFrontendPopulated = WithPopulatedFields<
-  CommentFrontend,
-  {
-    author: UserFrontend;
-    blog: BlogEntryFrontend;
-  }
+export type CommentFrontendPopulated = Prettify<
+  WithPopulatedFields<
+    CommentFrontend,
+    {
+      author: UserFrontend;
+      blog: BlogEntryFrontend;
+    }
+  >
 >;
 // export type CommentFrontendPopulated = ReturnType<
 //   typeof transformCommentPopulated

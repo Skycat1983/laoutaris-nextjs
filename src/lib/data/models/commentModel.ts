@@ -1,11 +1,11 @@
 import mongoose, { Document } from "mongoose";
 
-export interface BaseComment {
+export interface CommentBase {
   text: string;
   displayDate: Date;
 }
 
-export interface CommentDB extends Document, BaseComment {
+export interface CommentDB extends Document, CommentBase {
   author: mongoose.Schema.Types.ObjectId;
   blog: mongoose.Schema.Types.ObjectId;
   createdAt: Date;

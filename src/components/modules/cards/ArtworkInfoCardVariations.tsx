@@ -1,4 +1,3 @@
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import {
   CloudinaryColorPalette,
   HexColorPalette,
@@ -9,13 +8,14 @@ import {
 } from "@/components/elements/buttons";
 import { Bookmark, Heart } from "lucide-react";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
 // Classic Museum Card
 export const ClassicMuseumCard = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (
@@ -78,7 +78,7 @@ export const ContemporaryGridCard = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (
@@ -142,7 +142,7 @@ export const ContemporaryGridCardDark = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (
@@ -201,7 +201,7 @@ export const TimelineCard = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   const pl = "pl-8";
@@ -280,7 +280,7 @@ export const TimelineCard = ({
                 }`}
             />
             <span className="text-xs text-gray-500">
-              {artwork.favouritedCount}
+              {artwork.favouriteCount}
             </span>
           </div>
         </div>
@@ -294,7 +294,7 @@ export const MagazineCard = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (

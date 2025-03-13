@@ -1,16 +1,12 @@
 import { authOptions } from "@/lib/config/authOptions";
 import { getServerSession } from "next-auth";
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
-import {
-  CloudinaryColorPalette,
-  HexColorPalette,
-} from "@/components/modules/disclosures/ColorPallette";
+import { HexColorPalette } from "@/components/modules/disclosures/ColorPallette";
 import { FavouritesButton } from "@/components/elements/buttons";
 import { WatchlistButton } from "@/components/elements/buttons";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { Artwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
-export async function ArtworkInfoCard({ ...artwork }: Artwork) {
+export async function ArtworkInfoCard({ ...artwork }: ArtworkFrontend) {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session?.user;
 
@@ -48,10 +44,7 @@ export async function ArtworkInfoCard({ ...artwork }: Artwork) {
           colors={artwork.image.hexColors}
           label="Colour palette"
         />
-        {/* <CloudinaryColorPalette
-          colors={artwork.image.predominantColors.cloudinary}
-          label="Predominant colours"
-        /> */}
+
         <hr />
         <div className="w-full flex  gap-3 flex-row md:gap-5 lg:flex-row">
           <WatchlistButton

@@ -1,13 +1,16 @@
 // TypeFields = the properties that are used to generate the navigation items
-import { Article, Artwork, Collection, User } from "@/lib/data/types";
 import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { ArticleFrontend } from "./articleTypes";
+import { CollectionFrontend } from "./collectionTypes";
+import { ArtworkFrontend } from "./artworkTypes";
+import { UserFrontend } from "./userTypes";
 // Article Navigation
-export type ArticleNavFields = Pick<Article, "title" | "slug">;
+export type ArticleNavFields = Pick<ArticleFrontend, "title" | "slug">;
 export type ArticleNavItem = ArticleNavFields;
 
 // Collection Navigation
 export type CollectionNavFields = Pick<
-  Collection,
+  CollectionFrontend,
   "title" | "slug" | "artworks"
 >;
 export type CollectionNavItem = {
@@ -17,13 +20,16 @@ export type CollectionNavItem = {
 };
 
 // Artwork Navigation (for collection pagination)
-export type ArtworkNavFields = Pick<Artwork, "title" | "_id" | "image">;
+export type ArtworkNavFields = Pick<ArtworkFrontend, "title" | "_id" | "image">;
 export type CollectionArtworkNavList = {
   artworks: ArtworkNavFields[];
 };
 
 // User Account Navigation
-export type UserNavFields = Pick<User, "favourites" | "watchlist" | "comments">;
+export type UserNavFields = Pick<
+  UserFrontend,
+  "favourites" | "watchlist" | "comments"
+>;
 export type UserNavItem = UserNavFields;
 
 // Valid sections

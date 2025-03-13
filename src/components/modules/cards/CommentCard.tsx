@@ -3,10 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FrontendCommentWithAuthor,
-  FrontendCommentWithBlogNav,
-} from "@/lib/data/types/commentTypes";
 import { useSession } from "next-auth/react";
 import { Pencil, Trash2, X, Check } from "lucide-react";
 import { clientApi } from "@/lib/api/clientApi";
@@ -29,9 +25,10 @@ import {
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { isFrontendUser } from "@/lib/typeGuards";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 
 interface CommentCardProps {
-  comment: FrontendCommentWithAuthor | FrontendCommentWithBlogNav;
+  comment: CommentFrontendPopulated;
   onCommentUpdated?: () => void;
   onCommentDeleted?: () => void;
 }

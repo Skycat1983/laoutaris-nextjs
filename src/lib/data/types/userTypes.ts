@@ -1,21 +1,13 @@
-import {
-  ExtendedPublicUserFields,
-  SensitivePublicUserFields,
-  ExtendedOwnUserFields,
-  SensitiveOwnUserFields,
-} from "@/lib/constants";
 import { UserDB } from "../models";
 import { ArtworkFrontend } from "./artworkTypes";
-import {
-  LeanDocument,
-  Merge,
-  TransformedDocument,
-  WithPopulatedFields,
-} from "./utilTypes";
+import { LeanDocument, WithPopulatedFields } from "./utilTypes";
 import { ArtworkLean } from "./artworkTypes";
 import { transformUser } from "@/lib/transforms/transformUser";
 
 export type UserLean = LeanDocument<UserDB>;
+export type UserRaw = ReturnType<typeof transformUser.toRaw>;
+export type UserExtended = ReturnType<typeof transformUser.toExtended>;
+export type UserSanitized = ReturnType<typeof transformUser.toSanitized>;
 export type UserFrontend = ReturnType<typeof transformUser.toFrontend>;
 
 export type UserLeanPopulated = WithPopulatedFields<

@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import copy_id from "@/lib/helpers/copy_id";
-import { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
+import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 
 interface ArticleFeedCardProps {
-  item: FrontendArticleWithArtwork;
+  item: ArticleFrontendPopulated;
 }
 
 export function ArticleFeedCard({ item }: ArticleFeedCardProps) {

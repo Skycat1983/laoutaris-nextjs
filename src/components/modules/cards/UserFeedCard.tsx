@@ -1,9 +1,9 @@
 "use client";
 
-import type { FrontendUser } from "@/lib/data/types/userTypes";
+import { UserFrontend } from "@/lib/data/types";
 
 interface UserFeedCardProps {
-  item: FrontendUser;
+  item: UserFrontend;
 }
 
 export function UserFeedCard({ item }: UserFeedCardProps) {
@@ -14,7 +14,7 @@ export function UserFeedCard({ item }: UserFeedCardProps) {
           <h3 className="text-lg font-medium">{item.username}</h3>
           <span className="text-sm text-gray-500">{item.role}</span>
         </div>
-        <p className="text-sm text-gray-600">{item.email}</p>
+        {/* <p className="text-sm text-gray-600">{item.email}</p> */}
       </div>
     </div>
   );

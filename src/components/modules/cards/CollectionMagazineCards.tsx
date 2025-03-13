@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
-import {
-  NewLogoDark,
-  NewLogoLight,
-} from "@/components/elements/icons/NewLogos";
+import { NewLogoDark } from "@/components/elements/icons/NewLogos";
 
 interface CollectionCardProps {
   title: string;

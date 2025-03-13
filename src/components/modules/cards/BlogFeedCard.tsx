@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import copy_id from "@/lib/helpers/copy_id";
-import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import { BlogEntryFrontend } from "@/lib/data/types";
 
 interface BlogFeedCardProps {
-  item: FrontendBlogEntry;
+  item: BlogEntryFrontend;
 }
 
 export function BlogFeedCard({ item }: BlogFeedCardProps) {
@@ -28,8 +28,7 @@ export function BlogFeedCard({ item }: BlogFeedCardProps) {
           <h2 className="text-white text-xl font-bold">{item.title}</h2>
           <p className="text-white/80 text-sm">{item.subtitle}</p>
           <h1 className="text-white text-sm font-bold">
-            Comments:{" "}
-            <span className="text-white/80">{item.comments.length}</span>
+            Comments: <span className="text-white/80">{item.commentCount}</span>
           </h1>
         </div>
       </div>

@@ -1,7 +1,3 @@
-import {
-  ExtendedPublicArticleFields,
-  SensitivePublicArticleFields,
-} from "@/lib/constants";
 import { ArticleDB } from "../models";
 import { ArtworkFrontend, ArtworkLean } from "./artworkTypes";
 import { UserFrontend, UserLean } from "./userTypes";
@@ -90,43 +86,3 @@ export interface ArticleFilterParams {
   key: "section" | null;
   value: string | null;
 }
-
-// //! Article fields
-// export type Section = "artwork" | "biography" | "project" | "collections";
-// export type OverlayColour = "white" | "black";
-
-// export type PublicArticleTransformationsPopulated = {
-//   Lean: WithPopulatedFields<
-//     PublicArticleTransformations["Lean"],
-//     {
-//       author: PublicUserTransformations["Lean"];
-//       artwork: PublicArtworkTransformations["Lean"];
-//     }
-//   >;
-//   Raw: PublicArticleTransformations["Raw"];
-
-//   Extended: WithPopulatedFields<
-//     PublicArticleTransformations["Extended"],
-//     {
-//       author: PublicUserTransformations["Extended"];
-//       artwork: PublicArtworkTransformations["Extended"];
-//     }
-//   >;
-//   Frontend: WithPopulatedFields<
-//     PublicArticleTransformations["Frontend"],
-//     {
-//       author: PublicUserTransformations["Frontend"];
-//       artwork: PublicArtworkTransformations["Frontend"];
-//     }
-//   >;
-// };
-// export type PublicArticleLean = LeanDocument<ArticleDB>;
-// export type PublicArticleRaw = TransformedDocument<PublicArticleLean>;
-// export type PublicArticleExtended = Merge<
-//   PublicArticleRaw,
-//   { readTime?: number }
-// >;
-// export type PublicArticleSanitized = Omit<
-//   PublicArticleExtended,
-//   "_id" | "createdAt" | "updatedAt"
-// >;

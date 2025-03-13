@@ -1,15 +1,15 @@
-import { CollectionCardData } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import Image from "next/image";
 import Link from "next/link";
+import { CollectionFrontend } from "@/lib/data/types";
 
 type CollectionCardProps = {
-  collection: CollectionCardData;
+  collection: CollectionFrontend;
 };
 
 export const CollectionCard = ({ collection }: CollectionCardProps) => {
   return (
     <Link
-      href={`/collections/${collection.slug}/${collection.artworks[0]}`}
+      href={`/collections/${collection.slug}/${collection.firstArtworkId}`}
       className="relative row-span-1 col-span-1 h-64 overflow-hidden group"
     >
       <Image

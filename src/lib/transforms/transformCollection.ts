@@ -8,6 +8,7 @@ import {
 import {
   CollectionFrontendPopulated,
   CollectionLeanPopulated,
+  Prettify,
 } from "../data/types";
 import { createTransformer } from "./createTransformer";
 import { CollectionDB, CollectionBase } from "../data/models";
@@ -15,6 +16,17 @@ import { transformArtwork } from "./transformArtwork";
 
 export type TransformedCollection = ReturnType<
   typeof transformCollection.toFrontend
+>;
+
+type RawReturn = Prettify<ReturnType<typeof transformCollection.toRaw>>;
+type ExtendedReturn = Prettify<
+  ReturnType<typeof transformCollection.toExtended>
+>;
+type SanitizedReturn = Prettify<
+  ReturnType<typeof transformCollection.toSanitized>
+>;
+type FrontendReturn = Prettify<
+  ReturnType<typeof transformCollection.toFrontend>
 >;
 
 export const transformCollection = createTransformer<

@@ -8,6 +8,7 @@ import {
   CommentDB,
   UserDB,
 } from "../data/models";
+import { UserLean } from "../data/types";
 import {
   extendArtworkFields,
   extendBlogFields,
@@ -134,11 +135,18 @@ export type SensitivePublicSubscriberFields =
   (typeof SENSITIVE_PUBLIC_SUBSCRIBER_FIELDS)[number];
 export const SENSITIVE_PUBLIC_SUBSCRIBER_FIELDS = [] as const;
 
+type AvailableKeys<T> = keyof T;
+
 //! USER
 // Sensitive data
 export type SensitivePublicUserFields =
   (typeof SENSITIVE_PUBLIC_USER_FIELDS)[number];
-export const SENSITIVE_PUBLIC_USER_FIELDS = ["password", "email"] as const;
+type PublicUserFields = AvailableKeys<UserLean>;
+// export type SensitivePublicUserFields = Partial<keyof UserLean>;
+export const SENSITIVE_PUBLIC_USER_FIELDS: PublicUserFields = [
+  "password",
+  "email",
+] as const;
 // Additional fields
 export const EXTENDED_PUBLIC_USER_FIELDS: ExtendedPublicUserFields = {
   isOwner: false,

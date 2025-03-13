@@ -1,12 +1,12 @@
 "use client";
 
-import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 import { formatDateImproved } from "@/lib/utils/formatDate";
 import { CopyIcon } from "lucide-react";
 import { copy_id } from "@/lib/helpers/copy_id";
 
 interface CommentFeedCardProps {
-  item: FrontendCommentWithAuthor;
+  item: CommentFrontendPopulated;
 }
 
 export function CommentFeedCard({ item }: CommentFeedCardProps) {

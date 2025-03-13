@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
-import type { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
 interface ArtworkFeedCardProps {
-  item: FrontendArtwork;
+  item: ArtworkFrontend;
 }
 
 export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
