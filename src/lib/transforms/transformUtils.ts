@@ -1,28 +1,6 @@
 import { TransformedDocument } from "../data/types/utilTypes";
 import { transformMongooseDoc } from "./transformMongooseDoc";
 
-type FieldConfig<T extends string = string, D = any> = {
-  readonly type: T;
-  readonly default: D;
-};
-
-type ExtractFieldType<T extends FieldConfig> = T["type"] extends "number"
-  ? number
-  : T["type"] extends "string"
-  ? string
-  : T["type"] extends "boolean"
-  ? boolean
-  : T["type"] extends "date"
-  ? Date
-  : never;
-
-type ExtractFieldTypes<T extends Record<string, FieldConfig>> = {
-  [K in keyof T]: ExtractFieldType<T[K]>;
-};
-
-type MergedDoc<T, C extends Record<string, FieldConfig>> = T &
-  ExtractFieldTypes<C>;
-
 export const transformUtils = {
   // Convert lean document to raw (handle ObjectIds)
   toRaw: <T>(doc: any): TransformedDocument<T> =>
@@ -88,18 +66,3 @@ export const transformUtils = {
     );
   },
 };
-
-// Export types for external use
-export type { ExtractFieldType, ExtractFieldTypes, FieldConfig };
-
-// !DO NOT DELETE THIS
-// removeSensitive: <T extends Record<string, any>>(
-//   doc: T,
-//   sensitiveFields: readonly string[]
-// ): Omit<T, keyof typeof sensitiveFields> => {
-//   const sanitized = { ...doc };
-//   for (const field of sensitiveFields) {
-//     delete sanitized[field];
-//   }
-//   return sanitized as Omit<T, keyof typeof sensitiveFields>;
-// },

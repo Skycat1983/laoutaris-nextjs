@@ -1,4 +1,4 @@
-export const DECADE_OPTIONS = [
+const DECADE_OPTIONS = [
   "1950s",
   "1960s",
   "1970s",
@@ -8,16 +8,12 @@ export const DECADE_OPTIONS = [
   "2010s",
   "2020s",
 ] as const;
-export type Decade = (typeof DECADE_OPTIONS)[number];
+type Decade = (typeof DECADE_OPTIONS)[number];
 
-export const ARTSTYLE_OPTIONS = [
-  "abstract",
-  "semi-abstract",
-  "figurative",
-] as const;
-export type ArtStyle = (typeof ARTSTYLE_OPTIONS)[number];
+const ARTSTYLE_OPTIONS = ["abstract", "semi-abstract", "figurative"] as const;
+type ArtStyle = (typeof ARTSTYLE_OPTIONS)[number];
 
-export const MEDIUM_OPTIONS = [
+const MEDIUM_OPTIONS = [
   "oil",
   "acrylic",
   "paint",
@@ -28,26 +24,33 @@ export const MEDIUM_OPTIONS = [
   "ink",
   "sand",
 ] as const;
-export type Medium = (typeof MEDIUM_OPTIONS)[number];
+type Medium = (typeof MEDIUM_OPTIONS)[number];
 
-export const SURFACE_OPTIONS = ["paper", "canvas", "wood", "film"] as const;
-export type Surface = (typeof SURFACE_OPTIONS)[number];
+const SURFACE_OPTIONS = ["paper", "canvas", "wood", "film"] as const;
+type Surface = (typeof SURFACE_OPTIONS)[number];
 
-export const FILTER_MODE_OPTIONS = ["ALL", "ANY"] as const;
-export type FilterMode = (typeof FILTER_MODE_OPTIONS)[number];
+const FILTER_MODE_OPTIONS = ["ALL", "ANY"] as const;
+type FilterMode = (typeof FILTER_MODE_OPTIONS)[number];
 
-export const FILTER_KEY_OPTIONS = [
-  "decade",
-  "artstyle",
-  "medium",
-  "surface",
-] as const;
-export type FilterKey = (typeof FILTER_KEY_OPTIONS)[number];
+const FILTER_KEY_OPTIONS = ["decade", "artstyle", "medium", "surface"] as const;
+type FilterKey = (typeof FILTER_KEY_OPTIONS)[number];
 
-export const SORT_OPTION_OPTIONS = [
+const SORT_OPTION_OPTIONS = [
   "colorProximity",
   "mostRecent",
   "mostPopular",
   "mostFeatured",
 ] as const;
-export type SortOption = (typeof SORT_OPTION_OPTIONS)[number];
+type SortOption = (typeof SORT_OPTION_OPTIONS)[number];
+
+export type {
+  Decade,
+  ArtStyle,
+  Medium,
+  Surface,
+  FilterMode,
+  FilterKey,
+  SortOption,
+};
+
+export { DECADE_OPTIONS, ARTSTYLE_OPTIONS, MEDIUM_OPTIONS };

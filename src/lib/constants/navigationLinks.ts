@@ -7,7 +7,7 @@ interface NavLink {
   disabled?: boolean;
 }
 
-export const BLOG_NAV_LINKS: NavLink[] = [
+const BLOG_NAV_LINKS: NavLink[] = [
   {
     title: "Latest",
     slug: "latest",
@@ -30,3 +30,6 @@ export const BLOG_NAV_LINKS: NavLink[] = [
     disabled: true,
   },
 ];
+
+export type { NavLink };
+export { BLOG_NAV_LINKS };

@@ -1,4 +1,4 @@
-export const BLOG_TAGS = [
+const BLOG_TAGS = [
   "project",
   "family",
   "artwork",
@@ -7,4 +7,7 @@ export const BLOG_TAGS = [
   "exhibitions",
   "artists",
 ] as const;
-export type BlogTag = (typeof BLOG_TAGS)[number];
+type BlogTag = (typeof BLOG_TAGS)[number];
+
+export type { BlogTag };
+export { BLOG_TAGS };

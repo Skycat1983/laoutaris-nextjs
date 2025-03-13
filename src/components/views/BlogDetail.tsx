@@ -11,11 +11,6 @@ import { useRouter } from "next/navigation";
 import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import {
-  BlogEntryFrontend,
-  BlogEntryFrontendPopulated,
-  BlogEntryPopulatedCommentsPopulatedFrontend,
-} from "@/lib/data/types/blogTypes";
 import { CommentFrontend } from "@/lib/data/types/commentTypes";
 
 // First, define what props we expect based on whether comments are populated

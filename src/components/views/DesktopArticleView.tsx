@@ -6,8 +6,7 @@ import { Button } from "@/components/shadcn/button";
 import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useSelectedLayoutSegments } from "next/navigation";
-// import { ImQuotesLeft } from "react-icons/im";
+import { usePathname } from "next/navigation";
 
 interface ArticleProps {
   article: ArticleFrontendPopulated;
@@ -127,21 +126,3 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
 };
 
 export { DesktopArticleView };
-
-{
-  /* <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full z-1 relative">
-          <div className="flex flex-row w-full p-10 justify-end relative sticky top-[200px]">
-            <div>
-              <TransitionGroup
-                appear={true}
-                isShowing={true}
-                textColour="black"
-                // textColour={article.overlayColour}
-                title={article.title}
-                subtitle={article.subtitle}
-                author="Heron Laoutaris"
-              />
-            </div>
-          </div>
-        </div> */
-}

@@ -1,11 +1,6 @@
 import { LoginFormSchema, LoginWithUsernameSchema } from "@/lib/data/schemas";
 import { formatFieldErrors } from "@/lib/helpers/formatFieldErrors";
 
-// type LoginFormData = {
-//   email: string;
-//   password: string;
-// };
-
 interface ValidationResult<T> {
   formValidationErrors: Partial<Record<keyof T, string>>;
 }

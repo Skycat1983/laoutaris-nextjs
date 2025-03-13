@@ -26,23 +26,6 @@ export type WithPopulatedFields<
   TPopulated extends Record<string, any>
 > = Omit<TBase, keyof TPopulated> & TPopulated;
 
-// Helper to extract the actual type from a field config
-export type ExtractFieldType<T extends { type: string; default: any }> =
-  T["type"] extends "number"
-    ? number
-    : T["type"] extends "string"
-    ? string
-    : T["type"] extends "boolean"
-    ? boolean
-    : never;
-
-// Helper to convert config record to actual types
-export type ExtractFieldTypes<
-  T extends Record<string, { type: string; default: any }>
-> = {
-  [K in keyof T]: ExtractFieldType<T[K]>;
-};
-
 // For handling single transformations
 export type WithPopulated<
   T extends { [K in Stage]: any },
@@ -118,54 +101,30 @@ export type PublicTransformationsGeneric<
   >["Sanitized"];
 };
 
-// export const ArtworkConfig = {
-//   extend: {
-//     favouriteCount: 0,
-//     watchlistCount: 0,
-//     isFavourited: false,
-//     isWatchlisted: false,
-//   },
-//   sanitize: ["favourited", "watcherlist", "image"] as const,
-// } satisfies TransformConfig<ArtworkDB>;
+type FieldConfig<T extends string = string, D = any> = {
+  readonly type: T;
+  readonly default: D;
+};
 
-// export type ArtworkTransformations = DocumentTransformations<
-//   ArtworkDB,
-//   typeof ArtworkConfig
-// >;
+// Helper to extract the actual type from a field config
+export type ExtractFieldType<T extends { type: string; default: any }> =
+  T["type"] extends "number"
+    ? number
+    : T["type"] extends "string"
+    ? string
+    : T["type"] extends "boolean"
+    ? boolean
+    : never;
 
-// export const CollectionConfig = {
-//   extend: {
-//     firstArtwork: "" as string,
-//   },
-//   sanitize: ["_id", "createdAt", "updatedAt"] as const,
-// } satisfies TransformConfig<CollectionDB>;
+// Helper to convert config record to actual types
+export type ExtractFieldTypes<
+  T extends Record<string, { type: string; default: any }>
+> = {
+  [K in keyof T]: ExtractFieldType<T[K]>;
+};
 
-// // Type using the config
-// export type CollectionTransformations = DocumentTransformations<
-//   CollectionDB,
-//   typeof CollectionConfig
-// >;
-
-// Usage in transformations:
-// type FieldConfig = {
-//   type: "string" | "number" | "boolean" | "date";
-//   default: any;
-//   optional?: boolean;
-// };
-
-// // Helper type to infer the actual type from the config
-// type InferFieldType<T extends FieldConfig> = T["type"] extends "string"
-//   ? string
-//   : T["type"] extends "number"
-//   ? number
-//   : T["type"] extends "boolean"
-//   ? boolean
-//   : T["type"] extends "date"
-//   ? Date
-//   : never;
-
-// export type ExtendedFields<T extends Record<string, FieldConfig>> = {
-//   [K in keyof T]: T[K]["optional"] extends true
-//     ? InferFieldType<T[K]> | undefined
-//     : InferFieldType<T[K]>;
-// };
+// export type{
+//   FieldConfig,
+//   ExtractFieldType,
+//   ExtractFieldTypes,
+// }

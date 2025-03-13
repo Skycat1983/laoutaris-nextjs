@@ -18,16 +18,11 @@ interface BlogListViewProps {
 }
 
 const BlogListView = ({ blogData, next, prev }: BlogListViewProps) => {
-  // if single sort type, render continuous view component
   if (blogData.single) {
     return (
       <>
         <BlogSectionHeading heading={`${blogData.single.type} Posts`} />
-        <BlogSectionContinuous
-          initialBlogEntries={blogData.single.data}
-          // next={next}
-          // prev={prev}
-        />
+        <BlogSectionContinuous initialBlogEntries={blogData.single.data} />
       </>
     );
   }

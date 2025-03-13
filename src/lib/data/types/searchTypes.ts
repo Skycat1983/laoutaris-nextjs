@@ -1,6 +1,6 @@
-import { Collection } from "./collectionTypes";
-import { BlogEntry } from "./blogTypes";
-import { Article } from "./articleTypes";
+import { CollectionFrontend } from "./collectionTypes";
+import { BlogEntryFrontend } from "./blogTypes";
+import { ArticleFrontend } from "./articleTypes";
 
 // Content type literal
 export type SearchableContentType = "articles" | "blogs" | "collections";
@@ -24,7 +24,10 @@ export interface SearchableFields {
 }
 
 // Union type for all searchable content
-export type SearchableContent = Article | BlogEntry | Collection;
+export type SearchableContent =
+  | ArticleFrontend
+  | BlogEntryFrontend
+  | CollectionFrontend;
 
 // Add a type for the URL
 export type LinkTo = `/${string}`; // Template literal type to ensure it starts with /

@@ -30,8 +30,6 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
     "
       >
         <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end  max-w-2xl">
-          {/* <span className="m-4 max-h-[70vh] flex flex-row justify-end bg-red-500 flex-grow"> */}
-          {/* <div> */}
           {artwork && (
             <MagnifierImage
               src={artwork.image.secure_url}
@@ -42,7 +40,6 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
               magnificationLevel={8}
             />
           )}
-          {/* </div> */}
         </span>
 
         <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
@@ -54,15 +51,3 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
 };
 
 export { ArtworkView };
-{
-  /* <div className="p-6">
-        <HorizontalDivider />
-      </div> */
-}
-{
-  /* <CollectionInfoLayout /> */
-}
-
-{
-  /* <div className="flex flex-row max-w-full  h-[200px] justify-center px-4"></div> */
-}
