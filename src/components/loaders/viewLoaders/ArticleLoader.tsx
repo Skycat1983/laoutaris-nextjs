@@ -2,15 +2,14 @@
 
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArticleView } from "@/components/views/ArticleView";
-import { ArticleNavItem, ValidSection } from "@/lib/data/types/navigationTypes";
+import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
-import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
-
+import { ArticleSection } from "@/lib/constants";
 interface ArticleLoaderProps {
   slug: string;
-  section: ValidSection;
+  section: ArticleSection;
 }
 
 type FetcherResponses = [

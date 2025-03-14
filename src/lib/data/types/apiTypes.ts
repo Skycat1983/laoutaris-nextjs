@@ -6,6 +6,12 @@ export interface BaseApiResponse {
   statusCode?: number;
 }
 
+export type ApiErrorResponse = BaseApiResponse & {
+  success: false;
+  error: string;
+  errorCode?: number;
+};
+
 export interface PaginationMetadata {
   page: number;
   limit: number;
@@ -13,30 +19,25 @@ export interface PaginationMetadata {
   totalPages?: number;
 }
 
-export interface ApiSuccessResponse<T> extends BaseApiResponse {
+export type ApiSuccessResponse<T> = BaseApiResponse & {
   success: true;
   data: T;
   metadata?: PaginationMetadata;
-}
+};
 
-export interface ApiErrorResponse extends BaseApiResponse {
-  success: false;
-  error: string;
-  errorCode?: number;
-}
+export type SingleResult<T> = ApiSuccessResponse<T> & {
+  data: T;
+  metadata: never;
+};
 
-// Extends ApiSuccessResponse to always include metadata - used for paginated lists
+export type ListResult<T> = ApiSuccessResponse<T[]> & {
+  data: T[];
+  metadata: Required<PaginationMetadata>;
+};
+
 export type PaginatedResponse<T> = ApiSuccessResponse<T> & {
   metadata: PaginationMetadata;
 };
-
-export interface SingleResult<T> extends ApiSuccessResponse<T> {
-  metadata?: never;
-}
-
-export interface ListResult<T> extends ApiSuccessResponse<T[]> {
-  metadata: Required<PaginationMetadata>;
-}
 
 // What routes return (with NextResponse)
 export type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
@@ -46,3 +47,22 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 // What components receive (raw data)
 export type FetchResult<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// export interface ApiSuccessResponse<T> extends BaseApiResponse {
+//   success: true;
+//   data: T;
+//   metadata?: PaginationMetadata;
+// }
+
+// export interface SingleResult<T> extends ApiSuccessResponse<T> {
+//   metadata?: never;
+// }
+
+// export interface ListResult<T> extends ApiSuccessResponse<T[]> {
+//   metadata: Required<PaginationMetadata>;
+// }
+// export interface ApiErrorResponse extends BaseApiResponse {
+//   success: false;
+//   error: string;
+//   errorCode?: number;
+// }

@@ -4,22 +4,29 @@ import {
 } from "@/components/modules/navigation/subnav/Subnav";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
-import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
-import { UserNavFields } from "@/lib/data/types/navigationTypes";
+import { OwnUserNavigationFetchers } from "@/lib/api/user/navigation/fetchers";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  ApiSuccessResponse,
+  OwnUserNavFields,
+} from "@/lib/data/types";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
-
+import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 const firstId = (arr: string[]) => arr[0];
 
+type UserNavFetchResult = ApiOwnUserNavResult | ApiErrorResponse;
+
 const AccountSubnavLoader = async () => {
-  const result: ApiResponse<UserNavFields> =
+  const result: UserNavFetchResult =
     await serverApi.user.navigation.fetchUserNavigationList();
 
   if (!result.success) {
     throw new Error(result.error);
   }
 
-  const { data } = result as ApiSuccessResponse<UserNavFields>;
+  const { data } = result;
 
   const links: SubnavLink[] = [];
 

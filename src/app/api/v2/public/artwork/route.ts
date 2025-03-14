@@ -64,11 +64,11 @@ export async function GET(
     // Get total count for pagination
     const total = await ArtworkModel.countDocuments(query);
 
-    console.log("total", total);
+    // console.log("total", total);
 
     // Get all matching artworks (for color sorting) or paginated results (for other sorts)
     const allArtworks = await artworksQuery.lean<ArtworkLean[]>();
-    console.log("allArtworks count:", allArtworks.length);
+    // console.log("allArtworks count:", allArtworks.length);
 
     let finalArtworks: ArtworkLean[];
 
@@ -121,25 +121,25 @@ export async function GET(
       finalArtworks = allArtworks.slice((page - 1) * limit, page * limit);
     }
 
-    console.log("Starting artwork transformation");
-    console.log(
-      "Sample artwork structure:",
-      JSON.stringify(finalArtworks[0], null, 2)
-    );
+    // console.log("Starting artwork transformation");
+    // console.log(
+    //   "Sample artwork structure:",
+    //   JSON.stringify(finalArtworks[0], null, 2)
+    // );
 
     try {
       const transformedArtworks: ArtworkFrontend[] = finalArtworks.map(
         (artwork, index) => {
-          console.log(
-            `Transforming artwork ${index + 1} of ${finalArtworks.length}`
-          );
+          // console.log(
+          //   `Transforming artwork ${index + 1} of ${finalArtworks.length}`
+          // );
           const transformed = transformArtwork.toFrontend(artwork, userId);
-          console.log(`Successfully transformed artwork ${index + 1}`);
+          // console.log(`Successfully transformed artwork ${index + 1}`);
           return transformed;
         }
       );
 
-      console.log("All artworks transformed successfully");
+      // console.log("All artworks transformed successfully");
       return NextResponse.json({
         success: true,
         data: transformedArtworks,

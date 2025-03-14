@@ -13,8 +13,8 @@ import { ArticleLeanPopulated, ArticleFrontendPopulated } from "../data/types";
 export type TransformedArticle = ReturnType<typeof transformArticle.toFrontend>;
 
 export const transformArticle = createTransformer<
-  ArticleDB,
   ArticleBase,
+  ArticleDB,
   ExtendedPublicArticleFields,
   SensitivePublicArticleFields
 >(

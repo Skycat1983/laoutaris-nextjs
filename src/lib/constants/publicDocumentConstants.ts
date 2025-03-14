@@ -57,6 +57,7 @@ export type SensitivePublicArtworkFields =
 export const EXTENDED_PUBLIC_ARTWORK_FIELDS: ExtendedPublicArtworkFields = {
   favouriteCount: 0,
   watchlistCount: 0,
+  collectionCount: 0,
   isFavourited: false,
   isWatchlisted: false,
 } as const;
@@ -64,6 +65,7 @@ export const EXTENDED_PUBLIC_ARTWORK_FIELDS: ExtendedPublicArtworkFields = {
 export type ExtendedPublicArtworkFields = {
   favouriteCount: number;
   watchlistCount: number;
+  collectionCount: number;
   isFavourited: boolean;
   isWatchlisted: boolean;
 };

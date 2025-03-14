@@ -1,8 +1,7 @@
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
-import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
+import { ApiSuccessResponse } from "@/lib/data/types";
 import { serverApi } from "@/lib/api/serverApi";
 
 export async function BiographySubnavLoader() {

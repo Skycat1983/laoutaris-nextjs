@@ -8,6 +8,10 @@ import {
   ExtendedOwnUserFields,
 } from "../constants";
 import {
+  ExtendedCollectionNavFields,
+  ExtendedOwnUserNavFields,
+} from "../constants/navConstants";
+import {
   ArtworkDB,
   ArticleDB,
   BlogEntryDB,
@@ -15,6 +19,7 @@ import {
   CommentDB,
   UserDB,
 } from "../data/models";
+import { OwnUserNavFields } from "../data/types";
 import { calculateReadTime } from "../utils/calcReadTime";
 import { isUserInArray } from "../utils/isUserInArray";
 
@@ -31,6 +36,7 @@ export const extendArtworkFields = (
   return {
     favouriteCount: artwork.favourited.length,
     watchlistCount: artwork.watcherlist.length,
+    collectionCount: artwork.collections.length,
     isFavourited: isUserInArray(artwork.favourited, userId),
     isWatchlisted: isUserInArray(artwork.watcherlist, userId),
   } satisfies Partial<ExtendedPublicArtworkFields>;
@@ -71,3 +77,21 @@ export const extendOwnUserFields = (doc: UserDB, userId?: string | null) => {
     commentCount: doc.comments.length,
   } satisfies Partial<ExtendedOwnUserFields>;
 };
+
+export const extendOwnUserNavFields = (
+  doc: OwnUserNavFields
+): Partial<ExtendedOwnUserNavFields> => ({
+  firstFavouriteId: doc.favourites[0]?.toString() || null,
+  firstWatchlistId: doc.watchlist[0]?.toString() || null,
+  firstCommentId: doc.comments[0]?.toString() || null,
+  hasFavourites: doc.favourites.length > 0,
+  hasWatchlist: doc.watchlist.length > 0,
+  hasComments: doc.comments.length > 0,
+});
+
+export const extendCollectionNavFields = (
+  doc: CollectionDB
+): Partial<ExtendedCollectionNavFields> => ({
+  firstArtworkId: doc.artworks[0]?.toString() || null,
+  hasArtwork: doc.artworks.length > 0,
+});

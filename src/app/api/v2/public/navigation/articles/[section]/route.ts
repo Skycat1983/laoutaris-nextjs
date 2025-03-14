@@ -1,4 +1,8 @@
+import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
+import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { ARTICLE_SECTION_OPTIONS, ArticleSection } from "@/lib/constants";
 import { ArticleModel } from "@/lib/data/models";
+import { RouteResponse } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
 
 // Types
@@ -7,23 +11,17 @@ interface ArticleNavItem {
   slug: string;
 }
 
-type ArticleNavResponse = ApiResponse<ArticleNavItem[]>;
-
-// Validate sections
-const VALID_SECTIONS = ["biography", "artwork", "project"] as const;
-type ValidSection = (typeof VALID_SECTIONS)[number];
-
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { section: string } }
-): Promise<NextResponse<ArticleNavResponse>> => {
+  { params }: { params: { section: ArticleSection } }
+): Promise<RouteResponse<ApiArticleNavListResult>> => {
   try {
     const { section } = params;
 
     console.log("section", section);
 
     // Validate section
-    if (!VALID_SECTIONS.includes(section as ValidSection)) {
+    if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
       return NextResponse.json({
         success: false,
         error: "Invalid section",
@@ -35,8 +33,7 @@ export const GET = async (
     const articles = await ArticleModel.find({ section: section })
       .select("title slug")
       .sort({ displayDate: -1 })
-      .lean()
-      .exec();
+      .lean();
 
     // console.log("articles", articles);
 
@@ -57,7 +54,13 @@ export const GET = async (
     return NextResponse.json({
       success: true,
       data: navItems,
-    } satisfies ApiSuccessResponse<ArticleNavItem[]>);
+      metadata: {
+        total: navItems.length,
+        page: 1,
+        limit: navItems.length,
+        totalPages: 1,
+      },
+    } satisfies ApiArticleNavListResult);
   } catch (error) {
     console.error("Error fetching article navigation:", error);
     return NextResponse.json({

@@ -6,6 +6,7 @@ import { ArtworkDB } from "../models/artworkModel";
 import {
   LeanDocument,
   Merge,
+  Prettify,
   TransformedDocument,
   WithPopulatedFields,
 } from "./utilTypes";
@@ -17,7 +18,7 @@ import {
   Surface,
 } from "@/lib/constants/artworkConstants";
 import { Decade } from "@/lib/constants/artworkConstants";
-import { CollectionLean } from "./collectionTypes";
+import { CollectionFrontend, CollectionLean } from "./collectionTypes";
 import { transformArtwork } from "@/lib/transforms/transformArtwork";
 
 export type ArtworkLean = LeanDocument<ArtworkDB>;
@@ -29,32 +30,15 @@ export type ArtworkLeanPopulated = WithPopulatedFields<
     collections: CollectionLean[];
   }
 >;
-// export interface ArtworkFields {
-//   favouriteCount: number;
-//   watchlistCount: number;
-//   isFavourited?: boolean;
-//   isWatchlisted?: boolean;
-// }
-// //! doc-specific transformation definitions
-// export type PublicArtworkTransformations = {
-//   DB: ArtworkDB;
-//   Lean: LeanDocument<PublicArtworkTransformations["DB"]>;
-//   Raw: TransformedDocument<PublicArtworkTransformations["Lean"]>;
-//   Extended: Merge<
-//     PublicArtworkTransformations["Raw"],
-//     ExtendedPublicArtworkFields
-//   >;
-//   Sanitized: Omit<
-//     PublicArtworkTransformations["Extended"],
-//     SensitivePublicArtworkFields[number]
-//   > & {
-//     // image: CloudinaryImageSanitized;
-//   };
-//   Frontend: PublicArtworkTransformations["Sanitized"];
-// };
 
-// //! Frontend-specific types (safe)
-// export type PublicArtwork = PublicArtworkTransformations["Frontend"];
+export type ArtworkFrontendPopulated = Prettify<
+  WithPopulatedFields<
+    ArtworkFrontend,
+    {
+      collections: CollectionFrontend[];
+    }
+  >
+>;
 
 export interface ArtworkSortConfig {
   by: SortOption;

@@ -1,11 +1,10 @@
 import type {
   ArticleNavItem,
   CollectionNavItem,
-  ValidSection,
   CollectionArtworkNavList,
 } from "@/lib/data/types/navigationTypes";
 import { Fetcher } from "@/lib/api/core/createFetcher";
-import { ListResult } from "@/lib/data/types";
+import { ArticleSection, ListResult } from "@/lib/data/types";
 
 export type ApiArticleNavListResult = ListResult<ArticleNavItem>;
 export type ApiCollectionNavListResult = ListResult<CollectionNavItem>;
@@ -14,7 +13,7 @@ export type ApiCollectionNavListResult = ListResult<CollectionNavItem>;
 //TODO: rename these to identify use case, e.g. pagination, subnav link etc
 export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get article navigation list
-  fetchArticleNavigationList: async (section: ValidSection) => {
+  fetchArticleNavigationList: async (section: ArticleSection) => {
     const encodedSection = encodeURIComponent(section);
     return fetcher<ApiArticleNavListResult>(
       `/api/v2/public/navigation/articles/${encodedSection}`

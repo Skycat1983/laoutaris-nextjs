@@ -5,7 +5,10 @@ import {
   CollectionFrontendPopulated,
   ArticleFrontend,
   OwnUserFrontendPopulated,
+  LeanDocument,
 } from "@/lib/data/types";
+import { UserDB } from "../models";
+
 // Article Navigation
 export type ArticleNavFields = Pick<ArticleFrontend, "title" | "slug">;
 export type ArticleNavItem = ArticleNavFields;
@@ -15,11 +18,7 @@ export type CollectionNavFields = Pick<
   CollectionFrontendPopulated,
   "title" | "slug" | "artworks"
 >;
-export type CollectionNavItem = {
-  title: string;
-  slug: string;
-  artworkId: string;
-};
+export type CollectionNavItem = CollectionNavFields;
 
 // Artwork Navigation (for collection pagination)
 export type ArtworkNavFields = Pick<ArtworkFrontend, "title" | "_id" | "image">;
@@ -28,25 +27,9 @@ export type CollectionArtworkNavList = {
 };
 
 // User Account Navigation
-export type UserNavFields = Pick<
-  OwnUserFrontendPopulated,
+export type OwnUserNavFields = Pick<
+  UserDB,
   "favourites" | "watchlist" | "comments"
 >;
-export type UserNavItem = UserNavFields;
-
-// Valid sections
-export const VALID_SECTIONS = [
-  "biography",
-  "artwork",
-  "project",
-  "collections",
-] as const;
-export type ValidSection = (typeof VALID_SECTIONS)[number];
-
-// API response types
-export type ArticleNavResponse = ApiSuccessResponse<ArticleNavItem[]>;
-export type CollectionNavListResponse = ApiSuccessResponse<CollectionNavItem[]>;
-export type CollectionNavItemResponse = ApiSuccessResponse<CollectionNavItem>;
-export type CollectionArtworksNavResponse =
-  ApiResponse<CollectionArtworkNavList>;
-export type UserNavResponse = ApiResponse<UserNavItem>;
+export type OwnUserNavDataLean = LeanDocument<OwnUserNavFields>;
+export type OwnUserNavItem = OwnUserNavFields;

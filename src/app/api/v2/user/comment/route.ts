@@ -1,12 +1,12 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
-import { FrontendUserWithComments } from "@/lib/data/types/userTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import { RouteResponse } from "@/lib/api/core/createRoute";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<RouteResponse> {
   const userId = await getUserIdFromSession();
 
   console.log("userId", userId);
