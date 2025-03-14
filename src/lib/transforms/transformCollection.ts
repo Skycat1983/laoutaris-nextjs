@@ -8,10 +8,16 @@ import {
 import {
   CollectionFrontendPopulated,
   CollectionLeanPopulated,
+  CollectionSelectFieldsLean,
 } from "@/lib/data/types";
 import { CollectionDB, CollectionBase } from "@/lib/data/models";
 import { createTransformer, transformArtwork } from "@/lib/transforms";
+import {
+  EXTENDED_COLLECTION_NAV_FIELDS,
+  ExtendedCollectionNavFields,
+} from "../constants/navConstants";
 
+//! COLLECTION PUBLIC TRANSFORMER
 export const transformCollection = createTransformer<
   CollectionDB,
   CollectionBase,
@@ -23,6 +29,7 @@ export const transformCollection = createTransformer<
   COLLECTION_FIELD_EXTENDER
 );
 
+//! COLLECTION POPULATED TRANSFORMER
 export const transformCollectionPopulated = (
   doc: CollectionLeanPopulated,
   userId?: string | null

@@ -2,14 +2,13 @@ import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ARTICLE_SECTION_OPTIONS, ArticleSection } from "@/lib/constants";
 import { ArticleModel } from "@/lib/data/models";
-import { RouteResponse } from "@/lib/data/types";
+import {
+  ArticleSelectFieldsLean,
+  BiographyNavDataFrontend,
+  RouteResponse,
+} from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
-
-// Types
-interface ArticleNavItem {
-  title: string;
-  slug: string;
-}
+import { transformBiographyNav } from "@/lib/transforms/transformNavData";
 
 export const GET = async (
   req: NextRequest,
@@ -29,15 +28,12 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    // Fetch only what we need
-    const articles = await ArticleModel.find({ section: section })
+    const articleLean = await ArticleModel.find({ section: section })
       .select("title slug")
       .sort({ displayDate: -1 })
-      .lean();
+      .lean<ArticleSelectFieldsLean[]>();
 
-    // console.log("articles", articles);
-
-    if (!articles.length) {
+    if (!articleLean.length) {
       return NextResponse.json({
         success: false,
         error: "No articles found",
@@ -45,11 +41,9 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    // Transform to nav items
-    const navItems: ArticleNavItem[] = articles.map((article) => ({
-      title: article.title,
-      slug: article.slug,
-    }));
+    const navItems: BiographyNavDataFrontend[] = articleLean.map((article) =>
+      transformBiographyNav.toFrontend(article)
+    );
 
     return NextResponse.json({
       success: true,

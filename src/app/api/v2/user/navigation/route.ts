@@ -1,12 +1,9 @@
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 import { UserModel } from "@/lib/data/models";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
-import {
-  OwnUserNavDataLean,
-  OwnUserNavFields,
-} from "@/lib/data/types/navigationTypes";
+import { ApiErrorResponse, Prettify, RouteResponse } from "@/lib/data/types";
+import { OwnUserSelectFieldsLean } from "@/lib/data/types/navigationTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
+import { transformAccountNav } from "@/lib/transforms/transformNavData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -15,27 +12,24 @@ export async function GET(
   const userId = await getUserIdFromSession();
 
   try {
-    const rawUserData = await UserModel.findById(userId)
+    const leanUserData = await UserModel.findById(userId)
       .select("favourites watchlist comments")
-      .lean<OwnUserNavDataLean>();
+      .lean<OwnUserSelectFieldsLean>();
 
-    if (!rawUserData) {
+    if (!leanUserData) {
       return NextResponse.json({
         success: false,
         error: "User not found",
       } satisfies ApiErrorResponse);
     }
 
-    const user = transformMongooseDoc<UserNavFields>(rawUserData);
+    const userNavData: Prettify<
+      ReturnType<typeof transformAccountNav.toFrontend>
+    > = transformAccountNav.toFrontend(leanUserData);
 
     const response: ApiOwnUserNavResult = {
       success: true,
-      data: user,
-      metadata: {
-        total: 1,
-        page: 1,
-        limit: 1,
-      },
+      data: userNavData,
     };
 
     return NextResponse.json(response);

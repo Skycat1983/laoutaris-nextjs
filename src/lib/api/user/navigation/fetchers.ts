@@ -1,11 +1,11 @@
-import { OwnUserNavFields } from "@/lib/data/types/navigationTypes";
+import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
 import { Fetcher } from "../../core/createFetcher";
-import { ListResult } from "@/lib/data/types";
+import { OwnUserNavDataFrontend, SingleResult } from "@/lib/data/types";
 
-export type ApiOwnUserNavResult = ListResult<OwnUserNavFields>;
+export type ApiOwnUserNavResult = SingleResult<OwnUserNavDataFrontend>;
 
 export const createUserNavigationFetchers = (fetcher: Fetcher) => ({
-  fetchUserNavigationList: async () =>
+  fetchUserNavigation: async () =>
     fetcher<ApiOwnUserNavResult>(`/api/v2/user/navigation`),
 });
 

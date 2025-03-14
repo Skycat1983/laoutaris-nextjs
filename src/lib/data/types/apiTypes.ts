@@ -25,10 +25,7 @@ export type ApiSuccessResponse<T> = BaseApiResponse & {
   metadata?: PaginationMetadata;
 };
 
-export type SingleResult<T> = ApiSuccessResponse<T> & {
-  data: T;
-  metadata: never;
-};
+export type SingleResult<T> = Omit<ApiSuccessResponse<T>, "metadata">;
 
 export type ListResult<T> = ApiSuccessResponse<T[]> & {
   data: T[];

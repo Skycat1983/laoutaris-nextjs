@@ -1,22 +1,26 @@
+import { ApiCollectionNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { CollectionModel } from "@/lib/data/models";
 import {
-  CollectionNavItem,
-  CollectionNavListResponse,
-} from "@/lib/data/types/navigationTypes";
+  RouteResponse,
+  ApiErrorResponse,
+  CollectionSelectFieldsLean,
+} from "@/lib/data/types";
+import { transformCollectionNav } from "@/lib/transforms/transformNavData";
 
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest
-): Promise<NextResponse<CollectionNavListResponse>> => {
+): Promise<RouteResponse<ApiCollectionNavListResult>> => {
   try {
-    const collections = await CollectionModel.find({ section: "collections" })
+    const collectionsLean = await CollectionModel.find({
+      section: "collections",
+    })
       .select("title slug artworks")
       .sort({ updatedAt: 1 })
-      .lean()
-      .exec();
+      .lean<CollectionSelectFieldsLean[]>();
 
-    if (!collections.length) {
+    if (!collectionsLean.length) {
       return NextResponse.json({
         success: false,
         error: "No collections found",
@@ -24,24 +28,20 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    // filter out collections without artworks
-    const collectionsWithArtworks = collections.filter(
-      (collection) => collection.artworks.length > 0
-    );
-
-    // Transform to nav items
-    const navItems: CollectionNavItem[] = collectionsWithArtworks.map(
-      (collection) => ({
-        title: collection.title,
-        slug: collection.slug,
-        artworkId: collection.artworks[0]._id.toString(),
-      })
-    );
+    const collectionNavData = collectionsLean.map((collection) => {
+      return transformCollectionNav.toFrontend(collection);
+    });
 
     return NextResponse.json({
       success: true,
-      data: navItems,
-    } satisfies ApiSuccessResponse<CollectionNavItem[]>);
+      data: collectionNavData,
+      metadata: {
+        total: collectionNavData.length,
+        page: 1,
+        limit: collectionNavData.length,
+        totalPages: 1,
+      },
+    } satisfies ApiCollectionNavListResult);
   } catch (error) {
     console.error("Error fetching collection navigation:", error);
     return NextResponse.json({

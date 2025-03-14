@@ -1,33 +1,25 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type {
-  CollectionNavItem,
-  CollectionNavItemResponse,
-} from "@/lib/data/types/navigationTypes";
 import type { Types } from "mongoose";
-
-interface CollectionNavData {
-  _id: Types.ObjectId;
-  title: string;
-  slug: string;
-  artworks: { _id: Types.ObjectId }[];
-}
-
+import { ApiErrorResponse } from "@/lib/data/types";
+import { CollectionSelectFieldsLean, RouteResponse } from "@/lib/data/types";
+import { ApiCollectionNavItemResult } from "@/lib/api/public/navigation/fetchers";
+import { transformCollectionNav } from "@/lib/transforms/transformNavData";
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<NextResponse<CollectionNavItemResponse>> => {
-  try {
-    const { slug } = params;
+): Promise<RouteResponse<ApiCollectionNavItemResult>> => {
+  const { slug } = params;
 
-    const collection = await CollectionModel.findOne({
+  try {
+    const collectionLean = await CollectionModel.findOne({
       section: "collections",
       slug,
     })
-      .select<CollectionNavData>("title slug artworks")
-      .lean<CollectionNavData>(); //? add type to lean() ?
+      .select("title slug artworks")
+      .lean<CollectionSelectFieldsLean>(); //? add type to lean() ?
 
-    if (!collection) {
+    if (!collectionLean) {
       return NextResponse.json({
         success: false,
         error: "Collection not found",
@@ -35,16 +27,12 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const navItem = {
-      title: collection.title,
-      slug: collection.slug,
-      artworkId: collection.artworks[0]._id.toString(),
-    };
+    const collectionNavData = transformCollectionNav.toFrontend(collectionLean);
 
     return NextResponse.json({
       success: true,
-      data: navItem,
-    } satisfies ApiSuccessResponse<CollectionNavItem>);
+      data: collectionNavData,
+    } satisfies ApiCollectionNavItemResult);
   } catch (error) {
     console.error("Error fetching collection navigation:", error);
     return NextResponse.json({

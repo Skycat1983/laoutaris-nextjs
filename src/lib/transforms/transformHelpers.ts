@@ -8,6 +8,7 @@ import {
   ExtendedOwnUserFields,
 } from "../constants";
 import {
+  ExtendedBiographyNavFields,
   ExtendedCollectionNavFields,
   ExtendedOwnUserNavFields,
 } from "../constants/navConstants";
@@ -19,7 +20,11 @@ import {
   CommentDB,
   UserDB,
 } from "../data/models";
-import { OwnUserNavFields } from "../data/types";
+import {
+  ArticleSelectFields,
+  CollectionSelectFields,
+  OwnUserSelectFields,
+} from "../data/types";
 import { calculateReadTime } from "../utils/calcReadTime";
 import { isUserInArray } from "../utils/isUserInArray";
 
@@ -79,7 +84,7 @@ export const extendOwnUserFields = (doc: UserDB, userId?: string | null) => {
 };
 
 export const extendOwnUserNavFields = (
-  doc: OwnUserNavFields
+  doc: OwnUserSelectFields
 ): Partial<ExtendedOwnUserNavFields> => ({
   firstFavouriteId: doc.favourites[0]?.toString() || null,
   firstWatchlistId: doc.watchlist[0]?.toString() || null,
@@ -90,8 +95,14 @@ export const extendOwnUserNavFields = (
 });
 
 export const extendCollectionNavFields = (
-  doc: CollectionDB
+  doc: CollectionSelectFields
 ): Partial<ExtendedCollectionNavFields> => ({
   firstArtworkId: doc.artworks[0]?.toString() || null,
   hasArtwork: doc.artworks.length > 0,
 });
+
+export const extendBiographyNavFields = (
+  doc: ArticleSelectFields
+): Partial<ExtendedBiographyNavFields> => {
+  return {};
+};

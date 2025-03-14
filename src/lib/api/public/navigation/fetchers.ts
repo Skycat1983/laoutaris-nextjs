@@ -1,13 +1,17 @@
 import type {
-  ArticleNavItem,
-  CollectionNavItem,
-  CollectionArtworkNavList,
-} from "@/lib/data/types/navigationTypes";
+  BiographyNavDataFrontend,
+  CollectionNavDataFrontend,
+  ArticleSection,
+  ListResult,
+  SingleResult,
+} from "@/lib/data/types";
 import { Fetcher } from "@/lib/api/core/createFetcher";
-import { ArticleSection, ListResult } from "@/lib/data/types";
 
-export type ApiArticleNavListResult = ListResult<ArticleNavItem>;
-export type ApiCollectionNavListResult = ListResult<CollectionNavItem>;
+export type ApiArticleNavListResult = ListResult<BiographyNavDataFrontend>;
+export type ApiCollectionNavItemResult =
+  SingleResult<CollectionNavDataFrontend>;
+
+export type ApiCollectionNavListResult = ListResult<CollectionNavDataFrontend>;
 // export type ApiCollectionArtworkNavListResult = ListResult<CollectionArtworkNavList>;
 
 //TODO: rename these to identify use case, e.g. pagination, subnav link etc
@@ -29,7 +33,7 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get single collection navigation item
   fetchCollectionNavigationItem: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<CollectionNavItem>(
+    return fetcher<CollectionNavDataFrontend>(
       `/api/v2/public/navigation/collections/${encodedSlug}`
     );
   },
@@ -37,7 +41,7 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get collection artworks navigation
   fetchCollectionArtworksNavigation: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<CollectionArtworkNavList>(
+    return fetcher<CollectionNavDataFrontend>(
       `/api/v2/public/navigation/collections/${encodedSlug}/artworks`
     );
   },

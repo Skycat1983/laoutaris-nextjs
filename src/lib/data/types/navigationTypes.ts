@@ -1,35 +1,48 @@
-// TypeFields = the properties that are used to generate the navigation items
-import { ApiSuccessResponse, ApiResponse } from "@/lib/data/types/apiTypes";
+import { LeanDocument, Prettify } from "@/lib/data/types";
+import { ArticleDB, CollectionDB, UserDB } from "../models";
 import {
-  ArtworkFrontend,
-  CollectionFrontendPopulated,
-  ArticleFrontend,
-  OwnUserFrontendPopulated,
-  LeanDocument,
-} from "@/lib/data/types";
-import { UserDB } from "../models";
+  transformAccountNav,
+  transformBiographyNav,
+  transformCollectionNav,
+} from "@/lib/transforms/transformNavData";
 
-// Article Navigation
-export type ArticleNavFields = Pick<ArticleFrontend, "title" | "slug">;
-export type ArticleNavItem = ArticleNavFields;
+export type BaseSegment = "biography" | "collections" | "account";
 
-// Collection Navigation
-export type CollectionNavFields = Pick<
-  CollectionFrontendPopulated,
+export interface NavSegment {
+  label: string;
+  baseSegment: BaseSegment;
+  slug: string;
+  docId?: string;
+  disabled?: boolean;
+}
+
+export interface NavTransformer<T> {
+  toSegments: (doc: T) => NavSegment[];
+}
+
+//! ARTICLE NAVIGATION
+export type ArticleSelectFields = Pick<ArticleDB, "title" | "slug">;
+export type ArticleSelectFieldsLean = LeanDocument<ArticleSelectFields>;
+export type BiographyNavDataFrontend = Prettify<
+  ReturnType<typeof transformBiographyNav.toFrontend>
+>;
+
+//! COLLECTION NAVIGATION
+export type CollectionSelectFields = Pick<
+  CollectionDB,
   "title" | "slug" | "artworks"
 >;
-export type CollectionNavItem = CollectionNavFields;
+export type CollectionSelectFieldsLean = LeanDocument<CollectionSelectFields>;
+export type CollectionNavDataFrontend = Prettify<
+  ReturnType<typeof transformCollectionNav.toFrontend>
+>;
 
-// Artwork Navigation (for collection pagination)
-export type ArtworkNavFields = Pick<ArtworkFrontend, "title" | "_id" | "image">;
-export type CollectionArtworkNavList = {
-  artworks: ArtworkNavFields[];
-};
-
-// User Account Navigation
-export type OwnUserNavFields = Pick<
+//! USER ACCOUNT NAVIGATION
+export type OwnUserSelectFields = Pick<
   UserDB,
   "favourites" | "watchlist" | "comments"
 >;
-export type OwnUserNavDataLean = LeanDocument<OwnUserNavFields>;
-export type OwnUserNavItem = OwnUserNavFields;
+export type OwnUserSelectFieldsLean = LeanDocument<OwnUserSelectFields>;
+export type OwnUserNavDataFrontend = Prettify<
+  ReturnType<typeof transformAccountNav.toFrontend>
+>;
