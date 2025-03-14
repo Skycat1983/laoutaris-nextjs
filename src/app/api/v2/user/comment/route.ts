@@ -1,7 +1,7 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
+import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { RouteResponse } from "@/lib/api/core/createRoute";

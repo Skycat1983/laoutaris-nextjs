@@ -1,7 +1,7 @@
 import { CollectionDB } from "../models";
 import { ArtworkFrontend, ArtworkLean } from "./artworkTypes";
 import { LeanDocument, Prettify, WithPopulatedFields } from "./utilTypes";
-import { transformCollection } from "@/lib/transforms/transformCollection";
+import { transformCollection } from "@/lib/transforms/collection/transformCollection";
 
 export type CollectionLean = LeanDocument<CollectionDB>;
 export type CollectionRaw = Prettify<

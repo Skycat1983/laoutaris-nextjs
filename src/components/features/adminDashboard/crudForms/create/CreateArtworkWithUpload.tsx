@@ -8,7 +8,7 @@ import {
   CloudinaryImageDB,
   CloudinaryUploadInfo,
 } from "@/lib/data/types/cloudinaryTypes";
-import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/transformCloudinary";
+import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
 
 export function CreateArtworkWithUpload() {
   const [uploadInfo, setUploadInfo] = useState<CloudinaryImageDB | null>(null);

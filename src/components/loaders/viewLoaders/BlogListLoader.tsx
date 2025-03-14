@@ -1,7 +1,7 @@
 "use server";
 
 import { BlogListView } from "@/components/views/BlogListView";
-import { transformToPaginationLinks } from "@/lib/transforms/paginationTransforms";
+import { transformToPaginationLinks } from "@/lib/transforms/utils/paginationTransforms";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
 import { PaginationMetadata } from "@/lib/data/types/apiTypes";
@@ -9,15 +9,6 @@ import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
-  // fields: [
-  //   "title",
-  //   "subtitle",
-  //   "slug",
-  //   "imageUrl",
-  //   "summary",
-  //   "displayDate",
-  //   // "tags",
-  // ] as const,
   limit: 10,
 } as const;
 
@@ -129,9 +120,3 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     throw error;
   }
 }
-
-// Type Definitions
-// export type BlogEntryData = Pick<
-//   BlogEntryFrontend,
-//   (typeof BLOG_ENTRIES_CONFIG.fields)[number]
-// >;

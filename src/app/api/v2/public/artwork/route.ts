@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { findSimilarColors } from "@/lib/utils/colorUtils";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
-import { transformArtwork } from "@/lib/transforms/transformArtwork";
 import { ColourInfo, ArtworkFrontend, ArtworkLean } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { transformArtwork } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest

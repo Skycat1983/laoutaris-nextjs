@@ -15,7 +15,7 @@ import { createTransformer, transformArtwork } from "@/lib/transforms";
 import {
   EXTENDED_COLLECTION_NAV_FIELDS,
   ExtendedCollectionNavFields,
-} from "../constants/navConstants";
+} from "../../constants/navConstants";
 
 //! COLLECTION PUBLIC TRANSFORMER
 export const transformCollection = createTransformer<

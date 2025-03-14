@@ -1,5 +1,5 @@
 // import { FrontendBlogEntryUnpopulated } from "./blogTypes";
-import { transformComment } from "@/lib/transforms/transformComment";
+import { transformComment } from "@/lib/transforms/comment/transformComment";
 import { CommentDB } from "../models";
 import { BlogEntryFrontend, BlogEntryLean } from "./blogTypes";
 import { UserFrontend, UserLean } from "./userTypes";

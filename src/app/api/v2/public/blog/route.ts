@@ -4,7 +4,7 @@ import dbConnect from "@/lib/db/mongodb";
 import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { BlogEntryLean } from "@/lib/data/types/blogTypes";
-import { transformBlog } from "@/lib/transforms/transformBlog";
+import { transformBlog } from "@/lib/transforms/blog/transformBlog";
 type SortByType = "latest" | "oldest" | "popular" | "featured";
 
 export const GET = async (

@@ -4,7 +4,7 @@ import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";
-import { transformArtwork } from "@/lib/transforms/transformArtwork";
+import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 
 export async function GET(
   request: NextRequest,

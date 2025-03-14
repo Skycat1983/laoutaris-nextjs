@@ -2,7 +2,7 @@ import { UserDB } from "../models";
 import { ArtworkFrontend } from "./artworkTypes";
 import { LeanDocument, WithPopulatedFields, Prettify } from "./utilTypes";
 import { ArtworkLean } from "./artworkTypes";
-import { transformUser } from "@/lib/transforms/transformUser";
+import { transformUser } from "@/lib/transforms/user/transformUser";
 
 export type UserLean = LeanDocument<UserDB>;
 export type UserRaw = Prettify<ReturnType<typeof transformUser.toRaw>>;

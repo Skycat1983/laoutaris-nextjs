@@ -7,7 +7,7 @@ import { AdminArtworkTransformations } from "../data/types";
 import { AdminArticleTransformationsPopulated } from "../data/types";
 import { AdminBlogTransformations } from "../data/types";
 import { AdminCollectionTransformations } from "../data/types";
-import { transformMongooseDoc } from "./transformMongooseDoc";
+import { transformMongooseDoc } from "./utils/transformMongooseDoc";
 
 export function transformAdminArticlePopulated(
   document: AdminArticleTransformationsPopulated["Lean"]

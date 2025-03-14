@@ -6,7 +6,7 @@ import { UploadButton } from "@/components/elements/buttons";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/transformCloudinary";
+import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
 import type {
   CloudinaryImageFrontend,
   CloudinaryUploadInfo,

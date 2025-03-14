@@ -6,7 +6,7 @@ import {
   CollectionLean,
   RouteResponse,
 } from "@/lib/data/types";
-import { transformCollection } from "@/lib/transforms/transformCollection";
+import { transformCollection } from "@/lib/transforms/collection/transformCollection";
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {

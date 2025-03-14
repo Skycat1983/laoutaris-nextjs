@@ -19,7 +19,7 @@ import {
 } from "@/lib/constants/artworkConstants";
 import { Decade } from "@/lib/constants/artworkConstants";
 import { CollectionFrontend, CollectionLean } from "./collectionTypes";
-import { transformArtwork } from "@/lib/transforms/transformArtwork";
+import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 
 export type ArtworkLean = LeanDocument<ArtworkDB>;
 export type ArtworkFrontend = ReturnType<typeof transformArtwork.toFrontend>;

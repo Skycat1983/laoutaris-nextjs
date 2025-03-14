@@ -4,7 +4,7 @@ import {
   transformAccountNav,
   transformBiographyNav,
   transformCollectionNav,
-} from "@/lib/transforms/transformNavData";
+} from "@/lib/transforms/navigation/transformNavData";
 
 export type BaseSegment = "biography" | "collections" | "account";
 

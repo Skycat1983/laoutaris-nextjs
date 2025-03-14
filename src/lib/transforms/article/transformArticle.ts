@@ -4,12 +4,15 @@ import {
   SENSITIVE_PUBLIC_ARTICLE_FIELDS,
   SensitivePublicArticleFields,
   ARTICLE_FIELD_EXTENDER,
-} from "../constants";
-import { ArticleBase, ArticleDB } from "../data/models";
-import { createTransformer } from "./createTransformer";
-import { transformUser } from "./transformUser";
-import { transformArtwork } from "./transformArtwork";
-import { ArticleLeanPopulated, ArticleFrontendPopulated } from "../data/types";
+} from "../../constants";
+import { ArticleBase, ArticleDB } from "../../data/models";
+import { createTransformer } from "../createTransformer";
+import { transformUser } from "../user/transformUser";
+import { transformArtwork } from "../artwork/transformArtwork";
+import {
+  ArticleLeanPopulated,
+  ArticleFrontendPopulated,
+} from "../../data/types";
 export type TransformedArticle = ReturnType<typeof transformArticle.toFrontend>;
 
 export const transformArticle = createTransformer<

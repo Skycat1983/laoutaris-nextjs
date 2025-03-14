@@ -7,8 +7,8 @@ import {
   CommentLean,
   CommentLeanPopulated,
 } from "./commentTypes";
-import { transformBlog } from "@/lib/transforms/transformBlog";
-import { transformBlogPopulated } from "@/lib/transforms/transformBlog";
+import { transformBlog } from "@/lib/transforms/blog/transformBlog";
+import { transformBlogPopulated } from "@/lib/transforms/blog/transformBlog";
 export type BlogEntryLean = LeanDocument<BlogEntryDB>;
 export type BlogEntryFrontend = ReturnType<typeof transformBlog.toFrontend>;
 

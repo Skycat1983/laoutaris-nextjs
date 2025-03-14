@@ -2,7 +2,7 @@ import {
   CloudinaryImageDB,
   CloudinaryImageFrontend,
   CloudinaryImageSanitized,
-} from "../data/types";
+} from "../../data/types";
 
 export function sanitizeCloudinaryImage(
   image: CloudinaryImageDB

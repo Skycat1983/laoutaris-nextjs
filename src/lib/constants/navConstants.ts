@@ -8,7 +8,7 @@ import {
   extendCollectionNavFields,
   extendOwnUserNavFields,
 } from "../transforms";
-import { transformCollectionNav } from "../transforms/transformNavData";
+import { transformCollectionNav } from "../transforms/navigation/transformNavData";
 
 type BaseSement = "biography" | "collections" | "account";
 

@@ -9,7 +9,7 @@ import {
 import {
   OwnUserLeanPopulated,
   OwnUserFrontendPopulated,
-} from "../data/types/ownUserTypes";
+} from "../../data/types/ownUserTypes";
 import {
   transformArtwork,
   transformComment,

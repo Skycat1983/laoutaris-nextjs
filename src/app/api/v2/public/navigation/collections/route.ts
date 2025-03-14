@@ -5,7 +5,7 @@ import {
   ApiErrorResponse,
   CollectionSelectFieldsLean,
 } from "@/lib/data/types";
-import { transformCollectionNav } from "@/lib/transforms/transformNavData";
+import { transformCollectionNav } from "@/lib/transforms/navigation/transformNavData";
 
 import { NextRequest, NextResponse } from "next/server";
 

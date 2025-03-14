@@ -3,7 +3,7 @@ import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse, Prettify, RouteResponse } from "@/lib/data/types";
 import { OwnUserSelectFieldsLean } from "@/lib/data/types/navigationTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformAccountNav } from "@/lib/transforms/transformNavData";
+import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

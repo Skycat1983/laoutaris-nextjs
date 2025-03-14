@@ -9,7 +9,7 @@ import {
   PublicArtwork,
   PublicArtworkTransformations,
 } from "@/lib/data/types";
-import { transformArtwork } from "@/lib/transforms/transformArtwork";
+import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 
 export async function GET(
   request: NextRequest,

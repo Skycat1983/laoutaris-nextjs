@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformArticlePopulated } from "@/lib/transforms/transformArticle";
+import { transformArticlePopulated } from "@/lib/transforms/article/transformArticle";
 import { UserLean } from "@/lib/data/types/userTypes";
 import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 import {

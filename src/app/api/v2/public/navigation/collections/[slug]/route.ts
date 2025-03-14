@@ -1,10 +1,9 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import type { Types } from "mongoose";
 import { ApiErrorResponse } from "@/lib/data/types";
 import { CollectionSelectFieldsLean, RouteResponse } from "@/lib/data/types";
 import { ApiCollectionNavItemResult } from "@/lib/api/public/navigation/fetchers";
-import { transformCollectionNav } from "@/lib/transforms/transformNavData";
+import { transformCollectionNav } from "@/lib/transforms/navigation/transformNavData";
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }

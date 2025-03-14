@@ -7,7 +7,7 @@ import {
   RouteResponse,
 } from "@/lib/data/types";
 import { ApiBlogResult } from "@/lib/api/public/blog/fetchers";
-import { transformBlogPopulated } from "@/lib/transforms/transformBlog";
+import { transformBlogPopulated } from "@/lib/transforms/blog/transformBlog";
 
 export const GET = async (
   req: NextRequest,

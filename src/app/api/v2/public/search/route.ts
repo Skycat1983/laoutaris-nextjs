@@ -5,7 +5,7 @@ import {
   SearchResultItem,
   SearchableContent,
 } from "@/lib/data/types/searchTypes";
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
+import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
 import { transformToPick } from "@/lib/transforms/transformToPick";
 import { ApiErrorResponse, ApiSuccessResponse } from "@/lib/data/types";
 import { Article, BlogEntry, Collection } from "@/lib/data/types";

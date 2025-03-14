@@ -13,7 +13,7 @@ import { ApiBlogPopulatedResult } from "@/lib/api/public/blog/fetchers";
 import {
   transformBlogPopulated,
   transformBlogPopulatedWithCommentsPopulated,
-} from "@/lib/transforms/transformBlog";
+} from "@/lib/transforms/blog/transformBlog";
 
 export const GET = async (
   req: NextRequest,

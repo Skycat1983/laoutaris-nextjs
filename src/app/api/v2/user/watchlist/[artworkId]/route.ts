@@ -2,7 +2,7 @@ import { ArtworkModel } from "@/lib/data/models";
 import { ApiErrorResponse } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
-import { transformMongooseDoc } from "@/lib/transforms/transformMongooseDoc";
+import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

@@ -4,22 +4,22 @@ import {
   SensitivePublicBlogFields,
   ExtendedPublicBlogFields,
   BLOG_FIELD_EXTENDER,
-} from "../constants";
+} from "../../constants";
 
-import { BlogEntryBase, BlogEntryDB } from "../data/models";
+import { BlogEntryBase, BlogEntryDB } from "../../data/models";
 import {
   BlogEntryFrontendPopulated,
   BlogEntryLeanPopulated,
   CommentLeanPopulated,
   BlogEntryPopulatedCommentsPopulatedLean,
   BlogEntryPopulatedCommentsPopulatedFrontend,
-} from "../data/types";
-import { createTransformer } from "./createTransformer";
+} from "../../data/types";
+import { createTransformer } from "../createTransformer";
 import {
   transformComment,
   transformCommentPopulated,
-} from "./transformComment";
-import { transformUser } from "./transformUser";
+} from "../comment/transformComment";
+import { transformUser } from "../user/transformUser";
 
 export const transformBlog = createTransformer<
   BlogEntryDB,

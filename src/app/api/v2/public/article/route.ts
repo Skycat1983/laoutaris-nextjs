@@ -2,7 +2,7 @@ import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
-import { transformArticle } from "@/lib/transforms/transformArticle";
+import { transformArticle } from "@/lib/transforms/article/transformArticle";
 import { ArticleLean, ArticleFrontend } from "@/lib/data/types";
 
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;

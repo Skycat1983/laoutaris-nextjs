@@ -8,7 +8,7 @@ import {
   RouteResponse,
 } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
-import { transformBiographyNav } from "@/lib/transforms/transformNavData";
+import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
 
 export const GET = async (
   req: NextRequest,

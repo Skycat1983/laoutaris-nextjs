@@ -1,7 +1,7 @@
 import { ArtworkFrontend, ArtworkLean } from "./artworkTypes";
 import { UserFrontend, UserLean } from "./userTypes";
 import { LeanDocument, Prettify, WithPopulatedFields } from "./utilTypes";
-import { transformArticle } from "@/lib/transforms/transformArticle";
+import { transformArticle } from "@/lib/transforms/article/transformArticle";
 import { ArticleDB } from "@/lib/data/models";
 
 export type ArticleLean = LeanDocument<ArticleDB>;
