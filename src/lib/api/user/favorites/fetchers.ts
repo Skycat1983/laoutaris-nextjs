@@ -1,7 +1,5 @@
-import type { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
-import type { PublicArtwork } from "../../../../../unused/artworkToPublic";
 import type { Fetcher } from "../../core/createFetcher";
-import { ListResult } from "@/lib/data/types";
+import { ArtworkFrontend, ListResult, Prettify } from "@/lib/data/types";
 import { SingleResult } from "@/lib/data/types";
 
 type AddRemoveResult = {
@@ -9,18 +7,21 @@ type AddRemoveResult = {
   message: string;
 };
 
-export type ApiFavoritesListResult = ListResult<PublicArtwork>;
-export type ApiFavoritesItemResult = SingleResult<PublicArtwork>;
+export type ApiFavoritesListResult = Prettify<ListResult<ArtworkFrontend>>;
+export type ApiFavoritesItemResult = SingleResult<ArtworkFrontend>;
 export type ApiAddRemoveResult = SingleResult<AddRemoveResult>;
 
 export const createFavoritesFetchers = (fetcher: Fetcher) => ({
   // Get user favorites
-  list: async () => fetcher<ApiFavoritesListResult>(`/api/v2/user/favourite`),
+  getList: async () =>
+    fetcher<ApiFavoritesListResult>(`/api/v2/user/favourite`),
 
   // Get specific favorite artwork
-  getFavouriteArtwork: async (artworkId: string) => {
+  getOne: async (artworkId: string) => {
     const encodedArtworkId = encodeURIComponent(artworkId);
-    return fetcher<PublicArtwork>(`/api/v2/user/favourite/${encodedArtworkId}`);
+    return fetcher<ApiFavoritesItemResult>(
+      `/api/v2/user/favourite/${encodedArtworkId}`
+    );
   },
 
   // Add artwork to favorites (assuming this endpoint exists or will be created)

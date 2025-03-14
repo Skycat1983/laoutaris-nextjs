@@ -1,8 +1,10 @@
-import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
+import {
+  Subnav,
+  SubnavLink,
+} from "@/components/modules/navigation/subnav/Subnav";
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
-import { ApiSuccessResponse } from "@/lib/data/types";
 import { serverApi } from "@/lib/api/serverApi";
+import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 
 export async function BiographySubnavLoader() {
   const result = await serverApi.public.navigation.fetchArticleNavigationList(
@@ -13,12 +15,13 @@ export async function BiographySubnavLoader() {
     throw new Error(result.error || "Failed to fetch article navigation");
   }
 
-  const { data: articles } = result as ApiSuccessResponse<ArticleNavItem[]>;
+  const { data: articles } = result as ApiArticleNavListResult;
 
-  const links = articles.map((article) => ({
-    title: article.title,
+  const links: SubnavLink[] = articles.map((article) => ({
+    label: article.title,
     slug: article.slug,
     link_to: buildUrl(["biography", article.slug]),
+    disabled: false,
   }));
 
   return <Subnav links={links} />;

@@ -1,39 +1,30 @@
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { serverApi } from "@/lib/api/serverApi";
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  ApiSuccessResponse,
-} from "@/lib/data/types";
-import { ApiWatchlistListResult } from "@/lib/api/user/watchlist/fetchers";
-
-type LoaderResult = ApiWatchlistListResult | ApiErrorResponse;
+import { ApiFavoritesListResult } from "@/lib/api/user/favorites/fetchers";
+import { ArtworkFrontend, Prettify } from "@/lib/data/types";
 
 export async function WatchlistPaginationLoader() {
-  const result: LoaderResult = await serverApi.user.watchlist.getList();
+  const result = await serverApi.user.watchlist.getList();
 
   if (!result.success) {
-    throw new Error(result.error || "Failed to fetch user watchlist");
+    throw new Error(result.error || "Failed to fetch watchlist");
   }
 
-  const { data } = result as ApiWatchlistListResult;
+  const { data } = result as Prettify<ApiFavoritesListResult>;
 
-  // const { data } = result as ApiSuccessResponse<{
-  //   watchlist: ArtworkNavFields[];
-  // }>;
-
-  const buildFavouritesLink = (artwork: ArtworkNavFields) =>
+  const buildWatchlistLink = (artwork: ArtworkFrontend) =>
     buildUrl(["account", "watchlist", artwork._id]);
 
   return (
-    <ScrollableArtworkPagination
-      items={data.watchlist.map((artwork) => ({
-        ...artwork,
-        link: buildFavouritesLink(artwork),
-      }))}
-      heading="Your Watchlist"
-    />
+    <>
+      <ScrollableArtworkPagination
+        items={data.map((artwork) => ({
+          ...artwork,
+          link: buildWatchlistLink(artwork),
+        }))}
+        heading="Your Watchlist"
+      />
+    </>
   );
 }

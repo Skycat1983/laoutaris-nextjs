@@ -1,8 +1,6 @@
 import { ArtworkView } from "@/components/views/ArtworkView";
-import { clientApi } from "@/lib/api/clientApi";
 import { serverApi } from "@/lib/api/serverApi";
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
-import { ApiSuccessResponse } from "@/lib/data/types";
+import { ApiSuccessResponse, ArtworkFrontend } from "@/lib/data/types";
 import { ApiResponse } from "@/lib/data/types";
 
 export const FavouritedArtworkLoader = async ({
@@ -10,12 +8,12 @@ export const FavouritedArtworkLoader = async ({
 }: {
   artworkId: string;
 }) => {
-  const result: ApiResponse<PublicArtwork> =
-    await serverApi.user.favourites.getFavouriteArtwork(artworkId);
+  const result: ApiResponse<ArtworkFrontend> =
+    await serverApi.user.favourites.getOne(artworkId);
   if (!result.success) {
     throw new Error(result.error);
   }
-  const { data } = result as ApiSuccessResponse<PublicArtwork>;
+  const { data } = result as ApiSuccessResponse<ArtworkFrontend>;
 
   return (
     <>

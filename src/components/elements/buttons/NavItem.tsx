@@ -1,20 +1,18 @@
 "use client";
+import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
 import { useSelectedLayoutSegments, useSearchParams } from "next/navigation";
 
-interface NavItemProps {
-  label: string;
-  slug: string;
+type NavItemProps = SubnavLink & {
   activeClassName: string;
   className: string;
-  disabled?: boolean;
-}
+};
 
 const NavItem = ({
   label,
   slug,
   activeClassName,
   className,
-  disabled = false,
+  disabled,
 }: NavItemProps) => {
   const segments = useSelectedLayoutSegments();
   const searchParams = useSearchParams();

@@ -6,14 +6,13 @@ import {
   ArtworkPaginationItemSkeleton,
 } from "./ArtworkPaginationItem";
 import CollectionInfo from "../wip/CollectionInfo";
-import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import BlogSectionHeading from "@/components/elements/typography/BlogSectionHeading";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 interface ScrollablePaginationProps {
-  items: (ArtworkNavFields & { link: string })[];
+  items: (ArtworkFrontend & { link: string })[];
   heading: string;
 }
 

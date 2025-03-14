@@ -18,6 +18,7 @@ import {
   GridLayoutSlide,
   LeftPanelSlide,
   MinimalSlide,
+  RightPanelSlide,
   SplitLayoutSlide,
 } from "./HeroSlides";
 import {
@@ -32,6 +33,7 @@ import {
   RightPortraitCleanSlide,
   RightPortraitLargeTypeSlide,
 } from "./PortraitCycleSlides";
+import { PortraitsOfBeryl } from "./PortraitsOfBeryl";
 
 const slideDataStudio4 = {
   _id: { $oid: "65a4f7c9e4b0a3d1f0e20004" },
@@ -343,72 +345,83 @@ export function Hero() {
       }}
     >
       <CarouselContent className="w-full">
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitOverlapSlide data={slideDataStudio4} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <RightPortraitSlide data={slideDataStudio4} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <GridLayoutSlide data={slideDataStudio4} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariationPerson} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariationStreet} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariationLandscape} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariation} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataColoursYellow} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <BottomPanelSlide data={slideDataColoursOrange} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <SplitLayoutSlide data={slideDataAbstract} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <SplitLayoutSlide data={slideDataFigurative} />
-        </CarouselItem> */}
-
-        <CarouselItem className="w-full">
-          <LeftPortraitVerticalRhythmSlide data={cycleSlideData} />
-        </CarouselItem>
-
-        <CarouselItem className="w-full">
-          <RightPortraitLargeTypeSlide data={cycleSlideData} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <LeftPortraitCenteredSlide data={cycleSlideData} />
-        </CarouselItem>
-
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitVerticalSlide data={slideDataVariationPortrait3} />
-        </CarouselItem> */}
-        {/* 
-        <CarouselItem className="w-full">
-          <LeftPortraitVerticalSlide data={slideDataVariationPortrait2} />
-        </CarouselItem> */}
-
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitVerticalSlide data={slideDataVariationPortrait} />
-        </CarouselItem> */}
+        {/* filterable artworks */}
         <CarouselItem className="w-full">
           <FilterableArtworks />
         </CarouselItem>
 
+        {/* landscape */}
         <CarouselItem className="w-full">
-          <FamilyFavourites />
+          <RightPanelSlide data={slideDataVariationLandscape} />
         </CarouselItem>
+
+        {/* street */}
+        <CarouselItem className="w-full">
+          <LeftPanelSlide data={slideDataVariationStreet} />
+        </CarouselItem>
+
+        <CarouselItem className="w-full">
+          <LeftPortraitVerticalSlide data={slideDataVariationPortrait2} />
+        </CarouselItem>
+
+        {/* <CarouselItem className="w-full">
+          <LeftPortraitCenteredSlide data={cycleSlideData} />
+        </CarouselItem> */}
+
+        {/* Red */}
+        {/* <CarouselItem className="w-full">
+          <LeftPortraitVerticalSlide data={slideDataVariationPortrait3} />
+        </CarouselItem> */}
+
+        {/* orange */}
+        {/* <CarouselItem className="w-full">
+          <BottomPanelSlide data={slideDataColoursOrange} />
+        </CarouselItem> */}
+
+        {/* yellow */}
+        {/* <CarouselItem className="w-full">
+          <LeftPanelSlide data={slideDataColoursYellow} />
+        </CarouselItem> */}
+
+        {/* studio */}
+        <CarouselItem className="w-full">
+          <GridLayoutSlide data={slideDataStudio4} />
+        </CarouselItem>
+
+        <CarouselItem className="w-full">
+          <PortraitsOfBeryl />
+        </CarouselItem>
+
+        <CarouselItem className="w-full">
+          <LeftPortraitVerticalSlide data={slideDataVariationPortrait} />
+        </CarouselItem>
+
         <CarouselItem className="w-full ">
           <LargeScaleWorks />
         </CarouselItem>
+
+        {/* Boat */}
+        {/* <CarouselItem className="w-full">
+          <SplitLayoutSlide data={slideDataFigurative} />
+        </CarouselItem> */}
+
+        {/* <CarouselItem className="w-full">
+          <LeftPortraitOverlapSlide data={slideDataStudio4} />
+        </CarouselItem>
+        <CarouselItem className="w-full">
+          <RightPortraitSlide data={slideDataStudio4} />
+        </CarouselItem> */}
+
+        {/* <CarouselItem className="w-full">
+          <LeftPanelSlide data={slideDataVariation} />
+        </CarouselItem> */}
+        {/* <CarouselItem className="w-full">
+          <SplitLayoutSlide data={slideDataAbstract} />
+        </CarouselItem> */}
+        {/* family faves old */}
+        {/* <CarouselItem className="w-full">
+          <FamilyFavourites />
+        </CarouselItem> */}
       </CarouselContent>
       <div>
         <div className="absolute pt-[125px]">

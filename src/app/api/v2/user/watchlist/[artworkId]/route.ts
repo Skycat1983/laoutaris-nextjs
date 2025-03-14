@@ -1,18 +1,20 @@
+import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
-import { ApiErrorResponse } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { NextRequest } from "next/server";
 
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
-import { NextRequest, NextResponse } from "next/server";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
+import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
+import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
-) {
-  try {
-    console.log("params", params);
-    const userId = await getUserIdFromSession();
+): Promise<RouteResponse<ApiFavoritesItemResult>> {
+  const userId = await getUserIdFromSession();
 
+  try {
     if (!userId) {
       return NextResponse.json({
         success: false,
@@ -22,34 +24,38 @@ export async function GET(
 
     const { artworkId } = params;
 
-    const rawArtwork = await ArtworkModel.findById(artworkId).lean();
+    const leanArtwork = (await ArtworkModel.findById(
+      artworkId
+    ).lean()) as ArtworkLean | null;
 
-    if (!rawArtwork) {
+    if (!leanArtwork) {
       return NextResponse.json({
         success: false,
         error: "Artwork not found",
       } satisfies ApiErrorResponse);
     }
 
-    const artwork =
-      transformMongooseDoc<FrontendArtworkUnpopulated>(rawArtwork);
-    const data: PublicArtwork = artworkToPublic(artwork, userId);
+    const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
+      leanArtwork,
+      userId
+    );
 
-    if (!data.isWatchlisted) {
+    if (!artworkFrontend.isWatchlisted) {
       return NextResponse.json({
         success: false,
         error: "Artwork not in watchlist",
       } satisfies ApiErrorResponse);
     }
 
-    console.log("data in watchlist route", data);
-
     return NextResponse.json({
       success: true,
-      data: data,
-    } satisfies ApiSuccessResponse<PublicArtwork>);
+      data: artworkFrontend,
+    } satisfies ApiFavoritesItemResult);
   } catch (error) {
     console.error("Error in GET /user/watchlist/:artworkId:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return NextResponse.json({
+      success: false,
+      error: "Internal Server Error",
+    } satisfies ApiErrorResponse);
   }
 }

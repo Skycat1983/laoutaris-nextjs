@@ -1,35 +1,48 @@
+import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { UserModel } from "@/lib/data/models";
-import { FrontendUserWithFavourites } from "@/lib/data/types/userTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
+import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+type UserWithFavourites = {
+  _id: string;
+  favourites: ArtworkLean[];
+};
+
+export async function GET(
+  req: NextRequest
+): Promise<RouteResponse<ApiArtworkListResult>> {
   const userId = await getUserIdFromSession();
 
   try {
-    const rawUserFavourites = await UserModel.findById(userId)
+    const userWithFavourites = await UserModel.findById(userId)
       .select("favourites")
       .populate("favourites")
-      .lean()
-      .exec();
+      .lean<UserWithFavourites>();
 
-    if (!rawUserFavourites) {
+    if (!userWithFavourites) {
       return NextResponse.json({
         success: false,
         error: "User not found",
       } satisfies ApiErrorResponse);
     }
 
-    const userFavourites =
-      transformMongooseDoc<FrontendUserWithFavourites>(rawUserFavourites);
-
-    // console.log("userFavourites", userFavourites);
+    const artworks = userWithFavourites.favourites.map((artwork) =>
+      transformArtwork.toFrontend(artwork)
+    );
 
     return NextResponse.json({
       success: true,
-      data: userFavourites,
-    } satisfies ApiSuccessResponse<FrontendUserWithFavourites>);
+      data: artworks,
+      metadata: {
+        total: artworks.length,
+        page: 1,
+        limit: artworks.length,
+        totalPages: 1,
+      },
+    } satisfies ApiArtworkListResult);
   } catch (error) {
     console.error("Error fetching user favourites:", error);
     return NextResponse.json({

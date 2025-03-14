@@ -3,22 +3,17 @@ import { ArtworkModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { NextRequest } from "next/server";
 
-import {
-  ApiErrorResponse,
-  ApiSuccessResponse,
-  PublicArtwork,
-  PublicArtworkTransformations,
-} from "@/lib/data/types";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
-
+import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
+import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
-) {
-  try {
-    console.log("params", params);
-    const userId = await getUserIdFromSession();
+): Promise<RouteResponse<ApiFavoritesItemResult>> {
+  const userId = await getUserIdFromSession();
 
+  try {
     if (!userId) {
       return NextResponse.json({
         success: false,
@@ -28,9 +23,9 @@ export async function GET(
 
     const { artworkId } = params;
 
-    const leanArtwork = (await ArtworkModel.findById(artworkId).lean()) as
-      | PublicArtworkTransformations["Lean"]
-      | null;
+    const leanArtwork = (await ArtworkModel.findById(
+      artworkId
+    ).lean()) as ArtworkLean | null;
 
     if (!leanArtwork) {
       return NextResponse.json({
@@ -39,9 +34,12 @@ export async function GET(
       } satisfies ApiErrorResponse);
     }
 
-    const data: PublicArtwork = transformArtwork(leanArtwork, userId);
+    const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
+      leanArtwork,
+      userId
+    );
 
-    if (!data.isFavourited) {
+    if (!artworkFrontend.isFavourited) {
       return NextResponse.json({
         success: false,
         error: "Artwork not in favourites",
@@ -50,10 +48,13 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      data: data,
-    } satisfies ApiSuccessResponse<PublicArtwork>);
+      data: artworkFrontend,
+    } satisfies ApiFavoritesItemResult);
   } catch (error) {
     console.error("Error in GET /user/favourites/:artworkId:", error);
-    return new Response("Internal Server Error", { status: 500 });
+    return NextResponse.json({
+      success: false,
+      error: "Internal Server Error",
+    } satisfies ApiErrorResponse);
   }
 }

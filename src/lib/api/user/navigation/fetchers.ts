@@ -1,4 +1,3 @@
-import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
 import { Fetcher } from "../../core/createFetcher";
 import { OwnUserNavDataFrontend, SingleResult } from "@/lib/data/types";
 

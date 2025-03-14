@@ -2,76 +2,75 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { serverApi } from "@/lib/api/serverApi";
-import { OwnUserNavigationFetchers } from "@/lib/api/user/navigation/fetchers";
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  ApiSuccessResponse,
-  OwnUserNavFields,
-} from "@/lib/data/types";
+import { ApiErrorResponse } from "@/lib/data/types";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
-const firstId = (arr: string[]) => arr[0];
+import { createSubnavLink } from "@/lib/utils/createSubnavLink";
 
 type UserNavFetchResult = ApiOwnUserNavResult | ApiErrorResponse;
 
 const AccountSubnavLoader = async () => {
   const result: UserNavFetchResult =
-    await serverApi.user.navigation.fetchUserNavigationList();
+    await serverApi.user.navigation.fetchUserNavigation();
 
   if (!result.success) {
     throw new Error(result.error);
   }
 
   const { data } = result;
-
-  const links: SubnavLink[] = [];
-
   const stem = "account";
 
-  links.push({
-    title: "Settings",
-    slug: "settings",
-    link_to: buildUrl([stem, "settings"]),
-  });
+  const settings = createSubnavLink(
+    { label: "Settings", slug: "settings" },
+    { stem }
+  );
 
-  links.push({
-    title: "Favourites",
-    slug: "favourites",
-    link_to: buildUrl([stem, "favourites", firstId(data.favourites)]),
-    disabled: data.favourites.length === 0,
-  });
+  const favourites = createSubnavLink(
+    { label: "Favourites", slug: "favourites" },
+    {
+      stem,
+      segments: data.firstFavouriteId ? [data.firstFavouriteId] : undefined,
+      forceDisabled: data.favourites.length === 0,
+    }
+  );
 
-  links.push({
-    title: "Watchlist",
-    slug: "watchlist",
-    link_to: buildUrl([stem, "watchlist", firstId(data.watchlist)]),
-    disabled: data.watchlist.length === 0,
-  });
+  const watchlist = createSubnavLink(
+    { label: "Watchlist", slug: "watchlist" },
+    {
+      stem,
+      segments: data.firstWatchlistId ? [data.firstWatchlistId] : undefined,
+      forceDisabled: data.watchlist.length === 0,
+    }
+  );
 
-  links.push({
-    title: "Comments",
-    slug: "comments",
-    link_to: buildUrl([stem, "comments"]),
-    disabled: data.comments.length === 0,
-  });
+  const comments = createSubnavLink(
+    { label: "Comments", slug: "comments" },
+    {
+      stem,
+      forceDisabled: data.comments.length === 0,
+    }
+  );
 
-  links.push({
-    title: "Cart",
-    slug: "cart",
-    link_to: buildUrl([stem, "cart"]),
-    disabled: true,
-  });
+  const cart = createSubnavLink(
+    { label: "Cart", slug: "cart" },
+    { stem, forceDisabled: true }
+  );
 
-  links.push({
-    title: "Orders",
-    slug: "orders",
-    link_to: buildUrl([stem, "orders"]),
-    disabled: true,
-  });
+  const orders = createSubnavLink(
+    { label: "Orders", slug: "orders" },
+    { stem, forceDisabled: true }
+  );
+
+  const links: SubnavLink[] = [
+    settings,
+    favourites,
+    watchlist,
+    comments,
+    cart,
+    orders,
+  ];
 
   return <Subnav links={links} />;
 };

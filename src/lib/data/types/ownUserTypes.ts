@@ -33,6 +33,8 @@ export type OwnUserLeanPopulated = Prettify<
   >
 >;
 
+export type OwnUserFavourites = OwnUserLean["favourites"];
+
 export type OwnUserFrontendPopulated = Prettify<
   WithPopulatedFields<
     OwnUserFrontend,

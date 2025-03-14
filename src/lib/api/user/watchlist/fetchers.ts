@@ -1,13 +1,17 @@
 import type { Fetcher } from "../../core/createFetcher";
-import type { ListResult, PublicArtwork, SingleResult } from "@/lib/data/types";
+import type {
+  ListResult,
+  SingleResult,
+  ArtworkFrontend,
+} from "@/lib/data/types";
 
 type AddRemoveResult = {
   success: boolean;
   message: string;
 };
 
-export type ApiWatchlistListResult = ListResult<PublicArtwork>;
-export type ApiWatchlistItemResult = SingleResult<PublicArtwork>;
+export type ApiWatchlistListResult = ListResult<ArtworkFrontend>;
+export type ApiWatchlistItemResult = SingleResult<ArtworkFrontend>;
 export type ApiAddRemoveResult = SingleResult<AddRemoveResult>;
 
 export const createWatchlistFetchers = (fetcher: Fetcher) => ({

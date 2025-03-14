@@ -36,10 +36,18 @@ interface SubnavProps {
 }
 
 export type SubnavLink = {
-  title: string;
+  label: string;
   slug: string;
+} & (WorkingLink | DisabledLink);
+
+type WorkingLink = {
   link_to: string;
-  disabled?: boolean;
+  disabled: false;
+};
+
+type DisabledLink = {
+  link_to: null;
+  disabled: true;
 };
 
 export function Subnav({ links }: SubnavProps) {
@@ -47,15 +55,27 @@ export function Subnav({ links }: SubnavProps) {
     <SubnavWrapper>
       {links.map((link) => (
         <li key={link.slug}>
-          <Link href={link.link_to}>
+          {!link.disabled ? (
+            <Link href={link.link_to}>
+              <NavItem
+                label={link.label}
+                slug={link.slug}
+                link_to={link.link_to}
+                disabled={link.disabled}
+                className="z-[99] font-face-default subheading-button"
+                activeClassName="z-[99] font-face-default subheading-button-active"
+              />
+            </Link>
+          ) : (
             <NavItem
-              label={link.title}
+              label={link.label}
               slug={link.slug}
+              link_to={link.link_to}
               disabled={link.disabled}
               className="z-[99] font-face-default subheading-button"
               activeClassName="z-[99] font-face-default subheading-button-active"
             />
-          </Link>
+          )}
         </li>
       ))}
     </SubnavWrapper>
@@ -81,3 +101,10 @@ export const SubnavSkeleton = ({ count = 5 }: SubNavSkeletonProps) => {
     </SubnavWrapper>
   );
 };
+
+// export type SubnavLink = {
+//   title: string;
+//   slug: string;
+//   link_to: string;
+//   disabled?: boolean;
+// };

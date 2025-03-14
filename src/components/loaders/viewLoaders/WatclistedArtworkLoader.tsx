@@ -6,7 +6,7 @@ export async function WatchlistedArtworkLoader({
 }: {
   artworkId: string;
 }) {
-  const result = await serverApi.user.watchlist.artwork(artworkId);
+  const result = await serverApi.user.watchlist.getOne(artworkId);
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch watchlisted artwork");
