@@ -59,3 +59,14 @@ export interface ArtworkQueryParams extends ArtworkFilterParams {
   sortBy?: SortOption;
   sortColor?: string;
 }
+
+export interface ArtworkSearchParams {
+  sortBy?: string;
+  sortColor?: string;
+  decade?: Decade[];
+  artstyle?: ArtStyle[];
+  medium?: Medium[];
+  surface?: Surface[];
+  filterMode?: "ALL" | "ANY";
+  page?: string;
+}

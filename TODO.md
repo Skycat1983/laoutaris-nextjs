@@ -4,10 +4,6 @@ add a quote to the article model which we can render differently.
 
 see mobile view: the quote can float into view as we parallax scroll past it with image in background
 
-PROJECT STRUCTURE:
-
-- Flesh out the 'actions' folder of each server folder. The actions relate to direct database interactions and mutations.
-
 SERVER:
 
 - add 'size' property to all artworks. this is useful for pagination artworik display, so that the size of pagination items somewhat corresponds to the artworks actual size. pixel height and width isn't relevant

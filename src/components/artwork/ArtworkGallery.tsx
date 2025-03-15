@@ -7,12 +7,12 @@ import {
   ArtworkFrontend,
 } from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
-import { BasicAccordionFilter } from "./filters/BasicAccordionFilter";
+import { AccordionFilter } from "./filters/AccordionFilter";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
 import { FilterMode } from "@/lib/constants";
-
+import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
 interface ArtworkGalleryProps {
   initialArtworks: ArtworkFrontend[];
   initialSort?: ArtworkSortConfig;
@@ -128,14 +128,10 @@ export const ArtworkGallery = ({
       }
       const { data: artworks, metadata } = newArtworks;
 
-      // const publicArtworks = newArtworks.data.map((artwork) =>
-      //   ar tworkToPublic(artwork)
-      // );
-
       if (artworks.length === 0) {
         setHasMore(false);
       } else {
-        // Add new artworks while preventing duplicates
+        // addnew artworks abd preventing duplicates
         setArtworks((prev) => {
           const existingIds = new Set(prev.map((artwork) => artwork._id));
           const uniqueNewArtworks = artworks.filter(
@@ -160,7 +156,7 @@ export const ArtworkGallery = ({
 
   return (
     <FilterDrawerWrapper
-      filterComponent={BasicAccordionFilter}
+      filterComponent={ArtworkSortAndFilter}
       filterProps={{
         onFilterChange: handleFilterChange,
         onClearFilters: clearFilters,

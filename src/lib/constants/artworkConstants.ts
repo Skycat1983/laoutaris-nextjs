@@ -43,6 +43,15 @@ const SORT_OPTION_OPTIONS = [
 ] as const;
 type SortOption = (typeof SORT_OPTION_OPTIONS)[number];
 
+const ART_COLOURS = {
+  blue: "#453a88",
+  red: "#bd2c18",
+  green: "#6b8b69",
+  brown: "#a35546",
+  yellow: "#e5bb5c",
+  grey: "#a2a395",
+} as const;
+
 export type {
   Decade,
   ArtStyle,
@@ -53,4 +62,10 @@ export type {
   SortOption,
 };
 
-export { DECADE_OPTIONS, ARTSTYLE_OPTIONS, MEDIUM_OPTIONS, SURFACE_OPTIONS };
+export {
+  DECADE_OPTIONS,
+  ARTSTYLE_OPTIONS,
+  MEDIUM_OPTIONS,
+  SURFACE_OPTIONS,
+  ART_COLOURS,
+};

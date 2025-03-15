@@ -21,8 +21,8 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { ArtworkSortConfig, SortOption } from "@/lib/data/types";
-import { ColorPicker } from "./ColorPicker";
-
+import { ColourPicker } from "./ColourPicker";
+import { ART_COLOURS } from "@/lib/constants";
 type FilterMode = "ALL" | "ANY";
 
 interface DecadeOption {
@@ -96,7 +96,7 @@ type FilterKey = "decade" | "artstyle" | "medium" | "surface";
 
 type FilterValue = Decade | ArtStyle | Medium | Surface;
 
-export const BasicAccordionFilter = ({
+export const ArtworkSortAndFilter = ({
   onFilterChange,
   onClearFilters,
   filterMode,
@@ -174,7 +174,6 @@ export const BasicAccordionFilter = ({
     onClearFilters();
   };
 
-  // Add this new function to handle mode changes
   const handleFilterModeChange = (checked: boolean) => {
     const newMode = checked ? "ALL" : "ANY";
 
@@ -198,7 +197,6 @@ export const BasicAccordionFilter = ({
     onFilterModeChange(newMode);
   };
 
-  // Add this helper function at component level
   const isValueInArray = (
     arr: FilterValue[] | undefined,
     value: FilterValue
@@ -277,112 +275,123 @@ export const BasicAccordionFilter = ({
   };
 
   return (
-    <aside className="fixed left-0 w-full md:w-[290px] md:shadow-md bg-whitish">
-      {/* Sort Controls Section */}
-      <div className="border-b">
-        <div className="p-8 pb-4">
-          <h3 className="font-medium mb-4 text-gray-900">Sort Results By</h3>
-          <Select
-            value={pendingSort.by}
-            onValueChange={(newValue: SortOption) => {
-              setPendingSort({
-                by: newValue,
-                // Set default color (#000000) when switching to colorProximity
-                color: newValue === "colorProximity" ? "#000000" : undefined,
-              });
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sort by..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="mostRecent">Most Recent</SelectItem>
-              <SelectItem value="mostPopular">Most Popular</SelectItem>
-              <SelectItem value="mostFeatured">Most Featured</SelectItem>
-              <SelectItem value="colorProximity">Colour Proximity</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {pendingSort.by === "colorProximity" && (
-            <div className="mt-4">
-              <ColorPicker
-                onColorSelect={(color) => {
-                  setPendingSort((prev) => ({ ...prev, color }));
+    <aside className="fixed left-0 w-full md:w-[290px] md:shadow-md bg-whitish flex flex-col h-screen">
+      <ScrollArea className="flex-1">
+        <div className="border-b flex-shrink-0">
+          <div className="p-8 pb-4">
+            <h3 className="font-medium mb-4 text-gray-900">Sort Results By</h3>
+            <div className="relative">
+              <Select
+                value={pendingSort.by}
+                onValueChange={(newValue: SortOption) => {
+                  setPendingSort({
+                    by: newValue,
+                    color:
+                      newValue === "colorProximity" ? "#000000" : undefined,
+                  });
                 }}
-                selectedColor={pendingSort.color || "#000000"}
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sort by..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mostRecent">Most Recent</SelectItem>
+                  <SelectItem value="mostPopular">Most Popular</SelectItem>
+                  <SelectItem value="mostFeatured">Most Featured</SelectItem>
+                  <SelectItem value="colorProximity">
+                    Colour Proximity
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Filters Section */}
-      <div className="p-8 pb-4">
-        <h3 className="font-medium mb-4 text-gray-900">Filters</h3>
-
-        {/* Filter Mode Toggle */}
-        <div className="mb-6 pb-4 border-b">
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={filterMode === "ALL"}
-              onCheckedChange={handleFilterModeChange}
-            />
-            <span className="text-sm">
-              {filterMode === "ALL" ? "Match All Filters" : "Match Any Filter"}
-            </span>
+            {pendingSort.by === "colorProximity" && (
+              <div className="mt-4">
+                <label className="text-sm font-medium mb-2 block">
+                  Pick a colour
+                </label>
+                <ColourPicker
+                  initialColor={pendingSort.color || "#000000"}
+                  onColorSelect={(color) => {
+                    setPendingSort((prev) => ({ ...prev, color }));
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Filter Accordion */}
-        <ScrollArea className="h-[calc(100vh-320px)]">
-          <Accordion type="multiple" className="w-full">
-            <AccordionItem value="decade">
-              <AccordionTrigger>Decade</AccordionTrigger>
-              <AccordionContent>
-                {renderFilterOptions(decades, "decade")}
-              </AccordionContent>
-            </AccordionItem>
+        <div className="flex-1">
+          <div className="p-8 pb-4">
+            <h3 className="font-medium mb-4 text-gray-900">Filters</h3>
 
-            <AccordionItem value="style">
-              <AccordionTrigger>Art Style</AccordionTrigger>
-              <AccordionContent>
-                {renderFilterOptions(artStyles, "artstyle")}
-              </AccordionContent>
-            </AccordionItem>
+            {/* Filter Mode Toggle */}
+            <div className="mb-6 pb-4 border-b">
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={filterMode === "ALL"}
+                  onCheckedChange={handleFilterModeChange}
+                />
+                <span className="text-sm">
+                  {filterMode === "ALL"
+                    ? "Match All Filters"
+                    : "Match Any Filter"}
+                </span>
+              </div>
+            </div>
 
-            <AccordionItem value="medium">
-              <AccordionTrigger>Medium</AccordionTrigger>
-              <AccordionContent>
-                {renderFilterOptions(mediums, "medium")}
-              </AccordionContent>
-            </AccordionItem>
+            <Accordion type="multiple" className="w-full">
+              <AccordionItem value="decade">
+                <AccordionTrigger>Decade</AccordionTrigger>
+                <AccordionContent>
+                  {renderFilterOptions(decades, "decade")}
+                </AccordionContent>
+              </AccordionItem>
 
-            <AccordionItem value="surface">
-              <AccordionTrigger>Surface</AccordionTrigger>
-              <AccordionContent>
-                {renderFilterOptions(surfaces, "surface")}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          {/* Action Buttons */}
-          <div className="pt-4 pb-8 border-t mt-auto">
-            <div className="space-y-2">
-              <button
-                onClick={handleApplyFilters}
-                className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
-              >
-                Update
-              </button>
-              <button
-                onClick={handleClearFilters}
-                className="w-full border border-gray-300 text-gray-600 py-2 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Clear All
-              </button>
+              <AccordionItem value="style">
+                <AccordionTrigger>Art Style</AccordionTrigger>
+                <AccordionContent>
+                  {renderFilterOptions(artStyles, "artstyle")}
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="medium">
+                <AccordionTrigger>Medium</AccordionTrigger>
+                <AccordionContent>
+                  {renderFilterOptions(mediums, "medium")}
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="surface">
+                <AccordionTrigger>Surface</AccordionTrigger>
+                <AccordionContent>
+                  {renderFilterOptions(surfaces, "surface")}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <div className="pt-4 mt-4 border-t">
+              <div className="space-y-2">
+                <button
+                  onClick={handleApplyFilters}
+                  className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={handleClearFilters}
+                  className="w-full border border-gray-300 text-gray-600 py-2 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  Clear All
+                </button>
+              </div>
             </div>
           </div>
-        </ScrollArea>
-      </div>
+        </div>
+
+        {/* Adjust the spacer height */}
+        <div className="h-[20vh]" />
+      </ScrollArea>
     </aside>
   );
 };

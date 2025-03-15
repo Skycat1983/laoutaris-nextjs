@@ -24,13 +24,9 @@ interface NavMenuProps {
 }
 
 export function MobileNavDrawer({ navLinks }: NavMenuProps) {
-  console.log("navLinks in MobileNavDrawer", navLinks);
   const session = useSession();
 
   const isLoggedIn = session.status === "authenticated";
-
-  console.log("isLoggedIn>>>>>", isLoggedIn);
-  // console.log("navLinks", navLinks);
 
   const accountNavLinks = [
     {
@@ -51,8 +47,6 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
     { label: "Logout", path: "/sign-out", disabled: !isLoggedIn },
   ];
 
-  console.log("navLinks", navLinks);
-  console.log("accountNavLinks", accountNavLinks);
   return (
     <Drawer direction="right">
       <DrawerTrigger asChild>
@@ -133,30 +127,3 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
     </Drawer>
   );
 }
-
-{
-  /* <div className="p-4 pb-0 bg-red-100">
-            <div className="flex items-center justify-center space-x-2">
-              <div className="flex-1 text-center">
-                <div className="text-7xl font-bold tracking-tighter">
-                  text
-                </div>
-                <div className="text-[0.70rem] uppercase text-muted-foreground">
-                  hello
-                </div>
-              </div>
-            </div>
-            <div className="mt-3 "></div>
-          </div> */
-}
-
-// type Props = {};
-
-// const NavMenu = (props: Props) => {
-//   return (
-//     <div>
-//       {" "}
-//       <Menu />
-//     </div>
-//   );
-// };

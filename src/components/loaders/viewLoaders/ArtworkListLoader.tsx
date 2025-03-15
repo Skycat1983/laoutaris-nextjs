@@ -3,6 +3,7 @@ import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
+
 interface ArtworkListLoaderProps {
   initialSort?: ArtworkSortConfig;
   initialFilters?: ArtworkFilterParams;
@@ -23,6 +24,9 @@ export const ArtworkListLoader = async ({
     console.log("result.error", result.error);
     throw new Error(result.error || "Failed to fetch artworks");
   }
+
+  console.log("initialFilters", initialFilters);
+  console.log("initialSort", initialSort);
 
   const { data: artworks, metadata } = result as ApiArtworkListResult;
 

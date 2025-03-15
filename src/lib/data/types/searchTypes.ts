@@ -1,6 +1,12 @@
-import { CollectionFrontend } from "./collectionTypes";
-import { BlogEntryFrontend } from "./blogTypes";
-import { ArticleFrontend } from "./articleTypes";
+import { CollectionFrontend, CollectionLean } from "./collectionTypes";
+import { BlogEntryFrontend, BlogEntryLean } from "./blogTypes";
+import { ArticleFrontend, ArticleLean } from "./articleTypes";
+
+export type SearchQueriesType = {
+  articles: Promise<(ArticleLean | null)[]>;
+  blogs: Promise<(BlogEntryLean | null)[]>;
+  collections: Promise<(CollectionLean | null)[]>;
+};
 
 // Content type literal
 export type SearchableContentType = "articles" | "blogs" | "collections";
@@ -48,10 +54,10 @@ export interface SearchResponse {
   articles?: SearchResultItem[];
   blogs?: SearchResultItem[];
   collections?: SearchResultItem[];
-  metadata?: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  // metadata?: {
+  //   total: number;
+  //   page: number;
+  //   limit: number;
+  //   totalPages: number;
+  // };
 }

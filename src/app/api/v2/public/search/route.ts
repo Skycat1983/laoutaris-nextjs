@@ -3,17 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   SearchResponse,
   SearchResultItem,
-  SearchableContent,
+  SearchQueriesType,
 } from "@/lib/data/types/searchTypes";
 import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
-import { transformToPick } from "@/lib/transforms/transformToPick";
-import { ApiErrorResponse, ApiSuccessResponse } from "@/lib/data/types";
-import { Article, BlogEntry, Collection } from "@/lib/data/types";
+import {
+  ArticleLean,
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  BlogEntryLean,
+  CollectionLean,
+} from "@/lib/data/types";
+import { transformToPick } from "@/lib/transforms";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");
-    const type = searchParams.get("type");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
@@ -30,8 +34,8 @@ export async function GET(request: NextRequest) {
     // regex case-insensitive search
     const searchRegex = new RegExp(query, "i");
 
-    // base queries
-    const queries = {
+    // Base queries
+    const queries: SearchQueriesType = {
       articles: ArticleModel.find({
         $or: [
           { title: searchRegex },
@@ -39,7 +43,11 @@ export async function GET(request: NextRequest) {
           { summary: searchRegex },
           { text: searchRegex },
         ],
-      }),
+      })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean<ArticleLean[]>(),
+
       blogs: BlogModel.find({
         $or: [
           { title: searchRegex },
@@ -47,7 +55,11 @@ export async function GET(request: NextRequest) {
           { summary: searchRegex },
           { text: searchRegex },
         ],
-      }),
+      })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean<BlogEntryLean[]>(),
+
       collections: CollectionModel.find({
         $or: [
           { title: searchRegex },
@@ -55,75 +67,36 @@ export async function GET(request: NextRequest) {
           { summary: searchRegex },
           { text: searchRegex },
         ],
-      }),
-    };
-
-    // if type specified, search only that type
-    if (type && type in queries) {
-      const model = queries[type as keyof typeof queries];
-      const results = await model
+      })
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean()
-        .exec();
+        .lean<CollectionLean[]>(),
+    };
 
-      const total = await model.countDocuments();
-
-      // First transform mongoose doc, then pick required fields
-      const transformedResults =
-        transformMongooseDoc<SearchableContent[]>(results);
-      const searchResults = transformedResults.map((item) =>
-        transformToPick(item, [
-          "title",
-          "subtitle",
-          "summary",
-          "imageUrl",
-          "slug",
-        ])
-      ) as SearchResultItem[];
-
-      return NextResponse.json<ApiSuccessResponse<SearchResponse>>({
-        success: true,
-        data: {
-          articles: type === "articles" ? searchResults : [],
-          blogs: type === "blogs" ? searchResults : [],
-          collections: type === "collections" ? searchResults : [],
-          metadata: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-          },
-        },
-      });
-    }
-
-    // search all types if no type specified
+    // Always search everything
     const [articles, blogs, collections] = await Promise.all([
-      queries.articles.limit(limit).lean().exec(),
-      queries.blogs.limit(limit).lean().exec(),
-      queries.collections.limit(limit).lean().exec(),
+      queries.articles,
+      queries.blogs,
+      queries.collections,
     ]);
 
     // Transform each result set
-    const transformedArticles = transformMongooseDoc<Article[]>(articles).map(
-      (item) => ({
-        ...transformToPick(item, [
-          // "_id",
-          "title",
-          "subtitle",
-          "summary",
-          "imageUrl",
-          "slug",
-        ]),
-        linkTo: `/${item.section}/${item.slug}`,
-      })
-    ) as SearchResultItem[];
+    const transformedArticles = transformMongooseDoc<ArticleLean[]>(
+      articles
+    ).map((item) => ({
+      ...transformToPick(item, [
+        "title",
+        "subtitle",
+        "summary",
+        "imageUrl",
+        "slug",
+      ]),
+      linkTo: `/${item.section}/${item.slug}`,
+    })) as SearchResultItem[];
 
-    const transformedBlogs = transformMongooseDoc<BlogEntry[]>(blogs).map(
+    const transformedBlogs = transformMongooseDoc<BlogEntryLean[]>(blogs).map(
       (item) => ({
         ...transformToPick(item, [
-          // "_id",
           "title",
           "subtitle",
           "summary",
@@ -134,11 +107,10 @@ export async function GET(request: NextRequest) {
       })
     ) as SearchResultItem[];
 
-    const transformedCollections = transformMongooseDoc<Collection[]>(
+    const transformedCollections = transformMongooseDoc<CollectionLean[]>(
       collections
     ).map((item) => ({
       ...transformToPick(item, [
-        // "_id",
         "title",
         "subtitle",
         "summary",
@@ -159,12 +131,6 @@ export async function GET(request: NextRequest) {
         articles: transformedArticles,
         blogs: transformedBlogs,
         collections: transformedCollections,
-        metadata: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
       },
     });
   } catch (error) {

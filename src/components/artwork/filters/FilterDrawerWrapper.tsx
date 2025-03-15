@@ -14,9 +14,9 @@ import { FilterIcon } from "lucide-react";
 import {
   ArtworkFilterParams,
   ArtworkSortConfig,
-  FilterMode,
 } from "@/lib/data/types/artworkTypes";
 import { SortByProps } from "./SortBy";
+import { FilterMode } from "@/lib/constants";
 
 interface FilterProps {
   onApply?: () => void;
@@ -54,9 +54,7 @@ export const FilterDrawerWrapper = ({
   children,
   filterComponent: FilterComponent,
   filterProps,
-}: // sortComponent: SortComponent,
-// sortProps,
-FilterDrawerWrapperProps) => {
+}: FilterDrawerWrapperProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

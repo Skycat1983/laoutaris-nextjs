@@ -1,32 +1,23 @@
-import { ArtworkListLoader } from "@/components/loaders/viewLoaders/ArtworkListLoader";
 import React from "react";
-import { ArtworkSortConfig } from "@/lib/data/types";
-import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
-import { SortOption } from "@/lib/constants/artworkConstants";
-import { ArtStyle, Medium, Surface } from "@/lib/constants/artworkConstants";
-import { Decade } from "@/lib/constants";
 
-interface SearchParams {
-  sortBy?: string;
-  sortColor?: string;
-  decade?: Decade[];
-  artstyle?: ArtStyle[];
-  medium?: Medium[];
-  surface?: Surface[];
-  filterMode?: "ALL" | "ANY";
-  page?: string;
-}
+import { ArtworkListLoader } from "@/components/loaders/viewLoaders/ArtworkListLoader";
+import type {
+  ArtworkFilterParams,
+  ArtworkSearchParams,
+  ArtworkSortConfig,
+} from "@/lib/data/types";
+import { SortOption, ART_COLOURS } from "@/lib/constants";
 
 export default async function ArtworkListView({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: ArtworkSearchParams;
 }) {
   const page = parseInt(searchParams.page || "1");
 
   const sortConfig: ArtworkSortConfig = {
     by: (searchParams.sortBy as SortOption) || "colorProximity",
-    color: searchParams.sortColor || "#000000",
+    color: searchParams.sortColor || ART_COLOURS["blue"],
   };
 
   const filters: ArtworkFilterParams = {
@@ -54,9 +45,9 @@ export default async function ArtworkListView({
     page,
   };
 
-  console.log("URL searchParams:", searchParams);
-  console.log("Parsed filters:", filters);
-  console.log("Parsed sortConfig:", sortConfig);
+  // console.log("URL searchParams:", searchParams);
+  // console.log("Parsed filters:", filters);
+  // console.log("Parsed sortConfig:", sortConfig);
 
   return (
     <div>
