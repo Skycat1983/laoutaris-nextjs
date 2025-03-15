@@ -7,8 +7,10 @@ import {
   AdminArticleTransformationsPopulated,
   AdminArtworkTransformations,
   AdminUserTransformations,
+  ArticleFrontendPopulated,
 } from "@/lib/data/types";
 import { transformAdminArticlePopulated } from "@/lib/transforms/transformAdmin";
+import { transformArticlePopulated } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest,
@@ -47,8 +49,8 @@ export async function GET(
       );
     }
 
-    const frontendArticle: AdminArticleTransformationsPopulated["Frontend"] =
-      transformAdminArticlePopulated(leanArticle);
+    const frontendArticle: ArticleFrontendPopulated =
+      transformArticlePopulated(leanArticle);
 
     return NextResponse.json({
       success: true,

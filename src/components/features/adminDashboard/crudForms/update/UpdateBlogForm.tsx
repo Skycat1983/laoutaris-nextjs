@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import { BlogEntryFrontend } from "@/lib/data/types";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { updateBlogFormSchema, UpdateBlogFormValues } from "@/lib/data/schemas";
 import { DatePicker } from "@/components/modules/datePicker/DatePicker";
@@ -27,7 +27,7 @@ export const UpdateBlogForm = ({
   blogInfo,
   onSuccess,
 }: {
-  blogInfo: FrontendBlogEntry;
+  blogInfo: BlogEntryFrontend;
   onSuccess?: () => void;
 }) => {
   const [imagePreview, setImagePreview] = useState(blogInfo.imageUrl);

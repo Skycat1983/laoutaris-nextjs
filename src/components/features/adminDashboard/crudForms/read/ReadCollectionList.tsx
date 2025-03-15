@@ -4,15 +4,15 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
-import type { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
+import { CollectionFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 
 // TODO: when we click on a collection, we should fetch and render the artworks
 
 export function ReadCollectionList() {
-  const [collections, setCollections] = useState<
-    FrontendCollectionWithArtworks[]
-  >([]);
+  const [collections, setCollections] = useState<CollectionFrontendPopulated[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 import {
   createArticleSchema,
   CreateArticleFormValues,
@@ -32,7 +32,7 @@ import { Textarea } from "@/components/shadcn/textarea";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 
 interface CreateArticleFormProps {
-  artworkInfo: FrontendArtwork;
+  artworkInfo: ArtworkFrontend;
   onSuccess: () => void;
 }
 

@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
 import Image from "next/image";
-import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontendPopulated } from "@/lib/data/types";
 import { ArticleFilterDropdowns } from "../../inputs/ArticleFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
 
@@ -18,7 +17,7 @@ interface FilterState {
 }
 
 export function ReadArticleList() {
-  const [articles, setArticles] = useState<FrontendArticleWithArtwork[]>([]);
+  const [articles, setArticles] = useState<ArticleFrontendPopulated[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterState>({

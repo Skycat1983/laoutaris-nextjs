@@ -14,7 +14,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -30,7 +30,7 @@ import { clientApi } from "@/lib/api/clientApi";
 type UpdateArtworkFormValues = z.infer<typeof updateArtworkSchema>;
 
 interface UpdateArtworkFormProps {
-  artworkInfo: FrontendArtwork; // Define this type based on your data structure
+  artworkInfo: ArtworkFrontend; // Define this type based on your data structure
   onSuccess: () => void;
 }
 

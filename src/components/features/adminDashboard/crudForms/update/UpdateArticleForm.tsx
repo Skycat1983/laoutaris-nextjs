@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { FrontendArticleWithArtworkAndAuthor } from "@/lib/data/types/articleTypes";
+import { ArticleFrontendPopulated } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 import {
   UpdateArticleFormValues,
@@ -33,7 +33,7 @@ import {
 } from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
 interface UpdateArticleFormProps {
-  articleInfo: FrontendArticleWithArtworkAndAuthor;
+  articleInfo: ArticleFrontendPopulated;
   onSuccess: () => void;
 }
 
@@ -44,7 +44,7 @@ export const UpdateArticleForm = ({
   console.log("articleInfo", articleInfo);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(articleInfo.imageUrl);
-  const [newArtwork, setNewArtwork] = useState<FrontendArtwork | null>(null);
+  const [newArtwork, setNewArtwork] = useState<ArtworkFrontend | null>(null);
   const [isLoadingArtwork, setIsLoadingArtwork] = useState(false);
   const artworkIdRef = useRef<HTMLInputElement>(null);
 

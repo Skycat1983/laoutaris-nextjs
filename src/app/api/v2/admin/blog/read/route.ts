@@ -7,8 +7,12 @@ import {
   AdminBlogTransformationsPopulated,
   AdminCommentTransformations,
   AdminUserTransformations,
+  BlogEntryFrontend,
 } from "@/lib/data/types";
-import { transformAdminBlogPopulated } from "@/lib/transforms";
+import {
+  transformAdminBlogPopulated,
+  transformBlogPopulated,
+} from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest
@@ -51,8 +55,8 @@ export async function GET(
       );
     }
 
-    const blogs: AdminBlogTransformationsPopulated["Frontend"][] = rawBlogs.map(
-      (blog) => transformAdminBlogPopulated(blog)
+    const blogs: BlogEntryFrontend[] = rawBlogs.map((blog) =>
+      transformBlogPopulated(blog)
     );
 
     return NextResponse.json({

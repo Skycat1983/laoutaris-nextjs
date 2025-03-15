@@ -33,7 +33,7 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get single collection navigation item
   fetchCollectionNavigationItem: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<CollectionNavDataFrontend>(
+    return fetcher<ApiCollectionNavItemResult>(
       `/api/v2/public/navigation/collections/${encodedSlug}`
     );
   },

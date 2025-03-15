@@ -11,7 +11,6 @@ import {
   ArtworkPaginationItem,
   ArtworkPaginationItemSkeleton,
 } from "./ArtworkPaginationItem";
-import CollectionInfo from "../wip/CollectionInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
@@ -251,7 +250,7 @@ export function ScrollableArtworkPagination({
             >
               {items.map((artwork, index) => (
                 <motion.div
-                  key={artwork._id}
+                  key={artwork._id.toString()}
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: visibleItems.includes(index) ? 1 : 0,

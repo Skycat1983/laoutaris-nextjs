@@ -6,8 +6,9 @@ import { isAdmin } from "@/lib/session/isAdmin";
 import {
   AdminCollectionTransformationsPopulated,
   AdminArtworkTransformations,
+  CollectionFrontendPopulated,
 } from "@/lib/data/types";
-import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdmin";
+import { transformCollectionPopulated } from "@/lib/transforms";
 
 export async function GET(
   request: Request,
@@ -43,8 +44,8 @@ export async function GET(
       );
     }
 
-    const collection: AdminCollectionTransformationsPopulated["Frontend"] =
-      transformAdminCollectionPopulated(leanCollection);
+    const collection: CollectionFrontendPopulated =
+      transformCollectionPopulated(leanCollection);
 
     return NextResponse.json({
       success: true,

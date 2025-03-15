@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
-import { AdminArticleTransformationsPopulated } from "@/lib/data/types";
+import {
+  AdminArticleTransformationsPopulated,
+  ArticleFrontendPopulated,
+} from "@/lib/data/types";
 import { transformAdminArticlePopulated } from "@/lib/transforms/transformAdmin";
+import { transformArticlePopulated } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest
@@ -46,8 +50,9 @@ export async function GET(
       );
     }
 
-    const articles: AdminArticleTransformationsPopulated["Frontend"][] =
-      leanArticles.map((article) => transformAdminArticlePopulated(article));
+    const articles: ArticleFrontendPopulated[] = leanArticles.map((article) =>
+      transformArticlePopulated(article)
+    );
 
     return NextResponse.json({
       success: true,

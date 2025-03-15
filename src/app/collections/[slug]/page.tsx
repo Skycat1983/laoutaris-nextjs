@@ -27,7 +27,7 @@ export default async function CollectionSlug({
     const redirectPath = buildUrl([
       "collections",
       collection.slug,
-      collection.artworkId,
+      collection.firstArtworkId || "",
     ]);
 
     return redirect(redirectPath);

@@ -7,8 +7,10 @@ import {
   AdminBlogTransformationsPopulated,
   AdminCommentTransformations,
   AdminUserTransformations,
+  BlogEntryFrontend,
 } from "@/lib/data/types";
 import { transformAdminBlogPopulated } from "@/lib/transforms/transformAdmin";
+import { transformBlogPopulated } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest,
@@ -45,8 +47,7 @@ export async function GET(
       );
     }
 
-    const blog: AdminBlogTransformationsPopulated["Frontend"] =
-      transformAdminBlogPopulated(leanDocument);
+    const blog: BlogEntryFrontend = transformBlogPopulated(leanDocument);
 
     return NextResponse.json({
       success: true,

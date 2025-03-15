@@ -16,8 +16,8 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { FrontendCollectionWithArtworks } from "@/lib/data/types/collectionTypes";
-import { FrontendArtwork } from "@/lib/data/types/artworkTypes";
+import { CollectionFrontendPopulated } from "@/lib/data/types";
+import { ArtworkFrontend } from "@/lib/data/types";
 import {
   Tabs,
   TabsContent,
@@ -30,7 +30,7 @@ import {
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
 interface UpdateCollectionFormProps {
-  collectionInfo: FrontendCollectionWithArtworks;
+  collectionInfo: CollectionFrontendPopulated;
   onSuccess: () => void;
 }
 
@@ -40,14 +40,14 @@ export const UpdateCollectionForm = ({
 }: UpdateCollectionFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(collectionInfo.imageUrl);
-  const [artworkToAdd, setArtworkToAdd] = useState<FrontendArtwork | null>(
+  const [artworkToAdd, setArtworkToAdd] = useState<ArtworkFrontend | null>(
     null
   );
   const [isLoadingArtwork, setIsLoadingArtwork] = useState(false);
   const artworkIdRef = useRef<HTMLInputElement>(null);
 
   // Track artwork changes
-  const [artworks, setArtworks] = useState<FrontendArtwork[]>(
+  const [artworks, setArtworks] = useState<ArtworkFrontend[]>(
     collectionInfo.artworks
   );
   const [artworksToAdd, setArtworksToAdd] = useState<string[]>([]);

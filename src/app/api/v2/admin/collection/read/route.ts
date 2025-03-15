@@ -7,8 +7,8 @@ import {
   AdminArtworkTransformations,
   AdminCollectionTransformationsPopulated,
 } from "@/lib/data/types";
-import { transformAdminCollectionPopulated } from "@/lib/transforms/transformAdmin";
-
+import { transformCollectionPopulated } from "@/lib/transforms";
+import { CollectionFrontendPopulated } from "@/lib/data/types";
 // TODO: remove the 'return one item' logic
 
 export async function GET(
@@ -53,10 +53,9 @@ export async function GET(
       );
     }
 
-    const collections: AdminCollectionTransformationsPopulated["Frontend"][] =
-      rawCollections.map((collection) =>
-        transformAdminCollectionPopulated(collection)
-      );
+    const collections: CollectionFrontendPopulated[] = rawCollections.map(
+      (collection) => transformCollectionPopulated(collection)
+    );
 
     return NextResponse.json({
       success: true,

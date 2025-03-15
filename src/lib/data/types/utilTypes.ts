@@ -24,7 +24,7 @@ export type LeanDocument<T> = Omit<T, "$locals"> & {
 
 // for our transformation pipeline
 export type TransformedDocument<T> = Omit<T, keyof MongoDocument> & {
-  _id: string | ObjectId;
+  _id: string;
 };
 
 // ttility to make TypeScript output cleaner by removing intersections

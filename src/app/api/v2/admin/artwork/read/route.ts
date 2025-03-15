@@ -3,8 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { ReadArtworkListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { isAdmin } from "@/lib/session/isAdmin";
-import { AdminArtwork, AdminArtworkTransformations } from "@/lib/data/types";
+import { AdminArtworkTransformations } from "@/lib/data/types";
 import { transformAdminArtwork } from "@/lib/transforms/transformAdmin";
+import { transformArtwork } from "@/lib/transforms";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 export async function GET(
   request: NextRequest
@@ -57,8 +59,8 @@ export async function GET(
       );
     }
 
-    const artworks: AdminArtwork[] = rawArtworks.map((artwork) =>
-      transformAdminArtwork(artwork)
+    const artworks: ArtworkFrontend[] = rawArtworks.map((artwork) =>
+      transformArtwork.toFrontend(artwork)
     );
 
     return NextResponse.json({

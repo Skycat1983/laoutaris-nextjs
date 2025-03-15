@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/shadcn/button";
 import {
   Form,
@@ -21,17 +20,17 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Input } from "@/components/shadcn/input";
-import { Checkbox } from "@/components/shadcn/checkbox";
-import { ArtworkImage } from "@/lib/data/types/artworkTypes";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { BaseArtwork } from "@/lib/data/models";
-import { clientApi } from "@/lib/api/clientApi";
 import { artworkFormSchema, ArtworkFormValues } from "@/lib/data/schemas";
+import { ArtworkBase } from "@/lib/data/models";
+import { clientApi } from "@/lib/api/clientApi";
+import Image from "next/image";
+import { CloudinaryImageDB } from "@/lib/data/types";
+import { Checkbox } from "@/components/shadcn/checkbox";
 
 interface CreateArtworkFormProps {
-  uploadInfo: ArtworkImage | null;
+  uploadInfo: CloudinaryImageDB | null;
   onSuccess: () => void;
 }
 
@@ -60,7 +59,7 @@ export function CreateArtworkForm({
     setIsSubmitting(true);
 
     try {
-      const artworkData: BaseArtwork = {
+      const artworkData: ArtworkBase = {
         ...values,
         image: uploadInfo,
       };

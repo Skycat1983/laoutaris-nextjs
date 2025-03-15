@@ -5,7 +5,8 @@ import { ReadArtworkResult } from "@/lib/api/admin/read/fetchers";
 import { isAdmin } from "@/lib/session/isAdmin";
 import { AdminArtworkTransformations } from "@/lib/data/types";
 import { transformAdminArtwork } from "@/lib/transforms/transformAdmin";
-
+import { transformArtwork } from "@/lib/transforms";
+import { ArtworkFrontend } from "@/lib/data/types";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -40,8 +41,8 @@ export async function GET(
       );
     }
 
-    const frontendArtwork: AdminArtworkTransformations["Frontend"] =
-      transformAdminArtwork(leanArtwork);
+    const frontendArtwork: ArtworkFrontend =
+      transformArtwork.toFrontend(leanArtwork);
 
     return NextResponse.json({
       success: true,

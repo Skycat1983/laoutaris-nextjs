@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
-import type { FrontendUser } from "@/lib/data/types/userTypes";
+import type { UserFrontend } from "@/lib/data/types/userTypes";
 import { clientApi } from "@/lib/api/clientApi";
 
 export function ReadUserList() {
-  const [users, setUsers] = useState<FrontendUser[]>([]);
+  const [users, setUsers] = useState<UserFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +58,7 @@ export function ReadUserList() {
                 <h3 className="text-sm font-medium truncate">
                   {user.username}
                 </h3>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                {/* <p className="text-xs text-gray-500 truncate">{user.email}</p> */}
                 <p className="text-xs text-gray-500">Role: {user.role}</p>
               </div>
               <Button

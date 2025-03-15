@@ -1,19 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Artwork } from "@/lib/data/types/artworkTypes";
 import { CopyIcon } from "@/components/elements/icons";
 import Image from "next/image";
 import { Button } from "@/components/shadcn/button";
 import { ArtworkFilterDropdowns } from "../../inputs/ArtworkFilterDropdowns";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { clientApi } from "@/lib/api/clientApi";
-import { AdminArtwork } from "@/lib/data/types";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 type ArtworkFilterKey = "decade" | "artstyle" | "medium" | "surface";
 
 export function ReadArtworkList() {
-  const [artworks, setArtworks] = useState<AdminArtwork[]>([]);
+  const [artworks, setArtworks] = useState<ArtworkFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<{

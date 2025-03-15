@@ -1,6 +1,12 @@
 import type { ArticleFilterParams } from "@/lib/data/types/articleTypes";
-import type { CollectionFilterParams } from "@/lib/data/types/collectionTypes";
-import type { BlogFilterParams } from "@/lib/data/types/blogTypes";
+import type {
+  CollectionFilterParams,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types/collectionTypes";
+import type {
+  BlogEntryFrontend,
+  BlogFilterParams,
+} from "@/lib/data/types/blogTypes";
 import type { Fetcher } from "../../core/createFetcher";
 import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
 import {
@@ -13,7 +19,12 @@ import {
   AdminUser,
   AdminBlogPopulated,
 } from "@/lib/data/types/adminTypes";
-import { CommentFrontendPopulated, UserFrontend } from "@/lib/data/types";
+import {
+  ArtworkFrontend,
+  CommentFrontendPopulated,
+  UserFrontend,
+  ArticleFrontendPopulated,
+} from "@/lib/data/types";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
@@ -35,17 +46,29 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-export type ReadArtworkResult = SingleResult<AdminArtwork>;
-export type ReadArtworkListResult = ListResult<AdminArtwork>;
+export type ReadArtworkResult = SingleResult<ArtworkFrontend>;
+export type ReadArtworkListResult = ListResult<ArtworkFrontend>;
 
-export type ReadArticleResult = SingleResult<AdminArticlePopulated>;
-export type ReadArticleListResult = ListResult<AdminArticlePopulated>;
+export type ReadArticleResult = SingleResult<ArticleFrontendPopulated>;
+export type ReadArticleListResult = ListResult<ArticleFrontendPopulated>;
 
-export type ReadCollectionResult = SingleResult<AdminCollectionPopulated>;
-export type ReadCollectionListResult = ListResult<AdminCollectionPopulated>;
+export type ReadCollectionResult = SingleResult<CollectionFrontendPopulated>;
+export type ReadCollectionListResult = ListResult<CollectionFrontendPopulated>;
 
-export type ReadBlogResult = SingleResult<AdminBlogPopulated>;
-export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
+export type ReadBlogResult = SingleResult<BlogEntryFrontend>;
+export type ReadBlogListResult = ListResult<BlogEntryFrontend>;
+
+// export type ReadArtworkResult = SingleResult<AdminArtwork>;
+// export type ReadArtworkListResult = ListResult<AdminArtwork>;
+
+// export type ReadArticleResult = SingleResult<AdminArticlePopulated>;
+// export type ReadArticleListResult = ListResult<AdminArticlePopulated>;
+
+// export type ReadCollectionResult = SingleResult<AdminCollectionPopulated>;
+// export type ReadCollectionListResult = ListResult<AdminCollectionPopulated>;
+
+// export type ReadBlogResult = SingleResult<AdminBlogPopulated>;
+// export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
 
 export type ReadUserResult = SingleResult<UserFrontend>;
 export type ReadUserListResult = ListResult<UserFrontend>;

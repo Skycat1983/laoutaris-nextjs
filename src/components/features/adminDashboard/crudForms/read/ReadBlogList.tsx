@@ -5,9 +5,9 @@ import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
 import Image from "next/image";
-import type { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
 import { BlogFilterDropdowns } from "../../inputs/BlogFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
+import { BlogEntryFrontend } from "@/lib/data/types";
 
 type FilterKey = "featured" | "year" | null;
 
@@ -17,7 +17,7 @@ interface FilterState {
 }
 
 export function ReadBlogList() {
-  const [blogs, setBlogs] = useState<FrontendBlogEntry[]>([]);
+  const [blogs, setBlogs] = useState<BlogEntryFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterState>({

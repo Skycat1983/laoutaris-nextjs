@@ -20,12 +20,17 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useRouter } from "next/navigation";
 
-import { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  CollectionFrontend,
+} from "@/lib/data/types";
 import {
   CreateCollectionFormValues,
   createCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
+import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
 
 export const CreateCollectionForm = ({
   onSuccess,
@@ -56,7 +61,7 @@ export const CreateCollectionForm = ({
   const onSubmit = async (values: z.infer<typeof createCollectionSchema>) => {
     try {
       setIsSubmitting(true);
-      const response: ApiResponse<FrontendCollection> =
+      const response: CreateCollectionResult | ApiErrorResponse =
         await clientApi.admin.create.collection(values);
       if (!response.success) {
         throw new Error("Failed to create collection");
