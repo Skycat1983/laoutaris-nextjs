@@ -1,5 +1,8 @@
 import { buildUrl } from "@/lib/utils/buildUrl";
-import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
+import {
+  Subnav,
+  SubnavLink,
+} from "@/components/modules/navigation/subnav/Subnav";
 
 export default async function ProjectLayout({
   children,
@@ -8,22 +11,31 @@ export default async function ProjectLayout({
 }) {
   const stem = "project";
 
-  const subNavLinks = [
-    { title: "About", slug: "about", link_to: buildUrl([stem, "about"]) },
-    // {
-    //   title: "Aims",
-    //   slug: "aims",
-    //   link_to: buildUrl([stem, "aims"]),
-    //   disabled: true,
-    // },
-    // {
-    //   title: "Timeline",
-    //   slug: "timeline",
-    //   link_to: buildUrl([stem, "timeline"]),
-    //   disabled: true,
-    // },
-    { title: "Film", slug: "film", link_to: buildUrl([stem, "film"]) },
-    { title: "Contact", slug: "contact", link_to: buildUrl([stem, "contact"]) },
+  const subNavLinks: SubnavLink[] = [
+    {
+      label: "About",
+      slug: "about",
+      link_to: buildUrl([stem, "about"]),
+      disabled: false,
+    },
+    {
+      label: "Film",
+      slug: "film",
+      link_to: buildUrl([stem, "film"]),
+      disabled: false,
+    },
+    {
+      label: "FAQ",
+      slug: "faq",
+      link_to: null,
+      disabled: true,
+    },
+    {
+      label: "Contact",
+      slug: "contact",
+      link_to: buildUrl([stem, "contact"]),
+      disabled: false,
+    },
   ];
 
   return (

@@ -4,7 +4,7 @@ import { ARTICLE_SECTION_OPTIONS, ArticleSection } from "@/lib/constants";
 import { ArticleModel } from "@/lib/data/models";
 import {
   ArticleSelectFieldsLean,
-  BiographyNavDataFrontend,
+  ArticleNavDataFrontend,
   RouteResponse,
 } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
@@ -41,7 +41,7 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const navItems: BiographyNavDataFrontend[] = articleLean.map((article) =>
+    const navItems: ArticleNavDataFrontend[] = articleLean.map((article) =>
       transformBiographyNav.toFrontend(article)
     );
 

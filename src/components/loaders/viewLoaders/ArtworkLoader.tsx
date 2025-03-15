@@ -1,6 +1,8 @@
 import { SubscribeSection } from "@/components/sections";
 import { ArtworkView } from "@/components/views";
 import { serverApi } from "@/lib/api/serverApi";
+import { ArtworkFrontend } from "@/lib/data/types";
+import { ApiSuccessResponse } from "@/lib/data/types";
 import React from "react";
 
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
@@ -8,11 +10,11 @@ const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
   if (!result.success) {
     throw new Error("Failed to fetch artwork");
   }
-  const { data: artwork } = result;
+  const { data } = result as ApiSuccessResponse<ArtworkFrontend>;
   return (
     <>
       <div className="py-16">
-        <ArtworkView {...artwork} />
+        <ArtworkView {...data} />
       </div>
       {/* <CollectionInfoLayout /> */}
       <div className="pt-16">

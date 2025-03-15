@@ -26,8 +26,6 @@ export const ArtworkListLoader = async ({
 
   const { data: artworks, metadata } = result as ApiArtworkListResult;
 
-  // console.log("artworks in loader", artworks);
-
   return (
     <ArtworkGallery
       initialArtworks={artworks}

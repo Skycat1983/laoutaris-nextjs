@@ -2,11 +2,15 @@
 
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { ArticleView } from "@/components/views/ArticleView";
-import { ArticleNavItem } from "@/lib/data/types/navigationTypes";
 import { serverApi } from "@/lib/api/serverApi";
-import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
-import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import {
+  ArticleFrontendPopulated,
+  ArticleNavDataFrontend,
+  ApiResponse,
+  ApiSuccessResponse,
+} from "@/lib/data/types";
 import { ArticleSection } from "@/lib/constants";
+
 interface ArticleLoaderProps {
   slug: string;
   section: ArticleSection;
@@ -14,7 +18,7 @@ interface ArticleLoaderProps {
 
 type FetcherResponses = [
   ApiResponse<ArticleFrontendPopulated>,
-  ApiResponse<ArticleNavItem[]>
+  ApiResponse<ArticleNavDataFrontend[]>
 ];
 
 export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
@@ -37,7 +41,7 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
     articleResponse as ApiSuccessResponse<ArticleFrontendPopulated>;
 
   const { data: navigationList } = navigationResponse as ApiSuccessResponse<
-    ArticleNavItem[]
+    ArticleNavDataFrontend[]
   >;
 
   // Find current article index

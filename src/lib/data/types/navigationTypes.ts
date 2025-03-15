@@ -23,7 +23,7 @@ export interface NavTransformer<T> {
 //! ARTICLE NAVIGATION
 export type ArticleSelectFields = Pick<ArticleDB, "title" | "slug">;
 export type ArticleSelectFieldsLean = LeanDocument<ArticleSelectFields>;
-export type BiographyNavDataFrontend = Prettify<
+export type ArticleNavDataFrontend = Prettify<
   ReturnType<typeof transformBiographyNav.toFrontend>
 >;
 

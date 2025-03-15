@@ -176,3 +176,11 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.slow-slide {
+  transition: transform 1.5s ease-in-out;
+}
+
+.slow-slide:hover {
+  transform: translateX(-3%);
+}

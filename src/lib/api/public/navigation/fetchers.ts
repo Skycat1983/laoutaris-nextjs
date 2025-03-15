@@ -1,5 +1,5 @@
 import type {
-  BiographyNavDataFrontend,
+  ArticleNavDataFrontend,
   CollectionNavDataFrontend,
   ArticleSection,
   ListResult,
@@ -7,7 +7,7 @@ import type {
 } from "@/lib/data/types";
 import { Fetcher } from "@/lib/api/core/createFetcher";
 
-export type ApiArticleNavListResult = ListResult<BiographyNavDataFrontend>;
+export type ApiArticleNavListResult = ListResult<ArticleNavDataFrontend>;
 export type ApiCollectionNavItemResult =
   SingleResult<CollectionNavDataFrontend>;
 
