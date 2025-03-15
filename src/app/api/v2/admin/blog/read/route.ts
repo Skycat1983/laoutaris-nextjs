@@ -8,7 +8,7 @@ import {
   AdminCommentTransformations,
   AdminUserTransformations,
 } from "@/lib/data/types";
-import { adminTransformBlogPopulated } from "@/lib/transforms/transformBlogAdmin";
+import { transformAdminBlogPopulated } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest
@@ -52,7 +52,7 @@ export async function GET(
     }
 
     const blogs: AdminBlogTransformationsPopulated["Frontend"][] = rawBlogs.map(
-      (blog) => adminTransformBlogPopulated(blog)
+      (blog) => transformAdminBlogPopulated(blog)
     );
 
     return NextResponse.json({

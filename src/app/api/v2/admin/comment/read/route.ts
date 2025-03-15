@@ -1,11 +1,10 @@
 import { CommentModel } from "@/lib/data/models";
-import { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
 import { isAdmin } from "@/lib/session/isAdmin";
-
+import { CommentLeanPopulated } from "@/lib/data/types";
+import { transformCommentPopulated } from "@/lib/transforms";
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadCommentListResult>> {
@@ -31,7 +30,8 @@ export async function GET(
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("author");
+      .populate("author")
+      .lean<CommentLeanPopulated[]>();
 
     if (rawComments.length === 0) {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function GET(
     }
 
     const comments = rawComments.map((comment) =>
-      transformMongooseDoc<FrontendCommentWithAuthor>(comment)
+      transformCommentPopulated(comment)
     );
 
     return NextResponse.json({

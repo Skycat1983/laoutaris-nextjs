@@ -1,43 +1,47 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
+import {
+  ApiErrorResponse,
+  CommentLeanPopulated,
+  RouteResponse,
+  CommentFrontendPopulated,
+} from "@/lib/data/types";
+import {
+  ApiUserCommentsGetResult,
+  ApiUserCommentCreateResult,
+} from "@/lib/api/user/comments/fetchers";
 import dbConnect from "@/lib/db/mongodb";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import { RouteResponse } from "@/lib/api/core/createRoute";
+import { transformCommentPopulated } from "@/lib/transforms";
 
-export async function GET(req: NextRequest): Promise<RouteResponse> {
+interface UserWithComentsLean {
+  _id: string;
+  comments: CommentLeanPopulated[];
+}
+
+export async function GET(
+  req: NextRequest
+): Promise<RouteResponse<ApiUserCommentsGetResult>> {
   const userId = await getUserIdFromSession();
 
-  console.log("userId", userId);
-
-  const blogId = "67b46c5a31b3f845bc8019d8";
-  const blog = await BlogModel.findById(blogId);
-  console.log("blog", blog);
-
   try {
-    const rawUserWithoutPopulation = await UserModel.findById(userId)
-      .select("comments")
-      .lean()
-      .exec();
-
-    console.log(
-      "Raw user without population:",
-      JSON.stringify(rawUserWithoutPopulation, null, 2)
-    );
-
     const rawUserComments = await UserModel.findById(userId)
       .select("comments")
       .populate({
         path: "comments",
-        populate: {
-          path: "blog",
-          model: "Blog",
-          select: "slug title imageUrl subtitle",
-        },
+        populate: [
+          {
+            path: "blog",
+            model: "Blog",
+          },
+          {
+            path: "author",
+            model: "User",
+          },
+        ],
       })
-      .lean()
-      .exec();
+      .lean<UserWithComentsLean>();
 
     if (!rawUserComments) {
       return NextResponse.json({
@@ -46,23 +50,24 @@ export async function GET(req: NextRequest): Promise<RouteResponse> {
       } satisfies ApiErrorResponse);
     }
 
-    console.log(
-      "Raw user comments data in route.ts:",
-      JSON.stringify(rawUserComments, null, 2)
-    );
+    const { comments, ...user } = rawUserComments as UserWithComentsLean;
 
-    const userComments =
-      transformMongooseDoc<FrontendUserWithComments>(rawUserComments);
-
-    console.log(
-      "Transformed userComments in route.ts:",
-      JSON.stringify(userComments, null, 2)
+    const frontendComments: CommentFrontendPopulated[] = comments.map(
+      (comment) => {
+        return transformCommentPopulated(comment);
+      }
     );
 
     return NextResponse.json({
       success: true,
-      data: userComments,
-    } satisfies ApiSuccessResponse<FrontendUserWithComments>);
+      data: frontendComments,
+      metadata: {
+        total: comments.length,
+        page: 1,
+        limit: comments.length,
+        totalPages: 1,
+      },
+    } satisfies ApiUserCommentsGetResult);
   } catch (error) {
     console.error("Error fetching user comments:", error);
     return NextResponse.json({
@@ -138,7 +143,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         data: comment[0],
-      } satisfies ApiSuccessResponse<(typeof comment)[0]>);
+      } satisfies ApiUserCommentCreateResult);
     } catch (error) {
       await session.abortTransaction();
       throw error;

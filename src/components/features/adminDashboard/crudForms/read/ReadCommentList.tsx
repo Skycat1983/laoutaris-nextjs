@@ -4,14 +4,11 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
-import type {
-  FrontendComment,
-  FrontendCommentWithAuthor,
-} from "@/lib/data/types/commentTypes";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 
 export function ReadCommentList() {
-  const [comments, setComments] = useState<FrontendCommentWithAuthor[]>([]);
+  const [comments, setComments] = useState<CommentFrontendPopulated[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

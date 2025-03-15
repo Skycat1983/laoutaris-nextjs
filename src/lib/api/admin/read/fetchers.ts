@@ -13,7 +13,7 @@ import {
   AdminUser,
   AdminBlogPopulated,
 } from "@/lib/data/types/adminTypes";
-
+import { CommentFrontendPopulated } from "@/lib/data/types";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
@@ -50,8 +50,8 @@ export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
 export type ReadUserResult = SingleResult<AdminUser>;
 export type ReadUserListResult = ListResult<AdminUser>;
 
-export type ReadCommentResult = SingleResult<AdminBlogPopulated>;
-export type ReadCommentListResult = ListResult<AdminBlogPopulated>;
+export type ReadCommentResult = SingleResult<CommentFrontendPopulated>;
+export type ReadCommentListResult = ListResult<CommentFrontendPopulated>;
 
 export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
