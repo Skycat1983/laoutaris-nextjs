@@ -9,7 +9,6 @@ export type * from "./commentTypes";
 export type * from "./enquiryTypes";
 export type * from "./navigationTypes";
 export type * from "./ownUserTypes";
-export type * from "./populatedTypes";
 export type * from "./searchTypes";
 export type * from "./subscriberTypes";
 export type * from "./userTypes";

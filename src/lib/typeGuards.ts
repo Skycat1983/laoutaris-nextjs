@@ -1,7 +1,7 @@
-import type { FrontendUser } from "./data/types/userTypes";
+import { UserFrontend } from "./data/types";
 
 export const isFrontendUser = (
-  author: string | FrontendUser
-): author is FrontendUser => {
+  author: string | UserFrontend
+): author is UserFrontend => {
   return typeof author !== "string" && "_id" in author;
 };

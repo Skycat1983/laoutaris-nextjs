@@ -4,12 +4,12 @@ import {
   ArtworkPaginationItemSkeleton,
 } from "./ArtworkPaginationItem";
 import CollectionInfo from "../wip/CollectionInfo";
-import { ArtworkNavFields } from "@/lib/data/types/navigationTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 interface PaginationProps {
-  items: ArtworkNavFields[];
+  items: ArtworkFrontend[];
   heading: string;
-  link_to: (artwork: ArtworkNavFields) => string;
+  link_to: (artwork: ArtworkFrontend) => string;
 }
 
 const PaginationLayout = ({ children }: { children: ReactNode }) => {

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { ReactNode, useRef, useState, useEffect } from "react";
+import React, {
+  ReactNode,
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import {
   ArtworkPaginationItem,
   ArtworkPaginationItemSkeleton,
@@ -40,34 +46,76 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
 
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
     setShowLeftButton(scrollLeft > 0);
-    setShowRightButton(scrollLeft < scrollWidth - clientWidth - 10);
+    const hasOverflow = scrollWidth > clientWidth;
+    setShowRightButton(
+      hasOverflow && scrollLeft < scrollWidth - clientWidth - 10
+    );
   };
 
+  // Initial setup and measurements
+  useLayoutEffect(() => {
+    const checkContentAndScroll = () => {
+      if (!scrollContainerRef.current) return;
+
+      // Force a reflow to get accurate measurements
+      scrollContainerRef.current.style.display = "none";
+      scrollContainerRef.current.offsetHeight; // Trigger reflow
+      scrollContainerRef.current.style.display = "flex";
+
+      handleScrollCheck();
+    };
+
+    // Check immediately
+    checkContentAndScroll();
+
+    // Check again after a short delay to ensure content is laid out
+    const timeoutId = setTimeout(checkContentAndScroll, 100);
+
+    // Create an observer to watch for changes in the container's children
+    const observer = new ResizeObserver(() => {
+      checkContentAndScroll();
+    });
+
+    if (scrollContainerRef.current) {
+      observer.observe(scrollContainerRef.current);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, []);
+
+  // Scroll and resize listeners
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener("scroll", handleScrollCheck);
-      // Initial check
-      handleScrollCheck();
+      window.addEventListener("resize", handleScrollCheck);
 
-      return () =>
+      return () => {
         scrollContainer.removeEventListener("scroll", handleScrollCheck);
+        window.removeEventListener("resize", handleScrollCheck);
+      };
     }
   }, []);
 
   return (
     <div className="relative w-full group px-16">
-      {showLeftButton && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onClick={() => handleScroll("left")}
-          className="absolute left-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Scroll left"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </motion.button>
-      )}
+      <motion.button
+        initial={{ opacity: 0.3 }}
+        animate={{ opacity: showLeftButton ? 1 : 0.3 }}
+        onClick={() => handleScroll("left")}
+        className={`absolute left-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all ${
+          !showLeftButton ? "cursor-not-allowed" : "hover:scale-110"
+        }`}
+        disabled={!showLeftButton}
+        aria-label="Scroll left"
+      >
+        <ChevronLeft
+          className={`w-5 h-5 ${!showLeftButton ? "text-gray-300" : ""}`}
+        />
+      </motion.button>
 
       <div
         ref={scrollContainerRef}
@@ -82,17 +130,20 @@ const ScrollableLayout = ({ children }: { children: ReactNode }) => {
         {children}
       </div>
 
-      {showRightButton && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          onClick={() => handleScroll("right")}
-          className="absolute right-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Scroll right"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </motion.button>
-      )}
+      <motion.button
+        initial={{ opacity: 0.3 }}
+        animate={{ opacity: showRightButton ? 1 : 0.3 }}
+        onClick={() => handleScroll("right")}
+        className={`absolute right-2 top-1/3 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-all ${
+          !showRightButton ? "cursor-not-allowed" : "hover:scale-110"
+        }`}
+        disabled={!showRightButton}
+        aria-label="Scroll right"
+      >
+        <ChevronRight
+          className={`w-5 h-5 ${!showRightButton ? "text-gray-300" : ""}`}
+        />
+      </motion.button>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { RefreshButton } from "@/components/elements/buttons";
 import { SkeletonFactory } from "./SkeletonFactory";
 import { Skeleton } from "../shadcn/skeleton";
+import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
 
 // type for the fetch function that returns data
 type FetchFn<T> = (params: {
