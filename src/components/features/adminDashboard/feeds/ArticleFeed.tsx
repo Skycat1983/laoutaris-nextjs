@@ -3,12 +3,12 @@
 import { ArticleFeedCard } from "@/components/modules/cards/ArticleFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendArticleWithArtwork } from "@/lib/data/types/articleTypes";
+import { ArticleFrontendPopulated } from "@/lib/data/types";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 export function ArticleFeed() {
-  const [articles, setArticles] = useState<FrontendArticleWithArtwork[]>([]);
+  const [articles, setArticles] = useState<ArticleFrontendPopulated[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

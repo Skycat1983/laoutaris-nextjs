@@ -10,16 +10,6 @@ import type {
 import type { Fetcher } from "../../core/createFetcher";
 import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
 import {
-  AdminArtwork,
-  AdminArticle,
-  AdminCollection,
-  AdminBlog,
-  AdminArticlePopulated,
-  AdminCollectionPopulated,
-  AdminUser,
-  AdminBlogPopulated,
-} from "@/lib/data/types/adminTypes";
-import {
   ArtworkFrontend,
   CommentFrontendPopulated,
   UserFrontend,
@@ -46,18 +36,6 @@ interface ArtworkFilterParams {
   value: string | null;
 }
 
-export type ReadArtworkResult = SingleResult<ArtworkFrontend>;
-export type ReadArtworkListResult = ListResult<ArtworkFrontend>;
-
-export type ReadArticleResult = SingleResult<ArticleFrontendPopulated>;
-export type ReadArticleListResult = ListResult<ArticleFrontendPopulated>;
-
-export type ReadCollectionResult = SingleResult<CollectionFrontendPopulated>;
-export type ReadCollectionListResult = ListResult<CollectionFrontendPopulated>;
-
-export type ReadBlogResult = SingleResult<BlogEntryFrontend>;
-export type ReadBlogListResult = ListResult<BlogEntryFrontend>;
-
 // export type ReadArtworkResult = SingleResult<AdminArtwork>;
 // export type ReadArtworkListResult = ListResult<AdminArtwork>;
 
@@ -69,6 +47,18 @@ export type ReadBlogListResult = ListResult<BlogEntryFrontend>;
 
 // export type ReadBlogResult = SingleResult<AdminBlogPopulated>;
 // export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
+
+export type ReadArtworkResult = SingleResult<ArtworkFrontend>;
+export type ReadArtworkListResult = ListResult<ArtworkFrontend>;
+
+export type ReadArticleResult = SingleResult<ArticleFrontendPopulated>;
+export type ReadArticleListResult = ListResult<ArticleFrontendPopulated>;
+
+export type ReadCollectionResult = SingleResult<CollectionFrontendPopulated>;
+export type ReadCollectionListResult = ListResult<CollectionFrontendPopulated>;
+
+export type ReadBlogResult = SingleResult<BlogEntryFrontend>;
+export type ReadBlogListResult = ListResult<BlogEntryFrontend>;
 
 export type ReadUserResult = SingleResult<UserFrontend>;
 export type ReadUserListResult = ListResult<UserFrontend>;

@@ -9,7 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateCollectionForm } from "../crudForms/create";
 import { UpdateCollectionForm } from "../crudForms/update/UpdateCollectionForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
-import { AdminCollectionPopulated } from "@/lib/data/types";
+import { CollectionFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -21,7 +21,7 @@ export function CollectionOperations({
   operationType,
 }: CollectionOperationsProps) {
   const [collectionInfo, setCollectionInfo] =
-    useState<AdminCollectionPopulated | null>(null);
+    useState<CollectionFrontendPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -75,7 +75,7 @@ export function CollectionOperations({
     update: (
       <>
         {!collectionInfo && (
-          <DocumentReader<AdminCollectionPopulated>
+          <DocumentReader<CollectionFrontendPopulated>
             onDocumentFound={setCollectionInfo}
             readDocument={(id) => clientAdminApi.read.collection(id)}
             documentType="Collection"
@@ -93,7 +93,7 @@ export function CollectionOperations({
     delete: (
       <>
         {!collectionInfo && (
-          <DocumentReader<AdminCollectionPopulated>
+          <DocumentReader<CollectionFrontendPopulated>
             onDocumentFound={setCollectionInfo}
             readDocument={(id) => clientApi.admin.read.collection(id)}
             documentType="Collection"

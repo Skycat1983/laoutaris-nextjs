@@ -6,10 +6,10 @@ import { FeedSkeleton } from "@/components/compositions/Feed";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
-import { Artwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 export function ArtworkFeed() {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [artworks, setArtworks] = useState<ArtworkFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import type { Section } from "@/lib/data/types/articleTypes";
+import { ArticleSection } from "@/lib/data/types";
 
 type FilterKey = "section" | "overlayColour" | null;
 

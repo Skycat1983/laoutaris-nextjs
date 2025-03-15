@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendCommentWithAuthor } from "@/lib/data/types/commentTypes";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 import { CommentFeedCard } from "@/components/modules/cards/CommentFeedCard";
 
 export function CommentFeed() {
-  const [comments, setComments] = useState<FrontendCommentWithAuthor[]>([]);
+  const [comments, setComments] = useState<CommentFrontendPopulated[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

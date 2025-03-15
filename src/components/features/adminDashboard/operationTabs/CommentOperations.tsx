@@ -6,7 +6,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
-import { AdminComment } from "@/lib/data/types";
+import { AdminComment, CommentFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "read" | "delete";
 
@@ -15,7 +15,8 @@ interface CommentOperationsProps {
 }
 
 export function CommentOperations({ operationType }: CommentOperationsProps) {
-  const [commentInfo, setCommentInfo] = useState<AdminComment | null>(null);
+  const [commentInfo, setCommentInfo] =
+    useState<CommentFrontendPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -59,7 +60,7 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
     delete: (
       <>
         {!commentInfo && (
-          <DocumentReader<AdminComment>
+          <DocumentReader<CommentFrontendPopulated>
             onDocumentFound={setCommentInfo}
             readDocument={(id) => clientApi.admin.read.comment(id)}
             documentType="Comment"

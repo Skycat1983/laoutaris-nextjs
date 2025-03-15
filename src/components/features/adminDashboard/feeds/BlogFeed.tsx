@@ -2,14 +2,14 @@
 
 import { BlogFeedCard } from "@/components/modules/cards/BlogFeedCard";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import { FrontendBlogEntry } from "@/lib/data/types/blogTypes";
+import { BlogEntryFrontend } from "@/lib/data/types";
 import { useEffect, useState } from "react";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 
 export function BlogFeed() {
-  const [blogs, setBlogs] = useState<FrontendBlogEntry[]>([]);
+  const [blogs, setBlogs] = useState<BlogEntryFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

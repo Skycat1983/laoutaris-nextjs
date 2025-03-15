@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendUser } from "@/lib/data/types/userTypes";
+import { UserFrontend } from "@/lib/data/types/userTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 import { UserFeedCard } from "@/components/modules/cards/UserFeedCard";
 
 export function UserFeed() {
-  const [users, setUsers] = useState<FrontendUser[]>([]);
+  const [users, setUsers] = useState<UserFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

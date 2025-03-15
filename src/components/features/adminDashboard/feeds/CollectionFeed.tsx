@@ -3,12 +3,14 @@
 import { CollectionFeedCard } from "@/components/modules/cards/CollectionFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import type { FrontendCollection } from "@/lib/data/types/collectionTypes";
+import { CollectionFrontendPopulated } from "@/lib/data/types";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
 export function CollectionFeed() {
-  const [collections, setCollections] = useState<FrontendCollection[]>([]);
+  const [collections, setCollections] = useState<CollectionFrontendPopulated[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [metadata, setMetadata] = useState<PaginationMetadata>({
     page: 1,

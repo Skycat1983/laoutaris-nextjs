@@ -8,12 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import {
-  Decade,
-  ArtStyle,
-  Medium,
-  Surface,
-} from "@/lib/data/types/artworkTypes";
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
 

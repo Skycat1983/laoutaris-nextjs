@@ -8,7 +8,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
 import type {
-  CloudinaryImageFrontend,
+  CloudinaryImageDB,
   CloudinaryUploadInfo,
 } from "@/lib/data/types/cloudinaryTypes";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
@@ -16,7 +16,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateArtworkForm } from "../crudForms/create";
 import { UpdateArtworkForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
-import { AdminArtwork } from "@/lib/data/types";
+import { ArtworkFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -25,10 +25,8 @@ interface ArtworkOperationsProps {
 }
 
 export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
-  const [uploadInfo, setUploadInfo] = useState<CloudinaryImageFrontend | null>(
-    null
-  );
-  const [artworkInfo, setArtworkInfo] = useState<AdminArtwork | null>(null);
+  const [uploadInfo, setUploadInfo] = useState<CloudinaryImageDB | null>(null);
+  const [artworkInfo, setArtworkInfo] = useState<ArtworkFrontend | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -115,7 +113,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
     update: (
       <>
         {!artworkInfo && (
-          <DocumentReader<AdminArtwork>
+          <DocumentReader<ArtworkFrontend>
             onDocumentFound={setArtworkInfo}
             readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
@@ -133,7 +131,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
     delete: (
       <>
         {!artworkInfo && (
-          <DocumentReader<AdminArtwork>
+          <DocumentReader<ArtworkFrontend>
             onDocumentFound={setArtworkInfo}
             readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"

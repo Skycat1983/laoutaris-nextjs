@@ -8,7 +8,11 @@ import { DocumentReader } from "../DocumentReader";
 import { UpdateArticleForm } from "../crudForms/update/UpdateArticleForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
 import { CreateArticleForm } from "../crudForms/create";
-import { AdminArticlePopulated, AdminArtwork } from "@/lib/data/types";
+import {
+  AdminArticlePopulated,
+  ArtworkFrontend,
+  ArticleFrontendPopulated,
+} from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -17,10 +21,9 @@ interface ArticleOperationsProps {
 }
 
 export function ArticleOperations({ operationType }: ArticleOperationsProps) {
-  const [artworkInfo, setArtworkInfo] = useState<AdminArtwork | null>(null);
-  const [articleInfo, setArticleInfo] = useState<AdminArticlePopulated | null>(
-    null
-  );
+  const [artworkInfo, setArtworkInfo] = useState<ArtworkFrontend | null>(null);
+  const [articleInfo, setArticleInfo] =
+    useState<ArticleFrontendPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -68,7 +71,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     create: (
       <>
         {!artworkInfo && (
-          <DocumentReader<AdminArtwork>
+          <DocumentReader<ArtworkFrontend>
             onDocumentFound={setArtworkInfo}
             readDocument={(id) => clientApi.admin.read.artwork(id)}
             documentType="Artwork"
@@ -85,7 +88,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     update: (
       <>
         {!articleInfo && (
-          <DocumentReader<AdminArticlePopulated>
+          <DocumentReader<ArticleFrontendPopulated>
             onDocumentFound={setArticleInfo}
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
@@ -103,7 +106,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
     delete: (
       <>
         {!articleInfo && (
-          <DocumentReader<AdminArticlePopulated>
+          <DocumentReader<ArticleFrontendPopulated>
             onDocumentFound={setArticleInfo}
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"

@@ -9,7 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateBlogForm } from "../crudForms/create";
 import { UpdateBlogForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
-import { AdminBlogPopulated } from "@/lib/data/types";
+import { AdminBlogPopulated, BlogEntryFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -18,7 +18,7 @@ interface BlogOperationsProps {
 }
 
 export function BlogOperations({ operationType }: BlogOperationsProps) {
-  const [blogInfo, setBlogInfo] = useState<AdminBlogPopulated | null>(null);
+  const [blogInfo, setBlogInfo] = useState<BlogEntryFrontend | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
 
@@ -64,7 +64,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
     update: (
       <>
         {!blogInfo && (
-          <DocumentReader<AdminBlogPopulated>
+          <DocumentReader<BlogEntryFrontend>
             onDocumentFound={setBlogInfo}
             readDocument={(id) => clientAdminApi.read.blog(id)}
             documentType="Blog"
@@ -83,7 +83,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
     delete: (
       <>
         {!blogInfo && (
-          <DocumentReader<AdminBlogPopulated>
+          <DocumentReader<BlogEntryFrontend>
             onDocumentFound={setBlogInfo}
             readDocument={(id) => clientApi.admin.read.blog(id)}
             documentType="Blog"
