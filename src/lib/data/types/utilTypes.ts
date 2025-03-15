@@ -1,15 +1,30 @@
 import { Document as MongoDocument, ObjectId } from "mongoose";
 import { ArtworkDB } from "../models";
 
+type MongooseInternals = "$locals" | "$assertPopulated" | "$getAllSubdocs";
+
+export type StrictLeanDocument<T> = {
+  [K in keyof Omit<T, MongooseInternals>]: K extends "_id"
+    ? string | ObjectId
+    : T[K];
+} & {
+  _id: string | ObjectId;
+};
+
+type StrictObject<T> = {
+  [P in keyof T]: T[P];
+} & {};
+
 // For Mongoose's .lean() operation
 export type LeanDocument<T> = Omit<T, "$locals"> & {
   _id: string | ObjectId; // Could be either
   // _id: ObjectId;
+  __v?: number;
 };
 
 // for our transformation pipeline
 export type TransformedDocument<T> = Omit<T, keyof MongoDocument> & {
-  _id: string;
+  _id: string | ObjectId;
 };
 
 // ttility to make TypeScript output cleaner by removing intersections
@@ -20,11 +35,15 @@ export type Prettify<T> = {
 // Utility to merge two object types
 export type Merge<T1, T2> = Prettify<Omit<T1, keyof T2> & T2>;
 
-// Helper to create populated types
 export type WithPopulatedFields<
   TBase,
   TPopulated extends Record<string, any>
-> = Omit<TBase, keyof TPopulated> & TPopulated;
+> = StrictObject<Omit<TBase, keyof TPopulated> & TPopulated>;
+// Helper to create populated types
+// export type WithPopulatedFields<
+//   TBase,
+//   TPopulated extends Record<string, any>
+// > = Omit<TBase, keyof TPopulated> & TPopulated;
 
 // For handling single transformations
 export type WithPopulated<

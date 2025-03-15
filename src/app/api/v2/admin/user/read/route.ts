@@ -2,9 +2,9 @@ import { UserModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
-import { FrontendUser } from "@/lib/data/types";
 import { isAdmin } from "@/lib/session/isAdmin";
+import { UserLeanPopulated } from "@/lib/data/types";
+import { transformUser } from "@/lib/transforms";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(
@@ -31,7 +31,8 @@ export async function GET(
     const rawUsers = await UserModel.find()
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean<UserLeanPopulated[]>();
     // .populate([ "author"]);
 
     if (rawUsers.length === 0) {
@@ -41,9 +42,7 @@ export async function GET(
       );
     }
 
-    const users = rawUsers.map((user) =>
-      transformMongooseDoc<FrontendUser>(user)
-    );
+    const users = rawUsers.map((user) => transformUser.toFrontend(user));
 
     return NextResponse.json({
       success: true,

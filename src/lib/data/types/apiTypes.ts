@@ -44,22 +44,3 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 // What components receive (raw data)
 export type FetchResult<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
-// export interface ApiSuccessResponse<T> extends BaseApiResponse {
-//   success: true;
-//   data: T;
-//   metadata?: PaginationMetadata;
-// }
-
-// export interface SingleResult<T> extends ApiSuccessResponse<T> {
-//   metadata?: never;
-// }
-
-// export interface ListResult<T> extends ApiSuccessResponse<T[]> {
-//   metadata: Required<PaginationMetadata>;
-// }
-// export interface ApiErrorResponse extends BaseApiResponse {
-//   success: false;
-//   error: string;
-//   errorCode?: number;
-// }

@@ -39,7 +39,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       data: collection,
-    }) satisfies ApiCollectionPopulatedResult;
+    } satisfies ApiCollectionPopulatedResult);
   } catch (error) {
     console.error("Error fetching collection artwork:", error);
     return NextResponse.json(

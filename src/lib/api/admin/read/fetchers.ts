@@ -13,7 +13,7 @@ import {
   AdminUser,
   AdminBlogPopulated,
 } from "@/lib/data/types/adminTypes";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import { CommentFrontendPopulated, UserFrontend } from "@/lib/data/types";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
@@ -47,8 +47,8 @@ export type ReadCollectionListResult = ListResult<AdminCollectionPopulated>;
 export type ReadBlogResult = SingleResult<AdminBlogPopulated>;
 export type ReadBlogListResult = ListResult<AdminBlogPopulated>;
 
-export type ReadUserResult = SingleResult<AdminUser>;
-export type ReadUserListResult = ListResult<AdminUser>;
+export type ReadUserResult = SingleResult<UserFrontend>;
+export type ReadUserListResult = ListResult<UserFrontend>;
 
 export type ReadCommentResult = SingleResult<CommentFrontendPopulated>;
 export type ReadCommentListResult = ListResult<CommentFrontendPopulated>;

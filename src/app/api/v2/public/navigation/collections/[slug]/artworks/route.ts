@@ -1,11 +1,16 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { transformMongooseDoc } from "@/lib/transforms/utils/transformMongooseDoc";
-
 import {
-  CollectionArtworkNavList,
-  CollectionArtworksNavResponse,
-} from "@/lib/data/types/navigationTypes";
+  ApiSuccessResponse,
+  ApiErrorResponse,
+  RouteResponse,
+} from "@/lib/data/types/apiTypes";
+import {
+  CollectionLeanPopulated,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types";
+import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
+import { transformCollectionPopulated } from "@/lib/transforms";
 
 // Define the shape we want using Pick
 // ! did i break this?
@@ -13,20 +18,16 @@ import {
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<NextResponse<CollectionArtworksNavResponse>> => {
-  try {
-    const { slug } = params;
+): Promise<RouteResponse<ApiCollectionPopulatedResult>> => {
+  const { slug } = params;
 
-    const rawCollection = await CollectionModel.findOne({
-      section: "collections",
-      slug,
-    })
-      .select("artworks")
-      .populate({
-        path: "artworks",
-        select: "title image.secure_url image.pixelHeight image.pixelWidth",
+  try {
+    const rawCollection: CollectionLeanPopulated =
+      (await CollectionModel.findOne({
+        slug: params.slug,
       })
-      .lean();
+        .populate<CollectionLeanPopulated>("artworks")
+        .lean()) as CollectionLeanPopulated;
 
     if (!rawCollection) {
       return NextResponse.json({
@@ -36,16 +37,13 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const collection =
-      transformMongooseDoc<CollectionArtworkNavList>(rawCollection);
-
-    // console.log("rawCollection", rawCollection);
-    // console.log("collection in route", collection);
+    const frontendCollection: CollectionFrontendPopulated =
+      transformCollectionPopulated(rawCollection);
 
     return NextResponse.json({
       success: true,
-      data: collection,
-    } satisfies ApiSuccessResponse<CollectionArtworkNavList>);
+      data: frontendCollection,
+    } satisfies ApiCollectionPopulatedResult);
   } catch (error) {
     console.error("Error fetching collection artworks navigation:", error);
     return NextResponse.json({
