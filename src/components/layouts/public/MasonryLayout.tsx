@@ -1,10 +1,10 @@
-import { Artwork } from "@/lib/data/types/artworkTypes";
+import { ArtworkFrontend } from "@/lib/data/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useCallback } from "react";
 
 interface ArtworkLayoutProps {
-  artworks: Artwork[];
+  artworks: ArtworkFrontend[];
   hasMore: boolean;
   onLoadMore: () => void;
   isLoading?: boolean;
@@ -91,6 +91,9 @@ export const MasonryLayout = ({
                       </span>
                       <span className="text-white/80 text-sm">
                         👁 {artwork.watchlistCount}
+                      </span>
+                      <span className="text-white/80 text-sm">
+                        📂 {artwork.collectionCount}
                       </span>
                     </div>
                   </div>

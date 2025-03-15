@@ -15,7 +15,6 @@ import {
   ArtworkFilterParams,
   ArtworkSortConfig,
 } from "@/lib/data/types/artworkTypes";
-import { SortByProps } from "./SortBy";
 import { FilterMode } from "@/lib/constants";
 
 interface FilterProps {

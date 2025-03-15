@@ -56,7 +56,7 @@ export async function GET(
         artworksQuery = artworksQuery.sort({ "favourited.length": -1 });
         break;
       case "mostFeatured":
-        artworksQuery = artworksQuery.sort({ featured: -1, createdAt: -1 });
+        artworksQuery = artworksQuery.sort({ "collections.length": -1 });
         break;
       // colorProximity case is handled separately below
     }

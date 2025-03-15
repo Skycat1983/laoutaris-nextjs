@@ -7,7 +7,6 @@ import {
   ArtworkFrontend,
 } from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
-import { AccordionFilter } from "./filters/AccordionFilter";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";

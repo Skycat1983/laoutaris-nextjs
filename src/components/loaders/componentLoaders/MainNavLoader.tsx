@@ -2,20 +2,24 @@ import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import {
-  ArticleNavItem,
-  CollectionNavItem,
-} from "@/lib/data/types/navigationTypes";
-
+  ArticleNavDataFrontend,
+  CollectionNavDataFrontend,
+} from "@/lib/data/types";
+import { ApiSuccessResponse, ApiErrorResponse } from "@/lib/data/types";
+import {
+  ApiArticleNavListResult,
+  ApiCollectionNavListResult,
+} from "@/lib/api/public/navigation/fetchers";
 export interface NavBarLink {
   label: string;
   path: string;
   disabled?: boolean;
 }
 
-type MainNavFetchResults = [
-  ApiResponse<ArticleNavItem[]>,
-  ApiResponse<CollectionNavItem[]>
-];
+type ArticleNavResult = ApiArticleNavListResult | ApiErrorResponse;
+type CollectionNavResult = ApiCollectionNavListResult | ApiErrorResponse;
+
+type MainNavFetchResults = [ArticleNavResult, CollectionNavResult];
 
 export const MainNavLoader = async () => {
   const [articleNavigation, collectionNavigation]: MainNavFetchResults =
@@ -36,9 +40,9 @@ export const MainNavLoader = async () => {
   }
 
   const { data: articleNavigationList } =
-    articleNavigation as ApiSuccessResponse<ArticleNavItem[]>;
+    articleNavigation as ApiSuccessResponse<ArticleNavDataFrontend[]>;
   const { data: collectionNavigationList } =
-    collectionNavigation as ApiSuccessResponse<CollectionNavItem[]>;
+    collectionNavigation as ApiSuccessResponse<CollectionNavDataFrontend[]>;
 
   const navLinks: NavBarLink[] = [
     {
@@ -54,7 +58,7 @@ export const MainNavLoader = async () => {
       path: buildUrl([
         "collections",
         collectionNavigationList[0].slug,
-        collectionNavigationList[0].artworkId,
+        collectionNavigationList[0].firstArtworkId ?? "",
       ]),
     },
     { label: "Blog", path: buildUrl(["blog"]) },
@@ -62,6 +66,5 @@ export const MainNavLoader = async () => {
     { label: "Shop", path: buildUrl(["shop"]), disabled: true },
   ];
 
-  // console.log("navLinks in MainNavLoader", navLinks);
   return <MainNav navLinks={navLinks} />;
 };

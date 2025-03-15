@@ -1,34 +1,45 @@
 "use server";
 
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import {
-  CollectionNavItem,
-  ValidSection,
-} from "@/lib/data/types/navigationTypes";
-import { buildUrl } from "@/lib/utils/buildUrl";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
+import {
+  ApiErrorResponse,
+  CollectionNavDataFrontend,
+  ApiSuccessResponse,
+} from "@/lib/data/types";
+import { createSubnavLink } from "@/lib/utils/createSubnavLink";
 
 interface CollectionsSubnavLoaderProps {
-  section: ValidSection;
+  section: string;
 }
+
+type SubnavLoaderResult = ApiArticleNavListResult | ApiErrorResponse;
 
 export async function CollectionsSubnavLoader({
   section,
 }: CollectionsSubnavLoaderProps) {
-  const result: ApiResponse<CollectionNavItem[]> =
+  const result: SubnavLoaderResult =
     await serverPublicApi.navigation.fetchCollectionNavigationList();
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch collection navigation");
   }
 
-  const { data } = result as ApiSuccessResponse<CollectionNavItem[]>;
+  const { data } = result as ApiSuccessResponse<CollectionNavDataFrontend[]>;
 
-  const links = data.map((collection) => ({
-    title: collection.title,
-    slug: collection.slug,
-    link_to: buildUrl(["collections", collection.slug, collection.artworkId]),
-  }));
+  const subnavLinks = data.map((collection) =>
+    createSubnavLink(
+      {
+        label: collection.title,
+        slug: collection.slug,
+      },
+      {
+        stem: "collections",
+        segments: [collection.slug, collection.firstArtworkId ?? ""],
+      }
+    )
+  );
 
-  return <Subnav links={links} />;
+  return <Subnav links={subnavLinks} />;
 }

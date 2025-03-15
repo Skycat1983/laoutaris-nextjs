@@ -21,8 +21,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { ArtworkSortConfig, SortOption } from "@/lib/data/types";
-import { ColourPicker } from "./ColourPicker";
-import { ART_COLOURS } from "@/lib/constants";
+import { ColourPicker } from "../../modules/colourPicker.ts/ColourPicker";
 type FilterMode = "ALL" | "ANY";
 
 interface DecadeOption {

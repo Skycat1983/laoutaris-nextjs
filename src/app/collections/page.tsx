@@ -1,12 +1,19 @@
+import { ApiCollectionNavListResult } from "@/lib/api/public/navigation/fetchers";
+import {
+  ApiSuccessResponse,
+  CollectionNavDataFrontend,
+} from "@/lib/data/types";
 import { serverApi } from "@/lib/api/serverApi";
-import { CollectionNavItem } from "@/lib/data/types/navigationTypes";
+import { ApiErrorResponse } from "@/lib/data/types";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
+
+type CollectionPageResult = ApiCollectionNavListResult | ApiErrorResponse;
 
 export default async function Collections() {
   try {
     // Fetch the list of collections
-    const result: ApiResponse<CollectionNavItem[]> =
+    const result: CollectionPageResult =
       await serverApi.public.navigation.fetchCollectionNavigationList();
 
     if (!result.success) {
@@ -14,7 +21,7 @@ export default async function Collections() {
     }
 
     const { data: collections } = result as ApiSuccessResponse<
-      CollectionNavItem[]
+      CollectionNavDataFrontend[]
     >;
 
     // If no collections found, throw an error
@@ -27,7 +34,7 @@ export default async function Collections() {
     const defaultRedirectPath = buildUrl([
       "collections",
       firstCollection.slug,
-      firstCollection.artworkId,
+      firstCollection.firstArtworkId ?? "",
     ]);
 
     // Redirect to the first collection's first artwork
