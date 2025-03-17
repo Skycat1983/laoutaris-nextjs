@@ -23,6 +23,9 @@ import { Textarea } from "@/components/shadcn/textarea";
 const ContactForm = () => {
   // Define the schema for form validation using Zod
   const contactFormSchema = z.object({
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
+    }),
     email: z.string().email({
       message: "Please enter a valid email address.",
     }),
@@ -37,6 +40,7 @@ const ContactForm = () => {
   const form = useForm<z.infer<typeof contactFormSchema>>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
+      name: "",
       email: "",
       subject: "",
       message: "",
@@ -46,6 +50,7 @@ const ContactForm = () => {
   // Handle form submission
   async function onSubmit(values: z.infer<typeof contactFormSchema>) {
     const formData = new FormData();
+    formData.append("name", values.name);
     formData.append("email", values.email);
     formData.append("subject", values.subject);
     formData.append("message", values.message);
@@ -69,6 +74,22 @@ const ContactForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 px-4 py-6 bg-gray-100 rounded w-full"
       >
+        {/* Name Field */}
+        <FormField
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Your name" {...field} className="w-full" />
+              </FormControl>
+              <FormDescription className="hidden">
+                Your name is required.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* Email Field */}
         <FormField
           name="email"

@@ -19,12 +19,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
 import { Textarea } from "@/components/shadcn/textarea";
-import { submitEnquiry } from "@/lib/actions/submitEnquiry";
+import { clientApi } from "@/lib/api/clientApi";
+import { EnquiryBase } from "@/lib/data/models";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 
 // TODO: redo this form with shadcn/ui
 
 // ! https://www.youtube.com/watch?v=gQ2bVQPFS4U
-const EnquiryForm = () => {
+
+const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
+  const { openModal } = useGlobalFeatures();
+
   // TODO: get username from session.
 
   const formSchema = z.object({
@@ -34,7 +40,9 @@ const EnquiryForm = () => {
     email: z.string().email({
       message: "Please enter a valid email address.",
     }),
-    enquiryType: z.enum(["print", "original", "both"]),
+    subject: z.string().min(2, {
+      message: "Subject must be at least 2 characters.",
+    }),
     message: z.string().min(10, {
       message: "Message must be at least 10 characters.",
     }),
@@ -46,22 +54,40 @@ const EnquiryForm = () => {
     defaultValues: {
       name: "",
       email: "",
-      enquiryType: "print",
+      subject: artworkId,
       message: "",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("email", values.email);
-    formData.append("enquiryType", values.enquiryType);
-    formData.append("message", values.message);
+    // const formData = new FormData();
+    // formData.append("name", values.name);
+    // formData.append("email", values.email);
+    // formData.append("subject", artworkId);
+    // formData.append("message", values.message);
+    const enquiry: EnquiryBase = {
+      name: values.name,
+      email: values.email,
+      subject: artworkId, // Assuming artworkId is a string
+      message: values.message,
+    };
 
     try {
-      const result = await submitEnquiry(formData);
+      const result = await clientApi.public.enquiry.create(enquiry);
       console.log("result of submit enquiry", result);
+      if (result.success) {
+        openModal(
+          <ModalMessage
+            message="Enquiry submitted successfully"
+            type="success"
+          />
+        );
+      } else {
+        openModal(
+          <ModalMessage message="Enquiry submission failed" type="error" />
+        );
+      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
@@ -105,53 +131,7 @@ const EnquiryForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="enquiryType"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Enquiry type</FormLabel>
-              <FormControl>
-                {/* You can <span>@mention</span> other users and organizations. */}
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="original" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Original artwork
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="print" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Limited edition prints
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="both" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Either/both/other
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormDescription className="hidden">
-                The type of enquiry you&apos;re making.
-              </FormDescription>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="message"
@@ -168,7 +148,6 @@ const EnquiryForm = () => {
               <FormDescription className="hidden">
                 Any information you&apos;d like to share with us about your
                 enquiry.
-                {/* You can <span>@mention</span> other users and organizations. */}
               </FormDescription>
               <FormMessage />
             </FormItem>

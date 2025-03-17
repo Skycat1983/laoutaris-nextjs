@@ -1,28 +1,24 @@
 import mongoose, { Document } from "mongoose";
 
-export interface DBEnquiry extends Document {
+export interface EnquiryBase {
   name: string;
   email: string;
-  enquiryType: "print" | "original" | "both";
+  subject: string;
   message: string;
 }
 
-export type LeanEnquiry = Omit<DBEnquiry, keyof Document> & {
-  _id: string;
+export interface EnquiryDB extends Document, EnquiryBase {
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
-const enquiryContentSchema = new mongoose.Schema<DBEnquiry>(
+const enquiryContentSchema = new mongoose.Schema<EnquiryDB>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    enquiryType: {
-      type: String,
-      required: true,
-      enum: ["print", "original", "both"],
-    },
+    subject: { type: String, required: true },
     message: { type: String, required: true },
+    // artwork: { type: mongoose.Schema.Types.ObjectId, ref: "Artwork" },
   },
   {
     collection: "enquiries",
@@ -32,6 +28,6 @@ const enquiryContentSchema = new mongoose.Schema<DBEnquiry>(
 
 const EnquiryModel =
   mongoose.models.Enquiry ||
-  mongoose.model<DBEnquiry>("Enquiry", enquiryContentSchema);
+  mongoose.model<EnquiryDB>("Enquiry", enquiryContentSchema);
 
 export { EnquiryModel };

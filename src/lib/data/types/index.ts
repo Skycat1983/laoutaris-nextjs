@@ -6,7 +6,6 @@ export type * from "./blogTypes";
 export type * from "./cloudinaryTypes";
 export type * from "./collectionTypes";
 export type * from "./commentTypes";
-export type * from "./enquiryTypes";
 export type * from "./navigationTypes";
 export type * from "./ownUserTypes";
 export type * from "./searchTypes";

@@ -60,7 +60,7 @@ const ArtInfoTabs = ({ ...artwork }: ArtworkFrontend) => {
           </div>
         </TabsContent>
         <TabsContent value="enquire">
-          <EnquiryForm />
+          <EnquiryForm artworkId={artwork._id} />
         </TabsContent>
       </Tabs>
       <div className="px-4 py-8">

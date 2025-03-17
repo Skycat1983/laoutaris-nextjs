@@ -6,7 +6,7 @@ import { createNavigationFetchers } from "@/lib/api/public/navigation/fetchers";
 import { createBlogFetchers } from "@/lib/api/public/blog/fetchers";
 import { createArtworkFetchers } from "./artwork/fetchers";
 import { createSearchFetchers } from "./search/fetchers";
-
+import { createEnquiryFetchers } from "./enquiry/fetchers";
 const serverFetcher = createFetcher({
   getUrl: (path) => {
     const baseUrl = process.env.BASEURL || "http://localhost:3000";
@@ -15,8 +15,6 @@ const serverFetcher = createFetcher({
   getHeaders: () => headers(),
 });
 
-// can these properties be typed? maybe with Partial??
-
 export const serverPublicApi = {
   article: createArticleFetchers(serverFetcher),
   blog: createBlogFetchers(serverFetcher),
@@ -24,4 +22,5 @@ export const serverPublicApi = {
   navigation: createNavigationFetchers(serverFetcher),
   artwork: createArtworkFetchers(serverFetcher),
   search: createSearchFetchers(serverFetcher),
+  enquiry: createEnquiryFetchers(serverFetcher),
 };

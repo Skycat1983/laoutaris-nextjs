@@ -1,9 +1,8 @@
+import { SingleResult } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
-import {
-  SearchParams,
-  SearchResponse,
-  SearchableContentType,
-} from "@/lib/data/types/searchTypes";
+import { SearchParams, SearchResponse } from "@/lib/data/types/searchTypes";
+
+type ApiSearchResult = SingleResult<SearchResponse>;
 
 export const createSearchFetchers = (fetcher: Fetcher) => ({
   search: async ({ q, type, page = "1", limit = "10" }: SearchParams) => {
@@ -13,9 +12,7 @@ export const createSearchFetchers = (fetcher: Fetcher) => ({
     params.append("page", page);
     params.append("limit", limit);
 
-    return fetcher<ApiSuccessResponse<SearchResponse>>(
-      `/api/v2/public/search?${params}`
-    );
+    return fetcher<ApiSearchResult>(`/api/v2/public/search?${params}`);
   },
 });
 

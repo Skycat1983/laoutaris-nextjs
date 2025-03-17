@@ -54,10 +54,4 @@ export interface SearchResponse {
   articles?: SearchResultItem[];
   blogs?: SearchResultItem[];
   collections?: SearchResultItem[];
-  // metadata?: {
-  //   total: number;
-  //   page: number;
-  //   limit: number;
-  //   totalPages: number;
-  // };
 }

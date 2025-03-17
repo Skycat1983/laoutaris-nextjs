@@ -6,7 +6,7 @@ import { createCollectionFetchers } from "@/lib/api/public/collection/fetchers";
 import { createNavigationFetchers } from "@/lib/api/public/navigation/fetchers";
 import { createArtworkFetchers } from "./artwork/fetchers";
 import { createSearchFetchers } from "./search/fetchers";
-
+import { createEnquiryFetchers } from "./enquiry/fetchers";
 const clientFetcher = createFetcher({
   getUrl: (path) => path,
   getHeaders: () => ({
@@ -21,4 +21,5 @@ export const clientPublicApi = {
   navigation: createNavigationFetchers(clientFetcher),
   artwork: createArtworkFetchers(clientFetcher),
   search: createSearchFetchers(clientFetcher),
+  enquiry: createEnquiryFetchers(clientFetcher),
 };

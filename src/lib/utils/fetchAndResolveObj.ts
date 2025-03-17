@@ -1,3 +1,5 @@
+import { ApiResponse } from "@/lib/data/types";
+
 type Fetcher<T> = (
   identifierKey: string,
   identifierValue: string,
