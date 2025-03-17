@@ -1,4 +1,4 @@
-export interface FrontendEnquiry {
+export interface Enquiry {
   id: string;
   name: string;
   email: string;

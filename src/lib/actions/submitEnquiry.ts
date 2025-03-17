@@ -1,13 +1,13 @@
 "use server";
 
 import { FrontendEnquiry } from "@/lib/data/types/enquiryTypes";
-import { headers } from "next/headers";
 import { EnquiryModel } from "../data/models";
 import { replaceMongoId } from "@/lib/helpers/transformData";
+import { RouteResponse } from "@/lib/data/types";
 
 export async function submitEnquiry(
   formData: FormData
-): Promise<ApiResponse<FrontendEnquiry>> {
+): Promise<RouteResponse<FrontendEnquiry>> {
   try {
     const name = formData.get("name");
     const email = formData.get("email");
