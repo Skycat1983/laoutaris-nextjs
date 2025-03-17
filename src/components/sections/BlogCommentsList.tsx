@@ -2,9 +2,9 @@
 
 import React from "react";
 import { CommentCard } from "../modules/cards/CommentCard";
-import { CommentFrontend } from "@/lib/data/types/commentTypes";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 interface CommentsListProps {
-  comments: CommentFrontend[];
+  comments: CommentFrontendPopulated[];
   onCommentUpdated: () => void;
   onCommentDeleted: () => void;
 }

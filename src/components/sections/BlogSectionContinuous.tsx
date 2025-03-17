@@ -2,14 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BlogEntryData } from "../loaders/viewLoaders/BlogListLoader";
 import { ChevronRight } from "lucide-react";
 import { useCallback, useState } from "react";
 import { clientApi } from "@/lib/api/clientApi";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 interface BlogLayoutProps {
-  initialBlogEntries: BlogEntryData[];
+  initialBlogEntries: BlogEntryFrontend[];
   initialPage?: number;
 }
 

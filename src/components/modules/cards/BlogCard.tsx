@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/shadcn/skeleton";
-import { ArticleFrontend } from "@/lib/data/types/articleTypes";
+import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 
 interface BlogCardProps {
-  blog: ArticleFrontend;
+  blog: BlogEntryFrontend;
 }
 
 export const BlogCard = ({ blog }: BlogCardProps) => {

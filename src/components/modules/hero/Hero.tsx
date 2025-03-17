@@ -9,7 +9,7 @@ import {
   CarouselPrevious,
 } from "@/components/modules/hero/carousel";
 import FamilyFavourites from "./FamilyFavourites";
-import { FilterableArtworks } from "./FilterableArtworks";
+import { FilterableArtworks, FilterableArtworks2 } from "./FilterableArtworks";
 import { LargeScaleWorks } from "./LargeScaleWorks";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import {
@@ -349,10 +349,8 @@ export function Hero() {
         <CarouselItem className="w-full">
           <FilterableArtworks />
         </CarouselItem>
-
-        {/* landscape */}
         <CarouselItem className="w-full">
-          <RightPanelSlide data={slideDataVariationLandscape} />
+          <LeftPortraitVerticalSlide data={slideDataVariationPortrait2} />
         </CarouselItem>
 
         {/* street */}
@@ -361,7 +359,11 @@ export function Hero() {
         </CarouselItem>
 
         <CarouselItem className="w-full">
-          <LeftPortraitVerticalSlide data={slideDataVariationPortrait2} />
+          <FilterableArtworks2 />
+        </CarouselItem>
+        {/* landscape */}
+        <CarouselItem className="w-full">
+          <RightPanelSlide data={slideDataVariationLandscape} />
         </CarouselItem>
 
         {/* <CarouselItem className="w-full">

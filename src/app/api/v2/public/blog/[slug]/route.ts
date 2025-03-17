@@ -3,16 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db/mongodb";
 import {
   ApiErrorResponse,
-  BlogEntryLeanPopulated,
+  BlogEntryLeanWithAuthor,
   RouteResponse,
 } from "@/lib/data/types";
-import { ApiBlogResult } from "@/lib/api/public/blog/fetchers";
-import { transformBlogPopulated } from "@/lib/transforms/blog/transformBlog";
+import { ApiBlogWithAuthorResult } from "@/lib/api/public/blog/fetchers";
+import {
+  transformBlogPopulated,
+  transformBlogWithAuthor,
+} from "@/lib/transforms/blog/transformBlog";
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: { slug: string } }
-): Promise<RouteResponse<ApiBlogResult>> => {
+): Promise<RouteResponse<ApiBlogWithAuthorResult>> => {
   await dbConnect();
 
   try {
@@ -21,7 +24,8 @@ export const GET = async (
 
     const rawBlog = await BlogModel.findOne({ slug })
       .populate("comments")
-      .lean<BlogEntryLeanPopulated>();
+      .populate("author")
+      .lean<BlogEntryLeanWithAuthor>();
 
     if (!rawBlog) {
       return NextResponse.json({
@@ -31,12 +35,12 @@ export const GET = async (
       } satisfies ApiErrorResponse);
     }
 
-    const blog = transformBlogPopulated(rawBlog);
+    const blog = transformBlogWithAuthor(rawBlog);
 
     return NextResponse.json({
       success: true,
       data: blog,
-    } satisfies ApiBlogResult);
+    } satisfies ApiBlogWithAuthorResult);
   } catch (error) {
     console.error("Error fetching blog detail:", error);
     return NextResponse.json({

@@ -1,7 +1,7 @@
 import { FavouritesButton } from "@/components/elements/buttons/FavouritesButton";
 import { Heart, Bookmark } from "lucide-react";
 
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
+import { ArtworkFrontend } from "@/lib/data/types";
 import { HexColorPalette } from "../disclosures/ColorPallette";
 import { WatchlistButton } from "@/components/elements/buttons";
 import { Logo } from "@/components/elements/icons";
@@ -10,7 +10,7 @@ export const ArtworkMagazineCard = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (
@@ -69,7 +69,7 @@ export const ArtworkMagazineCard2 = ({
   artwork,
   isLoggedIn,
 }: {
-  artwork: PublicArtwork;
+  artwork: ArtworkFrontend;
   isLoggedIn: boolean;
 }) => {
   return (
@@ -138,7 +138,7 @@ export const ArtworkMagazineCard2 = ({
                 }`}
             />
             <span className="text-xs text-gray-500">
-              {artwork.favouritedCount}
+              {artwork.favouriteCount}
             </span>
           </div>
         </div>

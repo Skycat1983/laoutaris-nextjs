@@ -1,13 +1,9 @@
 import { buildUrl } from "@/lib/utils/buildUrl";
-import {
-  ArtworkNavFields,
-  CollectionArtworkNavList,
-} from "@/lib/data/types/navigationTypes";
-import { ArtworkPagination } from "@/components/modules/pagination/CollectionViewPagination";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
+
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
-import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
+import { ArtworkFrontend } from "@/lib/data/types";
 import { serverApi } from "@/lib/api/serverApi";
+import { ApiCollectionArtworkNavListResult } from "@/lib/api/public/navigation/fetchers";
 
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;
@@ -25,15 +21,12 @@ export async function CollectionArtworksPaginationLoader({
     );
   }
 
-  const { data: artworkNavigationList } =
-    result as ApiSuccessResponse<CollectionArtworkNavList>;
+  const { data } = result as ApiCollectionArtworkNavListResult;
 
-  const { artworks } = artworkNavigationList;
-
-  const buildCollectionLink = (artwork: ArtworkNavFields) =>
+  const buildCollectionLink = (artwork: ArtworkFrontend) =>
     buildUrl(["collections", slug, artwork._id]);
 
-  const itemsWithLinks = artworks.map((artwork) => ({
+  const itemsWithLinks = data.map((artwork) => ({
     ...artwork,
     link: buildCollectionLink(artwork),
   }));

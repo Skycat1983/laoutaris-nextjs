@@ -13,6 +13,8 @@ import {
   CommentLeanPopulated,
   BlogEntryPopulatedCommentsPopulatedLean,
   BlogEntryPopulatedCommentsPopulatedFrontend,
+  BlogEntryLeanWithAuthor,
+  BlogEntryFrontendWithAuthor,
 } from "../../data/types";
 import { createTransformer } from "../createTransformer";
 import {
@@ -31,6 +33,20 @@ export const transformBlog = createTransformer<
   SENSITIVE_PUBLIC_BLOG_FIELDS,
   BLOG_FIELD_EXTENDER
 );
+
+export const transformBlogWithAuthor = (
+  doc: BlogEntryLeanWithAuthor,
+  userId?: string | null
+) => {
+  const blogPublic = transformBlog.toFrontend(doc, userId);
+  const { author, ...baseDoc } = doc;
+  const transformedAuthor = transformUser.toFrontend(author);
+  const blogWithAuthor = {
+    ...blogPublic,
+    author: transformedAuthor,
+  };
+  return blogWithAuthor as BlogEntryFrontendWithAuthor;
+};
 
 export const transformBlogPopulated = (
   doc: BlogEntryLeanPopulated,

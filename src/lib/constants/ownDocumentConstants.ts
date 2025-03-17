@@ -5,7 +5,7 @@ import { extendOwnUserFields } from "../transforms/transformHelpers";
 
 //! OWNUSER
 // all possible user document fields
-type OwnUserFields = keyof UserDB;
+type OwnUserFields = keyof Pick<UserDB, "password">;
 
 // fields to actually sanitize
 const SENSITIVE_OWN_USER_FIELDS: readonly OwnUserFields[] = [

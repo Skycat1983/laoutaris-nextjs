@@ -2,10 +2,10 @@
 
 import { Logo } from "@/components/elements/icons";
 import Link from "next/link";
-import { NavItem } from "@/components/elements/buttons";
 import { navLinkBorderColours } from "@/lib/utils/consts";
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 import { AccountNav } from "../accountNav/AccountNav";
+import { NavItem } from "@/components/elements/buttons";
 
 interface DesktopNavLayoutProps {
   navLinks: NavBarLink[];

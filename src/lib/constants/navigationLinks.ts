@@ -1,35 +1,38 @@
+import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
 import { buildUrl } from "@/lib/utils/buildUrl";
 
-interface NavLink {
-  title: string;
-  slug: string;
-  link_to: string;
-  disabled?: boolean;
-}
+// interface NavLink {
+//   title: string;
+//   slug: string;
+//   link_to: string;
+//   disabled?: boolean;
+// }
 
-const BLOG_NAV_LINKS: NavLink[] = [
+const BLOG_NAV_LINKS: SubnavLink[] = [
   {
-    title: "Latest",
+    label: "Latest",
     slug: "latest",
     link_to: buildUrl(["blog"], { sortby: "latest" }),
+    disabled: false,
   },
   {
-    title: "Oldest",
+    label: "Oldest",
     slug: "oldest",
     link_to: buildUrl(["blog"], { sortby: "oldest" }),
+    disabled: false,
   },
   {
-    title: "Featured",
+    label: "Featured",
     slug: "featured",
     link_to: buildUrl(["blog"], { sortby: "featured" }),
+    disabled: false,
   },
   {
-    title: "Popular",
+    label: "Popular",
     slug: "popular",
     link_to: buildUrl(["blog"], { sortby: "popular" }),
-    disabled: true,
+    disabled: false,
   },
 ];
 
-export type { NavLink };
 export { BLOG_NAV_LINKS };

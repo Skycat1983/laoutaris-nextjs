@@ -25,9 +25,9 @@ const SearchResultsSection = ({
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {items.map((item) => (
+        {items.map((item, i) => (
           <Link
-            key={item._id}
+            key={i}
             href={item.linkTo}
             className="block transition-transform hover:scale-[1.02]"
           >

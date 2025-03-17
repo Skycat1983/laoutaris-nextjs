@@ -3,6 +3,7 @@ import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { ApiResponse } from "@/lib/data/types/apiTypes";
 import {
   BlogEntryFrontend,
+  BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
 import { delay } from "@/lib/utils/debug";
@@ -14,7 +15,7 @@ interface Props {
 
 export type BlogDetailLoaderResult =
   | ApiResponse<BlogEntryPopulatedCommentsPopulatedFrontend>
-  | ApiResponse<BlogEntryFrontend>;
+  | ApiResponse<BlogEntryFrontendWithAuthor>;
 
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
   await delay(2000);
@@ -39,7 +40,10 @@ export async function BlogDetailLoader({ slug, showComments = false }: Props) {
       );
     } else {
       return (
-        <BlogDetail blog={data as BlogEntryFrontend} showComments={false} />
+        <BlogDetail
+          blog={data as BlogEntryFrontendWithAuthor}
+          showComments={false}
+        />
       );
     }
   } catch (error) {

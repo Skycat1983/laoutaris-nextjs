@@ -1,19 +1,19 @@
 "use client";
 
-import { FrontendCommentWithBlogNav } from "@/lib/data/types/commentTypes";
 import React from "react";
 import { CommentCard } from "../modules/cards/CommentCard";
 import Link from "next/link";
 import { formatDateImproved } from "@/lib/utils/formatDate";
 import Image from "next/image";
+import { CommentFrontendPopulated } from "@/lib/data/types";
 
 type Props = {
-  comments: FrontendCommentWithBlogNav[];
+  comments: CommentFrontendPopulated[];
 };
 
 const UserCommentsView = ({ comments }: Props) => {
   console.log("comments", comments);
-  const blogLink = (comment: FrontendCommentWithBlogNav) =>
+  const blogLink = (comment: CommentFrontendPopulated) =>
     `/blog/${comment.blog.slug}`;
   console.log("comments", comments);
 
@@ -25,7 +25,7 @@ const UserCommentsView = ({ comments }: Props) => {
     }
     acc[blogSlug].push(comment);
     return acc;
-  }, {} as Record<string, FrontendCommentWithBlogNav[]>);
+  }, {} as Record<string, CommentFrontendPopulated[]>);
 
   // Helper function to check if the current comment is the first comment for the blog
   const isFirstCommentForBlog = (
@@ -35,7 +35,7 @@ const UserCommentsView = ({ comments }: Props) => {
     return commentIndex === 0;
   };
 
-  const withPlaceholderUsername = (comment: FrontendCommentWithBlogNav) => {
+  const withPlaceholderUsername = (comment: CommentFrontendPopulated) => {
     return {
       ...comment,
       author: {

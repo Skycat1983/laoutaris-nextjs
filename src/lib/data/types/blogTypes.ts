@@ -12,6 +12,24 @@ import { transformBlogPopulated } from "@/lib/transforms/blog/transformBlog";
 export type BlogEntryLean = LeanDocument<BlogEntryDB>;
 export type BlogEntryFrontend = ReturnType<typeof transformBlog.toFrontend>;
 
+export type BlogEntryLeanWithAuthor = Prettify<
+  WithPopulatedFields<
+    BlogEntryLean,
+    {
+      author: UserLean;
+    }
+  >
+>;
+
+export type BlogEntryFrontendWithAuthor = Prettify<
+  WithPopulatedFields<
+    BlogEntryFrontend,
+    {
+      author: UserFrontend;
+    }
+  >
+>;
+
 export type BlogEntryLeanPopulated = Prettify<
   WithPopulatedFields<
     BlogEntryLean,

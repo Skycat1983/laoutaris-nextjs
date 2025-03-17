@@ -1,7 +1,7 @@
 import type { Fetcher } from "../../core/createFetcher";
 import type { OwnUserFrontend, SingleResult } from "@/lib/data/types";
 
-type ApiProfileResult = SingleResult<OwnUserFrontend>;
+export type ApiProfileResult = SingleResult<OwnUserFrontend>;
 
 export const createProfileFetchers = (fetcher: Fetcher) => ({
   // Get user profile

@@ -3,13 +3,12 @@
 
 import { ArtworkInfoCard } from "@/components/modules/cards/ArtworkInfoCard";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
 import Image from "next/image";
-
+import { ArtworkFrontend } from "@/lib/data/types";
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
 
-const ArtworkView = (artwork: PublicArtwork) => {
+const ArtworkView = (artwork: ArtworkFrontend) => {
   return (
     <>
       <div

@@ -10,9 +10,9 @@ import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { CommentFrontend } from "@/lib/data/types/commentTypes";
+import { CommentFrontendPopulated } from "@/lib/data/types/commentTypes";
 import {
-  BlogEntryFrontend,
+  BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
 
@@ -23,7 +23,7 @@ type WithComments = {
 
 type WithoutComments = {
   showComments: false;
-  blog: BlogEntryFrontend;
+  blog: BlogEntryFrontendWithAuthor;
 };
 
 type BlogDetailProps = WithComments | WithoutComments;
@@ -31,9 +31,9 @@ type BlogDetailProps = WithComments | WithoutComments;
 const BlogDetail = ({ blog, showComments = false }: BlogDetailProps) => {
   const { title, subtitle, text, imageUrl, displayDate, slug } = blog;
   const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [populatedComments, setPopulatedComments] = useState<CommentFrontend[]>(
-    showComments && "comments" in blog ? blog.comments : []
-  );
+  const [populatedComments, setPopulatedComments] = useState<
+    CommentFrontendPopulated[]
+  >(showComments && "comments" in blog ? blog.comments : []);
   const [hasLoadedComments, setHasLoadedComments] = useState(showComments);
   const { openModal } = useGlobalFeatures();
 

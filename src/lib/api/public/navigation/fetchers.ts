@@ -4,6 +4,7 @@ import type {
   ArticleSection,
   ListResult,
   SingleResult,
+  ArtworkFrontend,
 } from "@/lib/data/types";
 import { Fetcher } from "@/lib/api/core/createFetcher";
 
@@ -12,7 +13,7 @@ export type ApiCollectionNavItemResult =
   SingleResult<CollectionNavDataFrontend>;
 
 export type ApiCollectionNavListResult = ListResult<CollectionNavDataFrontend>;
-// export type ApiCollectionArtworkNavListResult = ListResult<CollectionArtworkNavList>;
+export type ApiCollectionArtworkNavListResult = ListResult<ArtworkFrontend>;
 
 //TODO: rename these to identify use case, e.g. pagination, subnav link etc
 export const createNavigationFetchers = (fetcher: Fetcher) => ({
@@ -41,7 +42,7 @@ export const createNavigationFetchers = (fetcher: Fetcher) => ({
   // Get collection artworks navigation
   fetchCollectionArtworksNavigation: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
-    return fetcher<CollectionNavDataFrontend>(
+    return fetcher<ApiCollectionArtworkNavListResult>(
       `/api/v2/public/navigation/collections/${encodedSlug}/artworks`
     );
   },

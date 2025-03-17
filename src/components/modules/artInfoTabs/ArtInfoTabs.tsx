@@ -15,9 +15,9 @@ import {
 } from "@/components/modules/disclosures/ColorPallette";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import EnquiryForm from "../forms/user/EnquiryForm";
-import { PublicArtwork } from "../../../../unused/artworkToPublic";
+import { ArtworkFrontend } from "@/lib/data/types";
 
-const ArtInfoTabs = ({ ...artwork }: PublicArtwork) => {
+const ArtInfoTabs = ({ ...artwork }: ArtworkFrontend) => {
   const tabTriggerClassName = "py-4 px-12 m-0 text-lg w-full";
 
   return (

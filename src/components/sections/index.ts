@@ -1,9 +1,4 @@
-export {
-  AccountSettings,
-  AccountSettingsV1,
-  AccountSettingsV2,
-  AccountSettingsV3,
-} from "./AccountSettings";
+export { AccountSettings, AccountSettingsV3 } from "./AccountSettings";
 export { BlogCommentsList } from "./BlogCommentsList";
 export {
   BiographySection,
