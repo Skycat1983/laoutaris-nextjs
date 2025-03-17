@@ -15,12 +15,12 @@ import {
 } from "@/lib/data/types";
 import { transformToPick } from "@/lib/transforms";
 export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get("q");
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get("q");
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
 
+  try {
     if (!query) {
       return NextResponse.json<ApiErrorResponse>(
         {

@@ -5,7 +5,7 @@ import { delay } from "@/lib/utils/debug";
 import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { ArticleFrontend } from "@/lib/data/types/articleTypes";
 import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 export async function BiographySectionLoader() {
   await delay(2000);
   try {
@@ -21,6 +21,9 @@ export async function BiographySectionLoader() {
 
     return <BiographySection articles={articles} />;
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Biography section loading failed:", error);
     return null;
   }

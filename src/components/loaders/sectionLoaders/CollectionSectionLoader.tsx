@@ -5,7 +5,7 @@ import { delay } from "@/lib/utils/debug";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
 import { CollectionFrontend } from "@/lib/data/types/collectionTypes";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 // Loader Function
 export async function CollectionsSectionLoader() {
   await delay(2000);
@@ -27,6 +27,9 @@ export async function CollectionsSectionLoader() {
     // Return component with transformed data
     return <CollectionSection collections={collections} />;
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Collections section loading failed:", error);
     return null;
   }

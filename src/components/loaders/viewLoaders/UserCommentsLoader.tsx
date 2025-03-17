@@ -1,3 +1,5 @@
+"use server";
+
 import React from "react";
 import { UserCommentsView } from "@/components/views/UserCommentsView";
 import { serverApi } from "@/lib/api/serverApi";

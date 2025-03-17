@@ -9,11 +9,13 @@ import {
   ApiUserCommentsGetResult,
   ApiUserCommentCreateResult,
 } from "@/lib/api/user/comments/fetchers";
-import dbConnect from "@/lib/db/mongodb";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { transformCommentPopulated } from "@/lib/transforms";
+import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
+
+export const dynamic = "force-dynamic";
 
 interface UserWithComentsLean {
   _id: string;
@@ -23,9 +25,15 @@ interface UserWithComentsLean {
 export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiUserCommentsGetResult>> {
-  const userId = await getUserIdFromSession();
-
   try {
+    const userId = await getUserIdFromSession();
+
+    if (!userId) {
+      return NextResponse.json({
+        success: false,
+        error: "User not found",
+      } satisfies ApiErrorResponse);
+    }
     const rawUserComments = await UserModel.findById(userId)
       .select("comments")
       .populate({
@@ -69,6 +77,9 @@ export async function GET(
       },
     } satisfies ApiUserCommentsGetResult);
   } catch (error) {
+    if (isDynamicServerError(error)) {
+      throw error;
+    }
     console.error("Error fetching user comments:", error);
     return NextResponse.json({
       success: false,
@@ -78,21 +89,20 @@ export async function GET(
 }
 
 export async function POST(req: NextRequest) {
-  await dbConnect();
-
-  console.log("in comment route");
-  const userId = await getUserIdFromSession();
-  console.log("userId", userId);
-
-  if (!userId) {
-    return NextResponse.json({
-      success: false,
-      error: "Authentication required",
-      statusCode: 401,
-    } satisfies ApiErrorResponse);
-  }
+  const comment = await req.json();
 
   try {
+    const userId = await getUserIdFromSession();
+    console.log("userId", userId);
+
+    if (!userId) {
+      return NextResponse.json({
+        success: false,
+        error: "Authentication required",
+        statusCode: 401,
+      } satisfies ApiErrorResponse);
+    }
+
     const comment = await req.json();
     const { blogSlug, text } = comment;
 

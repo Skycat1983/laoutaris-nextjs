@@ -7,7 +7,7 @@ import { serverApi } from "@/lib/api/serverApi";
 import { ApiErrorResponse } from "@/lib/data/types";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 type CollectionPageResult = ApiCollectionNavListResult | ApiErrorResponse;
 
 export default async function Collections() {
@@ -40,6 +40,9 @@ export default async function Collections() {
     // Redirect to the first collection's first artwork
     return redirect(defaultRedirectPath);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error in collections default path:", error);
     throw error; // Let Next.js error boundary handle it
   }

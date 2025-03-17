@@ -1,7 +1,7 @@
 import { serverApi } from "@/lib/api/serverApi";
 import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 export default async function BiographyPage() {
   try {
     // Fetch the list of biography articles
@@ -26,6 +26,9 @@ export default async function BiographyPage() {
     // Redirect to the first article
     return redirect(defaultRedirectPath);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error in biography default path:", error);
     throw error; //  Next.js error boundary to handle it
   }

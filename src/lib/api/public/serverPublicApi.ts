@@ -10,6 +10,7 @@ import { createEnquiryFetchers } from "./enquiry/fetchers";
 const serverFetcher = createFetcher({
   getUrl: (path) => {
     const baseUrl = process.env.BASEURL || "http://localhost:3000";
+    // return new URL(path, baseUrl).toString();
     return new URL(path, baseUrl).toString();
   },
   getHeaders: () => headers(),

@@ -7,7 +7,7 @@ Reusable fetching logic
 */
 
 import { ApiErrorResponse } from "@/lib/data/types";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 // Fetcher types
 export type Fetcher = <T>(
   endpoint: string,
@@ -53,6 +53,9 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
 
       return result satisfies T;
     } catch (error) {
+      if (isNextError(error)) {
+        throw error;
+      }
       console.error(`Fetch error for ${endpoint}:`, error);
       return {
         success: false,

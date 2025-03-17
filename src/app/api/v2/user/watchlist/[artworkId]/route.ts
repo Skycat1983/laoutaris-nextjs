@@ -8,21 +8,23 @@ import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
 ): Promise<RouteResponse<ApiFavoritesItemResult>> {
-  const userId = await getUserIdFromSession();
+  const { artworkId } = params;
 
   try {
+    const userId = await getUserIdFromSession();
+
     if (!userId) {
       return NextResponse.json({
         success: false,
         error: "Unauthorized",
       } satisfies ApiErrorResponse);
     }
-
-    const { artworkId } = params;
 
     const leanArtwork = (await ArtworkModel.findById(
       artworkId

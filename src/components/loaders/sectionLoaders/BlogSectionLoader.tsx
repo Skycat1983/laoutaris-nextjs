@@ -4,7 +4,7 @@ import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { BlogSection } from "@/components/sections/BlogSection";
 import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
 import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
-
+import { isNextError } from "@/lib/helpers/isNextError";
 const BLOG_FETCH_CONFIG = {
   sortby: "latest" as const,
   limit: 4,
@@ -28,6 +28,9 @@ export async function BlogSectionLoader() {
     // Return component with transformed data
     return <BlogSection blogs={blogs} />;
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Blog section loading failed:", error);
     return null;
   }

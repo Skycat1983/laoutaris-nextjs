@@ -9,25 +9,25 @@ import {
 } from "@/lib/data/types";
 import { NextRequest, NextResponse } from "next/server";
 import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
+import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
+
+export const dynamic = "force-dynamic";
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: { section: ArticleSection } }
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
+  const { section } = params;
+  // Validate section
+  if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
+    return NextResponse.json({
+      success: false,
+      error: "Invalid section",
+      statusCode: 400,
+    } satisfies ApiErrorResponse);
+  }
+
   try {
-    const { section } = params;
-
-    console.log("section", section);
-
-    // Validate section
-    if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
-      return NextResponse.json({
-        success: false,
-        error: "Invalid section",
-        statusCode: 400,
-      } satisfies ApiErrorResponse);
-    }
-
     const articleLean = await ArticleModel.find({ section: section })
       .select("title slug")
       .sort({ displayDate: -1 })
@@ -56,6 +56,9 @@ export const GET = async (
       },
     } satisfies ApiArticleNavListResult);
   } catch (error) {
+    if (isDynamicServerError(error)) {
+      throw error;
+    }
     console.error("Error fetching article navigation:", error);
     return NextResponse.json({
       success: false,

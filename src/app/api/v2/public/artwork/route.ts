@@ -11,14 +11,14 @@ export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
   const userId = await getUserIdFromSession();
-  try {
-    const { searchParams } = new URL(request.url);
-    const filterMode = searchParams.get("filterMode") || "ALL";
-    const sortBy = searchParams.get("sortBy") || "mostRecent";
-    const targetColor = searchParams.get("sortColor");
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+  const { searchParams } = request.nextUrl;
+  const filterMode = searchParams.get("filterMode") || "ALL";
+  const sortBy = searchParams.get("sortBy") || "mostRecent";
+  const targetColor = searchParams.get("sortColor");
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
 
+  try {
     console.log("route params:", {
       filterMode,
       sortBy,
