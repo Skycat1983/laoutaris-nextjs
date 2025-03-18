@@ -229,9 +229,9 @@ export const MinimalSlide = ({ data }: { data: SlideData }) => {
         />
       </div>
       <div className="absolute inset-0 bg-black/20 transition-colors duration-500 group-hover:bg-black/40" />
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-24 flex items-end justify-center">
         <div className="text-center transform transition-transform duration-500 group-hover:translate-y-0 translate-y-4">
-          <h1 className="text-6xl font-cormorant text-white mb-4">
+          <h1 className="text-7xl font-cormorant text-white mb-4">
             {data.title}
           </h1>
           <p className="text-xl font-archivo text-white/90 mb-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">

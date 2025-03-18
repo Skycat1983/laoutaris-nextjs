@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { RadialGradientOverlay } from "./Overlays";
+import { RadialGradientOverlay } from "../Overlays";
 
 const LargeScaleWorks = () => {
   const originalImg =
