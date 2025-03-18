@@ -51,6 +51,7 @@ type DisabledLink = {
 };
 
 export function Subnav({ links }: SubnavProps) {
+  console.log("links", links);
   return (
     <SubnavWrapper>
       {links.map((link) => (

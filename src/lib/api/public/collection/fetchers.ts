@@ -12,10 +12,15 @@ interface FetchCollectionsParams {
   page?: number;
 }
 
+// a single collection
 export type ApiCollectionResult = SingleResult<CollectionFrontend>;
+// a list of collections
 export type ApiCollectionListResult = ListResult<CollectionFrontend>;
+// a single collection with populated artworks
 export type ApiCollectionPopulatedResult =
   SingleResult<CollectionFrontendPopulated>;
+// export type ApiCollectionArtworkListResult =
+//   ListResult<CollectionFrontendPopulated>;
 
 export const createCollectionFetchers = (fetcher: Fetcher) => ({
   // Get one collection by slug
@@ -44,8 +49,18 @@ export const createCollectionFetchers = (fetcher: Fetcher) => ({
     );
   },
 
+  // Get all artworks for a collection
+  //? used in artwork pagination
+  singleCollectionAllArtwork: async (slug: string) => {
+    const encodedSlug = encodeURIComponent(slug);
+    return fetcher<ApiCollectionPopulatedResult>(
+      `/api/v2/public/collection/${encodedSlug}/artwork`
+    );
+  },
+
   // Get collection with specific artwork
-  singlePopulated: async (slug: string, artworkId: string) => {
+  // ? used to get a single artwork from a collection, for example when routing to /collections/slug/artworkId
+  singleCollectionSingleArtwork: async (slug: string, artworkId: string) => {
     const encodedSlug = encodeURIComponent(slug);
     const encodedArtworkId = encodeURIComponent(artworkId);
     return fetcher<ApiCollectionPopulatedResult>(

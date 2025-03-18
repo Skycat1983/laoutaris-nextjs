@@ -14,6 +14,7 @@ import { ArticleSection } from "@/lib/constants";
 interface ArticleLoaderProps {
   slug: string;
   section: ArticleSection;
+  form?: React.ReactNode;
 }
 
 type FetcherResponses = [
@@ -21,7 +22,11 @@ type FetcherResponses = [
   ApiResponse<ArticleNavDataFrontend[]>
 ];
 
-export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
+export async function ArticleLoader({
+  slug,
+  section,
+  form,
+}: ArticleLoaderProps) {
   const [articleResponse, navigationResponse] = (await Promise.all([
     serverApi.public.article.singlePopulated(slug),
     serverApi.public.navigation.fetchArticleNavigationList(section),
@@ -51,15 +56,19 @@ export async function ArticleLoader({ slug, section }: ArticleLoaderProps) {
   const navigation = {
     prev:
       currentIndex > 0
-        ? buildUrl(["biography", navigationList[currentIndex - 1].slug])
+        ? buildUrl([section, navigationList[currentIndex - 1].slug])
         : null,
     next:
       currentIndex < navigationList.length - 1
-        ? buildUrl(["biography", navigationList[currentIndex + 1].slug])
+        ? buildUrl([section, navigationList[currentIndex + 1].slug])
         : null,
   };
 
-  console.log("article in loader", article);
+  if (form) {
+    return (
+      <ArticleView article={article} navigation={navigation} form={form} />
+    );
+  }
 
   return <ArticleView article={article} navigation={navigation} />;
 }

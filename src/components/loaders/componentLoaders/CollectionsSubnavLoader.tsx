@@ -36,7 +36,7 @@ export async function CollectionsSubnavLoader({
       },
       {
         stem: "collections",
-        segments: [collection.slug, collection.firstArtworkId ?? ""],
+        segments: [collection.firstArtworkId ?? ""],
       }
     )
   );

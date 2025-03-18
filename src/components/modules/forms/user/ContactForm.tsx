@@ -16,11 +16,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/shadcn/textarea";
+import { serverApi } from "@/lib/api/serverApi";
+import { clientApi } from "@/lib/api/clientApi";
+import { EnquiryBase } from "@/lib/data/models";
+import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import ModalMessage from "@/components/elements/typography/ModalMessage";
 // import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
 // TODO: redo this form with shadcn/ui
 
 const ContactForm = () => {
+  const { openModal } = useGlobalFeatures();
+
   // Define the schema for form validation using Zod
   const contactFormSchema = z.object({
     name: z.string().min(2, {
@@ -49,16 +56,28 @@ const ContactForm = () => {
 
   // Handle form submission
   async function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("email", values.email);
-    formData.append("subject", values.subject);
-    formData.append("message", values.message);
+    const formData: EnquiryBase = {
+      name: values.name,
+      email: values.email,
+      subject: values.subject,
+      message: values.message,
+    };
 
     try {
-      //   const result = await submitEnquiry(formData);
-      //   console.log("Form submitted successfully:", result);
-      // Optionally, reset the form or show a success message
+      const result = await clientApi.public.enquiry.create(formData);
+      if (result.success) {
+        openModal(
+          <ModalMessage
+            message="Enquiry submitted successfully"
+            type="success"
+          />
+        );
+      } else {
+        openModal(
+          <ModalMessage message="Enquiry submission failed" type="error" />
+        );
+      }
+
       form.reset();
     } catch (error) {
       const errorMessage =

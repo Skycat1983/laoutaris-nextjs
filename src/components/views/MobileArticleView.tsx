@@ -7,12 +7,14 @@ import { usePathname } from "next/navigation";
 
 interface ArticleProps {
   article: ArticleFrontendPopulated;
+  form?: React.ReactNode;
   nextUrl: string | null;
   prevUrl: string | null;
 }
 
 const MobileArticleView: React.FC<ArticleProps> = ({
   article,
+  form,
   nextUrl,
   prevUrl,
 }) => {
@@ -83,43 +85,8 @@ const MobileArticleView: React.FC<ArticleProps> = ({
               </p>
             ))}
         </article>
-        {/* INSERT HERE */}
-        {/* <div
-          className="w-full bg-cover bg-fixed h-[400px] fade-in"
-          style={{
-            backgroundImage: `url(${article.artwork.image.secure_url})`,
-            backgroundPosition: "50% 50%",
-          }}
-        >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div
-              className={`text-center p-8 ${overlayStyles.container} backdrop-blur-sm w-full m-16`}
-            >
-              <p className={`${overlayStyles.text} text-xl italic`}>
-                `Here we will add a quote from the article. The quote should
-                ideally come from the center of the article. Perhaps it can
-                scroll into view parallax style.`
-              </p>
-            </div>
-          </div>
-        </div> */}
-
-        {/* <article className="prose-xl text-left p-24 bg-white fade-in">
-          {article.text
-            .replace(/\r\n/g, "\n")
-            .split(/\n\n+/)
-            .map((paragraph, index) => (
-              <p
-                key={index}
-                className={`leading-8 prose-lg mb-6 ${
-                  index === 0 ? "drop-cap" : ""
-                }`}
-              >
-                {paragraph.trim()}
-              </p>
-            ))}
-        </article> */}
       </div>
+      {form && form}
 
       <div className="flex flex-row w-full justify-center items-center px-[80px] gap-5">
         {prevUrl ? (

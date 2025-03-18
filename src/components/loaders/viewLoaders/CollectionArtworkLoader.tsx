@@ -12,10 +12,11 @@ export async function CollectionArtworkLoader({
   artworkId: string;
 }) {
   await delay(1000);
-  const result = await serverApi.public.collection.singlePopulated(
-    slug,
-    artworkId
-  );
+  const result =
+    await serverApi.public.collection.singleCollectionSingleArtwork(
+      slug,
+      artworkId
+    );
 
   if (!result.success) {
     throw new Error(result.error || "Failed to fetch collection artwork");

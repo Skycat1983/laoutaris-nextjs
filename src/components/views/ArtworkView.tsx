@@ -46,6 +46,9 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
           <Card />
         </div>
       </div>
+      {/* <div className="flex flex-row justify-center items-center">
+        <h1>hello</h1>
+      </div> */}
     </>
   );
 };

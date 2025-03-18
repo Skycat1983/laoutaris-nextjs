@@ -51,54 +51,56 @@ const MagnifierImage = ({
   };
 
   return (
-    <div
-      ref={imageRef}
-      className="relative"
-      onMouseEnter={() => setShowMagnifier(true)}
-      onMouseLeave={() => setShowMagnifier(false)}
-      onMouseMove={handleMouseMove}
-    >
-      <Image
-        src={src}
-        width={width}
-        height={height}
-        alt={alt}
-        className="block mx-auto object-contain max-h-full w-auto shadow-2xl fade-in"
-        // className="object-contain max-h-full w-auto shadow-2xl fade-in"
-      />
+    <>
+      <div
+        ref={imageRef}
+        className="relative"
+        onMouseEnter={() => setShowMagnifier(true)}
+        onMouseLeave={() => setShowMagnifier(false)}
+        onMouseMove={handleMouseMove}
+      >
+        <Image
+          src={src}
+          width={width}
+          height={height}
+          alt={alt}
+          className="block mx-auto object-contain max-h-full w-auto shadow-2xl fade-in"
+          // className="object-contain max-h-full w-auto shadow-2xl fade-in"
+        />
 
-      {showMagnifier && (
-        <div
-          className="absolute pointer-events-none border-2 border-gray-200 rounded-full overflow-hidden bg-white"
-          style={{
-            width: `${magnifierSize}px`,
-            height: `${magnifierSize}px`,
-            left: `${mousePosition.x}%`,
-            top: `${mousePosition.y}%`,
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          {!isZoomedImageLoaded ? (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-              <span className="text-xs text-gray-600">Loading zoom...</span>
-            </div>
-          ) : (
-            <div
-              className="absolute"
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundImage: `url(${src})`,
-                backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`,
-                backgroundSize: `${magnificationLevel * 100}%`,
-                backgroundRepeat: "no-repeat",
-              }}
-            />
-          )}
-        </div>
-      )}
-    </div>
+        {showMagnifier && (
+          <div
+            className="absolute pointer-events-none border-2 border-gray-200 rounded-full overflow-hidden bg-white"
+            style={{
+              width: `${magnifierSize}px`,
+              height: `${magnifierSize}px`,
+              left: `${mousePosition.x}%`,
+              top: `${mousePosition.y}%`,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            {!isZoomedImageLoaded ? (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+                <span className="text-xs text-gray-600">Loading zoom...</span>
+              </div>
+            ) : (
+              <div
+                className="absolute"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${src})`,
+                  backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`,
+                  backgroundSize: `${magnificationLevel * 100}%`,
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

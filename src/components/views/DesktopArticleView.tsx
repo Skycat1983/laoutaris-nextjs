@@ -12,12 +12,14 @@ interface ArticleProps {
   article: ArticleFrontendPopulated;
   nextArticle: string | null;
   prevArticle: string | null;
+  form?: React.ReactNode;
 }
 
 const DesktopArticleView: React.FC<ArticleProps> = ({
   article,
   nextArticle,
   prevArticle,
+  form,
 }) => {
   const pathname = usePathname();
   const firstSegment = pathname.split("/")[1];
@@ -96,6 +98,7 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
               </p>
             ))}
           </article>
+          {form && form}
           <div className="flex flex-row w-full justify-center items-center pt-[50px] gap-5">
             {prevArticle ? (
               <Link href={prevArticle} className="bg-black text-white w-full">

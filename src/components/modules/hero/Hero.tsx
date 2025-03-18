@@ -353,11 +353,6 @@ export function Hero() {
           <LeftPortraitVerticalSlide data={slideDataVariationPortrait2} />
         </CarouselItem>
 
-        {/* street */}
-        <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariationStreet} />
-        </CarouselItem>
-
         <CarouselItem className="w-full">
           <FilterableArtworks2 />
         </CarouselItem>
@@ -366,64 +361,24 @@ export function Hero() {
           <RightPanelSlide data={slideDataVariationLandscape} />
         </CarouselItem>
 
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitCenteredSlide data={cycleSlideData} />
-        </CarouselItem> */}
-
-        {/* Red */}
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitVerticalSlide data={slideDataVariationPortrait3} />
-        </CarouselItem> */}
-
-        {/* orange */}
-        {/* <CarouselItem className="w-full">
-          <BottomPanelSlide data={slideDataColoursOrange} />
-        </CarouselItem> */}
-
-        {/* yellow */}
-        {/* <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataColoursYellow} />
-        </CarouselItem> */}
-
         {/* studio */}
         <CarouselItem className="w-full">
           <GridLayoutSlide data={slideDataStudio4} />
         </CarouselItem>
 
-        <CarouselItem className="w-full">
+        {/* <CarouselItem className="w-full">
           <PortraitsOfBeryl />
-        </CarouselItem>
+        </CarouselItem> */}
 
+        {/* orange figure */}
         <CarouselItem className="w-full">
           <LeftPortraitVerticalSlide data={slideDataVariationPortrait} />
         </CarouselItem>
 
+        {/* large scale works */}
         <CarouselItem className="w-full ">
           <LargeScaleWorks />
         </CarouselItem>
-
-        {/* Boat */}
-        {/* <CarouselItem className="w-full">
-          <SplitLayoutSlide data={slideDataFigurative} />
-        </CarouselItem> */}
-
-        {/* <CarouselItem className="w-full">
-          <LeftPortraitOverlapSlide data={slideDataStudio4} />
-        </CarouselItem>
-        <CarouselItem className="w-full">
-          <RightPortraitSlide data={slideDataStudio4} />
-        </CarouselItem> */}
-
-        {/* <CarouselItem className="w-full">
-          <LeftPanelSlide data={slideDataVariation} />
-        </CarouselItem> */}
-        {/* <CarouselItem className="w-full">
-          <SplitLayoutSlide data={slideDataAbstract} />
-        </CarouselItem> */}
-        {/* family faves old */}
-        {/* <CarouselItem className="w-full">
-          <FamilyFavourites />
-        </CarouselItem> */}
       </CarouselContent>
       <div>
         <div className="absolute pt-[125px]">
@@ -445,3 +400,73 @@ const HeroSkeleton = () => {
   );
 };
 export default HeroSkeleton;
+
+{
+  /* <CarouselItem className="w-full">
+          <LeftPortraitCenteredSlide data={cycleSlideData} />
+        </CarouselItem> */
+}
+
+{
+  /* Red */
+}
+{
+  /* <CarouselItem className="w-full">
+          <LeftPortraitVerticalSlide data={slideDataVariationPortrait3} />
+        </CarouselItem> */
+}
+
+{
+  /* orange */
+}
+{
+  /* <CarouselItem className="w-full">
+          <BottomPanelSlide data={slideDataColoursOrange} />
+        </CarouselItem> */
+}
+
+{
+  /* yellow */
+}
+{
+  /* <CarouselItem className="w-full">
+          <LeftPanelSlide data={slideDataColoursYellow} />
+        </CarouselItem> */
+}
+
+{
+  /* Boat */
+}
+{
+  /* <CarouselItem className="w-full">
+          <SplitLayoutSlide data={slideDataFigurative} />
+        </CarouselItem> */
+}
+
+{
+  /* <CarouselItem className="w-full">
+          <LeftPortraitOverlapSlide data={slideDataStudio4} />
+        </CarouselItem>
+        <CarouselItem className="w-full">
+          <RightPortraitSlide data={slideDataStudio4} />
+        </CarouselItem> */
+}
+
+{
+  /* <CarouselItem className="w-full">
+          <LeftPanelSlide data={slideDataVariation} />
+        </CarouselItem> */
+}
+{
+  /* <CarouselItem className="w-full">
+          <SplitLayoutSlide data={slideDataAbstract} />
+        </CarouselItem> */
+}
+{
+  /* family faves old */
+}
+{
+  /* <CarouselItem className="w-full">
+          <FamilyFavourites />
+        </CarouselItem> */
+}
