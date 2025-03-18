@@ -23,6 +23,9 @@ export const ArtworkGallery = ({
   initialSort,
   initialFilters,
 }: ArtworkGalleryProps) => {
+  console.log("initialArtworks", initialArtworks);
+  console.log("initialSort", initialSort);
+  console.log("initialFilters", initialFilters);
   const router = useRouter();
   const [artworks, setArtworks] = useState(initialArtworks);
   const [isLoading, setIsLoading] = useState(false);
@@ -162,14 +165,24 @@ export const ArtworkGallery = ({
         filterMode,
         onFilterModeChange: (mode: FilterMode) => setFilterMode(mode),
         initialSort,
+        initialFilters,
       }}
     >
-      <MasonryLayout
-        artworks={artworks}
-        hasMore={hasMore}
-        onLoadMore={loadMoreArtworks}
-        isLoading={isLoading}
-      />
+      {artworks.length > 0 ? (
+        <MasonryLayout
+          artworks={artworks}
+          hasMore={hasMore}
+          onLoadMore={loadMoreArtworks}
+          isLoading={isLoading}
+        />
+      ) : (
+        <div className="flex justify-center py-4 text-center flex-col gap-4">
+          <h1 className="text-2xl font-bold">No artworks found</h1>
+          <p className="text-gray-500">
+            Please try again with different filters
+          </p>
+        </div>
+      )}
     </FilterDrawerWrapper>
   );
 };

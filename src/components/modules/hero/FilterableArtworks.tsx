@@ -35,23 +35,6 @@ const FilterSelects = ({
 }) => (
   <div className="flex flex-col gap-4 sm:flex-row">
     <Select
-      onValueChange={(value: Decade) =>
-        setFilters((prev) => ({ ...prev, decade: value }))
-      }
-    >
-      <SelectTrigger className="w-full sm:w-[180px] bg-white">
-        <SelectValue placeholder="Select Decade" />
-      </SelectTrigger>
-      <SelectContent>
-        {DECADE_OPTIONS.map((decade) => (
-          <SelectItem key={decade} value={decade}>
-            {decade}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-
-    <Select
       onValueChange={(value: ArtStyle) =>
         setFilters((prev) => ({ ...prev, artstyle: value }))
       }
@@ -80,6 +63,22 @@ const FilterSelects = ({
         {SURFACE_OPTIONS.map((surface) => (
           <SelectItem key={surface} value={surface}>
             {surface.charAt(0).toUpperCase() + surface.slice(1)}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+    <Select
+      onValueChange={(value: Decade) =>
+        setFilters((prev) => ({ ...prev, decade: value }))
+      }
+    >
+      <SelectTrigger className="w-full sm:w-[180px] bg-white">
+        <SelectValue placeholder="Select Decade" />
+      </SelectTrigger>
+      <SelectContent>
+        {DECADE_OPTIONS.map((decade) => (
+          <SelectItem key={decade} value={decade}>
+            {decade}
           </SelectItem>
         ))}
       </SelectContent>

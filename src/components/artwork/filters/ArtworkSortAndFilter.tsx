@@ -89,6 +89,7 @@ interface BasicAccordionFilterProps {
   onFilterModeChange: (mode: FilterMode) => void;
   onApply?: () => void;
   initialSort?: ArtworkSortConfig;
+  initialFilters?: ArtworkFilterParams;
 }
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
@@ -102,13 +103,25 @@ export const ArtworkSortAndFilter = ({
   onFilterModeChange,
   onApply,
   initialSort,
+  initialFilters,
 }: BasicAccordionFilterProps) => {
-  const [pendingFilters, setPendingFilters] = useState<ArtworkFilterParams>({
-    decade: [],
-    artstyle: [],
-    medium: [],
-    surface: [],
-    filterMode: "ALL",
+  const [pendingFilters, setPendingFilters] = useState<ArtworkFilterParams>(
+    () => ({
+      decade: initialFilters?.decade || [],
+      artstyle: initialFilters?.artstyle || [],
+      medium: initialFilters?.medium || [],
+      surface: initialFilters?.surface || [],
+      filterMode: initialFilters?.filterMode || "ALL",
+    })
+  );
+
+  const [openItems, setOpenItems] = useState<string[]>(() => {
+    const items: string[] = [];
+    if (initialFilters?.decade?.length) items.push("decade");
+    if (initialFilters?.artstyle?.length) items.push("style");
+    if (initialFilters?.medium?.length) items.push("medium");
+    if (initialFilters?.surface?.length) items.push("surface");
+    return items;
   });
 
   const [pendingSort, setPendingSort] = useState<ArtworkSortConfig>(
@@ -166,10 +179,10 @@ export const ArtworkSortAndFilter = ({
       surface: [],
       filterMode: "ALL",
     });
-    setPendingSort({
-      by: "colorProximity",
-      color: "#e81111",
-    });
+    // setPendingSort({
+    //   by: "colorProximity",
+    //   color: "#e81111",
+    // });
     onClearFilters();
   };
 
@@ -273,6 +286,10 @@ export const ArtworkSortAndFilter = ({
     );
   };
 
+  const handleAccordionChange = (value: string[]) => {
+    setOpenItems(value);
+  };
+
   return (
     <aside className="fixed left-0 w-full md:w-[290px] md:shadow-md bg-whitish flex flex-col h-screen">
       <ScrollArea className="flex-1">
@@ -339,7 +356,12 @@ export const ArtworkSortAndFilter = ({
               </div>
             </div>
 
-            <Accordion type="multiple" className="w-full">
+            <Accordion
+              type="multiple"
+              className="w-full"
+              value={openItems}
+              onValueChange={handleAccordionChange}
+            >
               <AccordionItem value="decade">
                 <AccordionTrigger>Decade</AccordionTrigger>
                 <AccordionContent>

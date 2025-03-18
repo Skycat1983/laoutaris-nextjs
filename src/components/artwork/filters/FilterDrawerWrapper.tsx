@@ -24,6 +24,7 @@ interface FilterProps {
   filterMode: FilterMode;
   onFilterModeChange: (mode: FilterMode) => void;
   initialSort?: ArtworkSortConfig;
+  initialFilters?: ArtworkFilterParams;
 }
 
 const FilterButton = ({ onClick }: { onClick: () => void }) => {
@@ -47,13 +48,16 @@ interface FilterDrawerWrapperProps {
   children: React.ReactNode;
   filterComponent: React.ComponentType<FilterProps>;
   filterProps: Omit<FilterProps, "onApply">;
+  initialFilters?: ArtworkFilterParams;
 }
 
 export const FilterDrawerWrapper = ({
   children,
   filterComponent: FilterComponent,
   filterProps,
+  initialFilters,
 }: FilterDrawerWrapperProps) => {
+  // const defaultState =
   const [isOpen, setIsOpen] = useState(false);
 
   return (

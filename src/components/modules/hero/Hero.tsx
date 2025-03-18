@@ -345,7 +345,7 @@ export function Hero() {
       }}
     >
       <CarouselContent className="w-full">
-        {/* filterable artworks */}
+        {/* artworks filtered */}
         <CarouselItem className="w-full">
           <FilterableArtworks />
         </CarouselItem>

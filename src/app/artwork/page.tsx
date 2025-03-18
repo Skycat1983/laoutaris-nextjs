@@ -45,10 +45,6 @@ export default async function ArtworkListView({
     page,
   };
 
-  // console.log("URL searchParams:", searchParams);
-  // console.log("Parsed filters:", filters);
-  // console.log("Parsed sortConfig:", sortConfig);
-
   return (
     <div>
       <ArtworkListLoader initialSort={sortConfig} initialFilters={filters} />

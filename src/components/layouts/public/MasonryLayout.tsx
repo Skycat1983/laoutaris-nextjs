@@ -1,7 +1,7 @@
 import { ArtworkFrontend } from "@/lib/data/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useCallback } from "react";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 interface ArtworkLayoutProps {
   artworks: ArtworkFrontend[];
@@ -16,29 +16,18 @@ export const MasonryLayout = ({
   onLoadMore,
   isLoading = false,
 }: ArtworkLayoutProps) => {
-  const observerTarget = useRef<HTMLDivElement>(null);
-
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [target] = entries;
-      if (target.isIntersecting && hasMore && !isLoading) {
-        onLoadMore();
-      }
+  const {
+    observerRef,
+    isLoading: scrollLoading,
+    error,
+  } = useInfiniteScroll({
+    onLoadMore: async () => {
+      onLoadMore();
     },
-    [hasMore, isLoading, onLoadMore]
-  );
+    hasMore,
+  });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
-      rootMargin: "100px",
-    });
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => observer.disconnect();
-  }, [handleObserver]);
+  const loading = isLoading || scrollLoading;
 
   return (
     <div className="container mx-auto p-4">
@@ -104,10 +93,15 @@ export const MasonryLayout = ({
         ))}
       </div>
 
-      <div ref={observerTarget} className="h-4 w-full">
-        {isLoading && (
+      <div ref={observerRef} className="h-4 w-full">
+        {loading && (
           <div className="flex justify-center py-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          </div>
+        )}
+        {error && (
+          <div className="text-center text-red-500">
+            Error loading more artworks
           </div>
         )}
       </div>
