@@ -1,6 +1,7 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { MongoClient } from "mongodb";
 
+// extends the MongoDB adapter for Auth with custom user fields
 export const CustomMongoDBAdapter = (client: Promise<MongoClient>) => {
   const baseAdapter = MongoDBAdapter(client);
 

@@ -2,6 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 
 const uri = process.env.MONGO_URI as string;
 
+//  specifically for Auth.js/NextAuth, using the raw MongoDB driver
 const options = {
   serverApi: {
     version: ServerApiVersion.v1,
