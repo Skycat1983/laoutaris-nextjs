@@ -10,7 +10,10 @@ import { createEnquiryFetchers } from "./enquiry/fetchers";
 
 const serverFetcher = createFetcher({
   getUrl: (path) => {
-    const baseUrl = process.env.VERCEL_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : process.env.VERCEL_URL;
     return new URL(path, baseUrl).toString();
   },
   getHeaders: () => headers(),

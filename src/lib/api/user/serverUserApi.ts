@@ -9,11 +9,23 @@ import { isNextError } from "@/lib/helpers/isNextError";
 
 const serverUserFetcher = createFetcher({
   getUrl: (path) => {
-    const baseUrl = process.env.VERCEL_URL || "http://localhost:3000";
+    const baseUrl =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : process.env.VERCEL_URL;
     return new URL(path, baseUrl).toString();
   },
   getHeaders: () => headers(),
 });
+
+export const serverUserApi = {
+  profile: createProfileFetchers(serverUserFetcher),
+  watchlist: createWatchlistFetchers(serverUserFetcher),
+  favourites: createFavoritesFetchers(serverUserFetcher),
+  comments: createCommentsFetchers(serverUserFetcher),
+  navigation: createUserNavigationFetchers(serverUserFetcher),
+};
+
 // const serverUserFetcher = createFetcher({
 //   getUrl: (path) => {
 //     const baseUrl = process.env.BASEURL || "http://localhost:3000";
@@ -31,11 +43,3 @@ const serverUserFetcher = createFetcher({
 //     }
 //   },
 // });
-
-export const serverUserApi = {
-  profile: createProfileFetchers(serverUserFetcher),
-  watchlist: createWatchlistFetchers(serverUserFetcher),
-  favourites: createFavoritesFetchers(serverUserFetcher),
-  comments: createCommentsFetchers(serverUserFetcher),
-  navigation: createUserNavigationFetchers(serverUserFetcher),
-};
