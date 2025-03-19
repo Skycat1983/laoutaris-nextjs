@@ -11,21 +11,31 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-if (!process.env.MONGO_URI) {
-  throw new Error(
-    "Please define the MONGO_URI environment variable inside .env"
-  );
-}
-
-const MONGO_URL = process.env.MONGO_URI as string;
-
 // Initialize cache
 let cached = global.mongoose || { conn: null, promise: null };
 if (!global.mongoose) global.mongoose = cached;
 
 async function dbConnect() {
   try {
+    // Debug logging
+    console.log("Environment:", process.env.NODE_ENV);
+    console.log("MONGO_URI exists:", !!process.env.MONGO_URI);
+    console.log(
+      "Available env vars:",
+      Object.keys(process.env).filter((key) => key.includes("MONGO"))
+    );
+
+    // Check for MONGO_URI here instead of at module level
+    if (!process.env.MONGO_URI) {
+      throw new Error(
+        "Please define the MONGO_URI environment variable inside .env"
+      );
+    }
+
+    const MONGO_URL = process.env.MONGO_URI;
+
     if (cached.conn) {
+      console.log("Using cached connection");
       return cached.conn;
     }
 
@@ -39,20 +49,26 @@ async function dbConnect() {
         connectTimeoutMS: 10000, // Reduce connect timeout
       };
 
+      console.log(
+        "Attempting MongoDB connection with URL:",
+        MONGO_URL.replace(/:[^:/@]+@/, ":****@")
+      );
       cached.promise = mongoose.connect(MONGO_URL, opts);
     }
 
     try {
       cached.conn = await cached.promise;
+      console.log("MongoDB connected successfully");
     } catch (e) {
       cached.promise = null;
+      console.error("MongoDB connection attempt failed:", e);
       throw e;
     }
 
     return cached.conn;
   } catch (error) {
     console.error("MongoDB connection error:", error);
-    throw new Error("Failed to connect to MongoDB");
+    throw error; // Throw the original error for better debugging
   }
 }
 
