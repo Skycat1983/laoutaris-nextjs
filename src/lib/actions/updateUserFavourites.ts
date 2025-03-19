@@ -12,7 +12,7 @@ export async function updateUserFavourites(
 ): Promise<FavouritesButtonState> {
   const artworkId = formData.get("artworkId") as string;
 
-  await delay(1000); // Simulate a delay for debugging purposes
+  // await delay(1000); // Simulate a delay for debugging purposes
 
   try {
     const userId = await getUserIdFromSession();

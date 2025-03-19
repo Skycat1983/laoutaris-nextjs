@@ -12,7 +12,7 @@ export async function updateUserWatchlist(
 ): Promise<WatchlistButtonState> {
   const artworkId = formData.get("artworkId") as string;
 
-  await delay(1000);
+  // await delay(1000);
 
   try {
     const userId = await getUserIdFromSession();

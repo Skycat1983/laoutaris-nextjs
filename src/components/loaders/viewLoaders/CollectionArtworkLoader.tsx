@@ -11,7 +11,7 @@ export async function CollectionArtworkLoader({
   slug: string;
   artworkId: string;
 }) {
-  await delay(1000);
+  // await delay(1000);
   const result =
     await serverApi.public.collection.singleCollectionSingleArtwork(
       slug,

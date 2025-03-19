@@ -18,7 +18,7 @@ export type BlogDetailLoaderResult =
   | ApiResponse<BlogEntryFrontendWithAuthor>;
 
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
-  await delay(2000);
+  // await delay(2000);
   try {
     const result: BlogDetailLoaderResult = showComments
       ? await serverPublicApi.blog.singlePopulated(slug)

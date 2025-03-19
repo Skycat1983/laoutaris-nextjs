@@ -8,7 +8,6 @@ import { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
 // Loader Function
 export async function CollectionsSectionLoader() {
-  await delay(2000);
   try {
     // Fetch data using API layer
     const result = await serverApi.public.collection.multiple({
