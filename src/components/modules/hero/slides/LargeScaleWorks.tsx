@@ -37,12 +37,11 @@ const LargeScaleWorks = () => {
     <div className="relative h-[850px] w-screen overflow-hidden">
       <Image
         src={image.url}
-        layout="fill"
-        objectFit="cover"
+        fill
         alt="Browse our collection"
         quality={100}
         priority={true}
-        className="scale-110 z-0"
+        className="scale-110 z-0 object-cover"
       />
       <RadialGradientOverlay />
       <div

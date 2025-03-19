@@ -111,12 +111,11 @@ const FilterableArtworks = () => {
     <div className="relative h-[850px] w-full overflow-hidden">
       <Image
         src={PLACEHOLDER_URL}
-        layout="fill"
-        objectFit="cover"
+        fill
         alt="Browse our collection"
         quality={100}
         priority={true}
-        className="scale-110"
+        className="scale-110 object-cover"
       />
 
       <div className="absolute inset-0 flex items-end justify-center mb-24 pb-48 sm:pb-24 sm:mb-0 p-8">

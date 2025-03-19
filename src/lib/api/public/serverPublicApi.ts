@@ -14,7 +14,10 @@ const serverFetcher = createFetcher({
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
         : `https://${process.env.VERCEL_URL}`;
-    return new URL(path, baseUrl).toString();
+
+    const newUrl = new URL(path, baseUrl);
+    console.log("newUrl", newUrl);
+    return newUrl.toString();
   },
   getHeaders: () => headers(),
 });

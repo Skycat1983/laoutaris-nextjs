@@ -2,11 +2,8 @@ import {
   Archivo_Black,
   Cinzel_Decorative,
   Archivo,
-  Roboto_Serif,
-  Playfair_Display,
   Cormorant,
   Crimson_Text,
-  Cormorant_Garamond,
 } from "next/font/google";
 
 const archivoBlack = Archivo_Black({
