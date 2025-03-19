@@ -1,6 +1,6 @@
 import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
-import { ARTICLE_SECTION_OPTIONS, ArticleSection } from "@/lib/constants";
+import { ArticleSection } from "@/lib/constants";
 import { ArticleModel } from "@/lib/data/models";
 import {
   ArticleSelectFieldsLean,
@@ -11,6 +11,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
 import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 
+// navLinks.length > navLinkBorderColours.length. navLinks.length = 6, navLinkBorderColours.length = 5
+//  GET / 200 in 18561ms
+
 export const dynamic = "force-dynamic";
 
 export const GET = async (
@@ -19,13 +22,13 @@ export const GET = async (
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
   const { section } = params;
   // Validate section
-  if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
-    return NextResponse.json({
-      success: false,
-      error: "Invalid section",
-      statusCode: 400,
-    } satisfies ApiErrorResponse);
-  }
+  // if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
+  //   return NextResponse.json({
+  //     success: false,
+  //     error: "Invalid section",
+  //     statusCode: 400,
+  //   } satisfies ApiErrorResponse);
+  // }
 
   try {
     const articleLean = await ArticleModel.find({ section: section })

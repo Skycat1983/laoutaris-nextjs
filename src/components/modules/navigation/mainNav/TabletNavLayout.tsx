@@ -11,11 +11,11 @@ interface DesktopNavLayoutProps {
 }
 
 export function TabletNavLayout({ navLinks }: DesktopNavLayoutProps) {
-  if (navLinks.length > navLinkBorderColours.length) {
-    console.error(
-      `navLinks.length > navLinkBorderColours.length. navLinks.length = ${navLinks.length}, navLinkBorderColours.length = ${navLinkBorderColours.length}`
-    );
-  }
+  // if (navLinks.length > navLinkBorderColours.length) {
+  //   console.error(
+  //     `navLinks.length > navLinkBorderColours.length. navLinks.length = ${navLinks.length}, navLinkBorderColours.length = ${navLinkBorderColours.length}`
+  //   );
+  // }
 
   return (
     <>

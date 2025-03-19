@@ -19,6 +19,7 @@ import { CollectionSectionSkeleton } from "../sections/CollectionSection";
 import { BiographySectionSkeleton } from "@/components/sections/BiographySection";
 import { SubscribeSectionSkeleton } from "../sections/SubscribeSection";
 import { ProjectSectionSkeleton } from "@/components/sections/ProjectSection";
+//  GET /api/auth/session 200 in 8242ms
 
 export async function Home() {
   return (

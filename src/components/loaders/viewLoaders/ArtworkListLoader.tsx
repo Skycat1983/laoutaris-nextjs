@@ -3,7 +3,7 @@ import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
 import { ArtworkSortConfig } from "@/lib/data/types";
 import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
-
+import dbConnect from "@/lib/db/mongodb";
 interface ArtworkListLoaderProps {
   initialSort?: ArtworkSortConfig;
   initialFilters?: ArtworkFilterParams;
@@ -13,6 +13,7 @@ export const ArtworkListLoader = async ({
   initialSort,
   initialFilters,
 }: ArtworkListLoaderProps) => {
+  await dbConnect();
   const result = await serverApi.public.artwork.multiple({
     ...initialFilters,
     filterMode: initialFilters?.filterMode || "ALL",
