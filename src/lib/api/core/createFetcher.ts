@@ -8,6 +8,7 @@ Reusable fetching logic
 
 import { ApiErrorResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import dbConnect from "@/lib/db/mongodb";
 // Fetcher types
 export type Fetcher = <T>(
   endpoint: string,
@@ -25,6 +26,7 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
     options: RequestInit = {}
   ): Promise<T | ApiErrorResponse> => {
     try {
+      await dbConnect();
       const baseHeaders = config.getHeaders();
       const combinedHeaders = {
         "Content-Type": "application/json",
