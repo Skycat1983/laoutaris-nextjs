@@ -9,24 +9,27 @@ import { isNextError } from "@/lib/helpers/isNextError";
 
 const serverUserFetcher = createFetcher({
   getUrl: (path) => {
-    const baseUrl = process.env.BASEURL || "http://localhost:3000";
-    return new URL(path, baseUrl).toString();
+    return path.startsWith("/") ? path : `/${path}`;
   },
-  getHeaders: () => {
-    // Explicitly handle dynamic header usage
-    try {
-      return headers();
-    } catch (error) {
-      if (isNextError(error)) {
-        throw error;
-      }
-      return {};
-    }
-  },
+  getHeaders: () => headers(),
 });
-
-// Force this module to be dynamic
-export const dynamic = "force-dynamic";
+// const serverUserFetcher = createFetcher({
+//   getUrl: (path) => {
+//     const baseUrl = process.env.BASEURL || "http://localhost:3000";
+//     return new URL(path, baseUrl).toString();
+//   },
+//   getHeaders: () => {
+//     // Explicitly handle dynamic header usage
+//     try {
+//       return headers();
+//     } catch (error) {
+//       if (isNextError(error)) {
+//         throw error;
+//       }
+//       return {};
+//     }
+//   },
+// });
 
 export const serverUserApi = {
   profile: createProfileFetchers(serverUserFetcher),

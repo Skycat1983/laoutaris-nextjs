@@ -5,14 +5,20 @@ import { createDeleteFetchers } from "./delete/fetchers";
 import { createUpdateFetchers } from "./update/fetchers";
 import { createReadFetchers } from "./read/fetchers";
 
+// const adminServerFetcher = createFetcher({
+//   getUrl: (path) => {
+//     const baseUrl = process.env.BASEURL || "http://localhost:3000";
+//     return new URL(path, baseUrl).toString();
+//   },
+//   getHeaders: () => headers(),
+// });
+
 const adminServerFetcher = createFetcher({
   getUrl: (path) => {
-    const baseUrl = process.env.BASEURL || "http://localhost:3000";
-    return new URL(path, baseUrl).toString();
+    return path.startsWith("/") ? path : `/${path}`;
   },
   getHeaders: () => headers(),
 });
-
 export const serverAdminApi = {
   create: createPostFetchers(adminServerFetcher),
   delete: createDeleteFetchers(adminServerFetcher),

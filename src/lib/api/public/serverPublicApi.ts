@@ -7,11 +7,11 @@ import { createBlogFetchers } from "@/lib/api/public/blog/fetchers";
 import { createArtworkFetchers } from "./artwork/fetchers";
 import { createSearchFetchers } from "./search/fetchers";
 import { createEnquiryFetchers } from "./enquiry/fetchers";
+
 const serverFetcher = createFetcher({
   getUrl: (path) => {
-    const baseUrl = process.env.BASEURL || "http://localhost:3000";
-    // return new URL(path, baseUrl).toString();
-    return new URL(path, baseUrl).toString();
+    // Use relative paths - they will automatically use the current domain
+    return path.startsWith("/") ? path : `/${path}`;
   },
   getHeaders: () => headers(),
 });

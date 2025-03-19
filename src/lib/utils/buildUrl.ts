@@ -12,11 +12,3 @@ export function buildUrl(
 
   return `${path}?${queryString}`;
 }
-
-export const constructUrl = (segments: string[]) => {
-  const base = process.env.BASEURL;
-  const path = segments.join("/");
-
-  const url = new URL(path, base);
-  return url.toString();
-};
