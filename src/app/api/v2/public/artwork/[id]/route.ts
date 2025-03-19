@@ -5,11 +5,13 @@ import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
-
+import dbConnect from "@/lib/db/mongodb";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ApiArtworkResult>> {
+  await dbConnect();
+
   const { id } = params;
   const userId = await getUserIdFromSession();
 

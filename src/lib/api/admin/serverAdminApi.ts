@@ -15,7 +15,8 @@ import { createReadFetchers } from "./read/fetchers";
 
 const adminServerFetcher = createFetcher({
   getUrl: (path) => {
-    return path.startsWith("/") ? path : `/${path}`;
+    const baseUrl = process.env.VERCEL_URL || "http://localhost:3000";
+    return new URL(path, baseUrl).toString();
   },
   getHeaders: () => headers(),
 });

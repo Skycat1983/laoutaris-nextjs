@@ -1,10 +1,6 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  ApiSuccessResponse,
-  ApiErrorResponse,
-  RouteResponse,
-} from "@/lib/data/types/apiTypes";
+import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import {
   CollectionLeanPopulated,
   CollectionFrontendPopulated,
@@ -12,7 +8,6 @@ import {
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
 import { transformCollectionPopulated } from "@/lib/transforms";
 
-// Define the shape we want using Pick
 // ! did i break this?
 
 export const GET = async (

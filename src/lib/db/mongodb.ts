@@ -25,27 +25,35 @@ if (!global.mongoose) global.mongoose = cached;
 
 async function dbConnect() {
   try {
+    // If we have a connection, return it
     if (cached.conn) {
+      console.log("Using cached MongoDB connection");
       return cached.conn;
     }
 
+    // If we don't have a promise to connect, create one
     if (!cached.promise) {
       const opts = {
-        bufferCommands: true,
+        bufferCommands: false, // Disable buffering for better error handling
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 30000,
-        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 60000, // Increase from 30s to 60s
+        socketTimeoutMS: 60000, // Increase from 45s to 60s
         family: 4,
-        connectTimeoutMS: 30000,
+        connectTimeoutMS: 60000, // Increase from 30s to 60s
       };
 
-      cached.promise = mongoose.connect(MONGO_URL, opts);
+      console.log("Creating new MongoDB connection...");
+      cached.promise = mongoose.connect(MONGO_URL, opts).then((mongoose) => {
+        console.log("MongoDB connected successfully");
+        return mongoose;
+      });
     }
 
     try {
       cached.conn = await cached.promise;
     } catch (e) {
       cached.promise = null;
+      console.error("MongoDB connection failed:", e);
       throw e;
     }
 

@@ -10,8 +10,8 @@ import { createEnquiryFetchers } from "./enquiry/fetchers";
 
 const serverFetcher = createFetcher({
   getUrl: (path) => {
-    // Use relative paths - they will automatically use the current domain
-    return path.startsWith("/") ? path : `/${path}`;
+    const baseUrl = process.env.VERCEL_URL || "http://localhost:3000";
+    return new URL(path, baseUrl).toString();
   },
   getHeaders: () => headers(),
 });

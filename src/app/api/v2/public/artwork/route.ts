@@ -6,10 +6,13 @@ import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { ColourInfo, ArtworkFrontend, ArtworkLean } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformArtwork } from "@/lib/transforms";
-
+import dbConnect from "@/lib/db/mongodb";
+import { isNextError } from "@/lib/helpers/isNextError";
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
+  await dbConnect();
+
   const userId = await getUserIdFromSession();
   const { searchParams } = request.nextUrl;
   const filterMode = searchParams.get("filterMode") || "ALL";
@@ -158,6 +161,9 @@ export async function GET(
       );
     }
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error in artwork route:", error);
     return NextResponse.json(
       { success: false, error: "Internal Server Error" },

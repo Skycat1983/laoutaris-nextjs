@@ -10,6 +10,8 @@ import {
   ArticleLeanPopulated,
   ArticleFrontendPopulated,
 } from "@/lib/data/types/articleTypes";
+import { isNextError } from "@/lib/helpers/isNextError";
+import dbConnect from "@/lib/db/mongodb";
 type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
 export const GET = async (
@@ -18,6 +20,8 @@ export const GET = async (
 ): Promise<RouteResponse<ApiArticlePopulatedResult>> => {
   const userId = await getUserIdFromSession();
   try {
+    await dbConnect();
+
     // populate both artwork and author
     const articleDB = await ArticleModel.findOne({ slug: params.slug })
       .populate<{
@@ -42,6 +46,9 @@ export const GET = async (
       data: articlePublic,
     } satisfies ApiArticlePopulatedResult);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error fetching article artwork:", error);
     return NextResponse.json({
       success: false,
