@@ -17,13 +17,34 @@ if (!global.mongoose) global.mongoose = cached;
 
 const dbConnect = async () => {
   console.log("DB Connect called");
+
   if (mongoose.connection.readyState >= 1) {
     console.log("Using existing connection");
     return;
   }
 
-  console.log("Creating new connection");
-  return mongoose.connect(process.env.MONGO_URI!);
+  try {
+    console.log("Creating new connection");
+
+    // Add connection options to handle timeouts
+    return await mongoose.connect(process.env.MONGO_URI!, {
+      serverSelectionTimeoutMS: 10000, // Reduce from 30s to 10s
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
+      // Add these for MongoDB Atlas
+      retryWrites: true,
+      w: "majority",
+    });
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    // Log the MONGO_URI (but mask sensitive parts)
+    const maskedUri = process.env.MONGO_URI?.replace(
+      /(mongodb\+srv:\/\/)([^:]+):([^@]+)@/,
+      "$1****:****@"
+    );
+    console.error("Using connection string (masked):", maskedUri);
+    throw error;
+  }
 };
 
 // async function dbConnect() {
