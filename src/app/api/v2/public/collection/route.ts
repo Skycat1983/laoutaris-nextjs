@@ -19,10 +19,15 @@ export const GET = async (
     query.section = searchParams.get("section");
   }
 
+  console.log("query", query);
+
   // Handle field selection
   // Handle pagination
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
+
+  console.log("page", page);
+  console.log("limit", limit);
 
   try {
     const [leanCollections, total] = await Promise.all([
