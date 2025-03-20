@@ -10,7 +10,7 @@ import { transformCollection } from "@/lib/transforms/collection/transformCollec
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {
-  console.log("Collection fetch request received");
+  console.error("Collection fetch request received");
   // const { searchParams } = new URL(req.url);
   const { searchParams } = req.nextUrl;
   // Build query object
@@ -19,25 +19,40 @@ export const GET = async (
     query.section = searchParams.get("section");
   }
 
-  console.log("query", query);
+  console.error("query", query);
 
   // Handle field selection
   // Handle pagination
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
 
-  console.log("page", page);
-  console.log("limit", limit);
+  console.error("page", page);
+  console.error("limit", limit);
 
   try {
+    console.error("About to query MongoDB");
+
+    // Split the Promise.all to identify where it's failing
+    console.error("Starting find query");
+    const findPromise = CollectionModel.find(query)
+      // .select(fields)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean<CollectionLean[]>();
+
+    console.error("Starting count query");
+    const countPromise = CollectionModel.countDocuments(query);
+
+    console.error("Awaiting both promises");
     const [leanCollections, total] = await Promise.all([
-      CollectionModel.find(query)
-        // .select(fields)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean<CollectionLean[]>(),
-      CollectionModel.countDocuments(query),
+      findPromise,
+      countPromise,
     ]);
+
+    console.error("Queries completed", {
+      hasCollections: !!leanCollections,
+      total,
+    });
 
     console.log("leanCollections", leanCollections);
 

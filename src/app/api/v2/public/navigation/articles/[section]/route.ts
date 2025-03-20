@@ -21,6 +21,8 @@ export const GET = async (
   { params }: { params: { section: ArticleSection } }
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
   const { section } = params;
+  console.log("Article navigation request received");
+  console.log("section", section);
   // Validate section
   // if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
   //   return NextResponse.json({
@@ -36,6 +38,8 @@ export const GET = async (
       .sort({ displayDate: -1 })
       .lean<ArticleSelectFieldsLean[]>();
 
+    console.log("articleLean", articleLean);
+
     if (!articleLean.length) {
       return NextResponse.json({
         success: false,
@@ -47,6 +51,8 @@ export const GET = async (
     const navItems: ArticleNavDataFrontend[] = articleLean.map((article) =>
       transformBiographyNav.toFrontend(article)
     );
+
+    console.log("navItems", navItems);
 
     return NextResponse.json({
       success: true,
