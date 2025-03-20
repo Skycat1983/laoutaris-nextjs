@@ -9,27 +9,37 @@ import { createSearchFetchers } from "./search/fetchers";
 import { createEnquiryFetchers } from "./enquiry/fetchers";
 
 const serverFetcher = createFetcher({
-  getUrl: (path) => {
-    console.log("Original path:", path);
-
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-    console.log("Normalized path:", normalizedPath);
-
-    return normalizedPath; // Just return the path for server-side requests
-  },
   // getUrl: (path) => {
-  //   console.log("Incoming path:", path);
-  //   const baseUrl =
-  //     process.env.NODE_ENV === "development"
-  //       ? "http://localhost:3000"
-  //       : `https://${process.env.VERCEL_URL}`;
+  //   console.log("Original path:", path);
 
-  //   console.log("Base URL:", baseUrl);
-  //   const newUrl = new URL(path, baseUrl);
-  //   console.log("newUrl", newUrl);
-  //   console.log("Final URL:", newUrl.toString());
-  //   return newUrl.toString();
+  //   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  //   console.log("Normalized path:", normalizedPath);
+
+  //   return normalizedPath; // Just return the path for server-side requests
   // },
+  getUrl: (path) => {
+    console.log("=== URL Construction Debug ===");
+    console.log("1. Incoming path:", path);
+    console.log("2. NODE_ENV:", process.env.NODE_ENV);
+    console.log("3. VERCEL_URL:", process.env.VERCEL_URL);
+    console.log("NEXT_PUBLIC_VERCEL_ENV:", process.env.NEXT_PUBLIC_VERCEL_ENV);
+
+    const baseUrl =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : `https://${process.env.VERCEL_URL}`;
+
+    console.log("4. Constructed baseUrl:", baseUrl);
+
+    try {
+      const newUrl = new URL(path, baseUrl);
+      console.log("5. Final URL:", newUrl.toString());
+      return newUrl.toString();
+    } catch (error) {
+      console.error("6. URL Construction Error:", error);
+      throw error;
+    }
+  },
   getHeaders: () => headers(),
 });
 
