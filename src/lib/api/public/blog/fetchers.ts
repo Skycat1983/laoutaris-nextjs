@@ -19,13 +19,6 @@ export type ApiBlogPopulatedResult =
   SingleResult<BlogEntryPopulatedCommentsPopulatedFrontend>;
 
 export const createBlogFetchers = (fetcher: Fetcher) => ({
-  //? substitute with singleWithAuthor, as we never need without an author
-  // get one blog by slug
-  // single: async (slug: string) => {
-  //   const encodedSlug = encodeURIComponent(slug);
-  //   return fetcher<ApiBlogResult>(`/api/v2/public/blog/${encodedSlug}`);
-  // },
-
   single: async (slug: string) => {
     const encodedSlug = encodeURIComponent(slug);
     return fetcher<ApiBlogWithAuthorResult>(
@@ -55,3 +48,10 @@ export const createBlogFetchers = (fetcher: Fetcher) => ({
 });
 
 export type BlogFetchers = ReturnType<typeof createBlogFetchers>;
+
+//? substitute with singleWithAuthor, as we never need without an author
+// get one blog by slug
+// single: async (slug: string) => {
+//   const encodedSlug = encodeURIComponent(slug);
+//   return fetcher<ApiBlogResult>(`/api/v2/public/blog/${encodedSlug}`);
+// },

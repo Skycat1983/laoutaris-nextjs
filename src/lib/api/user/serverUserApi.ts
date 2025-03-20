@@ -5,7 +5,6 @@ import { createWatchlistFetchers } from "./watchlist/fetchers";
 import { createFavoritesFetchers } from "./favorites/fetchers";
 import { createCommentsFetchers } from "./comments/fetchers";
 import { createUserNavigationFetchers } from "./navigation/fetchers";
-import { isNextError } from "@/lib/helpers/isNextError";
 
 const serverUserFetcher = createFetcher({
   getUrl: (path) => {

@@ -44,7 +44,11 @@ export async function GET(
     return NextResponse.json(response);
   } catch (error) {
     if (isNextError(error)) {
-      throw error;
+      // throw error;
+      return NextResponse.json({
+        success: false,
+        error: "Next error triggered",
+      } satisfies ApiErrorResponse);
     }
     return NextResponse.json({
       success: false,
