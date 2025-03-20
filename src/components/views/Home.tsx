@@ -32,7 +32,7 @@ export async function Home() {
         </Suspense>
       </ContentLayout>
 
-      <ContentLayout bg="bg-slate/5">
+      {/* <ContentLayout bg="bg-slate/5">
         <Suspense fallback={<ProjectSectionSkeleton />}>
           <ProjectSectionLoader data-testid="home-project-section" />
         </Suspense>
@@ -54,7 +54,7 @@ export async function Home() {
         <Suspense fallback={<BlogSectionSkeleton />}>
           <BlogSectionLoader data-testid="home-blog-section" />
         </Suspense>
-      </ContentLayout>
+      </ContentLayout> */}
     </div>
   );
 }

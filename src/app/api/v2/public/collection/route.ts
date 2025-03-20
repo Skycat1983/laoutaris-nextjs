@@ -10,6 +10,7 @@ import { transformCollection } from "@/lib/transforms/collection/transformCollec
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {
+  console.log("Collection fetch request received");
   // const { searchParams } = new URL(req.url);
   const { searchParams } = req.nextUrl;
   // Build query object
@@ -33,6 +34,8 @@ export const GET = async (
       CollectionModel.countDocuments(query),
     ]);
 
+    console.log("leanCollections", leanCollections);
+
     if (!leanCollections) {
       return NextResponse.json(
         {
@@ -46,6 +49,8 @@ export const GET = async (
     const collections = leanCollections.map((collection) =>
       transformCollection.toFrontend(collection)
     );
+
+    console.log("collections", collections);
 
     return NextResponse.json({
       success: true,
