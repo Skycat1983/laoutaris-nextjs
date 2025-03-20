@@ -43,13 +43,20 @@ const nextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              "default-src 'self'",
+              // Allow resources from self and data URLs
+              "default-src 'self' https: data: blob:",
+              // Scripts from self and inline
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com",
+              // Frames
               "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
+              // Styles
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https:",
+              // Images
+              "img-src 'self' data: https: blob:",
+              // Fonts
               "font-src 'self' data:",
-              "connect-src 'self' https://www.youtube.com",
+              // API and external connections
+              "connect-src 'self' data: https: blob:",
             ].join("; "),
           },
         ],
