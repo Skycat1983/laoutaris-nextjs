@@ -20,7 +20,7 @@ export function ProjectSection() {
 
         <div className="grid grid-cols-2 lg:grid-cols-3 items-center h-full">
           <div className="col-span-3 xl:col-span-2">
-            <YoutubeEmbedding />
+            <YoutubeEmbedding videoId="6ynF2gO-J30" />
           </div>
           <div className="col-span-3 xl:col-span-1 z-1 mx-10 my-8 xl:my-4">
             <div className="ml-10 border-l border-black border-l-4">
