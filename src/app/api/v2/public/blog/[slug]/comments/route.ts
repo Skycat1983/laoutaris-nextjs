@@ -45,13 +45,6 @@ export const GET = async (
     const blog: Prettify<BlogEntryPopulatedCommentsPopulatedFrontend> =
       transformBlogPopulatedWithCommentsPopulated(rawBlog);
 
-    // const blog: Prettify<BlogEntryFrontendPopulated> =
-    //   transformBlogPopulated(rawBlog);
-
-    // const test = blog.comments[0].author.
-
-    //   const test = blog.text
-
     return NextResponse.json({
       success: true,
       data: blog,
