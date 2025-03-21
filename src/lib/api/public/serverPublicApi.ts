@@ -9,25 +9,18 @@ import { createSearchFetchers } from "./search/fetchers";
 import { createEnquiryFetchers } from "./enquiry/fetchers";
 
 const serverFetcher = createFetcher({
-  // getUrl: (path) => {
-  //   console.log("Original path:", path);
-
-  //   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  //   console.log("Normalized path:", normalizedPath);
-
-  //   return normalizedPath; // Just return the path for server-side requests
-  // },
   getUrl: (path) => {
     console.log("=== URL Construction Debug ===");
     console.log("1. Incoming path:", path);
     console.log("2. NODE_ENV:", process.env.NODE_ENV);
     console.log("3. VERCEL_URL:", process.env.VERCEL_URL);
+    console.log("4. VERCEL_ENV:", process.env.VERCEL_ENV);
     console.log("NEXT_PUBLIC_VERCEL_ENV:", process.env.NEXT_PUBLIC_VERCEL_ENV);
     console.log("NEXT_PUBLIC_VERCEL_URL:", process.env.NEXT_PUBLIC_VERCEL_URL);
 
     // changed to use NEXT_PUBLIC_VERCEL_URL instead of VERCEL_URL
     const baseUrl =
-      process.env.NODE_ENV === "development"
+      process.env.VERCEL_ENV === "development"
         ? "http://localhost:3000"
         : `https://${process.env.VERCEL_URL}`;
 
