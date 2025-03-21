@@ -33,6 +33,11 @@ const serverFetcher = createFetcher({
 
     console.log("4. Constructed baseUrl:", baseUrl);
 
+    if (process.env.NODE_ENV === "production") {
+      // Just use the path directly
+      return path.startsWith("/") ? path : `/${path}`;
+    }
+
     try {
       const newUrl = new URL(path, baseUrl);
       console.log("5. Final URL:", newUrl.toString());
