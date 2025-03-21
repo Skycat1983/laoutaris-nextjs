@@ -47,6 +47,8 @@ const dbConnect = async () => {
   }
 };
 
+export default dbConnect;
+
 // async function dbConnect() {
 //   try {
 //     // Debug logging
@@ -104,7 +106,7 @@ const dbConnect = async () => {
 //   }
 // }
 
-export default dbConnect;
+// export default dbConnect;
 
 // ! OLD CODE. DO NOT DELETE
 

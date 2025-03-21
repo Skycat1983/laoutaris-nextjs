@@ -2,12 +2,12 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authorizeUser } from "../actions/authenticateUser";
-import clientPromise from "../db";
 import { Adapter } from "next-auth/adapters";
 import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";
 import { CustomMongoDBAdapter } from "../db/adapter";
 import { User, Account, Profile, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { clientPromise } from "@/lib/db";
 
 // ! important
 // https://www.youtube.com/watch?v=3bI5js0PVu0&ab_channel=NoorMohammad
