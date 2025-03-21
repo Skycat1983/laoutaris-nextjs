@@ -18,12 +18,6 @@ const serverFetcher = createFetcher({
     console.log("NEXT_PUBLIC_VERCEL_ENV:", process.env.NEXT_PUBLIC_VERCEL_ENV);
     console.log("NEXT_PUBLIC_VERCEL_URL:", process.env.NEXT_PUBLIC_VERCEL_URL);
 
-    if (process.env.NODE_ENV === "production") {
-      console.error("Production server request:", path);
-      // Just use the path directly for same-server requests
-      return path;
-    }
-
     // changed to use NEXT_PUBLIC_VERCEL_URL instead of VERCEL_URL
     const baseUrl =
       process.env.VERCEL_ENV === "development"
