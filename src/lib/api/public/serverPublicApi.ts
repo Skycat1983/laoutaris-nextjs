@@ -19,10 +19,16 @@ const serverFetcher = createFetcher({
     console.log("NEXT_PUBLIC_VERCEL_URL:", process.env.NEXT_PUBLIC_VERCEL_URL);
 
     // changed to use NEXT_PUBLIC_VERCEL_URL instead of VERCEL_URL
+    // const baseUrl =
+    //   process.env.VERCEL_ENV === "development"
+    //     ? "http://localhost:3000"
+    //     : `https://${process.env.VERCEL_URL}`;
     const baseUrl =
-      process.env.VERCEL_ENV === "development"
-        ? "http://localhost:3000"
-        : `https://${process.env.VERCEL_URL}`;
+      process.env.VERCEL_ENV === "production"
+        ? `laoutaris-nextjs.vercel.app`
+        : process.env.VERCEL_ENV === "preview"
+        ? `https://${process.env.VERCEL_URL}`
+        : `http://localhost:3000`;
 
     console.log("4. Constructed baseUrl:", baseUrl);
 
