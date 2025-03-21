@@ -25,7 +25,7 @@ const serverFetcher = createFetcher({
     //     : `https://${process.env.VERCEL_URL}`;
     const baseUrl =
       process.env.VERCEL_ENV === "production"
-        ? `laoutaris-nextjs.vercel.app`
+        ? `https://laoutaris-nextjs.vercel.app`
         : process.env.VERCEL_ENV === "preview"
         ? `https://${process.env.VERCEL_URL}`
         : `http://localhost:3000`;
