@@ -16,7 +16,7 @@ export const createFavoritesFetchers = (fetcher: Fetcher) => ({
   getList: async () =>
     fetcher<ApiFavoritesListResult>(`/api/v2/user/favourite`, {
       method: "GET",
-      cache: "no-store",
+      // cache: "no-store",
     }),
 
   // Get specific favorite artwork
@@ -26,7 +26,7 @@ export const createFavoritesFetchers = (fetcher: Fetcher) => ({
       `/api/v2/user/favourite/${encodedArtworkId}`,
       {
         method: "GET",
-        cache: "no-store",
+        // cache: "no-store",
       }
     );
   },

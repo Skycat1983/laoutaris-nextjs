@@ -7,9 +7,11 @@ import {
   RouteResponse,
 } from "@/lib/data/types";
 import { transformCollection } from "@/lib/transforms/collection/transformCollection";
+import dbConnect from "@/lib/db/mongodb";
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {
+  await dbConnect();
   console.error("Collection fetch request received");
   // const { searchParams } = new URL(req.url);
   const { searchParams } = req.nextUrl;

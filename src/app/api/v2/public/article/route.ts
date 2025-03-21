@@ -11,13 +11,14 @@ type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiArticleListResult>> => {
+  await dbConnect();
+
   console.log("Starting article GET request");
 
   const { searchParams } = req.nextUrl;
 
   try {
     console.log("Attempting DB connection");
-    await dbConnect();
     console.log("DB connected successfully");
 
     // Build query object
