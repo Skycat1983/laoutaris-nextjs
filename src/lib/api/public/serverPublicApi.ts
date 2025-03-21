@@ -23,11 +23,12 @@ const serverFetcher = createFetcher({
     console.log("2. NODE_ENV:", process.env.NODE_ENV);
     console.log("3. VERCEL_URL:", process.env.VERCEL_URL);
     console.log("NEXT_PUBLIC_VERCEL_ENV:", process.env.NEXT_PUBLIC_VERCEL_ENV);
+    console.log("NEXT_PUBLIC_VERCEL_URL:", process.env.NEXT_PUBLIC_VERCEL_URL);
 
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
-        : `https://${process.env.VERCEL_URL}`;
+        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
 
     console.log("4. Constructed baseUrl:", baseUrl);
 
