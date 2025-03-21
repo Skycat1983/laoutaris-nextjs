@@ -25,6 +25,7 @@ const serverFetcher = createFetcher({
     console.log("NEXT_PUBLIC_VERCEL_ENV:", process.env.NEXT_PUBLIC_VERCEL_ENV);
     console.log("NEXT_PUBLIC_VERCEL_URL:", process.env.NEXT_PUBLIC_VERCEL_URL);
 
+    // changed to use NEXT_PUBLIC_VERCEL_URL instead of VERCEL_URL
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
