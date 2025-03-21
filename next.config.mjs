@@ -64,6 +64,12 @@ const nextConfig = {
       },
     ];
   },
+  webpack(config, { dev }) {
+    if (dev) {
+      config.devtool = "source-map"; // Enable better source maps in development
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
