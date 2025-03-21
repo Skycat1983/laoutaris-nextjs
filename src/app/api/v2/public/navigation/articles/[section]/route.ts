@@ -10,7 +10,7 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
 import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
-
+import dbConnect from "@/lib/db/mongodb";
 // navLinks.length > navLinkBorderColours.length. navLinks.length = 6, navLinkBorderColours.length = 5
 //  GET / 200 in 18561ms
 
@@ -23,16 +23,9 @@ export const GET = async (
   const { section } = params;
   console.log("Article navigation request received");
   console.log("section", section);
-  // Validate section
-  // if (!ARTICLE_SECTION_OPTIONS.includes(section as ArticleSection)) {
-  //   return NextResponse.json({
-  //     success: false,
-  //     error: "Invalid section",
-  //     statusCode: 400,
-  //   } satisfies ApiErrorResponse);
-  // }
 
   try {
+    await dbConnect();
     const articleLean = await ArticleModel.find({ section: section })
       .select("title slug")
       .sort({ displayDate: -1 })
