@@ -26,7 +26,7 @@ export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
         width={200}
         height={200}
         className="w-full h-auto shadow-xl"
-        loading="lazy"
+        // loading="lazy"
       />
       <button
         onClick={handleCopyClick}

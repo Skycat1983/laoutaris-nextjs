@@ -18,7 +18,7 @@ export const BlogCard = ({ blog }: BlogCardProps) => {
             width={200}
             height={200}
             className="w-full h-[300px] shadow-xl object-cover"
-            loading="lazy"
+            // loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
             <h2 className="text-white text-2xl font-bold">{blog.title}</h2>

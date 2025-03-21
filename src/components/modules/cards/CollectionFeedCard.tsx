@@ -21,7 +21,7 @@ export function CollectionFeedCard({ item }: CollectionFeedCardProps) {
           width={200}
           height={200}
           className="w-full h-auto shadow-xl"
-          loading="lazy"
+          // loading="lazy"
         />
         {/* Overlay with gradient background */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">

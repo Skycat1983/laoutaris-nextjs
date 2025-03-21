@@ -24,7 +24,7 @@ export function ArticleFeedCard({ item }: ArticleFeedCardProps) {
           width={200}
           height={200}
           className="w-full h-auto shadow-xl"
-          loading="lazy"
+          // loading="lazy"
         />
         {/* overlay w gradient background */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4 gap-2">
