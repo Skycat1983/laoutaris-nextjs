@@ -10,9 +10,9 @@ export async function Header({ className }: { className?: string }) {
   return (
     <>
       <header className={`fixed top-0 z-10 w-full bg-whitish ${className}`}>
-        {/* <Suspense fallback={<MainNavSkeleton />}> */}
-        <MainNavLoader />
-        {/* </Suspense> */}
+        <Suspense fallback={<MainNavSkeleton />}>
+          <MainNavLoader />
+        </Suspense>
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">
           <hr className="flex flex-row flex-grow" />
