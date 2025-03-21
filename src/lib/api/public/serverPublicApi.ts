@@ -29,14 +29,9 @@ const serverFetcher = createFetcher({
     const baseUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
-        : `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+        : `https://${process.env.VERCEL_URL}`;
 
     console.log("4. Constructed baseUrl:", baseUrl);
-
-    if (process.env.NODE_ENV === "production") {
-      // Just use the path directly
-      return path.startsWith("/") ? path : `/${path}`;
-    }
 
     try {
       const newUrl = new URL(path, baseUrl);

@@ -12,6 +12,7 @@ import {
 } from "@/lib/api/public/navigation/fetchers";
 import { isNextError } from "@/lib/helpers/isNextError";
 import dbConnect from "@/lib/db/mongodb";
+import { serverApi } from "@/lib/api/serverApi";
 export interface NavBarLink {
   label: string;
   path: string;
@@ -24,12 +25,13 @@ type CollectionNavResult = ApiCollectionNavListResult | ApiErrorResponse;
 type MainNavFetchResults = [ArticleNavResult, CollectionNavResult];
 
 export const MainNavLoader = async () => {
-  await dbConnect();
   try {
+    await dbConnect();
+
     const [articleNavigation, collectionNavigation]: MainNavFetchResults =
       await Promise.all([
-        serverPublicApi.navigation.fetchArticleNavigationList("biography"),
-        serverPublicApi.navigation.fetchCollectionNavigationList(),
+        serverApi.public.navigation.fetchArticleNavigationList("biography"),
+        serverApi.public.navigation.fetchCollectionNavigationList(),
       ]);
     if (!articleNavigation.success) {
       throw new Error(
