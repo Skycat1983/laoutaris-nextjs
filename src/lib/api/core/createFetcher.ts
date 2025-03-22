@@ -31,7 +31,6 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
       stack: new Error().stack?.split("\n").slice(1, 5).join("\n"), // First 4 lines of stack
     });
     try {
-      await dbConnect();
       const baseHeaders = config.getHeaders();
       const combinedHeaders = {
         "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
 
@@ -30,17 +31,23 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
 
     "
       >
-        <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end  max-w-2xl">
-          {artwork && (
-            <MagnifierImage
-              src={artwork.image.secure_url}
-              width={artwork.image.pixelWidth}
-              height={artwork.image.pixelHeight}
-              alt={artwork.title || "Artwork"}
-              magnifierSize={250}
-              magnificationLevel={8}
-            />
-          )}
+        <span className="m-4 justify-center lg:justify-self-end flex flex-col justify-end  max-w-2xl">
+          <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end  max-w-2xl">
+            {artwork && (
+              <MagnifierImage
+                src={artwork.image.secure_url}
+                width={artwork.image.pixelWidth}
+                height={artwork.image.pixelHeight}
+                alt={artwork.title || "Artwork"}
+                magnifierSize={250}
+                magnificationLevel={8}
+              />
+            )}
+          </span>
+          <div className="w-full flex justify-center items-center">
+            <h1 className="text-neutral-400 px-2">Hover for magnified view:</h1>
+            <Search className="text-neutral-400" />
+          </div>
         </span>
 
         <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
