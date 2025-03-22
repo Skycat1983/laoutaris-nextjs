@@ -21,8 +21,8 @@ export const GET = async (
   { params }: { params: { section: ArticleSection } }
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
   const { section } = params;
-  console.log("Article navigation request received");
-  console.log("section", section);
+  // console.log("Article navigation request received");
+  // console.log("section", section);
 
   try {
     await dbConnect();
@@ -31,7 +31,7 @@ export const GET = async (
       .sort({ displayDate: -1 })
       .lean<ArticleSelectFieldsLean[]>();
 
-    console.log("articleLean", articleLean);
+    // console.log("articleLean", articleLean);
 
     if (!articleLean.length) {
       return NextResponse.json({
@@ -45,7 +45,7 @@ export const GET = async (
       transformBiographyNav.toFrontend(article)
     );
 
-    console.log("navItems", navItems);
+    // console.log("navItems", navItems);
 
     return NextResponse.json({
       success: true,
@@ -61,7 +61,7 @@ export const GET = async (
     if (isDynamicServerError(error)) {
       throw error;
     }
-    console.error("Error fetching article navigation:", error);
+    // console.error("Error fetching article navigation:", error);
     return NextResponse.json({
       success: false,
       error: "Failed to fetch article navigation",

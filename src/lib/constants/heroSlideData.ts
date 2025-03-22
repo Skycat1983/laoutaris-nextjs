@@ -7,8 +7,8 @@ export const FAMILY_FAVOURITES_SLIDE = {
   imageUrl:
     "https://res.cloudinary.com/dzncmfirr/image/upload/v1707470730/art-thumbnails/JRL_w103_crop_bsstxr.jpg",
 
-  section: "art-history",
-  slug: "exploring-abstract-art",
+  section: "collections",
+  slug: "family-favourites",
   artworks: [
     { $oid: "65a4f7c9e4b0a3d1f0e67890" },
     { $oid: "65a4f7c9e4b0a3d1f0e09876" },
@@ -27,8 +27,8 @@ export const COMING_SOON_SLIDE = {
   text: "Abstract art has transformed the way we perceive creativity. From Kandinsky to Pollock, artists have pushed the boundaries of form and meaning.",
   imageUrl:
     "https://res.cloudinary.com/dzncmfirr/image/upload/c_crop,h_1300,w_1500,g_north/v1707470649/art-thumbnails/JRL_w111_crop_so0ecb.jpg",
-  section: "art-history",
-  slug: "exploring-abstract-art",
+  section: "collections",
+  slug: "coming-soon",
   artworks: [
     { $oid: "65a4f7c9e4b0a3d1f0e67890" },
     { $oid: "65a4f7c9e4b0a3d1f0e09876" },

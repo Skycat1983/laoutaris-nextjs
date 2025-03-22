@@ -17,10 +17,10 @@ export async function ArtworkInfoCard({ ...artwork }: ArtworkFrontend) {
           <div className="py-8 container mx-auto">
             <HorizontalDivider />
           </div>
-          <h1 className="text-4xl text-center font-thin fontface-crimson">
+          <h1 className="text-4xl text-left font-thin fontface-crimson">
             Artwork info
           </h1>
-          <div className="py-8 container mx-auto">
+          <div className="pt-8 container mx-auto">
             <HorizontalDivider />
           </div>
         </div>

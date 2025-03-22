@@ -1,4 +1,5 @@
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
+import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
 
 import { MagnifierImage } from "../modules/MagnifierImage";
 import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";

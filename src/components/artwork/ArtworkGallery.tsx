@@ -12,6 +12,7 @@ import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
 import { FilterMode } from "@/lib/constants";
 import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
+import { isValidValue } from "@/lib/utils/isValidValue";
 interface ArtworkGalleryProps {
   initialArtworks: ArtworkFrontend[];
   initialSort?: ArtworkSortConfig;
@@ -47,15 +48,6 @@ export const ArtworkGallery = ({
       setIsLoading(true);
 
       const { sort, ...filterParams } = newFilters;
-
-      // Helper function to check if a value should be included
-      const isValidValue = (value: any): boolean => {
-        if (value === undefined || value === null) return false;
-        if (Array.isArray(value)) return value.length > 0;
-        if (typeof value === "number") return true;
-        if (typeof value === "string") return value !== "";
-        return true;
-      };
 
       const cleanFilters = {
         ...Object.fromEntries(
