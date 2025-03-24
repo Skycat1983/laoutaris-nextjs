@@ -2,6 +2,7 @@ import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse, Prettify, RouteResponse } from "@/lib/data/types";
 import { OwnUserSelectFieldsLean } from "@/lib/data/types/navigationTypes";
+import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
@@ -13,6 +14,8 @@ export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiOwnUserNavResult>> {
   try {
+    await dbConnect();
+
     const userId = await getUserIdFromSession();
 
     if (!userId) {

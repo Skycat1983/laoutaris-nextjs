@@ -7,6 +7,8 @@ import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
+import dbConnect from "@/lib/db/mongodb";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
@@ -14,6 +16,8 @@ export async function GET(
   const userId = await getUserIdFromSession();
 
   try {
+    await dbConnect();
+
     if (!userId) {
       return NextResponse.json({
         success: false,

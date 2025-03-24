@@ -1,6 +1,7 @@
 import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
 import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,6 +12,8 @@ export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiProfileResult>> {
   try {
+    await dbConnect();
+
     const userId = await getUserIdFromSession();
     if (!userId) {
       return NextResponse.json({

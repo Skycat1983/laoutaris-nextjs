@@ -6,7 +6,7 @@ import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { NextRequest, NextResponse } from "next/server";
-
+import dbConnect from "@/lib/db/mongodb";
 type UserWithFavourites = {
   _id: string;
   favourites: ArtworkLean[];
@@ -18,6 +18,8 @@ export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
   try {
+    await dbConnect();
+
     const userId = await getUserIdFromSession();
 
     if (!userId) {

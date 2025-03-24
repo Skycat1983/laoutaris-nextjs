@@ -73,7 +73,7 @@ const dbConnect = async () => {
   // If all retries failed, throw the last error
   throw lastError;
 };
-
+//http://localhost:3000/api/auth/callback/github, http://laoutaris-nextjs-git-newest-main-skycat1983s-projects.vercel.app/api/auth/callback/github, https://laoutaris-nextjs.vercel.app/api/auth/callback/github
 export default dbConnect;
 
 // ! OLD CODE. DO NOT DELETE

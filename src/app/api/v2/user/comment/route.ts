@@ -14,7 +14,7 @@ import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { transformCommentPopulated } from "@/lib/transforms";
 import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
-
+import dbConnect from "@/lib/db/mongodb";
 export const dynamic = "force-dynamic";
 
 interface UserWithComentsLean {
@@ -26,6 +26,8 @@ export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiUserCommentsGetResult>> {
   try {
+    await dbConnect();
+
     const userId = await getUserIdFromSession();
 
     if (!userId) {
