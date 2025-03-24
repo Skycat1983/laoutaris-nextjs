@@ -23,32 +23,60 @@ const dbConnect = async () => {
     return;
   }
 
-  try {
-    console.log("Creating new connection");
+  // Retry mechanism for mongoose connection
+  const MAX_RETRIES = 3;
+  let currentAttempt = 0;
+  let lastError;
 
-    // Add connection options to handle timeouts
-    return await mongoose.connect(process.env.MONGO_URI!, {
-      serverSelectionTimeoutMS: 10000, // Reduce from 30s to 10s
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 10000,
-      // Add these for MongoDB Atlas
-      retryWrites: true,
-      w: "majority",
-      // directConnection: true,
-    });
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    // Log the MONGO_URI (but mask sensitive parts)
-    const maskedUri = process.env.MONGO_URI?.replace(
-      /(mongodb\+srv:\/\/)([^:]+):([^@]+)@/,
-      "$1****:****@"
-    );
-    console.error("Using connection string (masked):", maskedUri);
-    throw error;
+  while (currentAttempt < MAX_RETRIES) {
+    try {
+      currentAttempt++;
+      console.log(
+        `MongoDB mongoose connection attempt ${currentAttempt}/${MAX_RETRIES}`
+      );
+
+      return await mongoose.connect(process.env.MONGO_URI!, {
+        // Connection settings optimized for serverless
+        maxPoolSize: 5,
+        minPoolSize: 1,
+        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 60000,
+        connectTimeoutMS: 30000,
+        family: 4,
+        retryWrites: true,
+        w: "majority",
+      });
+    } catch (error) {
+      console.error(
+        `MongoDB mongoose connection attempt ${currentAttempt} failed:`,
+        error
+      );
+      lastError = error;
+
+      // Only retry if we haven't reached max attempts
+      if (currentAttempt < MAX_RETRIES) {
+        // Exponential backoff: 500ms, 1500ms, 4500ms
+        const backoffTime = Math.min(Math.pow(3, currentAttempt) * 500, 10000);
+        console.log(`Retrying in ${backoffTime}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, backoffTime));
+      }
+    }
   }
+
+  // Log masked URI for debugging
+  const maskedUri = process.env.MONGO_URI?.replace(
+    /(mongodb\+srv:\/\/)([^:]+):([^@]+)@/,
+    "$1****:****@"
+  );
+  console.error("Connection attempts exhausted with URI (masked):", maskedUri);
+
+  // If all retries failed, throw the last error
+  throw lastError;
 };
 
 export default dbConnect;
+
+// ! OLD CODE. DO NOT DELETE
 
 // async function dbConnect() {
 //   try {

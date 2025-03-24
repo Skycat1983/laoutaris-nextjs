@@ -21,42 +21,42 @@ export const GET = async (
     query.section = searchParams.get("section");
   }
 
-  console.error("query", query);
+  // console.error("query", query);
 
   // Handle field selection
   // Handle pagination
   const page = parseInt(searchParams.get("page") || "1");
   const limit = parseInt(searchParams.get("limit") || "10");
 
-  console.error("page", page);
-  console.error("limit", limit);
+  // console.error("page", page);
+  // console.error("limit", limit);
 
   try {
-    console.error("About to query MongoDB");
+    // console.error("About to query MongoDB");
 
     // Split the Promise.all to identify where it's failing
-    console.error("Starting find query");
+    // console.error("Starting find query");
     const findPromise = CollectionModel.find(query)
       // .select(fields)
       .skip((page - 1) * limit)
       .limit(limit)
       .lean<CollectionLean[]>();
 
-    console.error("Starting count query");
+    // console.error("Starting count query");
     const countPromise = CollectionModel.countDocuments(query);
 
-    console.error("Awaiting both promises");
+    // console.error("Awaiting both promises");
     const [leanCollections, total] = await Promise.all([
       findPromise,
       countPromise,
     ]);
 
-    console.error("Queries completed", {
-      hasCollections: !!leanCollections,
-      total,
-    });
+    // console.error("Queries completed", {
+    //   hasCollections: !!leanCollections,
+    //   total,
+    // });
 
-    console.log("leanCollections", leanCollections);
+    // console.log("leanCollections", leanCollections);
 
     if (!leanCollections) {
       return NextResponse.json(
@@ -72,7 +72,7 @@ export const GET = async (
       transformCollection.toFrontend(collection)
     );
 
-    console.log("collections", collections);
+    // console.log("collections", collections);
 
     return NextResponse.json({
       success: true,
