@@ -25,6 +25,11 @@ export async function MainNav({ navLinks }: { navLinks: NavBarLink[] }) {
 export const MainNavSkeleton = () => {
   const allLinksDisabled = [
     {
+      label: "Artwork",
+      path: "/artwork",
+      disabled: true,
+    },
+    {
       label: "Biography",
       path: "/biography",
       disabled: true,

@@ -8,7 +8,6 @@ Reusable fetching logic
 
 import { ApiErrorResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
-import dbConnect from "@/lib/db/mongodb";
 // Fetcher types
 export type Fetcher = <T>(
   endpoint: string,
