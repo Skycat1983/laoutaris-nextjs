@@ -34,6 +34,7 @@ const dbConnect = async () => {
       // Add these for MongoDB Atlas
       retryWrites: true,
       w: "majority",
+      // directConnection: true,
     });
   } catch (error) {
     console.error("MongoDB connection error:", error);
