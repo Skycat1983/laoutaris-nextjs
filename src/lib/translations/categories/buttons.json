@@ -1,0 +1,58 @@
+{
+  "common": {
+    "submit": {
+      "en": "Submit",
+      "de": "Absenden",
+      "fr": "Soumettre"
+    },
+    "cancel": {
+      "en": "Cancel",
+      "de": "Abbrechen",
+      "fr": "Annuler"
+    },
+    "update": {
+      "en": "Update",
+      "de": "Aktualisieren",
+      "fr": "Mettre à jour"
+    },
+    "clear": {
+      "en": "Clear All",
+      "de": "Alle löschen",
+      "fr": "Tout effacer"
+    }
+  },
+  "navigation": {
+    "next": {
+      "en": "Next",
+      "de": "Weiter",
+      "fr": "Suivant"
+    },
+    "previous": {
+      "en": "Previous",
+      "de": "Zurück",
+      "fr": "Précédent"
+    }
+  },
+  "actions": {
+    "favourite": {
+      "en": "Favourite",
+      "de": "Favorit",
+      "fr": "Favori"
+    },
+    "unfavourite": {
+      "en": "Unfavourite",
+      "de": "Aus Favoriten entfernen",
+      "fr": "Retirer des favoris"
+    },
+    "add_to_watchlist": {
+      "en": "Add to Watchlist",
+      "de": "Zur Beobachtungsliste hinzufügen",
+      "fr": "Ajouter à la liste de suivi"
+    },
+    "remove_from_watchlist": {
+      "en": "Remove from Watchlist",
+      "de": "Von Beobachtungsliste entfernen",
+      "fr": "Retirer de la liste de suivi"
+    }
+  }
+}

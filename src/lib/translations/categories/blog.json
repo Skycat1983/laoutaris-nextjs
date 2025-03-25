@@ -1,0 +1,53 @@
+{
+  "posts": {
+    "recent_posts": {
+      "en": "Recent Posts",
+      "de": "Aktuelle Beiträge",
+      "fr": "Articles récents"
+    },
+    "latest_posts": {
+      "en": "Latest Posts",
+      "de": "Neueste Beiträge",
+      "fr": "Derniers articles"
+    },
+    "popular_posts": {
+      "en": "Popular Posts",
+      "de": "Beliebte Beiträge",
+      "fr": "Articles populaires"
+    },
+    "featured_posts": {
+      "en": "Featured Posts",
+      "de": "Empfohlene Beiträge",
+      "fr": "Articles en vedette"
+    }
+  },
+  "content": {
+    "curated_by_the_family": {
+      "en": "Curated by the Family",
+      "de": "Kuratiert von der Familie",
+      "fr": "Curaté par la famille"
+    },
+    "watch_the_documentary": {
+      "en": "Watch the Documentary",
+      "de": "Dokumentation ansehen",
+      "fr": "Regarder le documentaire"
+    },
+    "read_my_grandfathers_story": {
+      "en": "Read My Grandfather's Story",
+      "de": "Lies die Geschichte meines Großvaters",
+      "fr": "Lisez l'histoire de mon grand-père"
+    }
+  },
+  "newsletter": {
+    "join_our_mailing_list": {
+      "en": "Join Our Mailing List",
+      "de": "Treten Sie unserer Mailingliste bei",
+      "fr": "Rejoignez notre liste de diffusion"
+    },
+    "enter_your_email": {
+      "en": "Enter Your Email",
+      "de": "Geben Sie Ihre E-Mail ein",
+      "fr": "Entrez votre email"
+    }
+  }
+}

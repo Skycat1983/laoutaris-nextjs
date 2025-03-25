@@ -1,0 +1,105 @@
+{
+  "styles": {
+    "abstract": {
+      "en": "Abstract",
+      "de": "Abstrakt",
+      "fr": "Abstrait"
+    },
+    "semi_abstract": {
+      "en": "Semi-Abstract",
+      "de": "Halb-Abstrakt",
+      "fr": "Semi-abstrait"
+    },
+    "figurative": {
+      "en": "Figurative",
+      "de": "Figurativ",
+      "fr": "Figuratif"
+    }
+  },
+  "mediums": {
+    "oil": {
+      "en": "Oil",
+      "de": "Öl",
+      "fr": "Huile"
+    },
+    "acrylic": {
+      "en": "Acrylic",
+      "de": "Acryl",
+      "fr": "Acrylique"
+    },
+    "paint": {
+      "en": "Paint",
+      "de": "Farbe",
+      "fr": "Peinture"
+    },
+    "watercolour": {
+      "en": "Watercolour",
+      "de": "Aquarell",
+      "fr": "Aquarelle"
+    },
+    "pastel": {
+      "en": "Pastel",
+      "de": "Pastell",
+      "fr": "Pastel"
+    },
+    "pencil": {
+      "en": "Pencil",
+      "de": "Bleistift",
+      "fr": "Crayon"
+    },
+    "charcoal": {
+      "en": "Charcoal",
+      "de": "Kohle",
+      "fr": "Fusain"
+    },
+    "ink": {
+      "en": "Ink",
+      "de": "Tinte",
+      "fr": "Encre"
+    },
+    "sand": {
+      "en": "Sand",
+      "de": "Sand",
+      "fr": "Sable"
+    }
+  },
+  "surfaces": {
+    "paper": {
+      "en": "Paper",
+      "de": "Papier",
+      "fr": "Papier"
+    },
+    "canvas": {
+      "en": "Canvas",
+      "de": "Leinwand",
+      "fr": "Toile"
+    },
+    "wood": {
+      "en": "Wood",
+      "de": "Holz",
+      "fr": "Bois"
+    },
+    "film": {
+      "en": "Film",
+      "de": "Film",
+      "fr": "Film"
+    }
+  },
+  "labels": {
+    "medium": {
+      "en": "Medium",
+      "de": "Medium",
+      "fr": "Médium"
+    },
+    "surface": {
+      "en": "Surface",
+      "de": "Oberfläche",
+      "fr": "Surface"
+    },
+    "art_style": {
+      "en": "Art Style",
+      "de": "Kunststil",
+      "fr": "Style artistique"
+    }
+  }
+}

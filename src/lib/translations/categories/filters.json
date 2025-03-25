@@ -1,0 +1,63 @@
+{
+  "labels": {
+    "filters": {
+      "en": "Filters",
+      "de": "Filter",
+      "fr": "Filtres"
+    },
+    "sort_by": {
+      "en": "Sort By",
+      "de": "Sortieren nach",
+      "fr": "Trier par"
+    },
+    "sort_results_by": {
+      "en": "Sort Results By",
+      "de": "Ergebnisse sortieren nach",
+      "fr": "Trier les résultats par"
+    },
+    "pick_a_colour": {
+      "en": "Pick a Colour",
+      "de": "Wähle eine Farbe",
+      "fr": "Choisissez une couleur"
+    },
+    "decade": {
+      "en": "Decade",
+      "de": "Jahrzehnt",
+      "fr": "Décennie"
+    }
+  },
+  "modes": {
+    "match_all_filters": {
+      "en": "Match All Filters",
+      "de": "Alle Filter erfüllen",
+      "fr": "Correspond à tous les filtres"
+    },
+    "match_any_filters": {
+      "en": "Match Any Filters",
+      "de": "Einen der Filter erfüllen",
+      "fr": "Correspond à un des filtres"
+    }
+  },
+  "sorting": {
+    "most_recent": {
+      "en": "Most Recent",
+      "de": "Neueste",
+      "fr": "Plus récent"
+    },
+    "most_popular": {
+      "en": "Most Popular",
+      "de": "Beliebteste",
+      "fr": "Les plus appréciés"
+    },
+    "most_featured": {
+      "en": "Most Featured",
+      "de": "Am meisten präsentiert",
+      "fr": "Les plus mis en avant"
+    },
+    "color_proximity": {
+      "en": "Color Proximity",
+      "de": "Farbproximalität",
+      "fr": "Proximité de couleur"
+    }
+  }
+}

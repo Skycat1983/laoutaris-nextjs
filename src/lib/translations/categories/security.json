@@ -1,0 +1,62 @@
+{
+  "platform": {
+    "secure_platform": {
+      "en": "Secure Platform",
+      "de": "Sichere Plattform",
+      "fr": "Plateforme sécurisée"
+    },
+    "secure_platform_desc": {
+      "en": "Encrypted transactions",
+      "de": "Verschlüsselte Transaktionen",
+      "fr": "Transactions cryptées"
+    }
+  },
+  "artists": {
+    "verified_artists": {
+      "en": "Verified Artists",
+      "de": "Verifizierte Künstler",
+      "fr": "Artistes vérifiés"
+    },
+    "verified_artists_desc": {
+      "en": "Authentic artworks",
+      "de": "Authentische Kunstwerke",
+      "fr": "Œuvres authentiques"
+    }
+  },
+  "payments": {
+    "safe_payments": {
+      "en": "Safe Payments",
+      "de": "Sichere Zahlungen",
+      "fr": "Paiements sécurisés"
+    },
+    "safe_payments_desc": {
+      "en": "Multiple methods",
+      "de": "Mehrere Zahlungsmethoden",
+      "fr": "Méthodes multiples"
+    }
+  },
+  "support": {
+    "expert_support": {
+      "en": "Expert Support",
+      "de": "Experten-Support",
+      "fr": "Support expert"
+    },
+    "expert_support_desc": {
+      "en": "Dedicated service",
+      "de": "Engagierter Service",
+      "fr": "Service dédié"
+    }
+  },
+  "delivery": {
+    "safe_delivery": {
+      "en": "Safe Delivery",
+      "de": "Sichere Lieferung",
+      "fr": "Livraison sécurisée"
+    },
+    "safe_delivery_desc": {
+      "en": "Insured shipping",
+      "de": "Versicherter Versand",
+      "fr": "Expédition assurée"
+    }
+  }
+}

@@ -1,0 +1,372 @@
+{
+  "artwork": {
+    "en": "Artwork",
+    "de": "Kunstwerk",
+    "fr": "Œuvre d'art"
+  },
+  "biography": {
+    "en": "Biography",
+    "de": "Biografie",
+    "fr": "Biographie"
+  },
+  "collections": {
+    "en": "Collections",
+    "de": "Sammlungen",
+    "fr": "Collections"
+  },
+  "blog": {
+    "en": "Blog",
+    "de": "Blog",
+    "fr": "Blog"
+  },
+  "project": {
+    "en": "Project",
+    "de": "Projekt",
+    "fr": "Projet"
+  },
+  "shop": {
+    "en": "Shop",
+    "de": "Shop",
+    "fr": "Boutique"
+  },
+  "curated_by_the_family": {
+    "en": "Curated by the Family",
+    "de": "Kuratiert von der Familie",
+    "fr": "Curaté par la famille"
+  },
+  "watch_the_documentary": {
+    "en": "Watch the Documentary",
+    "de": "Dokumentation ansehen",
+    "fr": "Regarder le documentaire"
+  },
+  "read_my_grandfathers_story": {
+    "en": "Read My Grandfather's Story",
+    "de": "Lies die Geschichte meines Großvaters",
+    "fr": "Lisez l'histoire de mon grand-père"
+  },
+  "see_more": {
+    "en": "See More",
+    "de": "Mehr ansehen",
+    "fr": "Voir plus"
+  },
+  "read_more": {
+    "en": "Read More",
+    "de": "Mehr lesen",
+    "fr": "Lire plus"
+  },
+  "learn_more": {
+    "en": "Learn More",
+    "de": "Mehr erfahren",
+    "fr": "En savoir plus"
+  },
+  "next": {
+    "en": "Next",
+    "de": "Weiter",
+    "fr": "Suivant"
+  },
+  "previous": {
+    "en": "Previous",
+    "de": "Zurück",
+    "fr": "Précédent"
+  },
+  "sort_results_by": {
+    "en": "Sort Results By",
+    "de": "Ergebnisse sortieren nach",
+    "fr": "Trier les résultats par"
+  },
+  "pick_a_colour": {
+    "en": "Pick a Colour",
+    "de": "Wähle eine Farbe",
+    "fr": "Choisissez une couleur"
+  },
+  "filters": {
+    "en": "Filters",
+    "de": "Filter",
+    "fr": "Filtres"
+  },
+  "match_all_filters": {
+    "en": "Match All Filters",
+    "de": "Alle Filter erfüllen",
+    "fr": "Correspond à tous les filtres"
+  },
+  "match_any_filters": {
+    "en": "Match Any Filters",
+    "de": "Einen der Filter erfüllen",
+    "fr": "Correspond à un des filtres"
+  },
+  "favourite": {
+    "en": "Favourite",
+    "de": "Favorit",
+    "fr": "Favori"
+  },
+  "favourited": {
+    "en": "Favourited",
+    "de": "Als Favorit markiert",
+    "fr": "Ajouté aux favoris"
+  },
+  "add_to_favourites": {
+    "en": "Add to Favourites",
+    "de": "Zu Favoriten hinzufügen",
+    "fr": "Ajouter aux favoris"
+  },
+  "unfavourite": {
+    "en": "Unfavourite",
+    "de": "Aus Favoriten entfernen",
+    "fr": "Retirer des favoris"
+  },
+  "watchlist": {
+    "en": "Watchlist",
+    "de": "Beobachtungsliste",
+    "fr": "Liste de suivi"
+  },
+  "watchlisted": {
+    "en": "Watchlisted",
+    "de": "Zur Beobachtungsliste hinzugefügt",
+    "fr": "Ajouté à la liste de suivi"
+  },
+  "add_to_watchlist": {
+    "en": "Add to Watchlist",
+    "de": "Zur Beobachtungsliste hinzufügen",
+    "fr": "Ajouter à la liste de suivi"
+  },
+  "remove": {
+    "en": "Remove",
+    "de": "Entfernen",
+    "fr": "Supprimer"
+  },
+  "view_all": {
+    "en": "View All",
+    "de": "Alle ansehen",
+    "fr": "Voir tout"
+  },
+  "load_more": {
+    "en": "Load More",
+    "de": "Mehr laden",
+    "fr": "Charger plus"
+  },
+  "most_recent": {
+    "en": "Most Recent",
+    "de": "Neueste",
+    "fr": "Plus récent"
+  },
+  "most_popular": {
+    "en": "Most Popular",
+    "de": "Beliebteste",
+    "fr": "Les plus appréciés"
+  },
+  "most_featured": {
+    "en": "Most Featured",
+    "de": "Am meisten präsentiert",
+    "fr": "Les plus mis en avant"
+  },
+  "search": {
+    "en": "Search",
+    "de": "Suche",
+    "fr": "Rechercher"
+  },
+  "secure_platform": {
+    "en": "Secure Platform",
+    "de": "Sichere Plattform",
+    "fr": "Plateforme sécurisée"
+  },
+  "secure_platform_desc": {
+    "en": "Encrypted transactions",
+    "de": "Verschlüsselte Transaktionen",
+    "fr": "Transactions cryptées"
+  },
+  "verified_artists": {
+    "en": "Verified Artists",
+    "de": "Verifizierte Künstler",
+    "fr": "Artistes vérifiés"
+  },
+  "verified_artists_desc": {
+    "en": "Authentic artworks",
+    "de": "Authentische Kunstwerke",
+    "fr": "Œuvres authentiques"
+  },
+  "safe_payments": {
+    "en": "Safe Payments",
+    "de": "Sichere Zahlungen",
+    "fr": "Paiements sécurisés"
+  },
+  "safe_payments_desc": {
+    "en": "Multiple methods",
+    "de": "Mehrere Zahlungsmethoden",
+    "fr": "Méthodes multiples"
+  },
+  "expert_support": {
+    "en": "Expert Support",
+    "de": "Experten-Support",
+    "fr": "Support expert"
+  },
+  "expert_support_desc": {
+    "en": "Dedicated service",
+    "de": "Engagierter Service",
+    "fr": "Service dédié"
+  },
+  "safe_delivery": {
+    "en": "Safe Delivery",
+    "de": "Sichere Lieferung",
+    "fr": "Livraison sécurisée"
+  },
+  "safe_delivery_desc": {
+    "en": "Insured shipping",
+    "de": "Versicherter Versand",
+    "fr": "Expédition assurée"
+  },
+  "color_proximity": {
+    "en": "Color Proximity",
+    "de": "Farbproximalität",
+    "fr": "Proximité de couleur"
+  },
+  "sort_by": {
+    "en": "Sort By",
+    "de": "Sortieren nach",
+    "fr": "Trier par"
+  },
+  "recent_posts": {
+    "en": "Recent Posts",
+    "de": "Aktuelle Beiträge",
+    "fr": "Articles récents"
+  },
+  "latest_posts": {
+    "en": "Latest Posts",
+    "de": "Neueste Beiträge",
+    "fr": "Derniers articles"
+  },
+  "popular_posts": {
+    "en": "Popular Posts",
+    "de": "Beliebte Beiträge",
+    "fr": "Articles populaires"
+  },
+  "featured_posts": {
+    "en": "Featured Posts",
+    "de": "Empfohlene Beiträge",
+    "fr": "Articles en vedette"
+  },
+  "join_our_mailing_list": {
+    "en": "Join Our Mailing List",
+    "de": "Treten Sie unserer Mailingliste bei",
+    "fr": "Rejoignez notre liste de diffusion"
+  },
+  "enter_your_email": {
+    "en": "Enter Your Email",
+    "de": "Geben Sie Ihre E-Mail ein",
+    "fr": "Entrez votre email"
+  },
+  "decade": {
+    "en": "Decade",
+    "de": "Jahrzehnt",
+    "fr": "Décennie"
+  },
+  "art_style": {
+    "en": "Art Style",
+    "de": "Kunststil",
+    "fr": "Style artistique"
+  },
+  "medium": {
+    "en": "Medium",
+    "de": "Medium",
+    "fr": "Médium"
+  },
+  "surface": {
+    "en": "Surface",
+    "de": "Oberfläche",
+    "fr": "Surface"
+  },
+  "abstract": {
+    "en": "Abstract",
+    "de": "Abstrakt",
+    "fr": "Abstrait"
+  },
+  "semi_abstract": {
+    "en": "Semi-Abstract",
+    "de": "Halb-Abstrakt",
+    "fr": "Semi-abstrait"
+  },
+  "figurative": {
+    "en": "Figurative",
+    "de": "Figurativ",
+    "fr": "Figuratif"
+  },
+  "oil": {
+    "en": "Oil",
+    "de": "Öl",
+    "fr": "Huile"
+  },
+  "acrylic": {
+    "en": "Acrylic",
+    "de": "Acryl",
+    "fr": "Acrylique"
+  },
+  "paint": {
+    "en": "Paint",
+    "de": "Farbe",
+    "fr": "Peinture"
+  },
+  "watercolour": {
+    "en": "Watercolour",
+    "de": "Aquarell",
+    "fr": "Aquarelle"
+  },
+  "pastel": {
+    "en": "Pastel",
+    "de": "Pastell",
+    "fr": "Pastel"
+  },
+  "pencil": {
+    "en": "Pencil",
+    "de": "Bleistift",
+    "fr": "Crayon"
+  },
+  "charcoal": {
+    "en": "Charcoal",
+    "de": "Kohle",
+    "fr": "Fusain"
+  },
+  "ink": {
+    "en": "Ink",
+    "de": "Tinte",
+    "fr": "Encre"
+  },
+  "sand": {
+    "en": "Sand",
+    "de": "Sand",
+    "fr": "Sable"
+  },
+  "none": {
+    "en": "None",
+    "de": "Keine",
+    "fr": "Aucun"
+  },
+  "paper": {
+    "en": "Paper",
+    "de": "Papier",
+    "fr": "Papier"
+  },
+  "canvas": {
+    "en": "Canvas",
+    "de": "Leinwand",
+    "fr": "Toile"
+  },
+  "wood": {
+    "en": "Wood",
+    "de": "Holz",
+    "fr": "Bois"
+  },
+  "film": {
+    "en": "Film",
+    "de": "Film",
+    "fr": "Film"
+  },
+  "update": {
+    "en": "Update",
+    "de": "Aktualisieren",
+    "fr": "Mettre à jour"
+  },
+  "clear_all": {
+    "en": "Clear All",
+    "de": "Alle löschen",
+    "fr": "Tout effacer"
+  }
+}

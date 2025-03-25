@@ -1,0 +1,82 @@
+{
+  "recent_posts": {
+    "en": "Recent Posts",
+    "de": "Aktuelle Beiträge",
+    "fr": "Articles récents"
+  },
+  "see_more": {
+    "en": "See More",
+    "de": "Mehr ansehen",
+    "fr": "Voir plus"
+  },
+  "read_more": {
+    "en": "Read More",
+    "de": "Mehr lesen",
+    "fr": "Lire plus"
+  },
+  "learn_more": {
+    "en": "Learn More",
+    "de": "Mehr erfahren",
+    "fr": "En savoir plus"
+  },
+  "next": {
+    "en": "Next",
+    "de": "Weiter",
+    "fr": "Suivant"
+  },
+  "previous": {
+    "en": "Previous",
+    "de": "Zurück",
+    "fr": "Précédent"
+  },
+  "favourite": {
+    "en": "Favourite",
+    "de": "Favorit",
+    "fr": "Favori"
+  },
+  "favourited": {
+    "en": "Favourited",
+    "de": "Als Favorit markiert",
+    "fr": "Ajouté aux favoris"
+  },
+  "add_to_favourites": {
+    "en": "Add to Favourites",
+    "de": "Zu Favoriten hinzufügen",
+    "fr": "Ajouter aux favoris"
+  },
+  "unfavourite": {
+    "en": "Unfavourite",
+    "de": "Aus Favoriten entfernen",
+    "fr": "Retirer des favoris"
+  },
+  "watchlist": {
+    "en": "Watchlist",
+    "de": "Beobachtungsliste",
+    "fr": "Liste de suivi"
+  },
+  "watchlisted": {
+    "en": "Watchlisted",
+    "de": "Zur Beobachtungsliste hinzugefügt",
+    "fr": "Ajouté à la liste de suivi"
+  },
+  "add_to_watchlist": {
+    "en": "Add to Watchlist",
+    "de": "Zur Beobachtungsliste hinzufügen",
+    "fr": "Ajouter à la liste de suivi"
+  },
+  "remove": {
+    "en": "Remove",
+    "de": "Entfernen",
+    "fr": "Supprimer"
+  },
+  "view_all": {
+    "en": "View All",
+    "de": "Alle ansehen",
+    "fr": "Voir tout"
+  },
+  "load_more": {
+    "en": "Load More",
+    "de": "Mehr laden",
+    "fr": "Charger plus"
+  }
+}

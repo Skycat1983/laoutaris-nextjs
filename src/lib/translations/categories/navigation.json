@@ -1,0 +1,46 @@
+{
+  "main": {
+    "artwork": {
+      "en": "Artwork",
+      "de": "Kunstwerk",
+      "fr": "Œuvre d'art"
+    },
+    "biography": {
+      "en": "Biography",
+      "de": "Biografie",
+      "fr": "Biographie"
+    },
+    "collections": {
+      "en": "Collections",
+      "de": "Sammlungen",
+      "fr": "Collections"
+    },
+    "blog": {
+      "en": "Blog",
+      "de": "Blog",
+      "fr": "Blog"
+    },
+    "project": {
+      "en": "Project",
+      "de": "Projekt",
+      "fr": "Projet"
+    },
+    "shop": {
+      "en": "Shop",
+      "de": "Shop",
+      "fr": "Boutique"
+    }
+  },
+  "pagination": {
+    "next": {
+      "en": "Next",
+      "de": "Weiter",
+      "fr": "Suivant"
+    },
+    "previous": {
+      "en": "Previous",
+      "de": "Zurück",
+      "fr": "Précédent"
+    }
+  }
+}

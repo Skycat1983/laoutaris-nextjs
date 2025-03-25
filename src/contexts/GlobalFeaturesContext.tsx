@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useContext } from "react";
 import useModal, { UseModalValues } from "../hooks/useModal";
-import { getSession } from "@/lib/session/session";
+import { useLanguage, Languages, UseLanguageValues } from "@/hooks/useLanguage";
 
-type GlobalFeaturesContextValues = UseModalValues;
+type GlobalFeaturesContextValues = UseModalValues & UseLanguageValues;
 
 export const defaultValue: GlobalFeaturesContextValues = {
   isOpen: false,
@@ -18,6 +12,8 @@ export const defaultValue: GlobalFeaturesContextValues = {
   closeModal: () => {},
   modalContent: null,
   setModalContent: () => {},
+  language: "en",
+  changeLanguage: () => {},
 };
 
 const GlobalFeaturesContext =
@@ -30,13 +26,14 @@ interface GlobalFeaturesProviderProps {
 export const GlobalFeaturesProvider = ({
   children,
 }: GlobalFeaturesProviderProps): React.ReactElement => {
-  // const [activeSession, setActiveSession] = useState(false);
+  const language = useLanguage();
   const modal = useModal();
 
   return (
     <GlobalFeaturesContext.Provider
       value={{
         ...modal,
+        ...language,
       }}
     >
       {children}

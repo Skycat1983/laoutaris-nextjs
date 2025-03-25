@@ -1,0 +1,72 @@
+{
+  "curated_by_the_family": {
+    "en": "Curated by the Family",
+    "de": "Kuratiert von der Familie",
+    "fr": "Curaté par la famille"
+  },
+  "watch_the_documentary": {
+    "en": "Watch the Documentary",
+    "de": "Dokumentation ansehen",
+    "fr": "Regarder le documentaire"
+  },
+  "read_my_grandfathers_story": {
+    "en": "Read My Grandfather's Story",
+    "de": "Lies die Geschichte meines Großvaters",
+    "fr": "Lisez l'histoire de mon grand-père"
+  },
+  "recent_posts": {
+    "en": "Recent Posts",
+    "de": "Aktuelle Beiträge",
+    "fr": "Articles récents"
+  },
+  "see_more": {
+    "en": "See More",
+    "de": "Mehr ansehen",
+    "fr": "Voir plus"
+  },
+  "read_more": {
+    "en": "Read More",
+    "de": "Mehr lesen",
+    "fr": "Lire plus"
+  },
+  "learn_more": {
+    "en": "Learn More",
+    "de": "Mehr erfahren",
+    "fr": "En savoir plus"
+  },
+  "next": {
+    "en": "Next",
+    "de": "Weiter",
+    "fr": "Suivant"
+  },
+  "previous": {
+    "en": "Previous",
+    "de": "Zurück",
+    "fr": "Précédent"
+  },
+  "sort_results_by": {
+    "en": "Sort Results By",
+    "de": "Ergebnisse sortieren nach",
+    "fr": "Trier les résultats par"
+  },
+  "pick_a_colour": {
+    "en": "Pick a Colour",
+    "de": "Wähle eine Farbe",
+    "fr": "Choisissez une couleur"
+  },
+  "filters": {
+    "en": "Filters",
+    "de": "Filter",
+    "fr": "Filtres"
+  },
+  "match_all_filters": {
+    "en": "Match All Filters",
+    "de": "Alle Filter erfüllen",
+    "fr": "Correspond à tous les filtres"
+  },
+  "match_any_filters": {
+    "en": "Match Any Filters",
+    "de": "Einen der Filter erfüllen",
+    "fr": "Correspond à un des filtres"
+  }
+}
