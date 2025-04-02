@@ -1,14 +1,15 @@
 # Laoutaris Art Gallery
 
-A digital showcase of my late grandfather's artwork This modern web application presents a curated collection of artwork in an elegant and accessible format.
+A digital showcase of my late grandfather's artwork This modern web application presents a curated collection of artwork in an accessible format.
 
 ## Features
 
-- 🎨 High-quality artwork display with zoom capabilities
-- 📱 Fully responsive design for all devices
-- 🔍 Search and filter functionality
-- 📖 Detailed artwork information and history
-- ⚡ Fast page loads with optimized image loading
+- High-quality artwork display with zoom capabilities
+- Fully responsive design for all devices
+- Search and filter functionality, including filter by colour proximity
+- Detailed artwork information and history
+- Fast page loads with optimized image loading
+- Dashboard for admin to perform full range of CRUD operations on app content (artwork, articles, collections, comments, blog entries & more).
 
 ## Tech Stack
 
