@@ -6,7 +6,7 @@ export default async function BlogLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col flex-grow">
+    <section className="flex flex-col flex-grow container max-w-7xl mx-auto">
       {children}
       <div className="container mx-auto py-16">
         <SubscribeSection isLoggedIn={false} />
