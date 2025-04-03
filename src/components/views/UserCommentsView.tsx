@@ -3,7 +3,7 @@
 import React from "react";
 import { CommentCard } from "../modules/cards/CommentCard";
 import Link from "next/link";
-import { formatDateImproved } from "@/lib/utils/formatDate";
+import { formatDateImproved } from "@/lib/utils/dateUtils";
 import Image from "next/image";
 import { CommentFrontendPopulated } from "@/lib/data/types";
 

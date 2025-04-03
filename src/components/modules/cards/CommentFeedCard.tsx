@@ -1,7 +1,7 @@
 "use client";
 
 import { CommentFrontendPopulated } from "@/lib/data/types";
-import { formatDateImproved } from "@/lib/utils/formatDate";
+import { formatDateImproved } from "@/lib/utils/dateUtils";
 import { CopyIcon } from "lucide-react";
 import { copy_id } from "@/lib/helpers/copy_id";
 

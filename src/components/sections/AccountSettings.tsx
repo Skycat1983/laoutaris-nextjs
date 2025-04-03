@@ -1,4 +1,4 @@
-import { formatDate } from "@/lib/utils/formatDate";
+import { formatDate } from "@/lib/utils/dateUtils";
 import React from "react";
 import LogoutForm from "../modules/forms/user/LogoutForm";
 import { OwnUserFrontend } from "@/lib/data/types";

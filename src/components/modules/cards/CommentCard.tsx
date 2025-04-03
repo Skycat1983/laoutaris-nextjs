@@ -9,7 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { Button } from "@/components/shadcn/button";
 import { Textarea } from "@/components/shadcn/textarea";
 import { Skeleton } from "@/components/shadcn/skeleton";
-import { formatDateImproved } from "@/lib/utils/formatDate";
+import { formatDateImproved } from "@/lib/utils/dateUtils";
 import React from "react";
 import {
   Form,
