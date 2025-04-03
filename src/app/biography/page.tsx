@@ -1,7 +1,7 @@
 import { serverApi } from "@/lib/api/serverApi";
-import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { buildUrl } from "@/lib/utils/urlUtils";
 export default async function BiographyPage() {
   try {
     // Fetch the list of biography articles

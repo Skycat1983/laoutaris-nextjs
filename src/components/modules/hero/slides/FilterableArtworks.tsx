@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { buildArtworkSearchUrl } from "@/lib/utils/urlHelpers";
+import { buildArtworkSearchUrl } from "@/lib/utils/urlUtils";
 import {
   Select,
   SelectContent,

@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/shadcn/tooltip";
 import Link from "next/link";
-import { buildArtworkSearchUrl } from "@/lib/utils/urlHelpers";
+import { buildArtworkSearchUrl } from "@/lib/utils/urlUtils";
 import { ColourInfo } from "@/lib/data/types";
 
 interface HexColorPaletteProps {
