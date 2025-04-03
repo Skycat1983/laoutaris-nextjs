@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { dateToYear } from "@/lib/utils/dateUtils";
-import { getYearColor } from "@/lib/utils/colorUtils";
+import { getYearColor } from "@/lib/utils/colourUtils";
 import { BlogEntryFrontend } from "@/lib/data/types";
 
 interface BlogsViewCardProps {

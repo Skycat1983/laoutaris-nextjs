@@ -1,6 +1,6 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
-import { findSimilarColors } from "@/lib/utils/colorUtils";
+import { findSimilarColors } from "@/lib/utils/colourUtils";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { ColourInfo, ArtworkFrontend, ArtworkLean } from "@/lib/data/types";
