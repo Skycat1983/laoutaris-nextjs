@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { isProtectedRoute, isAdminRoute } from "@/lib/utils/isRoute";
+import { isProtectedRoute, isAdminRoute } from "@/lib/utils/routeUtils";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
