@@ -16,6 +16,10 @@ export function formatDate(
   options?: Intl.DateTimeFormatOptions
 ): string {
   try {
+    if (dateInput === null || dateInput === undefined) {
+      throw new Error("Invalid date: input is null or undefined");
+    }
+
     const date =
       typeof dateInput === "number" ? new Date(dateInput) : new Date(dateInput);
 
