@@ -17,8 +17,17 @@ export const isProtectedRoute = (path: string): boolean => {
 
 // Helper function to check if a path is an admin route
 export const isAdminRoute = (path: string): boolean => {
+  // Helper to check if a path is exactly equal to a base path or is a nested route
+  const isExactOrNestedRoute = (basePath: string): boolean => {
+    return (
+      path === basePath || // Exact match
+      path === `${basePath}/` || // Match with trailing slash
+      path.startsWith(basePath + "/")
+    ); // Nested route
+  };
+
   return (
-    path.startsWith(PROTECTED_FRONTEND_ROUTES.ADMIN) ||
-    path.startsWith(PROTECTED_API_ROUTES.ADMIN_API)
+    isExactOrNestedRoute(PROTECTED_FRONTEND_ROUTES.ADMIN) ||
+    isExactOrNestedRoute(PROTECTED_API_ROUTES.ADMIN_API)
   );
 };
