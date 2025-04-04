@@ -25,8 +25,8 @@ import {
   CollectionSelectFields,
   OwnUserSelectFields,
 } from "../data/types";
-import { calculateReadTime } from "../utils/calcReadTime";
-import { isUserInArray } from "../utils/isUserInArray";
+import { calculateReadTime } from "../utils/textUtils";
+import { isUserInArray } from "../utils/userUtils";
 
 export const extendArticleFields = (doc: ArticleDB, userId?: string | null) => {
   return {

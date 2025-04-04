@@ -8,7 +8,7 @@ import {
   CollectionNavDataFrontend,
   ApiSuccessResponse,
 } from "@/lib/data/types";
-import { createSubnavLink } from "@/lib/utils/createSubnavLink";
+import { createSubnavLink } from "@/lib/helpers/createSubnavLink";
 
 interface CollectionsSubnavLoaderProps {
   section: string;

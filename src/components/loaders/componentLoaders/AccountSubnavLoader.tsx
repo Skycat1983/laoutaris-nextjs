@@ -6,7 +6,7 @@ import { serverApi } from "@/lib/api/serverApi";
 import { ApiErrorResponse } from "@/lib/data/types";
 import React from "react";
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
-import { createSubnavLink } from "@/lib/utils/createSubnavLink";
+import { createSubnavLink } from "@/lib/helpers/createSubnavLink";
 
 type UserNavFetchResult = ApiOwnUserNavResult | ApiErrorResponse;
 

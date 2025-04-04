@@ -1,5 +1,3 @@
-import { Document } from "mongoose";
-
 export const replaceMongoId = <T extends { _id: any }>(
   document: T
 ): Omit<T, "_id"> & { id: string } => {
