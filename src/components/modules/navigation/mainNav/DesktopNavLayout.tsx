@@ -2,10 +2,11 @@
 
 import { Logo } from "@/components/elements/icons";
 import Link from "next/link";
-import { navLinkBorderColours } from "@/lib/utils/consts";
+
 import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
 import { AccountNav } from "../accountNav/AccountNav";
 import { NavItem } from "@/components/elements/buttons";
+import { NAV_LINK_BORDER_COLOURS } from "@/lib/constants";
 
 interface DesktopNavLayoutProps {
   navLinks: NavBarLink[];
@@ -30,7 +31,7 @@ export async function DesktopNavLayout({ navLinks }: DesktopNavLayoutProps) {
                     <NavItem
                       label={link.label}
                       slug={link.path}
-                      activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${navLinkBorderColours[index]}`}
+                      activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${NAV_LINK_BORDER_COLOURS[index]}`}
                       className="font-face-default subheading border-transparent"
                     />
                   </Link>
@@ -39,7 +40,7 @@ export async function DesktopNavLayout({ navLinks }: DesktopNavLayoutProps) {
                     label={link.label}
                     slug={link.path}
                     className="font-face-default subheading border-transparent cursor-not-allowed text-gray-400"
-                    activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${navLinkBorderColours[index]}`}
+                    activeClassName={`font-face-default subheading border-b-4 border-t-4 border-t-transparent pb-1 pt-1 ${NAV_LINK_BORDER_COLOURS[index]}`}
                   />
                 )}
 

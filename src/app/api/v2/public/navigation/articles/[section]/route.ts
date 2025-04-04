@@ -11,8 +11,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
 import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 import dbConnect from "@/lib/db/mongodb";
-// navLinks.length > navLinkBorderColours.length. navLinks.length = 6, navLinkBorderColours.length = 5
-//  GET / 200 in 18561ms
 
 export const dynamic = "force-dynamic";
 
