@@ -12,7 +12,7 @@ import { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
 import { FilterMode } from "@/lib/constants";
 import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
-import { isValidValue } from "@/lib/utils/isValidValue";
+import { isValidValue } from "@/lib/helpers/validation";
 interface ArtworkGalleryProps {
   initialArtworks: ArtworkFrontend[];
   initialSort?: ArtworkSortConfig;

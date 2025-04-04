@@ -39,4 +39,4 @@ export const translations: TranslationsMap = {
 };
 
 export * from "./types";
-export * from "./utils/translationUtils";
+export * from "../utils/translationUtils";
