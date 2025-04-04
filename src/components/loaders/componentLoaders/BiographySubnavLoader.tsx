@@ -2,9 +2,9 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { buildUrl } from "@/lib/utils/buildUrl";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
+import { buildUrl } from "@/lib/utils/urlUtils";
 
 export async function BiographySubnavLoader() {
   const result = await serverApi.public.navigation.fetchArticleNavigationList(

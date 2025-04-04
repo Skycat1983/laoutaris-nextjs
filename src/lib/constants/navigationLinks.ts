@@ -1,12 +1,5 @@
 import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
-import { buildUrl } from "@/lib/utils/buildUrl";
-
-// interface NavLink {
-//   title: string;
-//   slug: string;
-//   link_to: string;
-//   disabled?: boolean;
-// }
+import { buildUrl } from "../utils/urlUtils";
 
 const BLOG_NAV_LINKS: SubnavLink[] = [
   {

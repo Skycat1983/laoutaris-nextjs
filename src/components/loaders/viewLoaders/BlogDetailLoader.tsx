@@ -6,7 +6,7 @@ import {
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
-import { delay } from "@/lib/utils/debug";
+import { delay } from "@/lib/utils/debugUtils";
 
 interface Props {
   slug: string;

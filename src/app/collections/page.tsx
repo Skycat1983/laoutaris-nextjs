@@ -5,9 +5,10 @@ import {
 } from "@/lib/data/types";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiErrorResponse } from "@/lib/data/types";
-import { buildUrl } from "@/lib/utils/buildUrl";
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { buildUrl } from "@/lib/utils/urlUtils";
+
 type CollectionPageResult = ApiCollectionNavListResult | ApiErrorResponse;
 
 export default async function Collections() {

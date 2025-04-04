@@ -1,4 +1,4 @@
-import { buildUrl } from "@/lib/utils/buildUrl";
+import { buildUrl } from "@/lib/utils/urlUtils";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiFavoritesListResult } from "@/lib/api/user/favorites/fetchers";

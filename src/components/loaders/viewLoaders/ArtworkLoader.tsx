@@ -3,7 +3,7 @@ import { ArtworkView } from "@/components/views";
 import { serverApi } from "@/lib/api/serverApi";
 import { ArtworkFrontend } from "@/lib/data/types";
 import { ApiSuccessResponse } from "@/lib/data/types";
-import { delay } from "@/lib/utils/debug";
+import { delay } from "@/lib/utils/debugUtils";
 import React from "react";
 
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {

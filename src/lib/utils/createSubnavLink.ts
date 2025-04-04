@@ -1,5 +1,5 @@
 import { SubnavLink } from "@/components/modules/navigation/subnav/Subnav";
-import { buildUrl } from "./buildUrl";
+import { buildUrl } from "@/lib/utils/urlUtils";
 
 type BaseLink = {
   label: string;

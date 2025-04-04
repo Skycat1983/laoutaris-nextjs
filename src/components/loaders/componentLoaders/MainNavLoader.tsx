@@ -1,6 +1,4 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
-import { buildUrl } from "@/lib/utils/buildUrl";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import {
   ArticleNavDataFrontend,
   CollectionNavDataFrontend,
@@ -13,6 +11,7 @@ import {
 import { isNextError } from "@/lib/helpers/isNextError";
 import dbConnect from "@/lib/db/mongodb";
 import { serverApi } from "@/lib/api/serverApi";
+import { buildUrl } from "@/lib/utils/urlUtils";
 export interface NavBarLink {
   label: string;
   path: string;

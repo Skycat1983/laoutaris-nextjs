@@ -1,4 +1,4 @@
-import { buildUrl } from "@/lib/utils/buildUrl";
+import { buildUrl } from "@/lib/utils/urlUtils";
 
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { ArtworkFrontend } from "@/lib/data/types";

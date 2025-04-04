@@ -2,7 +2,7 @@
 
 import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../data/models";
-import { delay } from "@/lib/utils/debug";
+import { delay } from "@/lib/utils/debugUtils";
 import { WatchlistButton } from "@/components/elements/buttons";
 import { revalidatePath } from "next/cache";
 import { WatchlistButtonState } from "@/components/elements/buttons/WatchlistButton";

@@ -1,7 +1,8 @@
 "use server";
 
-import { serverApi } from "@/lib/api/serverApi";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
+import { serverApi } from "@/lib/api/serverApi";
 import { redirect } from "next/navigation";
 
 export default async function CollectionSlug({

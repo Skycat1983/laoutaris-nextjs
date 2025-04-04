@@ -4,7 +4,6 @@ import {
 } from "@/components/modules/navigation/subnav/Subnav";
 import { serverApi } from "@/lib/api/serverApi";
 import { ApiErrorResponse } from "@/lib/data/types";
-import { buildUrl } from "@/lib/utils/buildUrl";
 import React from "react";
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 import { createSubnavLink } from "@/lib/utils/createSubnavLink";

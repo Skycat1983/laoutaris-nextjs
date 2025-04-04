@@ -1,6 +1,6 @@
 "use server";
 
-import { buildUrl } from "@/lib/utils/buildUrl";
+import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
 import { serverApi } from "@/lib/api/serverApi";
 import {
