@@ -1,35 +1,17 @@
-export interface UrlParams {
-  segments: string[];
-  query?: Record<string, string>;
-}
+type BuildUrlParams = [segments: string[], query?: Record<string, string>];
 
-export interface ArtworkSearchParams {
+type ArtworkSearchParams = {
   sortBy?: string;
   sortColor?: string;
   filterMode?: string;
-}
+};
 
 /**
  * Builds a URL from segments and query parameters.
  * @param segments - Array of URL segments
+ * @param query - Optional query parameters
  */
-export function buildUrl(segments: string[]): string;
-/**
- * Builds a URL from segments and query parameters.
- * @param params - Object containing segments and optional query parameters
- */
-export function buildUrl(params: UrlParams): string;
-/**
- * Implementation of buildUrl that handles both signatures
- */
-export function buildUrl(params: string[] | UrlParams): string {
-  // Handle array input (backward compatibility)
-  if (Array.isArray(params)) {
-    return `/${params.join("/")}`;
-  }
-
-  // Handle object input (new signature)
-  const { segments, query } = params;
+export function buildUrl(...[segments, query]: BuildUrlParams): string {
   const path = `/${segments.join("/")}`;
 
   if (!query) return path;
@@ -58,3 +40,5 @@ export function buildArtworkSearchUrl(params: ArtworkSearchParams): string {
 
   return `/artwork?${searchParams.toString()}`;
 }
+
+export type { BuildUrlParams, ArtworkSearchParams };
