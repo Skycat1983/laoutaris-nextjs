@@ -22,7 +22,6 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
   isLoggedIn,
 }) => {
   const url =
-    //   "https://res.cloudinary.com/dzncmfirr/image/upload/v1706776922/studio-thumbnails/JRL_studio1_005_ufgeas.jpg";
     "https://res.cloudinary.com/dzncmfirr/image/upload/v1706776926/studio-thumbnails/JRL_studio1_012_smdlzw.jpg";
   return (
     <div className="w-full bg-gray-900 text-white relative overflow-hidden">
@@ -54,42 +53,6 @@ export const SubscribeSection: React.FC<SubscribeSectionProps> = ({
     </div>
   );
 };
-
-{
-  /* <div className="flex gap-4 flex-col md:flex-row ">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-gray-400"
-            />
-            <button className="px-6 py-3 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-              Subscribe
-            </button>
-          </div> */
-}
-
-// export function SubscribeSection({ isLoggedIn }: { isLoggedIn: boolean }) {
-//   const message = isLoggedIn
-//     ? "Welcome back!"
-//     : "Stay up to date with our latest news and updates.";
-
-//   return (
-//     <SubscribeSectionLayout>
-//       <div className="col-start-1 col-end-6 flex flex-col items-center justify-center gap-8 text-center bg-slate/10">
-//         <div>
-//           <h1 className="text-4xl font-cormorant">Stay up to date</h1>
-//         </div>
-//         <div>
-//           <h1>Subscribe to our newsletter for discounts and updates.</h1>
-//         </div>
-//       </div>
-
-//       <div className="bg-slate-100 border col-start-7 col-end-12">
-//         <SubscribeForm />
-//       </div>
-//     </SubscribeSectionLayout>
-//   );
-// }
 
 export function SubscribeSectionSkeleton() {
   return (

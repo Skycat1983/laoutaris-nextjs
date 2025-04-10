@@ -67,12 +67,6 @@ const SubscribeForm = () => {
             </FormItem>
           )}
         />
-        {/* <Button
-          type="submit"
-          className="px-6 py-6 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-        >
-          Subscribe
-        </Button> */}
         <SubmitButton
           label="Subscribe"
           className={

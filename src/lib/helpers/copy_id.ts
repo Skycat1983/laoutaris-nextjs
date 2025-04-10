@@ -2,7 +2,7 @@ interface HasId {
   _id: string;
 }
 
-export function copy_id() {
+function copy_id() {
   const handleCopyId = async (item: HasId) => {
     try {
       await navigator.clipboard.writeText(item._id);
@@ -15,4 +15,6 @@ export function copy_id() {
   return handleCopyId;
 }
 
-export default copy_id;
+export { copy_id };
+
+export type { HasId };
