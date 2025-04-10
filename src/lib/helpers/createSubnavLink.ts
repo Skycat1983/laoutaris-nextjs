@@ -6,7 +6,7 @@ type BaseLink = {
   slug: string;
 };
 
-export const createSubnavLink = (
+const createSubnavLink = (
   base: BaseLink,
   options: {
     stem: string;
@@ -30,3 +30,7 @@ export const createSubnavLink = (
     disabled: false,
   };
 };
+
+export { createSubnavLink };
+
+export type { BaseLink };
