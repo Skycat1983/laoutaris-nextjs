@@ -24,8 +24,8 @@ import {
 } from "@/lib/data/schemas/commentSchema";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { isFrontendUser } from "@/lib/typeGuards";
 import { CommentFrontendPopulated } from "@/lib/data/types";
+import { isFrontendUser } from "@/lib/utils/userUtils";
 
 interface CommentCardProps {
   comment: CommentFrontendPopulated;

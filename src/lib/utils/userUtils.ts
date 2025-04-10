@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { UserFrontend } from "../data/types";
 
 type IsUserInArrayInput = {
   array: (string | ObjectId)[];
@@ -10,5 +11,11 @@ const isUserInArray = ({ array, userId }: IsUserInArrayInput): boolean => {
   return array.some((id) => id.toString() === userId);
 };
 
-export { isUserInArray };
+const isFrontendUser = (
+  author: string | UserFrontend
+): author is UserFrontend => {
+  return typeof author !== "string" && "_id" in author;
+};
+
+export { isUserInArray, isFrontendUser };
 export type { IsUserInArrayInput };
