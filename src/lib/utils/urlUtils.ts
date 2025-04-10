@@ -12,7 +12,9 @@ type ArtworkSearchParams = {
  * @param query - Optional query parameters
  */
 export function buildUrl(...[segments, query]: BuildUrlParams): string {
-  const path = `/${segments.join("/")}`;
+  // Filter out empty segments to avoid double slashes
+  const filteredSegments = segments.filter(Boolean);
+  const path = `/${filteredSegments.join("/")}`;
 
   if (!query) return path;
 

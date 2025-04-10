@@ -38,6 +38,26 @@ describe("buildUrl", () => {
       expected: "/",
       description: "handles empty segments array",
     },
+    {
+      params: [["", "test", ""]],
+      expected: "/test",
+      description: "filters out empty string segments",
+    },
+    {
+      params: [["api", "", "users"]],
+      expected: "/api/users",
+      description: "handles empty segments in middle of path",
+    },
+    {
+      params: [["", "", ""]],
+      expected: "/",
+      description: "handles array of only empty segments",
+    },
+    {
+      params: [["", "test", "", "path", ""]],
+      expected: "/test/path",
+      description: "handles multiple empty segments mixed with valid ones",
+    },
   ];
 
   test.each(testCases)("$description", ({ params, expected }) => {

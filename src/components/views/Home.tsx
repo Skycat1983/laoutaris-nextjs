@@ -27,31 +27,49 @@ export async function Home() {
       <Hero data-testid="home-hero" />
 
       <ContentLayout data-testid="home-content-layout">
-        <Suspense fallback={<CollectionSectionSkeleton />}>
+        <Suspense
+          fallback={
+            <CollectionSectionSkeleton data-testid="collection-section-skeleton" />
+          }
+        >
           <CollectionsSectionLoader data-testid="home-collection-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
-        <Suspense fallback={<ProjectSectionSkeleton />}>
+        <Suspense
+          fallback={
+            <ProjectSectionSkeleton data-testid="project-section-skeleton" />
+          }
+        >
           <ProjectSectionLoader data-testid="home-project-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout>
-        <Suspense fallback={<BiographySectionSkeleton />}>
+        <Suspense
+          fallback={
+            <BiographySectionSkeleton data-testid="biography-section-skeleton" />
+          }
+        >
           <BiographySectionLoader data-testid="home-biography-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="bg-slate/5">
-        <Suspense fallback={<SubscribeSectionSkeleton />}>
+        <Suspense
+          fallback={
+            <SubscribeSectionSkeleton data-testid="subscribe-section-skeleton" />
+          }
+        >
           <SubscribeSectionLoader data-testid="home-subscribe-section" />
         </Suspense>
       </ContentLayout>
 
       <ContentLayout bg="">
-        <Suspense fallback={<BlogSectionSkeleton />}>
+        <Suspense
+          fallback={<BlogSectionSkeleton data-testid="blog-section-skeleton" />}
+        >
           <BlogSectionLoader data-testid="home-blog-section" />
         </Suspense>
       </ContentLayout>
