@@ -12,9 +12,9 @@ export default async function AccountLayout({
 
   return (
     <section className="p-0 m-0">
-      <Suspense fallback={<SubnavSkeleton />}>
+      {/* <Suspense fallback={<SubnavSkeleton />}>
         <AccountSubnavLoader />
-      </Suspense>
+      </Suspense> */}
       {children}
     </section>
   );
