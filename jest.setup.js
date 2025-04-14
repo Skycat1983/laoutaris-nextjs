@@ -1,3 +1,4 @@
+process.env.SUPPRESS_JEST_WARNINGS = "true";
 import "@testing-library/jest-dom";
 
 // Add TextEncoder polyfill

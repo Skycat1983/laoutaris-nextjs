@@ -42,8 +42,8 @@ export const extendArtworkFields = (
     favouriteCount: artwork.favourited.length,
     watchlistCount: artwork.watcherlist.length,
     collectionCount: artwork.collections.length,
-    isFavourited: isUserInArray(artwork.favourited, userId),
-    isWatchlisted: isUserInArray(artwork.watcherlist, userId),
+    isFavourited: isUserInArray({ array: artwork.favourited, userId }),
+    isWatchlisted: isUserInArray({ array: artwork.watcherlist, userId }),
   } satisfies Partial<ExtendedPublicArtworkFields>;
 };
 
