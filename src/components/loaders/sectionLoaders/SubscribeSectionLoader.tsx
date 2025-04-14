@@ -5,12 +5,13 @@ import { SubscribeSection } from "../../sections/SubscribeSection";
 export async function SubscribeSectionLoader() {
   const session = await getServerSession(authOptions);
   const isLoggedIn = !!session;
+  const userName = session?.user?.name || null;
 
   console.log("session in SubscribeSectionLoader", session);
 
   return (
     <>
-      <SubscribeSection isLoggedIn={isLoggedIn} />
+      <SubscribeSection isLoggedIn={isLoggedIn} userName={userName} />
     </>
   );
 }
