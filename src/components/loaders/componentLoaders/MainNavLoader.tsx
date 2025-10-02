@@ -68,7 +68,7 @@ export const MainNavLoader = async () => {
       },
       { label: "Blog", path: buildUrl(["blog"]) },
       { label: "Project", path: buildUrl(["project", "about"]) },
-      { label: "Shop", path: buildUrl(["shop"]), disabled: true },
+      { label: "Shop", path: buildUrl(["shop"]) },
     ];
 
     return <MainNav navLinks={navLinks} />;
