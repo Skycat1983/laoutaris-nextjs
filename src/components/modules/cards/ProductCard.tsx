@@ -53,9 +53,9 @@ export const ProductCard = ({
           {product.title}
         </h2>
 
-        {/* <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
           {product.description}
-        </p> */}
+        </p>
 
         {/* Price should be centered text-center */}
         <div className="flex items-baseline gap-2 mb-4 text-center justify-center">
