@@ -30,7 +30,8 @@ const shopifyFetch = async <T>({
         query,
         variables,
       }),
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      // Cache settings: 0 = no cache (development), 3600 = 1 hour (production)
+      next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 3600 },
     });
 
     if (!response.ok) {

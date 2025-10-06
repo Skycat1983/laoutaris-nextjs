@@ -8,3 +8,4 @@ export { BlogsViewCard, BlogsViewCardSkeleton } from "./BlogsViewCard";
 export { CollectionCard, CollectionCardSkeleton } from "./CollectionCard";
 export { CollectionFeedCard } from "./CollectionFeedCard";
 export { CommentCard, CommentCardSkeleton } from "./CommentCard";
+export { ProductCard, ProductCardSkeleton } from "./ProductCard";
