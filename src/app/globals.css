@@ -67,7 +67,11 @@
     @apply bg-background text-foreground m-0 p-0;
   }
 
-  html,
+  html {
+    @apply h-full max-w-full m-0 p-0 overflow-x-hidden;
+    overflow-y: scroll; /* Prevent layout shift when dropdown opens */
+  }
+
   body {
     @apply h-full max-w-full m-0 p-0 overflow-x-hidden;
   }

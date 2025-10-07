@@ -55,7 +55,7 @@ export default async function Shop() {
           {/* Image Section */}
           <div className="relative w-full h-[400px] lg:h-[600px]">
             <Image
-              src="https://res.cloudinary.com/dzncmfirr/image/upload/v1706776928/studio-thumbnails/JRL_studio1_007_qacibz.jpg"
+              src="https://res.cloudinary.com/dzncmfirr/image/upload/e_grayscale/v1706776928/studio-thumbnails/JRL_studio1_007_qacibz.jpg"
               alt="Art Sale Banner"
               fill
               className="object-cover"

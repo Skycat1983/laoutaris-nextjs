@@ -119,7 +119,7 @@ const ShopFilters = () => {
         {/* Checkbox Filters */}
         <div className="flex flex-wrap gap-6 items-center">
           <div className="flex items-center space-x-2">
-            <Checkbox id="originals" className="rounded-none" />
+            <Checkbox id="originals" className="rounded-none" defaultChecked />
             <Label
               htmlFor="originals"
               className="text-sm font-normal cursor-pointer"
@@ -129,7 +129,11 @@ const ShopFilters = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="limited-edition" className="rounded-none" />
+            <Checkbox
+              id="limited-edition"
+              className="rounded-none"
+              defaultChecked
+            />
             <Label
               htmlFor="limited-edition"
               className="text-sm font-normal cursor-pointer"
@@ -139,7 +143,7 @@ const ShopFilters = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="books" className="rounded-none" />
+            <Checkbox id="books" className="rounded-none" defaultChecked />
             <Label
               htmlFor="books"
               className="text-sm font-normal cursor-pointer"
