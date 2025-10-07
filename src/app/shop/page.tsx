@@ -1,7 +1,8 @@
 import { getProducts } from "@/lib/api/shopify/shopifyClient";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import { ProductCard } from "@/components/modules/cards";
-import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import ShopFilters from "@/components/modules/filters/ShopFilters";
+import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
 import Image from "next/image";
 
 // TODO: Move Shopify credentials to .env.local before pushing to GitHub
@@ -70,7 +71,7 @@ export default async function Shop() {
               </h1>
               <div className="w-24 h-1 bg-gray-900 mb-8"></div>
 
-              <h2 className="text-2xl lg:text-3xl font-semibold mb-6 text-gray-800">
+              <h2 className="text-2xl lg:text-3xl mb-6 text-gray-800">
                 Supporting the artist
               </h2>
 
@@ -91,14 +92,14 @@ export default async function Shop() {
           </div>
         </section>
 
-        <HorizontalDivider />
+        {/* Filters Section */}
+        <ShopFilters />
+
+        {/* Results Bar */}
+        <ShopResultsBar totalResults={products.length} />
 
         {/* Products Section */}
         <div className="px-8 py-12">
-          <h2 className="text-4xl font-bold mb-8 text-center">
-            Available Works
-          </h2>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
             {products.map((product) => (
               <ProductCard
