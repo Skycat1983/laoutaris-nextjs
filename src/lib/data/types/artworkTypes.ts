@@ -1,7 +1,3 @@
-import {
-  SensitivePublicArtworkFields,
-  ExtendedPublicArtworkFields,
-} from "@/lib/constants/publicDocumentConstants";
 import { ArtworkDB } from "../models/artworkModel";
 import {
   LeanDocument,

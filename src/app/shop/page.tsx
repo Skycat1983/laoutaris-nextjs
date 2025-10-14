@@ -67,25 +67,25 @@ export default async function Shop() {
           <div className="bg-gray-50 flex flex-col justify-center px-8 py-12 lg:px-16 lg:py-20">
             <div className="max-w-xl">
               <h1 className="text-5xl lg:text-6xl mb-4 text-gray-900">
-                Art Sale
+                Art for Sale
               </h1>
               <div className="w-24 h-1 bg-gray-900 mb-8"></div>
 
               <h2 className="text-2xl lg:text-3xl mb-6 text-gray-800">
-                Supporting the artist
+                Supporting our mission
               </h2>
 
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Sometimes unique opportunities arise – and that&apos;s exactly
-                  why we have selected exceptional works of art and unique
-                  pieces for you at a preferential price.
+                  We would like to reiterate that my grandfather&apos;s artwork
+                  is freely available, long term, to any establishment that can
+                  put it on display to the public.
                 </p>
                 <p>
-                  Sometimes there may be a few small signs of ageing in the
-                  picture, or perhaps just a small scratch on the frame. And
-                  sometimes we simply make room for new acquisitions and part
-                  with works, even from our own collection.
+                  However, even if you aren&apos;t a gallery curator, you can
+                  still own a piece of his art. We have a selection of books,
+                  prints, and original artworks for sale. Limited edition print
+                  runs are fixed at 100 reproductions.
                 </p>
               </div>
             </div>

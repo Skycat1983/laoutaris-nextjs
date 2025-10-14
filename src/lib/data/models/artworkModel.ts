@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import { CloudinaryImageDB, ColourInfo, PredominantColors } from "../types";
+import { ShopifyProductLink } from "../types/shopifyTypes";
 import {
   ArtStyle,
   Medium,
@@ -25,6 +26,7 @@ export interface ArtworkDB extends Document, ArtworkBase {
   collections: mongoose.Schema.Types.ObjectId[];
   watcherlist: mongoose.Schema.Types.ObjectId[];
   favourited: mongoose.Schema.Types.ObjectId[];
+  shopifyProducts?: ShopifyProductLink[]; // NEW: Minimal Shopify links
   createdAt: Date;
   updatedAt: Date;
 }
@@ -91,6 +93,17 @@ const artworkSchema = new mongoose.Schema(
     featured: { type: Boolean, default: false },
     watcherlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     favourited: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    shopifyProducts: [
+      {
+        productId: { type: String, required: true },
+        type: {
+          type: String,
+          enum: ["original", "print", "book"],
+          required: true,
+        },
+        _id: false, // Disable _id for subdocuments
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -64,6 +64,14 @@ export interface ShopifyProductsResponse {
   products: ShopifyProductConnection;
 }
 
+// Metafield types for artwork linking
+export interface ShopifyMetafield {
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+}
+
 // Simplified product type for UI display
 export interface SimpleProduct {
   id: string;
@@ -79,4 +87,8 @@ export interface SimpleProduct {
     altText: string | null;
   } | null;
   availableForSale: boolean;
+
+  // For linking to MongoDB artworks
+  mongodbArtworkId?: string; // For individual artwork products (from metafield)
+  featuredArtworkIds?: string[]; // For books (from metafield)
 }
