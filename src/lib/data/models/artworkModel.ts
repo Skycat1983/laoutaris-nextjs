@@ -20,6 +20,7 @@ export interface ArtworkBase {
   surface: Surface;
   featured: boolean;
   image: CloudinaryImageDB;
+  shopifyProducts?: ShopifyProductLink[];
 }
 
 export interface ArtworkDB extends Document, ArtworkBase {

@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
-
+import ArtworkShopSection from "../modules/cards/ArtworkShopSection";
 import { MagnifierImage } from "../modules/MagnifierImage";
 import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
@@ -54,9 +54,9 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
           <Card />
         </div>
       </div>
-      {/* <div className="flex flex-row justify-center items-center">
-        <h1>hello</h1>
-      </div> */}
+
+      {/* Shop Section - Only shows if artwork has Shopify products */}
+      <ArtworkShopSection artwork={artwork} />
     </>
   );
 };

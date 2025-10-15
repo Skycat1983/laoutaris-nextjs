@@ -46,6 +46,7 @@ export interface ShopifyProduct {
     minVariantPrice: ShopifyMoney;
     maxVariantPrice: ShopifyMoney;
   };
+  metafields?: ShopifyMetafield[];
 }
 
 export interface ShopifyProductConnection {

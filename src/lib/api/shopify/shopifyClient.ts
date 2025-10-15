@@ -7,7 +7,11 @@ import {
   ShopifyProduct,
   SimpleProduct,
 } from "@/lib/data/types/shopify";
-import { GET_PRODUCTS_QUERY, GET_PRODUCT_BY_HANDLE_QUERY } from "./queries";
+import {
+  GET_PRODUCTS_QUERY,
+  GET_PRODUCT_BY_HANDLE_QUERY,
+  GET_PRODUCT_BY_ID_QUERY,
+} from "./queries";
 
 /**
  * Make a GraphQL request to Shopify Storefront API
@@ -30,7 +34,8 @@ const shopifyFetch = async <T>({
         query,
         variables,
       }),
-      // Cache settings: 0 = no cache (development), 3600 = 1 hour (production)
+      // Disable cache during development for fresh data
+      cache: process.env.NODE_ENV === "development" ? "no-store" : "default",
       next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 3600 },
     });
 
@@ -63,6 +68,27 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
   const firstVariant = product.variants.edges[0]?.node;
   const firstImage = product.images.edges[0]?.node;
 
+  // Extract metafields
+  const mongodbArtworkId = product.metafields?.find(
+    (m) => m.key === "mongodb_artwork_id"
+  )?.value;
+
+  const featuredArtworkIdsRaw = product.metafields?.find(
+    (m) => m.key === "featured_artwork_ids"
+  )?.value;
+
+  let featuredArtworkIds: string[] | undefined;
+  if (featuredArtworkIdsRaw) {
+    try {
+      featuredArtworkIds = JSON.parse(featuredArtworkIdsRaw);
+    } catch {
+      console.error(
+        "Failed to parse featured_artwork_ids in transformProduct: ",
+        featuredArtworkIdsRaw
+      );
+    }
+  }
+
   return {
     id: product.id,
     handle: product.handle,
@@ -82,6 +108,8 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
         }
       : null,
     availableForSale: product.availableForSale,
+    mongodbArtworkId,
+    featuredArtworkIds,
   };
 };
 
@@ -149,5 +177,29 @@ export const getProductByHandle = async (
       error
     );
     throw new Error(`Failed to fetch product with handle: ${handle}`);
+  }
+};
+
+/**
+ * Fetch a single product by ID
+ * @param id - Product GID (e.g., "gid://shopify/Product/123456")
+ */
+export const getProductById = async (
+  id: string
+): Promise<SimpleProduct | null> => {
+  try {
+    const data = await shopifyFetch<{ product: ShopifyProduct | null }>({
+      query: GET_PRODUCT_BY_ID_QUERY,
+      variables: { id },
+    });
+
+    if (!data.product) {
+      return null;
+    }
+
+    return transformProduct(data.product);
+  } catch (error) {
+    console.error("Error fetching product by ID in getProductById: ", error);
+    throw new Error(`Failed to fetch product with ID: ${id}`);
   }
 };
