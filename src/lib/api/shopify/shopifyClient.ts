@@ -68,12 +68,14 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
   const firstVariant = product.variants.edges[0]?.node;
   const firstImage = product.images.edges[0]?.node;
 
-  // Extract metafields
-  const mongodbArtworkId = product.metafields?.find(
+  // Extract metafields - filter out null values first
+  const validMetafields = product.metafields?.filter(Boolean) || [];
+
+  const mongodbArtworkId = validMetafields.find(
     (m) => m.key === "mongodb_artwork_id"
   )?.value;
 
-  const featuredArtworkIdsRaw = product.metafields?.find(
+  const featuredArtworkIdsRaw = validMetafields.find(
     (m) => m.key === "featured_artwork_ids"
   )?.value;
 
