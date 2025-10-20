@@ -1,3 +1,10 @@
+export type ShopSortOption =
+  | "type"
+  | "price-low"
+  | "price-high"
+  | "title-asc"
+  | "title-desc";
+
 export type ShopFiltersState = {
   artstyle?: string;
   medium?: string;
@@ -8,6 +15,7 @@ export type ShopFiltersState = {
   showOriginals?: boolean;
   showPrints?: boolean;
   showBooks?: boolean;
+  sortBy?: ShopSortOption;
 };
 
 export type ShopSearchParams = {
@@ -18,4 +26,5 @@ export type ShopSearchParams = {
   showOriginals?: string;
   showPrints?: string;
   showBooks?: string;
+  sortBy?: string;
 };

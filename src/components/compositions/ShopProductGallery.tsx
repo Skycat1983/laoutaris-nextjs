@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
-import { ShopFiltersState } from "@/lib/data/types/shopTypes";
+import { ShopFiltersState, ShopSortOption } from "@/lib/data/types/shopTypes";
 
 interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
@@ -21,6 +21,9 @@ export const ShopProductGallery = ({
 
   const [products, setProducts] = useState<SimpleProduct[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
+  const [sortBy, setSortBy] = useState<ShopSortOption>(
+    initialFilters?.sortBy || "type"
+  );
   const [filters, setFilters] = useState<ShopFiltersState>(
     initialFilters || {
       artstyle: "all-style",
@@ -32,8 +35,46 @@ export const ShopProductGallery = ({
       showOriginals: true,
       showPrints: true,
       showBooks: true,
+      sortBy: "type",
     }
   );
+
+  // Sort products based on current sortBy value
+  const sortedProducts = useMemo(() => {
+    const sorted = [...products];
+
+    switch (sortBy) {
+      case "price-low":
+        return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+      case "price-high":
+        return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+      case "title-asc":
+        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+      case "title-desc":
+        return sorted.sort((a, b) => b.title.localeCompare(a.title));
+      case "type":
+      default:
+        // Sort by product type: books first, then originals, then prints
+        return sorted.sort((a, b) => {
+          const getTypeOrder = (title: string) => {
+            const lowerTitle = title.toLowerCase();
+            if (lowerTitle.includes("book")) return 0;
+            if (lowerTitle.includes("original")) return 1;
+            if (lowerTitle.includes("print")) return 2;
+            return 3;
+          };
+          return getTypeOrder(a.title) - getTypeOrder(b.title);
+        });
+    }
+  }, [products, sortBy]);
+
+  const handleSortChange = (newSortBy: ShopSortOption) => {
+    console.log(
+      "ShopProductGallery - Sort changed to in ShopProductGallery.tsx: ",
+      newSortBy
+    );
+    setSortBy(newSortBy);
+  };
 
   const handleFilterChange = async (newFilters: Partial<ShopFiltersState>) => {
     try {
@@ -111,7 +152,9 @@ export const ShopProductGallery = ({
       showOriginals: true,
       showPrints: true,
       showBooks: true,
+      sortBy: "type",
     });
+    setSortBy("type");
     setProducts(initialProducts);
   };
 
@@ -121,7 +164,11 @@ export const ShopProductGallery = ({
       <ShopFilters filters={filters} onFilterChange={handleFilterChange} />
 
       {/* Results Bar */}
-      <ShopResultsBar totalResults={products.length} />
+      <ShopResultsBar
+        totalResults={products.length}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+      />
 
       {/* Products Section */}
       <div className="px-8 py-12 relative">
@@ -145,7 +192,7 @@ export const ShopProductGallery = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
-            {products.map((product) => (
+            {sortedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}

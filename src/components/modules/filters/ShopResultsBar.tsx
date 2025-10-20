@@ -8,12 +8,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
+import { ShopSortOption } from "@/lib/data/types/shopTypes";
 
 type ShopResultsBarProps = {
   totalResults: number;
+  sortBy: ShopSortOption;
+  onSortChange: (sortBy: ShopSortOption) => void;
 };
 
-const ShopResultsBar = ({ totalResults }: ShopResultsBarProps) => {
+const ShopResultsBar = ({
+  totalResults,
+  sortBy,
+  onSortChange,
+}: ShopResultsBarProps) => {
   return (
     <div className="w-full bg-white border-t border-gray-200 px-8 py-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
@@ -41,16 +48,19 @@ const ShopResultsBar = ({ totalResults }: ShopResultsBarProps) => {
 
         {/* Sort Dropdown */}
         <div className="flex items-center gap-3">
-          <Select defaultValue="popular">
+          <Select
+            value={sortBy}
+            onValueChange={(value) => onSortChange(value as ShopSortOption)}
+          >
             <SelectTrigger className="w-[180px] rounded-none bg-white">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="popular">Most popular</SelectItem>
+              <SelectItem value="type">Sort by Type</SelectItem>
               <SelectItem value="price-low">Price: Low to High</SelectItem>
               <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
+              <SelectItem value="title-asc">Title: A to Z</SelectItem>
+              <SelectItem value="title-desc">Title: Z to A</SelectItem>
             </SelectContent>
           </Select>
         </div>
