@@ -1,6 +1,6 @@
 // Minimal link to Shopify products - store only what's needed to reference
 export type ShopifyProductLink = {
-  productId: string; // Shopify product GID
+  productId: string; // Shopify numeric product ID (e.g., "10538938761480")
   type: "original" | "print" | "book";
 };
 

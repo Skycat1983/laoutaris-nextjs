@@ -10,8 +10,14 @@ import {
 } from "@/components/shadcn/select";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { Label } from "@/components/shadcn/label";
+import { ShopFiltersState } from "@/lib/data/types/shopTypes";
 
-const ShopFilters = () => {
+type ShopFiltersProps = {
+  filters: ShopFiltersState;
+  onFilterChange: (filters: Partial<ShopFiltersState>) => void;
+};
+
+const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
   return (
     <div className="w-full bg-white px-8 py-8">
       <div className="max-w-7xl mx-auto">
@@ -20,7 +26,10 @@ const ShopFilters = () => {
         {/* Filter Dropdowns */}
         <div className="flex flex-wrap gap-3 mb-6">
           {/* Art Style Filter */}
-          <Select defaultValue="all-style">
+          <Select
+            value={filters.artstyle || "all-style"}
+            onValueChange={(value) => onFilterChange({ artstyle: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Art Style" />
             </SelectTrigger>
@@ -33,7 +42,10 @@ const ShopFilters = () => {
           </Select>
 
           {/* Medium Filter */}
-          <Select defaultValue="all-medium">
+          <Select
+            value={filters.medium || "all-medium"}
+            onValueChange={(value) => onFilterChange({ medium: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Medium" />
             </SelectTrigger>
@@ -50,7 +62,10 @@ const ShopFilters = () => {
           </Select>
 
           {/* Colours Filter */}
-          <Select defaultValue="all-colours">
+          <Select
+            value={filters.colour || "all-colours"}
+            onValueChange={(value) => onFilterChange({ colour: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Colours" />
             </SelectTrigger>
@@ -72,7 +87,10 @@ const ShopFilters = () => {
           </Select>
 
           {/* Surface/Technique Filter */}
-          <Select defaultValue="all-surface">
+          <Select
+            value={filters.surface || "all-surface"}
+            onValueChange={(value) => onFilterChange({ surface: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Surface" />
             </SelectTrigger>
@@ -86,7 +104,10 @@ const ShopFilters = () => {
           </Select>
 
           {/* Decade/Epochs Filter */}
-          <Select defaultValue="all-epochs">
+          <Select
+            value={filters.decade || "all-epochs"}
+            onValueChange={(value) => onFilterChange({ decade: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Decades" />
             </SelectTrigger>
@@ -103,7 +124,10 @@ const ShopFilters = () => {
           </Select>
 
           {/* Dimensions/Size Filter */}
-          <Select defaultValue="all-dimensions">
+          <Select
+            value={filters.dimension || "all-dimensions"}
+            onValueChange={(value) => onFilterChange({ dimension: value })}
+          >
             <SelectTrigger className="w-[160px] rounded-none bg-white">
               <SelectValue placeholder="Dimensions" />
             </SelectTrigger>
@@ -119,7 +143,14 @@ const ShopFilters = () => {
         {/* Checkbox Filters */}
         <div className="flex flex-wrap gap-6 items-center">
           <div className="flex items-center space-x-2">
-            <Checkbox id="originals" className="rounded-none" defaultChecked />
+            <Checkbox
+              id="originals"
+              className="rounded-none"
+              checked={filters.showOriginals ?? true}
+              onCheckedChange={(checked) =>
+                onFilterChange({ showOriginals: checked === true })
+              }
+            />
             <Label
               htmlFor="originals"
               className="text-sm font-normal cursor-pointer"
@@ -132,7 +163,10 @@ const ShopFilters = () => {
             <Checkbox
               id="limited-edition"
               className="rounded-none"
-              defaultChecked
+              checked={filters.showPrints ?? true}
+              onCheckedChange={(checked) =>
+                onFilterChange({ showPrints: checked === true })
+              }
             />
             <Label
               htmlFor="limited-edition"
@@ -143,7 +177,14 @@ const ShopFilters = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Checkbox id="books" className="rounded-none" defaultChecked />
+            <Checkbox
+              id="books"
+              className="rounded-none"
+              checked={filters.showBooks ?? true}
+              onCheckedChange={(checked) =>
+                onFilterChange({ showBooks: checked === true })
+              }
+            />
             <Label
               htmlFor="books"
               className="text-sm font-normal cursor-pointer"

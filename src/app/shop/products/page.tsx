@@ -1,51 +1,24 @@
-import { getProducts } from "@/lib/api/shopify/shopifyClient";
-import { SimpleProduct } from "@/lib/data/types/shopify";
-import { ProductCard } from "@/components/modules/cards";
-import ShopFilters from "@/components/modules/filters/ShopFilters";
-import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
+import { ShopProductsLoader } from "@/components/loaders/viewLoaders/ShopProductsLoader";
+import { ShopFiltersState, ShopSearchParams } from "@/lib/data/types/shopTypes";
 import Image from "next/image";
 
 // TODO: Move Shopify credentials to .env.local before pushing to GitHub
 // Credentials are in: src/lib/config/shopifyConfig.ts
 
-export default async function ProductsPage() {
-  let products: SimpleProduct[] = [];
-  let error: string | null = null;
-
-  try {
-    const result = await getProducts(20);
-    products = result.products;
-  } catch (err) {
-    console.error("Error loading products in Products page: ", err);
-    error = err instanceof Error ? err.message : "Failed to load products";
-  }
-
-  if (error) {
-    return (
-      <main className="flex min-h-screen max-w-screen flex-col items-center justify-center p-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">
-            Error Loading Products
-          </h1>
-          <p className="text-gray-600">{error}</p>
-          <p className="text-sm text-gray-500 mt-4">
-            Check the console for more details
-          </p>
-        </div>
-      </main>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <main className="flex min-h-screen max-w-screen flex-col items-center justify-center p-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Shop</h1>
-          <p className="text-gray-600">No products available at the moment.</p>
-        </div>
-      </main>
-    );
-  }
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: ShopSearchParams;
+}) {
+  const filters: ShopFiltersState = {
+    artstyle: searchParams.artstyle || "all-style",
+    medium: searchParams.medium || "all-medium",
+    surface: searchParams.surface || "all-surface",
+    decade: searchParams.decade || "all-epochs",
+    showOriginals: searchParams.showOriginals !== "false",
+    showPrints: searchParams.showPrints !== "false",
+    showBooks: searchParams.showBooks !== "false",
+  };
 
   return (
     <main className="flex min-h-screen max-w-screen flex-col items-center justify-start">
@@ -92,24 +65,8 @@ export default async function ProductsPage() {
           </div>
         </section>
 
-        {/* Filters Section */}
-        <ShopFilters />
-
-        {/* Results Bar */}
-        <ShopResultsBar totalResults={products.length} />
-
-        {/* Products Section */}
-        <div className="px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                variant="contain"
-              />
-            ))}
-          </div>
-        </div>
+        {/* Products Loader */}
+        <ShopProductsLoader initialFilters={filters} />
       </div>
     </main>
   );
