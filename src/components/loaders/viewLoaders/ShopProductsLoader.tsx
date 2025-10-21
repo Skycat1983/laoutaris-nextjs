@@ -40,8 +40,8 @@ export const ShopProductsLoader = async ({
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const queryString = params.toString();
     const url = queryString
-      ? `${baseUrl}/api/v2/shop/products?${queryString}`
-      : `${baseUrl}/api/v2/shop/products`;
+      ? `${baseUrl}/api/v2/public/shop/products?${queryString}`
+      : `${baseUrl}/api/v2/public/shop/products`;
 
     console.log(
       "ShopProductsLoader - Fetching from in ShopProductsLoader.tsx: ",

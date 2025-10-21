@@ -9,6 +9,7 @@ import React from "react";
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
   await delay(1000);
   const result = await serverApi.public.artwork.single(params.id);
+  console.log("artwork loader result in ArtworkLoader: ", result);
   if (!result.success) {
     throw new Error("Failed to fetch artwork");
   }

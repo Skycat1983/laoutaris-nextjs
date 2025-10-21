@@ -37,12 +37,14 @@ const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
         );
         if (originals.length > 0) {
           const res = await fetch(
-            `/api/shopify/products/${encodeURIComponent(
+            `/api/v2/public/shop/products/${encodeURIComponent(
               originals[0].productId
             )}`
           );
+          console.log("original product response in ArtworkShopSection: ", res);
           if (res.ok) {
             const product = await res.json();
+            console.log("original product in ArtworkShopSection: ", product);
             setOriginalProduct(product);
           }
         }
@@ -52,27 +54,35 @@ const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
           artwork.shopifyProducts,
           "print"
         );
+        console.log("print products in ArtworkShopSection: ", prints);
         if (prints.length > 0) {
           const printData = await Promise.all(
             prints.map((p) =>
               fetch(
-                `/api/shopify/products/${encodeURIComponent(p.productId)}`
+                `/api/v2/public/shop/products/${encodeURIComponent(
+                  p.productId
+                )}`
               ).then((res) => (res.ok ? res.json() : null))
             )
           );
+          console.log("print products in ArtworkShopSection: ", printData);
           setPrintProducts(printData.filter(Boolean));
         }
 
         // Fetch books
         const books = getShopifyProductsByType(artwork.shopifyProducts, "book");
+        console.log("book products in ArtworkShopSection: ", books);
         if (books.length > 0) {
           const bookData = await Promise.all(
             books.map((b) =>
               fetch(
-                `/api/shopify/products/${encodeURIComponent(b.productId)}`
+                `/api/v2/public/shop/products/${encodeURIComponent(
+                  b.productId
+                )}`
               ).then((res) => (res.ok ? res.json() : null))
             )
           );
+          console.log("book products in ArtworkShopSection: ", bookData);
           setBookProducts(bookData.filter(Boolean));
         }
       } catch (error) {

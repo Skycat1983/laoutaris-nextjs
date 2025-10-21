@@ -113,7 +113,7 @@ export const ShopProductGallery = ({
         params.toString()
       );
 
-      const response = await fetch(`/api/v2/shop/products?${params}`);
+      const response = await fetch(`/api/v2/public/shop/products?${params}`);
 
       if (!response.ok) {
         throw new Error("Failed to fetch products");
