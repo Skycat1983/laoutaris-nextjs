@@ -52,18 +52,20 @@ const nextConfig = {
             value: [
               // Allow resources from self and data URLs
               "default-src 'self' https: data: blob:",
-              // Scripts from self and inline
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com",
-              // Frames
-              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
-              // Styles
-              "style-src 'self' 'unsafe-inline'",
-              // Images
+              // Scripts from self and inline + Cloudinary widget
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+              // Frames + Cloudinary widget
+              "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+              // Styles + Cloudinary
+              "style-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+              // Images + Cloudinary
               "img-src 'self' data: https: blob:",
-              // Fonts
-              "font-src 'self' data:",
-              // API and external connections
+              // Fonts + Cloudinary
+              "font-src 'self' data: https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+              // API and external connections + Cloudinary
               "connect-src 'self' data: https: blob:",
+              // Media sources
+              "media-src 'self' data: https: blob:",
             ].join("; "),
           },
         ],

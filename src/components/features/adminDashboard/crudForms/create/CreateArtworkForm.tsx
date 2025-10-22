@@ -26,7 +26,7 @@ import { artworkFormSchema, ArtworkFormValues } from "@/lib/data/schemas";
 import { ArtworkBase } from "@/lib/data/models";
 import { clientApi } from "@/lib/api/clientApi";
 import Image from "next/image";
-import { CloudinaryImageDB, CloudinaryImageFrontend } from "@/lib/data/types";
+import { CloudinaryImageDB } from "@/lib/data/types";
 import { Checkbox } from "@/components/shadcn/checkbox";
 
 interface CreateArtworkFormProps {
