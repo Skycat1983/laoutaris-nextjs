@@ -127,3 +127,5 @@ import { ProductCard } from "@/components/modules/cards/ProductCard";
 ---
 
 **Status:** Fixed! Shop route should now work without crashes.
+
+---
