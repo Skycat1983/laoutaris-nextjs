@@ -28,3 +28,9 @@ A digital showcase of my late grandfather's artwork and biography.
 ## Live Demo
 
 Visit the live site: [Laoutaris Art Gallery](https://laoutaris-nextjs.vercel.app/)
+
+## Project Documentation
+
+Production-readiness planning and agent handoff docs live in [docs/README.md](docs/README.md).
+
+Agents should read [AGENTS.md](AGENTS.md) before changing the project.
