@@ -52,16 +52,26 @@ or inconsistent code forward.
   canonical.
 - A-007 found production URL construction is hard-coded and inconsistent across
   server fetchers, shop loaders, and redirects.
+- T-007 completed a small ADR 0004-aligned slice for the shop product detail
+  page: linked artwork now uses a server-only artwork-by-ID data service shared
+  by the public artwork detail API route and product detail page.
+- T-014 created T-015 to audit the Next major migration surface before package
+  edits, including App Router, middleware, image optimization, server-side
+  rendering, Node runtime, and verification risks.
+- T-015 inventoried the Next 14 -> 16 code risk: synchronous App Router
+  `params`/`searchParams`, synchronous `cookies()`/`headers()` usage,
+  `middleware.ts` -> `proxy.ts`, custom webpack config under Turbopack default,
+  `next/image` default changes, and lint/tooling migration.
+- T-018 completed the broader `/artwork` list proof route for ADR 0004:
+  `ArtworkListLoader` and `GET /api/v2/public/artwork` now share the
+  server-only `getArtworkList` data service instead of relying on same-app HTTP
+  for the initial artwork list.
 
 ## Backlog
 
-- Implement a narrow `/artwork` proof route for
-  [ADR 0004](../decisions/0004-server-data-access-ownership.md): extract the
-  artwork list read into a server-only data service, call it from both
-  `ArtworkListLoader` and the existing public artwork API route, and add tests
-  proving server rendering does not require a live `localhost:3000` app.
-- After the proof route passes, migrate route-critical loaders off same-app HTTP
-  in small slices and retire `serverApi` usage from server loaders/actions.
+- Use the completed T-007 and T-018 proof routes as templates to migrate
+  remaining route-critical loaders off same-app HTTP in small slices and retire
+  `serverApi` usage from server loaders/actions.
 - Define client-safe and server-only import rules, including direct-import rules
   for barrels that can pull server-only dependencies into client components.
 - Ensure every MongoDB-backed API route and server action reaches the database
@@ -81,6 +91,9 @@ or inconsistent code forward.
   verification before deletion.
 - Open a separate dependency cleanup task for A-014 package candidates so
   `package.json` and lockfile changes are reviewed together.
+- Use T-015's inventory before any future Next major package edit; especially
+  convert async request APIs, middleware/proxy, and fetch/cache behavior in a
+  package-owner implementation task after the owner accepts a stable target.
 
 ## Acceptance Criteria
 
@@ -115,8 +128,29 @@ Use targeted import/reference searches for pruning tasks.
   decision task.
 - 2026-05-14: Reconciled A-002/A-007 architecture-adjacent findings into F-030
   and F-050, production risks, and this backlog.
+- 2026-05-14: Prepared T-007 to remove one same-app HTTP path from Shopify
+  product detail without broadening into the full `/artwork` list migration.
+- 2026-05-14: Completed T-007; added `getArtworkById` as a server-only
+  MongoDB/transform helper, reused it from the public artwork detail API route,
+  and removed `/shop/products/[productHandle]` linked artwork same-app HTTP.
+- 2026-05-14: T-014 added T-015 as a Next major migration preflight audit so
+  framework/runtime architecture risks are scoped before dependency edits.
+- 2026-05-14: Completed T-015; it found no accepted stable Next target that
+  clears both residual advisories yet, and documented the App Router,
+  middleware/proxy, headers/cookies, image, webpack/Turbopack, lint, caching,
+  and verification surfaces for the future migration.
+- 2026-05-14: Prepared T-018 to extract the public artwork list query into a
+  shared server-only data service used by both `ArtworkListLoader` and
+  `GET /api/v2/public/artwork`.
+- 2026-05-14: Completed T-018; added `getArtworkList`, refactored the public
+  artwork list API route and `ArtworkListLoader` to share it, removed the
+  loader's same-app HTTP dependency, and added focused service/API/loader tests.
 
 ## Next Agent Action
 
-Implement the `/artwork` server data-access proof route with tests before
-applying the pattern across loaders, API routes, actions, and cache policy.
+Choose the next route-critical server loader or action that still uses
+same-app HTTP and migrate it through the ADR 0004 service pattern proven by
+T-007 and T-018. If dependency work takes priority, wait for
+owner/orchestrator acceptance of a Next target, then use
+[T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
+as the migration inventory for the package implementation task.

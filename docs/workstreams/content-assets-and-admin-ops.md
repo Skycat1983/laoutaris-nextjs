@@ -50,6 +50,10 @@ content operations repeatable and safe.
   preset ownership.
 - T-005 hardened the Cloudinary signing route guard and request validation while
   preserving the `next-cloudinary` top-level `signature` response contract.
+- A-008 reconfirmed allowed Cloudinary signing params, public/server variable
+  ownership, and asset lifecycle policy remain open after T-005.
+- A-016 found admin content create/update routes do not have a consistent
+  server-side validation policy and invalid admin input often becomes a 500.
 
 ## Backlog
 
@@ -62,6 +66,8 @@ content operations repeatable and safe.
 - Audit Cloudinary upload signing and allowed upload parameters.
 - Define allowed Cloudinary signing params, folder rules, upload preset
   ownership, and asset lifecycle expectations for `sign-cloudinary-params`.
+- Migrate admin content create/update routes toward allowlisted validation
+  schemas, ObjectId validation, and structured 400 field-error responses.
 - Document Cloudinary variables, upload preset ownership, rotation owner, and
   allowed upload policy in the Cloudinary/environment runbooks.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
@@ -105,8 +111,13 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-14: Completed T-005 route guard and request validation for the
   Cloudinary signing endpoint; allowed signing params, folder/preset ownership,
   and asset lifecycle policy remain open.
+- 2026-05-14: Reconciled A-008 Cloudinary signing policy follow-up into F-054
+  as a duplicate of remaining F-044 policy work.
+- 2026-05-14: Reconciled A-016 admin create/update validation findings into
+  F-057.
 
 ## Next Agent Action
 
 Define the remaining Cloudinary upload policy before changing public image
-payloads.
+payloads; coordinate admin create/update validation with the Data/API
+workstream after T-010 proves the first public validation pattern.

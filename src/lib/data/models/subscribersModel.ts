@@ -13,7 +13,13 @@ export type LeanSubscriber = Omit<DBSubscriber, keyof Document> & {
 
 const subscriberContentSchema = new mongoose.Schema<DBSubscriber>(
   {
-    email: { type: String, required: true, unique: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
     unsubscribed: { type: Boolean, default: false },
   },
   {

@@ -7,12 +7,10 @@ export const SignupFormSchema = z.object({
   username: z.string().min(5),
 });
 
-export const LoginFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
 export const LoginWithUsernameSchema = z.object({
-  usernameData: z.string().min(5),
-  passwordData: z.string().min(8),
+  username: z
+    .string()
+    .trim()
+    .min(5, "Username must be at least 5 characters."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
 });

@@ -1,6 +1,6 @@
 # Shopify Commerce Workstream
 
-Status: Planned
+Status: Active
 
 Goal: make Shopify-backed artwork, print, and book sales reliable enough for
 production while preserving MongoDB as the archive source of truth.
@@ -58,18 +58,25 @@ production while preserving MongoDB as the archive source of truth.
 - T-004 standardized the public single-product shop API envelope and numeric
   product ID validation, and updated `ArtworkShopSection` to unwrap the new
   contract.
+- T-007 fixed product detail linked artwork fetching by resolving Shopify
+  metafield artwork IDs through a server-only MongoDB artwork data service
+  instead of the non-existent `/api/artworks/:id` route.
+- T-008 replaced the misleading nonfunctional product detail `Add to Cart`
+  affordance with an enquiry link to `/project/contact?product=...` for
+  products Shopify marks available for sale.
+- Unavailable product detail pages now show non-purchase status copy instead of
+  a cart, checkout, or enquiry completion affordance.
+- T-009 removed the token-shaped Shopify config source comment; owner
+  verification/rotation for the removed value remains open.
 
 ## Backlog
 
-- Decide first-release checkout handoff: hide purchase controls, link to
-  Shopify-hosted product/checkout, or implement Shopify cart/checkout with
-  variant selection.
-- Fix `/shop/products/[productHandle]` linked artwork fetching by using the
-  canonical public artwork route envelope or a server-side data helper.
+- Decide the full checkout handoff: Shopify-hosted product/checkout link or
+  Shopify cart/checkout with variant selection.
 - Define the admin linking workflow for original, print, and book product links,
   including numeric ID/type validation and duplicate prevention.
-- Remove credential-like Shopify values from source comments, verify whether any
-  exposed value was real, and rotate if needed.
+- Verify whether the removed Shopify credential-like source comment represented
+  a real value and rotate it if needed.
 - Add shared Shopify product ID normalization and audit existing data for legacy
   GID-style values.
 - Standardize shop product API envelopes and carry product type, tags, variant
@@ -116,8 +123,24 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-14: Completed T-004; the single-product route validates numeric IDs
   before Shopify calls, returns success/error envelopes with real 400/404/502
   statuses, and the artwork-page shop section reads `result.data`.
+- 2026-05-14: Prepared T-007 to replace product-detail linked artwork
+  self-fetching with a server-only data path.
+- 2026-05-14: Completed T-007; `/shop/products/[productHandle]` now resolves
+  linked original/print artwork and book artwork through `getArtworkById`,
+  gracefully ignores invalid or missing linked artwork IDs, and no longer
+  depends on `/api/artworks/:id`, `NEXT_PUBLIC_BASE_URL`, or a localhost
+  fallback for linked artwork context.
+- 2026-05-14: Prepared T-008 to replace the nonfunctional product detail
+  `Add to Cart` affordance with a safe first-release handoff.
+- 2026-05-14: Completed T-008; available product detail pages now link to the
+  project contact page for enquiry, unavailable products show non-purchase
+  status, and focused tests cover both CTA states.
+- 2026-05-14: Completed T-009 for the Shopify source cleanup slice by removing
+  the token-shaped config comment and adding a focused regression check. Owner
+  verification or rotation for the removed value remains open.
 
 ## Next Agent Action
 
-Resolve checkout handoff and admin linking workflow decisions before fixing
-product-detail linked artwork fetching.
+Get owner confirmation on whether the removed Shopify value was real and needs
+rotation; keep checkout handoff and admin linking workflow decisions as the next
+commerce implementation blockers.

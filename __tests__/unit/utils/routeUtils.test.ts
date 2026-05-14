@@ -12,6 +12,8 @@ type RouteTestCase = {
 };
 
 describe("routeUtils", () => {
+  const retiredProtectedRoute = ["", "protected"].join("/");
+
   describe("isProtectedRoute", () => {
     const protectedRouteTests: RouteTestCase[] = [
       // Frontend routes
@@ -51,6 +53,11 @@ describe("routeUtils", () => {
         path: `${PUBLIC_ROUTES.BLOG}/post-1`,
         expected: false,
         description: "does not match nested public route",
+      },
+      {
+        path: retiredProtectedRoute,
+        expected: false,
+        description: "does not retain retired protected test route",
       },
     ];
 

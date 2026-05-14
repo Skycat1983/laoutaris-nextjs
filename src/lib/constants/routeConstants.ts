@@ -2,7 +2,6 @@
 export const PROTECTED_FRONTEND_ROUTES = {
   ACCOUNT: "/account",
   ADMIN: "/admin",
-  PROTECTED: "/protected",
 } as const;
 
 // API routes that need protection

@@ -15,12 +15,60 @@ import { NextRequest, NextResponse } from "next/server";
 import { transformCommentPopulated } from "@/lib/transforms";
 import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 import dbConnect from "@/lib/db/mongodb";
+import {
+  createCommentRouteSchema,
+  type CreateCommentRouteInput,
+} from "@/lib/data/schemas/commentSchema";
 export const dynamic = "force-dynamic";
 
 interface UserWithComentsLean {
   _id: string;
   comments: CommentLeanPopulated[];
 }
+
+type CommentFieldErrors = Partial<
+  Record<keyof CreateCommentRouteInput, string[] | undefined>
+>;
+
+type CommentValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: CommentFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: CommentFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<CommentValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid comment input",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
+
+const findPopulatedCommentById = (
+  commentId: unknown,
+  session: mongoose.ClientSession
+) =>
+  CommentModel.findById(commentId)
+    .session(session)
+    .populate([
+      { path: "author", model: "User" },
+      { path: "blog", model: "Blog" },
+    ])
+    .lean<CommentLeanPopulated>();
 
 export async function GET(
   req: NextRequest
@@ -91,40 +139,41 @@ export async function GET(
 }
 
 export async function POST(req: NextRequest) {
-  const comment = await req.json();
+  const userId = await getUserIdFromSession();
+
+  if (!userId) {
+    return errorResponse("Authentication required", 401);
+  }
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return validationErrorResponse({}, ["Request body must be valid JSON."]);
+  }
+
+  const parsedBody = createCommentRouteSchema.safeParse(body);
+
+  if (!parsedBody.success) {
+    const { fieldErrors, formErrors } = parsedBody.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
 
   try {
-    const userId = await getUserIdFromSession();
-    console.log("userId", userId);
+    await dbConnect();
 
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "Authentication required",
-        statusCode: 401,
-      } satisfies ApiErrorResponse);
+    const { blogSlug, text } = parsedBody.data;
+    const blog = await BlogModel.findOne({ slug: blogSlug });
+
+    if (!blog) {
+      return errorResponse("Blog not found", 404);
     }
 
-    const comment = await req.json();
-    const { blogSlug, text } = comment;
-
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    const mongoSession = await mongoose.startSession();
+    mongoSession.startTransaction();
 
     try {
-      const blog = await BlogModel.findOne({ slug: blogSlug });
-
-      if (!blog) {
-        await session.abortTransaction();
-        return NextResponse.json({
-          success: false,
-          error: "Blog not found",
-          statusCode: 404,
-        } satisfies ApiErrorResponse);
-      }
-
-      // Create the comment
-      const comment = await CommentModel.create(
+      const createdComments = await CommentModel.create(
         [
           {
             text,
@@ -133,41 +182,52 @@ export async function POST(req: NextRequest) {
             displayDate: new Date(),
           },
         ],
-        { session }
+        { session: mongoSession }
       );
+      const createdComment = createdComments[0];
 
-      // Update blog with new comment
+      if (!createdComment?._id) {
+        throw new Error("Comment creation did not return an id");
+      }
+
       await BlogModel.findByIdAndUpdate(
         blog._id,
-        { $push: { comments: comment[0]._id } },
-        { session }
+        { $push: { comments: createdComment._id } },
+        { session: mongoSession }
       );
 
-      // Update user's comments array
       await UserModel.findByIdAndUpdate(
         userId,
-        { $push: { comments: comment[0]._id } },
-        { session }
+        { $push: { comments: createdComment._id } },
+        { session: mongoSession }
       );
 
-      await session.commitTransaction();
+      const populatedComment = await findPopulatedCommentById(
+        createdComment._id,
+        mongoSession
+      );
+
+      if (!populatedComment) {
+        throw new Error("Created comment could not be loaded");
+      }
+
+      await mongoSession.commitTransaction();
 
       return NextResponse.json({
         success: true,
-        data: comment[0],
+        data: transformCommentPopulated(populatedComment, userId),
       } satisfies ApiUserCommentCreateResult);
     } catch (error) {
-      await session.abortTransaction();
+      await mongoSession.abortTransaction();
       throw error;
     } finally {
-      session.endSession();
+      mongoSession.endSession();
     }
   } catch (error) {
+    if (isDynamicServerError(error)) {
+      throw error;
+    }
     console.error("Error creating comment:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to create comment",
-      statusCode: 500,
-    } satisfies ApiErrorResponse);
+    return errorResponse("Failed to create comment", 500);
   }
 }

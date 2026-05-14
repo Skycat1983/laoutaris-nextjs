@@ -27,5 +27,18 @@ update this file before production.
 - Never commit `.env` values.
 - Keep server-only secrets out of `next.config.mjs` `env`; values defined there
   can be inlined into application bundles by Next.js.
+- Run `npm run env:guard` after editing `next.config.mjs`; `npm run build` also
+  runs this guard before `next build`.
 - Document new variables here when adding config.
 - Include purpose, required environments, and rotation owner when known.
+
+## Next Config Env Guard
+
+`npm run env:guard` inspects the exported `next.config.mjs` object and fails if
+the `env` field includes known server-only secrets or future secret-like names
+containing `SECRET`, `TOKEN`, `PASSWORD`, or `PRIVATE_KEY`.
+
+`NEXT_PUBLIC_*` names are not blocked just because they are public. If a public
+name also contains a secret-like term, it must be explicitly allowlisted in
+`scripts/validate-next-config-env.mjs` after its non-sensitive purpose is
+documented here.

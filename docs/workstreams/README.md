@@ -12,13 +12,13 @@ should start from the relevant workstream brief.
 
 | Workstream | Status | Purpose |
 | --- | --- | --- |
-| [Shopify commerce](shopify-commerce.md) | Planned | Make product browsing, product details, and artwork-to-Shopify linking production-ready. |
-| [Architecture refactor and code health](architecture-refactor-and-code-health.md) | Planned | Scope structural refactors, dead-code pruning, SSR/data-fetching patterns, and scalable conventions. |
-| [Data models and API](data-models-and-api.md) | Planned | Harden schemas, transforms, API contracts, and error handling. |
-| [Auth, admin, and permissions](auth-admin-and-permissions.md) | Planned | Secure user, admin, and protected route behavior. |
+| [Shopify commerce](shopify-commerce.md) | Active | Make product browsing, product details, and artwork-to-Shopify linking production-ready. |
+| [Architecture refactor and code health](architecture-refactor-and-code-health.md) | Active | Scope structural refactors, dead-code pruning, SSR/data-fetching patterns, and scalable conventions. |
+| [Data models and API](data-models-and-api.md) | Active | Harden schemas, transforms, API contracts, and error handling. |
+| [Auth, admin, and permissions](auth-admin-and-permissions.md) | Active | Secure user, admin, and protected route behavior. |
 | [Frontend routes and components](frontend-routes-and-components.md) | Planned | Stabilize public route UX, component boundaries, and client/server imports. |
-| [Testing and quality](testing-and-quality.md) | Planned | Establish reliable automated checks for refactoring. |
-| [Deployment, security, and observability](deployment-security-and-observability.md) | Planned | Prepare environment, headers, logs, monitoring, and deployment checks. |
+| [Testing and quality](testing-and-quality.md) | Active | Establish reliable automated checks for refactoring. |
+| [Deployment, security, and observability](deployment-security-and-observability.md) | Active | Prepare environment, headers, logs, monitoring, and deployment checks. |
 | [Content, assets, and admin operations](content-assets-and-admin-ops.md) | Planned | Make content, image, and admin data operations repeatable. |
 
 ## Updating A Workstream

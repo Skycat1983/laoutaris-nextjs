@@ -16,13 +16,14 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
 import { Textarea } from "@/components/shadcn/textarea";
 import { clientApi } from "@/lib/api/clientApi";
-import { EnquiryBase } from "@/lib/data/models";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import {
+  enquirySchema,
+  type EnquiryInput,
+} from "@/lib/data/schemas/enquirySchema";
 
 // TODO: redo this form with shadcn/ui
 
@@ -33,24 +34,9 @@ const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
 
   // TODO: get username from session.
 
-  const formSchema = z.object({
-    name: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    subject: z.string().min(2, {
-      message: "Subject must be at least 2 characters.",
-    }),
-    message: z.string().min(10, {
-      message: "Message must be at least 10 characters.",
-    }),
-  });
-
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<EnquiryInput>({
+    resolver: zodResolver(enquirySchema),
     defaultValues: {
       name: "",
       email: "",
@@ -60,16 +46,16 @@ const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: EnquiryInput) {
     // const formData = new FormData();
     // formData.append("name", values.name);
     // formData.append("email", values.email);
     // formData.append("subject", artworkId);
     // formData.append("message", values.message);
-    const enquiry: EnquiryBase = {
+    const enquiry: EnquiryInput = {
       name: values.name,
       email: values.email,
-      subject: artworkId, // Assuming artworkId is a string
+      subject: values.subject,
       message: values.message,
     };
 

@@ -38,16 +38,29 @@ For a book:
 Store the numeric Shopify product ID in MongoDB. Construct the full Shopify GID
 only when calling Shopify APIs.
 
+## First-Release Purchase Handoff
+
+Product detail pages currently use an enquiry handoff instead of cart or
+checkout. When a Shopify product is available for sale, the public product
+detail page links to `/project/contact?product=[handle]`. When a product is not
+available for sale, the page shows that it cannot currently be purchased.
+
+Before enabling checkout or cart controls, define the Shopify checkout owner,
+variant ID handling, line-item construction, and unavailable-product behavior.
+
 ## Manual Verification
 
 - `/shop/products` shows the expected product set.
 - Product filters do not duplicate book products.
 - Product detail loads from `/shop/products/[productHandle]`.
+- Product detail shows an enquiry link for available products and no
+  `Add to Cart` control.
+- Product detail shows non-purchase status for unavailable products.
 - Product detail links back to archive artwork where linked.
 - Artwork detail shows sale affordances only when `shopifyProducts` exists.
 
 ## Open Work
 
-- Define the first-release checkout handoff.
+- Define and implement the full cart or checkout handoff.
 - Define admin UI workflow for adding and removing Shopify links.
 - Add tests for link helpers and product transformation.

@@ -1,32 +1,57 @@
-import { LoginFormSchema, LoginWithUsernameSchema } from "@/lib/data/schemas";
+import { LoginWithUsernameSchema } from "@/lib/data/schemas/userSchema";
 import { formatFieldErrors } from "@/lib/helpers/formatFieldErrors";
 
-interface ValidationResult<T> {
-  formValidationErrors: Partial<Record<keyof T, string>>;
+interface CredentialsAuthorizeInput {
+  usernameData: unknown;
+  passwordData: unknown;
 }
 
-export const validateLogin = (
-  email: string,
-  password: string
-): ValidationResult<LoginFormData> => {
-  const validationResult = LoginFormSchema.safeParse({
-    email,
+export interface CredentialsSignInFormData {
+  username: string;
+  password: string;
+}
+
+interface CredentialsSignInValidationSuccess {
+  success: true;
+  data: CredentialsSignInFormData;
+}
+
+interface CredentialsSignInValidationFailure {
+  success: false;
+  formValidationErrors: Partial<
+    Record<keyof CredentialsSignInFormData, string>
+  >;
+}
+
+type CredentialsSignInValidationResult =
+  | CredentialsSignInValidationSuccess
+  | CredentialsSignInValidationFailure;
+
+export const validateCredentialsSignInData = ({
+  username,
+  password,
+}: {
+  username: unknown;
+  password: unknown;
+}): CredentialsSignInValidationResult => {
+  const validationResult = LoginWithUsernameSchema.safeParse({
+    username,
     password,
   });
 
   if (!validationResult.success) {
-    const formValidationErrors = formatFieldErrors<LoginFormData>(
-      validationResult.error
-    );
-    return { formValidationErrors };
+    return {
+      success: false,
+      formValidationErrors:
+        formatFieldErrors<CredentialsSignInFormData>(validationResult.error),
+    };
   }
-  return { formValidationErrors: {} };
-};
 
-interface LoginFormData {
-  usernameData: unknown;
-  passwordData: unknown;
-}
+  return {
+    success: true,
+    data: validationResult.data,
+  };
+};
 
 interface LoginValidationSuccess {
   success: true;
@@ -46,10 +71,10 @@ type LoginWithUsernameValidationResult =
 export const validateLoginData = ({
   usernameData,
   passwordData,
-}: LoginFormData): LoginWithUsernameValidationResult => {
-  const validationResult = LoginWithUsernameSchema.safeParse({
-    usernameData,
-    passwordData,
+}: CredentialsAuthorizeInput): LoginWithUsernameValidationResult => {
+  const validationResult = validateCredentialsSignInData({
+    username: usernameData,
+    password: passwordData,
   });
 
   if (!validationResult.success) {
@@ -57,8 +82,8 @@ export const validateLoginData = ({
   } else {
     return {
       success: true,
-      username: validationResult.data.usernameData as string,
-      password: validationResult.data.passwordData as string,
+      username: validationResult.data.username,
+      password: validationResult.data.password,
     };
   }
 };

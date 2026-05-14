@@ -1,7 +1,8 @@
 # Rendering And Data Fetching
 
 This document tracks the intended server-side rendering and data-fetching
-strategy for the app. It is currently a planning target, not a fully implemented
+strategy for the app. It is partially implemented through narrow proof routes,
+but remains a staged migration target rather than a fully implemented
 architecture contract.
 
 ## Current Position
@@ -27,6 +28,15 @@ API routes, and server actions should share server-only services that own
 MongoDB/Shopify reads, transforms, and typed domain results. API routes remain
 HTTP adapters for browser clients and external callers. Server loaders and
 server actions should not fetch this same Next.js app through absolute HTTP URLs.
+
+Implemented proof slices:
+
+- `src/lib/data/services/getArtworkById.ts` is shared by the public artwork
+  detail API and shop product detail archive-context reads.
+- `src/lib/data/services/getArtworkList.ts` is shared by
+  `ArtworkListLoader` and `GET /api/v2/public/artwork`, so the initial
+  `/artwork` server render no longer self-fetches the same app for its artwork
+  list.
 
 ## Patterns To Audit
 
@@ -57,8 +67,8 @@ The remaining production blockers are tracked through the
 [production risks](../risks/production-readiness.md), and
 [ADR 0004](../decisions/0004-server-data-access-ownership.md):
 
-- Existing server loaders and server API wrappers still self-fetch the same app
-  over absolute HTTP URLs until migrated to the ADR 0004 service pattern.
+- Some server loaders and server API wrappers still self-fetch the same app over
+  absolute HTTP URLs until migrated to the ADR 0004 service pattern.
 - Several MongoDB-backed API routes and account server actions lack explicit DB
   connection ownership.
 - The root layout performs DB/session work globally, which blocks route-specific

@@ -133,7 +133,7 @@ Expected output: [results/A-007-deployment-environment.md](results/A-007-deploym
 
 ## A-008 Security Headers, CORS, And Logging
 
-Status: Not started
+Status: Completed
 
 Goal: audit CSP, CORS headers, middleware logging, API logging, exposed secrets,
 and production-safe error behavior.
@@ -251,7 +251,7 @@ Expected output: [results/A-015-ssr-data-fetching.md](results/A-015-ssr-data-fet
 
 ## A-016 Forms, Validation, And User Input
 
-Status: Not started
+Status: Completed
 
 Goal: audit all public, user, and admin input flows for validation consistency,
 error handling, sanitization, accessibility, and API persistence behavior.
@@ -295,7 +295,7 @@ Expected output: [results/A-018-translations-content-taxonomy.md](results/A-018-
 
 ## A-019 Dependencies And Supply Chain
 
-Status: Not started
+Status: Completed
 
 Goal: audit dependencies, lockfile health, unused packages, package purpose,
 known vulnerability exposure, and supply-chain risk before production launch.

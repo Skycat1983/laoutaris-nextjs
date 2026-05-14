@@ -53,6 +53,24 @@ features before production launch.
   helpers.
 - T-005 added a route-local API admin guard and JSON 401/403 behavior to the
   Cloudinary signing endpoint without broad admin route migration.
+- T-009 removed direct registration console logging that exposed raw password,
+  hashed password, and saved user document data.
+- T-016 upgraded credential hashing to `bcrypt@6.0.0`, verified new and
+  existing bcrypt hashes, removed the remaining direct credential-value log in
+  `src/lib/helpers/bcrypt.ts`, and made malformed hashes fail closed.
+- A-016 found the current sign-in UI calls `signIn()` without field values,
+  comment edit/create validation needs route-boundary fixes, and legacy
+  auth/comment controls need accessible labels.
+- T-013 now submits the active sign-in form through the username-based NextAuth
+  credentials path with shared validation, generic auth errors, accessible
+  fields, focused component tests, and `SignInFormBackup` removed.
+- T-012 now hardens user comment create/update route validation while preserving
+  user ownership checks and adding focused unauthenticated/forbidden route
+  coverage.
+- T-019 removed `LoginForm`, `processLogin`, the custom JWT cookie session
+  helpers, unreferenced duplicate/test-header session helpers, and the stale
+  `/protected` route/constant after the active NextAuth credentials path was
+  tested.
 
 ## Backlog
 
@@ -62,12 +80,9 @@ features before production launch.
   consistent JSON 401/403 behavior for API routes.
 - Migrate additional admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
-- Confirm whether `/protected` is still intentional; if not, remove the route
-  and protected-route constant in the same auth-reviewed change.
-- Choose the current sign-in/session path, then remove the legacy
-  `SignInFormBackup`, `processLogin`, and custom session chain only after tests.
-- Delete unused auth/session helpers only after A-004 confirms no planned
-  test-header or role-helper workflow depends on them.
+- Route package/env cleanup for now-unused `jose` and legacy `JWT_SECRET`
+  remnants through deployment/dependency tasks; T-019 did not edit package
+  manifests or environment docs.
 - Add DB connection handling and route revalidation to favourite/watchlist
   server actions.
 - Remove or gate noisy middleware logging before production.
@@ -76,6 +91,8 @@ features before production launch.
 - Add tests for route protection utilities and high-risk auth helpers.
 - Add tests for credentials admin, credentials non-admin, OAuth user, middleware
   admin decisions, shared route guards, and representative user/admin APIs.
+- Add tests for remaining representative user/admin APIs as shared route guards
+  and ownership helpers are introduced.
 - Document admin account bootstrap and recovery workflow, including promotion,
   audit ownership, and recovery if all admins are unavailable.
 
@@ -116,8 +133,35 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   Cloudinary signing route, preserving the top-level `signature` response, and
   covering unauthenticated, forbidden, invalid body, missing-secret, and success
   paths with focused tests.
+- 2026-05-14: Reconciled A-008 registration logging into F-051 and T-009.
+- 2026-05-14: Completed T-009 by removing direct registration console logging
+  and adding focused source hygiene regression coverage.
+- 2026-05-14: Reconciled A-016 sign-in, comment, and accessibility findings
+  into F-056, F-058, F-061, and F-062.
+- 2026-05-14: T-014 created T-016 for the focused `bcrypt@6.0.0` compatibility
+  patch, credential hash verification, and removal of the remaining bcrypt
+  helper credential log.
+- 2026-05-14: Completed T-013 by routing `SignInForm` through shared
+  username/password validation and `signIn("credentials", { redirect: false })`,
+  adding accessible credential fields and focused tests, updating the sign-up
+  modal switch, and removing `SignInFormBackup`.
+- 2026-05-14: Completed T-012 by preserving comment ownership checks while
+  adding route-safe create/update validation, real HTTP statuses, transformed
+  DTO responses, and focused unauthenticated/forbidden route tests.
+- 2026-05-14: Completed T-016 by upgrading to `bcrypt@6.0.0`, removing the
+  helper credential-value log, making malformed hash verification fail closed,
+  and adding focused helper tests for new hashes, existing bcrypt hashes, failed
+  verification, and no console logging.
+- 2026-05-14: Prepared T-019 to prune or explicitly retire the stale custom
+  login/session path and `/protected` after the active NextAuth sign-in repair.
+- 2026-05-14: Completed T-019 by removing `LoginForm`, `processLogin`, the
+  custom JWT cookie session helpers, unreferenced duplicate/test-header session
+  helpers, and `src/app/protected/page.tsx`, removing the stale protected-route
+  constant, preserving the active NextAuth credentials path, and verifying
+  focused sign-in/route utility tests plus lint.
 
 ## Next Agent Action
 
-Decide whether to migrate other admin routes to `requireApiAdmin()` before
-pruning `/protected` or legacy session code.
+Continue auth hardening with shared user/admin route guards, admin bootstrap and
+recovery documentation, favourite/watchlist action DB ownership, and production
+logging cleanup.

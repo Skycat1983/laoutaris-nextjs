@@ -1,10 +1,14 @@
 import { UserModel } from "@/lib/data/models";
 import { verifyPassword } from "@/lib/helpers/bcrypt";
-import type { LoginFormData, LoginWithUsernameFormData } from "./processLogin";
 import dbConnect from "@/lib/db/mongodb";
 import { RequestInternal } from "next-auth";
 import { validateLoginData } from "../validation/validateLoginData";
 import type { UserRole } from "@/lib/constants";
+
+interface LoginWithUsernameFormData {
+  username: string;
+  password: string;
+}
 
 interface AuthenticateUserSuccess {
   success: true;
@@ -58,41 +62,6 @@ export const authenticateUsername = async ({
   };
 };
 
-export const authenticateUser = async ({
-  email,
-  password,
-}: LoginFormData): Promise<AuthenticateUserResponse> => {
-  const existingUser = await UserModel.findOne({ email: email });
-
-  if (!existingUser) {
-    return {
-      success: false,
-      error: "User not found",
-    };
-  }
-
-  const { password: hashedPassword } = existingUser;
-  const verified = await verifyPassword(password, hashedPassword);
-
-  if (!verified) {
-    return {
-      success: false,
-      error: "Invalid password",
-    };
-  }
-
-  return {
-    success: true,
-    message: "User logged in successfully",
-    user: {
-      _id: existingUser._id.toString(),
-      email: existingUser.email,
-      username: existingUser.username,
-      role: existingUser.role ?? "user",
-    },
-  };
-};
-
 export const authorizeUser = async (
   credentials: Record<"username" | "password", string> | undefined,
   req: Pick<RequestInternal, "body" | "query" | "headers" | "method">
@@ -100,7 +69,7 @@ export const authorizeUser = async (
   // Connect to the database
   await dbConnect();
 
-  // Extract email and password from the credentials
+  // Extract username and password from the credentials
   const usernameData = credentials?.username as unknown;
   const passwordData = credentials?.password as unknown;
 

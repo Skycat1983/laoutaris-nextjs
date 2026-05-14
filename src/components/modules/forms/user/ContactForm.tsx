@@ -14,13 +14,14 @@ import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Textarea } from "@/components/shadcn/textarea";
-import { serverApi } from "@/lib/api/serverApi";
 import { clientApi } from "@/lib/api/clientApi";
-import { EnquiryBase } from "@/lib/data/models";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import {
+  enquirySchema,
+  type EnquiryInput,
+} from "@/lib/data/schemas/enquirySchema";
 // import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
 // TODO: redo this form with shadcn/ui
@@ -28,24 +29,9 @@ import ModalMessage from "@/components/elements/typography/ModalMessage";
 const ContactForm = () => {
   const { openModal } = useGlobalFeatures();
 
-  // Define the schema for form validation using Zod
-  const contactFormSchema = z.object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    subject: z.string().min(2, {
-      message: "Subject must be at least 2 characters.",
-    }),
-    message: z.string().min(10, {
-      message: "Message must be at least 10 characters.",
-    }),
-  });
   // Initialize the form with React Hook Form and Zod resolver
-  const form = useForm<z.infer<typeof contactFormSchema>>({
-    resolver: zodResolver(contactFormSchema),
+  const form = useForm<EnquiryInput>({
+    resolver: zodResolver(enquirySchema),
     defaultValues: {
       name: "",
       email: "",
@@ -55,8 +41,8 @@ const ContactForm = () => {
   });
 
   // Handle form submission
-  async function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    const formData: EnquiryBase = {
+  async function onSubmit(values: EnquiryInput) {
+    const formData: EnquiryInput = {
       name: values.name,
       email: values.email,
       subject: values.subject,

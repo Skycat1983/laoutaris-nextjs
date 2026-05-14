@@ -1,6 +1,7 @@
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,13 +18,7 @@ const fetchArtworkIfLinked = async (
   if (!product.mongodbArtworkId) return null;
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(
-      `${baseUrl}/api/artworks/${product.mongodbArtworkId}`,
-      { cache: "no-store" }
-    );
-    if (!response.ok) return null;
-    return response.json();
+    return getArtworkById(product.mongodbArtworkId);
   } catch (error) {
     console.error("Error fetching linked artwork in ProductPage: ", error);
     return null;
@@ -33,20 +28,26 @@ const fetchArtworkIfLinked = async (
 const fetchArtworksInBook = async (
   artworkIds: string[]
 ): Promise<ArtworkFrontend[]> => {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const artworks = await Promise.all(
-      artworkIds.map((id) =>
-        fetch(`${baseUrl}/api/artworks/${id}`, {
-          cache: "no-store",
-        }).then((res) => (res.ok ? res.json() : null))
-      )
-    );
-    return artworks.filter(Boolean);
-  } catch (error) {
-    console.error("Error fetching artworks in book in ProductPage: ", error);
-    return [];
-  }
+  const artworks = await Promise.all(
+    artworkIds.map(async (id) => {
+      try {
+        return await getArtworkById(id);
+      } catch (error) {
+        console.error("Error fetching book artwork in ProductPage: ", error);
+        return null;
+      }
+    })
+  );
+
+  return artworks.filter(
+    (artwork): artwork is ArtworkFrontend => artwork !== null
+  );
+};
+
+const hasFeaturedArtworkIds = (
+  featuredArtworkIds: SimpleProduct["featuredArtworkIds"]
+): featuredArtworkIds is string[] => {
+  return Array.isArray(featuredArtworkIds) && featuredArtworkIds.length > 0;
 };
 
 export default async function ProductPage({ params }: PageProps) {
@@ -60,11 +61,13 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   // Determine product type and fetch related data
-  const isBook =
-    product.featuredArtworkIds && product.featuredArtworkIds.length > 0;
+  const featuredArtworkIds = hasFeaturedArtworkIds(product.featuredArtworkIds)
+    ? product.featuredArtworkIds
+    : [];
+  const isBook = featuredArtworkIds.length > 0;
   const linkedArtwork = isBook ? null : await fetchArtworkIfLinked(product);
   const bookArtworks = isBook
-    ? await fetchArtworksInBook(product.featuredArtworkIds!)
+    ? await fetchArtworksInBook(featuredArtworkIds)
     : [];
 
   return (
@@ -110,13 +113,31 @@ export default async function ProductPage({ params }: PageProps) {
             />
           )}
 
-          {/* Buy Button Placeholder */}
-          <button
-            className="w-full bg-black text-white py-4 px-8 rounded-md font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!product.availableForSale}
-          >
-            {product.availableForSale ? "Add to Cart" : "Out of Stock"}
-          </button>
+          {product.availableForSale ? (
+            <div className="rounded-md border border-gray-200 p-4">
+              <Link
+                href={`/project/contact?product=${encodeURIComponent(
+                  product.handle
+                )}`}
+                className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
+              >
+                Enquire About This Product
+              </Link>
+              <p className="mt-3 text-sm text-gray-600">
+                Contact the archive team to confirm availability and purchase
+                details.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
+              <p className="font-semibold text-gray-900">
+                Currently Unavailable
+              </p>
+              <p className="mt-2 text-sm text-gray-600">
+                This product cannot currently be purchased.
+              </p>
+            </div>
+          )}
 
           {/* Link to Artwork Page (if single artwork) */}
           {linkedArtwork && (

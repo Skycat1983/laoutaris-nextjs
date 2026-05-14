@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import type { ObjectId } from "mongoose";
 import { isUserInArray, type IsUserInArrayInput } from "@/lib/utils/userUtils";
 
@@ -11,9 +10,12 @@ type UserArrayTestCase = IsUserInArrayInput & {
 describe("userUtils", () => {
   describe("isUserInArray", () => {
     // Create some test ObjectIds
-    const objectId1 = new Types.ObjectId("507f1f77bcf86cd799439011");
-    const objectId2 = new Types.ObjectId("507f1f77bcf86cd799439012");
-    const objectId3 = new Types.ObjectId("507f1f77bcf86cd799439013");
+    const createObjectId = (value: string) =>
+      ({ toString: () => value } as ObjectId);
+
+    const objectId1 = createObjectId("507f1f77bcf86cd799439011");
+    const objectId2 = createObjectId("507f1f77bcf86cd799439012");
+    const objectId3 = createObjectId("507f1f77bcf86cd799439013");
 
     const testCases: UserArrayTestCase[] = [
       // Valid cases with string IDs

@@ -26,11 +26,8 @@ export const registerUser = async ({
   password,
 }: SignUpFormData): Promise<RegisterUserResponse> => {
   try {
-    console.log("email, username, password", email, username, password);
-
     // Encrypt the password
     const hashedPassword = await encryptPassword(password);
-    console.log("hashedPassword", hashedPassword);
 
     // Create a new user instance
     const newUser = new UserModel({
@@ -38,11 +35,9 @@ export const registerUser = async ({
       username,
       password: hashedPassword,
     });
-    console.log("newUser :>> ", newUser);
 
     // Save the user to the database
     const result = await newUser.save();
-    console.log("result :>> ", result);
 
     // Return success response
     return {
@@ -55,7 +50,6 @@ export const registerUser = async ({
       },
     };
   } catch (error) {
-    console.log("Error registering user:", error);
     const errorMessage = getErrorMessage(error);
 
     // Return error response

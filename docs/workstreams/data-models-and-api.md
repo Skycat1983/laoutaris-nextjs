@@ -1,6 +1,6 @@
 # Data Models And API Workstream
 
-Status: Planned
+Status: Active
 
 Goal: make MongoDB schemas, Mongoose models, transforms, and API responses
 consistent enough for production refactoring and Shopify integration.
@@ -53,6 +53,27 @@ consistent enough for production refactoring and Shopify integration.
 - T-004 completed the first narrow API contract slice: the public single
   Shopify product route now uses success/error envelopes, validates numeric
   product IDs before Shopify calls, and has focused route tests.
+- A-016 completed the forms/input audit and confirmed server-side validation
+  gaps in public enquiry, user comments, admin create/update routes,
+  subscription, search/browse query parsing, and input persistence tests.
+- A-008 confirmed public and admin routes return raw exception messages and need
+  public-safe error responses with internal redacted logging.
+- T-010 completed the first public input hardening slice: public enquiry now
+  uses a shared Zod DTO schema, persists only normalized validated fields,
+  returns real 400 validation responses with `fieldErrors`/`formErrors`, removes
+  request-body logging, owns `dbConnect()`, and returns public-safe 500 errors.
+- T-012 completed the user comment input hardening slice: comment create/update
+  now use route-safe Zod parsing, real HTTP auth/validation/not-found/forbidden
+  statuses, parsed trimmed text persistence, transformed frontend DTO responses,
+  and focused route tests.
+- T-017 completed the subscription input hardening slice: `submitSubscription`
+  validates defensive `FormData` input, normalizes email values, owns
+  `dbConnect()`, persists only the normalized subscriber DTO, removes direct
+  input logging, and returns stable public-safe failures.
+- T-018 moved the public artwork list query, existing filter/sort behavior,
+  color-proximity handling, pagination metadata, user-context transformation,
+  and `dbConnect()` ownership into `getArtworkList`, shared by the API route and
+  `ArtworkListLoader`.
 
 ## Backlog
 
@@ -74,8 +95,13 @@ consistent enough for production refactoring and Shopify integration.
   required/optional field.
 - Add validation policy for create and update routes, including `safeParse` or
   equivalent 400 responses instead of broad 500s for validation failures.
-- Fix high-risk route DTO mismatches for user profile, comment create/update,
-  public enquiry, and admin content writes.
+- Fix high-risk route DTO mismatches for user profile and admin content writes.
+- Migrate admin create/update routes toward allowlisted schemas, ObjectId
+  validation, real 400 validation responses, and route tests by content type.
+- Validate and bound public search, artwork browse, and shop browse query
+  parameters before building regexes, Mongo filters, or Shopify query behavior.
+- Replace raw exception responses with stable public-safe errors across public,
+  user, and admin routes.
 - Add Shopify product ID normalization and validation for admin writes, API
   reads, and one-time data migration/audit work.
 - Document pagination and filtering contracts for artwork, collection, blog,
@@ -119,8 +145,27 @@ Add API route tests where behavior is changed.
   `/api/v2/public/shop/products/[productId]`; validation, 400/404/502 error
   envelopes, success `data` wrapping, and the direct artwork-page consumer are
   covered by focused tests.
+- 2026-05-14: Reconciled A-016 into F-055 through F-062, updated F-016, and
+  routed the first public input slice to T-010.
+- 2026-05-14: Reconciled A-008 raw exception handling into F-053 and this
+  backlog.
+- 2026-05-14: Completed T-010 for `POST /api/v2/public/enquiry`; shared schema
+  validation, normalized DTO persistence, body-log removal, real HTTP
+  validation statuses, public-safe 500s, and focused route tests are in place.
+- 2026-05-14: Completed T-012 for user comment create/update routes; route-safe
+  schema validation, real HTTP statuses, trimmed persistence, transformed
+  frontend DTOs, transaction rollback coverage, and focused route tests are in
+  place.
+- 2026-05-14: Completed T-017 for `submitSubscription`; server-action
+  validation, normalization, `dbConnect()` ownership, public-safe errors, input
+  log removal, and focused tests are in place.
+- 2026-05-14: Completed T-018 for `GET /api/v2/public/artwork`; the route now
+  parses search params and delegates query/transform ownership to
+  `getArtworkList` while preserving the public list envelope.
 
 ## Next Agent Action
 
-Let T-005 test the shared auth/error helper shape on one admin route, then use
-T-004 and T-005 together to decide the next public, user, and admin API slices.
+Use the T-010/T-012/T-017 schema patterns and the T-018 service-adapter pattern
+for the remaining data/API work: admin create/update validation, public
+search/artwork/shop browse query bounds, and other MongoDB-backed route DB
+ownership gaps.

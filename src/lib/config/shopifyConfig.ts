@@ -1,7 +1,5 @@
-// Shopify configuration - reads from environment variables
-// Make sure these are set in your .env file:
-// SHOPIFY_STORE_DOMAIN=laoutaris.myshopify.com
-// SHOPIFY_STOREFRONT_ACCESS_TOKEN=505da68638bfc961864ab6edf282b561
+// Shopify configuration reads required values from environment variables.
+// Set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_ACCESS_TOKEN outside source.
 
 export const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN || "";
 export const SHOPIFY_STOREFRONT_ACCESS_TOKEN =

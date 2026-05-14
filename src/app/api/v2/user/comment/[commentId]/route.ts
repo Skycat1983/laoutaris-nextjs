@@ -5,77 +5,123 @@ import { isValidObjectId } from "mongoose";
 import { CommentModel, UserModel, BlogModel } from "@/lib/data/models";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import dbConnect from "@/lib/db/mongodb";
+import { transformCommentPopulated } from "@/lib/transforms";
+import {
+  ApiErrorResponse,
+  CommentLeanPopulated,
+} from "@/lib/data/types";
+import { ApiUserCommentUpdateResult } from "@/lib/api/user/comments/fetchers";
+import {
+  updateCommentRouteBodySchema,
+  updateCommentRouteParamsSchema,
+  type UpdateCommentRouteBody,
+  type UpdateCommentRouteParams,
+} from "@/lib/data/schemas/commentSchema";
+
+type CommentUpdateFieldErrors = Partial<
+  Record<
+    keyof (UpdateCommentRouteBody & UpdateCommentRouteParams),
+    string[] | undefined
+  >
+>;
+
+type CommentValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: CommentUpdateFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: CommentUpdateFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<CommentValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid comment input",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { commentId: string } }
 ) {
+  const userId = await getUserIdFromSession();
+
+  if (!userId) {
+    return errorResponse("Unauthorized", 401);
+  }
+
+  const parsedParams = updateCommentRouteParamsSchema.safeParse(params);
+
+  if (!parsedParams.success) {
+    const { fieldErrors, formErrors } = parsedParams.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  let body: unknown;
+
+  try {
+    body = await request.json();
+  } catch {
+    return validationErrorResponse({}, ["Request body must be valid JSON."]);
+  }
+
+  const parsedBody = updateCommentRouteBodySchema.safeParse(body);
+
+  if (!parsedBody.success) {
+    const { fieldErrors, formErrors } = parsedBody.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
   try {
     await dbConnect();
 
-    const userId = await getUserIdFromSession();
+    const { commentId } = parsedParams.data;
+    const { text } = parsedBody.data;
 
-    // Check authentication
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const { commentId } = params;
-
-    // Validate ObjectId
-    if (!isValidObjectId(commentId)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid comment ID" },
-        { status: 400 }
-      );
-    }
-
-    // Get update data from request body
-    const { text } = await request.json();
-    if (!text?.trim()) {
-      return NextResponse.json(
-        { success: false, message: "Comment text is required" },
-        { status: 400 }
-      );
-    }
-
-    // Find comment and verify ownership
     const comment = await CommentModel.findById(commentId).populate("author");
     if (!comment) {
-      return NextResponse.json(
-        { success: false, message: "Comment not found" },
-        { status: 404 }
-      );
+      return errorResponse("Comment not found", 404);
     }
 
-    if (comment.author._id.toString() !== session.user.id) {
-      return NextResponse.json(
-        { success: false, message: "Not authorized to edit this comment" },
-        { status: 403 }
-      );
+    if (comment.author._id.toString() !== userId) {
+      return errorResponse("Not authorized to edit this comment", 403);
     }
 
-    // Update the comment
     const updatedComment = await CommentModel.findByIdAndUpdate(
       commentId,
       { $set: { text } },
-      { new: true } // Return the updated document
-    ).populate("author");
+      { new: true, runValidators: true }
+    )
+      .populate([
+        { path: "author", model: "User" },
+        { path: "blog", model: "Blog" },
+      ])
+      .lean<CommentLeanPopulated>();
+
+    if (!updatedComment) {
+      return errorResponse("Comment not found", 404);
+    }
 
     return NextResponse.json({
       success: true,
-      data: updatedComment,
-    });
+      data: transformCommentPopulated(updatedComment, userId),
+    } satisfies ApiUserCommentUpdateResult);
   } catch (error) {
     console.error("Error updating comment:", error);
-    return NextResponse.json(
-      { success: false, message: "Failed to update comment" },
-      { status: 500 }
-    );
+    return errorResponse("Failed to update comment", 500);
   }
 }
 

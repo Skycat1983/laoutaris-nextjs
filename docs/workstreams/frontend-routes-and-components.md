@@ -46,6 +46,13 @@ Next.js server/client component boundaries.
 - A-002 found public list APIs have inconsistent empty-state semantics and
   public search ignores the fetcher's `type` parameter while omitting pagination
   metadata.
+- A-016 found legacy search, auth, and comment controls that need accessible
+  labels or button semantics, and confirmed public search/filter UI relies on
+  API query parsing that is not yet bounded server-side.
+- T-013 fixed the sign-in credential field labels and converted the sign-in and
+  sign-up modal switches from clickable spans to buttons.
+- T-019 removed the stale `/protected` App Router page and protected-route
+  constant; no documented frontend workflow owned that route.
 
 ## Backlog
 
@@ -63,6 +70,8 @@ Next.js server/client component boundaries.
   route contracts once A-002 empty-list and search metadata semantics are chosen.
 - Align shop filters, pagination, and sorting UI with backed API behavior or hide
   unsupported controls.
+- Replace clickable search icons, unlabeled drawer triggers, and icon-only
+  comment actions with accessible controls when each flow is refactored.
 - Decide the i18n/frontend language direction before pruning unused translation
   UI.
 - Add smoke-level tests for high-value public pages.
@@ -90,9 +99,18 @@ Use browser checks for layout-sensitive changes.
   `docs/audits/findings-register.md`, production risks, and this backlog.
 - 2026-05-14: Reconciled A-002 public list/search semantics into F-049 and this
   backlog.
+- 2026-05-14: Reconciled A-016 search/query and accessibility findings into
+  F-060 and F-062.
+- 2026-05-14: Completed the T-013 sign-in accessibility slice with visible
+  credential labels, field error relationships, and keyboard-accessible modal
+  switch buttons.
+- 2026-05-14: T-019 removed the stale `/protected` frontend route and added
+  focused route utility coverage that it is no longer protected.
 
 ## Next Agent Action
 
-Map client/server import boundaries for public routes, then remove the highest
-risk client imports from server/model modules after the architecture decision
-workstream defines the import rules.
+Keep client/server import mapping as the broader frontend priority, but pair
+search/comment accessibility fixes with the corresponding validation-flow tasks
+instead of running them as isolated visual cleanup. The sign-in field
+accessibility slice is complete through T-013, and the stale `/protected` route
+is removed through T-019.

@@ -5,6 +5,7 @@ Deployment target: Vercel, based on the project README.
 ## Pre-Deployment Checks
 
 ```bash
+npm run env:guard
 npm test
 npm run build
 npm run lint
@@ -23,6 +24,8 @@ See [environment variables](environment.md).
 
 Server-only secrets must be configured in the deployment environment and must
 not be exposed through `next.config.mjs` `env` or `NEXT_PUBLIC_*` variables.
+`npm run build` runs `npm run env:guard` before `next build` to prevent known
+server-only secret names from being exposed through Next config.
 
 ## Smoke Checks After Deploy
 

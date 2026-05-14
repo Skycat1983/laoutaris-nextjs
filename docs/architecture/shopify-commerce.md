@@ -69,6 +69,19 @@ Product listing:
 4. Fetch product details from Shopify.
 5. Render products and apply client-side sorting where appropriate.
 
+## First-Release Purchase Handoff
+
+Product detail pages do not implement Shopify cart or checkout yet. For the
+first release, products that Shopify marks `availableForSale` link users to
+`/project/contact?product=[handle]` with enquiry copy. Products that are not
+available for sale show non-purchase status copy.
+
+Do not render `Add to Cart`, checkout, or direct purchase controls until the
+product contract exposes the required checkout data and ownership is decided.
+A future cart/checkout implementation must define variant IDs, line items,
+availability checks, and whether checkout is owned by a Shopify-hosted flow or
+an app-managed cart flow.
+
 ## Product Types
 
 | Type | Meaning |
@@ -90,7 +103,7 @@ Product listing:
 
 ## Open Decisions
 
-- First-release checkout approach is not documented yet.
+- Full cart/checkout approach is not documented yet.
 - Admin UI for creating and removing Shopify links is not documented yet.
 - Product pagination and caching policy need verification against production
   needs.

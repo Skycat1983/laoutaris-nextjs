@@ -3,7 +3,7 @@
 import { SubmitButton } from "@/components/elements/buttons";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
-import SignInForm from "./SignInFormBackup";
+import SignInForm from "./SignInForm";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import {
   RegistrationResponse,
@@ -80,14 +80,15 @@ const SignUpForm = () => {
         </form>
         <h2 className="text-lg py-4 text-[#000000BF]">
           Alrealy got an account?{" "}
-          <span
+          <button
+            type="button"
             className="text-blue-600 cursor-pointer"
             onClick={() => {
               setModalContent(<SignInForm />);
             }}
           >
             Sign in
-          </span>{" "}
+          </button>{" "}
           instead
         </h2>
       </div>

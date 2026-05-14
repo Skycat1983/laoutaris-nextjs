@@ -1,8 +1,10 @@
 "use server";
 
 import { replaceMongoId } from "@/lib/helpers/transformData";
-import { SubscriberModel } from "../data/models";
-import { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
+import { SubscriberModel } from "@/lib/data/models/subscribersModel";
+import { subscriberSchema } from "@/lib/data/schemas/subscriberSchema";
+import dbConnect from "@/lib/db/mongodb";
+import type { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
 
 export interface SubscribeFormState {
   success: boolean;
@@ -14,16 +16,21 @@ export async function submitSubscription(
   prevState: SubscribeFormState,
   formData: FormData
 ): Promise<SubscribeFormState> {
+  const validation = subscriberSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!validation.success) {
+    return {
+      success: false,
+      message: "Please enter a valid email address.",
+    };
+  }
+
+  const { email } = validation.data;
+
   try {
-    const email = formData.get("email") as string;
-
-    if (!email) {
-      return {
-        success: false,
-        message: "Email is required.",
-      };
-    }
-
+    await dbConnect();
     const existingSubscriber = await SubscriberModel.findOne({ email });
 
     if (existingSubscriber) {
@@ -33,8 +40,6 @@ export async function submitSubscription(
       };
     }
 
-    console.log("Attempting to create subscriber with data:", { email });
-
     const newSubscriber = await SubscriberModel.create({ email });
     const subscriber = replaceMongoId(newSubscriber.toObject());
 
@@ -43,19 +48,12 @@ export async function submitSubscription(
       message: "Successfully subscribed!",
       data: subscriber as FrontendSubscriber,
     };
-  } catch (error) {
-    console.error("Error creating subscriber:", {
-      error,
-      message: error instanceof Error ? error.message : "Unknown error",
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+  } catch {
+    console.error("Subscription creation failed.");
 
     return {
       success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "An error occurred while subscribing.",
+      message: "We could not complete your subscription. Please try again.",
     };
   }
 }
