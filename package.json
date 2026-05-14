@@ -7,6 +7,7 @@
     "build": "npm run env:guard && next build",
     "start": "next start",
     "env:guard": "node scripts/validate-next-config-env.mjs",
+    "smoke:public": "node scripts/smoke-public-routes.mjs",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch"

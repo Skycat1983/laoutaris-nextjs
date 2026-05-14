@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
+import dbConnect from "@/lib/db/mongodb";
 
 export const dynamic = "force-dynamic";
 
@@ -14,17 +15,15 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
 ): Promise<RouteResponse<ApiFavoritesItemResult>> {
+  const userGuard = await requireApiUser();
+  if (!userGuard.ok) {
+    return userGuard.response;
+  }
+
   const { artworkId } = params;
 
   try {
-    const userId = await getUserIdFromSession();
-
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse);
-    }
+    await dbConnect();
 
     const leanArtwork = (await ArtworkModel.findById(
       artworkId
@@ -39,7 +38,7 @@ export async function GET(
 
     const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
       leanArtwork,
-      userId
+      userGuard.userId
     );
 
     if (!artworkFrontend.isWatchlisted) {

@@ -3,8 +3,7 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   createCollectionRouteSchema,
@@ -46,18 +45,9 @@ const errorResponse = (error: string, status: number) =>
 export async function POST(
   request: Request
 ): Promise<RouteResponse<CreateCollectionResult>> {
-  const hasPermission = await isAdmin();
-  const userId = await getUserIdFromSession();
-
-  if (!hasPermission || !userId) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
 
   let body: unknown;
@@ -90,7 +80,7 @@ export async function POST(
       imageUrl,
       section,
       slug,
-      author: userId,
+      author: admin.userId,
     });
 
     return NextResponse.json(

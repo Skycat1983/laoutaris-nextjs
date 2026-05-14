@@ -95,12 +95,15 @@ security headers, environment documentation, and actionable operational signals.
 - T-023 completed the follow-up that reduces reliance on native bcrypt
   packaging for public pages by removing bcrypt from the normal root-layout
   import path.
-- T-024 captured partial production smoke on 2026-05-14: the public Vercel alias
-  returned `HTTP/2 200` for `GET /`, and an intentionally invalid credentials
-  callback returned `401 CredentialsSignin` instead of `500`. Closure is blocked
-  because `origin/main` did not yet include the local T-023 auth import-boundary
-  change, targeted Vercel logs were unavailable, and no smoke credentials account
-  was documented.
+- T-024 confirmed the bcrypt native-load crash is resolved in production:
+  `origin/main` matched local `HEAD` with the T-023 auth import-boundary change,
+  the owner reported the deployment no longer crashes, and
+  `curl -I https://laoutaris-nextjs.vercel.app/` returned `HTTP/2 200`.
+- T-025 converted the remaining Vercel smoke repeatability gap into a
+  deployment runbook checklist with exact evidence fields, minimum route
+  expectations, credentials smoke handling, targeted Vercel log requirements,
+  rollback triggers, and a dependency-free `npm run smoke:public` helper for
+  unauthenticated public-route status checks.
 
 ## Backlog
 
@@ -124,11 +127,12 @@ security headers, environment documentation, and actionable operational signals.
 - Centralize or remove same-app base URL construction; until ADR 0004 is applied
   broadly, avoid production localhost fallbacks and hard-coded production
   domains.
-- Document deployment, Vercel project settings, Node runtime, rollback, and
-  smoke-check steps.
-- Convert deployment smoke checks into a scripted suite or an evidence-based
-  manual checklist with exact routes, records, roles, expected status/redirects,
-  and rollback trigger.
+- Pin or document remaining Vercel project settings and Node/runtime ownership;
+  T-025 now covers smoke evidence and rollback triggers, while runtime pins stay
+  separate under F-064/R-028.
+- Keep the deployment smoke checklist and `npm run smoke:public` route list
+  current as production route contracts, approved smoke records, auth roles, and
+  Shopify product handles change.
 - Decide whether to defer the Next/PostCSS migration until a stable Next release
   bundles `postcss@8.5.10+`, migrate to stable `next@16.2.6` with explicit
   temporary PostCSS advisory acceptance, or accept canary framework risk.
@@ -224,19 +228,24 @@ npm run lint
   `GET /`, credentials sign-in, deployed commit/runtime, and targeted logs.
 - 2026-05-14: T-024 partial smoke found `GET /` on
   `https://laoutaris-nextjs.vercel.app/` returning `HTTP/2 200`; an invalid
-  credentials callback returned `401 CredentialsSignin`, not `500`. The task is
-  blocked pending a deployment containing T-023, Vercel log access, and a known
-  test/admin credentials account.
+  credentials callback returned `401 CredentialsSignin`, not `500`. At that
+  point the task was blocked pending a deployment containing T-023, Vercel log
+  access, and a known test/admin credentials account.
+- 2026-05-14: Completed T-024 after `origin/main` matched local `HEAD` with the
+  T-023 auth import-boundary change, the owner confirmed the Vercel deployment
+  no longer crashes, and a fresh `curl -I /` returned `HTTP/2 200`.
+- 2026-05-14: Prepared T-025 to make Vercel smoke checks repeatable without
+  storing secrets or Vercel tokens in the repo.
+- 2026-05-14: Completed T-025 by expanding the deployment runbook with a smoke
+  evidence template, minimum route expectations, credentials smoke secret
+  handling, targeted Vercel log requirements, rollback triggers, and
+  `npm run smoke:public` for unauthenticated public-route status checks.
 
 ## Next Agent Action
 
-Owner/orchestrator action for
-[T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md): commit and
-deploy the local T-023 auth import-boundary change, provide Vercel deployment/log
-access or a targeted log excerpt for `/`, and provide a secret-channel
-test/admin account so credentials sign-in can be smoked.
-Keep the Next/PostCSS owner choice separate: wait for a stable Next release
-with bundled `postcss@8.5.10+`, accept a partial stable `next@16.2.6` migration
-with residual PostCSS risk, or explicitly accept canary framework risk. Resolve
-package-manager/Node runtime pins and dependency-update automation through
-F-064.
+Resolve the remaining deployment operations gaps that T-025 intentionally left
+separate: package-manager and Node runtime pins, Vercel project-setting
+ownership, dependency-update automation, and environment inventory. Keep the
+Next/PostCSS owner choice separate: wait for a stable Next release with bundled
+`postcss@8.5.10+`, accept a partial stable `next@16.2.6` migration with
+residual PostCSS risk, or explicitly accept canary framework risk.

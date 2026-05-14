@@ -93,11 +93,23 @@ refactoring without turning every change into a manual QA pass.
   serverless bundle could load native bcrypt on `GET /`.
 - T-023 added focused import-boundary tests plus deployment smoke expectations
   for `GET /` and credentials sign-in.
-- T-024 captured partial remote Vercel smoke evidence on 2026-05-14: `GET /`
-  returned `HTTP/2 200`, and an intentionally invalid credentials callback
-  returned `401 CredentialsSignin` instead of `500`. The required successful
-  credentials sign-in and targeted log check remain blocked by missing smoke
-  credentials, missing Vercel log access, and no deployed T-023 commit.
+- T-024 confirmed the Vercel bcrypt native-load crash is resolved for `GET /`
+  after T-023 reached `origin/main`; an intentionally invalid credentials
+  callback also returned controlled `401 CredentialsSignin` instead of `500`.
+- T-025 made deployment smoke evidence, auth smoke handling, targeted log
+  checks, and rollback decisions repeatable in the deployment runbook, and added
+  `npm run smoke:public` for unauthenticated public-route status checks.
+- T-026 added focused shared route-guard tests and representative admin/user API
+  auth-status tests.
+- T-027 added focused saved-route tests for user navigation, favourites, and
+  watchlist read-route guard behavior.
+- T-028 added focused saved-item action tests for unauthenticated and invalid
+  input short-circuiting, DB call ordering, add/remove route revalidation, and
+  no revalidation on persistence failure.
+- T-029 added static route/fetcher parity coverage with a documented
+  self-checking known-gap allowlist.
+- T-030 is ready with focused route-test expectations for admin user/comment
+  detail read routes plus T-029 parity allowlist cleanup.
 
 ## Backlog
 
@@ -109,8 +121,8 @@ refactoring without turning every change into a manual QA pass.
   parsing as those flows are hardened.
 - Add tests for shared response helpers, body-level status cleanup, and
   unauthenticated/forbidden JSON 401/403 behavior.
-- Add a route/fetcher parity check that compares `src/lib/api/**/fetchers.ts`
-  paths and methods against exported handlers under `src/app/api/v2`.
+- Keep the T-029 route/fetcher parity check current as fetcher modules and
+  route handlers are added, removed, or backed by new methods.
 - Add a DB ownership check for MongoDB-backed route handlers and server actions
   once the shared wrapper/service pattern is chosen.
 - Add auth/route-protection tests around middleware utilities and high-risk
@@ -129,8 +141,9 @@ refactoring without turning every change into a manual QA pass.
 - Add a documented coverage command and targeted thresholds for route guards,
   transforms, API helpers, and Shopify/data contracts before considering a
   repo-wide threshold.
-- Convert deployment smoke checks into a scripted smoke suite or precise
-  evidence-based manual checklist before production launch.
+- Keep deployment smoke checks current through the evidence-based manual
+  checklist and the `npm run smoke:public` unauthenticated status helper added
+  by T-025.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -248,17 +261,56 @@ npm run lint
 - 2026-05-14: T-024 captured partial remote evidence: the public Vercel alias
   returned `HTTP/2 200` for `GET /`, and the credentials callback returned a
   controlled `401 CredentialsSignin` for invalid smoke values instead of `500`.
-  Acceptance remains blocked until a T-023-containing deployment, successful
-  credentials sign-in, and targeted log evidence are available.
+  At that point acceptance was blocked until a T-023-containing deployment,
+  successful credentials sign-in, and targeted log evidence were available.
+- 2026-05-14: Completed T-024 after `origin/main` matched local `HEAD` with
+  T-023, the owner confirmed the deployment no longer crashes, and a fresh
+  `curl -I /` returned `HTTP/2 200`.
+- 2026-05-14: Prepared T-025 to convert the ad hoc Vercel smoke evidence into a
+  repeatable checklist or lightweight public-route script.
+- 2026-05-14: Completed T-025 by documenting repeatable Vercel smoke evidence,
+  credentials smoke secret handling, targeted log checks, rollback triggers, and
+  adding `npm run smoke:public` for unauthenticated public-route status checks.
+- 2026-05-14: T-026 added
+  `__tests__/unit/api/apiRouteGuards.test.ts` and
+  `__tests__/unit/api/userProfileRoute.test.ts`, expanded
+  `__tests__/unit/api/adminCollectionRoute.test.ts`, and passed focused API
+  guard/route tests, lint, and build. Existing Google Fonts retry noise,
+  Browserslist notice, MongoDB connection logs, and fetcher debug output remain
+  expected build noise.
+- 2026-05-14: T-027 added
+  `__tests__/unit/api/userSavedRoutes.test.ts` for user navigation,
+  favourite, and watchlist `requireApiUser()` behavior. Focused guard, profile,
+  and saved-route tests, lint, and build passed. Existing MongoDB connection
+  logs, branch verification logs, and fetcher debug output remain expected build
+  noise.
+- 2026-05-14: Prepared T-028 with focused saved-item action coverage
+  expectations for unauthenticated and invalid input short-circuiting, DB call
+  ordering, successful revalidation, and no revalidation on persistence
+  failures.
+- 2026-05-14: T-028 added
+  `__tests__/unit/actions/savedItemActions.test.ts`; focused saved-item action
+  tests, lint, and build passed. Existing MongoDB connection logs, branch
+  verification logs, route fetcher debug output, and static-generation noise
+  remain expected build noise.
+- 2026-05-14: Prepared T-029 to add
+  `__tests__/unit/api/routeFetcherParity.test.ts` or equivalent focused parity
+  coverage for F-037 route/fetcher drift.
+- 2026-05-14: T-029 added
+  `__tests__/unit/api/routeFetcherParity.test.ts` for static route/fetcher
+  parity coverage. The focused test, lint, and build passed; the test now
+  checks all current fetcher modules, source call counts, non-allowlisted
+  route/method backing, and stale F-037 allowlist entries.
+- 2026-05-14: Prepared T-030 with focused route and parity-test expectations
+  for the admin user/comment detail read mismatch cleanup.
 
 ## Next Agent Action
 
-Support [T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md) by
-rerunning the remote smoke after the T-023 deployment is confirmed and a
-secret-channel smoke account plus Vercel log access are available. Then convert
-deployment smoke checks into a repeatable checklist or script. For Next
-dependencies,
-wait for owner/orchestrator acceptance of a Next target, then execute the
+Commission
+`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
+Use the T-025 deployment smoke checklist when validating future deployment,
+runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
+for owner/orchestrator acceptance of a Next target, then execute the
 verification plan in
 [T-015](../tasks/T-015-next-major-migration-preflight.md) during the package
 implementation task.

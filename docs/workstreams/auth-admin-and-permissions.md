@@ -79,25 +79,37 @@ features before production launch.
 - T-023 decoupled session/auth configuration imports from credentials password
   verification while preserving the active NextAuth credentials flow.
 - T-024 exercised the deployed credentials callback with intentionally invalid
-  values and received `401 CredentialsSignin`, not `500`, but successful
-  credentials sign-in still needs a known smoke account after a deployment that
-  includes T-023.
+  values and received `401 CredentialsSignin`, not `500`. After T-023 reached
+  `origin/main`, the owner confirmed the deployment no longer crashes.
+- T-025 documented repeatable credentials smoke handling for production deploys:
+  smoke accounts must be owner-approved, secrets must move through a private
+  channel outside docs/logs/chat, and evidence records only account source,
+  expected role, and outcome.
+- T-026 introduced shared route-local user/admin API guards and migrated admin
+  collection create/update plus user profile auth-status behavior to real JSON
+  `401`/`403` responses for the representative slice.
+- T-027 migrated user navigation, favourites, and watchlist read routes to
+  `requireApiUser()` with real JSON `401` responses before DB/model work.
+- T-028 added explicit DB connection ownership and route revalidation to
+  favourite/watchlist server actions, with defensive invalid saved-item input
+  handling and focused action tests.
 
 ## Backlog
 
 - Use the A-004 protected-route inventory when changing middleware or admin API
   guards.
-- Introduce shared `requireUser` and `requireAdmin` route helpers with
-  consistent JSON 401/403 behavior for API routes.
+- Apply shared `requireApiUser()` and `requireApiAdmin()` to remaining
+  protected API routes through separate scoped migrations with focused route
+  tests.
 - Migrate additional admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
 - Route legacy `JWT_SECRET` env remnants through deployment/auth docs. T-022
   completed the direct `jose` package cleanup; auth packages still own their
   transitive `jose` dependencies.
-- Add DB connection handling and route revalidation to favourite/watchlist
-  server actions.
 - Remove or gate noisy middleware logging before production.
-- Confirm credential, OAuth, sign-in, sign-out, and redirect flows.
+- Confirm credential, OAuth, sign-in, sign-out, and redirect flows. For
+  deployment smoke, use the T-025 owner-approved smoke-account handling and do
+  not record usernames, passwords, cookies, or CSRF tokens.
 - Verify role persistence and role assignment behavior.
 - Add tests for route protection utilities and high-risk auth helpers.
 - Add tests for credentials admin, credentials non-admin, OAuth user, middleware
@@ -178,14 +190,35 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   with the new auth import-boundary coverage.
 - 2026-05-14: T-024 partial production smoke confirmed the deployed credentials
   callback returns a controlled `401 CredentialsSignin` for invalid credentials
-  instead of a bcrypt native-load `500`. A real credentials sign-in smoke remains
-  blocked by missing smoke account credentials and a deployment containing T-023.
+  instead of a bcrypt native-load `500`. At that point a real credentials
+  sign-in smoke remained blocked by missing smoke account credentials and a
+  deployment containing T-023.
+- 2026-05-14: Completed T-024 after T-023 reached `origin/main` and the owner
+  confirmed the Vercel deployment no longer crashes. Repeatable sign-in smoke
+  account handling is now a deployment-smoke process follow-up, not a bcrypt
+  incident blocker.
+- 2026-05-14: Completed T-025's auth-facing deployment process slice by
+  documenting owner-approved admin and non-admin smoke accounts, secret-channel
+  handoff rules, allowed evidence wording, sign-out verification, non-admin
+  admin denial, and admin dashboard access expectations.
+- 2026-05-14: Completed T-026 by adding shared route-local user/admin API
+  guards, migrating admin collection create/update and user profile auth-status
+  behavior, and verifying focused guard/route tests plus lint and build.
+- 2026-05-14: Completed T-027 by migrating user navigation, favourites, and
+  watchlist read routes to `requireApiUser()`, preserving authenticated DTOs,
+  and verifying focused saved-route guard tests, lint, and build.
+- 2026-05-14: Prepared T-028 for favourite/watchlist server-action
+  `dbConnect()` ownership, affected-route revalidation, defensive saved-item
+  input handling, and focused action tests.
+- 2026-05-14: Completed T-028 by adding favourite/watchlist server-action
+  `dbConnect()` ownership before model work, rejecting invalid `artworkId`
+  values before DB/model access, revalidating affected account/artwork paths
+  after successful toggles, and verifying focused action tests, lint, and
+  build.
 
 ## Next Agent Action
 
-Before closing the bcrypt incident, rerun the credentials sign-in smoke with a
-known test/admin account after the T-023 deployment is confirmed. Otherwise
-continue with shared user/admin route guards, admin bootstrap and recovery
-documentation, favourite/watchlist action DB ownership, and production logging
-cleanup. Keep any broader root-layout session redesign separate from the
-completed T-023 credentials import-boundary mitigation.
+After T-029 makes route/fetcher parity measurable, prepare the next scoped
+protected API guard migration task from F-036/A-004. Keep admin
+bootstrap/recovery documentation, production logging cleanup, F-037 runtime
+fixes, and broader root-layout session redesign separate from that guard slice.

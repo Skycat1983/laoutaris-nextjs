@@ -33,7 +33,13 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-021 Harden public search query service](T-021-public-search-query-service.md) | Completed | Bound public search query input and moved `/search` server rendering to a direct server-only data service. |
 | [T-022 Prune unused package candidates](T-022-prune-unused-package-candidates.md) | Completed | Removed confirmed-unused direct packages such as `jose`, `next-test-api-route-handler`, Shopify/GraphQL clients, and redundant type packages with lockfile verification. |
 | [T-023 Decouple root layout auth from bcrypt](T-023-root-layout-auth-bcrypt-decoupling.md) | Completed | Removed bcrypt and credentials verification from the normal public-page import path after the Vercel native bcrypt incident. |
-| [T-024 Verify Vercel bcrypt redeploy smoke](T-024-verify-vercel-bcrypt-redeploy-smoke.md) | Blocked | Captured partial Vercel smoke for `GET /` and invalid credentials callback; successful sign-in, targeted logs, and a deployment containing T-023 still require owner access/action. |
+| [T-024 Verify Vercel bcrypt redeploy smoke](T-024-verify-vercel-bcrypt-redeploy-smoke.md) | Completed | Confirmed the Vercel bcrypt native-load crash no longer affects `GET /` after T-023 reached `origin/main`; repeatable smoke/log handling remains a separate deployment task. |
+| [T-025 Make Vercel smoke checks repeatable](T-025-repeatable-vercel-smoke-checklist.md) | Completed | Added deployment smoke evidence fields, credential handling rules, Vercel log requirements, rollback triggers, and `npm run smoke:public`. |
+| [T-026 Introduce shared API route guards](T-026-shared-api-route-guards.md) | Completed | Added shared user/admin API guard helpers and migrated admin collection create/update plus user profile auth-status behavior to real JSON `401`/`403` responses. |
+| [T-027 Migrate user saved routes to shared guard](T-027-user-saved-routes-shared-guard.md) | Completed | Applied `requireApiUser()` to user navigation, favourites, and watchlist read routes with real JSON `401` responses and focused tests. |
+| [T-028 Harden saved item actions DB ownership and revalidation](T-028-saved-item-actions-db-revalidation.md) | Completed | Added explicit MongoDB connection ownership and route revalidation to favourite/watchlist server actions with focused action tests. |
+| [T-029 Add route fetcher parity inventory](T-029-route-fetcher-parity-inventory.md) | Completed | Added a focused static route/fetcher parity test with an explicit self-checking known-gap allowlist for F-037 mismatches. |
+| [T-030 Implement admin user and comment detail read routes](T-030-admin-user-comment-detail-read-routes.md) | Ready | Add missing admin user/comment detail read routes and remove those two entries from the route/fetcher parity allowlist. |
 
 ## Rules
 

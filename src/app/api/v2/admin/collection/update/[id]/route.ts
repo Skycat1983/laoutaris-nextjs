@@ -2,7 +2,7 @@ import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateCollectionResult } from "@/lib/api/admin/update/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   updateCollectionRouteBodySchema,
@@ -83,16 +83,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<UpdateCollectionResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
 
   const parsedParams = updateCollectionRouteParamsSchema.safeParse(params);

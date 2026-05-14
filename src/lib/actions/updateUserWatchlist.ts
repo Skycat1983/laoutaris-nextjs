@@ -2,22 +2,30 @@
 
 import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../data/models";
-import { delay } from "@/lib/utils/debugUtils";
-import { WatchlistButton } from "@/components/elements/buttons";
+import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
-import { WatchlistButtonState } from "@/components/elements/buttons/WatchlistButton";
+import type { WatchlistButtonState } from "@/components/elements/buttons/WatchlistButton";
+
 export async function updateUserWatchlist(
   prevState: WatchlistButtonState,
   formData: FormData
 ): Promise<WatchlistButtonState> {
-  const artworkId = formData.get("artworkId") as string;
+  const artworkId = formData.get("artworkId");
 
-  // await delay(1000);
+  if (typeof artworkId !== "string" || !artworkId) {
+    return {
+      success: false,
+      message: "User not logged in",
+      isWatchlisted: prevState.isWatchlisted,
+    };
+  }
 
   try {
     const userId = await getUserIdFromSession();
 
-    if (userId && artworkId) {
+    if (userId) {
+      await dbConnect();
+
       const user = await UserModel.findOne({ _id: userId });
       const artwork = await ArtworkModel.findOne({ _id: artworkId });
 
@@ -74,6 +82,10 @@ export async function updateUserWatchlist(
       let successMessage = updatedWatchlistStatus
         ? "Added to watchlist"
         : "Removed from watchlist";
+
+      revalidatePath("/account/watchlist");
+      revalidatePath(`/account/watchlist/${artworkId}`);
+      revalidatePath(`/artwork/${artworkId}`);
 
       return {
         success: true,

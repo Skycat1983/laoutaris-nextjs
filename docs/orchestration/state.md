@@ -4,10 +4,8 @@ Last updated: 2026-05-14
 
 ## Current Priority
 
-Resolve the blocked Vercel bcrypt smoke by deploying the T-023 auth
-import-boundary change, providing targeted Vercel log access, and supplying a
-secret-channel smoke credentials account. Keep the residual Next/PostCSS owner
-decision separate.
+Commission the first route/fetcher parity cleanup after T-029 made F-037
+measurable, while keeping the residual Next/PostCSS owner decision separate.
 
 ## Active Phase
 
@@ -83,20 +81,39 @@ Implementation commissioning and high-risk follow-up sequencing.
 - The Vercel bcrypt native trace incident is fixed locally by tracing bcrypt
   prebuilds in `next.config.mjs`; T-023 also removes bcrypt from the normal
   public-page import path locally.
-- T-024 captured partial production evidence on 2026-05-14: the public Vercel
-  alias returned `HTTP/2 200` for `GET /`, and an intentionally invalid
-  credentials callback returned `401 CredentialsSignin` instead of `500`.
-  Closure is blocked because the observed `origin/main` SHA did not yet include
-  the local T-023 change, targeted Vercel logs were unavailable, and no smoke
-  credentials account was documented.
+- T-024 is complete. After `origin/main` advanced to
+  `820d45f1e155ddc700879f6afef803bea57cbf02`, matching local `HEAD` with the
+  T-023 auth import-boundary change, the owner reported the Vercel deployment no
+  longer crashes and a fresh `curl -I /` returned `HTTP/2 200`.
+- T-025 is complete. The deployment runbook now contains repeatable Vercel smoke
+  evidence fields, route/status expectations, credentials smoke secret handling,
+  targeted log requirements, and rollback triggers. `npm run smoke:public`
+  covers unauthenticated public-route status checks without secrets.
+- T-026 is complete. It introduced shared route-local user/admin API guards,
+  migrated admin collection create/update plus user profile auth-status
+  behavior, and passed focused route/guard tests, lint, and build.
+- T-027 is complete. It applied `requireApiUser()` to user navigation,
+  favourites, and watchlist read routes with real JSON `401` responses before
+  DB/model work, added explicit watchlist read-route DB ownership, and passed
+  focused saved-route guard tests, lint, and build.
+- T-028 is complete. It added explicit favourite/watchlist server-action
+  `dbConnect()` ownership before model work, affected-route revalidation after
+  successful toggles, defensive saved-item input handling, and focused action
+  tests.
+- T-029 is complete. It added a static route/fetcher parity inventory test with
+  a self-checking seven-item known-gap allowlist for F-037 and found no
+  additional mismatches.
+- T-030 is ready. It scopes the active admin user/comment detail read route
+  mismatches to two new admin detail routes, focused route tests, and removal of
+  `admin.read.user` and `admin.read.comment` from the T-029 allowlist.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
-  completion of Vercel smoke verification for the bcrypt tracing/import-boundary
-  fix, broader root-layout DB/session/cache ownership, remaining admin write
-  validation, artwork/shop browse query bounds, staged ADR 0004 server
-  data-access migrations, package-manager/Node runtime pins, Cloudinary upload
-  policy, admin bootstrap/recovery, and the broader CORS/CSP and logging policy
-  decisions.
+  Vercel project-setting and rollback ownership, broader protected API
+  auth-status consistency, remaining route/fetcher parity drift, broader
+  root-layout DB/session/cache ownership, remaining admin write validation,
+  artwork/shop browse query bounds, staged ADR 0004 server data-access
+  migrations, package-manager/Node runtime pins, Cloudinary upload policy, admin
+  bootstrap/recovery, and the broader CORS/CSP and logging policy decisions.
 
 ## Active Audits
 
@@ -148,16 +165,19 @@ completed:
   Shopify credential verification/rotation, residual Next/PostCSS dependency
   risk, and public enquiry/commercial contact ownership.
 - Resolve or escalate the new A-002/A-007 decisions: admin API route convention,
-  legacy/env variable status, smoke/rollback ownership, and Cloudinary upload
+  legacy/env variable status, Vercel rollback owner, and Cloudinary upload
   preset ownership.
 
 ## Next Orchestrator Action
 
-Commit and deploy the local T-023 auth import-boundary change, then rerun
-[T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md) with Vercel
-deployment/log access and a secret-channel test/admin credentials account. Keep
-the immediate bcrypt tracing include in `next.config.mjs` until T-024 records a
-passing Vercel smoke. After smoke, commission the next focused implementation
-batch from the workstream next actions, with likely candidates including
-deployment smoke checklist/script work, shared user/admin route guards, or the
-next ADR 0004 same-app HTTP migration.
+Commission
+`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
+
+After T-030, choose between another F-037 allowlist cleanup group,
+broader protected API guard migration, remaining artwork/shop browse query
+bounds, or admin write validation.
+
+Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
+native-dependency policy explicitly replaces it. Use the T-025 deployment smoke
+checklist for future deployment, runtime, auth, Shopify, and route-contract
+changes.

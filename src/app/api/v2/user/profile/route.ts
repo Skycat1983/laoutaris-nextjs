@@ -1,9 +1,9 @@
 import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
+import { requireApiUser } from "@/lib/api/requireApiUser";
 import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -11,18 +11,15 @@ export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiProfileResult>> {
+  const userGuard = await requireApiUser();
+  if (!userGuard.ok) {
+    return userGuard.response;
+  }
+
   try {
     await dbConnect();
 
-    const userId = await getUserIdFromSession();
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
-    }
-
-    const user = await UserModel.findById(userId).select("-password");
+    const user = await UserModel.findById(userGuard.userId).select("-password");
 
     if (!user) {
       return NextResponse.json({

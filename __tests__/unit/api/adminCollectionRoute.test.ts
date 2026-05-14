@@ -1,9 +1,8 @@
 import { POST } from "@/app/api/v2/admin/collection/create/route";
 import { PATCH } from "@/app/api/v2/admin/collection/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
-import { CollectionModel } from "@/lib/data/models";
-import { isAdmin } from "@/lib/session/isAdmin";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { CollectionModel, UserModel } from "@/lib/data/models";
+import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
@@ -24,14 +23,17 @@ jest.mock("@/lib/data/models", () => ({
     create: jest.fn(),
     findById: jest.fn(),
   },
+  UserModel: {
+    findById: jest.fn(),
+  },
 }));
 
-jest.mock("@/lib/session/isAdmin", () => ({
-  isAdmin: jest.fn(),
+jest.mock("@/lib/config/authOptions", () => ({
+  authOptions: { providers: [] },
 }));
 
-jest.mock("@/lib/session/getUserIdFromSession", () => ({
-  getUserIdFromSession: jest.fn(),
+jest.mock("next-auth", () => ({
+  getServerSession: jest.fn(),
 }));
 
 type MockRequest = {
@@ -100,22 +102,47 @@ const createCollectionDocument = () => ({
 
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockCreate = CollectionModel.create as jest.Mock;
-const mockFindById = CollectionModel.findById as jest.Mock;
-const mockIsAdmin = isAdmin as jest.MockedFunction<typeof isAdmin>;
-const mockGetUserIdFromSession =
-  getUserIdFromSession as jest.MockedFunction<typeof getUserIdFromSession>;
+const mockCollectionFindById = CollectionModel.findById as jest.Mock;
+const mockUserFindById = UserModel.findById as jest.Mock;
+const mockGetServerSession = getServerSession as jest.MockedFunction<
+  typeof getServerSession
+>;
+
+const setAdminSession = () => {
+  mockGetServerSession.mockResolvedValue({
+    user: {
+      id: adminUserId,
+      name: "Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+    expires: "2099-01-01T00:00:00.000Z",
+  });
+  mockUserFindById.mockResolvedValue({ role: "admin" });
+};
+
+const setNonAdminSession = () => {
+  mockGetServerSession.mockResolvedValue({
+    user: {
+      id: "507f1f77bcf86cd799439016",
+      name: "Member",
+      email: "member@example.com",
+      role: "user",
+    },
+    expires: "2099-01-01T00:00:00.000Z",
+  });
+};
 
 describe("POST /api/v2/admin/collection/create", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsAdmin.mockResolvedValue(true);
-    mockGetUserIdFromSession.mockResolvedValue(adminUserId);
+    setAdminSession();
     mockDbConnect.mockResolvedValue(undefined);
     mockCreate.mockResolvedValue(createdCollection);
   });
 
   it("returns 401 without reading the body for unauthenticated callers", async () => {
-    mockIsAdmin.mockResolvedValue(false);
+    mockGetServerSession.mockResolvedValue(null);
     const request = createRequest(validCreatePayload);
 
     const response = await POST(request as never);
@@ -129,6 +156,26 @@ describe("POST /api/v2/admin/collection/create", () => {
     });
     expect(request.json).not.toHaveBeenCalled();
     expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 without reading the body for authenticated non-admin callers", async () => {
+    setNonAdminSession();
+    const request = createRequest(validCreatePayload);
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body).toEqual({
+      success: false,
+      message: "Forbidden",
+      error: "Forbidden",
+    });
+    expect(request.json).not.toHaveBeenCalled();
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
@@ -145,7 +192,8 @@ describe("POST /api/v2/admin/collection/create", () => {
       fieldErrors: {},
       formErrors: ["Request body must be valid JSON."],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
@@ -169,7 +217,8 @@ describe("POST /api/v2/admin/collection/create", () => {
       },
       formErrors: [],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
@@ -189,7 +238,8 @@ describe("POST /api/v2/admin/collection/create", () => {
       fieldErrors: {},
       formErrors: ["Unrecognized key(s) in object: 'role'"],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
@@ -206,7 +256,8 @@ describe("POST /api/v2/admin/collection/create", () => {
     const body = await response.json();
 
     expect(response.status).toBe(201);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
     expect(mockCreate).toHaveBeenCalledWith({
       ...validCreatePayload,
       section: "collections",
@@ -230,7 +281,8 @@ describe("POST /api/v2/admin/collection/create", () => {
       const body = await response.json();
 
       expect(response.status).toBe(500);
-      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(mockDbConnect).toHaveBeenCalledTimes(2);
+      expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expect(mockCreate).toHaveBeenCalledWith({
         ...validCreatePayload,
         section: "collections",
@@ -254,14 +306,13 @@ describe("POST /api/v2/admin/collection/create", () => {
 describe("PATCH /api/v2/admin/collection/update/[id]", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsAdmin.mockResolvedValue(true);
-    mockGetUserIdFromSession.mockResolvedValue(adminUserId);
+    setAdminSession();
     mockDbConnect.mockResolvedValue(undefined);
-    mockFindById.mockResolvedValue(createCollectionDocument());
+    mockCollectionFindById.mockResolvedValue(createCollectionDocument());
   });
 
   it("returns 401 without reading the body for unauthenticated callers", async () => {
-    mockIsAdmin.mockResolvedValue(false);
+    mockGetServerSession.mockResolvedValue(null);
     const request = createRequest(validUpdatePayload);
 
     const response = await PATCH(request as never, {
@@ -277,7 +328,29 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     });
     expect(request.json).not.toHaveBeenCalled();
     expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 without reading the body for authenticated non-admin callers", async () => {
+    setNonAdminSession();
+    const request = createRequest(validUpdatePayload);
+
+    const response = await PATCH(request as never, {
+      params: { id: collectionId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body).toEqual({
+      success: false,
+      message: "Forbidden",
+      error: "Forbidden",
+    });
+    expect(request.json).not.toHaveBeenCalled();
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
   it("returns 400 for an invalid collection ID before reading the body", async () => {
@@ -298,8 +371,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       formErrors: [],
     });
     expect(request.json).not.toHaveBeenCalled();
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
   it("returns 400 for invalid JSON and does not write to MongoDB", async () => {
@@ -317,8 +391,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       fieldErrors: {},
       formErrors: ["Request body must be valid JSON."],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
   it("returns 400 for invalid update fields and artwork IDs", async () => {
@@ -342,8 +417,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       },
       formErrors: [],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
   it("rejects unknown update fields before persistence", async () => {
@@ -364,12 +440,13 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       fieldErrors: {},
       formErrors: ["Unrecognized key(s) in object: 'role'"],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
   it("returns 404 when the collection is not found", async () => {
-    mockFindById.mockResolvedValue(null);
+    mockCollectionFindById.mockResolvedValue(null);
     const request = createRequest({ title: "Updated Series" });
 
     const response = await PATCH(request as never, {
@@ -378,8 +455,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     const body = await response.json();
 
     expect(response.status).toBe(404);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockFindById).toHaveBeenCalledWith(collectionId);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
     expect(body).toEqual({
       success: false,
       error: "Collection not found",
@@ -388,7 +466,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
 
   it("updates only parsed fields and validated artwork changes", async () => {
     const collection = createCollectionDocument();
-    mockFindById.mockResolvedValue(collection);
+    mockCollectionFindById.mockResolvedValue(collection);
     const request = createRequest({
       title: "  Updated Series  ",
       subtitle: "  Updated grouping  ",
@@ -406,8 +484,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockFindById).toHaveBeenCalledWith(collectionId);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
     expect(collection.title).toBe("Updated Series");
     expect(collection.subtitle).toBe("Updated grouping");
     expect(collection.summary).toBe("Updated collection summary.");
@@ -433,7 +512,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       .mockImplementation(() => {});
     const collection = createCollectionDocument();
     collection.save.mockRejectedValue(new Error("private database detail"));
-    mockFindById.mockResolvedValue(collection);
+    mockCollectionFindById.mockResolvedValue(collection);
 
     try {
       const response = await PATCH(
@@ -445,8 +524,9 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       const body = await response.json();
 
       expect(response.status).toBe(500);
-      expect(mockDbConnect).toHaveBeenCalledTimes(1);
-      expect(mockFindById).toHaveBeenCalledWith(collectionId);
+      expect(mockDbConnect).toHaveBeenCalledTimes(2);
+      expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+      expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
       expect(body).toEqual({
         success: false,
         error: "Failed to update collection",

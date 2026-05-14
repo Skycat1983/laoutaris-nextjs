@@ -82,6 +82,17 @@ consistent enough for production refactoring and Shopify integration.
   validates and bounds `q`/`type`/`page`/`limit`, escapes search regex input,
   delegates MongoDB query/DTO work to `getPublicSearchResults`, and returns real
   400 validation responses.
+- T-026 began F-036 protected API auth-status cleanup with shared user/admin
+  route-local guards and a representative admin/user route slice.
+- T-027 continued F-036 on user navigation, favourites, and watchlist read
+  routes, and added explicit DB ownership to the watchlist read routes.
+- T-028 resolved the F-027 favourite/watchlist server-action DB ownership and
+  revalidation slice, including invalid saved-item input handling and focused
+  action tests.
+- T-029 added a focused static route/fetcher parity inventory test for the
+  known F-037 mismatches before runtime contract fixes.
+- T-030 is ready to implement the active admin user/comment detail read routes
+  and remove those two known-gap entries from the T-029 parity allowlist.
 
 ## Backlog
 
@@ -91,8 +102,8 @@ consistent enough for production refactoring and Shopify integration.
   validation, and upstream-service response helpers.
 - Replace body-level `statusCode`/`errorCode` failures with real HTTP response
   statuses across representative public, user, and admin routes first.
-- Add a route/fetcher parity inventory or static test that catches unsupported
-  methods and missing route files before consumers depend on them.
+- Use the route/fetcher parity inventory to catch new unsupported methods and
+  missing route files before consumers depend on them.
 - Require route responses to return transformed frontend/admin data rather than
   raw Mongoose documents unless explicitly documented.
 - Add `dbConnect()` or a shared DB wrapper to every MongoDB-backed API route and
@@ -179,8 +190,35 @@ Add API route tests where behavior is changed.
   server data access; `getPublicSearchResults` now owns MongoDB connection,
   escaped regex search, `type` filtering, pagination bounds, and DTO shaping for
   both the API route and `/search` page.
+- 2026-05-14: Completed T-026 by adding shared user/admin API route guards and
+  migrating admin collection create/update plus user profile auth-status
+  behavior without changing the profile raw-document DTO shape.
+- 2026-05-14: Completed T-027 by moving user navigation, favourites, and
+  watchlist read routes behind `requireApiUser()` before DB/model work and by
+  adding explicit `dbConnect()` ownership to watchlist list/detail reads.
+- 2026-05-14: Prepared T-028 for favourite/watchlist server-action
+  `dbConnect()` ownership, route revalidation, invalid saved-item input
+  handling, and focused action tests.
+- 2026-05-14: Completed T-028 by adding favourite/watchlist server-action
+  `dbConnect()` ownership before model reads/writes, preserving stable action
+  states/messages, revalidating account/artwork paths only after successful
+  persistence, and adding focused action tests for ordering and invalid input.
+- 2026-05-14: Prepared T-029 to make F-037 route/fetcher parity drift
+  measurable with a static route manifest, explicit fetcher operation
+  inventory, and self-checking known-gap allowlist.
+- 2026-05-14: Completed T-029 by adding
+  `__tests__/unit/api/routeFetcherParity.test.ts`; it scans the current App
+  Router API route manifest, checks all 59 active fetcher operations across 16
+  fetcher modules, and carries only the seven documented F-037 gaps in a
+  self-checking allowlist. Focused parity test, lint, and build passed.
+- 2026-05-14: Prepared T-030 to back `clientApi.admin.read.user(id)` and
+  `clientApi.admin.read.comment(id)` with admin detail routes, focused route
+  tests, and parity allowlist cleanup.
 
 ## Next Agent Action
 
-Commission a follow-up for the remaining F-060 artwork/shop browse query
-bounds. Keep article/artwork/blog admin writes as separate follow-up slices.
+Commission
+`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
+Keep favourite/watchlist unsupported API methods, profile update behavior,
+F-060 artwork/shop browse query bounds, protected API guard migration, and
+article/artwork/blog admin write validation as separate follow-up slices.

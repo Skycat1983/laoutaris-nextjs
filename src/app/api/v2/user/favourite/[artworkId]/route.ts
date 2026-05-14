@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
@@ -13,17 +13,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
 ): Promise<RouteResponse<ApiFavoritesItemResult>> {
-  const userId = await getUserIdFromSession();
+  const userGuard = await requireApiUser();
+  if (!userGuard.ok) {
+    return userGuard.response;
+  }
 
   try {
     await dbConnect();
-
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse);
-    }
 
     const { artworkId } = params;
 
@@ -40,7 +36,7 @@ export async function GET(
 
     const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
       leanArtwork,
-      userId
+      userGuard.userId
     );
 
     if (!artworkFrontend.isFavourited) {

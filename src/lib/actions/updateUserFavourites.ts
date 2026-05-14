@@ -2,22 +2,30 @@
 
 import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../data/models";
-import { delay } from "@/lib/utils/debugUtils";
+import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
-import { FavouritesButtonState } from "@/components/elements/buttons/FavouritesButton";
+import type { FavouritesButtonState } from "@/components/elements/buttons/FavouritesButton";
 
 export async function updateUserFavourites(
   prevState: FavouritesButtonState,
   formData: FormData
 ): Promise<FavouritesButtonState> {
-  const artworkId = formData.get("artworkId") as string;
+  const artworkId = formData.get("artworkId");
 
-  // await delay(1000); // Simulate a delay for debugging purposes
+  if (typeof artworkId !== "string" || !artworkId) {
+    return {
+      success: false,
+      message: "User not logged in",
+      isFavourited: prevState.isFavourited,
+    };
+  }
 
   try {
     const userId = await getUserIdFromSession();
 
-    if (userId && artworkId) {
+    if (userId) {
+      await dbConnect();
+
       const user = await UserModel.findOne({ _id: userId });
       const artwork = await ArtworkModel.findOne({ _id: artworkId });
 
@@ -74,6 +82,10 @@ export async function updateUserFavourites(
       let successMessage = updatedFavouritesStatus
         ? "Added to favourites"
         : "Removed from favourites";
+
+      revalidatePath("/account/favourites");
+      revalidatePath(`/account/favourites/${artworkId}`);
+      revalidatePath(`/artwork/${artworkId}`);
 
       return {
         success: true,

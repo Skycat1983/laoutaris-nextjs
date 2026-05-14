@@ -1,10 +1,11 @@
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
+import { requireApiUser } from "@/lib/api/requireApiUser";
 import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import { ArtworkLean } from "@/lib/data/types/artworkTypes";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
+import dbConnect from "@/lib/db/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
 type UserWithWatchlist = {
@@ -17,16 +18,15 @@ export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
-  try {
-    const userId = await getUserIdFromSession();
+  const userGuard = await requireApiUser();
+  if (!userGuard.ok) {
+    return userGuard.response;
+  }
 
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
-    }
-    const userWithWatchlist = await UserModel.findById(userId)
+  try {
+    await dbConnect();
+
+    const userWithWatchlist = await UserModel.findById(userGuard.userId)
       .select("watchlist")
       .populate("watchlist")
       .lean<UserWithWatchlist>();

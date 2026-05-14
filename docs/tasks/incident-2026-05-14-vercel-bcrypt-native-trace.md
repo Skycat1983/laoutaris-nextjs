@@ -1,6 +1,6 @@
 # Incident 2026-05-14 Vercel Bcrypt Native Trace
 
-Status: Partial production smoke captured; redeploy/log access required.
+Status: Resolved in production; smoke repeatability follow-up remains.
 
 Workstreams:
 [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md),
@@ -69,11 +69,11 @@ Attempted but did not complete locally:
   compilation before this fix was applied. Treat that as a local verification
   blocker, not as a reproduction of the Vercel bcrypt error.
 
-## Remaining Production Action
+## Production Verification
 
-Redeploy to Vercel, then smoke `GET /` and credentials sign-in. If Vercel still
-reports the same bcrypt native-load error, capture the deployment ID/build ID
-and inspect the function bundle contents for
+Redeploy to Vercel, then smoke `GET /` and credentials sign-in. If Vercel ever
+reports the same bcrypt native-load error again, capture the deployment ID/build
+ID and inspect the function bundle contents for
 `node_modules/bcrypt/prebuilds/linux-x64/bcrypt.glibc.node`.
 
 [T-024 Verify Vercel bcrypt redeploy smoke](T-024-verify-vercel-bcrypt-redeploy-smoke.md)
@@ -93,18 +93,29 @@ An intentionally invalid credentials callback smoke returned `401` with
 not reproduce the bcrypt native-load crash for that invalid request, but it does
 not prove successful credentials sign-in.
 
-The production incident is not closed. The current `origin/main` SHA observed
-during smoke was `e26656a812e23d75d49ae59d4a422ce2c6b5ab99`, which includes
-the bcrypt tracing config but not the local T-023 dynamic credentials import.
-This checkout also lacked `.vercel` metadata, Vercel CLI access, targeted log
-access, and a documented smoke credentials account.
+The production incident was not closed at that point. The current `origin/main`
+SHA observed during smoke was `e26656a812e23d75d49ae59d4a422ce2c6b5ab99`, which
+included the bcrypt tracing config but not the local T-023 dynamic credentials
+import. This checkout also lacked `.vercel` metadata, Vercel CLI access,
+targeted log access, and a documented smoke credentials account.
+
+## Final Production Confirmation
+
+On 2026-05-14, the owner reported that the Vercel deployment is no longer
+crashing. A follow-up `curl -I https://laoutaris-nextjs.vercel.app/` at
+17:36:51 UTC returned `HTTP/2 200` from Vercel for `x-matched-path: /`
+(`x-vercel-id: fra1::iad1::phrmt-1778780211947-f44b34b00973`). At that time,
+`origin/main` resolved to `820d45f1e155ddc700879f6afef803bea57cbf02`, matching
+local `HEAD`, and local `HEAD` contained the T-023 dynamic credentials import in
+`src/lib/config/authOptions.ts`.
+
+The bcrypt native-load crash for `GET /` is resolved in production. Targeted
+Vercel log access and a secret-channel sign-in smoke account remain separate
+deployment-smoke repeatability work under T-025/F-048.
 
 ## Follow-Up
 
 [T-023 Decouple root layout auth from bcrypt](T-023-root-layout-auth-bcrypt-decoupling.md)
-completed the local blast-radius reduction. Keep the `next.config.mjs` bcrypt
-prebuild tracing include until redeploy smoke confirms both `GET /` and
-credentials sign-in in Vercel.
-
-The production incident remains open until a T-024 rerun records successful
-Vercel smoke evidence for a deployment that contains both local fixes.
+completed the local blast-radius reduction. The production incident is closed
+for the bcrypt native-load `500`. Keep the `next.config.mjs` bcrypt prebuild
+tracing include until a later native-dependency policy explicitly replaces it.

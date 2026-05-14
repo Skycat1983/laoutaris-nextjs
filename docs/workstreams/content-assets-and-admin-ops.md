@@ -57,6 +57,9 @@ content operations repeatable and safe.
 - T-020 completed the first admin collection create/update validation slice
   with strict route schemas, allowlisted parsed persistence, collection/artwork
   ObjectId checks, real validation statuses, and focused route tests.
+- T-029 found active admin dashboard detail fetchers for user and comment
+  records without matching route files; T-030 is ready to back those read
+  operations.
 
 ## Backlog
 
@@ -124,9 +127,14 @@ Use manual admin checks when changing dashboard behavior.
   validation. Collection writes now reject invalid JSON, invalid fields, invalid
   collection/artwork IDs, and unknown fields before persistence while preserving
   explicit auth and not-found responses.
+- 2026-05-14: Prepared T-030 to add missing admin user/comment detail read
+  routes for active dashboard operation-tab fetchers, with focused route tests
+  and route/fetcher parity allowlist cleanup.
 
 ## Next Agent Action
 
-Use the T-020 collection write pattern for future article, artwork, and blog
-admin write-route validation slices. Keep remaining Cloudinary upload policy and
+Commission
+`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`
+for the active admin read-route mismatch. Keep T-020-style article, artwork,
+and blog admin write-route validation, remaining Cloudinary upload policy, and
 public image payload decisions separate.

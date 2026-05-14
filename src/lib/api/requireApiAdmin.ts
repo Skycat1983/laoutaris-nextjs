@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/config/authOptions";
 import dbConnect from "@/lib/db/mongodb";
 import { UserModel } from "@/lib/data/models";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { apiAuthError } from "./apiAuthError";
 
 type ApiAdminResult =
   | {
@@ -14,16 +15,6 @@ type ApiAdminResult =
       ok: false;
       response: NextResponse<ApiErrorResponse>;
     };
-
-const apiAuthError = (error: string, status: 401 | 403 | 500) =>
-  NextResponse.json(
-    {
-      success: false,
-      message: error,
-      error,
-    } satisfies ApiErrorResponse,
-    { status }
-  );
 
 export async function requireApiAdmin(): Promise<ApiAdminResult> {
   const session = await getServerSession(authOptions);
