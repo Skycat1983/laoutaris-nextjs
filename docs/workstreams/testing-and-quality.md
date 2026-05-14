@@ -79,6 +79,15 @@ refactoring without turning every change into a manual QA pass.
   `localhost:3000` same-app fetch.
 - T-019 added route utility coverage for the retired protected test route and
   reran the focused sign-in form test.
+- T-020 added focused admin collection create/update route coverage for
+  unauthenticated, invalid JSON, invalid fields, invalid update id, not found,
+  success, rejected unknown-field behavior, and public-safe internal failures.
+- T-021 added focused public search service, API route, and page coverage for
+  query validation, pagination bounds, `type` filtering, escaped regex input,
+  and no same-app fetch requirement.
+- T-022 completed package cleanup verification with full Jest, lint, npm tree,
+  and audit checks. T-021 later cleared the public-search schema issue that had
+  blocked package-cleanup build verification.
 
 ## Backlog
 
@@ -190,12 +199,32 @@ npm run lint
   Jest, lint, and build passed. Existing date utility error-path console output
   and build-time Browserslist/MongoDB/fetcher/debug output remain expected
   verification noise.
+- 2026-05-14: Prepared T-020, T-021, and T-022 with focused test expectations
+  for admin collection route validation, public search service/API/page
+  behavior, and package cleanup verification.
+- 2026-05-14: T-020 added
+  `__tests__/unit/api/adminCollectionRoute.test.ts`; the focused admin
+  collection route test, lint, and final full Jest suite passed. Existing date
+  utility error-path console output remains expected test noise.
+- 2026-05-14: T-021 added
+  `__tests__/unit/data/getPublicSearchResults.test.ts`,
+  `__tests__/unit/api/publicSearchRoute.test.ts`, and
+  `__tests__/unit/searchPage.test.tsx`; focused search tests, full `npm test`,
+  lint, and build passed. Existing date utility error-path console output and
+  build-time Browserslist/MongoDB/fetcher/debug output remain expected
+  verification noise.
+- 2026-05-14: T-022 removed unused direct package candidates and ran package
+  verification. `npm test` passed with 25 suites and 195 tests, `npm run lint`
+  passed, production audit still reports only the known residual Next/PostCSS
+  advisories, and full audit reports the existing 11 Next/PostCSS/dev-tooling
+  findings. `npm run build` was attempted twice during T-022; the second
+  attempt compiled but failed during `/api/v2/public/search` page-data
+  collection because public-search schema code still threw at runtime. T-021
+  subsequently fixed that blocker and `npm run build` passed.
 
 ## Next Agent Action
 
-Support the next server data-access migration or input-validation slice with
-focused service/API/loader/action tests. For dependencies, wait for
-owner/orchestrator acceptance of a Next target, then execute the verification
-plan in
+For Next dependencies, wait for owner/orchestrator acceptance of a Next target,
+then execute the verification plan in
 [T-015](../tasks/T-015-next-major-migration-preflight.md) during the package
 implementation task.

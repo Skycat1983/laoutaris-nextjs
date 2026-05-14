@@ -1,12 +1,6 @@
-import { CollectionFrontend, CollectionLean } from "./collectionTypes";
-import { BlogEntryFrontend, BlogEntryLean } from "./blogTypes";
-import { ArticleFrontend, ArticleLean } from "./articleTypes";
-
-export type SearchQueriesType = {
-  articles: Promise<(ArticleLean | null)[]>;
-  blogs: Promise<(BlogEntryLean | null)[]>;
-  collections: Promise<(CollectionLean | null)[]>;
-};
+import { CollectionFrontend } from "./collectionTypes";
+import { BlogEntryFrontend } from "./blogTypes";
+import { ArticleFrontend } from "./articleTypes";
 
 // Content type literal
 export type SearchableContentType = "articles" | "blogs" | "collections";
@@ -41,7 +35,7 @@ export type LinkTo = `/${string}`; // Template literal type to ensure it starts 
 // Base search result type
 export type BaseSearchResultItem = Pick<
   SearchableContent,
-  "title" | "subtitle" | "summary" | "text" | "imageUrl" | "slug"
+  "title" | "subtitle" | "summary" | "imageUrl" | "slug"
 >;
 
 // Extended search result with link

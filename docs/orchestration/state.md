@@ -4,8 +4,9 @@ Last updated: 2026-05-14
 
 ## Current Priority
 
-Commission the next non-overlapping implementation slices while escalating the
-residual Next/PostCSS owner decision.
+Commission the next non-overlapping implementation slices after T-017, T-018,
+and T-019 completed, while keeping the residual Next/PostCSS owner decision
+separate.
 
 ## Active Phase
 
@@ -37,7 +38,7 @@ Implementation commissioning and high-risk follow-up sequencing.
   server loaders, API routes, and server actions.
 - Completed audits A-002, A-003, A-004, and A-007 have been reconciled into the
   findings register, risk tracker, and workstream backlogs.
-- T-001 through T-016 are complete. They removed `MONGO_URI` exposure from Next
+- T-001 through T-019 are complete. They removed `MONGO_URI` exposure from Next
   config, persisted credentials roles into JWT/session state, made stable
   `session.user.id` the protected-read ownership source, standardized the
   public single Shopify product API contract, hardened the Cloudinary signing
@@ -49,7 +50,9 @@ Implementation commissioning and high-risk follow-up sequencing.
   enquiry validation, patched the current-major production dependency baseline,
   hardened user comment create/update validation, repaired the active sign-in
   flow, split residual dependency advisories into explicit follow-up tasks,
-  completed the Next major migration preflight, and upgraded bcrypt to 6.0.0.
+  completed the Next major migration preflight, upgraded bcrypt to 6.0.0,
+  hardened subscription validation, proved the `/artwork` list ADR 0004
+  service pattern, and pruned the legacy custom auth/session path.
 - Completed audits A-008, A-016, and A-019 have been reconciled into the
   findings register, risk tracker, workstream backlogs, result files, and task
   briefs.
@@ -59,12 +62,19 @@ Implementation commissioning and high-risk follow-up sequencing.
   output but requires explicit owner acceptance.
 - T-016 removed the bcrypt production advisory path, removed helper credential
   logging, and verified bcrypt 6 hash compatibility.
-- T-017, T-018, and T-019 are ready for the next implementation batch.
+- T-017 resolved subscription server-action validation and public-safe failure
+  handling.
+- T-018 partially mitigated the remaining same-app HTTP/server data-access risk
+  by moving `/artwork` initial list loading to `getArtworkList`.
+- T-019 resolved the stale custom login/session path and `/protected` route
+  pruning; now-unused `jose` is a package-cleanup candidate.
+- T-020, T-021, and T-022 are ready for the next implementation batch.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
-  admin create/update validation, subscription validation, public search/browse
-  query bounds, the `/artwork` ADR 0004 proof route, and the remaining
-  auth/session pruning decisions.
+  admin create/update validation, public search/browse query bounds, staged
+  ADR 0004 server data-access migrations, unused package/install-script cleanup,
+  Cloudinary upload policy, admin bootstrap/recovery, and the broader CORS/CSP
+  and logging policy decisions.
 
 ## Active Audits
 
@@ -124,12 +134,12 @@ completed:
 Commission the next batch with one-line task pointers:
 
 ```text
-/task effort: high details: docs/tasks/T-018-artwork-list-server-data-proof.md
-/task effort: high details: docs/tasks/T-017-subscription-validation.md
-/task effort: high details: docs/tasks/T-019-legacy-auth-session-pruning.md
+/task effort: high details: docs/tasks/T-020-admin-collection-write-validation.md
+/task effort: high details: docs/tasks/T-021-public-search-query-service.md
+/task effort: high details: docs/tasks/T-022-prune-unused-package-candidates.md
 ```
 
-These tasks have disjoint primary write scopes. T-018 owns the artwork list API,
-loader, and new data service; T-017 owns the subscription action/schema/tests;
-T-019 owns legacy auth/session pruning and `/protected`. Keep package edits out
-of this batch unless a task explicitly escalates.
+These tasks have disjoint primary write scopes. T-020 owns admin collection
+create/update validation and focused route tests. T-021 owns public search query
+validation, search service extraction, and `/search` server rendering. T-022
+owns `package.json`, `package-lock.json`, and package-focused verification.

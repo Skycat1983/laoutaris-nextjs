@@ -29,6 +29,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-017 Harden subscription validation](T-017-subscription-validation.md) | Completed | Validated and normalized the subscription server action before subscriber lookup or persistence. |
 | [T-018 Create artwork list server data service proof](T-018-artwork-list-server-data-proof.md) | Completed | Proved ADR 0004 on `/artwork` by sharing a server-only artwork list data service between the loader and API route. |
 | [T-019 Prune legacy auth session path](T-019-legacy-auth-session-pruning.md) | Completed | Removed the stale custom login/session code and `/protected` after the active NextAuth sign-in flow repair. |
+| [T-020 Harden admin collection write validation](T-020-admin-collection-write-validation.md) | Completed | Validated admin collection create/update input, persisted allowlisted fields, and added focused route tests. |
+| [T-021 Harden public search query service](T-021-public-search-query-service.md) | Completed | Bound public search query input and moved `/search` server rendering to a direct server-only data service. |
+| [T-022 Prune unused package candidates](T-022-prune-unused-package-candidates.md) | Completed | Removed confirmed-unused direct packages such as `jose`, `next-test-api-route-handler`, Shopify/GraphQL clients, and redundant type packages with lockfile verification. |
 
 ## Rules
 

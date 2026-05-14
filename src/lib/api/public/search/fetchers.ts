@@ -2,7 +2,7 @@ import { SingleResult } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
 import { SearchParams, SearchResponse } from "@/lib/data/types/searchTypes";
 
-type ApiSearchResult = SingleResult<SearchResponse>;
+export type ApiSearchResult = SingleResult<SearchResponse>;
 
 export const createSearchFetchers = (fetcher: Fetcher) => ({
   search: async ({ q, type, page = "1", limit = "10" }: SearchParams) => {

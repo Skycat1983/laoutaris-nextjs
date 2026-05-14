@@ -66,10 +66,17 @@ or inconsistent code forward.
   `ArtworkListLoader` and `GET /api/v2/public/artwork` now share the
   server-only `getArtworkList` data service instead of relying on same-app HTTP
   for the initial artwork list.
+- T-021 applied the ADR 0004 service-adapter pattern to public search:
+  `/search` and `GET /api/v2/public/search` now share the server-only
+  `getPublicSearchResults` service instead of relying on same-app HTTP for the
+  initial search render.
+- T-022 completed the package-focused cleanup for confirmed-unused direct
+  dependency candidates, keeping lockfile churn out of source-pruning tasks.
+  A-014 source-file pruning remains a separate follow-up.
 
 ## Backlog
 
-- Use the completed T-007 and T-018 proof routes as templates to migrate
+- Use the completed T-007, T-018, and T-021 proof routes as templates to migrate
   remaining route-critical loaders off same-app HTTP in small slices and retire
   `serverApi` usage from server loaders/actions.
 - Define client-safe and server-only import rules, including direct-import rules
@@ -89,8 +96,6 @@ or inconsistent code forward.
 - Create a staged pruning task for A-014 high-confidence unused leaf files, WIP
   variants, unused barrels, starter assets, and import cleanup, with
   verification before deletion.
-- Open a separate dependency cleanup task for A-014 package candidates so
-  `package.json` and lockfile changes are reviewed together.
 - Use T-015's inventory before any future Next major package edit; especially
   convert async request APIs, middleware/proxy, and fetch/cache behavior in a
   package-owner implementation task after the owner accepts a stable target.
@@ -145,12 +150,22 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-14: Completed T-018; added `getArtworkList`, refactored the public
   artwork list API route and `ArtworkListLoader` to share it, removed the
   loader's same-app HTTP dependency, and added focused service/API/loader tests.
+- 2026-05-14: Prepared T-021 to migrate public search to a server-only service
+  and T-022 to handle unused dependency cleanup separately from source
+  refactors.
+- 2026-05-14: Completed T-021; added `getPublicSearchResults`, refactored the
+  public search API route and `/search` page to share it, removed the search
+  page's same-app HTTP dependency, and added focused service/API/page tests.
+- 2026-05-14: Completed T-022 by removing unused direct dependencies from the
+  manifest and lockfile while leaving A-014 runtime/source pruning for a later
+  staged task.
 
 ## Next Agent Action
 
-Choose the next route-critical server loader or action that still uses
-same-app HTTP and migrate it through the ADR 0004 service pattern proven by
-T-007 and T-018. If dependency work takes priority, wait for
-owner/orchestrator acceptance of a Next target, then use
+Use the completed T-007/T-018/T-021 proof routes to choose the next
+route-critical same-app HTTP migration, and prepare a later A-014 source
+pruning task for unused leaf files, WIP variants, barrels, and starter assets.
+If Next dependency work takes priority, wait for owner/orchestrator acceptance
+of a Next target, then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.

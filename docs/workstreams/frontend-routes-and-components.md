@@ -43,16 +43,19 @@ Next.js server/client component boundaries.
   inconsistently.
 - A-001 found visible shop filter, pagination, and sorting controls whose UI
   behavior is not backed consistently by API data.
-- A-002 found public list APIs have inconsistent empty-state semantics and
-  public search ignores the fetcher's `type` parameter while omitting pagination
-  metadata.
+- A-002 found public list APIs have inconsistent empty-state semantics and that
+  public search omitted pagination metadata; T-021 now honors the public search
+  fetcher's `type` parameter.
 - A-016 found legacy search, auth, and comment controls that need accessible
   labels or button semantics, and confirmed public search/filter UI relies on
-  API query parsing that is not yet bounded server-side.
+  API query parsing that is not yet bounded server-side. T-021 bounded the
+  public search route/page query parser; artwork/shop filter bounds remain.
 - T-013 fixed the sign-in credential field labels and converted the sign-in and
   sign-up modal switches from clickable spans to buttons.
 - T-019 removed the stale `/protected` App Router page and protected-route
   constant; no documented frontend workflow owned that route.
+- T-021 updated the `/search` page so its initial server render uses direct
+  server data access and bounded query parsing instead of same-app HTTP.
 
 ## Backlog
 
@@ -106,11 +109,14 @@ Use browser checks for layout-sensitive changes.
   switch buttons.
 - 2026-05-14: T-019 removed the stale `/protected` frontend route and added
   focused route utility coverage that it is no longer protected.
+- 2026-05-14: Prepared T-021 to harden public search query handling and move
+  `/search` initial server rendering off same-app HTTP.
+- 2026-05-14: Completed T-021; `/search` now parses bounded query params,
+  displays stable invalid-query states, and gets initial results from
+  `getPublicSearchResults` instead of `serverApi.public.search.search(...)`.
 
 ## Next Agent Action
 
-Keep client/server import mapping as the broader frontend priority, but pair
-search/comment accessibility fixes with the corresponding validation-flow tasks
-instead of running them as isolated visual cleanup. The sign-in field
-accessibility slice is complete through T-013, and the stale `/protected` route
-is removed through T-019.
+Keep broader client/server import mapping as the frontend priority, and pair
+remaining search/comment accessibility fixes with their corresponding
+validation-flow tasks instead of running them as isolated visual cleanup.

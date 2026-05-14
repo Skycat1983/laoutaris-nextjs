@@ -1,41 +1,91 @@
-import { serverApi } from "@/lib/api/serverApi";
 import SearchResultsSection from "@/components/modules/search/SearchResultsSection";
-import { SearchParams, SearchResponse } from "@/lib/data/types/searchTypes";
+import {
+  parsePublicSearchQuery,
+  type PublicSearchQueryFieldErrors,
+  type SearchQueryInput,
+} from "@/lib/data/schemas/searchSchema";
+import { getPublicSearchResults } from "@/lib/data/services/getPublicSearchResults";
+import type {
+  SearchableContentType,
+  SearchResponse,
+} from "@/lib/data/types/searchTypes";
+import { isNextError } from "@/lib/helpers/isNextError";
 
-export default async function SearchPage({
-  searchParams,
+type SearchPageProps = {
+  searchParams: SearchQueryInput;
+};
+
+const SEARCH_TYPE_TITLES: Record<SearchableContentType, string> = {
+  articles: "Articles",
+  blogs: "Blogs",
+  collections: "Collections",
+};
+
+const firstErrorMessage = (
+  fieldErrors: PublicSearchQueryFieldErrors,
+  formErrors: string[]
+) => formErrors[0] ?? Object.values(fieldErrors).flat().filter(Boolean)[0];
+
+const hasQueryValue = (searchParams: SearchQueryInput) => {
+  const query = Array.isArray(searchParams.q)
+    ? searchParams.q[0]
+    : searchParams.q;
+
+  return typeof query === "string" && query.trim().length > 0;
+};
+
+const SearchMessage = ({
+  title,
+  message,
 }: {
-  searchParams: SearchParams;
-}) {
-  const query = searchParams.q;
-  const page = parseInt(searchParams.page || "1");
-  const type = searchParams.type;
+  title: string;
+  message: string;
+}) => (
+  <div className="container mx-auto p-4">
+    <h1 className="text-2xl font-bold mb-4">{title}</h1>
+    <p>{message}</p>
+  </div>
+);
 
-  if (!query) {
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const parsedQuery = parsePublicSearchQuery(searchParams);
+
+  if (!parsedQuery.success) {
+    const { fieldErrors, formErrors } = parsedQuery.error.flatten();
+    const queryError = fieldErrors.q?.[0];
+
+    if (queryError && !hasQueryValue(searchParams)) {
+      return (
+        <SearchMessage title="Search" message="Please enter a search term" />
+      );
+    }
+
     return (
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Search</h1>
-        <p>Please enter a search term</p>
-      </div>
+      <SearchMessage
+        title="Search Error"
+        message={firstErrorMessage(fieldErrors, formErrors) || "Invalid search query"}
+      />
     );
   }
 
-  const results = await serverApi.public.search.search({
-    q: query,
-    type,
-    page: page.toString(),
-  });
+  const { q: query, type } = parsedQuery.data;
+  let searchData: SearchResponse;
 
-  if (!results.success) {
+  try {
+    const results = await getPublicSearchResults(parsedQuery.data);
+    searchData = results.data;
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     return (
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Search Error</h1>
-        <p>{results.error}</p>
-      </div>
+      <SearchMessage
+        title="Search Error"
+        message="Failed to perform search"
+      />
     );
   }
-
-  const searchData = results.data as SearchResponse;
 
   return (
     <div className="container mx-auto p-4">
@@ -46,7 +96,7 @@ export default async function SearchPage({
       <div className="grid gap-8">
         {type ? (
           <SearchResultsSection
-            title={type.charAt(0).toUpperCase() + type.slice(1)}
+            title={SEARCH_TYPE_TITLES[type]}
             items={searchData[type] || []}
             type={type}
           />

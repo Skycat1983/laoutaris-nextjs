@@ -37,6 +37,10 @@ Implemented proof slices:
   `ArtworkListLoader` and `GET /api/v2/public/artwork`, so the initial
   `/artwork` server render no longer self-fetches the same app for its artwork
   list.
+- `src/lib/data/services/getPublicSearchResults.ts` is shared by
+  `src/app/search/page.tsx` and `GET /api/v2/public/search`, so the initial
+  `/search` server render no longer self-fetches the same app for search
+  results.
 
 ## Patterns To Audit
 

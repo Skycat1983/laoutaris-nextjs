@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    outputFileTracingIncludes: {
+      "/**": ["node_modules/bcrypt/prebuilds/**/*"],
+    },
+  },
   images: {
     remotePatterns: [
       {

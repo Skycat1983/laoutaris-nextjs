@@ -82,6 +82,12 @@ security headers, environment documentation, and actionable operational signals.
 - T-009 removed direct registration credential logging and the Shopify
   token-shaped source comment; owner verification/rotation for the removed
   Shopify value remains open.
+- T-022 removed unused direct dependencies, including `jose`,
+  `next-test-api-route-handler`, `@types/uuid`, Shopify/GraphQL client
+  packages, and the direct Radix dialog manifest entry. The unused
+  `next-test-api-route-handler -> core-js` install-script path is gone from the
+  lockfile; production audit output remains limited to the known residual
+  Next/PostCSS advisories from T-015.
 
 ## Backlog
 
@@ -115,8 +121,6 @@ security headers, environment documentation, and actionable operational signals.
   temporary PostCSS advisory acceptance, or accept canary framework risk.
 - Before any future Next package edit, re-run npm metadata/audit checks and use
   T-015's Node/React/lint/proxy/image/App Router verification plan.
-- Run a package-focused cleanup for unused direct dependencies only after A-019
-  or a targeted dependency task confirms the plan and lockfile verification.
 - Add package-manager and Node runtime pins, document `npm ci` as the install
   path, and define dependency audit/update automation or cadence.
 - Audit privacy, consent, and commerce compliance gaps for owner/legal review.
@@ -184,10 +188,19 @@ npm run lint
   `next@16.2.6` does not clear the nested PostCSS advisory in an isolated
   audit, and documenting the owner decision path plus future migration
   verification plan.
+- 2026-05-14: Prepared T-022 to prune confirmed-unused package candidates,
+  including the unused `next-test-api-route-handler` core-js install-script
+  path if verification confirms it is still unused.
+- 2026-05-14: Completed T-022 by removing unused direct package candidates,
+  refreshing `package-lock.json`, confirming the unused `core-js` path is gone,
+  and running npm audit, full Jest, and lint verification. Build verification
+  initially hit unrelated in-progress T-021 public-search schema edits; T-021
+  later cleared that blocker and `npm run build` passed.
 
 ## Next Agent Action
 
-Escalate the Next/PostCSS choice to the owner/orchestrator: wait for a stable
-Next release with bundled `postcss@8.5.10+`, accept a partial stable
-`next@16.2.6` migration with residual PostCSS risk, or explicitly accept canary
-framework risk.
+Keep the Next/PostCSS owner choice separate: wait for a stable Next release
+with bundled `postcss@8.5.10+`, accept a partial stable `next@16.2.6` migration
+with residual PostCSS risk, or explicitly accept canary framework risk. Resolve
+package-manager/Node runtime pins and dependency-update automation through
+F-064.

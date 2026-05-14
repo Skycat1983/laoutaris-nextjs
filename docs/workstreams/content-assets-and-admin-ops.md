@@ -54,6 +54,9 @@ content operations repeatable and safe.
   ownership, and asset lifecycle policy remain open after T-005.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
+- T-020 completed the first admin collection create/update validation slice
+  with strict route schemas, allowlisted parsed persistence, collection/artwork
+  ObjectId checks, real validation statuses, and focused route tests.
 
 ## Backlog
 
@@ -115,9 +118,15 @@ Use manual admin checks when changing dashboard behavior.
   as a duplicate of remaining F-044 policy work.
 - 2026-05-14: Reconciled A-016 admin create/update validation findings into
   F-057.
+- 2026-05-14: Prepared T-020 to harden admin collection create/update route
+  validation before broader admin write-route migration.
+- 2026-05-14: Completed T-020 for admin collection create/update route
+  validation. Collection writes now reject invalid JSON, invalid fields, invalid
+  collection/artwork IDs, and unknown fields before persistence while preserving
+  explicit auth and not-found responses.
 
 ## Next Agent Action
 
-Define the remaining Cloudinary upload policy before changing public image
-payloads; coordinate admin create/update validation with the Data/API
-workstream after T-010 proves the first public validation pattern.
+Use the T-020 collection write pattern for future article, artwork, and blog
+admin write-route validation slices. Keep remaining Cloudinary upload policy and
+public image payload decisions separate.

@@ -71,6 +71,8 @@ features before production launch.
   helpers, unreferenced duplicate/test-header session helpers, and the stale
   `/protected` route/constant after the active NextAuth credentials path was
   tested.
+- T-022 removed the now-unused direct `jose` dependency from `package.json`;
+  remaining `jose` installs are transitive through NextAuth/auth packages.
 
 ## Backlog
 
@@ -80,9 +82,9 @@ features before production launch.
   consistent JSON 401/403 behavior for API routes.
 - Migrate additional admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
-- Route package/env cleanup for now-unused `jose` and legacy `JWT_SECRET`
-  remnants through deployment/dependency tasks; T-019 did not edit package
-  manifests or environment docs.
+- Route legacy `JWT_SECRET` env remnants through deployment/auth docs. T-022
+  completed the direct `jose` package cleanup; auth packages still own their
+  transitive `jose` dependencies.
 - Add DB connection handling and route revalidation to favourite/watchlist
   server actions.
 - Remove or gate noisy middleware logging before production.

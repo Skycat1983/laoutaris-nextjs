@@ -74,6 +74,14 @@ consistent enough for production refactoring and Shopify integration.
   color-proximity handling, pagination metadata, user-context transformation,
   and `dbConnect()` ownership into `getArtworkList`, shared by the API route and
   `ArtworkListLoader`.
+- T-020 completed the first admin collection write validation slice: collection
+  create/update now use strict route-safe schemas, real validation statuses,
+  allowlisted parsed persistence, ObjectId checks, `dbConnect()` ownership, and
+  focused route tests.
+- T-021 completed public search query hardening: `/api/v2/public/search` now
+  validates and bounds `q`/`type`/`page`/`limit`, escapes search regex input,
+  delegates MongoDB query/DTO work to `getPublicSearchResults`, and returns real
+  400 validation responses.
 
 ## Backlog
 
@@ -98,16 +106,15 @@ consistent enough for production refactoring and Shopify integration.
 - Fix high-risk route DTO mismatches for user profile and admin content writes.
 - Migrate admin create/update routes toward allowlisted schemas, ObjectId
   validation, real 400 validation responses, and route tests by content type.
-- Validate and bound public search, artwork browse, and shop browse query
-  parameters before building regexes, Mongo filters, or Shopify query behavior.
+- Validate and bound artwork browse and shop browse query parameters before
+  building Mongo filters or Shopify query behavior.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
 - Add Shopify product ID normalization and validation for admin writes, API
   reads, and one-time data migration/audit work.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
-- Choose list empty-state semantics and search `type`/pagination metadata
-  behavior.
+- Choose list empty-state semantics and search pagination metadata behavior.
 - Document whether admin action-segment API paths are canonical, or open an ADR
   for a resource-oriented migration plan.
 - Audit form/input validation from UI through API persistence.
@@ -162,10 +169,18 @@ Add API route tests where behavior is changed.
 - 2026-05-14: Completed T-018 for `GET /api/v2/public/artwork`; the route now
   parses search params and delegates query/transform ownership to
   `getArtworkList` while preserving the public list envelope.
+- 2026-05-14: Prepared T-020 for admin collection create/update validation and
+  T-021 for public search query validation plus server-only data access.
+- 2026-05-14: Completed T-020 for admin collection create/update validation;
+  strict route schemas, allowlisted parsed persistence, collection/artwork
+  ObjectId validation, real 400/401/404/500 statuses, `dbConnect()` ownership,
+  debug-log removal, and focused route tests are in place.
+- 2026-05-14: Completed T-021 for public search query validation and direct
+  server data access; `getPublicSearchResults` now owns MongoDB connection,
+  escaped regex search, `type` filtering, pagination bounds, and DTO shaping for
+  both the API route and `/search` page.
 
 ## Next Agent Action
 
-Use the T-010/T-012/T-017 schema patterns and the T-018 service-adapter pattern
-for the remaining data/API work: admin create/update validation, public
-search/artwork/shop browse query bounds, and other MongoDB-backed route DB
-ownership gaps.
+Commission a follow-up for the remaining F-060 artwork/shop browse query
+bounds. Keep article/artwork/blog admin writes as separate follow-up slices.
