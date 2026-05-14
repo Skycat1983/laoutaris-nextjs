@@ -51,6 +51,13 @@ production while preserving MongoDB as the archive source of truth.
   production-ready.
 - A-015 independently confirmed the product-detail linked artwork fetch uses a
   non-existent `/api/artworks/:id` path.
+- A-002 confirmed the single-product shop API returns raw product/error bodies
+  and accepts arbitrary path segments; A-003 confirmed artwork schemas still
+  omit Shopify product-link validation; A-007 confirmed the credential-like
+  source comment remains.
+- T-004 standardized the public single-product shop API envelope and numeric
+  product ID validation, and updated `ArtworkShopSection` to unwrap the new
+  contract.
 
 ## Backlog
 
@@ -102,9 +109,15 @@ Add targeted tests as shop behavior is hardened.
 - Historical shop notes identified and indexed in `docs/archive/README.md`.
 - 2026-05-14: A-001 and overlapping A-015 findings reconciled into
   `docs/audits/findings-register.md`, production risks, and this backlog.
+- 2026-05-14: Reconciled overlapping A-002, A-003, and A-007 Shopify findings
+  into existing F-010, F-011, F-012, and F-015.
+- 2026-05-14: Prepared T-004 as the first Shopify/API contract implementation
+  slice.
+- 2026-05-14: Completed T-004; the single-product route validates numeric IDs
+  before Shopify calls, returns success/error envelopes with real 400/404/502
+  statuses, and the artwork-page shop section reads `result.data`.
 
 ## Next Agent Action
 
-Resolve the checkout handoff and admin linking workflow decisions, then fix
-product-detail linked artwork fetching and shop API envelope consistency before
-hardening filters, pagination, sorting, and tests.
+Resolve checkout handoff and admin linking workflow decisions before fixing
+product-detail linked artwork fetching.

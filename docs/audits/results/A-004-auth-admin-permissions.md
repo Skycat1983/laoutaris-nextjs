@@ -105,49 +105,27 @@ Cloudinary signing endpoint relies only on middleware for admin protection.
 
 ## Findings Register Updates
 
-- No shared findings register edits were made because this was an audit-result
-  assignment and shared docs are already dirty from other work.
-- Candidate rows for orchestrator review:
-
-| Candidate ID | Source Audit | Severity | Finding | Destination |
-| --- | --- | --- | --- | --- |
-| A004-C1 | A-004 | High | Credentials admin sign-in does not persist DB role into JWT/session, so credentials admins fail admin middleware and `isAdmin()` checks. | Auth workstream, production risk R-002, testing workstream |
-| A004-C2 | A-004 | High | User ownership helpers resolve by `session.user.name` and can create users during protected reads instead of using stable `session.user.id`. | Auth workstream, data/API workstream |
-| A004-C3 | A-004 | High | Cloudinary signing endpoint lacks route-local admin guard and request validation. | Auth workstream, content/assets workstream, A-009 |
-| A004-C4 | A-004 | Medium | Protected API auth responses mix redirects, JSON 403, missing HTTP status, and body-only `statusCode` fields. | Data/API workstream, auth workstream |
-| A004-C5 | A-004 | Medium | `/protected` remains as a stale protected route and uses invalid App Router redirect behavior. | Auth workstream, architecture cleanup |
-| A004-C6 | A-004 | Medium | Legacy custom session/login helpers and unused dev test-header auth helpers need a NextAuth-only cleanup decision. | Auth workstream, architecture cleanup |
-| A004-C7 | A-004 | Medium | Admin bootstrap and recovery workflow is missing. | Auth runbook, auth workstream |
+- Reconciled on 2026-05-14 into
+  [findings-register.md](../findings-register.md).
+- New converted findings: F-036, F-042, F-043, F-044, and F-045.
+- Existing findings updated with A-004 evidence: F-016 and F-032.
 
 ## Risks Updated
 
-- No shared risk file edits were made.
-- Candidate risk updates:
-  - Update R-002 to replace "not fully audited" with the concrete A-004 gaps:
-    credentials role persistence, unstable user identity helper, stale
-    `/protected`, Cloudinary signing guard, and legacy session cleanup.
-  - Consider adding or updating an auth/testing risk under R-005/R-013 for
-    missing middleware, session-helper, and route-handler tests.
+- Updated on 2026-05-14:
+  [production-readiness risks](../../risks/production-readiness.md) R-002,
+  R-005, R-008, and R-014.
 
 ## Workstream Updates
 
-- No shared workstream edits were made.
-- Candidate backlog updates for
-  [Auth, admin, and permissions](../../workstreams/auth-admin-and-permissions.md):
-  - Fix credentials role persistence into JWT/session.
-  - Introduce shared `requireUser` and `requireAdmin` route helpers with
-    consistent JSON 401/403 behavior.
-  - Refactor ownership helpers to use stable `session.user.id`.
-  - Add a route-local admin guard and signing-param validation to
-    `sign-cloudinary-params`.
-  - Confirm and remove or fix `/protected`.
-  - Remove or isolate the legacy custom session/login chain after tests.
-  - Document admin bootstrap and recovery.
-  - Add tests for route utilities, middleware decisions, session helpers, and
-    representative user/admin APIs.
+- Updated on 2026-05-14:
+  [Auth, admin, and permissions](../../workstreams/auth-admin-and-permissions.md),
+  [Data Models and API](../../workstreams/data-models-and-api.md),
+  [Testing and quality](../../workstreams/testing-and-quality.md), and
+  [Content, assets, and admin operations](../../workstreams/content-assets-and-admin-ops.md).
 
 ## Next Action
 
-Reconcile these candidate findings into the register and auth workstream, then
-start with the credentials role/JWT fix and shared route auth helpers before
-pruning stale session files or `/protected`.
+Fix credentials role persistence and stable `session.user.id` ownership helpers,
+then introduce shared JSON 401/403 route guards before pruning stale session
+files or `/protected`.

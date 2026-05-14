@@ -43,6 +43,9 @@ Next.js server/client component boundaries.
   inconsistently.
 - A-001 found visible shop filter, pagination, and sorting controls whose UI
   behavior is not backed consistently by API data.
+- A-002 found public list APIs have inconsistent empty-state semantics and
+  public search ignores the fetcher's `type` parameter while omitting pagination
+  metadata.
 
 ## Backlog
 
@@ -56,6 +59,8 @@ Next.js server/client component boundaries.
   loaders, route-critical fetches, and empty archive views.
 - Stabilize responsive behavior for artwork, collections, shop, and search.
 - Audit search, navigation, breadcrumbs, filters, and content discovery paths.
+- Align public empty, not-found, and search-result states with the data/API
+  route contracts once A-002 empty-list and search metadata semantics are chosen.
 - Align shop filters, pagination, and sorting UI with backed API behavior or hide
   unsupported controls.
 - Decide the i18n/frontend language direction before pruning unused translation
@@ -83,6 +88,8 @@ Use browser checks for layout-sensitive changes.
 - Documentation scaffold created.
 - 2026-05-14: Reconciled A-001, A-013, A-014, and A-015 frontend findings into
   `docs/audits/findings-register.md`, production risks, and this backlog.
+- 2026-05-14: Reconciled A-002 public list/search semantics into F-049 and this
+  backlog.
 
 ## Next Agent Action
 

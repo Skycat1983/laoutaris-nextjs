@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
+import { ApiErrorResponse, SingleResult } from "@/lib/data/types/apiTypes";
+import { SimpleProduct } from "@/lib/data/types/shopify";
+
+const SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN = /^\d+$/;
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
+
+const decodeProductId = (productId: string) => {
+  try {
+    return decodeURIComponent(productId);
+  } catch {
+    return null;
+  }
+};
 
 /**
  * Fetch a single Shopify product by numeric ID
@@ -11,33 +32,34 @@ export async function GET(
 ) {
   try {
     const { productId } = params;
+    const decodedProductId = productId ? decodeProductId(productId) : null;
 
-    if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 }
+    if (
+      !decodedProductId ||
+      !SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN.test(decodedProductId)
+    ) {
+      return errorResponse(
+        "Product ID must be a numeric Shopify product ID",
+        400
       );
     }
 
-    // Convert numeric ID to Shopify GID format
-    const gid = `gid://shopify/Product/${decodeURIComponent(productId)}`;
-    console.log(`Fetching product with numeric ID: ${productId}, GID: ${gid}`);
-
+    const gid = `gid://shopify/Product/${decodedProductId}`;
     const product = await getProductById(gid);
 
     if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return errorResponse("Product not found", 404);
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json<SingleResult<SimpleProduct>>({
+      success: true,
+      data: product,
+    });
   } catch (error) {
     console.error(
       "Error in GET /api/v2/public/shop/products/[productId]: ",
       error
     );
-    return NextResponse.json(
-      { error: "Failed to fetch product" },
-      { status: 500 }
-    );
+    return errorResponse("Failed to fetch product", 502);
   }
 }

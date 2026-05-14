@@ -46,7 +46,7 @@ Expected output: [results/A-001-shopify-commerce.md](results/A-001-shopify-comme
 
 ## A-002 Public, User, And Admin API Contracts
 
-Status: Not started
+Status: Completed
 
 Goal: inventory API routes, response shapes, status codes, validation behavior,
 and route-group conventions.
@@ -60,7 +60,7 @@ Expected output: [results/A-002-api-contracts.md](results/A-002-api-contracts.md
 
 ## A-003 Data Models, Schemas, And Transforms
 
-Status: Not started
+Status: Completed
 
 Goal: confirm schemas, Mongoose models, TypeScript types, and transform functions
 agree on required fields, optional fields, and frontend data contracts.
@@ -74,7 +74,7 @@ Expected output: [results/A-003-data-models-transforms.md](results/A-003-data-mo
 
 ## A-004 Auth, Admin, And Permission Boundaries
 
-Status: Not started
+Status: Completed
 
 Goal: audit protected routes, admin APIs, user ownership checks, session helpers,
 NextAuth configuration, and middleware behavior.
@@ -118,7 +118,7 @@ Expected output: [results/A-006-testing-quality-baseline.md](results/A-006-testi
 
 ## A-007 Deployment And Environment Readiness
 
-Status: Not started
+Status: Completed
 
 Goal: audit deployment assumptions, environment variables, build behavior,
 production configuration, and smoke-check requirements.

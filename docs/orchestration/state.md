@@ -4,8 +4,8 @@ Last updated: 2026-05-14
 
 ## Current Priority
 
-Reconcile the completed A-002, A-003, A-004, and A-007 audit batch before
-commissioning runtime implementation.
+Sequence the first implementation slices from the reconciled high-severity
+auth, API, data, and deployment findings.
 
 ## Active Phase
 
@@ -35,9 +35,12 @@ Audit reconciliation and implementation sequencing.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted and
   chooses direct server data-access services over same-app HTTP self-fetching for
   server loaders, API routes, and server actions.
-- Completed audits A-002, A-003, A-004, and A-007 have landed and need
-  reconciliation into the findings register, risk tracker, and workstream
-  backlogs before implementation begins.
+- Completed audits A-002, A-003, A-004, and A-007 have been reconciled into the
+  findings register, risk tracker, and workstream backlogs.
+- T-001, T-002, T-003, and T-004 are complete. T-001 removed `MONGO_URI`
+  exposure from Next config, T-002 persisted credentials roles into JWT/session
+  state, T-003 made stable `session.user.id` the protected-read ownership
+  source, and T-004 standardized the public single Shopify product API contract.
 
 ## Active Audits
 
@@ -51,9 +54,6 @@ Completed and reconciled:
 - [A-013 Architecture refactor scope](../audits/results/A-013-architecture-refactor-scope.md)
 - [A-014 Unused code and dependency pruning](../audits/results/A-014-unused-code-dependency-pruning.md)
 - [A-015 SSR and data-fetching strategy](../audits/results/A-015-ssr-data-fetching.md)
-
-Completed, pending reconciliation:
-
 - [A-002 Public, user, and admin API contracts](../audits/results/A-002-api-contracts.md)
 - [A-003 Data models, schemas, and transforms](../audits/results/A-003-data-models-transforms.md)
 - [A-004 Auth, admin, and permission boundaries](../audits/results/A-004-auth-admin-permissions.md)
@@ -61,8 +61,8 @@ Completed, pending reconciliation:
 
 ## Recommended Next Audits
 
-Do not start another broad audit batch until A-002, A-003, A-004, and A-007 are
-reconciled. Good follow-up audits after reconciliation:
+Good follow-up audits after the first high-risk implementation slices are
+assigned:
 
 1. [A-008 Security headers, CORS, and logging](../audits/goals.md#a-008-security-headers-cors-and-logging)
 2. [A-016 Forms, validation, and user input](../audits/goals.md#a-016-forms-validation-and-user-input)
@@ -80,17 +80,21 @@ reconciled. Good follow-up audits after reconciliation:
   future completed audit results.
 - Convert future completed audit findings into workstream backlog items before
   assigning implementation work.
-- Reconcile A-002, A-003, A-004, and A-007 before assigning implementation work.
+- Keep A-002, A-003, A-004, and A-007 reconciled findings linked when assigning
+  implementation work.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
 - Resolve or escalate owner decisions captured in the findings register:
   checkout scope, admin Shopify linking, i18n scope, auth/session pruning, and
   Shopify credential verification.
+- Resolve or escalate the new A-002/A-007 decisions: admin API route convention,
+  legacy/env variable status, smoke/rollback ownership, and Cloudinary upload
+  preset ownership.
 
 ## Next Orchestrator Action
 
-Commission reconciliation for A-002, A-003, A-004, and A-007. After
-reconciliation, authorize the first narrow implementation slice: the `/artwork`
-server data-access proof described in
-[ADR 0004](../decisions/0004-server-data-access-ownership.md), unless the
-reconciled auth/API/deployment findings reveal a higher-severity prerequisite.
+Commission
+[T-005 Harden Cloudinary Signing API Guard](../tasks/T-005-cloudinary-signing-api-guard.md)
+as the next auth/security implementation slice. Preserve the
+`next-cloudinary` top-level `signature` response contract while adding the
+route-local admin guard, validation, and tests.

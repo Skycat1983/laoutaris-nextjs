@@ -48,6 +48,8 @@ content operations repeatable and safe.
 - A-004 and A-007 found the Cloudinary signing route lacks a route-local admin
   guard, request validation, complete environment documentation, and clear upload
   preset ownership.
+- T-005 hardened the Cloudinary signing route guard and request validation while
+  preserving the `next-cloudinary` top-level `signature` response contract.
 
 ## Backlog
 
@@ -58,8 +60,8 @@ content operations repeatable and safe.
   operations.
 - Define backup and restore expectations for MongoDB and Cloudinary assets.
 - Audit Cloudinary upload signing and allowed upload parameters.
-- Add route-local admin authorization, request validation, allowed param/folder
-  rules, and a shared API envelope to `sign-cloudinary-params`.
+- Define allowed Cloudinary signing params, folder rules, upload preset
+  ownership, and asset lifecycle expectations for `sign-cloudinary-params`.
 - Document Cloudinary variables, upload preset ownership, rotation owner, and
   allowed upload policy in the Cloudinary/environment runbooks.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
@@ -98,8 +100,13 @@ Use manual admin checks when changing dashboard behavior.
   `docs/audits/findings-register.md`, production risks, and this backlog.
 - 2026-05-14: Reconciled A-003, A-004, and A-007 Cloudinary/image findings into
   F-041, F-044, production risks, and this backlog.
+- 2026-05-14: Prepared T-005 to secure the Cloudinary signing endpoint before
+  broader upload policy and image transform work.
+- 2026-05-14: Completed T-005 route guard and request validation for the
+  Cloudinary signing endpoint; allowed signing params, folder/preset ownership,
+  and asset lifecycle policy remain open.
 
 ## Next Agent Action
 
-Inventory Cloudinary signing and artwork image transform behavior, then define
-the admin upload policy before changing upload code or public image payloads.
+Define the remaining Cloudinary upload policy before changing public image
+payloads.

@@ -10,12 +10,12 @@ file instead of creating scattered notes.
 | ID | Result File | Status |
 | --- | --- | --- |
 | A-001 | [Shopify commerce](A-001-shopify-commerce.md) | Completed |
-| A-002 | [API contracts](A-002-api-contracts.md) | Not started |
-| A-003 | [Data models and transforms](A-003-data-models-transforms.md) | Not started |
-| A-004 | [Auth, admin, and permissions](A-004-auth-admin-permissions.md) | Not started |
+| A-002 | [API contracts](A-002-api-contracts.md) | Completed |
+| A-003 | [Data models and transforms](A-003-data-models-transforms.md) | Completed |
+| A-004 | [Auth, admin, and permissions](A-004-auth-admin-permissions.md) | Completed |
 | A-005 | [Frontend routes and components](A-005-frontend-routes-components.md) | Not started |
 | A-006 | [Testing and quality baseline](A-006-testing-quality-baseline.md) | Completed |
-| A-007 | [Deployment and environment](A-007-deployment-environment.md) | Not started |
+| A-007 | [Deployment and environment](A-007-deployment-environment.md) | Completed |
 | A-008 | [Security headers, CORS, and logging](A-008-security-headers-cors-logging.md) | Not started |
 | A-009 | [Cloudinary and assets](A-009-cloudinary-assets.md) | Not started |
 | A-010 | [Performance, SEO, and accessibility](A-010-performance-seo-accessibility.md) | Not started |

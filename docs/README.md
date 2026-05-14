@@ -24,6 +24,8 @@ future artwork, print, and book sales.
 
 - [Workstreams](workstreams/README.md): active refactor plans, progress, and task
   handoff points.
+- [Tasks](tasks/README.md): bounded implementation or review slices ready for
+  one-line `/task` assignments.
 - [Audits](audits/README.md): linkable audit goals and a canonical home for
   audit results, findings reconciliation, and review status.
 - [Orchestration](orchestration/README.md): coordinator role guide, takeover
@@ -41,11 +43,11 @@ future artwork, print, and book sales.
 
 ## Current Refactor Phase
 
-Status: documentation system established, implementation refactor not yet
-started.
+Status: documentation system established, with initial implementation slices in
+progress.
 
-Primary goal: make the project safe for production hardening by creating clear
-agent handoff boundaries before changing runtime behavior.
+Primary goal: make the project safe for production hardening by using clear
+agent handoff boundaries for each runtime change.
 
 Current default workstream order:
 

@@ -48,6 +48,10 @@ or inconsistent code forward.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
   server loaders, API routes, and server actions should share direct
   server-only data-access services instead of same-app HTTP fetches.
+- A-002 found the admin API action-segment convention is not documented as
+  canonical.
+- A-007 found production URL construction is hard-coded and inconsistent across
+  server fetchers, shop loaders, and redirects.
 
 ## Backlog
 
@@ -70,6 +74,8 @@ or inconsistent code forward.
   filters, admin forms, and shop filters.
 - Centralize app route builders, API route builders, and auth path constants;
   remove hard-coded localhost/same-app absolute routes.
+- Document whether admin action-segment API routes are canonical, or open an ADR
+  for migration to resource-oriented routes before mixing conventions.
 - Create a staged pruning task for A-014 high-confidence unused leaf files, WIP
   variants, unused barrels, starter assets, and import cleanup, with
   verification before deletion.
@@ -107,6 +113,8 @@ Use targeted import/reference searches for pruning tasks.
   accepted direct server data-access services as the canonical pattern for
   loaders, API routes, and server actions. No runtime code was changed in the
   decision task.
+- 2026-05-14: Reconciled A-002/A-007 architecture-adjacent findings into F-030
+  and F-050, production risks, and this backlog.
 
 ## Next Agent Action
 

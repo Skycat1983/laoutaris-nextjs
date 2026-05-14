@@ -2,7 +2,6 @@
 
 import { UserModel } from "../data/models";
 import { getServerSession } from "next-auth";
-import { createUserFromSession } from "./createUserFromSession";
 import { authOptions } from "@/lib/config/authOptions";
 import { FlattenMaps } from "mongoose";
 
@@ -63,34 +62,12 @@ export const getUserFromSession = async (
 
   const session = await getServerSession(authOptions);
 
-  if (session?.user?.name) {
-    const username = session.user.name;
-    const email = session.user.email || "";
-
-    try {
-      const rawUser = await UserModel.findOne({ username })
-        .select("role")
-        .lean()
-        .exec();
-
-      const user = ensureSingleDocument(rawUser);
-
-      if (user) {
-        return {
-          id: user.id.toString(),
-          role: (user.role as "user" | "admin") || "user",
-          username,
-        };
-      } else {
-        // Create new user if they don't exist
-        if (email && username) {
-          const userId = await createUserFromSession(username, email);
-          return userId ? { id: userId, role: "user", username } : null;
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching user from session:", error);
-    }
+  if (session?.user?.id) {
+    return {
+      id: session.user.id,
+      role: (session.user.role as "user" | "admin") || "user",
+      username: session.user.name ?? undefined,
+    };
   }
 
   return null;

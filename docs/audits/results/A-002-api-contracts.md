@@ -240,42 +240,28 @@ which has no `isAdmin()` check and returns raw `Response.json({ signature })`.
 
 ## Findings Register Updates
 
-- Not updated by this audit because audit workflow says result authors update
-  their assigned result file by default and shared trackers belong to the
-  orchestrator or reconciliation agent.
-- Candidate rows for reconciliation:
-  - High, Data/API: API handlers return body-level error codes with HTTP 200
-    across public and user routes.
-  - High, Data/API: API fetchers expose methods and single-resource admin
-    endpoints that do not exist in `src/app/api/v2`.
-  - High, Data/API: MongoDB-backed API handlers lack consistent route-local
-    `dbConnect()` ownership, especially admin routes.
-  - High, Admin/Security/API: `/api/v2/admin/sign-cloudinary-params` bypasses
-    admin auth and the shared API envelope.
-  - High, Data/API: Create/update validation is inconsistent and maps Zod
-    validation failures to 500.
-  - High, Data/API: Public, user, and admin routes return raw Mongoose
-    documents where typed fetchers expect frontend/admin DTOs.
-  - Medium, Data/API: List empty-state semantics vary between 404 and
-    successful empty arrays.
-  - Medium, Search/API: Public search ignores the `type` param and omits
-    pagination metadata.
-  - Medium, Shopify/API: Public shop product single route uses raw responses and
-    lacks product ID validation.
+- Reconciled on 2026-05-14 into
+  [findings-register.md](../findings-register.md).
+- New converted findings: F-036, F-037, F-038, F-044, F-049, and F-050.
+- Existing findings updated with A-002 evidence: F-012, F-015, F-016, F-020, and
+  F-024.
 
 ## Risks Updated
 
-- None. This audit was scoped to the A-002 result file.
-- Candidate escalation for reconciliation: add or update a production-readiness
-  risk for inconsistent API status/envelope behavior because it affects public
-  SSR, account flows, admin CRUD, and future external integrations.
+- Updated on 2026-05-14:
+  [production-readiness risks](../../risks/production-readiness.md) R-005,
+  R-006, R-008, R-014, and R-026.
 
 ## Workstream Updates
 
-- None. This audit was scoped to the result file. The Data Models and API
-  workstream already includes backlog items for API response shape inventory,
-  status-code consistency, DB connection ownership, validation policy, response
-  transforms, and pagination/filter contracts.
+- Updated on 2026-05-14:
+  [Data Models and API](../../workstreams/data-models-and-api.md),
+  [Auth, admin, and permissions](../../workstreams/auth-admin-and-permissions.md),
+  [Content, assets, and admin operations](../../workstreams/content-assets-and-admin-ops.md),
+  [Frontend routes and components](../../workstreams/frontend-routes-and-components.md),
+  [Testing and quality](../../workstreams/testing-and-quality.md),
+  [Architecture refactor and code health](../../workstreams/architecture-refactor-and-code-health.md),
+  and [Shopify commerce](../../workstreams/shopify-commerce.md).
 
 ## Completion Audit
 
@@ -288,13 +274,11 @@ which has no `isAdmin()` check and returns raw `Response.json({ signature })`.
 | Inspect validation behavior. | Findings cover Zod parse-to-500 behavior, raw JSON admin updates, public enquiry, and user comment validation gaps. | Complete |
 | Inspect route-group conventions. | Contract inventory and findings cover public/user/admin groups, admin action segments, and the Cloudinary admin exception. | Complete |
 | Inspect fetcher/API consumer contracts. | Findings cover unsupported fetcher methods and missing admin single-resource routes. | Complete |
-| Keep edits scoped. | Only this result file was edited. Shared findings, risks, goals, result index, and workstream files were not modified. | Complete |
+| Keep audit edits scoped. | The original audit edited only this result file; the 2026-05-14 reconciliation later updated shared findings, risks, status indexes, and workstream files. | Complete |
 | Record verification. | Commands run are listed above. Runtime verification was not run because no runtime code changed. | Complete |
 
 ## Next Action
 
-Reconcile the candidate findings into the findings register, then start the API
-hardening work with a narrow shared response-helper and route-test proof on one
-public route, one user route, and one admin route. After the helper contract is
-accepted, apply it across `/api/v2` with a static fetcher-vs-route inventory
-check and a DB-ownership check.
+Start the API hardening work with shared response/validation helpers, a
+route/fetcher parity check, and a narrow route-test proof on one public route,
+one user route, and one admin write route.

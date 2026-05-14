@@ -1,6 +1,6 @@
 # Deployment, Security, And Observability Workstream
 
-Status: Planned
+Status: Active
 
 Goal: prepare the app for production deployment with safe configuration,
 security headers, environment documentation, and actionable operational signals.
@@ -52,12 +52,13 @@ security headers, environment documentation, and actionable operational signals.
   external network access, URL construction is hard-coded/inconsistent,
   Cloudinary upload variables are undocumented, smoke checks are manual, and
   runtime/Vercel/rollback settings are not pinned.
+- T-005 added a route-local admin guard, request validation, and missing-secret
+  handling to the Cloudinary signing endpoint.
 
 ## Backlog
 
 - Inventory required environment variables without recording secret values.
-- Remove `MONGO_URI` from `next.config.mjs` and add a config guard that rejects
-  known server-only secrets in Next `env`.
+- Add a config guard that rejects known server-only secrets in Next `env`.
 - Update the environment runbook with `JWT_SECRET`, `AUTH_SECRET` decision
   status, `NEXT_PUBLIC_BASE_URL`, `VERCEL_ENV`, `VERCEL_URL`, Cloudinary
   variables, upload preset ownership, required environments, owners, and
@@ -109,10 +110,17 @@ npm run lint
   backlog.
 - 2026-05-14: Reconciled A-007 into F-046 through F-048 and updated
   F-011/F-019/F-020/F-030/F-044/F-047, production risks, and this backlog.
+- 2026-05-14: T-001 removed `MONGO_URI` from `next.config.mjs`, confirmed the
+  remaining `MONGO_URI` references are server-side DB helpers, and updated the
+  environment/deployment runbooks to keep server-only secrets out of Next
+  config `env`.
+- 2026-05-14: Prepared T-005 to harden Cloudinary signing before the broader
+  Cloudinary/Vercel/auth environment inventory continues.
+- 2026-05-14: Completed T-005 missing `CLOUDINARY_API_SECRET` handling with a
+  public-safe JSON error; Cloudinary environment inventory and rotation
+  ownership remain open.
 
 ## Next Agent Action
 
-Remove `MONGO_URI` from `next.config.mjs`, then update
-[../runbooks/environment.md](../runbooks/environment.md) and deployment notes
-with the A-007 variable inventory, build dependencies, Vercel settings, and
-smoke/rollback evidence requirements.
+Add the server-only Next config env guard and continue the A-007 environment
+inventory for Cloudinary, Vercel URL, and legacy auth variables.

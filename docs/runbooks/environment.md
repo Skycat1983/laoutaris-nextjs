@@ -7,7 +7,7 @@ purposes, and likely owners only.
 
 | Variable | Purpose | Notes |
 | --- | --- | --- |
-| `MONGO_URI` | MongoDB connection for app data | Referenced in `next.config.mjs` and DB helpers |
+| `MONGO_URI` | MongoDB connection for app data | Required server-only secret for DB helpers. Configure it in server runtime/build environments, not in `next.config.mjs` `env` or any `NEXT_PUBLIC_*` variable. |
 | `NEXTAUTH_SECRET` | NextAuth JWT/session secret | Required by middleware token lookup |
 | `GITHUB_ID` | GitHub OAuth client ID | Optional unless GitHub sign-in is enabled |
 | `GITHUB_SECRET` | GitHub OAuth client secret | Secret |
@@ -25,5 +25,7 @@ update this file before production.
 ## Rules
 
 - Never commit `.env` values.
+- Keep server-only secrets out of `next.config.mjs` `env`; values defined there
+  can be inlined into application bundles by Next.js.
 - Document new variables here when adding config.
 - Include purpose, required environments, and rotation owner when known.

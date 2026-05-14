@@ -14,6 +14,29 @@ type ArtworkShopSectionProps = {
   artwork: ArtworkFrontend;
 };
 
+type ShopProductResponse =
+  | { success: true; data: SimpleProduct }
+  | { success: false; error: string };
+
+const fetchShopifyProduct = async (
+  productId: string
+): Promise<SimpleProduct | null> => {
+  const res = await fetch(
+    `/api/v2/public/shop/products/${encodeURIComponent(productId)}`
+  );
+
+  if (!res.ok) {
+    return null;
+  }
+
+  const result = (await res.json()) as ShopProductResponse;
+  return result.success ? result.data : null;
+};
+
+const isSimpleProduct = (
+  product: SimpleProduct | null
+): product is SimpleProduct => product !== null;
+
 const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
   const [originalProduct, setOriginalProduct] = useState<SimpleProduct | null>(
     null
@@ -36,17 +59,8 @@ const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
           "original"
         );
         if (originals.length > 0) {
-          const res = await fetch(
-            `/api/v2/public/shop/products/${encodeURIComponent(
-              originals[0].productId
-            )}`
-          );
-          console.log("original product response in ArtworkShopSection: ", res);
-          if (res.ok) {
-            const product = await res.json();
-            console.log("original product in ArtworkShopSection: ", product);
-            setOriginalProduct(product);
-          }
+          const product = await fetchShopifyProduct(originals[0].productId);
+          setOriginalProduct(product);
         }
 
         // Fetch prints
@@ -54,36 +68,20 @@ const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
           artwork.shopifyProducts,
           "print"
         );
-        console.log("print products in ArtworkShopSection: ", prints);
         if (prints.length > 0) {
           const printData = await Promise.all(
-            prints.map((p) =>
-              fetch(
-                `/api/v2/public/shop/products/${encodeURIComponent(
-                  p.productId
-                )}`
-              ).then((res) => (res.ok ? res.json() : null))
-            )
+            prints.map((p) => fetchShopifyProduct(p.productId))
           );
-          console.log("print products in ArtworkShopSection: ", printData);
-          setPrintProducts(printData.filter(Boolean));
+          setPrintProducts(printData.filter(isSimpleProduct));
         }
 
         // Fetch books
         const books = getShopifyProductsByType(artwork.shopifyProducts, "book");
-        console.log("book products in ArtworkShopSection: ", books);
         if (books.length > 0) {
           const bookData = await Promise.all(
-            books.map((b) =>
-              fetch(
-                `/api/v2/public/shop/products/${encodeURIComponent(
-                  b.productId
-                )}`
-              ).then((res) => (res.ok ? res.json() : null))
-            )
+            books.map((b) => fetchShopifyProduct(b.productId))
           );
-          console.log("book products in ArtworkShopSection: ", bookData);
-          setBookProducts(bookData.filter(Boolean));
+          setBookProducts(bookData.filter(isSimpleProduct));
         }
       } catch (error) {
         console.error(

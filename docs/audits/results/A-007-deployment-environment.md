@@ -393,59 +393,27 @@ Missing details before production:
 
 ## Findings Register Updates
 
-None. This audit kept edits scoped to the assigned result file because shared
-trackers are owned by orchestration/reconciliation unless explicitly assigned.
-
-Candidate rows for reconciliation:
-
-- High, Deployment/Security: `MONGO_URI` is exposed through `next.config.mjs`
-  `env`.
-- High, Deployment: Environment runbook is missing active variables and
-  config-decision status for `JWT_SECRET`, `AUTH_SECRET`,
-  `NEXT_PUBLIC_BASE_URL`, Vercel URL values, and Cloudinary variables.
-- High, Deployment/Quality: Build verification depends on live MongoDB and
-  external Google Fonts/network access.
-- High, Deployment/Architecture: Deployment URL construction is hard-coded and
-  inconsistent across server fetchers, shop loaders, and redirects.
-- High, Security/Deployment: Shopify credential-like source comment remains.
-- Medium, Assets/Deployment: Cloudinary upload preset and signing variables are
-  not fully documented.
-- Medium, Deployment/Quality: Deployment smoke checks are manual and not backed
-  by a script.
-- Medium, Deployment/Ops: Runtime version, Vercel project settings, and
-  rollback steps are not pinned or documented.
-- Medium, Observability/Deployment: Build and runtime logs are noisy and not
-  production-policy gated.
+- Reconciled on 2026-05-14 into
+  [findings-register.md](../findings-register.md).
+- New converted findings: F-044, F-046, F-047, and F-048.
+- Existing findings updated with A-007 evidence: F-011, F-016, F-019, F-020,
+  and F-030.
 
 ## Risks Updated
 
-None. Existing risks R-003, R-019, R-022, and R-024 are directly relevant, but
-this audit did not edit the shared risk tracker.
-
-Candidate risk updates:
-
-- Add or update a high deployment/security risk for server-only secrets exposed
-  through `next.config.mjs`.
-- Update R-003 with the completed A-007 env inventory and open variables.
-- Update R-024 with the current build evidence: default sandbox build failed on
-  MongoDB DNS/egress; external-access build passed but still used live MongoDB.
-- Update R-019 or a deployment operations risk with missing automated smoke
-  checks, rollback steps, Vercel settings, and production logging policy.
+- Updated on 2026-05-14:
+  [production-readiness risks](../../risks/production-readiness.md) R-003,
+  R-005, R-008, R-014, R-019, R-022, R-024, R-027, and R-028.
 
 ## Workstream Updates
 
-None. Shared workstream edits should be handled during reconciliation.
-
-Candidate deployment/security backlog additions:
-
-- Remove `MONGO_URI` from `next.config.mjs`.
-- Update environment and deployment runbooks with the A-007 env inventory,
-  service dependencies, and owner/rotation metadata.
-- Centralize or remove same-app base URL construction.
-- Decide CI policy for live MongoDB and Google Fonts dependencies.
-- Convert deployment smoke checks into a scripted or evidence-based checklist.
-- Document Vercel project settings, Node version, and rollback steps.
-- Gate production debug logs.
+- Updated on 2026-05-14:
+  [Deployment, security, and observability](../../workstreams/deployment-security-and-observability.md),
+  [Testing and quality](../../workstreams/testing-and-quality.md),
+  [Architecture refactor and code health](../../workstreams/architecture-refactor-and-code-health.md),
+  [Auth, admin, and permissions](../../workstreams/auth-admin-and-permissions.md),
+  [Content, assets, and admin operations](../../workstreams/content-assets-and-admin-ops.md),
+  and [Shopify commerce](../../workstreams/shopify-commerce.md).
 
 ## Completion Audit
 
@@ -463,12 +431,11 @@ Candidate deployment/security backlog additions:
 | Audit smoke-check requirements. | Deployment smoke list was reviewed and missing executable/evidence details are recorded. | Complete |
 | Write result file. | `docs/audits/results/A-007-deployment-environment.md` is updated from placeholder to completed audit. | Complete |
 | Avoid recording secret values. | `.env` inspection printed names only; this report does not include secret values. | Complete |
-| Avoid overwriting unrelated dirty files. | Pre-existing dirty shared docs were observed; this audit edits only the A-007 result file. | Complete |
-| Identify shared tracker updates without unassigned shared edits. | Candidate findings, risks, and workstream updates are listed, but shared trackers were not edited. | Complete |
+| Avoid overwriting unrelated dirty files. | Pre-existing dirty shared docs were observed; the original audit edited only this result file, and reconciliation later patched shared docs in place. | Complete |
+| Reconcile shared tracker updates. | Candidate findings, risks, and workstream updates are now routed through the findings register, risk tracker, and workstream backlogs. | Complete |
 
 ## Next Action
 
-Reconcile A-007 into shared trackers, starting with the high-risk secret exposure
-in `next.config.mjs`, then update the environment/deployment runbooks with
-owner, purpose, required environments, and rotation notes for every active
-variable.
+Remove `MONGO_URI` from `next.config.mjs`, then update the
+environment/deployment runbooks with owner, purpose, required environments,
+rotation notes, Vercel settings, smoke evidence, and rollback steps.

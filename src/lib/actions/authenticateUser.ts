@@ -1,9 +1,10 @@
 import { UserModel } from "@/lib/data/models";
 import { verifyPassword } from "@/lib/helpers/bcrypt";
-import { LoginFormData, LoginWithUsernameFormData } from "./processLogin";
+import type { LoginFormData, LoginWithUsernameFormData } from "./processLogin";
 import dbConnect from "@/lib/db/mongodb";
 import { RequestInternal } from "next-auth";
 import { validateLoginData } from "../validation/validateLoginData";
+import type { UserRole } from "@/lib/constants";
 
 interface AuthenticateUserSuccess {
   success: true;
@@ -12,6 +13,7 @@ interface AuthenticateUserSuccess {
     _id: string;
     email: string;
     username: string;
+    role: UserRole;
   };
 }
 
@@ -27,7 +29,6 @@ export const authenticateUsername = async ({
   password,
 }: LoginWithUsernameFormData): Promise<AuthenticateUserResponse> => {
   const existingUser = await UserModel.findOne({ username: username });
-  console.log("existingUser :>> ", existingUser);
   if (!existingUser) {
     return {
       success: false,
@@ -49,9 +50,10 @@ export const authenticateUsername = async ({
     success: true,
     message: "User logged in successfully",
     user: {
-      _id: existingUser._id,
+      _id: existingUser._id.toString(),
       email: existingUser.email,
       username: existingUser.username,
+      role: existingUser.role ?? "user",
     },
   };
 };
@@ -83,9 +85,10 @@ export const authenticateUser = async ({
     success: true,
     message: "User logged in successfully",
     user: {
-      _id: existingUser._id,
+      _id: existingUser._id.toString(),
       email: existingUser.email,
       username: existingUser.username,
+      role: existingUser.role ?? "user",
     },
   };
 };
@@ -105,7 +108,6 @@ export const authorizeUser = async (
 
   const validatedData = validateLoginData({ usernameData, passwordData });
 
-  console.log("validatedData :>> ", validatedData);
   if (!validatedData.success) {
     // data validation failed
     return null;
@@ -123,6 +125,7 @@ export const authorizeUser = async (
       id: result.user._id,
       email: result.user.email,
       name: result.user.username,
+      role: result.user.role,
     };
   }
 

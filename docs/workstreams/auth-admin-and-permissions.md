@@ -1,6 +1,6 @@
 # Auth, Admin, And Permissions Workstream
 
-Status: Planned
+Status: Active
 
 Goal: harden authentication, protected routes, admin access, and user-owned
 features before production launch.
@@ -46,19 +46,22 @@ features before production launch.
   `session.user.name`, protected API auth responses are inconsistent, Cloudinary
   signing lacks a route-local guard, `/protected` is stale/invalid, legacy
   session helpers compete with NextAuth, and admin bootstrap/recovery is missing.
+- T-002 now persists credentials users' database role through authorize, JWT,
+  and session state.
+- T-003 now makes `session.user.id` the canonical protected-read ownership
+  source and removes username lookup/user creation from the normal session user
+  helpers.
+- T-005 added a route-local API admin guard and JSON 401/403 behavior to the
+  Cloudinary signing endpoint without broad admin route migration.
 
 ## Backlog
 
 - Use the A-004 protected-route inventory when changing middleware or admin API
   guards.
-- Persist the database role for credentials users into JWT/session state, or
-  load the persisted role by stable user ID in the JWT callback.
-- Make `session.user.id` the canonical user ID for route ownership checks and
-  remove protected-read user creation from session helper code.
 - Introduce shared `requireUser` and `requireAdmin` route helpers with
   consistent JSON 401/403 behavior for API routes.
-- Add a route-local admin guard and signing-param validation to
-  `/api/v2/admin/sign-cloudinary-params`.
+- Migrate additional admin API routes to the API admin guard only through
+  separate scoped tasks with focused route tests.
 - Confirm whether `/protected` is still intentional; if not, remove the route
   and protected-route constant in the same auth-reviewed change.
 - Choose the current sign-in/session path, then remove the legacy
@@ -101,9 +104,20 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   this backlog.
 - 2026-05-14: Reconciled A-004 into F-036, F-042 through F-045, updated F-032,
   production risks, and this backlog.
+- 2026-05-14: Completed T-002/F-042 by returning the persisted credentials role,
+  preserving it in JWT/session callbacks, and adding focused admin/non-admin
+  credentials role tests.
+- 2026-05-14: Completed T-003/F-043 by returning stable `session.user.id` from
+  ownership helpers, removing normal username lookup/user creation side effects,
+  and adding focused helper tests.
+- 2026-05-14: Prepared T-005 to harden the Cloudinary signing admin endpoint as
+  the first shared API guard slice.
+- 2026-05-14: Completed T-005 by adding `requireApiAdmin()`, applying it to the
+  Cloudinary signing route, preserving the top-level `signature` response, and
+  covering unauthenticated, forbidden, invalid body, missing-secret, and success
+  paths with focused tests.
 
 ## Next Agent Action
 
-Fix credentials role persistence and stable `session.user.id` ownership helpers,
-then introduce shared JSON 401/403 route guards before pruning `/protected` or
-legacy session code.
+Decide whether to migrate other admin routes to `requireApiAdmin()` before
+pruning `/protected` or legacy session code.

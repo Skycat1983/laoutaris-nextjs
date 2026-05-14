@@ -14,12 +14,15 @@ npm run lint
 
 Before deploying, confirm production values exist for:
 
-- MongoDB connection.
+- MongoDB connection via server-only `MONGO_URI`.
 - NextAuth secret and provider credentials.
 - Shopify store domain and Storefront token.
 - Cloudinary upload and delivery configuration.
 
 See [environment variables](environment.md).
+
+Server-only secrets must be configured in the deployment environment and must
+not be exposed through `next.config.mjs` `env` or `NEXT_PUBLIC_*` variables.
 
 ## Smoke Checks After Deploy
 

@@ -50,6 +50,9 @@ consistent enough for production refactoring and Shopify integration.
 - A-003 found model/schema/type field drift, admin write validation gaps,
   profile/comment/enquiry DTO mismatches, transform extender gaps, and artwork
   image sanitization issues.
+- T-004 completed the first narrow API contract slice: the public single
+  Shopify product route now uses success/error envelopes, validates numeric
+  product IDs before Shopify calls, and has focused route tests.
 
 ## Backlog
 
@@ -110,9 +113,14 @@ Add API route tests where behavior is changed.
   `docs/audits/findings-register.md`, production risks, and this backlog.
 - 2026-05-14: Reconciled A-002 and A-003 into F-036 through F-041, F-049, F-050,
   existing F-010/F-012/F-015/F-024, production risks, and this backlog.
+- 2026-05-14: Prepared T-004 to standardize the public single Shopify product
+  API contract before broad route/fetcher refactors.
+- 2026-05-14: Completed T-004 for
+  `/api/v2/public/shop/products/[productId]`; validation, 400/404/502 error
+  envelopes, success `data` wrapping, and the direct artwork-page consumer are
+  covered by focused tests.
 
 ## Next Agent Action
 
-Start with the A-002/A-003 contract slice: add shared response/validation
-helpers and a route/fetcher parity check, then apply them to one public route,
-one user route, and one admin write route with focused tests.
+Let T-005 test the shared auth/error helper shape on one admin route, then use
+T-004 and T-005 together to decide the next public, user, and admin API slices.

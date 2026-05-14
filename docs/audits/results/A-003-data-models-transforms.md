@@ -84,45 +84,27 @@ or transform contracts found in this audit.
 
 ## Findings Register Updates
 
-Shared-file edits were intentionally not made because audit ownership rules say
-to leave register/risk/workstream edits as candidates unless assigned to
-reconcile shared files.
-
-Candidate findings for reconciliation:
-
-| Candidate ID | Severity | Finding | Suggested destination |
-| --- | --- | --- | --- |
-| A003-F01 | High | Required/optional field contracts are inconsistent across models, schemas, and TypeScript types. | Findings register, data/API workstream, production risk R-006 |
-| A003-F02 | High | Admin create/update routes bypass exported Zod schemas and return raw Mongoose documents under transformed result types. | Findings register, data/API workstream, production risk R-006 |
-| A003-F03 | High | Profile, comment, and enquiry route responses do not match their frontend API result types. | Findings register, data/API workstream, production risk R-006 |
-| A003-F04 | Medium | Public transform extension fields produce defaults or `undefined` values that conflict with frontend contracts. | Findings register, testing workstream, data/API workstream |
-| A003-F05 | Medium | Artwork image transforms bypass the Cloudinary sanitizer and return undocumented image fields. | Findings register, data/API workstream, content/assets workstream |
-| A003-F06 | Medium | Shopify product-link validation remains missing from artwork schemas. | Existing F-010 follow-up only; avoid duplicate |
+- Reconciled on 2026-05-14 into
+  [findings-register.md](../findings-register.md).
+- New converted findings: F-038, F-039, F-040, and F-041.
+- Existing findings updated with A-003 evidence: F-010, F-012, F-015, and F-016.
 
 ## Risks Updated
 
-None. Candidate findings above should be reconciled into existing production risk
-R-006 unless the orchestrator chooses more specific risk records.
+- Updated on 2026-05-14:
+  [production-readiness risks](../../risks/production-readiness.md) R-005,
+  R-006, R-008, R-014, and R-023.
 
 ## Workstream Updates
 
-None. Candidate backlog updates for
-`docs/workstreams/data-models-and-api.md`:
-
-- Add a model/schema/type field matrix for article, artwork, blog, collection,
-  comment, user, enquiry, and subscriber records.
-- Standardize admin create/update route validation and transformed response
-  outputs.
-- Add unit tests for high-risk transforms:
-  - blog `readTime`
-  - collection `firstArtworkId`
-  - user/comment `isOwner`
-  - artwork image sanitization and color-sort payloads
-- Add route contract tests for profile, comment create/update, enquiry, and
-  admin content writes.
+- Updated on 2026-05-14:
+  [Data Models and API](../../workstreams/data-models-and-api.md),
+  [Testing and quality](../../workstreams/testing-and-quality.md),
+  [Content, assets, and admin operations](../../workstreams/content-assets-and-admin-ops.md),
+  and [Shopify commerce](../../workstreams/shopify-commerce.md).
 
 ## Next Action
 
-Reconcile A003-F01 through A003-F06, then implement A003-F01 first by creating
-an authoritative field matrix and shared validation source for core persisted
-entities.
+Create the authoritative model/schema/type field matrix for core persisted
+entities, then implement route validation and transform contract fixes in small
+tested slices.
