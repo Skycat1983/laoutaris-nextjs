@@ -4,9 +4,10 @@ Last updated: 2026-05-14
 
 ## Current Priority
 
-Commission the next non-overlapping implementation slices after T-017, T-018,
-and T-019 completed, while keeping the residual Next/PostCSS owner decision
-separate.
+Resolve the blocked Vercel bcrypt smoke by deploying the T-023 auth
+import-boundary change, providing targeted Vercel log access, and supplying a
+secret-channel smoke credentials account. Keep the residual Next/PostCSS owner
+decision separate.
 
 ## Active Phase
 
@@ -38,7 +39,7 @@ Implementation commissioning and high-risk follow-up sequencing.
   server loaders, API routes, and server actions.
 - Completed audits A-002, A-003, A-004, and A-007 have been reconciled into the
   findings register, risk tracker, and workstream backlogs.
-- T-001 through T-019 are complete. They removed `MONGO_URI` exposure from Next
+- T-001 through T-023 are complete. They removed `MONGO_URI` exposure from Next
   config, persisted credentials roles into JWT/session state, made stable
   `session.user.id` the protected-read ownership source, standardized the
   public single Shopify product API contract, hardened the Cloudinary signing
@@ -52,7 +53,11 @@ Implementation commissioning and high-risk follow-up sequencing.
   flow, split residual dependency advisories into explicit follow-up tasks,
   completed the Next major migration preflight, upgraded bcrypt to 6.0.0,
   hardened subscription validation, proved the `/artwork` list ADR 0004
-  service pattern, and pruned the legacy custom auth/session path.
+  service pattern, pruned the legacy custom auth/session path, hardened admin
+  collection writes, migrated public search to a server-only service, and
+  removed confirmed-unused direct package candidates. T-023 removed bcrypt and
+  credentials password verification from the normal public-page import path by
+  lazy-loading credentials authorize inside the NextAuth credentials provider.
 - Completed audits A-008, A-016, and A-019 have been reconciled into the
   findings register, risk tracker, workstream backlogs, result files, and task
   briefs.
@@ -68,13 +73,30 @@ Implementation commissioning and high-risk follow-up sequencing.
   by moving `/artwork` initial list loading to `getArtworkList`.
 - T-019 resolved the stale custom login/session path and `/protected` route
   pruning; now-unused `jose` is a package-cleanup candidate.
-- T-020, T-021, and T-022 are ready for the next implementation batch.
+- T-020 resolved the admin collection create/update validation slice; article,
+  artwork, and blog admin writes remain open.
+- T-021 partially mitigated public query bounds and ADR 0004 migration by
+  moving public search to `getPublicSearchResults`; artwork browse and shop
+  browse query bounds remain open.
+- T-022 resolved the package cleanup slice for confirmed-unused direct
+  dependencies and removed the unused `core-js` install-script path.
+- The Vercel bcrypt native trace incident is fixed locally by tracing bcrypt
+  prebuilds in `next.config.mjs`; T-023 also removes bcrypt from the normal
+  public-page import path locally.
+- T-024 captured partial production evidence on 2026-05-14: the public Vercel
+  alias returned `HTTP/2 200` for `GET /`, and an intentionally invalid
+  credentials callback returned `401 CredentialsSignin` instead of `500`.
+  Closure is blocked because the observed `origin/main` SHA did not yet include
+  the local T-023 change, targeted Vercel logs were unavailable, and no smoke
+  credentials account was documented.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
-  admin create/update validation, public search/browse query bounds, staged
-  ADR 0004 server data-access migrations, unused package/install-script cleanup,
-  Cloudinary upload policy, admin bootstrap/recovery, and the broader CORS/CSP
-  and logging policy decisions.
+  completion of Vercel smoke verification for the bcrypt tracing/import-boundary
+  fix, broader root-layout DB/session/cache ownership, remaining admin write
+  validation, artwork/shop browse query bounds, staged ADR 0004 server
+  data-access migrations, package-manager/Node runtime pins, Cloudinary upload
+  policy, admin bootstrap/recovery, and the broader CORS/CSP and logging policy
+  decisions.
 
 ## Active Audits
 
@@ -131,15 +153,11 @@ completed:
 
 ## Next Orchestrator Action
 
-Commission the next batch with one-line task pointers:
-
-```text
-/task effort: high details: docs/tasks/T-020-admin-collection-write-validation.md
-/task effort: high details: docs/tasks/T-021-public-search-query-service.md
-/task effort: high details: docs/tasks/T-022-prune-unused-package-candidates.md
-```
-
-These tasks have disjoint primary write scopes. T-020 owns admin collection
-create/update validation and focused route tests. T-021 owns public search query
-validation, search service extraction, and `/search` server rendering. T-022
-owns `package.json`, `package-lock.json`, and package-focused verification.
+Commit and deploy the local T-023 auth import-boundary change, then rerun
+[T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md) with Vercel
+deployment/log access and a secret-channel test/admin credentials account. Keep
+the immediate bcrypt tracing include in `next.config.mjs` until T-024 records a
+passing Vercel smoke. After smoke, commission the next focused implementation
+batch from the workstream next actions, with likely candidates including
+deployment smoke checklist/script work, shared user/admin route guards, or the
+next ADR 0004 same-app HTTP migration.

@@ -32,6 +32,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-020 Harden admin collection write validation](T-020-admin-collection-write-validation.md) | Completed | Validated admin collection create/update input, persisted allowlisted fields, and added focused route tests. |
 | [T-021 Harden public search query service](T-021-public-search-query-service.md) | Completed | Bound public search query input and moved `/search` server rendering to a direct server-only data service. |
 | [T-022 Prune unused package candidates](T-022-prune-unused-package-candidates.md) | Completed | Removed confirmed-unused direct packages such as `jose`, `next-test-api-route-handler`, Shopify/GraphQL clients, and redundant type packages with lockfile verification. |
+| [T-023 Decouple root layout auth from bcrypt](T-023-root-layout-auth-bcrypt-decoupling.md) | Completed | Removed bcrypt and credentials verification from the normal public-page import path after the Vercel native bcrypt incident. |
+| [T-024 Verify Vercel bcrypt redeploy smoke](T-024-verify-vercel-bcrypt-redeploy-smoke.md) | Blocked | Captured partial Vercel smoke for `GET /` and invalid credentials callback; successful sign-in, targeted logs, and a deployment containing T-023 still require owner access/action. |
 
 ## Rules
 

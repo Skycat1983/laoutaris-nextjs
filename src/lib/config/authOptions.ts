@@ -1,10 +1,9 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authorizeUser } from "../actions/authenticateUser";
 import { Adapter } from "next-auth/adapters";
 import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";
-import { CustomMongoDBAdapter } from "../db/adapter";
+import { CustomMongoDBAdapter } from "@/lib/db/adapter";
 import { clientPromise } from "@/lib/db";
 import { authCallbacks } from "./authCallbacks";
 
@@ -53,7 +52,10 @@ export const authOptions = {
           id: "password",
         },
       },
-      authorize: authorizeUser,
+      authorize: async (credentials, req) => {
+        const { authorizeUser } = await import("../actions/authenticateUser");
+        return authorizeUser(credentials, req);
+      },
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID ?? "",

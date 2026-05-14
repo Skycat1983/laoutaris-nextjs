@@ -1,6 +1,6 @@
 # Incident 2026-05-14 Vercel Bcrypt Native Trace
 
-Status: Fixed locally; redeploy required.
+Status: Partial production smoke captured; redeploy/log access required.
 
 Workstreams:
 [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md),
@@ -24,8 +24,8 @@ Relevant stack summary:
 ## Root Cause
 
 This was a deployment bundle/runtime mismatch after the `bcrypt@6.0.0` upgrade.
-The compiled home route bundle contains an external `require("bcrypt")` through
-the root layout authentication chain:
+At incident time, the compiled home route bundle contained an external
+`require("bcrypt")` through the root layout authentication chain:
 
 `src/app/layout.tsx` -> `src/lib/config/authOptions.ts` ->
 `src/lib/actions/authenticateUser.ts` -> `src/lib/helpers/bcrypt.ts`.
@@ -43,6 +43,12 @@ ship the native bcrypt prebuilds they need at runtime.
 Focused coverage was added in
 `__tests__/unit/deployment/nextConfigBcryptTrace.test.ts`.
 
+Follow-up blast-radius reduction was completed by
+[T-023](T-023-root-layout-auth-bcrypt-decoupling.md): `authOptions` now
+lazy-loads `authorizeUser` inside the credentials provider callback, so
+root-layout session reads and public page imports no longer eagerly import the
+bcrypt helper or native package.
+
 ## Verification
 
 Passed:
@@ -53,6 +59,9 @@ Passed:
 - `npm run lint`
 - `npm_config_platform=linux npm_config_arch=x64 LIBC=glibc node -e "const path=require('path'); const load=require('node-gyp-build'); console.log(load.path(path.resolve('node_modules/bcrypt')));"`
   resolved bcrypt to `node_modules/bcrypt/prebuilds/linux-x64/bcrypt.glibc.node`.
+- `npm test -- --runTestsByPath __tests__/unit/auth/authOptionsImportBoundary.test.tsx __tests__/unit/auth/credentialsRoleSession.test.ts __tests__/unit/forms/SignInForm.test.tsx __tests__/unit/deployment/nextConfigBcryptTrace.test.ts`
+- `npm test`
+- `npm run build`
 
 Attempted but did not complete locally:
 
@@ -66,3 +75,36 @@ Redeploy to Vercel, then smoke `GET /` and credentials sign-in. If Vercel still
 reports the same bcrypt native-load error, capture the deployment ID/build ID
 and inspect the function bundle contents for
 `node_modules/bcrypt/prebuilds/linux-x64/bcrypt.glibc.node`.
+
+[T-024 Verify Vercel bcrypt redeploy smoke](T-024-verify-vercel-bcrypt-redeploy-smoke.md)
+tracks this production verification step.
+
+## Partial Production Smoke
+
+On 2026-05-14 at 17:20:24 UTC,
+`curl -I https://laoutaris-nextjs.vercel.app/` returned `HTTP/2 200` from
+Vercel for `x-matched-path: /`
+(`x-vercel-id: fra1::iad1::bvqrj-1778779220713-98f4158169b5`). A full
+`GET /` also returned `HTTP/2 200`
+(`x-vercel-id: fra1::iad1::828rx-1778779220730-bcc8d370c6d7`).
+
+An intentionally invalid credentials callback smoke returned `401` with
+`CredentialsSignin`, not `500`. This shows the deployed credentials callback did
+not reproduce the bcrypt native-load crash for that invalid request, but it does
+not prove successful credentials sign-in.
+
+The production incident is not closed. The current `origin/main` SHA observed
+during smoke was `e26656a812e23d75d49ae59d4a422ce2c6b5ab99`, which includes
+the bcrypt tracing config but not the local T-023 dynamic credentials import.
+This checkout also lacked `.vercel` metadata, Vercel CLI access, targeted log
+access, and a documented smoke credentials account.
+
+## Follow-Up
+
+[T-023 Decouple root layout auth from bcrypt](T-023-root-layout-auth-bcrypt-decoupling.md)
+completed the local blast-radius reduction. Keep the `next.config.mjs` bcrypt
+prebuild tracing include until redeploy smoke confirms both `GET /` and
+credentials sign-in in Vercel.
+
+The production incident remains open until a T-024 rerun records successful
+Vercel smoke evidence for a deployment that contains both local fixes.

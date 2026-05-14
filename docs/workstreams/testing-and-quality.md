@@ -88,6 +88,16 @@ refactoring without turning every change into a manual QA pass.
 - T-022 completed package cleanup verification with full Jest, lint, npm tree,
   and audit checks. T-021 later cleared the public-search schema issue that had
   blocked package-cleanup build verification.
+- The Vercel bcrypt native trace incident showed a verification gap: local
+  bcrypt helper tests and lint/build checks did not prove that Vercel's
+  serverless bundle could load native bcrypt on `GET /`.
+- T-023 added focused import-boundary tests plus deployment smoke expectations
+  for `GET /` and credentials sign-in.
+- T-024 captured partial remote Vercel smoke evidence on 2026-05-14: `GET /`
+  returned `HTTP/2 200`, and an intentionally invalid credentials callback
+  returned `401 CredentialsSignin` instead of `500`. The required successful
+  credentials sign-in and targeted log check remain blocked by missing smoke
+  credentials, missing Vercel log access, and no deployed T-023 commit.
 
 ## Backlog
 
@@ -121,6 +131,8 @@ refactoring without turning every change into a manual QA pass.
   repo-wide threshold.
 - Convert deployment smoke checks into a scripted smoke suite or precise
   evidence-based manual checklist before production launch.
+- Add native-package/runtime smoke expectations when bcrypt, Next, auth
+  configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
   verification.
 - Reduce expected test/build noise by gating debug logs and expected
@@ -221,10 +233,32 @@ npm run lint
   attempt compiled but failed during `/api/v2/public/search` page-data
   collection because public-search schema code still threw at runtime. T-021
   subsequently fixed that blocker and `npm run build` passed.
+- 2026-05-14: Recorded the Vercel bcrypt native trace incident as a deployment
+  verification gap and prepared T-023 with auth import-boundary tests plus
+  redeploy smoke expectations for `GET /` and credentials sign-in.
+- 2026-05-14: T-023 added
+  `__tests__/unit/auth/authOptionsImportBoundary.test.tsx` for auth config
+  import, lazy credentials authorize, and root-layout public-shell rendering
+  without bcrypt imports. Focused auth/import-boundary tests, full Jest, lint,
+  and build passed; existing date utility console output and build-time
+  MongoDB/fetcher/root-layout debug output remain expected verification noise.
+- 2026-05-14: Prepared T-024 so the deployment smoke gap is verified with
+  remote `GET /`, credentials sign-in, deployed commit/runtime, and targeted
+  Vercel log evidence.
+- 2026-05-14: T-024 captured partial remote evidence: the public Vercel alias
+  returned `HTTP/2 200` for `GET /`, and the credentials callback returned a
+  controlled `401 CredentialsSignin` for invalid smoke values instead of `500`.
+  Acceptance remains blocked until a T-023-containing deployment, successful
+  credentials sign-in, and targeted log evidence are available.
 
 ## Next Agent Action
 
-For Next dependencies, wait for owner/orchestrator acceptance of a Next target,
-then execute the verification plan in
+Support [T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md) by
+rerunning the remote smoke after the T-023 deployment is confirmed and a
+secret-channel smoke account plus Vercel log access are available. Then convert
+deployment smoke checks into a repeatable checklist or script. For Next
+dependencies,
+wait for owner/orchestrator acceptance of a Next target, then execute the
+verification plan in
 [T-015](../tasks/T-015-next-major-migration-preflight.md) during the package
 implementation task.

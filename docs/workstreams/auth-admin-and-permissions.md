@@ -73,6 +73,15 @@ features before production launch.
   tested.
 - T-022 removed the now-unused direct `jose` dependency from `package.json`;
   remaining `jose` installs are transitive through NextAuth/auth packages.
+- The 2026-05-14 Vercel bcrypt incident showed that the root layout imported the
+  credentials authorize path through `authOptions`, causing public pages to load
+  native bcrypt even outside credentials login/register flows.
+- T-023 decoupled session/auth configuration imports from credentials password
+  verification while preserving the active NextAuth credentials flow.
+- T-024 exercised the deployed credentials callback with intentionally invalid
+  values and received `401 CredentialsSignin`, not `500`, but successful
+  credentials sign-in still needs a known smoke account after a deployment that
+  includes T-023.
 
 ## Backlog
 
@@ -161,9 +170,22 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   helpers, and `src/app/protected/page.tsx`, removing the stale protected-route
   constant, preserving the active NextAuth credentials path, and verifying
   focused sign-in/route utility tests plus lint.
+- 2026-05-14: Prepared T-023 to lazy/decouple credentials bcrypt imports from
+  root-layout public session reads after the Vercel native bcrypt incident.
+- 2026-05-14: Completed T-023 by moving `authorizeUser` behind a dynamic import
+  inside the credentials provider callback. Existing credentials authorize,
+  JWT/session role propagation, sign-in form, and bcrypt tracing tests passed
+  with the new auth import-boundary coverage.
+- 2026-05-14: T-024 partial production smoke confirmed the deployed credentials
+  callback returns a controlled `401 CredentialsSignin` for invalid credentials
+  instead of a bcrypt native-load `500`. A real credentials sign-in smoke remains
+  blocked by missing smoke account credentials and a deployment containing T-023.
 
 ## Next Agent Action
 
-Continue auth hardening with shared user/admin route guards, admin bootstrap and
-recovery documentation, favourite/watchlist action DB ownership, and production
-logging cleanup.
+Before closing the bcrypt incident, rerun the credentials sign-in smoke with a
+known test/admin account after the T-023 deployment is confirmed. Otherwise
+continue with shared user/admin route guards, admin bootstrap and recovery
+documentation, favourite/watchlist action DB ownership, and production logging
+cleanup. Keep any broader root-layout session redesign separate from the
+completed T-023 credentials import-boundary mitigation.

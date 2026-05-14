@@ -73,6 +73,13 @@ or inconsistent code forward.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
+- The 2026-05-14 Vercel bcrypt incident showed another root-layout ownership
+  problem: at incident time `src/app/layout.tsx` imported `authOptions`, which
+  eagerly imported the credentials authorize path and native bcrypt for every
+  public page render.
+- T-023 completed the auth import-boundary slice: root-layout/session auth
+  imports no longer load credentials password verification or native bcrypt
+  unless a credentials authorize flow is running.
 
 ## Backlog
 
@@ -159,13 +166,21 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-14: Completed T-022 by removing unused direct dependencies from the
   manifest and lockfile while leaving A-014 runtime/source pruning for a later
   staged task.
+- 2026-05-14: Recorded the Vercel bcrypt native trace incident as new evidence
+  for root-layout blast radius and prepared T-023 to lazy/decouple credentials
+  bcrypt imports from public session reads.
+- 2026-05-14: Completed T-023 by lazy-loading the credentials authorize
+  implementation inside the NextAuth credentials provider, keeping bcrypt out of
+  normal root-layout public imports, and adding focused auth/root-layout
+  import-boundary tests.
 
 ## Next Agent Action
 
 Use the completed T-007/T-018/T-021 proof routes to choose the next
-route-critical same-app HTTP migration, and prepare a later A-014 source
-pruning task for unused leaf files, WIP variants, barrels, and starter assets.
-If Next dependency work takes priority, wait for owner/orchestrator acceptance
-of a Next target, then use
+route-critical same-app HTTP migration, and keep broader root-layout
+session/cache refactors separate from the completed T-023 import-boundary
+mitigation. Prepare a later A-014 source pruning task for unused leaf files, WIP
+variants, barrels, and starter assets. If Next dependency work takes priority,
+wait for owner/orchestrator acceptance of a Next target, then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.

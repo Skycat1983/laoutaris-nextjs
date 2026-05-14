@@ -88,6 +88,19 @@ security headers, environment documentation, and actionable operational signals.
   `next-test-api-route-handler -> core-js` install-script path is gone from the
   lockfile; production audit output remains limited to the known residual
   Next/PostCSS advisories from T-015.
+- The 2026-05-14 Vercel bcrypt native trace incident produced a local fix in
+  `next.config.mjs`: `experimental.outputFileTracingIncludes` now includes
+  `node_modules/bcrypt/prebuilds/**/*` so Vercel serverless functions include
+  the Linux native bcrypt prebuild.
+- T-023 completed the follow-up that reduces reliance on native bcrypt
+  packaging for public pages by removing bcrypt from the normal root-layout
+  import path.
+- T-024 captured partial production smoke on 2026-05-14: the public Vercel alias
+  returned `HTTP/2 200` for `GET /`, and an intentionally invalid credentials
+  callback returned `401 CredentialsSignin` instead of `500`. Closure is blocked
+  because `origin/main` did not yet include the local T-023 auth import-boundary
+  change, targeted Vercel logs were unavailable, and no smoke credentials account
+  was documented.
 
 ## Backlog
 
@@ -123,6 +136,8 @@ security headers, environment documentation, and actionable operational signals.
   T-015's Node/React/lint/proxy/image/App Router verification plan.
 - Add package-manager and Node runtime pins, document `npm ci` as the install
   path, and define dependency audit/update automation or cadence.
+- Keep native-package deployment smoke checks for `GET /` and credentials
+  sign-in after bcrypt, Next, runtime, or auth import-boundary changes.
 - Audit privacy, consent, and commerce compliance gaps for owner/legal review.
 - Define observability, alerting, incident response, and rollback ownership.
 - Add monitoring or error reporting decision if needed.
@@ -196,9 +211,30 @@ npm run lint
   and running npm audit, full Jest, and lint verification. Build verification
   initially hit unrelated in-progress T-021 public-search schema edits; T-021
   later cleared that blocker and `npm run build` passed.
+- 2026-05-14: Recorded the Vercel bcrypt native trace incident. Immediate local
+  fix is `next.config.mjs` output-file tracing for bcrypt prebuilds; redeploy
+  and `GET /` plus credentials sign-in smoke checks remain required.
+- 2026-05-14: Prepared T-023 to decouple public root-layout session imports
+  from credentials bcrypt imports.
+- 2026-05-14: Completed T-023 by lazy-loading credentials authorize from
+  `authOptions`, adding auth/root-layout import-boundary tests that fail if
+  public imports load bcrypt, and keeping the bcrypt prebuild tracing include
+  pending Vercel smoke.
+- 2026-05-14: Prepared T-024 to capture Vercel redeploy smoke evidence for
+  `GET /`, credentials sign-in, deployed commit/runtime, and targeted logs.
+- 2026-05-14: T-024 partial smoke found `GET /` on
+  `https://laoutaris-nextjs.vercel.app/` returning `HTTP/2 200`; an invalid
+  credentials callback returned `401 CredentialsSignin`, not `500`. The task is
+  blocked pending a deployment containing T-023, Vercel log access, and a known
+  test/admin credentials account.
 
 ## Next Agent Action
 
+Owner/orchestrator action for
+[T-024](../tasks/T-024-verify-vercel-bcrypt-redeploy-smoke.md): commit and
+deploy the local T-023 auth import-boundary change, provide Vercel deployment/log
+access or a targeted log excerpt for `/`, and provide a secret-channel
+test/admin account so credentials sign-in can be smoked.
 Keep the Next/PostCSS owner choice separate: wait for a stable Next release
 with bundled `postcss@8.5.10+`, accept a partial stable `next@16.2.6` migration
 with residual PostCSS risk, or explicitly accept canary framework risk. Resolve
