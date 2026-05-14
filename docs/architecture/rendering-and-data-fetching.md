@@ -1,7 +1,7 @@
 # Rendering And Data Fetching
 
 This document tracks the intended server-side rendering and data-fetching
-strategy for the app. It is currently a planning target, not a verified
+strategy for the app. It is currently a planning target, not a fully implemented
 architecture contract.
 
 ## Current Position
@@ -19,6 +19,15 @@ when it improves reliability, SEO, shareability, or first load behavior. Client
 components should be used for interaction after initial render, such as filters,
 sort controls, forms, drawers, and account actions.
 
+## Accepted Server Data Pattern
+
+[ADR 0004](../decisions/0004-server-data-access-ownership.md) accepts direct
+server data-access services as the canonical server-side pattern. Server loaders,
+API routes, and server actions should share server-only services that own
+MongoDB/Shopify reads, transforms, and typed domain results. API routes remain
+HTTP adapters for browser clients and external callers. Server loaders and
+server actions should not fetch this same Next.js app through absolute HTTP URLs.
+
 ## Patterns To Audit
 
 - Page-level data fetching in `src/app/**/page.tsx`.
@@ -33,6 +42,8 @@ sort controls, forms, drawers, and account actions.
 - Which routes must be fully server-rendered for production launch?
 - Which routes can remain client-interactive after a server-rendered shell?
 - What cache and revalidation policy should Shopify reads use?
+- Which service result shape should become the standard across public, user, and
+  admin data services?
 - What test strategy proves SSR behavior without brittle implementation checks?
 
 ## Reconciled Audit Findings
@@ -41,13 +52,13 @@ sort controls, forms, drawers, and account actions.
 the desired high-level shape for several public routes: server pages and
 loaders provide initial data, then client components handle interaction.
 
-The production blockers are now tracked through the
+The remaining production blockers are tracked through the
 [architecture refactor workstream](../workstreams/architecture-refactor-and-code-health.md),
 [production risks](../risks/production-readiness.md), and
 [ADR 0004](../decisions/0004-server-data-access-ownership.md):
 
-- Server loaders and server API wrappers self-fetch the same app over absolute
-  HTTP URLs.
+- Existing server loaders and server API wrappers still self-fetch the same app
+  over absolute HTTP URLs until migrated to the ADR 0004 service pattern.
 - Several MongoDB-backed API routes and account server actions lack explicit DB
   connection ownership.
 - The root layout performs DB/session work globally, which blocks route-specific

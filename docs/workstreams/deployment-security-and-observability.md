@@ -38,15 +38,50 @@ security headers, environment documentation, and actionable operational signals.
 - API CORS headers are broad.
 - Shopify, MongoDB, NextAuth, OAuth, and Cloudinary require environment
   variables.
+- A-001 found a Shopify credential-like value in source comments that must be
+  verified and removed.
+- A-006 found build verification depends on Google Fonts network access and live
+  MongoDB/environment behavior during static generation.
+- Completed audits found debug logging across build, SSR, DB, fetcher, and shop
+  paths that needs a production logging policy.
+- A-014 found unused direct dependency candidates; A-019 remains the full
+  supply-chain audit.
+- A-007 completed the deployment/environment audit and found `MONGO_URI` is
+  exposed through `next.config.mjs` `env`, the environment runbook misses active
+  variables and decisions, build verification depends on live MongoDB and
+  external network access, URL construction is hard-coded/inconsistent,
+  Cloudinary upload variables are undocumented, smoke checks are manual, and
+  runtime/Vercel/rollback settings are not pinned.
 
 ## Backlog
 
 - Inventory required environment variables without recording secret values.
+- Remove `MONGO_URI` from `next.config.mjs` and add a config guard that rejects
+  known server-only secrets in Next `env`.
+- Update the environment runbook with `JWT_SECRET`, `AUTH_SECRET` decision
+  status, `NEXT_PUBLIC_BASE_URL`, `VERCEL_ENV`, `VERCEL_URL`, Cloudinary
+  variables, upload preset ownership, required environments, owners, and
+  rotation guidance.
+- Remove credential-like values from source comments and decide whether exposed
+  values require rotation.
 - Tighten CSP and CORS policy where feasible.
 - Define production logging policy.
+- Gate or remove debug logs that currently pollute tests, builds, SSR, and shop
+  flows.
 - Confirm build behavior on a clean environment.
-- Document deployment, rollback, and smoke-check steps.
+- Decide whether CI builds should be isolated from Google Fonts and live MongoDB
+  access or document those external dependencies explicitly.
+- Centralize or remove same-app base URL construction; until ADR 0004 is applied
+  broadly, avoid production localhost fallbacks and hard-coded production
+  domains.
+- Document deployment, Vercel project settings, Node runtime, rollback, and
+  smoke-check steps.
+- Convert deployment smoke checks into a scripted suite or an evidence-based
+  manual checklist with exact routes, records, roles, expected status/redirects,
+  and rollback trigger.
 - Audit dependency and supply-chain risk.
+- Run a package-focused cleanup for unused direct dependencies only after A-019
+  or a targeted dependency task confirms the plan and lockfile verification.
 - Audit privacy, consent, and commerce compliance gaps for owner/legal review.
 - Define observability, alerting, incident response, and rollback ownership.
 - Add monitoring or error reporting decision if needed.
@@ -69,8 +104,15 @@ npm run lint
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-14: Reconciled A-001, A-006, A-014, and A-015 deployment/security
+  findings into `docs/audits/findings-register.md`, production risks, and this
+  backlog.
+- 2026-05-14: Reconciled A-007 into F-046 through F-048 and updated
+  F-011/F-019/F-020/F-030/F-044/F-047, production risks, and this backlog.
 
 ## Next Agent Action
 
-Create an environment variable inventory from config files and route usage, then
-update [../runbooks/environment.md](../runbooks/environment.md).
+Remove `MONGO_URI` from `next.config.mjs`, then update
+[../runbooks/environment.md](../runbooks/environment.md) and deployment notes
+with the A-007 variable inventory, build dependencies, Vercel settings, and
+smoke/rollback evidence requirements.

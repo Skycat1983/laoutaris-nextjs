@@ -4,12 +4,12 @@ Last updated: 2026-05-14
 
 ## Current Priority
 
-Establish the coordination system for production-readiness work before runtime
-refactors begin.
+Reconcile the completed A-002, A-003, A-004, and A-007 audit batch before
+commissioning runtime implementation.
 
 ## Active Phase
 
-Documentation and audit planning.
+Audit reconciliation and implementation sequencing.
 
 ## Current Facts
 
@@ -29,20 +29,44 @@ Documentation and audit planning.
   complete before commissioning an agent.
 - Concurrent audit agents should assume they are not alone in the repo and should
   keep edits scoped to assigned result files unless told otherwise.
+- Completed audits A-001, A-006, A-012, A-013, A-014, and A-015 have been
+  reconciled into the findings register, risk tracker, workstream backlogs, and
+  required process/ADR/runbook docs.
+- [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted and
+  chooses direct server data-access services over same-app HTTP self-fetching for
+  server loaders, API routes, and server actions.
+- Completed audits A-002, A-003, A-004, and A-007 have landed and need
+  reconciliation into the findings register, risk tracker, and workstream
+  backlogs before implementation begins.
 
 ## Active Audits
 
-None started yet.
+None currently active.
+
+Completed and reconciled:
+
+- [A-001 Shopify commerce readiness](../audits/results/A-001-shopify-commerce.md)
+- [A-006 Testing and quality baseline](../audits/results/A-006-testing-quality-baseline.md)
+- [A-012 Documentation and handoff quality](../audits/results/A-012-documentation-knowledge-base.md)
+- [A-013 Architecture refactor scope](../audits/results/A-013-architecture-refactor-scope.md)
+- [A-014 Unused code and dependency pruning](../audits/results/A-014-unused-code-dependency-pruning.md)
+- [A-015 SSR and data-fetching strategy](../audits/results/A-015-ssr-data-fetching.md)
+
+Completed, pending reconciliation:
+
+- [A-002 Public, user, and admin API contracts](../audits/results/A-002-api-contracts.md)
+- [A-003 Data models, schemas, and transforms](../audits/results/A-003-data-models-transforms.md)
+- [A-004 Auth, admin, and permission boundaries](../audits/results/A-004-auth-admin-permissions.md)
+- [A-007 Deployment and environment readiness](../audits/results/A-007-deployment-environment.md)
 
 ## Recommended Next Audits
 
-1. [A-012 Documentation and handoff quality](../audits/goals.md#a-012-documentation-and-handoff-quality)
-2. [A-013 Architecture refactor scope](../audits/goals.md#a-013-architecture-refactor-scope)
-3. [A-014 Unused code and dependency pruning](../audits/goals.md#a-014-unused-code-and-dependency-pruning)
-4. [A-015 SSR and data-fetching strategy](../audits/goals.md#a-015-ssr-and-data-fetching-strategy)
-5. [A-006 Testing and quality baseline](../audits/goals.md#a-006-testing-and-quality-baseline)
-6. [A-016 Forms, validation, and user input](../audits/goals.md#a-016-forms-validation-and-user-input)
-7. [A-019 Dependencies and supply chain](../audits/goals.md#a-019-dependencies-and-supply-chain)
+Do not start another broad audit batch until A-002, A-003, A-004, and A-007 are
+reconciled. Good follow-up audits after reconciliation:
+
+1. [A-008 Security headers, CORS, and logging](../audits/goals.md#a-008-security-headers-cors-and-logging)
+2. [A-016 Forms, validation, and user input](../audits/goals.md#a-016-forms-validation-and-user-input)
+3. [A-019 Dependencies and supply chain](../audits/goals.md#a-019-dependencies-and-supply-chain)
 
 ## Open Coordination Tasks
 
@@ -50,14 +74,23 @@ None started yet.
   `effort: xhigh` for broad, ambiguous, or high-risk cross-cutting audits.
 - Update and review the relevant details doc first, then commission agents with a
   one-line `/goal` or `/task` pointer.
-- Keep audit result status in sync with `docs/audits/goals.md`.
+- Keep future audit result status in sync with `docs/audits/goals.md` and
+  `docs/audits/results/README.md`.
 - Keep [findings-register.md](../audits/findings-register.md) in sync with
-  completed audit results.
-- Convert completed audit findings into workstream backlog items.
+  future completed audit results.
+- Convert future completed audit findings into workstream backlog items before
+  assigning implementation work.
+- Reconcile A-002, A-003, A-004, and A-007 before assigning implementation work.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
+- Resolve or escalate owner decisions captured in the findings register:
+  checkout scope, admin Shopify linking, i18n scope, auth/session pruning, and
+  Shopify credential verification.
 
 ## Next Orchestrator Action
 
-Run A-012 as a quick self-audit of the documentation system, then start A-013 to
-define the architecture refactor scope before assigning implementation work.
+Commission reconciliation for A-002, A-003, A-004, and A-007. After
+reconciliation, authorize the first narrow implementation slice: the `/artwork`
+server data-access proof described in
+[ADR 0004](../decisions/0004-server-data-access-ownership.md), unless the
+reconciled auth/API/deployment findings reveal a higher-severity prerequisite.

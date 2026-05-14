@@ -37,14 +37,29 @@ Next.js server/client component boundaries.
   project, search, and shop.
 - Shared card, navigation, filter, and loader modules are reused across routes.
 - Historical shop notes identify barrel exports as a client bundle risk.
+- A-013 and A-015 found client components importing server/model modules or
+  broad barrels that can cross client/server boundaries.
+- A-015 found public loaders handle error, empty, and not-found states
+  inconsistently.
+- A-001 found visible shop filter, pagination, and sorting controls whose UI
+  behavior is not backed consistently by API data.
 
 ## Backlog
 
 - Map server and client component boundaries for public routes.
 - Identify barrel exports used from client components.
+- Replace client component value imports from server APIs, Mongoose model
+  barrels, and broad mixed client/server barrels with client-safe APIs, shared
+  frontend types, or direct imports.
 - Audit loading, error, not found, and empty states on public pages.
+- Define loader error contracts by route type: public detail pages, section
+  loaders, route-critical fetches, and empty archive views.
 - Stabilize responsive behavior for artwork, collections, shop, and search.
 - Audit search, navigation, breadcrumbs, filters, and content discovery paths.
+- Align shop filters, pagination, and sorting UI with backed API behavior or hide
+  unsupported controls.
+- Decide the i18n/frontend language direction before pruning unused translation
+  UI.
 - Add smoke-level tests for high-value public pages.
 
 ## Acceptance Criteria
@@ -66,8 +81,11 @@ Use browser checks for layout-sensitive changes.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-14: Reconciled A-001, A-013, A-014, and A-015 frontend findings into
+  `docs/audits/findings-register.md`, production risks, and this backlog.
 
 ## Next Agent Action
 
-Inspect public page and loader patterns, then document the preferred server page
-plus loader plus client interaction pattern in an architecture note.
+Map client/server import boundaries for public routes, then remove the highest
+risk client imports from server/model modules after the architecture decision
+workstream defines the import rules.

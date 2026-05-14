@@ -1,6 +1,6 @@
 # 0004 - Server Data Access Ownership
 
-Status: Proposed
+Status: Accepted
 
 Date: 2026-05-14
 
@@ -15,22 +15,53 @@ route ownership decisions.
 
 ## Decision
 
-Pending owner/orchestrator decision before broad implementation.
+Use direct server data-access services as the canonical server-side pattern.
 
-The decision should choose one canonical pattern:
+Server loaders, API routes, and server actions that run inside the Next.js
+runtime should call typed server-only data services instead of fetching this same
+app over absolute HTTP URLs. API route handlers remain the public HTTP boundary:
+they should parse requests, enforce request-level auth, call the same server data
+services, and translate service results into `NextResponse` envelopes. Browser
+client components should continue to use client API fetchers for interactive
+reads and writes.
 
-- Direct server data-access services used by loaders, API routes, and server
-  actions.
-- A deliberate internal HTTP layer with one shared server fetcher, auth/header
-  forwarding rules, base URL ownership, cache policy, and tests.
+The ownership split is:
 
-Until this ADR is accepted, broad rewrites of loaders, server fetchers, or API
-route data flow should wait. Narrow proof-of-concept work may be used to inform
-the decision if it is recorded in the
-[architecture refactor workstream](../workstreams/architecture-refactor-and-code-health.md).
+- Route boundaries own URL/search-param parsing, redirects, `notFound()` calls,
+  and request/session context.
+- Server data services own MongoDB connection setup, model queries, Shopify
+  server calls when needed, transforms, and typed domain results.
+- API routes are HTTP adapters over those services, not the only server-side way
+  to reach app data.
+- Server actions call services directly after validating action input and auth
+  context.
+- `serverApi`, `serverPublicApi`, `serverUserApi`, and `serverAdminApi` are
+  deprecated for same-app SSR and server actions. They may stay temporarily
+  while each route is migrated, but new server-side code should not use them.
+
+A deliberate internal HTTP layer is rejected for ordinary same-app server reads.
+It would require header forwarding, absolute base URL ownership, deployment
+domain handling, cache policy, and integration tests for a network hop that the
+server runtime does not need. Internal HTTP is allowed only as a documented
+exception when the call truly crosses a runtime or service boundary.
+
+The first implementation proof should be narrow: migrate one route, preferably
+`/artwork`, by extracting the artwork list read into a server data service,
+calling it from both `ArtworkListLoader` and the existing public artwork API
+route, and adding tests that prove the server loader no longer requires a live
+`localhost:3000` app.
 
 ## Consequences
 
-- The rendering and data-fetching refactor has a named decision gate.
-- Work can still proceed on audits, tests, route inventories, and small proofs.
-- Production SSR/cache work remains blocked until this ADR is accepted.
+- Same-app HTTP self-fetching should be removed from server loaders and server
+  actions over staged route migrations.
+- API routes remain useful for browser clients and external callers, but should
+  share service logic with server-rendered routes instead of duplicating query
+  code.
+- MongoDB connection ownership moves to the service or shared service wrapper
+  for MongoDB-backed reads and writes, rather than relying on the root layout or
+  incidental earlier route work.
+- Route-specific cache and dynamic rendering policy can now be documented and
+  applied at the page/loader/API adapter boundary.
+- The refactor still needs a proof route and tests before broad migration across
+  public, account, admin, and Shopify data flows.

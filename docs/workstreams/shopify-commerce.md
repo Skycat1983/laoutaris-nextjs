@@ -45,19 +45,34 @@ production while preserving MongoDB as the archive source of truth.
   client components.
 - Product route URLs should use Shopify handles:
   `/shop/products/[productHandle]`.
+- A-001 found product detail linked artwork fetching, checkout scope, admin
+  linking, credential hygiene, product ID validation, filters, pagination,
+  sorting, transform coverage, and API envelope consistency are not
+  production-ready.
+- A-015 independently confirmed the product-detail linked artwork fetch uses a
+  non-existent `/api/artworks/:id` path.
 
 ## Backlog
 
-- Confirm the current shop routes compile and load with empty, partial, and
-  populated Shopify data.
-- Audit the product listing API for error shape, pagination behavior, filter
-  correctness, and failed Shopify fetch behavior.
-- Confirm the product detail route handles original artworks, prints, books, and
-  missing linked MongoDB artwork.
-- Define the admin linking workflow for original, print, and book product links.
-- Decide whether Shopify cart or checkout handoff is in scope for the first
-  production release.
-- Add focused tests for product transformation, link helpers, and API behavior.
+- Decide first-release checkout handoff: hide purchase controls, link to
+  Shopify-hosted product/checkout, or implement Shopify cart/checkout with
+  variant selection.
+- Fix `/shop/products/[productHandle]` linked artwork fetching by using the
+  canonical public artwork route envelope or a server-side data helper.
+- Define the admin linking workflow for original, print, and book product links,
+  including numeric ID/type validation and duplicate prevention.
+- Remove credential-like Shopify values from source comments, verify whether any
+  exposed value was real, and rotate if needed.
+- Add shared Shopify product ID normalization and audit existing data for legacy
+  GID-style values.
+- Standardize shop product API envelopes and carry product type, tags, variant
+  IDs, availability, and description fields needed by product detail.
+- Remove or implement visible color/dimension filters and placeholder
+  pagination.
+- Sort shop products on explicit product/link metadata instead of title
+  keywords.
+- Add focused tests for product transformation, link helpers, API behavior,
+  product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
   or remove the root notes.
 
@@ -85,9 +100,11 @@ Add targeted tests as shop behavior is hardened.
 
 - Documentation scaffold created.
 - Historical shop notes identified and indexed in `docs/archive/README.md`.
+- 2026-05-14: A-001 and overlapping A-015 findings reconciled into
+  `docs/audits/findings-register.md`, production risks, and this backlog.
 
 ## Next Agent Action
 
-Audit the live shop route and public shop API against
-[../architecture/shopify-commerce.md](../architecture/shopify-commerce.md), then
-update this brief with confirmed defects and the first implementation task.
+Resolve the checkout handoff and admin linking workflow decisions, then fix
+product-detail linked artwork fetching and shop API envelope consistency before
+hardening filters, pagination, sorting, and tests.

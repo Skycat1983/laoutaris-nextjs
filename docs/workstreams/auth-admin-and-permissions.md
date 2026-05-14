@@ -37,15 +37,44 @@ features before production launch.
 - Middleware checks protected and admin routes through route utilities.
 - Admin role is read from the token.
 - User features include favourites, watchlist, comments, and profile.
+- A-014 found stale or unused auth/session pruning candidates and a likely stale
+  `/protected` route that need A-004 confirmation before deletion.
+- A-015 found favourite/watchlist server actions touch MongoDB without explicit
+  connection setup or route revalidation.
+- A-004 completed the auth/admin audit and found credentials admin role is not
+  persisted into JWT/session state, ownership helpers resolve by
+  `session.user.name`, protected API auth responses are inconsistent, Cloudinary
+  signing lacks a route-local guard, `/protected` is stale/invalid, legacy
+  session helpers compete with NextAuth, and admin bootstrap/recovery is missing.
 
 ## Backlog
 
-- Audit protected route definitions and confirm every admin API route is covered.
+- Use the A-004 protected-route inventory when changing middleware or admin API
+  guards.
+- Persist the database role for credentials users into JWT/session state, or
+  load the persisted role by stable user ID in the JWT callback.
+- Make `session.user.id` the canonical user ID for route ownership checks and
+  remove protected-read user creation from session helper code.
+- Introduce shared `requireUser` and `requireAdmin` route helpers with
+  consistent JSON 401/403 behavior for API routes.
+- Add a route-local admin guard and signing-param validation to
+  `/api/v2/admin/sign-cloudinary-params`.
+- Confirm whether `/protected` is still intentional; if not, remove the route
+  and protected-route constant in the same auth-reviewed change.
+- Choose the current sign-in/session path, then remove the legacy
+  `SignInFormBackup`, `processLogin`, and custom session chain only after tests.
+- Delete unused auth/session helpers only after A-004 confirms no planned
+  test-header or role-helper workflow depends on them.
+- Add DB connection handling and route revalidation to favourite/watchlist
+  server actions.
 - Remove or gate noisy middleware logging before production.
 - Confirm credential, OAuth, sign-in, sign-out, and redirect flows.
 - Verify role persistence and role assignment behavior.
 - Add tests for route protection utilities and high-risk auth helpers.
-- Document admin account bootstrap and recovery workflow.
+- Add tests for credentials admin, credentials non-admin, OAuth user, middleware
+  admin decisions, shared route guards, and representative user/admin APIs.
+- Document admin account bootstrap and recovery workflow, including promotion,
+  audit ownership, and recovery if all admins are unavailable.
 
 ## Acceptance Criteria
 
@@ -67,8 +96,14 @@ Add targeted tests for `routeUtils` and session helpers when changed.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-14: Reconciled A-014 auth/session pruning findings and A-015 account
+  action findings into `docs/audits/findings-register.md`, production risks, and
+  this backlog.
+- 2026-05-14: Reconciled A-004 into F-036, F-042 through F-045, updated F-032,
+  production risks, and this backlog.
 
 ## Next Agent Action
 
-Audit `src/middleware.ts`, `src/lib/utils/routeUtils.ts`, and admin API routes
-to confirm which paths are protected and which are exposed.
+Fix credentials role persistence and stable `session.user.id` ownership helpers,
+then introduce shared JSON 401/403 route guards before pruning `/protected` or
+legacy session code.

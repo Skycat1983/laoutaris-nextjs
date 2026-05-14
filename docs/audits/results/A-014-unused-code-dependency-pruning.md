@@ -2,7 +2,7 @@
 
 Status: Complete
 
-Audit goal: [A-014 Unused code and dependency pruning](../goals.md#a-014-unused-code-dependency-pruning)
+Audit goal: [A-014 Unused code and dependency pruning](../goals.md#a-014-unused-code-and-dependency-pruning)
 
 Workstream: [Architecture refactor and code health](../../workstreams/architecture-refactor-and-code-health.md)
 

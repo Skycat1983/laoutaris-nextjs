@@ -37,16 +37,43 @@ content operations repeatable and safe.
 - Cloudinary is used for image upload and delivery.
 - MongoDB stores primary archive and content data.
 - User-generated content includes comments, favourites, and watchlist records.
+- A-001 found no operator-safe admin workflow for creating, validating, and
+  removing Shopify product links on artwork records.
+- A-013 found admin entity operations are repeated across operation tabs, read
+  lists, feeds, and API clients.
+- A-014 found the i18n translation pipeline is mostly unused and root Shopify
+  historical notes still need consolidation before deletion.
+- A-003 found public artwork image transforms bypass Cloudinary image
+  sanitization and route-specific image fields are not typed.
+- A-004 and A-007 found the Cloudinary signing route lacks a route-local admin
+  guard, request validation, complete environment documentation, and clear upload
+  preset ownership.
 
 ## Backlog
 
 - Document admin content workflows for each content type.
+- Document and implement the admin workflow for linking original, print, and
+  book Shopify products to artwork records.
+- Add validation and duplicate-prevention expectations for Shopify product link
+  operations.
 - Define backup and restore expectations for MongoDB and Cloudinary assets.
 - Audit Cloudinary upload signing and allowed upload parameters.
+- Add route-local admin authorization, request validation, allowed param/folder
+  rules, and a shared API envelope to `sign-cloudinary-params`.
+- Document Cloudinary variables, upload preset ownership, rotation owner, and
+  allowed upload policy in the Cloudinary/environment runbooks.
+- Decide whether public artwork responses should expose Cloudinary `public_id`;
+  if not, wire image sanitization into artwork transforms and tests.
 - Confirm delete behavior for content with related records.
+- Consolidate repeated admin entity operation patterns into typed descriptors
+  where it reduces duplicated feed/read/update/delete behavior.
 - Audit translations, labels, content taxonomy, and public/admin copy
   consistency.
+- Decide whether the mostly unused translation pipeline is in launch scope; if
+  not, route it to a pruning task.
 - Add operator runbooks for adding artworks and linking Shopify products.
+- Consolidate useful root Shopify historical notes before deleting or archiving
+  the root files.
 
 ## Acceptance Criteria
 
@@ -67,8 +94,12 @@ Use manual admin checks when changing dashboard behavior.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-14: Reconciled A-001, A-013, and A-014 content/admin findings into
+  `docs/audits/findings-register.md`, production risks, and this backlog.
+- 2026-05-14: Reconciled A-003, A-004, and A-007 Cloudinary/image findings into
+  F-041, F-044, production risks, and this backlog.
 
 ## Next Agent Action
 
-Inventory admin CRUD forms and routes, then document one complete artwork create
-and update workflow.
+Inventory Cloudinary signing and artwork image transform behavior, then define
+the admin upload policy before changing upload code or public image payloads.

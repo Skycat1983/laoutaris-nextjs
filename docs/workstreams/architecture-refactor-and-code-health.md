@@ -1,6 +1,6 @@
 # Architecture Refactor And Code Health Workstream
 
-Status: Planned
+Status: Active
 
 Goal: identify and execute structural refactors that make the app easier to
 scale, safer to test, and simpler for agents to modify without carrying unused
@@ -44,19 +44,37 @@ or inconsistent code forward.
   attempted but are not yet successfully established as reliable patterns.
 - Root and component-level code likely contains WIP, historical, or unused paths
   that should be audited before pruning.
+- A-013, A-014, and A-015 are complete and reconciled.
+- [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
+  server loaders, API routes, and server actions should share direct
+  server-only data-access services instead of same-app HTTP fetches.
 
 ## Backlog
 
-- Audit current route, loader, server component, and client component patterns.
-- Identify modules, components, hooks, dependencies, constants, and docs that are
-  unused or superseded.
-- Define a preferred server-side rendering and data-fetching pattern for public,
-  admin, account, and shop routes.
-- Define import and barrel-export rules for server-safe and client-safe modules.
-- Identify duplicated patterns that should become shared utilities or be
-  intentionally kept local.
-- Create a staged pruning plan with verification commands before deleting code.
-- Update architecture docs and ADRs before executing broad refactors.
+- Implement a narrow `/artwork` proof route for
+  [ADR 0004](../decisions/0004-server-data-access-ownership.md): extract the
+  artwork list read into a server-only data service, call it from both
+  `ArtworkListLoader` and the existing public artwork API route, and add tests
+  proving server rendering does not require a live `localhost:3000` app.
+- After the proof route passes, migrate route-critical loaders off same-app HTTP
+  in small slices and retire `serverApi` usage from server loaders/actions.
+- Define client-safe and server-only import rules, including direct-import rules
+  for barrels that can pull server-only dependencies into client components.
+- Ensure every MongoDB-backed API route and server action reaches the database
+  only through a service or shared wrapper that calls `dbConnect()`.
+- Move route-neutral DB/session work out of the root layout so dynamic rendering
+  and cache policy can be owned by the routes that need them.
+- Document route-specific cache/revalidation policy for public archive,
+  authenticated, admin, and Shopify data.
+- Consolidate taxonomy/filter option sources across constants, schemas, public
+  filters, admin forms, and shop filters.
+- Centralize app route builders, API route builders, and auth path constants;
+  remove hard-coded localhost/same-app absolute routes.
+- Create a staged pruning task for A-014 high-confidence unused leaf files, WIP
+  variants, unused barrels, starter assets, and import cleanup, with
+  verification before deletion.
+- Open a separate dependency cleanup task for A-014 package candidates so
+  `package.json` and lockfile changes are reviewed together.
 
 ## Acceptance Criteria
 
@@ -81,9 +99,16 @@ Use targeted import/reference searches for pruning tasks.
 
 - Workstream created to make architecture refactor, pruning, SSR, and scalable
   patterns first-class production-readiness scope.
+- 2026-05-14: A-013, A-014, and A-015 findings reconciled into
+  `docs/audits/findings-register.md`, production risks,
+  [ADR 0004](../decisions/0004-server-data-access-ownership.md), and this
+  backlog.
+- 2026-05-14: [ADR 0004](../decisions/0004-server-data-access-ownership.md)
+  accepted direct server data-access services as the canonical pattern for
+  loaders, API routes, and server actions. No runtime code was changed in the
+  decision task.
 
 ## Next Agent Action
 
-Start with [A-013 Architecture refactor scope](../audits/goals.md#a-013-architecture-refactor-scope),
-then use A-014 and A-015 to split pruning and rendering strategy into separate
-evidence-backed result files.
+Implement the `/artwork` server data-access proof route with tests before
+applying the pattern across loaders, API routes, actions, and cache policy.
