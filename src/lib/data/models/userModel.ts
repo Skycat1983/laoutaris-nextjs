@@ -3,7 +3,7 @@ import { USER_ROLES, UserRole } from "@/lib/constants";
 export interface UserBase {
   email: string;
   username: string;
-  password: string;
+  password?: string;
   role: UserRole;
 }
 

@@ -4,16 +4,15 @@ Last updated: 2026-05-15
 
 ## Current Priority
 
-T-056 is ready to assign: align the optional persisted user `password`
-credentials/OAuth contract while preserving credentials password requirements
-and public/own user sanitization. Keep Shopify product ID/admin-linking,
-Cloudinary upload policy, global logging/redaction policy, visible blog
-pinned/tag admin workflow, and the residual Next/PostCSS owner decision
-separate.
+T-057 is ready to assign: centralize numeric Shopify product ID validation/GID
+construction and apply it to public product reads. Keep admin Shopify
+product-linking, checkout/cart ownership, data migration, Cloudinary upload
+policy, global logging/redaction policy, visible blog pinned/tag admin workflow,
+and the residual Next/PostCSS owner decision separate.
 
 ## Active Phase
 
-T-056 user password OAuth contract alignment is prepared and ready for agent
+T-057 Shopify product ID normalization is prepared and ready for agent
 assignment.
 
 ## Successor Takeover Snapshot
@@ -119,10 +118,15 @@ Use this section as the first operational handoff for a new orchestrator.
   contracts across the model, route schemas, allowlisted admin create/update
   persistence, and focused tests while leaving visible pinned/tag admin workflow
   controls out of scope.
-- T-056 is ready: it owns the remaining user `password` credentials/OAuth
-  field-contract alignment slice from the F-039 matrix.
+- T-056 is complete: it made persisted user passwords optional, denied
+  credentials auth for OAuth-style users without stored hashes before bcrypt
+  verification, preserved hashed credentials role propagation, and kept
+  public/own password sanitization intact.
+- T-057 is ready: it owns the focused F-012 public Shopify product ID
+  normalization slice for shared numeric ID validation/GID construction across
+  public single-product and listing routes.
 - Next task assignment:
-  `/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
+  `/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -310,8 +314,10 @@ Use this section as the first operational handoff for a new orchestrator.
   remain separate.
 - T-055 is complete. It aligned blog `imageUrl`, `pinned`, and `tags`
   model/schema/admin route contracts while leaving visible admin workflow and
-  public filtering behavior separate. Runtime F-039 work remains open only for
-  the user password/OAuth alignment slice.
+  public filtering behavior separate.
+- T-056 is complete. It aligned optional persisted user password typing and
+  credentials/OAuth behavior while preserving credentials password requirements,
+  hashed-user role propagation, and public/own password sanitization.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
   Vercel project-setting and rollback ownership, broader root-layout
@@ -375,13 +381,13 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-056:
-`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
+Assign T-057:
+`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
 
-Keep Shopify product ID/admin-linking, remaining Cloudinary upload
-policy/runbook work, focused production logging cleanup, visible blog
-pinned/tag admin workflow, and the residual Next/PostCSS owner decision
-separate unless priority changes.
+Keep admin Shopify product-linking, checkout/cart ownership, data migration,
+remaining Cloudinary upload policy/runbook work, focused production logging
+cleanup, visible blog pinned/tag admin workflow, and the residual Next/PostCSS
+owner decision separate unless priority changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

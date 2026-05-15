@@ -342,11 +342,14 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   requirements, treat OAuth users without stored password hashes as invalid
   credentials login targets, and avoid changing account-linking or password
   setup workflows.
+- 2026-05-15: Completed T-056 by treating OAuth-style users without stored
+  password hashes as invalid credentials login targets before bcrypt
+  verification while preserving credentials registration password hashing,
+  hashed-user role propagation, and account-linking/password-setup scope
+  boundaries.
 
 ## Next Agent Action
 
-Assign T-056:
-`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, and any future protected-route migrations
 separate. Preserve the T-043 shared guard invariant and add focused route

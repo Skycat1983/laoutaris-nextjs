@@ -41,6 +41,13 @@ export const authenticateUsername = async ({
   }
 
   const { password: hashedPassword } = existingUser;
+  if (typeof hashedPassword !== "string" || hashedPassword.length === 0) {
+    return {
+      success: false,
+      error: "Invalid password",
+    };
+  }
+
   const verified = await verifyPassword(password, hashedPassword);
 
   if (!verified) {

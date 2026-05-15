@@ -149,9 +149,17 @@ Add targeted tests as shop behavior is hardened.
   invalid repeated filters, product-type boolean strings, and optional `sortBy`
   values before `dbConnect()`, MongoDB query construction, or Shopify product
   fan-out while preserving existing valid listing behavior and response shape.
+- 2026-05-15: Prepared T-057 as the next focused F-012 Shopify product ID slice.
+  It centralizes numeric Shopify product ID validation/GID construction and
+  applies it to public single-product and product-listing reads while leaving
+  admin linking, data migration, checkout/cart, product transforms, sorting, and
+  pagination separate.
 
 ## Next Agent Action
 
-Choose the next Shopify slice separately: owner confirmation on the removed
-Shopify value, checkout handoff, admin linking workflow, product ID migration,
-and server-side sorting/pagination remain separate commerce blockers.
+Assign T-057:
+`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+
+Owner confirmation on the removed Shopify value, checkout handoff, admin
+linking workflow, data migration, and server-side sorting/pagination remain
+separate commerce blockers.

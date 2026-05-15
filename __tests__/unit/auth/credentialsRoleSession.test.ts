@@ -1,4 +1,7 @@
-import { authorizeUser } from "@/lib/actions/authenticateUser";
+import {
+  authenticateUsername,
+  authorizeUser,
+} from "@/lib/actions/authenticateUser";
 import { authCallbacks } from "@/lib/config/authCallbacks";
 import { authOptions } from "@/lib/config/authOptions";
 import dbConnect from "@/lib/db/mongodb";
@@ -93,6 +96,46 @@ describe("credentials role propagation", () => {
       });
     }
   );
+
+  it("rejects credentials authorize for an OAuth-style user without a stored password", async () => {
+    mockFindOne.mockResolvedValue({
+      _id: { toString: () => "oauth-user-id" },
+      email: "oauth-user@example.com",
+      username: "oauth1",
+      role: "user",
+    });
+
+    await expect(
+      authorizeUser(
+        { username: "oauth1", password: "password1" },
+        requestInternal
+      )
+    ).resolves.toBeNull();
+
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockFindOne).toHaveBeenCalledWith({ username: "oauth1" });
+    expect(mockVerifyPassword).not.toHaveBeenCalled();
+  });
+
+  it("does not verify credentials when the stored password hash is missing", async () => {
+    mockFindOne.mockResolvedValue({
+      _id: { toString: () => "oauth-user-id" },
+      email: "oauth-user@example.com",
+      username: "oauth1",
+      password: "",
+      role: "user",
+    });
+
+    await expect(
+      authenticateUsername({ username: "oauth1", password: "password1" })
+    ).resolves.toEqual({
+      success: false,
+      error: "Invalid password",
+    });
+
+    expect(mockFindOne).toHaveBeenCalledWith({ username: "oauth1" });
+    expect(mockVerifyPassword).not.toHaveBeenCalled();
+  });
 
   it.each([
     { role: "admin", id: "admin-user-id", username: "admin1" },

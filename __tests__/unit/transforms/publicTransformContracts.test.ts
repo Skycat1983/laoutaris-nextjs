@@ -38,6 +38,7 @@ import {
   transformComment,
   transformCommentPopulated,
 } from "@/lib/transforms/comment/transformComment";
+import { transformOwnUser } from "@/lib/transforms/user/transformOwnUser";
 import { transformUser } from "@/lib/transforms/user/transformUser";
 
 const ownerId = "user-owner";
@@ -156,6 +157,27 @@ describe("public transform contracts", () => {
     expect(publicOwner).not.toHaveProperty("email");
     expect(publicOwner).not.toHaveProperty("password");
     expect(publicOtherUser.isOwner).toBe(false);
+  });
+
+  it("filters password from own user frontend documents", () => {
+    const ownUser = transformOwnUser.toFrontend(
+      createUser({
+        comments: ["comment-1"],
+        watchlist: ["artwork-1"],
+        favourites: ["artwork-2"],
+      }) as never,
+      ownerId
+    );
+
+    expect(ownUser).toMatchObject({
+      _id: ownerId,
+      email: "owner@example.com",
+      username: "owner",
+      favouritedCount: 1,
+      watchlistCount: 1,
+      commentCount: 1,
+    });
+    expect(ownUser).not.toHaveProperty("password");
   });
 
   it("computes direct and populated comment ownership from the supplied userId", () => {

@@ -1,6 +1,6 @@
 # T-056 Align User Password OAuth Contract
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Data models and API](../workstreams/data-models-and-api.md),
@@ -118,12 +118,23 @@ command and update this task's handoff notes.
 
 ## Handoff Notes
 
-- Keep this as the user `password` credentials/OAuth contract slice only.
-- Treat OAuth users without passwords as valid persisted users but invalid
-  credentials login targets until a deliberate password setup/account-linking
-  workflow exists.
-- Treat existing dirty worktree changes as other agents' work unless they are
-  required to complete this task.
+- Completed on 2026-05-15.
+- `UserBase.password` is now optional to match persisted OAuth-created users.
+- Credentials registration and login schemas still require password strings,
+  and `registerUser()` still hashes and persists credentials passwords.
+- Credentials authentication now returns invalid credentials before calling
+  `verifyPassword()` when the stored user has no usable password hash.
+- Existing credentials users with stored hashes still authorize and propagate
+  the persisted role through JWT/session callbacks.
+- Public user and own-user frontend transforms omit `password`; the user
+  profile route still selects `-password`.
+- No OAuth adapter, account-linking, password-reset/setup, Shopify,
+  Cloudinary, or logging behavior was changed.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/auth/credentialsRoleSession.test.ts __tests__/unit/auth/authOptionsImportBoundary.test.tsx __tests__/unit/transforms/publicTransformContracts.test.ts __tests__/unit/api/userProfileRoute.test.ts`,
+  `npm run lint`, and `npm run build`. Build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug log
+  noise.
 
 ## Escalate
 

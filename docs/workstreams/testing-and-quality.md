@@ -587,14 +587,26 @@ npm run lint
   coverage expectations for optional persisted passwords, missing stored-hash
   credentials denial without bcrypt verification, existing credentials role
   propagation, and public/own password sanitization.
+- 2026-05-15: T-056 extended
+  `__tests__/unit/auth/credentialsRoleSession.test.ts` for OAuth-style
+  missing-password credentials denial and no bcrypt verification, and
+  `__tests__/unit/transforms/publicTransformContracts.test.ts` for own-user
+  password sanitization. Focused auth/import-boundary/transform/profile tests,
+  lint, and build passed; build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-057 with focused public Shopify route coverage
+  expectations for shared numeric product ID normalization, invalid path-ID
+  `400`s before Shopify calls, invalid stored listing IDs skipped before
+  Shopify calls, and post-normalization deduplication.
 
 ## Next Agent Action
 
-Assign T-056:
-`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
-Broaden to lint and build after focused tests pass.
-Keep the route/fetcher parity and protected API guard inventories current when
-fetchers or route handlers change.
+Assign T-057:
+`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+
+For the next implementation slice, add focused tests before broadening to lint
+and build. Keep the route/fetcher parity and protected API guard inventories
+current when fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
 for owner/orchestrator acceptance of a Next target, then execute the

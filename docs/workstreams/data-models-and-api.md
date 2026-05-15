@@ -171,6 +171,11 @@ consistent enough for production refactoring and Shopify integration.
   persisted blogs now require `imageUrl` and default `tags` to `[]`; admin blog
   route schemas accept/default `pinned` and `tags`, reject invalid tags before
   blog reads/writes, and persist only parsed allowlisted fields.
+- T-056 completed the remaining scoped F-039 user `password` runtime alignment
+  slice: persisted user types allow missing passwords for OAuth-created users,
+  credentials auth rejects users without stored hashes before bcrypt
+  verification, existing hashed credentials users still authorize with roles,
+  and public/own user DTOs continue omitting passwords.
 
 ## Backlog
 
@@ -187,8 +192,6 @@ consistent enough for production refactoring and Shopify integration.
 - Add `dbConnect()` or a shared DB wrapper to every MongoDB-backed API route and
   server action, then test handlers in isolation.
 - Confirm schemas, TypeScript types, and transforms agree on required fields.
-- Implement the remaining F-039 user field contract decision recorded
-  in [data-field-contracts.md](../architecture/data-field-contracts.md).
 - Build additional field matrices for artwork, collection, comment, enquiry,
   and subscriber records when implementation work discovers unresolved
   required/optional drift outside the T-053 scope.
@@ -511,8 +514,22 @@ Add API route tests where behavior is changed.
   slice. It owns user `password` optional persisted typing and credentials/OAuth
   authentication behavior while preserving registration/login password
   requirements and frontend password sanitization.
+- 2026-05-15: Completed T-056 by making `UserBase.password` optional, guarding
+  credentials authentication against missing stored hashes before bcrypt
+  verification, preserving credentials role propagation for hashed users, and
+  extending focused auth/transform tests for OAuth-style missing-password
+  denial and public/own password sanitization. Focused tests, lint, and build
+  passed.
+- 2026-05-15: Prepared T-057 for the focused F-012 Shopify product ID
+  normalization slice. It should centralize numeric product ID validation/GID
+  construction and apply it to public Shopify product reads without changing
+  admin linking, data migration, checkout/cart, product transforms, sorting, or
+  pagination.
 
 ## Next Agent Action
 
-Assign T-056:
-`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
+Assign T-057:
+`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+
+Keep the completed article/blog/user F-039 field-contract matrix closed unless
+a new required/optional drift is discovered outside that scoped matrix.
