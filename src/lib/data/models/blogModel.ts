@@ -27,7 +27,7 @@ const blogSchema = new mongoose.Schema<BlogEntryDB>(
     subtitle: { type: String, required: true },
     summary: { type: String, required: true },
     text: { type: String, required: true },
-    imageUrl: { type: String, required: false },
+    imageUrl: { type: String, required: true },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -38,7 +38,7 @@ const blogSchema = new mongoose.Schema<BlogEntryDB>(
     featured: { type: Boolean, default: false },
     pinned: { type: Boolean, default: false },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-    tags: [{ type: String, enum: BLOG_TAGS }],
+    tags: { type: [{ type: String, enum: BLOG_TAGS }], default: [] },
   },
   {
     timestamps: true,

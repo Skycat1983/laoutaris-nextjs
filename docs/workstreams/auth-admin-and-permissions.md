@@ -337,9 +337,16 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   shared response helpers for success, not-found, conflict, and internal
   failure envelopes while preserving auth-before-body-read ordering, structured
   validation `400`s, route-local DB ownership, and allowlisted persistence.
+- 2026-05-15: Prepared T-056 for the user `password` credentials/OAuth field
+  contract slice. It should keep credentials registration/login password
+  requirements, treat OAuth users without stored password hashes as invalid
+  credentials login targets, and avoid changing account-linking or password
+  setup workflows.
 
 ## Next Agent Action
 
+Assign T-056:
+`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, and any future protected-route migrations
 separate. Preserve the T-043 shared guard invariant and add focused route

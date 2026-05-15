@@ -36,6 +36,13 @@ export interface CloudinaryImageDB {
 
 export type CloudinaryImageSanitized = Omit<CloudinaryImageDB, "public_id">;
 
+export interface CloudinaryImageColorProximityMetadata {
+  similarityScore?: number;
+}
+
+export type CloudinaryImageSanitizable = CloudinaryImageDB &
+  CloudinaryImageColorProximityMetadata;
+
 export interface PredominantColors {
   cloudinary: ColourInfo[];
   google: ColourInfo[];
@@ -46,4 +53,5 @@ export interface ColourInfo {
   percentage: number;
 }
 
-export type CloudinaryImageFrontend = CloudinaryImageSanitized;
+export type CloudinaryImageFrontend = CloudinaryImageSanitized &
+  CloudinaryImageColorProximityMetadata;

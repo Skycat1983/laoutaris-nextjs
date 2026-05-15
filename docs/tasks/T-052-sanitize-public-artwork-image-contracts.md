@@ -1,6 +1,6 @@
 # T-052 Sanitize Public Artwork Image Contracts
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Data models and API](../workstreams/data-models-and-api.md),
@@ -16,13 +16,14 @@ shape.
 
 ## Why Now
 
-T-051 resolved the focused F-040 public transform extender drift. The next
-bounded transform/data slice is F-041: `transformArtwork` still bypasses the
-existing image sanitizer, public artwork payloads can expose `image.public_id`,
-the color-proximity path injects an undocumented `image.similarityScore`, and
-the Cloudinary image schema accepts loose color arrays. This stays in the same
-data/API and asset-contract area without mixing in Shopify product-linking,
-Cloudinary upload policy, global logging, or the broader F-039 field matrix.
+T-051 resolved the focused F-040 public transform extender drift. At assignment
+time, the next bounded transform/data slice was F-041: `transformArtwork`
+bypassed the existing image sanitizer, public artwork payloads could expose
+`image.public_id`, the color-proximity path injected an undocumented
+`image.similarityScore`, and the Cloudinary image schema accepted loose color
+arrays. This stayed in the same data/API and asset-contract area without mixing
+in Shopify product-linking, Cloudinary upload policy, global logging, or the
+broader F-039 field matrix.
 
 This task addresses:
 
@@ -123,12 +124,39 @@ path, update the focused Jest command in this task and in the handoff notes.
 
 ## Handoff Notes
 
+- Completed on 2026-05-15.
+- `transformArtwork.toFrontend()` now sanitizes nested Cloudinary image data via
+  `transformImage`, so direct and populated public artwork DTOs omit
+  `image.public_id` while preserving `secure_url`, `bytes`, `pixelHeight`,
+  `pixelWidth`, `format`, `hexColors`, and `predominantColors`.
+- `similarityScore` is preserved as optional public-only image metadata for
+  color-proximity sorted artwork lists. It is typed on the public image DTO and
+  intentionally remains outside persisted Cloudinary image validation.
+- `cloudinaryImageSchema` now validates `hexColors`,
+  `predominantColors.cloudinary`, and `predominantColors.google` as strict
+  `{ color: string; percentage: number }` objects instead of `z.any()`.
+- Added
+  `__tests__/unit/transforms/publicArtworkImageContracts.test.ts` for the
+  focused public artwork image and Cloudinary color schema contract.
 - Keep this limited to public artwork image contract behavior and schema shape
   validation.
-- Record whether `similarityScore` is preserved as typed optional public image
-  metadata or intentionally removed from public output.
+- Recorded decision: `similarityScore` is preserved as typed optional public
+  image metadata and excluded from persisted image validation.
 - Treat existing dirty worktree changes as other agents' work unless they are
   required to complete this task.
+
+## Verification Results
+
+Passed on 2026-05-15:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/transforms/publicArtworkImageContracts.test.ts __tests__/unit/data/getArtworkList.test.ts __tests__/unit/api/publicArtworkListRoute.test.ts __tests__/unit/api/publicArtworkRoute.test.ts __tests__/unit/api/adminArtworkRoute.test.ts
+npm run lint
+npm run build
+```
+
+Build retained existing MongoDB/static-generation, branch-verification, link,
+and fetcher debug log noise.
 
 ## Escalate
 

@@ -8,6 +8,7 @@ reality changes.
 
 - [System overview](system-overview.md)
 - [Routes and API](routes-and-api.md)
+- [Data field contracts](data-field-contracts.md)
 - [Shopify commerce](shopify-commerce.md)
 - [Rendering and data fetching](rendering-and-data-fetching.md)
 

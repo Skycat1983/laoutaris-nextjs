@@ -6,16 +6,33 @@ import {
   ARTWORK_FIELD_EXTENDER,
 } from "../../constants";
 import { createTransformer } from "../createTransformer";
-import { ArtworkBase, ArtworkDB } from "../../data/models";
-import {
+import type { ArtworkBase, ArtworkDB } from "../../data/models";
+import type {
   ArtworkLeanPopulated,
   ArtworkFrontendPopulated,
+  CloudinaryImageFrontend,
+  CloudinaryImageSanitizable,
+  LeanDocument,
+  Prettify,
+  TransformedDocument,
 } from "../../data/types";
 import { transformCollection } from "..";
+import { transformImage } from "./transformImage";
+
+type ArtworkPublicBase = Omit<
+  TransformedDocument<LeanDocument<ArtworkDB>> & ExtendedPublicArtworkFields,
+  SensitivePublicArtworkFields
+>;
+
+type ArtworkFrontendSanitized = Prettify<
+  Omit<ArtworkPublicBase, "image"> & {
+    image: CloudinaryImageFrontend;
+  }
+>;
 
 export type TransformedArtwork = ReturnType<typeof transformArtwork.toFrontend>;
 
-export const transformArtwork = createTransformer<
+const baseArtworkTransformer = createTransformer<
   ArtworkDB,
   ArtworkBase,
   ExtendedPublicArtworkFields,
@@ -25,6 +42,24 @@ export const transformArtwork = createTransformer<
   SENSITIVE_PUBLIC_ARTWORK_FIELDS,
   ARTWORK_FIELD_EXTENDER
 );
+
+export const transformArtwork = {
+  ...baseArtworkTransformer,
+  toFrontend: (
+    doc: LeanDocument<ArtworkDB> | ArtworkLeanPopulated,
+    userId?: string | null
+  ): ArtworkFrontendSanitized => {
+    const artworkPublic = baseArtworkTransformer.toFrontend(
+      doc as LeanDocument<ArtworkDB>,
+      userId
+    ) as ArtworkPublicBase;
+
+    return {
+      ...artworkPublic,
+      image: transformImage(artworkPublic.image as CloudinaryImageSanitizable),
+    };
+  },
+};
 
 export const transformArtworkPopulated = (
   doc: ArtworkLeanPopulated,

@@ -70,6 +70,8 @@ const validUpdatePayload = {
 const parsedCreatePayload = {
   ...validCreatePayload,
   displayDate,
+  pinned: false,
+  tags: [],
 };
 
 const parsedUpdatePayload = {
@@ -105,7 +107,7 @@ const createInvalidJsonRequest = (): MockRequest => ({
   json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
 });
 
-const createBlogDocument = (blog: typeof createdBlog | typeof updatedBlog) => ({
+const createBlogDocument = (blog: object) => ({
   toObject: jest.fn().mockReturnValue({
     ...blog,
     __v: 0,
@@ -238,11 +240,33 @@ describe("POST /api/v2/admin/blog/create", () => {
     expect(mockBlogCreate).not.toHaveBeenCalled();
   });
 
-  it("rejects unknown create fields before persistence", async () => {
+  it("returns 400 when imageUrl is missing and does not write to MongoDB", async () => {
+    const payloadWithoutImageUrl: Partial<typeof validCreatePayload> = {
+      ...validCreatePayload,
+    };
+    delete payloadWithoutImageUrl.imageUrl;
+    const request = createRequest(payloadWithoutImageUrl);
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid blog input",
+      fieldErrors: {
+        imageUrl: ["Image URL is required"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogCreate).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid create tags before persistence", async () => {
     const request = createRequest({
       ...validCreatePayload,
-      author: "507f1f77bcf86cd799439099",
-      pinned: true,
       tags: ["studio"],
     });
 
@@ -253,8 +277,33 @@ describe("POST /api/v2/admin/blog/create", () => {
     expect(body).toEqual({
       success: false,
       error: "Invalid blog input",
+      fieldErrors: {
+        tags: ["Tag must be a valid blog tag"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogCreate).not.toHaveBeenCalled();
+  });
+
+  it("rejects unknown create fields before persistence", async () => {
+    const request = createRequest({
+      ...validCreatePayload,
+      author: "507f1f77bcf86cd799439099",
+      pinned: true,
+      tags: ["artwork"],
+    });
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid blog input",
       fieldErrors: {},
-      formErrors: ["Unrecognized key(s) in object: 'author', 'pinned', 'tags'"],
+      formErrors: ["Unrecognized key(s) in object: 'author'"],
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
@@ -286,6 +335,44 @@ describe("POST /api/v2/admin/blog/create", () => {
     expect(body).toEqual({
       success: true,
       data: createdBlog,
+    });
+  });
+
+  it("creates a blog with explicit pinned and tags values", async () => {
+    const explicitCreatePayload = {
+      ...validCreatePayload,
+      pinned: true,
+      tags: ["artwork", "news"],
+    };
+    const explicitParsedCreatePayload = {
+      ...parsedCreatePayload,
+      pinned: true,
+      tags: ["artwork", "news"],
+    };
+    const explicitCreatedBlog = {
+      _id: blogId,
+      ...explicitParsedCreatePayload,
+      slug: "studio-journal",
+      author: adminUserId,
+    };
+    mockBlogCreate.mockResolvedValue(createBlogDocument(explicitCreatedBlog));
+
+    const response = await POST(
+      createRequest(explicitCreatePayload) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogCreate).toHaveBeenCalledWith({
+      ...explicitParsedCreatePayload,
+      slug: "studio-journal",
+      author: adminUserId,
+    });
+    expect(body).toEqual({
+      success: true,
+      data: explicitCreatedBlog,
     });
   });
 
@@ -448,11 +535,8 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
   });
 
-  it("rejects unknown update fields before persistence", async () => {
+  it("rejects invalid update tags before blog reads", async () => {
     const request = createRequest({
-      title: "Updated Studio Journal",
-      author: "507f1f77bcf86cd799439099",
-      slug: "forced-slug",
       tags: ["studio"],
     });
 
@@ -465,8 +549,37 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(body).toEqual({
       success: false,
       error: "Invalid blog input",
+      fieldErrors: {
+        tags: ["Tag must be a valid blog tag"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogFindById).not.toHaveBeenCalled();
+    expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
+  });
+
+  it("rejects unknown update fields before persistence", async () => {
+    const request = createRequest({
+      title: "Updated Studio Journal",
+      author: "507f1f77bcf86cd799439099",
+      slug: "forced-slug",
+      pinned: true,
+      tags: ["artwork"],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: blogId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid blog input",
       fieldErrors: {},
-      formErrors: ["Unrecognized key(s) in object: 'author', 'slug', 'tags'"],
+      formErrors: ["Unrecognized key(s) in object: 'author', 'slug'"],
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
@@ -559,6 +672,46 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(body).toEqual({
       success: true,
       data: updatedBlog,
+    });
+  });
+
+  it("updates explicit pinned and tags values", async () => {
+    const explicitUpdatedBlog = {
+      ...updatedBlog,
+      pinned: true,
+      tags: ["artwork", "events"],
+    };
+    mockBlogFindByIdAndUpdate.mockResolvedValue(
+      createBlogDocument(explicitUpdatedBlog)
+    );
+    const request = createRequest({
+      pinned: true,
+      tags: ["artwork", "events"],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: blogId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogFindById).toHaveBeenCalledWith(blogId);
+    expect(mockBlogFindOne).not.toHaveBeenCalled();
+    expect(mockBlogFindByIdAndUpdate).toHaveBeenCalledWith(
+      blogId,
+      {
+        $set: {
+          pinned: true,
+          tags: ["artwork", "events"],
+        },
+      },
+      { new: true }
+    );
+    expect(body).toEqual({
+      success: true,
+      data: explicitUpdatedBlog,
     });
   });
 

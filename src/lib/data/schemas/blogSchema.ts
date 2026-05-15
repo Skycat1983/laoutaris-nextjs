@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BLOG_TAGS } from "@/lib/constants";
 
 const BLOG_FIELD_LIMITS = {
   title: 200,
@@ -44,6 +45,10 @@ const displayDateSchema = z
     return date;
   });
 
+const blogTagSchema = z.enum(BLOG_TAGS, {
+  errorMap: () => ({ message: "Tag must be a valid blog tag" }),
+});
+
 const blogBaseFields = {
   title: requiredTrimmedString("Title")
     .min(2, "Title must be at least 2 characters")
@@ -81,23 +86,40 @@ const blogBaseFields = {
       `Image URL must be ${BLOG_FIELD_LIMITS.imageUrl} characters or fewer`
     ),
   featured: z.boolean().default(false),
+  pinned: z.boolean().default(false),
+  tags: z.array(blogTagSchema).default([]),
   displayDate: displayDateSchema,
 };
 
 export const createBlogFormSchema = z.object({
-  ...blogBaseFields,
-  // tags: z.string(),
+  title: blogBaseFields.title,
+  subtitle: blogBaseFields.subtitle,
+  summary: blogBaseFields.summary,
+  text: blogBaseFields.text,
+  imageUrl: blogBaseFields.imageUrl,
+  displayDate: blogBaseFields.displayDate,
+  featured: blogBaseFields.featured,
 });
 
 export type CreateBlogFormValues = z.infer<typeof createBlogFormSchema>;
 
 export const updateBlogFormSchema = z.object({
-  ...blogBaseFields,
+  title: blogBaseFields.title,
+  subtitle: blogBaseFields.subtitle,
+  summary: blogBaseFields.summary,
+  text: blogBaseFields.text,
+  imageUrl: blogBaseFields.imageUrl,
+  displayDate: blogBaseFields.displayDate,
+  featured: blogBaseFields.featured,
 });
 
 export type UpdateBlogFormValues = z.infer<typeof updateBlogFormSchema>;
 
-export const createBlogRouteSchema = createBlogFormSchema.strict();
+export const createBlogRouteSchema = z
+  .object({
+    ...blogBaseFields,
+  })
+  .strict();
 
 export const updateBlogRouteParamsSchema = z.object({
   id: objectIdStringSchema("Invalid blog ID"),
@@ -112,6 +134,8 @@ export const apiUpdateBlogSchema = z
     imageUrl: blogBaseFields.imageUrl.optional(),
     displayDate: blogBaseFields.displayDate.optional(),
     featured: blogBaseFields.featured.optional(),
+    pinned: blogBaseFields.pinned.optional(),
+    tags: blogBaseFields.tags.optional(),
   })
   .strict();
 

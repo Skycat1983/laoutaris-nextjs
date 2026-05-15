@@ -107,8 +107,17 @@ export async function POST(
   try {
     await dbConnect();
 
-    const { title, subtitle, summary, text, imageUrl, displayDate, featured } =
-      parsedBody.data;
+    const {
+      title,
+      subtitle,
+      summary,
+      text,
+      imageUrl,
+      displayDate,
+      featured,
+      pinned,
+      tags,
+    } = parsedBody.data;
     const slug = slugify(title, { lower: true });
 
     const blog = await BlogModel.create({
@@ -119,6 +128,8 @@ export async function POST(
       imageUrl,
       displayDate,
       featured,
+      pinned,
+      tags,
       slug,
       author: admin.userId,
     });

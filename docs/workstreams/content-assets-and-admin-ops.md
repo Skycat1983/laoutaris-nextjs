@@ -68,6 +68,8 @@ content operations repeatable and safe.
   create/update while leaving Shopify product-link editing separate.
 - T-038 applied the same admin write-validation pattern to blog create/update
   while leaving `pinned`/`tags` workflow support separate.
+- T-055 aligned the server-side blog `imageUrl`/`pinned`/`tags` contracts while
+  keeping visible pinned/tag admin workflow controls out of scope.
 - T-040 migrated admin delete routes to the shared admin guard, added
   destructive ID validation before target/session work, and preserved existing
   artwork/blog/comment/user cascade behavior with focused tests.
@@ -173,10 +175,21 @@ Use manual admin checks when changing dashboard behavior.
   behavior, and Cloudinary color schema validation while leaving broader
   Cloudinary upload policy and Shopify product-link workflow decisions
   separate.
+- 2026-05-15: Completed T-052 for the F-041 public artwork image contract
+  slice. Public artwork transforms now sanitize Cloudinary image payloads,
+  omit `public_id`, preserve optional public-only `similarityScore`, and reject
+  malformed persisted color entries through the Cloudinary image schema.
+- 2026-05-15: Prepared T-055 for the blog field-contract slice. It owns
+  server-side `imageUrl`, `pinned`, and `tags` model/schema/admin route
+  alignment while keeping visible pinned/tag admin workflow controls out of
+  scope.
+- 2026-05-15: Completed T-055 by making persisted blog `imageUrl` required,
+  defaulting `tags` to `[]`, accepting/defaulting route-safe `pinned` and
+  `tags`, and adding focused admin blog route coverage. Visible admin blog
+  controls for pinned status and tags remain a separate workflow decision.
 
 ## Next Agent Action
 
-Assign T-052:
-`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
-Keep broader Cloudinary upload policy, Shopify product-link workflow, and admin
-content workflow runbooks separate.
+No immediate content/admin follow-up is assigned from T-055. Keep broader
+Cloudinary upload policy/runbook, Shopify product-link workflow, and visible
+pinned/tag admin controls separate unless explicitly assigned.

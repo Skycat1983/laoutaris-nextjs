@@ -61,7 +61,11 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-049 Apply API response helpers to admin delete routes](T-049-apply-api-response-helpers-admin-delete-routes.md) | Completed | Applied shared response helpers to admin delete routes while preserving success messages, cascade behavior, conflict handling, and transaction ordering. |
 | [T-050 Apply API response helpers to admin create update routes](T-050-apply-api-response-helpers-admin-create-update-routes.md) | Completed | Applied shared response helpers to admin create/update routes while preserving validation, DTOs, create statuses, and allowlisted persistence. |
 | [T-051 Add public transform contract coverage](T-051-add-public-transform-contract-coverage.md) | Completed | Added focused tests and fixes for blog read time, collection first artwork, user ownership, and comment ownership transform contracts. |
-| [T-052 Sanitize public artwork image contracts](T-052-sanitize-public-artwork-image-contracts.md) | Ready | Sanitize public artwork image DTOs, type color-proximity metadata, and tighten Cloudinary color validation. |
+| [T-052 Sanitize public artwork image contracts](T-052-sanitize-public-artwork-image-contracts.md) | Completed | Sanitized public artwork image DTOs, typed color-proximity metadata, and tightened Cloudinary color validation. |
+| [T-053 Create core field contract matrix](T-053-create-core-field-contract-matrix.md) | Completed | Created the authoritative F-039 field matrix for article, blog, and user required/optional contract drift. |
+| [T-054 Align article section options](T-054-align-article-section-options.md) | Completed | Aligned admin article section filter options with shared constants and added regression coverage rejecting stale collection article sections. |
+| [T-055 Align blog field contracts](T-055-align-blog-field-contracts.md) | Completed | Aligned blog imageUrl, pinned, and tags model/schema/admin route contracts with focused validation and persistence coverage. |
+| [T-056 Align user password OAuth contract](T-056-align-user-password-oauth-contract.md) | Ready | Align optional persisted user passwords with OAuth users while preserving credentials password requirements and auth tests. |
 
 ## Rules
 

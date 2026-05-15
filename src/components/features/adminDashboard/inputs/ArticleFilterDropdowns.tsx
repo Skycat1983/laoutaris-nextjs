@@ -8,14 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { ArticleSection } from "@/lib/data/types";
+import {
+  ARTICLE_OVERLAY_COLOUR_OPTIONS,
+  ARTICLE_SECTION_OPTIONS,
+} from "@/lib/constants/articleConstants";
 
-type FilterKey = "section" | "overlayColour" | null;
+type ArticleFilterKey = "section" | "overlayColour";
+type FilterKey = ArticleFilterKey | null;
 
-const filterOptions: Record<"section" | "overlayColour", string[]> = {
-  section: ["artwork", "biography", "project", "collections"],
-  overlayColour: ["white", "black"],
-} as const;
+export const ARTICLE_FILTER_OPTIONS = {
+  section: ARTICLE_SECTION_OPTIONS,
+  overlayColour: ARTICLE_OVERLAY_COLOUR_OPTIONS,
+} satisfies Record<ArticleFilterKey, readonly string[]>;
 
 interface ArticleFilterDropdownsProps {
   onFilterChange: (key: FilterKey, value: string | null) => void;
@@ -34,7 +38,7 @@ export function ArticleFilterDropdowns({
         setSelectedValue(null);
         onFilterChange(null, null);
       } else {
-        const filterKey = key as "section" | "overlayColour";
+        const filterKey = key as ArticleFilterKey;
         setSelectedKey(filterKey);
         setSelectedValue(null);
         onFilterChange(filterKey, null);
@@ -70,7 +74,7 @@ export function ArticleFilterDropdowns({
         </SelectTrigger>
         <SelectContent>
           {selectedKey &&
-            filterOptions[selectedKey].map((option) => (
+            ARTICLE_FILTER_OPTIONS[selectedKey].map((option) => (
               <SelectItem key={option} value={option}>
                 {option}
               </SelectItem>

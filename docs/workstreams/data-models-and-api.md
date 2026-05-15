@@ -156,9 +156,21 @@ consistent enough for production refactoring and Shopify integration.
   blog/comment transforms preserve comment/user ownership context. The public
   collection card link now coalesces null `firstArtworkId` values to the
   existing empty-string fallback.
-- T-052 is prepared for the next bounded F-041 public artwork image contract
-  slice: public image sanitization, explicit color-proximity metadata behavior,
-  and Cloudinary color schema tightening.
+- T-052 completed the bounded F-041 public artwork image contract slice: public
+  image sanitization, explicit optional color-proximity metadata typing, and
+  Cloudinary color schema tightening.
+- T-053 created the durable F-039 core field contract matrix for article
+  `section`, blog `imageUrl`/`pinned`/`tags`, and user `password`; runtime
+  alignment remains open through the follow-up task candidates in
+  [data-field-contracts.md](../architecture/data-field-contracts.md).
+- T-054 completed the article `section` runtime alignment slice: admin article
+  filter section options now derive from `ARTICLE_SECTION_OPTIONS`, and focused
+  regression coverage confirms `"collections"` remains invalid for article
+  create/update schemas while collection routes stay separate.
+- T-055 completed the blog `imageUrl`/`pinned`/`tags` runtime alignment slice:
+  persisted blogs now require `imageUrl` and default `tags` to `[]`; admin blog
+  route schemas accept/default `pinned` and `tags`, reject invalid tags before
+  blog reads/writes, and persist only parsed allowlisted fields.
 
 ## Backlog
 
@@ -175,9 +187,11 @@ consistent enough for production refactoring and Shopify integration.
 - Add `dbConnect()` or a shared DB wrapper to every MongoDB-backed API route and
   server action, then test handlers in isolation.
 - Confirm schemas, TypeScript types, and transforms agree on required fields.
-- Build a field matrix for article, artwork, blog, collection, comment, user,
-  enquiry, and subscriber records, then choose the authoritative layer for each
-  required/optional field.
+- Implement the remaining F-039 user field contract decision recorded
+  in [data-field-contracts.md](../architecture/data-field-contracts.md).
+- Build additional field matrices for artwork, collection, comment, enquiry,
+  and subscriber records when implementation work discovers unresolved
+  required/optional drift outside the T-053 scope.
 - Add validation policy for create and update routes, including `safeParse` or
   equivalent 400 responses instead of broad 500s for validation failures.
 - Fix high-risk route DTO mismatches for user profile and admin content writes.
@@ -458,8 +472,47 @@ Add API route tests where behavior is changed.
   validation, and focused public/admin artwork tests while leaving upload
   policy, Shopify product-linking, global logging, and the broader F-039 field
   matrix separate.
+- 2026-05-15: Completed T-052 by routing `transformArtwork.toFrontend()` and
+  populated artwork transforms through the Cloudinary image sanitizer,
+  preserving public-safe image fields, typing `similarityScore` as optional
+  public-only image metadata, and tightening Cloudinary color schema validation
+  to strict `{ color, percentage }` objects. Focused artwork image contract,
+  artwork list, public/admin artwork route tests, lint, and build passed.
+- 2026-05-15: Prepared T-053 as the documentation-first F-039 field contract
+  matrix. It owns article `section`, blog `imageUrl`/`pinned`/`tags`, and user
+  `password` model/schema/type/UI-auth alignment recommendations before any
+  runtime field fixes are assigned.
+- 2026-05-15: Completed T-053 by creating
+  [data-field-contracts.md](../architecture/data-field-contracts.md), linking
+  it from architecture docs, and recording implementation-ready follow-up
+  candidates: T-054 for article section UI constants, T-055 for blog
+  `imageUrl`/`pinned`/`tags`, and T-056 for user `password` credentials/OAuth
+  alignment. No runtime behavior changed.
+- 2026-05-15: Prepared T-054 as the first F-039 runtime field-contract slice.
+  It owns article `section` UI option alignment with
+  `ARTICLE_SECTION_OPTIONS` and focused regression coverage rejecting the stale
+  `"collections"` article section while keeping collection routes separate.
+- 2026-05-15: Completed T-054 by deriving admin article filter section options
+  from `ARTICLE_SECTION_OPTIONS`, exporting the narrow
+  `ARTICLE_FILTER_OPTIONS` contract for regression coverage, and proving
+  `createArticleSchema` plus `updateArticleRouteBodySchema` reject
+  `section: "collections"`. Focused tests, lint, and build passed.
+- 2026-05-15: Prepared T-055 as the next F-039 runtime field-contract slice.
+  It owns blog `imageUrl`, `pinned`, and `tags` model/schema/admin route
+  alignment while leaving visible admin workflow, public filtering behavior,
+  and user password/OAuth alignment separate.
+- 2026-05-15: Completed T-055 by aligning blog field contracts across the
+  model, route schemas, admin create/update persistence, and focused tests:
+  `imageUrl` is required on persisted blogs, `tags` defaults to `[]`, route
+  create defaults omitted `pinned`/`tags`, create/update accept explicit
+  replacements, invalid tags return structured `400`s before blog model
+  reads/writes, and visible admin forms remain unchanged.
+- 2026-05-15: Prepared T-056 as the remaining F-039 runtime field-contract
+  slice. It owns user `password` optional persisted typing and credentials/OAuth
+  authentication behavior while preserving registration/login password
+  requirements and frontend password sanitization.
 
 ## Next Agent Action
 
-Assign T-052:
-`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
+Assign T-056:
+`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`

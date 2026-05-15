@@ -154,6 +154,12 @@ refactoring without turning every change into a manual QA pass.
   bodies, missing-resource `404`s, artwork conflict `409`, public-safe internal
   `500`s, private-message redaction, direct debug-log removal in covered paths,
   and preserved auth/DB/transaction/cascade ordering.
+- T-054 added focused article section contract coverage proving
+  `"collections"` is rejected by article create/update schemas and admin article
+  filter section options derive from `ARTICLE_SECTION_OPTIONS`.
+- T-055 extended focused admin blog route coverage for missing `imageUrl`,
+  omitted/defaulted `pinned` and `tags`, explicit create/update replacements,
+  invalid tag rejection before blog reads/writes, and unknown-field rejection.
 
 ## Backlog
 
@@ -544,12 +550,49 @@ npm run lint
   coverage expectations for `image.public_id` sanitization, frontend image
   field preservation, color-proximity `similarityScore` behavior, Cloudinary
   color schema validation, and affected public/admin artwork route fixtures.
+- 2026-05-15: T-052 added
+  `__tests__/unit/transforms/publicArtworkImageContracts.test.ts` for direct
+  and populated artwork image sanitization, frontend image field preservation,
+  optional public-only `similarityScore`, and strict Cloudinary color schema
+  validation. Focused artwork image/list/public route/admin route tests, lint,
+  and build passed; build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-053 as a docs-only field contract matrix task. Runtime
+  tests are intentionally out of scope; `git diff --check` is the verification
+  baseline unless implementation code is changed by mistake.
+- 2026-05-15: T-053 created the F-039 field contract matrix and follow-up test
+  expectations for article section constants, blog `imageUrl`/`pinned`/`tags`,
+  and user `password` credentials/OAuth behavior. Runtime tests remain assigned
+  to the later implementation slices.
+- 2026-05-15: Prepared T-054 with focused article section schema/UI option
+  coverage expectations: article schemas should reject `"collections"` and
+  admin article filter options should derive from `ARTICLE_SECTION_OPTIONS`.
+- 2026-05-15: T-054 added
+  `__tests__/unit/data/articleSectionContracts.test.ts` for article
+  create/update schema rejection of `section: "collections"` and the admin
+  article filter option contract. Focused article tests, lint, and build passed;
+  build retained existing MongoDB/static-generation, branch-verification, link,
+  and fetcher debug log noise.
+- 2026-05-15: Prepared T-055 with focused blog model/schema/admin route
+  coverage expectations for required `imageUrl`, optional/defaulted `pinned`,
+  optional/defaulted `tags`, invalid tag rejection, allowlisted persistence, and
+  preserved admin blog route behavior.
+- 2026-05-15: T-055 updated
+  `__tests__/unit/api/adminBlogRoute.test.ts` for missing `imageUrl`,
+  defaulted and explicit `pinned`/`tags`, invalid tag rejection, and preserved
+  unknown-field rejection. Focused admin blog route tests, lint, and build
+  passed; build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-056 with focused credentials/OAuth password contract
+  coverage expectations for optional persisted passwords, missing stored-hash
+  credentials denial without bcrypt verification, existing credentials role
+  propagation, and public/own password sanitization.
 
 ## Next Agent Action
 
-Assign T-052 and start with focused transform/schema tests before
-implementation:
-`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
+Assign T-056:
+`/task effort: high details: docs/tasks/T-056-align-user-password-oauth-contract.md`
+Broaden to lint and build after focused tests pass.
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,
