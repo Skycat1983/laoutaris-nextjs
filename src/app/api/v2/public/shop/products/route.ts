@@ -1,6 +1,10 @@
 import { ArtworkDB, ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
+import {
+  normalizeShopifyProductId,
+  shopifyProductIdToGid,
+} from "@/lib/api/shopify/productIds";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
 import dbConnect from "@/lib/db/mongodb";
@@ -128,9 +132,13 @@ export async function GET(request: NextRequest) {
       filteredLinks.length
     );
 
-    // Deduplicate by productId
+    // Normalize and deduplicate product IDs before Shopify requests.
     const uniqueProductIds = Array.from(
-      new Set(filteredLinks.map((link) => link.productId))
+      new Set(
+        filteredLinks
+          .map((link) => normalizeShopifyProductId(link.productId))
+          .filter((productId): productId is string => productId !== null)
+      )
     );
 
     console.log(
@@ -140,8 +148,12 @@ export async function GET(request: NextRequest) {
 
     // Batch fetch from Shopify
     const productPromises = uniqueProductIds.map((productId) => {
-      // Convert numeric ID to GID format
-      const gid = `gid://shopify/Product/${productId}`;
+      const gid = shopifyProductIdToGid(productId);
+
+      if (!gid) {
+        return Promise.resolve(null);
+      }
+
       return getProductById(gid).catch((error) => {
         console.error(
           `Shop products route - Failed to fetch product ${productId} in route.ts: `,

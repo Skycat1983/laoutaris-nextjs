@@ -173,6 +173,73 @@ describe("GET /api/v2/public/shop/products", () => {
     });
   });
 
+  it("skips invalid stored product IDs before calling Shopify", async () => {
+    mockArtworkQuery([
+      {
+        shopifyProducts: [
+          { productId: "201", type: "original" },
+          { productId: "gid://shopify/Product/202", type: "print" },
+          { productId: "not-a-product-id", type: "book" },
+          { productId: "", type: "book" },
+        ],
+      },
+    ]);
+
+    const response = await GET(
+      createRequest("https://example.test/api/v2/public/shop/products")
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetProductById).toHaveBeenCalledTimes(1);
+    expect(mockGetProductById).toHaveBeenCalledWith(
+      "gid://shopify/Product/201"
+    );
+    expect(body).toEqual({
+      success: true,
+      data: [createProduct("201")],
+      metadata: {
+        totalArtworks: 1,
+        totalProducts: 1,
+      },
+    });
+  });
+
+  it("deduplicates product IDs after normalization", async () => {
+    mockArtworkQuery([
+      {
+        shopifyProducts: [
+          { productId: "301", type: "original" },
+          { productId: " 301 ", type: "print" },
+          { productId: "302", type: "book" },
+        ],
+      },
+      {
+        shopifyProducts: [{ productId: "302", type: "book" }],
+      },
+    ]);
+
+    const response = await GET(
+      createRequest("https://example.test/api/v2/public/shop/products")
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetProductById).toHaveBeenCalledTimes(2);
+    expect(mockGetProductById).toHaveBeenNthCalledWith(
+      1,
+      "gid://shopify/Product/301"
+    );
+    expect(mockGetProductById).toHaveBeenNthCalledWith(
+      2,
+      "gid://shopify/Product/302"
+    );
+    expect(body.metadata).toEqual({
+      totalArtworks: 2,
+      totalProducts: 2,
+    });
+  });
+
   it("returns 400 for invalid repeated filter values before DB or Shopify work", async () => {
     const response = await GET(
       createRequest(

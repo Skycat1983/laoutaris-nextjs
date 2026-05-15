@@ -1,6 +1,6 @@
 # T-057 Normalize Shopify Product IDs
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),
@@ -101,7 +101,26 @@ record the final command in the handoff notes.
 
 ## Handoff Notes
 
-- Not started.
+- Completed on 2026-05-15.
+- Added `src/lib/api/shopify/productIds.ts` to centralize numeric Shopify
+  product ID normalization, route-param decoding, and Shopify product GID
+  construction.
+- Updated `GET /api/v2/public/shop/products/[productId]` to use the shared
+  helper while preserving the existing success and error envelopes.
+- Updated `GET /api/v2/public/shop/products` to normalize stored
+  `shopifyProducts.productId` values before deduplication and to skip invalid
+  stored IDs before any Shopify `getProductById()` call.
+- GID-style, empty, and non-numeric stored values are ignored by public listing
+  reads rather than being interpolated into malformed Shopify GIDs. No MongoDB
+  data migration or admin linking behavior was added.
+- Added focused route coverage for malformed decoded path IDs, invalid stored
+  listing IDs skipped before Shopify calls, and post-normalization
+  deduplication.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/api/shopSingleProductRoute.test.ts __tests__/unit/api/shopProductsRoute.test.ts`,
+  `npm run lint`, and `npm run build`. Build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug log
+  noise.
 
 ## Escalate
 

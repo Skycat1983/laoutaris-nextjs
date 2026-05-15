@@ -66,7 +66,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-054 Align article section options](T-054-align-article-section-options.md) | Completed | Aligned admin article section filter options with shared constants and added regression coverage rejecting stale collection article sections. |
 | [T-055 Align blog field contracts](T-055-align-blog-field-contracts.md) | Completed | Aligned blog imageUrl, pinned, and tags model/schema/admin route contracts with focused validation and persistence coverage. |
 | [T-056 Align user password OAuth contract](T-056-align-user-password-oauth-contract.md) | Completed | Aligned optional persisted user passwords with OAuth users while preserving credentials password requirements and auth tests. |
-| [T-057 Normalize Shopify product IDs](T-057-normalize-shopify-product-ids.md) | Ready | Centralize numeric Shopify product ID validation/GID construction and apply it to public product reads. |
+| [T-057 Normalize Shopify product IDs](T-057-normalize-shopify-product-ids.md) | Completed | Centralized numeric Shopify product ID validation/GID construction and applied it to public product reads. |
+| [T-058 Audit Shopify product link data](T-058-audit-shopify-product-link-data.md) | Ready | Add a read-only audit for existing artwork Shopify product links before migration or admin-linking work. |
 
 ## Rules
 

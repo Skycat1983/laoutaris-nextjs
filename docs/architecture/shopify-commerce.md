@@ -65,9 +65,11 @@ Product listing:
 
 1. Fetch or filter artwork records from MongoDB.
 2. Extract linked Shopify product IDs.
-3. Deduplicate product IDs.
-4. Fetch product details from Shopify.
-5. Render products and apply client-side sorting where appropriate.
+3. Normalize linked product IDs to numeric Shopify product IDs.
+4. Ignore malformed stored product IDs, including legacy full GID strings.
+5. Deduplicate normalized product IDs.
+6. Fetch product details from Shopify.
+7. Render products and apply client-side sorting where appropriate.
 
 ## First-Release Purchase Handoff
 

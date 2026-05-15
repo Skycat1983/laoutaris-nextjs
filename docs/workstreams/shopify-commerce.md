@@ -80,8 +80,8 @@ production while preserving MongoDB as the archive source of truth.
   including numeric ID/type validation and duplicate prevention.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
-- Add shared Shopify product ID normalization and audit existing data for legacy
-  GID-style values.
+- Audit existing Shopify product link data for legacy GID-style or malformed
+  values, and plan any owner-approved cleanup.
 - Standardize shop product API envelopes and carry product type, tags, variant
   IDs, availability, and description fields needed by product detail.
 - Remove or implement visible color/dimension filters and placeholder
@@ -154,11 +154,20 @@ Add targeted tests as shop behavior is hardened.
   applies it to public single-product and product-listing reads while leaving
   admin linking, data migration, checkout/cart, product transforms, sorting, and
   pagination separate.
+- 2026-05-15: Completed T-057; public Shopify product reads now share numeric
+  product ID normalization and GID construction, the single-product route keeps
+  invalid path IDs at `400` before Shopify work, and the listing route skips
+  malformed stored IDs before Shopify fan-out while deduplicating after
+  normalization.
+- 2026-05-15: Prepared T-058 as the next F-012 existing-data step. It adds a
+  read-only audit for artwork `shopifyProducts` links so invalid IDs,
+  duplicates, and migration needs are visible before any mutation or admin
+  linking task.
 
 ## Next Agent Action
 
-Assign T-057:
-`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+Assign T-058:
+`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
 
 Owner confirmation on the removed Shopify value, checkout handoff, admin
 linking workflow, data migration, and server-side sorting/pagination remain

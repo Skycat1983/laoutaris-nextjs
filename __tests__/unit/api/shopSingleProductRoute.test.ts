@@ -68,7 +68,7 @@ describe("GET /api/v2/public/shop/products/[productId]", () => {
     });
   });
 
-  it.each(["", "abc123", "gid%3A%2F%2Fshopify%2FProduct%2F123456"])(
+  it.each(["", "abc123", "%E0%A4%A", "gid%3A%2F%2Fshopify%2FProduct%2F123456"])(
     "returns 400 for invalid product ID %p without calling Shopify",
     async (productId) => {
       const response = await GET(request, createParams(productId));

@@ -202,8 +202,8 @@ consistent enough for production refactoring and Shopify integration.
   validation, real 400 validation responses, and route tests by content type.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
-- Add Shopify product ID normalization and validation for admin writes, API
-  reads, and one-time data migration/audit work.
+- Add Shopify product ID validation for admin writes and one-time data
+  migration/audit work.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
@@ -525,11 +525,19 @@ Add API route tests where behavior is changed.
   construction and apply it to public Shopify product reads without changing
   admin linking, data migration, checkout/cart, product transforms, sorting, or
   pagination.
+- 2026-05-15: Completed T-057 by adding shared Shopify product ID
+  normalization/GID construction for public product reads. Invalid path IDs
+  still return `400` before Shopify calls, and invalid stored listing IDs are
+  skipped before Shopify fan-out with deduplication after normalization.
+- 2026-05-15: Prepared T-058 for the read-only F-012 existing-data audit. It
+  should report invalid Shopify product IDs, duplicate links, and migration
+  needs without mutating MongoDB or calling Shopify APIs.
 
 ## Next Agent Action
 
-Assign T-057:
-`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+Assign T-058:
+`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
 
-Keep the completed article/blog/user F-039 field-contract matrix closed unless
-a new required/optional drift is discovered outside that scoped matrix.
+Shopify admin product-link validation and existing-data migration remain
+separate from the completed public-read normalization and prepared read-only
+audit work.

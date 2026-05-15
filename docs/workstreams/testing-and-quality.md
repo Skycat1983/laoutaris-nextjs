@@ -598,11 +598,20 @@ npm run lint
   expectations for shared numeric product ID normalization, invalid path-ID
   `400`s before Shopify calls, invalid stored listing IDs skipped before
   Shopify calls, and post-normalization deduplication.
+- 2026-05-15: T-057 added focused public Shopify route coverage for malformed
+  decoded path IDs, invalid stored listing IDs skipped before Shopify calls,
+  and product listing deduplication after ID normalization. Focused route
+  tests, lint, and build passed; build retained existing MongoDB/static
+  generation, branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-058 with focused audit-helper coverage expectations
+  for invalid Shopify product IDs, GID-style persisted values, duplicate
+  within-artwork links, cross-artwork duplicates, unknown product types, and
+  read-only command syntax.
 
 ## Next Agent Action
 
-Assign T-057:
-`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+Assign T-058:
+`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
 
 For the next implementation slice, add focused tests before broadening to lint
 and build. Keep the route/fetcher parity and protected API guard inventories

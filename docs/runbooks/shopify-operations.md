@@ -38,6 +38,10 @@ For a book:
 Store the numeric Shopify product ID in MongoDB. Construct the full Shopify GID
 only when calling Shopify APIs.
 
+Public product reads normalize IDs at the Shopify API boundary. Malformed
+stored values, including full `gid://shopify/Product/...` strings, are ignored
+by the public product listing until the MongoDB link is corrected.
+
 ## First-Release Purchase Handoff
 
 Product detail pages currently use an enquiry handoff instead of cart or

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
+import {
+  normalizeShopifyProductIdParam,
+  shopifyProductIdToGid,
+} from "@/lib/api/shopify/productIds";
 import { ApiErrorResponse, SingleResult } from "@/lib/data/types/apiTypes";
 import { SimpleProduct } from "@/lib/data/types/shopify";
-
-const SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN = /^\d+$/;
 
 const errorResponse = (error: string, status: number) =>
   NextResponse.json<ApiErrorResponse>(
@@ -13,14 +15,6 @@ const errorResponse = (error: string, status: number) =>
     },
     { status }
   );
-
-const decodeProductId = (productId: string) => {
-  try {
-    return decodeURIComponent(productId);
-  } catch {
-    return null;
-  }
-};
 
 /**
  * Fetch a single Shopify product by numeric ID
@@ -32,19 +26,24 @@ export async function GET(
 ) {
   try {
     const { productId } = params;
-    const decodedProductId = productId ? decodeProductId(productId) : null;
+    const normalizedProductId = normalizeShopifyProductIdParam(productId);
 
-    if (
-      !decodedProductId ||
-      !SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN.test(decodedProductId)
-    ) {
+    if (!normalizedProductId) {
       return errorResponse(
         "Product ID must be a numeric Shopify product ID",
         400
       );
     }
 
-    const gid = `gid://shopify/Product/${decodedProductId}`;
+    const gid = shopifyProductIdToGid(normalizedProductId);
+
+    if (!gid) {
+      return errorResponse(
+        "Product ID must be a numeric Shopify product ID",
+        400
+      );
+    }
+
     const product = await getProductById(gid);
 
     if (!product) {

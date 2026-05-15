@@ -4,15 +4,16 @@ Last updated: 2026-05-15
 
 ## Current Priority
 
-T-057 is ready to assign: centralize numeric Shopify product ID validation/GID
-construction and apply it to public product reads. Keep admin Shopify
-product-linking, checkout/cart ownership, data migration, Cloudinary upload
-policy, global logging/redaction policy, visible blog pinned/tag admin workflow,
-and the residual Next/PostCSS owner decision separate.
+T-058 is ready to assign: add a read-only audit for existing MongoDB artwork
+`shopifyProducts` links before migration or admin-linking work. Keep automatic
+data mutation, Shopify API validation, admin Shopify product-linking,
+checkout/cart ownership, Cloudinary upload policy, global logging/redaction
+policy, visible blog pinned/tag admin workflow, and the residual Next/PostCSS
+owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-057 Shopify product ID normalization is prepared and ready for agent
+T-058 Shopify product link data audit is prepared and ready for agent
 assignment.
 
 ## Successor Takeover Snapshot
@@ -122,11 +123,15 @@ Use this section as the first operational handoff for a new orchestrator.
   credentials auth for OAuth-style users without stored hashes before bcrypt
   verification, preserved hashed credentials role propagation, and kept
   public/own password sanitization intact.
-- T-057 is ready: it owns the focused F-012 public Shopify product ID
-  normalization slice for shared numeric ID validation/GID construction across
-  public single-product and listing routes.
+- T-057 is complete: it added shared numeric Shopify product ID
+  normalization/GID construction for public product reads, preserved invalid
+  path-ID `400`s before Shopify work, and skips malformed stored listing IDs
+  before Shopify fan-out.
+- T-058 is ready: it owns the read-only existing-data audit for artwork
+  `shopifyProducts` links so invalid IDs, duplicate links, and migration needs
+  are visible before mutation/admin-linking work.
 - Next task assignment:
-  `/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+  `/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -381,13 +386,14 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-057:
-`/task effort: high details: docs/tasks/T-057-normalize-shopify-product-ids.md`
+Assign T-058:
+`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
 
-Keep admin Shopify product-linking, checkout/cart ownership, data migration,
-remaining Cloudinary upload policy/runbook work, focused production logging
-cleanup, visible blog pinned/tag admin workflow, and the residual Next/PostCSS
-owner decision separate unless priority changes.
+Keep automatic data mutation, Shopify API validation, admin Shopify
+product-linking validation, checkout/cart ownership, remaining Cloudinary upload
+policy/runbook work, focused production logging cleanup, visible blog pinned/tag
+admin workflow, and the residual Next/PostCSS owner decision separate unless
+priority changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke
