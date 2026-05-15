@@ -1,11 +1,13 @@
 import { CommentModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import { CommentLeanPopulated } from "@/lib/data/types";
 import { transformCommentPopulated } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   request: NextRequest
@@ -32,34 +34,31 @@ export async function GET(
       .lean<CommentLeanPopulated[]>();
 
     if (rawComments.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "No comments found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "No comments found",
+        status: 404,
+      });
     }
 
     const comments = rawComments.map((comment) =>
       transformCommentPopulated(comment)
     );
 
-    return NextResponse.json({
-      success: true,
-      data: comments,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ReadCommentListResult);
+    return apiListResponse(comments, {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("[COMMENT_READ]", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch comment(s)" },
-      { status: 500 }
-    ) satisfies NextResponse<ApiErrorResponse>;
+    return apiErrorResponse({
+      message: "Failed to fetch comment(s)",
+      status: 500,
+    });
   }
 }

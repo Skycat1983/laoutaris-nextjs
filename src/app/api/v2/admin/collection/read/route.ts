@@ -1,8 +1,9 @@
 import { CollectionModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   AdminArtworkTransformations,
@@ -10,6 +11,7 @@ import {
 } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
 import { CollectionFrontendPopulated } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 // TODO: remove the 'return one item' logic
 
 export async function GET(
@@ -40,34 +42,31 @@ export async function GET(
       .lean<Array<AdminCollectionTransformationsPopulated["Lean"]>>();
 
     if (rawCollections.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "No collections found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "No collections found",
+        status: 404,
+      });
     }
 
     const collections: CollectionFrontendPopulated[] = rawCollections.map(
       (collection) => transformCollectionPopulated(collection)
     );
 
-    return NextResponse.json({
-      success: true,
-      data: collections,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ReadCollectionListResult);
+    return apiListResponse(collections, {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("[ARTICLE_READ]", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch article(s)" },
-      { status: 500 }
-    ) satisfies NextResponse<ApiErrorResponse>;
+    return apiErrorResponse({
+      message: "Failed to fetch article(s)",
+      status: 500,
+    });
   }
 }

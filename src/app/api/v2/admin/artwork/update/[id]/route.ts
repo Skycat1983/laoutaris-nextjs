@@ -2,6 +2,7 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -11,6 +12,7 @@ import {
   type UpdateArtworkRouteParams,
 } from "@/lib/data/schemas/artworkSchema";
 import type { AdminArtwork } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type ArtworkUpdateFieldErrors = Partial<
   Record<
@@ -43,15 +45,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeArtworkResponse = (value: unknown): unknown => {
@@ -136,15 +129,22 @@ export async function PATCH(
     );
 
     if (!updatedArtwork) {
-      return errorResponse("Artwork not found", 404);
+      return apiErrorResponse({
+        message: "Artwork not found",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: toArtworkResponse(updatedArtwork),
-    } satisfies UpdateArtworkResult);
+    return apiSuccessResponse(toArtworkResponse(updatedArtwork));
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error updating artwork:", error);
-    return errorResponse("Failed to update artwork", 500);
+    return apiErrorResponse({
+      message: "Failed to update artwork",
+      status: 500,
+    });
   }
 }

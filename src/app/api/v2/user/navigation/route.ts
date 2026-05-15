@@ -1,12 +1,13 @@
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { UserModel } from "@/lib/data/models";
-import { ApiErrorResponse, Prettify, RouteResponse } from "@/lib/data/types";
+import { Prettify, RouteResponse } from "@/lib/data/types";
 import { OwnUserSelectFieldsLean } from "@/lib/data/types/navigationTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -26,33 +27,24 @@ export async function GET(
       .lean<OwnUserSelectFieldsLean>();
 
     if (!leanUserData) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "User not found",
+        status: 404,
+      });
     }
 
     const userNavData: Prettify<
       ReturnType<typeof transformAccountNav.toFrontend>
     > = transformAccountNav.toFrontend(leanUserData);
 
-    const response: ApiOwnUserNavResult = {
-      success: true,
-      data: userNavData,
-    };
-
-    return NextResponse.json(response);
+    return apiSuccessResponse<ApiOwnUserNavResult["data"]>(userNavData);
   } catch (error) {
     if (isNextError(error)) {
-      // throw error;
-      return NextResponse.json({
-        success: false,
-        error: "Next error triggered",
-      } satisfies ApiErrorResponse);
+      throw error;
     }
-    return NextResponse.json({
-      success: false,
-      error: "Error fetching user navigation",
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch user navigation",
+      status: 500,
+    });
   }
 }

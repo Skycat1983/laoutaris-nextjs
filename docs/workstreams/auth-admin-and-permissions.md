@@ -113,16 +113,27 @@ features before production launch.
 - T-042 migrated the remaining user comment GET/POST/PATCH handlers from
   `getUserIdFromSession()` to `requireApiUser()`, so the user comment route
   group now uses the shared route-local user guard.
-- T-043 is ready to add a protected API guard inventory test for all
-  `/api/v2/user` and `/api/v2/admin` route files.
+- T-043 added a protected API guard inventory test for all `/api/v2/user` and
+  `/api/v2/admin` route files so new protected routes cannot reintroduce direct
+  session/admin helper checks at route boundaries.
+- T-044 standardized response helpers and real failure statuses for protected
+  user profile, navigation, favourite, and watchlist read routes without
+  changing the shared guard invariant.
+- T-048 applied shared response helpers to admin read list/detail routes while
+  preserving `requireApiAdmin()` guard behavior, invalid-ID `400`
+  short-circuiting, and DB-before-model ordering.
+- T-049 applied shared response helpers to admin delete routes while preserving
+  the shared admin guard invariant, invalid-ID `400` short-circuiting,
+  destructive DB-before-model ordering, cascade behavior, and transaction
+  cleanup semantics.
 
 ## Backlog
 
 - Use the A-004 protected-route inventory when changing middleware or admin API
   guards.
 - Keep protected API route files on shared `requireApiUser()` and
-  `requireApiAdmin()` guards; T-043 is prepared to add a static inventory test
-  for this invariant.
+  `requireApiAdmin()` guards; T-043 now guards this invariant with static
+  inventory coverage.
 - Migrate any future admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
 - Route legacy `JWT_SECRET` env remnants through deployment/auth docs. T-022
@@ -288,9 +299,48 @@ Add targeted tests for `routeUtils` and session helpers when changed.
 - 2026-05-15: Prepared T-043 to add static protected-route guard inventory
   coverage so user/admin API route files keep using `requireApiUser()` and
   `requireApiAdmin()` instead of direct session/admin helper checks.
+- 2026-05-15: Completed T-043 by adding
+  `__tests__/unit/api/protectedApiGuardInventory.test.ts`, which inventories
+  protected user/admin route files, requires the shared guard imports/calls,
+  rejects direct `getServerSession()`, `getUserIdFromSession()`, or `isAdmin()`
+  route-boundary checks, and verifies exported handlers call the guard before
+  body, DB, model, or transaction work.
+- 2026-05-15: Prepared T-044 to apply shared API response helpers to protected
+  user profile/navigation/favourite/watchlist read routes while preserving
+  `requireApiUser()` ordering and leaving comments/admin/bootstrap work
+  separate.
+- 2026-05-15: Completed T-044 by applying shared API response helpers to
+  protected user profile/navigation/favourite/watchlist read routes. The routes
+  still call `requireApiUser()` before DB/model/transform work, preserve shared
+  JSON `401` guard behavior, and now return real `404`/`500` envelopes for
+  missing-resource and internal-failure paths.
+- 2026-05-15: Prepared T-048 for admin read route response-helper cleanup. It
+  must preserve the T-039/T-043 `requireApiAdmin()` guard invariant, invalid-ID
+  `400` short-circuiting, and DB-before-model ordering while migrating admin
+  read success/error envelopes to shared helpers.
+- 2026-05-15: Completed T-048 without changing the shared admin guard
+  invariant: admin article/artwork/blog/collection/comment/user read list/detail
+  routes now use shared response helpers for success, list, empty-list,
+  not-found, and internal-failure envelopes while preserving invalid-ID and
+  auth short-circuit behavior.
+- 2026-05-15: Prepared T-049 for admin delete route response-helper cleanup. It
+  must preserve the T-040/T-043 `requireApiAdmin()` guard invariant, invalid-ID
+  `400` short-circuiting, destructive DB-before-model ordering, cascade
+  behavior, and transaction abort/commit/end semantics.
+- 2026-05-15: Completed T-049 without changing the shared admin guard
+  invariant: admin article/artwork/blog/collection/comment/user delete routes
+  now use shared response helpers for success, not-found, conflict, and
+  internal-failure envelopes while preserving invalid-ID, auth short-circuit,
+  cascade, DB-ordering, and transaction behavior.
+- 2026-05-15: Completed T-050 without changing the shared admin guard
+  invariant: admin article/artwork/blog/collection create/update routes now use
+  shared response helpers for success, not-found, conflict, and internal
+  failure envelopes while preserving auth-before-body-read ordering, structured
+  validation `400`s, route-local DB ownership, and allowlisted persistence.
 
 ## Next Agent Action
 
-Commission T-043 for protected API guard inventory closure. Keep admin
-bootstrap/recovery documentation, broader production logging policy, shared
-response-helper standardization, and root-layout session redesign separate.
+Keep admin bootstrap/recovery documentation, broader production logging policy,
+root-layout session redesign, and any future protected-route migrations
+separate. Preserve the T-043 shared guard invariant and add focused route
+coverage before changing protected user/admin route behavior.

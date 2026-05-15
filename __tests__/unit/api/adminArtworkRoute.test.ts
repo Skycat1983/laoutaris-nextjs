@@ -309,6 +309,7 @@ describe("POST /api/v2/admin/artwork/create", () => {
       });
       expect(body).toEqual({
         success: false,
+        message: "Failed to create artwork",
         error: "Failed to create artwork",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -496,6 +497,7 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
     );
     expect(body).toEqual({
       success: false,
+      message: "Artwork not found",
       error: "Artwork not found",
     });
   });
@@ -585,6 +587,7 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
       );
       expect(body).toEqual({
         success: false,
+        message: "Failed to update artwork",
         error: "Failed to update artwork",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(

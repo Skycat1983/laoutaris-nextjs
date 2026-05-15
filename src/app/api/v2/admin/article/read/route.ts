@@ -1,14 +1,16 @@
 import { ArticleModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   AdminArticleTransformationsPopulated,
   ArticleFrontendPopulated,
 } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   request: NextRequest
@@ -36,39 +38,31 @@ export async function GET(
     ]);
 
     if (leanArticles.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "No articles found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "No articles found",
+        status: 404,
+      });
     }
 
     const articles: ArticleFrontendPopulated[] = leanArticles.map((article) =>
       transformArticlePopulated(article)
     );
 
-    return NextResponse.json({
-      success: true,
-      data: articles,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ReadArticleListResult);
+    return apiListResponse(articles, {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading articles:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read articles",
-      } satisfies ApiErrorResponse,
-      {
-        status: 500,
-      }
-    );
+    return apiErrorResponse({
+      message: "Failed to read articles",
+      status: 500,
+    });
   }
 }

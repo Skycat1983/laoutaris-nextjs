@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   _request: NextRequest,
@@ -15,26 +17,21 @@ export async function GET(
     const artwork = await getArtworkById(id, userId);
 
     if (!artwork)
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Artwork not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Artwork not found",
+        status: 404,
+      });
 
-    return NextResponse.json({
-      success: true,
-      data: artwork,
-    } satisfies ApiArtworkResult);
+    return apiSuccessResponse<ApiArtworkResult["data"]>(artwork);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error fetching public artwork:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Internal Server Error",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to fetch artwork",
+      status: 500,
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { ArticleModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { ApiArticlePopulatedResult } from "@/lib/api/public/article/fetchers";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformArticlePopulated } from "@/lib/transforms/article/transformArticle";
@@ -12,14 +13,13 @@ import {
 } from "@/lib/data/types/articleTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
 import dbConnect from "@/lib/db/mongodb";
-type RouteResponse<T> = NextResponse<T | ApiErrorResponse>;
 
 export const GET = async (
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiArticlePopulatedResult>> => {
-  const userId = await getUserIdFromSession();
   try {
+    await getUserIdFromSession();
     await dbConnect();
 
     // populate both artwork and author
@@ -31,29 +31,26 @@ export const GET = async (
       .lean<ArticleLeanPopulated>();
 
     if (!articleDB) {
-      return NextResponse.json({
-        success: false,
-        error: "Article not found",
-        statusCode: 404,
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Article not found",
+        status: 404,
+      });
     }
 
     const articlePublic: ArticleFrontendPopulated =
       transformArticlePopulated(articleDB);
 
-    return NextResponse.json({
-      success: true,
-      data: articlePublic,
-    } satisfies ApiArticlePopulatedResult);
+    return apiSuccessResponse<ApiArticlePopulatedResult["data"]>(
+      articlePublic
+    );
   } catch (error) {
     if (isNextError(error)) {
       throw error;
     }
     console.error("Error fetching article artwork:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch article artwork",
-      statusCode: 500,
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch article",
+      status: 500,
+    });
   }
 };

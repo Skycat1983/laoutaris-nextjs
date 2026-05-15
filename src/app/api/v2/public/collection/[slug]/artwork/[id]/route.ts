@@ -1,14 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { CollectionModel } from "@/lib/data/models";
 import { Types } from "mongoose";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
+import dbConnect from "@/lib/db/mongodb";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string; id: string } }
 ): Promise<RouteResponse<ApiCollectionPopulatedResult>> {
   try {
+    await dbConnect();
+
     const { slug, id } = params;
 
     // find collection and populate only the matching artwork
@@ -18,37 +23,32 @@ export async function GET(
     });
 
     if (!collection) {
-      return NextResponse.json(
-        { success: false, error: "Collection not found", statusCode: 404 },
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Collection not found",
+        status: 404,
+      });
     }
 
     // check if artwork exists in this collection
     if (!collection.artworks?.length) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Artwork not found in this collection",
-          statusCode: 404,
-        },
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Artwork not found in this collection",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: collection,
-    } satisfies ApiCollectionPopulatedResult);
-  } catch (error) {
-    console.error("Error fetching collection artwork:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch collection artwork",
-        statusCode: 500,
-      },
-      { status: 500 }
+    return apiSuccessResponse<ApiCollectionPopulatedResult["data"]>(
+      collection as ApiCollectionPopulatedResult["data"]
     );
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    console.error("Error fetching collection artwork:", error);
+    return apiErrorResponse({
+      message: "Failed to fetch collection artwork",
+      status: 500,
+    });
   }
 }

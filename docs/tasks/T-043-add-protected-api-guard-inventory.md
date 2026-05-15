@@ -1,6 +1,6 @@
 # T-043 Add Protected API Guard Inventory
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md),
@@ -113,9 +113,30 @@ npm run lint
 npm run build
 ```
 
+Completed verification on 2026-05-15:
+
+- `npm test -- --runTestsByPath __tests__/unit/api/protectedApiGuardInventory.test.ts`
+  passed with 4 tests.
+- `npm run lint` passed with no warnings or errors.
+- `npm run build` passed. Existing build-time MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise appeared.
+
 ## Completion
 
-Pending.
+Completed on 2026-05-15.
+
+- Added `__tests__/unit/api/protectedApiGuardInventory.test.ts`.
+- The test recursively inventories protected `route.ts` files under
+  `src/app/api/v2/user` and `src/app/api/v2/admin`.
+- It fails when a protected user/admin route omits the expected shared guard
+  import or call, uses direct `getServerSession()`, `getUserIdFromSession()`,
+  or `isAdmin()` route-boundary helpers, or performs request body, DB, model, or
+  transaction work before the route-local guard in an exported HTTP handler.
+- Existing protected route files passed without runtime behavior changes.
+
+Remaining work: shared API response-helper standardization, production logging
+policy, public optional-session route policy, and admin bootstrap/recovery stay
+separate follow-ups.
 
 ## Escalate
 

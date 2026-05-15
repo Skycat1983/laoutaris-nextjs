@@ -309,6 +309,7 @@ describe("POST /api/v2/admin/blog/create", () => {
       });
       expect(body).toEqual({
         success: false,
+        message: "Failed to create blog",
         error: "Failed to create blog",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -490,6 +491,7 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
     expect(body).toEqual({
       success: false,
+      message: "Blog not found",
       error: "Blog not found",
     });
   });
@@ -513,6 +515,8 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
     expect(body).toEqual({
       success: false,
+      message:
+        'A blog with a similar title already exists. The slug "updated-studio-journal" is already taken.',
       error:
         'A blog with a similar title already exists. The slug "updated-studio-journal" is already taken.',
     });
@@ -614,6 +618,7 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
       );
       expect(body).toEqual({
         success: false,
+        message: "Failed to update blog",
         error: "Failed to update blog",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(

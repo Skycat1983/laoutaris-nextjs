@@ -1,29 +1,25 @@
 import { BlogModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import dbConnect from "@/lib/db/mongodb";
 import {
-  ApiErrorResponse,
   BlogEntryPopulatedCommentsPopulatedLean,
   BlogEntryPopulatedCommentsPopulatedFrontend,
   RouteResponse,
-  BlogEntryFrontendPopulated,
   Prettify,
 } from "@/lib/data/types";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { ApiBlogPopulatedResult } from "@/lib/api/public/blog/fetchers";
-import {
-  transformBlogPopulated,
-  transformBlogPopulatedWithCommentsPopulated,
-} from "@/lib/transforms/blog/transformBlog";
+import { transformBlogPopulatedWithCommentsPopulated } from "@/lib/transforms/blog/transformBlog";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export const GET = async (
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiBlogPopulatedResult>> => {
-  await dbConnect();
-
   try {
+    await dbConnect();
+
     const { slug } = params;
-    console.log("Fetching blog with populated comments and authors:", slug);
 
     const rawBlog = await BlogModel.findOne({ slug })
       .populate({
@@ -35,26 +31,25 @@ export const GET = async (
       .lean<BlogEntryPopulatedCommentsPopulatedLean>();
 
     if (!rawBlog) {
-      return NextResponse.json({
-        success: false,
-        error: "Blog entry not found",
-        statusCode: 404,
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Blog entry not found",
+        status: 404,
+      });
     }
 
     const blog: Prettify<BlogEntryPopulatedCommentsPopulatedFrontend> =
       transformBlogPopulatedWithCommentsPopulated(rawBlog);
 
-    return NextResponse.json({
-      success: true,
-      data: blog,
-    } satisfies ApiBlogPopulatedResult);
+    return apiSuccessResponse<ApiBlogPopulatedResult["data"]>(blog);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error fetching blog with comments and authors:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch blog entry with comments",
-      statusCode: 500,
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch blog entry with comments",
+      status: 500,
+    });
   }
 };

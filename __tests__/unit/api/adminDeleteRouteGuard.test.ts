@@ -355,6 +355,7 @@ describe("admin delete route shared guard migration", () => {
       data: null,
       message: "Article deleted successfully",
     });
+    expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
   it("preserves collection not-found behavior", async () => {
@@ -368,10 +369,12 @@ describe("admin delete route shared guard migration", () => {
     expect(response.status).toBe(404);
     expect(body).toEqual({
       success: false,
+      message: "Collection not found",
       error: "Collection not found",
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockCollectionFindByIdAndDelete).toHaveBeenCalledWith(collectionId);
+    expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
   it("blocks artwork deletion when an article references it", async () => {
@@ -599,6 +602,7 @@ describe("admin delete route shared guard migration", () => {
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
+        message: "Failed to delete blog and associated data",
         error: "Failed to delete blog and associated data",
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
@@ -627,6 +631,7 @@ describe("admin delete route shared guard migration", () => {
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
+        message: "Failed to delete article",
         error: "Failed to delete article",
       });
       expect(JSON.stringify(body)).not.toContain("private article detail");

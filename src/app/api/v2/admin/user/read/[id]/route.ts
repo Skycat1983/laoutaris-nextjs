@@ -1,15 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminReadInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
 import { UserModel } from "@/lib/data/models";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { ReadUserResult } from "@/lib/api/admin/read/fetchers";
 import type { UserLean, UserFrontend } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   _request: NextRequest,
@@ -31,29 +33,24 @@ export async function GET(
     const leanUser = await UserModel.findById(id).lean<UserLean>();
 
     if (!leanUser) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "User not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "User not found",
+        status: 404,
+      });
     }
 
     const user: UserFrontend = transformUser.toFrontend(leanUser);
 
-    return NextResponse.json({
-      success: true,
-      data: user,
-    } satisfies ReadUserResult);
+    return apiSuccessResponse(user);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading user:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read user",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to read user",
+      status: 500,
+    });
   }
 }

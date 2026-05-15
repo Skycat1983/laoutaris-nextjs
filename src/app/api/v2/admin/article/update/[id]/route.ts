@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -12,6 +13,7 @@ import {
   type UpdateArticleRouteParams,
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type ArticleUpdateFieldErrors = Partial<
   Record<
@@ -44,15 +46,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeArticleResponse = (value: unknown): unknown => {
@@ -145,15 +138,22 @@ export async function PATCH(
     );
 
     if (!updatedArticle) {
-      return errorResponse("Article not found", 404);
+      return apiErrorResponse({
+        message: "Article not found",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: toArticleResponse(updatedArticle),
-    } satisfies UpdateArticleResult);
+    return apiSuccessResponse(toArticleResponse(updatedArticle));
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error updating article:", error);
-    return errorResponse("Failed to update article", 500);
+    return apiErrorResponse({
+      message: "Failed to update article",
+      status: 500,
+    });
   }
 }

@@ -1,8 +1,8 @@
 import { CollectionModel } from "@/lib/data/models";
-import { NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminReadInvalidIdResponse,
@@ -14,6 +14,7 @@ import {
   CollectionFrontendPopulated,
 } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   _request: Request,
@@ -39,30 +40,25 @@ export async function GET(
       .lean<AdminCollectionTransformationsPopulated["Lean"]>();
 
     if (!leanCollection) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Collection not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Collection not found",
+        status: 404,
+      });
     }
 
     const collection: CollectionFrontendPopulated =
       transformCollectionPopulated(leanCollection);
 
-    return NextResponse.json({
-      success: true,
-      data: collection,
-    } satisfies ReadCollectionResult);
+    return apiSuccessResponse(collection);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading collection:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read collection",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to read collection",
+      status: 500,
+    });
   }
 }

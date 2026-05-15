@@ -4,16 +4,16 @@ Last updated: 2026-05-15
 
 ## Current Priority
 
-Commission T-043 as the protected API guard inventory closure task. T-043 adds
-a static regression test proving protected user/admin API routes use the shared
-route-local guards and do not reintroduce direct session/admin helper checks.
-Keep shared API response-helper standardization, production logging policy,
-Shopify product ID/admin-linking/checkout decisions, and the residual
-Next/PostCSS owner decision separate.
+T-051 is ready to assign: add focused public transform contract coverage and
+fixes for blog `readTime`, collection `firstArtworkId`, public user `isOwner`,
+and comment ownership state. Keep Shopify product ID/admin-linking, Cloudinary
+upload policy, global logging/redaction policy, and the residual Next/PostCSS
+owner decision separate.
 
 ## Active Phase
 
-Implementation commissioning and high-risk follow-up sequencing.
+T-051 public transform contract cleanup is prepared and ready for agent
+assignment.
 
 ## Successor Takeover Snapshot
 
@@ -70,12 +70,42 @@ Use this section as the first operational handoff for a new orchestrator.
   to `requireApiUser()`, moved GET auth before DB/model work, preserved
   create/update/delete behavior, added focused comment route tests, and passed
   focused tests, lint, and build.
-- T-043 is ready: it owns a static protected API guard inventory test for
-  `src/app/api/v2/user` and `src/app/api/v2/admin`. Do not fold shared
-  response-helper standardization, public optional-session policy, or logging
-  cleanup into T-043.
-- Next one-line assignment: `/task effort: high details:
-  docs/tasks/T-043-add-protected-api-guard-inventory.md`
+- T-043 is complete: it added static protected API guard inventory coverage for
+  `src/app/api/v2/user` and `src/app/api/v2/admin`. Shared response-helper
+  standardization, public optional-session policy, and logging cleanup remain
+  separate.
+- T-044 is complete: it added `src/lib/api/apiResponse.ts`, delegated
+  `apiAuthError()` without changing the auth envelope, and migrated protected
+  user profile/navigation/favourite/watchlist read routes to shared helpers
+  with real `404`/`500` missing-resource/internal-failure statuses.
+- T-045 is complete: it migrated public artwork/article/blog detail routes and
+  populated blog-comment detail routes to shared success/error helpers with real
+  `404`/`500` statuses, public-safe internal-failure bodies, and focused public
+  route tests.
+- T-046 is complete: it migrated public collection list/detail/artwork routes
+  to shared success/error helpers, added explicit `dbConnect()` ownership, and
+  added focused collection route tests.
+- T-047 is complete: it migrated public navigation article/collection routes to
+  the same shared response helpers, real public-safe `404`/`500` statuses,
+  route-local `dbConnect()` ownership, debug-log removal in touched handlers,
+  and focused public navigation route tests.
+- T-048 is complete: it migrated admin article/artwork/blog/collection/comment
+  and user read list/detail routes to shared response helpers while preserving
+  `requireApiAdmin()` guard behavior, invalid-ID `400` contracts, success DTOs,
+  metadata, and DB/auth ordering.
+- T-049 is complete: it migrated admin article/artwork/blog/collection/comment
+  and user delete routes to shared response helpers while preserving success
+  messages, `data: null`, invalid-ID `400` contracts, conflict and not-found
+  statuses, cascade behavior, transactions, and guard/DB ordering.
+- T-050 is complete: it migrated admin article/artwork/blog/collection
+  create/update routes to shared response helpers while preserving structured
+  validation responses, create/update success contracts, `201` create statuses,
+  not-found/conflict statuses, allowlisted persistence, and guard/DB ordering.
+- T-051 is ready: it owns the focused F-040 public transform contract slice for
+  blog `readTime`, collection `firstArtworkId`, public user `isOwner`, and
+  comment ownership state.
+- Next task assignment:
+  `/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -225,16 +255,37 @@ Use this section as the first operational handoff for a new orchestrator.
   `requireApiUser()` before body, DB, model, or transaction work, preserved
   comment validation/DTO behavior, and returned real GET missing-user/internal
   failure statuses.
-- T-043 is ready. It locks the protected route-local guard invariant with a
+- T-043 is complete. It locks the protected route-local guard invariant with a
   static inventory test before moving on to response-helper or logging-policy
   work.
+- T-044 is complete. It introduced a small shared API response helper and
+  applied it only to protected user profile, navigation, favourite, and
+  watchlist read routes before any broader response-helper migration.
+- T-045 is complete. It applied the same helper to public content detail routes
+  before broader public list/search/navigation, admin, or logging-policy work.
+- T-046 is complete. It applied the same helper to public collection APIs before
+  broader public navigation or admin response-helper work.
+- T-047 is complete. It applied the same helper to public navigation APIs
+  before broader admin response-helper, logging-policy, or field-contract work.
+- T-048 is complete. It applied the same helper to admin read APIs before
+  broader admin write/delete response-helper, logging-policy, or field-contract
+  work.
+- T-049 is complete. It applied the same helper pattern to admin delete APIs
+  before broader admin create/update response-helper, logging-policy, or
+  field-contract work.
+- T-050 is complete. It applied the same helper pattern to admin create/update
+  APIs before broader field-contract, Shopify product-linking, or logging-policy
+  work.
+- T-051 is prepared. It should add focused public transform tests and fixes for
+  the F-040 blog `readTime`, collection `firstArtworkId`, public user
+  `isOwner`, and comment ownership-state drift.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
-  Vercel project-setting and rollback ownership, remaining protected API
-  auth-status consistency, broader root-layout DB/session/cache ownership,
-  staged ADR 0004 server data-access migrations, package-manager/Node runtime
-  pins, Cloudinary upload policy, admin bootstrap/recovery, and the broader
-  CORS/CSP and logging policy decisions.
+  Vercel project-setting and rollback ownership, broader root-layout
+  DB/session/cache ownership, staged ADR 0004
+  server data-access migrations, package-manager/Node runtime pins, Cloudinary
+  upload policy, admin bootstrap/recovery, and the broader CORS/CSP and logging
+  policy decisions.
 
 ## Active Audits
 
@@ -291,17 +342,10 @@ completed:
 
 ## Next Orchestrator Action
 
-Commission T-043 with:
-
-```text
-/task effort: high details: docs/tasks/T-043-add-protected-api-guard-inventory.md
-```
-
-After T-043 returns, reconcile its docs and choose between shared API
-response-helper standardization, a focused production logging slice, or the
-next field/transform contract cleanup. Keep Shopify product ID/admin-linking
-work and Cloudinary upload policy as separate task tracks unless priority
-changes.
+Choose the next bounded slice: field/transform contract cleanup, Shopify
+product ID/admin-linking, or focused production logging cleanup. Keep
+Cloudinary upload policy and the residual Next/PostCSS owner decision separate
+unless priority changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

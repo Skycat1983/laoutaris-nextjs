@@ -291,6 +291,7 @@ describe("POST /api/v2/admin/article/create", () => {
       });
       expect(body).toEqual({
         success: false,
+        message: "Failed to create article",
         error: "Failed to create article",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -472,6 +473,7 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
     );
     expect(body).toEqual({
       success: false,
+      message: "Article not found",
       error: "Article not found",
     });
   });
@@ -544,6 +546,7 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
       );
       expect(body).toEqual({
         success: false,
+        message: "Failed to update article",
         error: "Failed to update article",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(

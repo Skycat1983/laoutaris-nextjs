@@ -136,8 +136,24 @@ refactoring without turning every change into a manual QA pass.
 - T-042 extended focused user comment route tests for shared-guard
   GET/POST/PATCH auth short-circuiting, GET list/status behavior, and preserved
   create/update/delete behavior.
-- T-043 is ready with a focused static protected API guard inventory test for
+- T-043 added focused static protected API guard inventory coverage for
   user/admin route files.
+- T-044 added focused helper/profile/saved-route coverage for shared API
+  response helpers and protected user read-route status behavior.
+- T-047 added focused public navigation route coverage for preserved success
+  contracts, real missing-resource `404`s, public-safe internal `500`s,
+  private-message redaction, no direct debug logging in covered success/404
+  paths, and DB-before-model ordering.
+- T-048 updated focused admin read route coverage for shared helper envelopes,
+  preserved list/detail success contracts, empty-list and missing-resource
+  `404`s, unchanged invalid-ID `400` bodies, public-safe internal `500`s,
+  private-message redaction, auth short-circuiting, and DB-before-model
+  ordering.
+- T-049 updated focused admin delete route coverage for shared helper envelopes,
+  preserved success messages and `data: null`, unchanged invalid-ID `400`
+  bodies, missing-resource `404`s, artwork conflict `409`, public-safe internal
+  `500`s, private-message redaction, direct debug-log removal in covered paths,
+  and preserved auth/DB/transaction/cascade ordering.
 
 ## Backlog
 
@@ -431,14 +447,98 @@ npm run lint
 - 2026-05-15: Prepared T-043 with focused static coverage expectations for
   protected user/admin API route guard imports/calls and banned direct
   session/admin helper checks.
+- 2026-05-15: T-043 added
+  `__tests__/unit/api/protectedApiGuardInventory.test.ts` for protected
+  user/admin route file inventory, shared guard import/call enforcement,
+  banned direct session/admin helper checks, and guard ordering before body,
+  DB, model, or transaction work in exported handlers. Focused tests, lint, and
+  build passed; build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-044 with focused coverage expectations for
+  `apiResponse` helpers, protected user profile missing-user/internal statuses,
+  protected user navigation/favourite/watchlist missing-resource/internal
+  statuses, preserved success envelopes, and the existing protected API guard
+  inventory.
+- 2026-05-15: T-044 added `__tests__/unit/api/apiResponse.test.ts` and extended
+  `userProfileRoute` and `userSavedRoutes` coverage for missing-user,
+  missing-artwork, saved-item not-in-set, public-safe internal failure, preserved
+  success envelopes, and shared `401` guard behavior. Focused helper, profile,
+  saved-route, and guard-inventory tests, lint, and build passed; build retained
+  existing MongoDB/static-generation, branch-verification, link, and fetcher
+  debug log noise.
+- 2026-05-15: Prepared T-045 with focused public content detail route coverage
+  expectations for public artwork/article/blog success, missing-resource `404`,
+  public-safe internal `500`, and no raw private thrown message in response
+  bodies.
+- 2026-05-15: T-045 added
+  `__tests__/unit/api/publicContentDetailRoutes.test.ts` and updated public
+  artwork detail coverage for public artwork/article/blog success,
+  missing-resource `404`, public-safe internal `500`, and raw private-message
+  redaction. Focused public route/parity tests, lint, and build passed; build
+  retained existing MongoDB/static-generation, branch-verification, link, and
+  fetcher debug log noise.
+- 2026-05-15: Prepared T-046 with focused public collection route coverage
+  expectations for list/detail/artwork success paths, real missing-resource
+  `404`s, public-safe internal `500`s, route-local DB ownership, and no private
+  thrown messages in response bodies.
+- 2026-05-15: T-046 added
+  `__tests__/unit/api/publicCollectionRoutes.test.ts` for public collection
+  list/detail/artwork success paths, missing collection `404`, missing
+  artwork-in-collection `404`, public-safe internal `500`, private-message
+  redaction, and route-local DB-before-model ordering. Focused
+  collection/parity tests, lint, and build passed; build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug log
+  noise.
+- 2026-05-15: Prepared T-047 with focused public navigation route coverage
+  expectations for article navigation, collection navigation list/detail,
+  collection navigation artworks, missing-resource `404`s, public-safe internal
+  `500`s, private-message redaction, and DB-before-model ordering.
+- 2026-05-15: T-047 added
+  `__tests__/unit/api/publicNavigationRoutes.test.ts` for public navigation
+  article/collection success paths, missing-resource `404`s, public-safe
+  internal `500`s, private-message redaction, no direct debug logging in
+  covered success/404 paths, and route-local DB-before-model ordering. Focused
+  navigation/parity tests, lint, and build passed; build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug log
+  noise.
+- 2026-05-15: Prepared T-048 with focused admin read route coverage
+  expectations for representative list/detail success contracts, empty-list and
+  missing-resource statuses, unchanged invalid-ID `400` bodies, public-safe
+  internal `500`s, private-message redaction, and preserved auth/DB ordering.
+- 2026-05-15: T-048 updated admin read route tests for shared response helper
+  envelopes and reran focused admin read/parity tests, lint, and build
+  successfully. Build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-049 with focused admin delete route coverage
+  expectations for preserved success messages and `data: null`, invalid-ID
+  `400` bodies, missing-resource `404`s, artwork conflict `409`, public-safe
+  internal `500`s, private-message redaction, debug-log removal, and preserved
+  auth/DB/transaction/cascade ordering.
+- 2026-05-15: T-049 updated admin delete route and helper tests for shared
+  response helper envelopes, optional success messages, private-message
+  redaction, preserved cascade/transaction behavior, and no direct debug logs
+  in covered success/not-found paths. Focused admin delete/helper/parity tests,
+  lint, and build passed; build retained existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug log noise.
+- 2026-05-15: T-050 updated admin create/update route tests for shared response
+  helper envelopes, preserved validation `400` bodies, create `201` statuses,
+  update success contracts, not-found `404`s, blog slug conflict `409`,
+  public-safe internal `500`s, private-message redaction, and preserved
+  auth/body-read/DB-ordering and allowlisted persistence behavior. Focused
+  admin create/update/helper/parity tests, lint, and build passed; build
+  retained existing MongoDB/static-generation, branch-verification, link, and
+  fetcher debug log noise.
+- 2026-05-15: Prepared T-051 with focused public transform contract coverage
+  expectations for blog `readTime`, collection `firstArtworkId`, public user
+  `isOwner`, comment ownership state, sensitive-field filtering, and populated
+  blog/comment user-context propagation.
 
 ## Next Agent Action
 
-Keep the route/fetcher parity inventory current when fetchers or route handlers
-change. For T-043, add
-`__tests__/unit/api/protectedApiGuardInventory.test.ts` before broadening to
-lint and build. For later response-helper hardening tasks, add focused route
-tests before broadening to lint and build.
+Assign T-051 and start with focused transform tests before implementation:
+`/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`
+Keep the route/fetcher parity and protected API guard inventories current when
+fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
 for owner/orchestrator acceptance of a Next target, then execute the

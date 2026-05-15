@@ -1,13 +1,14 @@
-import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import { RouteResponse } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   request: NextRequest,
@@ -28,10 +29,10 @@ export async function GET(
     ).lean()) as ArtworkLean | null;
 
     if (!leanArtwork) {
-      return NextResponse.json({
-        success: false,
-        error: "Artwork not found",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Artwork not found",
+        status: 404,
+      });
     }
 
     const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
@@ -40,21 +41,21 @@ export async function GET(
     );
 
     if (!artworkFrontend.isFavourited) {
-      return NextResponse.json({
-        success: false,
-        error: "Artwork not in favourites",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Artwork not in favourites",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: artworkFrontend,
-    } satisfies ApiFavoritesItemResult);
+    return apiSuccessResponse<ApiFavoritesItemResult["data"]>(artworkFrontend);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error in GET /user/favourites/:artworkId:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Internal Server Error",
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch favourite artwork",
+      status: 500,
+    });
   }
 }

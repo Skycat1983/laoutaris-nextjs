@@ -1,20 +1,21 @@
-import { NextResponse } from "next/server";
 import { ArtworkModel } from "@/lib/data/models";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import { RouteResponse } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
-import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
+import { ApiWatchlistItemResult } from "@/lib/api/user/watchlist/fetchers";
 import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
-): Promise<RouteResponse<ApiFavoritesItemResult>> {
+): Promise<RouteResponse<ApiWatchlistItemResult>> {
   const userGuard = await requireApiUser();
   if (!userGuard.ok) {
     return userGuard.response;
@@ -30,10 +31,10 @@ export async function GET(
     ).lean()) as ArtworkLean | null;
 
     if (!leanArtwork) {
-      return NextResponse.json({
-        success: false,
-        error: "Artwork not found",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Artwork not found",
+        status: 404,
+      });
     }
 
     const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
@@ -42,21 +43,21 @@ export async function GET(
     );
 
     if (!artworkFrontend.isWatchlisted) {
-      return NextResponse.json({
-        success: false,
-        error: "Artwork not in watchlist",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Artwork not in watchlist",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: artworkFrontend,
-    } satisfies ApiFavoritesItemResult);
+    return apiSuccessResponse<ApiWatchlistItemResult["data"]>(artworkFrontend);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
     console.error("Error in GET /user/watchlist/:artworkId:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Internal Server Error",
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch watchlist artwork",
+      status: 500,
+    });
   }
 }

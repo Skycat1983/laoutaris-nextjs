@@ -1,11 +1,13 @@
 import { UserModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import { UserLeanPopulated } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(
@@ -33,32 +35,29 @@ export async function GET(
     // .populate([ "author"]);
 
     if (rawUsers.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "No users found" } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "No users found",
+        status: 404,
+      });
     }
 
     const users = rawUsers.map((user) => transformUser.toFrontend(user));
 
-    return NextResponse.json({
-      success: true,
-      data: users,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ReadUserListResult);
+    return apiListResponse(users, {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("[USER_READ]", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch user(s)",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to fetch user(s)",
+      status: 500,
+    });
   }
 }

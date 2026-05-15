@@ -527,6 +527,7 @@ describe("admin read route shared guard migration", () => {
     expect(response.status).toBe(404);
     expect(body).toEqual({
       success: false,
+      message: "No artworks found",
       error: "No artworks found",
     });
     expect(mockTransformArtworkToFrontend).not.toHaveBeenCalled();
@@ -544,6 +545,7 @@ describe("admin read route shared guard migration", () => {
     expect(response.status).toBe(404);
     expect(body).toEqual({
       success: false,
+      message: "Collection not found",
       error: "Collection not found",
     });
     expect(mockTransformCollectionPopulated).not.toHaveBeenCalled();
@@ -567,6 +569,7 @@ describe("admin read route shared guard migration", () => {
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
+        message: "Failed to read blog",
         error: "Failed to read blog",
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");

@@ -73,6 +73,12 @@ const unauthorizedBody = {
   message: "Unauthorized",
   error: "Unauthorized",
 };
+const errorBody = (message: string) => ({
+  success: false,
+  message,
+  error: message,
+});
+let consoleErrorSpy: jest.SpyInstance;
 
 const setAuthenticatedSession = () => {
   mockGetServerSession.mockResolvedValue({
@@ -94,6 +100,15 @@ const expectUnauthorized = async (response: JsonResponse) => {
   expect(mockArtworkFindById).not.toHaveBeenCalled();
   expect(mockTransformAccountNav).not.toHaveBeenCalled();
   expect(mockTransformArtwork).not.toHaveBeenCalled();
+};
+
+const expectErrorResponse = async (
+  response: JsonResponse,
+  status: number,
+  message: string
+) => {
+  expect(response.status).toBe(status);
+  await expect(response.json()).resolves.toEqual(errorBody(message));
 };
 
 const mockSelectLeanUser = (user: unknown) => {
@@ -120,8 +135,13 @@ const mockArtworkLean = (artwork: unknown) => {
 describe("user saved route guards", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockGetServerSession.mockResolvedValue(null);
     mockDbConnect.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it.each([
@@ -147,6 +167,68 @@ describe("user saved route guards", () => {
 
     await expectUnauthorized(response);
   });
+
+  it.each([
+    [
+      "navigation",
+      () => mockSelectLeanUser(null),
+      () => getUserNavigation({} as never),
+    ],
+    [
+      "favourites list",
+      () => mockSelectPopulateLeanUser(null),
+      () => getUserFavourite({} as never),
+    ],
+    [
+      "watchlist list",
+      () => mockSelectPopulateLeanUser(null),
+      () => getUserWatchlist({} as never),
+    ],
+  ])(
+    "returns a real JSON 404 when the current user is missing for %s",
+    async (_, setupMissingUser, call) => {
+      setAuthenticatedSession();
+      setupMissingUser();
+
+      const response = (await call()) as JsonResponse;
+
+      await expectErrorResponse(response, 404, "User not found");
+      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(mockUserFindById).toHaveBeenCalledWith(userId);
+      expect(mockTransformAccountNav).not.toHaveBeenCalled();
+      expect(mockTransformArtwork).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each([
+    [
+      "navigation",
+      () => getUserNavigation({} as never),
+      "Failed to fetch user navigation",
+    ],
+    [
+      "favourites list",
+      () => getUserFavourite({} as never),
+      "Failed to fetch user favourites",
+    ],
+    [
+      "watchlist list",
+      () => getUserWatchlist({} as never),
+      "Failed to fetch user watchlist",
+    ],
+  ])(
+    "returns a public-safe 500 when %s loading fails",
+    async (_, call, message) => {
+      setAuthenticatedSession();
+      mockDbConnect.mockRejectedValue(new Error("database unavailable"));
+
+      const response = (await call()) as JsonResponse;
+
+      await expectErrorResponse(response, 500, message);
+      expect(mockUserFindById).not.toHaveBeenCalled();
+      expect(mockArtworkFindById).not.toHaveBeenCalled();
+    }
+  );
 
   it("loads account navigation for authenticated callers", async () => {
     setAuthenticatedSession();
@@ -304,4 +386,101 @@ describe("user saved route guards", () => {
       data: frontendArtwork,
     });
   });
+
+  it.each([
+    [
+      "favourite detail",
+      () =>
+        getUserFavouriteItem({} as never, {
+          params: { artworkId },
+        }),
+    ],
+    [
+      "watchlist detail",
+      () =>
+        getUserWatchlistItem({} as never, {
+          params: { artworkId },
+        }),
+    ],
+  ])("returns a real JSON 404 when artwork is missing for %s", async (_, call) => {
+    setAuthenticatedSession();
+    const { lean } = mockArtworkLean(null);
+
+    const response = (await call()) as JsonResponse;
+
+    await expectErrorResponse(response, 404, "Artwork not found");
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockArtworkFindById).toHaveBeenCalledWith(artworkId);
+    expect(lean).toHaveBeenCalledTimes(1);
+    expect(mockTransformArtwork).not.toHaveBeenCalled();
+  });
+
+  it("returns a real JSON 404 when artwork is not in favourites", async () => {
+    setAuthenticatedSession();
+    const artwork = { _id: artworkId, title: "Detail" };
+    const frontendArtwork = {
+      id: artworkId,
+      title: "Detail",
+      isFavourited: false,
+    };
+    mockArtworkLean(artwork);
+    mockTransformArtwork.mockReturnValue(frontendArtwork);
+
+    const response = (await getUserFavouriteItem({} as never, {
+      params: { artworkId },
+    })) as JsonResponse;
+
+    await expectErrorResponse(response, 404, "Artwork not in favourites");
+    expect(mockTransformArtwork).toHaveBeenCalledWith(artwork, userId);
+  });
+
+  it("returns a real JSON 404 when artwork is not in watchlist", async () => {
+    setAuthenticatedSession();
+    const artwork = { _id: artworkId, title: "Watch Detail" };
+    const frontendArtwork = {
+      id: artworkId,
+      title: "Watch Detail",
+      isWatchlisted: false,
+    };
+    mockArtworkLean(artwork);
+    mockTransformArtwork.mockReturnValue(frontendArtwork);
+
+    const response = (await getUserWatchlistItem({} as never, {
+      params: { artworkId },
+    })) as JsonResponse;
+
+    await expectErrorResponse(response, 404, "Artwork not in watchlist");
+    expect(mockTransformArtwork).toHaveBeenCalledWith(artwork, userId);
+  });
+
+  it.each([
+    [
+      "favourite detail",
+      () =>
+        getUserFavouriteItem({} as never, {
+          params: { artworkId },
+        }),
+      "Failed to fetch favourite artwork",
+    ],
+    [
+      "watchlist detail",
+      () =>
+        getUserWatchlistItem({} as never, {
+          params: { artworkId },
+        }),
+      "Failed to fetch watchlist artwork",
+    ],
+  ])(
+    "returns a public-safe 500 when %s loading fails",
+    async (_, call, message) => {
+      setAuthenticatedSession();
+      mockDbConnect.mockRejectedValue(new Error("database unavailable"));
+
+      const response = (await call()) as JsonResponse;
+
+      await expectErrorResponse(response, 500, message);
+      expect(mockArtworkFindById).not.toHaveBeenCalled();
+      expect(mockTransformArtwork).not.toHaveBeenCalled();
+    }
+  );
 });

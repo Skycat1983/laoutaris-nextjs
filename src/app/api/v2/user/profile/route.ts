@@ -1,10 +1,11 @@
 import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { UserModel } from "@/lib/data/models";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import { RouteResponse } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
@@ -22,24 +23,21 @@ export async function GET(
     const user = await UserModel.findById(userGuard.userId).select("-password");
 
     if (!user) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "User not found",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: user,
-    } satisfies ApiProfileResult);
+    return apiSuccessResponse<ApiProfileResult["data"]>(user);
   } catch (error) {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Error fetching user:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch user",
-    } satisfies ApiErrorResponse);
+    console.error("Error fetching user profile:", error);
+    return apiErrorResponse({
+      message: "Failed to fetch user profile",
+      status: 500,
+    });
   }
 }

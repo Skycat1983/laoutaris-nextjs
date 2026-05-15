@@ -1,26 +1,20 @@
 import { BlogModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import dbConnect from "@/lib/db/mongodb";
-import {
-  ApiErrorResponse,
-  BlogEntryLeanWithAuthor,
-  RouteResponse,
-} from "@/lib/data/types";
+import { BlogEntryLeanWithAuthor, RouteResponse } from "@/lib/data/types";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { ApiBlogWithAuthorResult } from "@/lib/api/public/blog/fetchers";
-import {
-  transformBlogPopulated,
-  transformBlogWithAuthor,
-} from "@/lib/transforms/blog/transformBlog";
+import { transformBlogWithAuthor } from "@/lib/transforms/blog/transformBlog";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export const GET = async (
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiBlogWithAuthorResult>> => {
-  await dbConnect();
-
   try {
+    await dbConnect();
+
     const { slug } = params;
-    console.log("slug", slug);
 
     const rawBlog = await BlogModel.findOne({ slug })
       .populate("comments")
@@ -28,25 +22,24 @@ export const GET = async (
       .lean<BlogEntryLeanWithAuthor>();
 
     if (!rawBlog) {
-      return NextResponse.json({
-        success: false,
-        error: "Blog entry not found",
-        statusCode: 404,
-      } satisfies ApiErrorResponse);
+      return apiErrorResponse({
+        message: "Blog entry not found",
+        status: 404,
+      });
     }
 
     const blog = transformBlogWithAuthor(rawBlog);
 
-    return NextResponse.json({
-      success: true,
-      data: blog,
-    } satisfies ApiBlogWithAuthorResult);
+    return apiSuccessResponse<ApiBlogWithAuthorResult["data"]>(blog);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error fetching blog detail:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch blog entry",
-      statusCode: 500,
-    } satisfies ApiErrorResponse);
+    return apiErrorResponse({
+      message: "Failed to fetch blog entry",
+      status: 500,
+    });
   }
 };

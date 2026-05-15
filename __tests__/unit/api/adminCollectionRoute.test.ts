@@ -291,6 +291,7 @@ describe("POST /api/v2/admin/collection/create", () => {
       });
       expect(body).toEqual({
         success: false,
+        message: "Failed to create collection",
         error: "Failed to create collection",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -460,6 +461,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
     expect(body).toEqual({
       success: false,
+      message: "Collection not found",
       error: "Collection not found",
     });
   });
@@ -529,6 +531,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
       expect(body).toEqual({
         success: false,
+        message: "Failed to update collection",
         error: "Failed to update collection",
       });
       expect(consoleErrorSpy).toHaveBeenCalledWith(

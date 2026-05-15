@@ -3,12 +3,14 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   createCollectionRouteSchema,
   type CreateCollectionRouteInput,
 } from "@/lib/data/schemas/collectionSchema";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type CollectionCreateFieldErrors = Partial<
   Record<keyof CreateCollectionRouteInput, string[] | undefined>
@@ -31,15 +33,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 export async function POST(
@@ -83,12 +76,16 @@ export async function POST(
       author: admin.userId,
     });
 
-    return NextResponse.json(
-      { success: true, data: collection } satisfies CreateCollectionResult,
-      { status: 201 }
-    );
+    return apiSuccessResponse(collection, { status: 201 });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error creating collection:", error);
-    return errorResponse("Failed to create collection", 500);
+    return apiErrorResponse({
+      message: "Failed to create collection",
+      status: 500,
+    });
   }
 }

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -10,6 +11,7 @@ import {
   type CreateArticleRouteInput,
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type ArticleCreateFieldErrors = Partial<
   Record<keyof CreateArticleRouteInput, string[] | undefined>
@@ -39,15 +41,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeArticleResponse = (value: unknown): unknown => {
@@ -142,15 +135,16 @@ export async function POST(
       author: admin.userId,
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: toArticleResponse(article),
-      } satisfies CreateArticleResult,
-      { status: 201 }
-    );
+    return apiSuccessResponse(toArticleResponse(article), { status: 201 });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error creating article:", error);
-    return errorResponse("Failed to create article", 500);
+    return apiErrorResponse({
+      message: "Failed to create article",
+      status: 500,
+    });
   }
 }

@@ -1,18 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { CollectionModel } from "@/lib/data/models";
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import {
   CollectionLeanPopulated,
   CollectionFrontendPopulated,
 } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
+import dbConnect from "@/lib/db/mongodb";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export const GET = async (
-  req: NextRequest,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiCollectionPopulatedResult>> => {
   try {
+    await dbConnect();
+
     const rawCollection: CollectionLeanPopulated =
       (await CollectionModel.findOne({
         slug: params.slug,
@@ -21,31 +26,26 @@ export const GET = async (
         .lean()) as CollectionLeanPopulated;
 
     if (!rawCollection) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Collection not found",
-          statusCode: 404,
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Collection not found",
+        status: 404,
+      });
     }
 
     const frontendCollection: CollectionFrontendPopulated =
       transformCollectionPopulated(rawCollection);
-    return NextResponse.json({
-      success: true,
-      data: frontendCollection,
-    } satisfies ApiCollectionPopulatedResult);
-  } catch (error) {
-    console.error("Collection fetch error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to fetch collection with artworks",
-        statusCode: 500,
-      } satisfies ApiErrorResponse,
-      { status: 500 }
+    return apiSuccessResponse<ApiCollectionPopulatedResult["data"]>(
+      frontendCollection
     );
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    console.error("Collection fetch error:", error);
+    return apiErrorResponse({
+      message: "Failed to fetch collection with artworks",
+      status: 500,
+    });
   }
 };

@@ -1,18 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminReadInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
 import { CommentModel } from "@/lib/data/models";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { ReadCommentResult } from "@/lib/api/admin/read/fetchers";
 import type {
   CommentFrontendPopulated,
   CommentLeanPopulated,
 } from "@/lib/data/types";
 import { transformCommentPopulated } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   _request: NextRequest,
@@ -36,30 +38,25 @@ export async function GET(
       .lean<CommentLeanPopulated>();
 
     if (!leanComment) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Comment not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Comment not found",
+        status: 404,
+      });
     }
 
     const comment: CommentFrontendPopulated =
       transformCommentPopulated(leanComment);
 
-    return NextResponse.json({
-      success: true,
-      data: comment,
-    } satisfies ReadCommentResult);
+    return apiSuccessResponse(comment);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading comment:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read comment",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to read comment",
+      status: 500,
+    });
   }
 }

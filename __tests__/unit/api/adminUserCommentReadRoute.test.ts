@@ -276,6 +276,7 @@ describe("admin user/comment detail read routes", () => {
     expect(response.status).toBe(404);
     expect(body).toEqual({
       success: false,
+      message: "User not found",
       error: "User not found",
     });
     expect(mockTransformUserToFrontend).not.toHaveBeenCalled();
@@ -301,6 +302,7 @@ describe("admin user/comment detail read routes", () => {
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
+        message: "Failed to read user",
         error: "Failed to read user",
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
@@ -346,6 +348,7 @@ describe("admin user/comment detail read routes", () => {
     expect(response.status).toBe(404);
     expect(body).toEqual({
       success: false,
+      message: "Comment not found",
       error: "Comment not found",
     });
     expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
@@ -370,6 +373,7 @@ describe("admin user/comment detail read routes", () => {
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
+        message: "Failed to read comment",
         error: "Failed to read comment",
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");

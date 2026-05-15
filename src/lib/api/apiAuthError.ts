@@ -1,17 +1,13 @@
-import { NextResponse } from "next/server";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import { apiErrorResponse } from "./apiResponse";
 
 type ApiAuthErrorStatus = 401 | 403 | 500;
 
 export const apiAuthError = (
   error: string,
   status: ApiAuthErrorStatus
-) =>
-  NextResponse.json(
-    {
-      success: false,
-      message: error,
-      error,
-    } satisfies ApiErrorResponse,
-    { status }
-  );
+): ReturnType<typeof apiErrorResponse> =>
+  apiErrorResponse({
+    message: error,
+    error,
+    status,
+  });

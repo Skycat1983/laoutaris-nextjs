@@ -2,6 +2,7 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateArtworkResult } from "@/lib/api/admin/create/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -9,6 +10,7 @@ import {
   type CreateArtworkRouteInput,
 } from "@/lib/data/schemas/artworkSchema";
 import type { AdminArtwork } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type ArtworkCreateFieldErrors = Partial<
   Record<keyof CreateArtworkRouteInput, string[] | undefined>
@@ -38,15 +40,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeArtworkResponse = (value: unknown): unknown => {
@@ -130,15 +123,16 @@ export async function POST(
       author: admin.userId,
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: toArtworkResponse(artwork),
-      } satisfies CreateArtworkResult,
-      { status: 201 }
-    );
+    return apiSuccessResponse(toArtworkResponse(artwork), { status: 201 });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error creating artwork:", error);
-    return errorResponse("Failed to create artwork", 500);
+    return apiErrorResponse({
+      message: "Failed to create artwork",
+      status: 500,
+    });
   }
 }

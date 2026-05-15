@@ -123,8 +123,35 @@ consistent enough for production refactoring and Shopify integration.
 - T-042 finished the user comment route group's route-local protected auth
   cleanup by moving GET/POST/PATCH to `requireApiUser()`, preserving comment
   DTOs and validation behavior, and returning real GET failure statuses.
-- T-043 is ready to add a static protected API guard inventory before broader
+- T-043 added static protected API guard inventory coverage before broader
   response-helper standardization begins.
+- T-044 added the first shared API response-helper slice, scoped to protected
+  user profile, navigation, favourite, and watchlist read routes with real
+  `404`/`500` statuses and public-safe error envelopes.
+- T-045 completed the next response-helper slice, scoped to public artwork,
+  article, blog, and populated blog-comment detail route failures with real
+  `404`/`500` statuses and public-safe internal-failure bodies.
+- T-046 completed the next response-helper slice, scoped to public collection
+  routes, explicit route-local DB ownership, and public-safe `404`/`500`
+  envelopes.
+- T-047 completed the next response-helper slice, scoped to public navigation
+  article/collection routes, explicit route-local DB ownership, and public-safe
+  `404`/`500` envelopes.
+- T-048 completed the next response-helper slice, scoped to admin read routes
+  with shared success/error helpers, real empty-list/missing-resource/internal
+  failure statuses, public-safe `500` bodies, and preserved guard behavior,
+  invalid-ID validation, success DTOs, metadata, and DB-before-model ordering.
+- T-049 completed the next response-helper slice, scoped to admin delete routes
+  with shared success/error helpers, preserved success messages, `data: null`,
+  conflict handling, missing-resource/internal-failure statuses, cascade
+  behavior, transactions, guard/DB ordering, and touched debug-log removal.
+- T-050 completed the final currently staged admin response-helper slice,
+  scoped to admin create/update routes with shared success/error helpers while
+  preserving validation responses, success DTOs, create statuses, allowlisted
+  persistence, not-found/conflict statuses, and guard/DB ordering.
+- T-051 is prepared for the next bounded field/transform contract slice:
+  focused public transform tests and fixes for blog `readTime`, collection
+  `firstArtworkId`, public user `isOwner`, and comment ownership state.
 
 ## Backlog
 
@@ -328,10 +355,90 @@ Add API route tests where behavior is changed.
   behavior, and verifying focused route tests, lint, and build.
 - 2026-05-15: Prepared T-043 for protected API guard inventory closure across
   user/admin route files, keeping response-helper standardization separate.
+- 2026-05-15: Completed T-043 by adding a static protected API guard inventory
+  test across user/admin route files. It requires the shared guard imports and
+  calls, blocks direct session/admin helper checks, and verifies guard calls
+  precede body, DB, model, or transaction work in exported handlers.
+- 2026-05-15: Prepared T-044 as the first shared response-helper
+  standardization slice. It owns a small `src/lib/api` response helper and the
+  protected user profile/navigation/favourite/watchlist read routes, while
+  leaving comments, admin/public/Shopify routes, field contracts, and logging
+  policy separate.
+- 2026-05-15: Completed T-044 by adding `src/lib/api/apiResponse.ts`, keeping
+  `apiAuthError()`'s envelope unchanged through delegation, and migrating
+  protected user profile/navigation/favourite/watchlist read routes to shared
+  success/error helpers with real `404` missing-resource and public-safe `500`
+  internal-failure statuses. Focused helper/profile/saved-route tests, guard
+  inventory, lint, and build passed.
+- 2026-05-15: Prepared T-045 as the next shared response-helper slice. It owns
+  public artwork/article/blog detail route failures, real `404`/`500` statuses,
+  public-safe `500` bodies, and focused public route tests while leaving public
+  lists/search/navigation, admin routes, field contracts, and logging policy
+  separate.
+- 2026-05-15: Completed T-045 by migrating public artwork/article/blog detail
+  routes and populated blog-comment detail routes to shared success/error
+  helpers, preserving transformed DTO success envelopes and artwork optional
+  user context, replacing body-only `statusCode` failures with real
+  public-safe `404`/`500` responses, and verifying focused route/parity tests,
+  lint, and build.
+- 2026-05-15: Prepared T-046 for public collection route response-helper
+  cleanup. It owns collection list/detail/artwork route helpers, real statuses,
+  route-local `dbConnect()` ownership, and focused collection route tests while
+  leaving public navigation, admin routes, and logging policy separate.
+- 2026-05-15: Completed T-046 by migrating public collection
+  list/detail/artwork routes to shared success/error helpers, preserving
+  current success contracts, replacing body-only `statusCode` failures with
+  real public-safe `404`/`500` responses, and adding route-local `dbConnect()`
+  ownership before model reads.
+- 2026-05-15: Prepared T-047 for public navigation route response-helper
+  cleanup. It owns article/collection navigation route helpers, real statuses,
+  route-local `dbConnect()` ownership, touched debug-log removal, and focused
+  public navigation route tests while leaving admin routes, field contracts,
+  Shopify product ID/admin-linking, and global logging policy separate.
+- 2026-05-15: Completed T-047 by migrating public article/collection navigation
+  routes to shared success/error helpers, preserving current navigation success
+  contracts, replacing body-only `statusCode` failures with real public-safe
+  `404`/`500` responses, adding route-local `dbConnect()` ownership before
+  model reads where it was missing, and verifying focused navigation/parity
+  tests, lint, and build.
+- 2026-05-15: Prepared T-048 for admin read route response-helper cleanup. It
+  owns article/artwork/blog/collection/comment/user read list/detail helper
+  usage, real statuses, public-safe internal failure bodies, and focused admin
+  read route tests while leaving admin writes/deletes, field contracts, Shopify
+  product ID/admin-linking, and global logging policy separate.
+- 2026-05-15: Completed T-048 by migrating admin
+  article/artwork/blog/collection/comment/user read list/detail routes to
+  shared success/list/error response helpers, preserving `requireApiAdmin()`,
+  invalid-ID `400` responses, transformed DTOs, list metadata, empty-list and
+  missing-resource `404`s, DB-before-model ordering, and public-safe internal
+  `500` bodies. Focused admin read/parity tests, lint, and build passed.
+- 2026-05-15: Prepared T-049 for admin delete route response-helper cleanup.
+  It owns article/artwork/blog/collection/comment/user delete helper usage,
+  real statuses, public-safe internal failure bodies, direct debug-log removal,
+  and focused admin delete route tests while leaving admin create/update routes,
+  field contracts, Shopify product ID/admin-linking, and global logging policy
+  separate.
+- 2026-05-15: Completed T-049 by migrating admin
+  article/artwork/blog/collection/comment/user delete routes to shared
+  success/error response helpers, preserving `requireApiAdmin()`, invalid-ID
+  `400` responses, route-specific success messages, `data: null`,
+  missing-resource `404`s, artwork conflict `409`, cascade behavior,
+  transaction abort/commit/end behavior, DB-before-model ordering, and
+  public-safe internal `500` bodies. Focused admin delete/helper/parity tests,
+  lint, and build passed.
+- 2026-05-15: Completed T-050 by migrating admin article/artwork/blog/collection
+  create/update routes to shared success/error response helpers, preserving
+  structured validation `400` bodies, create `201`s, update DTOs, missing
+  resource `404`s, blog slug conflict `409`, allowlisted persistence,
+  guard/body-read/DB ordering, and public-safe internal `500` bodies. Focused
+  admin create/update/helper/parity tests, lint, and build passed.
+- 2026-05-15: Prepared T-051 for the focused F-040 public transform contract
+  slice. It owns blog `readTime`, collection `firstArtworkId`, public user
+  `isOwner`, and comment ownership-state coverage/fixes while leaving the
+  broader F-039 field matrix, F-041 image sanitization, Shopify product
+  ID/admin-linking, and global logging policy separate.
 
 ## Next Agent Action
 
-Commission T-043 for protected API guard inventory closure. After it returns,
-choose the next data/API hardening slice from shared response-helper
-standardization, field/transform contract cleanup, or Shopify product
-ID/admin-linking work.
+Assign T-051:
+`/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`

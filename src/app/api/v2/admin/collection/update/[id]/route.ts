@@ -2,6 +2,7 @@ import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateCollectionResult } from "@/lib/api/admin/update/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -10,6 +11,7 @@ import {
   type UpdateCollectionRouteBody,
   type UpdateCollectionRouteParams,
 } from "@/lib/data/schemas/collectionSchema";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type CollectionUpdateFieldErrors = Partial<
   Record<
@@ -35,15 +37,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const applyCollectionFields = (
@@ -115,18 +108,25 @@ export async function PATCH(
 
     const collection = await CollectionModel.findById(parsedParams.data.id);
     if (!collection) {
-      return errorResponse("Collection not found", 404);
+      return apiErrorResponse({
+        message: "Collection not found",
+        status: 404,
+      });
     }
 
     applyCollectionFields(collection, parsedBody.data);
     await collection.save();
 
-    return NextResponse.json({
-      success: true,
-      data: collection,
-    } satisfies UpdateCollectionResult);
+    return apiSuccessResponse(collection);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error updating collection:", error);
-    return errorResponse("Failed to update collection", 500);
+    return apiErrorResponse({
+      message: "Failed to update collection",
+      status: 500,
+    });
   }
 }

@@ -106,6 +106,24 @@ security headers, environment documentation, and actionable operational signals.
   unauthenticated public-route status checks.
 - T-041 removed always-on middleware debug logs while fixing middleware API auth
   responses; broader production logging/redaction policy remains separate.
+- T-044 completed a route-local public-safe API response slice for protected
+  user read routes. It does not define the broader production logging,
+  redaction, monitoring, or request-correlation policy.
+- T-045 completed the next route-local public-safe API response slice, scoped to
+  public content detail route failure bodies and direct debug-log removal in
+  touched blog handlers.
+- T-046 completed the next route-local public-safe API response slice, scoped to
+  public collection route failure bodies and removal of touched collection
+  request debug logging.
+- T-047 completed the next route-local public-safe API response slice, scoped
+  to public navigation route failure bodies and removal of touched navigation
+  debug logging. Broader logging/redaction policy remains separate.
+- T-048 completed the next route-local public-safe API response slice, scoped
+  to admin read route failure bodies. Broader logging/redaction policy remains
+  separate.
+- T-049 completed the next route-local public-safe API response slice, scoped
+  to admin delete route failure bodies and touched delete-handler debug-log
+  removal. Broader logging/redaction policy remains separate.
 
 ## Backlog
 
@@ -249,6 +267,59 @@ npm run lint
   `src/middleware.ts`, returning shared JSON `401` responses for
   unauthenticated protected API callers, preserving frontend redirects, and
   verifying focused tests, lint, and build.
+- 2026-05-15: Prepared T-044 to reduce public-facing route error inconsistency
+  for protected user read routes with shared response helpers and stable
+  public-safe failure bodies. Broader logging/redaction policy remains separate.
+- 2026-05-15: Completed T-044 by routing protected user profile, navigation,
+  favourite, and watchlist read-route missing-resource and internal failures
+  through shared public-safe response helpers with real `404`/`500` statuses.
+  Broader logging/redaction, monitoring, and request-correlation policy remains
+  separate.
+- 2026-05-15: Prepared T-045 to apply shared public-safe response helpers to
+  unauthenticated public content detail routes. It should remove touched direct
+  debug `console.log()` calls but keep global logging/redaction policy separate.
+- 2026-05-15: Completed T-045 by routing public artwork/article/blog detail
+  route missing-resource and internal failures through shared public-safe
+  response helpers with real `404`/`500` statuses, removing touched blog
+  `console.log()` calls, and keeping broader logging/redaction, monitoring, and
+  request-correlation policy separate.
+- 2026-05-15: Prepared T-046 to apply shared public-safe response helpers to
+  public collection routes and remove touched direct debug logs. Broader
+  logging/redaction policy remains separate.
+- 2026-05-15: Completed T-046 by routing public collection route missing
+  resource and internal failures through shared public-safe response helpers
+  with real `404`/`500` statuses and removing touched collection request debug
+  logging. Broader logging/redaction, monitoring, and request-correlation policy
+  remains separate.
+- 2026-05-15: Prepared T-047 to apply shared public-safe response helpers to
+  public navigation routes and remove touched direct debug logs. Broader
+  logging/redaction policy remains separate.
+- 2026-05-15: Completed T-047 by routing public navigation route missing
+  resource and internal failures through shared public-safe response helpers
+  with real `404`/`500` statuses and removing touched navigation
+  request/found/no-results debug logging. Broader logging/redaction,
+  monitoring, and request-correlation policy remains separate.
+- 2026-05-15: Prepared T-048 to apply shared stable response helpers to admin
+  read routes while keeping broader logging/redaction, monitoring, and
+  request-correlation policy separate.
+- 2026-05-15: Prepared T-049 to apply shared stable response helpers to admin
+  delete routes and remove touched direct debug logs while keeping broader
+  logging/redaction, monitoring, and request-correlation policy separate.
+- 2026-05-15: Completed T-048 by routing admin read route empty-list,
+  missing-resource, and internal failures through shared stable response
+  helpers with real `404`/`500` statuses and public-safe internal failure
+  bodies. Broader logging/redaction, monitoring, and request-correlation policy
+  remains separate.
+- 2026-05-15: Completed T-049 by routing admin delete route missing-resource,
+  conflict, and internal failures through shared stable response helpers with
+  real `404`/`409`/`500` statuses and public-safe internal failure bodies,
+  while removing touched delete-handler debug logs. Broader logging/redaction,
+  monitoring, and request-correlation policy remains separate.
+- 2026-05-15: Completed T-050 by routing admin create/update route success,
+  missing-resource, conflict, and internal failures through shared stable
+  response helpers with real `201`/`200`/`404`/`409`/`500` statuses and
+  public-safe internal failure bodies. Broader logging/redaction, monitoring,
+  and request-correlation policy remains separate.
 
 ## Next Agent Action
 

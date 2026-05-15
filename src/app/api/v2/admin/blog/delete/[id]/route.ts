@@ -1,14 +1,16 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import mongoose from "mongoose";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/delete/routeValidation";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function DELETE(
   _request: NextRequest,
@@ -35,13 +37,10 @@ export async function DELETE(
     const blog = await BlogModel.findById(id).session(session);
     if (!blog) {
       await session.abortTransaction();
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Blog not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Blog not found",
+        status: 404,
+      });
     }
 
     // If blog has comments, handle the cleanup
@@ -75,22 +74,22 @@ export async function DELETE(
     // If everything succeeded, commit the transaction
     await session.commitTransaction();
 
-    return NextResponse.json({
-      success: true,
-      data: null,
+    return apiSuccessResponse(null, {
       message: "Blog and associated comments deleted successfully",
-    } satisfies DeleteDocumentResult);
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      await session?.abortTransaction();
+      throw error;
+    }
+
     // If anything fails, abort the transaction
     await session?.abortTransaction();
     console.error("Error in blog deletion transaction:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to delete blog and associated data",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to delete blog and associated data",
+      status: 500,
+    });
   } finally {
     // Always end the session
     session?.endSession();

@@ -1,12 +1,14 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { ReadArtworkListResult } from "@/lib/api/admin/read/fetchers";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import { AdminArtworkTransformations } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms";
 import { ArtworkFrontend } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   request: NextRequest
@@ -46,39 +48,31 @@ export async function GET(
     ]);
 
     if (rawArtworks.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "No artworks found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "No artworks found",
+        status: 404,
+      });
     }
 
     const artworks: ArtworkFrontend[] = rawArtworks.map((artwork) =>
       transformArtwork.toFrontend(artwork)
     );
 
-    return NextResponse.json({
-      success: true,
-      data: artworks,
-      metadata: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
-    } satisfies ReadArtworkListResult);
+    return apiListResponse(artworks, {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading artworks:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read artworks",
-      } satisfies ApiErrorResponse,
-      {
-        status: 500,
-      }
-    );
+    return apiErrorResponse({
+      message: "Failed to read artworks",
+      status: 500,
+    });
   }
 }

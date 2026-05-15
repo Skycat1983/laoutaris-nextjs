@@ -1,13 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { CollectionModel } from "@/lib/data/models";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/delete/routeValidation";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function DELETE(
   _request: NextRequest,
@@ -28,31 +30,25 @@ export async function DELETE(
 
     const deletedCollection = await CollectionModel.findByIdAndDelete(id);
 
-    console.log("Deleted collection:", deletedCollection);
-
     if (!deletedCollection) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Collection not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Collection not found",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
+    return apiSuccessResponse(null, {
       message: "Collection deleted successfully",
-      data: null,
-    } satisfies DeleteDocumentResult);
+    });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error deleting collection:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to delete collection",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to delete collection",
+      status: 500,
+    });
   }
 }

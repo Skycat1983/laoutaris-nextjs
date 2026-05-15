@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -10,6 +11,7 @@ import {
   type CreateBlogRouteInput,
 } from "@/lib/data/schemas/blogSchema";
 import type { AdminBlog } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type BlogCreateFieldErrors = Partial<
   Record<keyof CreateBlogRouteInput, string[] | undefined>
@@ -39,15 +41,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeBlogResponse = (value: unknown): unknown => {
@@ -130,15 +123,16 @@ export async function POST(
       author: admin.userId,
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: toBlogResponse(blog),
-      } satisfies CreateBlogResult,
-      { status: 201 }
-    );
+    return apiSuccessResponse(toBlogResponse(blog), { status: 201 });
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error creating blog:", error);
-    return errorResponse("Failed to create blog", 500);
+    return apiErrorResponse({
+      message: "Failed to create blog",
+      status: 500,
+    });
   }
 }

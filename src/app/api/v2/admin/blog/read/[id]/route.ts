@@ -1,8 +1,9 @@
 import { BlogModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import { NextRequest } from "next/server";
+import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminReadInvalidIdResponse,
@@ -15,6 +16,7 @@ import {
   BlogEntryFrontend,
 } from "@/lib/data/types";
 import { transformBlogPopulated } from "@/lib/transforms";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
   _request: NextRequest,
@@ -41,29 +43,24 @@ export async function GET(
       .lean<AdminBlogTransformationsPopulated["Lean"]>();
 
     if (!leanDocument) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Blog not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return apiErrorResponse({
+        message: "Blog not found",
+        status: 404,
+      });
     }
 
     const blog: BlogEntryFrontend = transformBlogPopulated(leanDocument);
 
-    return NextResponse.json({
-      success: true,
-      data: blog,
-    } satisfies ReadBlogResult);
+    return apiSuccessResponse(blog);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error reading blog:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to read blog",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return apiErrorResponse({
+      message: "Failed to read blog",
+      status: 500,
+    });
   }
 }

@@ -79,12 +79,13 @@ describe("GET /api/v2/public/artwork/[id]", () => {
     );
     expect(body).toEqual({
       success: false,
+      message: "Artwork not found",
       error: "Artwork not found",
     });
   });
 
-  it("returns a 500 error envelope when the artwork service throws", async () => {
-    mockGetArtworkById.mockRejectedValue(new Error("database unavailable"));
+  it("returns a public-safe 500 when the artwork service throws", async () => {
+    mockGetArtworkById.mockRejectedValue(new Error("private database detail"));
 
     const response = await GET(request, createParams(validArtworkId));
     const body = await response.json();
@@ -92,7 +93,9 @@ describe("GET /api/v2/public/artwork/[id]", () => {
     expect(response.status).toBe(500);
     expect(body).toEqual({
       success: false,
-      error: "database unavailable",
+      message: "Failed to fetch artwork",
+      error: "Failed to fetch artwork",
     });
+    expect(JSON.stringify(body)).not.toContain("private database detail");
   });
 });

@@ -44,6 +44,7 @@ const profile = {
   email: "joseph@example.com",
   role: "user",
 };
+let consoleErrorSpy: jest.SpyInstance;
 
 const setAuthenticatedSession = () => {
   mockGetServerSession.mockResolvedValue({
@@ -60,10 +61,15 @@ const setAuthenticatedSession = () => {
 describe("GET /api/v2/user/profile", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockDbConnect.mockResolvedValue(undefined);
     mockFindById.mockReturnValue({
       select: jest.fn().mockResolvedValue(profile),
     });
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it("returns a real JSON 401 for unauthenticated callers", async () => {
@@ -97,6 +103,40 @@ describe("GET /api/v2/user/profile", () => {
     expect(body).toEqual({
       success: true,
       data: profile,
+    });
+  });
+
+  it("returns a real JSON 404 when the current user no longer exists", async () => {
+    setAuthenticatedSession();
+    const select = jest.fn().mockResolvedValue(null);
+    mockFindById.mockReturnValue({ select });
+
+    const response = await GET({} as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockFindById).toHaveBeenCalledWith(userId);
+    expect(body).toEqual({
+      success: false,
+      message: "User not found",
+      error: "User not found",
+    });
+  });
+
+  it("returns a public-safe 500 when profile loading fails", async () => {
+    setAuthenticatedSession();
+    mockDbConnect.mockRejectedValue(new Error("database unavailable"));
+
+    const response = await GET({} as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(mockFindById).not.toHaveBeenCalled();
+    expect(body).toEqual({
+      success: false,
+      message: "Failed to fetch user profile",
+      error: "Failed to fetch user profile",
     });
   });
 });

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import slugify from "slugify";
 import { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
+import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
@@ -12,6 +13,7 @@ import {
   type UpdateBlogRouteParams,
 } from "@/lib/data/schemas/blogSchema";
 import type { AdminBlog } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 type BlogUpdateFieldErrors = Partial<
   Record<keyof (UpdateBlogRouteBody & UpdateBlogRouteParams), string[]>
@@ -43,15 +45,6 @@ const validationErrorResponse = (
       formErrors,
     },
     { status: 400 }
-  );
-
-const errorResponse = (error: string, status: number) =>
-  NextResponse.json<ApiErrorResponse>(
-    {
-      success: false,
-      error,
-    },
-    { status }
   );
 
 const normalizeBlogResponse = (value: unknown): unknown => {
@@ -130,7 +123,10 @@ export async function PATCH(
       parsedParams.data.id
     )) as BlogDocumentLike | null;
     if (!existingBlog) {
-      return errorResponse("Blog not found", 404);
+      return apiErrorResponse({
+        message: "Blog not found",
+        status: 404,
+      });
     }
 
     const updateData: UpdateBlogRouteBody & { slug?: string } = {
@@ -148,10 +144,10 @@ export async function PATCH(
       });
 
       if (slugExists) {
-        return errorResponse(
-          `A blog with a similar title already exists. The slug "${newSlug}" is already taken.`,
-          409
-        );
+        return apiErrorResponse({
+          message: `A blog with a similar title already exists. The slug "${newSlug}" is already taken.`,
+          status: 409,
+        });
       }
 
       updateData.slug = newSlug;
@@ -166,15 +162,22 @@ export async function PATCH(
     );
 
     if (!updatedBlog) {
-      return errorResponse("Blog not found", 404);
+      return apiErrorResponse({
+        message: "Blog not found",
+        status: 404,
+      });
     }
 
-    return NextResponse.json({
-      success: true,
-      data: toBlogResponse(updatedBlog),
-    } satisfies UpdateBlogResult);
+    return apiSuccessResponse(toBlogResponse(updatedBlog));
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error updating blog:", error);
-    return errorResponse("Failed to update blog", 500);
+    return apiErrorResponse({
+      message: "Failed to update blog",
+      status: 500,
+    });
   }
 }
