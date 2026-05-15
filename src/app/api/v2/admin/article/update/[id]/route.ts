@@ -3,62 +3,157 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  updateArticleRouteBodySchema,
+  updateArticleRouteParamsSchema,
+  type UpdateArticleRouteBody,
+  type UpdateArticleRouteParams,
+} from "@/lib/data/schemas/articleSchema";
+import type { AdminArticle } from "@/lib/data/types";
+
+type ArticleUpdateFieldErrors = Partial<
+  Record<
+    keyof (UpdateArticleRouteBody & UpdateArticleRouteParams),
+    string[] | undefined
+  >
+>;
+
+type ArticleValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: ArticleUpdateFieldErrors;
+  formErrors: string[];
+};
+
+type ArticleDocumentLike = {
+  toObject?: (options?: {
+    versionKey?: boolean;
+    flattenObjectIds?: boolean;
+  }) => unknown;
+};
+
+const validationErrorResponse = (
+  fieldErrors: ArticleUpdateFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ArticleValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid article input",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
+
+const normalizeArticleResponse = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeArticleResponse);
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (value && typeof value === "object") {
+    const maybeObjectId = value as { constructor?: { name?: string } };
+
+    if (
+      maybeObjectId.constructor?.name === "ObjectId" &&
+      typeof value.toString === "function"
+    ) {
+      return value.toString();
+    }
+
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([key]) => key !== "__v")
+        .map(([key, nestedValue]) => [
+          key,
+          normalizeArticleResponse(nestedValue),
+        ])
+    );
+  }
+
+  return value;
+};
+
+const toArticleResponse = (article: ArticleDocumentLike): AdminArticle => {
+  const plainArticle =
+    typeof article.toObject === "function"
+      ? article.toObject({ versionKey: false, flattenObjectIds: true })
+      : article;
+
+  return normalizeArticleResponse(plainArticle) as AdminArticle;
+};
 
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<UpdateArticleResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
 
-  const { id } = params;
-  try {
-    const updateData = await request.json();
+  const parsedParams = updateArticleRouteParamsSchema.safeParse(params);
 
-    if (updateData.title) {
-      updateData.slug = slugify(updateData.title, { lower: true });
+  if (!parsedParams.success) {
+    const { fieldErrors, formErrors } = parsedParams.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  let body: unknown;
+
+  try {
+    body = await request.json();
+  } catch {
+    return validationErrorResponse({}, ["Request body must be valid JSON."]);
+  }
+
+  const parsedBody = updateArticleRouteBodySchema.safeParse(body);
+
+  if (!parsedBody.success) {
+    const { fieldErrors, formErrors } = parsedBody.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  try {
+    await dbConnect();
+
+    const updateData: UpdateArticleRouteBody & { slug?: string } = {
+      ...parsedBody.data,
+    };
+
+    if (parsedBody.data.title !== undefined) {
+      updateData.slug = slugify(parsedBody.data.title, { lower: true });
     }
 
     const updatedArticle = await ArticleModel.findByIdAndUpdate(
-      id,
+      parsedParams.data.id,
       { $set: updateData },
-      { new: true } // return  updated doc
+      { new: true }
     );
 
     if (!updatedArticle) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Article not found",
-          error: "Article not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return errorResponse("Article not found", 404);
     }
 
     return NextResponse.json({
       success: true,
-      data: updatedArticle,
+      data: toArticleResponse(updatedArticle),
     } satisfies UpdateArticleResult);
   } catch (error) {
     console.error("Error updating article:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to update article",
-        error: "Failed to update article",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return errorResponse("Failed to update article", 500);
   }
 }

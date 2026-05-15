@@ -8,42 +8,39 @@ import { NextRequest, NextResponse } from "next/server";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import mongoose from "mongoose";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminDeleteInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/delete/routeValidation";
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
-  const session = await mongoose.startSession();
-  session.startTransaction();
+
+  const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminDeleteInvalidIdResponse("user", "Invalid user ID");
+  }
+
+  let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
 
   try {
-    const { id } = params;
-    if (!id) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "User ID is required",
-        } satisfies ApiErrorResponse,
-        { status: 400 }
-      );
-    }
+    await dbConnect();
+    session = await mongoose.startSession();
+    session.startTransaction();
 
     // Find the user first
     const user = await UserModel.findById(id).session(session);
     if (!user) {
+      await session.abortTransaction();
       return NextResponse.json(
         {
           success: false,
@@ -109,7 +106,7 @@ export async function DELETE(
     } satisfies DeleteDocumentResult);
   } catch (error) {
     // If anything fails, abort the transaction
-    await session.abortTransaction();
+    await session?.abortTransaction();
     console.error("Error in user deletion transaction:", error);
     return NextResponse.json(
       {
@@ -120,6 +117,6 @@ export async function DELETE(
     );
   } finally {
     // Always end the session
-    session.endSession();
+    session?.endSession();
   }
 }

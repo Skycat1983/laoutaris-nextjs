@@ -104,6 +104,8 @@ security headers, environment documentation, and actionable operational signals.
   expectations, credentials smoke handling, targeted Vercel log requirements,
   rollback triggers, and a dependency-free `npm run smoke:public` helper for
   unauthenticated public-route status checks.
+- T-041 removed always-on middleware debug logs while fixing middleware API auth
+  responses; broader production logging/redaction policy remains separate.
 
 ## Backlog
 
@@ -240,12 +242,20 @@ npm run lint
   evidence template, minimum route expectations, credentials smoke secret
   handling, targeted Vercel log requirements, rollback triggers, and
   `npm run smoke:public` for unauthenticated public-route status checks.
+- 2026-05-15: Prepared T-041 as a narrow middleware logging/auth-response slice:
+  remove direct debug logs from `src/middleware.ts` while returning JSON `401`
+  for protected API callers and preserving frontend redirects.
+- 2026-05-15: Completed T-041 by removing direct debug logs from
+  `src/middleware.ts`, returning shared JSON `401` responses for
+  unauthenticated protected API callers, preserving frontend redirects, and
+  verifying focused tests, lint, and build.
 
 ## Next Agent Action
 
 Resolve the remaining deployment operations gaps that T-025 intentionally left
 separate: package-manager and Node runtime pins, Vercel project-setting
-ownership, dependency-update automation, and environment inventory. Keep the
-Next/PostCSS owner choice separate: wait for a stable Next release with bundled
-`postcss@8.5.10+`, accept a partial stable `next@16.2.6` migration with
-residual PostCSS risk, or explicitly accept canary framework risk.
+ownership, dependency-update automation, environment inventory, and broader
+production logging/redaction policy. Keep the Next/PostCSS owner choice
+separate: wait for a stable Next release with bundled `postcss@8.5.10+`, accept
+a partial stable `next@16.2.6` migration with residual PostCSS risk, or
+explicitly accept canary framework risk.

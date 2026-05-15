@@ -93,20 +93,42 @@ features before production launch.
 - T-028 added explicit DB connection ownership and route revalidation to
   favourite/watchlist server actions, with defensive invalid saved-item input
   handling and focused action tests.
+- T-031 pruned the unused unsupported favourite/watchlist write fetchers while
+  preserving the active saved-item server-action flow.
+- T-032 pruned the unused profile update fetcher while preserving current
+  profile read behavior and resolving the remaining F-037 user fetcher drift.
+- T-033 migrated user comment delete to `requireApiUser()` before
+  DB/transaction work, validates the comment ID before persistence work, and
+  returns the typed delete envelope.
+- T-039 migrated remaining admin read routes from `isAdmin()` to
+  `requireApiAdmin()`, with real JSON `401`/`403` guard responses, target-read
+  DB ownership, detail ID validation, and focused route coverage.
+- T-040 migrated admin article, artwork, blog, collection, comment, and user
+  delete routes to `requireApiAdmin()`, added destructive ID validation before
+  target/session work, added route-local DB ownership, and preserved cascade
+  behavior with focused route coverage.
+- T-041 hardened middleware API auth responses so unauthenticated protected API
+  callers receive JSON `401` responses instead of NextAuth redirects, while
+  protected frontend routes keep browser redirects.
+- T-042 migrated the remaining user comment GET/POST/PATCH handlers from
+  `getUserIdFromSession()` to `requireApiUser()`, so the user comment route
+  group now uses the shared route-local user guard.
+- T-043 is ready to add a protected API guard inventory test for all
+  `/api/v2/user` and `/api/v2/admin` route files.
 
 ## Backlog
 
 - Use the A-004 protected-route inventory when changing middleware or admin API
   guards.
-- Apply shared `requireApiUser()` and `requireApiAdmin()` to remaining
-  protected API routes through separate scoped migrations with focused route
-  tests.
-- Migrate additional admin API routes to the API admin guard only through
+- Keep protected API route files on shared `requireApiUser()` and
+  `requireApiAdmin()` guards; T-043 is prepared to add a static inventory test
+  for this invariant.
+- Migrate any future admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
 - Route legacy `JWT_SECRET` env remnants through deployment/auth docs. T-022
   completed the direct `jose` package cleanup; auth packages still own their
   transitive `jose` dependencies.
-- Remove or gate noisy middleware logging before production.
+- Remove or gate remaining noisy auth/admin logs before production.
 - Confirm credential, OAuth, sign-in, sign-out, and redirect flows. For
   deployment smoke, use the T-025 owner-approved smoke-account handling and do
   not record usernames, passwords, cookies, or CSRF tokens.
@@ -215,10 +237,60 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   values before DB/model access, revalidating affected account/artwork paths
   after successful toggles, and verifying focused action tests, lint, and
   build.
+- 2026-05-15: Prepared T-031 to remove unused favourite/watchlist API write
+  fetchers without changing the T-028 server-action mutation path, and T-032 to
+  remove the unused profile update fetcher without adding profile editing scope.
+- 2026-05-15: Completed T-031 by removing the unused favourite/watchlist API
+  write fetchers and their route/fetcher parity known-gap entries without
+  changing the T-028 server-action saved-item mutation path.
+- 2026-05-15: Completed T-032 by removing the unused profile update fetcher and
+  emptying the route/fetcher parity known-gap allowlist without adding profile
+  editing scope.
+- 2026-05-15: Prepared T-033 to harden `DELETE
+  /api/v2/user/comment/[commentId]` with the shared user guard, route-param
+  validation before DB work, preserved transaction behavior, and focused delete
+  tests.
+- 2026-05-15: Completed T-033 by moving user comment delete behind
+  `requireApiUser()`, preserving transactional ownership/delete/user/blog
+  updates, returning real `401`/`400`/`403`/`404`/`500` statuses, and verifying
+  focused route tests, lint, and build.
+- 2026-05-15: Completed T-034 by moving admin article create/update behind
+  `requireApiAdmin()` before body reads while preserving session-owned create
+  authorship and adding focused unauthenticated/non-admin route coverage.
+- 2026-05-15: Prepared T-039 and T-040 as the next F-036 protected admin API
+  guard migration queue. T-039 owns remaining admin read routes still using
+  `isAdmin()`; T-040 owns admin delete routes and destructive ID validation
+  after T-039 is reconciled.
+- 2026-05-15: Completed T-039 by migrating admin article, artwork, blog,
+  collection, comment, and user read routes to `requireApiAdmin()`, adding
+  detail read ID validation before target reads, preserving existing read
+  response semantics, and verifying focused route tests, lint, and build.
+- 2026-05-15: Completed T-040 by migrating admin article, artwork, blog,
+  collection, comment, and user delete routes to `requireApiAdmin()`, validating
+  delete IDs before route-local destructive work and transaction sessions,
+  preserving cascade/delete semantics, and verifying focused route tests, lint,
+  and build.
+- 2026-05-15: Prepared T-041 to harden middleware API auth responses, preserve
+  frontend redirect behavior, keep admin API `403` behavior, and remove
+  always-on middleware debug logs with focused middleware/route utility tests.
+- 2026-05-15: Completed T-041 by returning shared JSON `401` middleware
+  responses for unauthenticated protected API requests, preserving protected
+  frontend redirects and admin API/frontend denial behavior, removing direct
+  middleware debug logs, and verifying focused middleware/route utility tests,
+  lint, and build.
+- 2026-05-15: Prepared T-042 to move user comment GET/POST/PATCH handlers to
+  `requireApiUser()` while preserving T-012 validation behavior and T-033 delete
+  behavior.
+- 2026-05-15: Completed T-042 by moving user comment GET/POST/PATCH handlers to
+  `requireApiUser()`, returning shared JSON `401` guard responses before body,
+  DB, model, or transaction work, preserving comment create/update/delete
+  behavior, and verifying focused route tests, lint, and build.
+- 2026-05-15: Prepared T-043 to add static protected-route guard inventory
+  coverage so user/admin API route files keep using `requireApiUser()` and
+  `requireApiAdmin()` instead of direct session/admin helper checks.
 
 ## Next Agent Action
 
-After T-029 makes route/fetcher parity measurable, prepare the next scoped
-protected API guard migration task from F-036/A-004. Keep admin
-bootstrap/recovery documentation, production logging cleanup, F-037 runtime
-fixes, and broader root-layout session redesign separate from that guard slice.
+Commission T-043 for protected API guard inventory closure. Keep admin
+bootstrap/recovery documentation, broader production logging policy, shared
+response-helper standardization, and root-layout session redesign separate.

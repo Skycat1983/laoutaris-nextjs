@@ -68,6 +68,9 @@ production while preserving MongoDB as the archive source of truth.
   a cart, checkout, or enquiry completion affordance.
 - T-009 removed the token-shaped Shopify config source comment; owner
   verification/rotation for the removed value remains open.
+- T-036 validates public shop listing query params before MongoDB query
+  construction or Shopify product fan-out, while leaving checkout, product ID
+  migration, admin linking, sorting, and pagination separate.
 
 ## Backlog
 
@@ -138,9 +141,17 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-14: Completed T-009 for the Shopify source cleanup slice by removing
   the token-shaped config comment and adding a focused regression check. Owner
   verification or rotation for the removed value remains open.
+- 2026-05-15: Prepared T-036 to close the remaining F-060 public shop browse
+  query-bounds slice. It scopes repeated artwork-derived shop filters,
+  product-type boolean parsing, optional `sortBy` validation, and focused route
+  tests before DB/Shopify work.
+- 2026-05-15: Completed T-036; the public shop listing route now rejects
+  invalid repeated filters, product-type boolean strings, and optional `sortBy`
+  values before `dbConnect()`, MongoDB query construction, or Shopify product
+  fan-out while preserving existing valid listing behavior and response shape.
 
 ## Next Agent Action
 
-Get owner confirmation on whether the removed Shopify value was real and needs
-rotation; keep checkout handoff and admin linking workflow decisions as the next
-commerce implementation blockers.
+Choose the next Shopify slice separately: owner confirmation on the removed
+Shopify value, checkout handoff, admin linking workflow, product ID migration,
+and server-side sorting/pagination remain separate commerce blockers.

@@ -2,34 +2,29 @@ import { ArticleModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
 import {
   AdminArticleTransformationsPopulated,
   ArticleFrontendPopulated,
 } from "@/lib/data/types";
-import { transformAdminArticlePopulated } from "@/lib/transforms/transformAdmin";
 import { transformArticlePopulated } from "@/lib/transforms";
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadArticleListResult>> {
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
+  }
+
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");
 
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
-  }
-
   try {
+    await dbConnect();
+
     const [leanArticles, total] = await Promise.all([
       ArticleModel.find()
         .limit(limit)

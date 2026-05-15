@@ -159,7 +159,6 @@ export const CreateArticleForm = ({
                       <SelectItem value="artwork">Artwork</SelectItem>
                       <SelectItem value="biography">Biography</SelectItem>
                       <SelectItem value="project">Project</SelectItem>
-                      <SelectItem value="collections">Collections</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription>

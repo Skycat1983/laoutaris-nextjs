@@ -2,26 +2,20 @@ import { ArtworkModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ReadArtworkListResult } from "@/lib/api/admin/read/fetchers";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
 import { AdminArtworkTransformations } from "@/lib/data/types";
-import { transformAdminArtwork } from "@/lib/transforms/transformAdmin";
 import { transformArtwork } from "@/lib/transforms";
 import { ArtworkFrontend } from "@/lib/data/types";
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadArtworkListResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "100");
   const page = parseInt(searchParams.get("page") || "1");
@@ -40,6 +34,8 @@ export async function GET(
   }
 
   try {
+    await dbConnect();
+
     const [rawArtworks, total] = await Promise.all([
       ArtworkModel.find(query)
         .limit(limit)

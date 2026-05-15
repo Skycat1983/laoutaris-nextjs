@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
-import { POST } from "@/app/api/v2/user/comment/route";
-import { PATCH } from "@/app/api/v2/user/comment/[commentId]/route";
+import { getServerSession } from "next-auth";
+import { GET, POST } from "@/app/api/v2/user/comment/route";
+import {
+  DELETE,
+  PATCH,
+} from "@/app/api/v2/user/comment/[commentId]/route";
 import dbConnect from "@/lib/db/mongodb";
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { transformCommentPopulated } from "@/lib/transforms";
 
 jest.mock("next/server", () => ({
@@ -18,10 +21,6 @@ jest.mock("next/server", () => ({
 jest.mock("@/lib/db/mongodb", () => ({
   __esModule: true,
   default: jest.fn(),
-}));
-
-jest.mock("@/lib/session/getUserIdFromSession", () => ({
-  getUserIdFromSession: jest.fn(),
 }));
 
 jest.mock("@/lib/config/authOptions", () => ({
@@ -59,6 +58,7 @@ jest.mock("@/lib/data/models", () => ({
     startSession: jest.fn(),
   },
   UserModel: {
+    findById: jest.fn(),
     findByIdAndUpdate: jest.fn(),
   },
 }));
@@ -92,6 +92,12 @@ const createMongoSession = () => ({
   endSession: jest.fn(),
 });
 
+const createUserCommentsQuery = (result: unknown) => ({
+  select: jest.fn().mockReturnThis(),
+  populate: jest.fn().mockReturnThis(),
+  lean: jest.fn().mockResolvedValue(result),
+});
+
 const createSessionLeanQuery = (result: unknown) => ({
   session: jest.fn().mockReturnThis(),
   populate: jest.fn().mockReturnThis(),
@@ -100,6 +106,15 @@ const createSessionLeanQuery = (result: unknown) => ({
 
 const createPopulateQuery = (result: unknown) => ({
   populate: jest.fn().mockResolvedValue(result),
+});
+
+const createPopulateSessionQuery = (result: unknown) => ({
+  populate: jest.fn().mockReturnThis(),
+  session: jest.fn().mockResolvedValue(result),
+});
+
+const createDeleteSessionQuery = () => ({
+  session: jest.fn().mockResolvedValue({ _id: commentId }),
 });
 
 const createPopulatedLeanQuery = (result: unknown) => ({
@@ -140,20 +155,125 @@ const frontendComment = {
 };
 
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
-const mockGetUserIdFromSession =
-  getUserIdFromSession as jest.MockedFunction<typeof getUserIdFromSession>;
+const mockGetServerSession = getServerSession as jest.Mock;
 const mockBlogFindOne = BlogModel.findOne as jest.Mock;
 const mockBlogFindByIdAndUpdate = BlogModel.findByIdAndUpdate as jest.Mock;
 const mockCommentCreate = CommentModel.create as jest.Mock;
 const mockCommentFindById = CommentModel.findById as jest.Mock;
 const mockCommentFindByIdAndUpdate =
   CommentModel.findByIdAndUpdate as jest.Mock;
+const mockCommentFindByIdAndDelete =
+  CommentModel.findByIdAndDelete as jest.Mock;
+const mockCommentStartSession = CommentModel.startSession as jest.Mock;
+const mockUserFindById = UserModel.findById as jest.Mock;
 const mockUserFindByIdAndUpdate = UserModel.findByIdAndUpdate as jest.Mock;
 const mockTransformCommentPopulated =
   transformCommentPopulated as jest.MockedFunction<
     typeof transformCommentPopulated
   >;
 const mockStartSession = mongoose.startSession as jest.Mock;
+
+describe("GET /api/v2/user/comment", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockDbConnect.mockResolvedValue(undefined);
+    mockGetServerSession.mockResolvedValue({
+      user: {
+        id: userId,
+      },
+    });
+    mockUserFindById.mockReturnValue(
+      createUserCommentsQuery({
+        _id: userId,
+        comments: [populatedComment],
+      })
+    );
+    mockTransformCommentPopulated.mockReturnValue(frontendComment as never);
+  });
+
+  it("returns the shared 401 before DB or model work for unauthenticated callers", async () => {
+    mockGetServerSession.mockResolvedValue(null);
+    const request = createRequest({});
+
+    const response = await GET(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(body).toEqual({
+      success: false,
+      message: "Unauthorized",
+      error: "Unauthorized",
+    });
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
+  });
+
+  it("returns the user comment list envelope with transformed DTOs", async () => {
+    const response = await GET(createRequest({}) as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(userId);
+    expect(mockTransformCommentPopulated).toHaveBeenCalledWith(
+      populatedComment,
+      userId
+    );
+    expect(body).toEqual({
+      success: true,
+      data: [frontendComment],
+      metadata: {
+        total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+      },
+    });
+  });
+
+  it("returns 404 when the authenticated user is missing", async () => {
+    mockUserFindById.mockReturnValue(createUserCommentsQuery(null));
+
+    const response = await GET(createRequest({}) as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(body).toEqual({
+      success: false,
+      error: "User not found",
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
+  });
+
+  it("returns a public-safe 500 when comment lookup fails", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockUserFindById.mockImplementation(() => {
+      throw new Error("private DB detail");
+    });
+
+    try {
+      const response = await GET(createRequest({}) as never);
+      const body = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(body).toEqual({
+        success: false,
+        error: "Failed to fetch user comments",
+      });
+      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error fetching user comments:",
+        expect.any(Error)
+      );
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
+  });
+});
 
 describe("POST /api/v2/user/comment", () => {
   let mongoSession: ReturnType<typeof createMongoSession>;
@@ -162,7 +282,11 @@ describe("POST /api/v2/user/comment", () => {
     jest.clearAllMocks();
     mongoSession = createMongoSession();
     mockDbConnect.mockResolvedValue(undefined);
-    mockGetUserIdFromSession.mockResolvedValue(userId);
+    mockGetServerSession.mockResolvedValue({
+      user: {
+        id: userId,
+      },
+    });
     mockStartSession.mockResolvedValue(mongoSession as never);
     mockBlogFindOne.mockResolvedValue({ _id: blogId });
     mockCommentCreate.mockResolvedValue([{ _id: commentId }]);
@@ -174,8 +298,8 @@ describe("POST /api/v2/user/comment", () => {
     mockTransformCommentPopulated.mockReturnValue(frontendComment as never);
   });
 
-  it("returns 401 without reading the body for unauthenticated callers", async () => {
-    mockGetUserIdFromSession.mockResolvedValue(null);
+  it("returns the shared 401 without reading the body for unauthenticated callers", async () => {
+    mockGetServerSession.mockResolvedValue(null);
     const request = createRequest({
       text: "Valid comment",
       blogSlug,
@@ -187,7 +311,8 @@ describe("POST /api/v2/user/comment", () => {
     expect(response.status).toBe(401);
     expect(body).toEqual({
       success: false,
-      error: "Authentication required",
+      message: "Unauthorized",
+      error: "Unauthorized",
     });
     expect(request.json).not.toHaveBeenCalled();
     expect(mockDbConnect).not.toHaveBeenCalled();
@@ -337,11 +462,201 @@ describe("POST /api/v2/user/comment", () => {
   });
 });
 
+describe("DELETE /api/v2/user/comment/[commentId]", () => {
+  let mongoSession: ReturnType<typeof createMongoSession>;
+  const ownedComment = {
+    _id: commentId,
+    author: {
+      _id: {
+        toString: () => userId,
+      },
+    },
+    blog: blogId,
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mongoSession = createMongoSession();
+    mockDbConnect.mockResolvedValue(undefined);
+    mockGetServerSession.mockResolvedValue({
+      user: {
+        id: userId,
+      },
+    });
+    mockCommentStartSession.mockResolvedValue(mongoSession);
+    mockCommentFindById.mockReturnValue(createPopulateSessionQuery(ownedComment));
+    mockCommentFindByIdAndDelete.mockReturnValue(createDeleteSessionQuery());
+    mockUserFindByIdAndUpdate.mockResolvedValue({ _id: userId });
+    mockBlogFindByIdAndUpdate.mockResolvedValue({ _id: blogId });
+  });
+
+  it("returns 401 before DB work for unauthenticated callers", async () => {
+    mockGetServerSession.mockResolvedValue(null);
+    const request = createRequest({});
+
+    const response = await DELETE(request as never, {
+      params: { commentId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(body).toEqual({
+      success: false,
+      message: "Unauthorized",
+      error: "Unauthorized",
+    });
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockCommentStartSession).not.toHaveBeenCalled();
+    expect(mockCommentFindById).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for an invalid comment ID before DB work", async () => {
+    const request = createRequest({});
+
+    const response = await DELETE(request as never, {
+      params: { commentId: "not-an-object-id" },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid comment input",
+      fieldErrors: {
+        commentId: ["Invalid comment ID"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockCommentStartSession).not.toHaveBeenCalled();
+    expect(mockCommentFindById).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 and aborts the transaction when the comment is missing", async () => {
+    mockCommentFindById.mockReturnValue(createPopulateSessionQuery(null));
+    const request = createRequest({});
+
+    const response = await DELETE(request as never, {
+      params: { commentId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(body).toEqual({
+      success: false,
+      error: "Comment not found",
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mongoSession.startTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+    expect(mockCommentFindByIdAndDelete).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 and aborts when the authenticated user does not own the comment", async () => {
+    mockCommentFindById.mockReturnValue(
+      createPopulateSessionQuery({
+        ...ownedComment,
+        author: {
+          _id: {
+            toString: () => otherUserId,
+          },
+        },
+      })
+    );
+    const request = createRequest({});
+
+    const response = await DELETE(request as never, {
+      params: { commentId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body).toEqual({
+      success: false,
+      error: "Not authorized to delete this comment",
+    });
+    expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+    expect(mockCommentFindByIdAndDelete).not.toHaveBeenCalled();
+  });
+
+  it("deletes the owned comment and returns the typed delete envelope", async () => {
+    const request = createRequest({});
+
+    const response = await DELETE(request as never, {
+      params: { commentId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mongoSession.startTransaction).toHaveBeenCalledTimes(1);
+    expect(mockCommentFindByIdAndDelete).toHaveBeenCalledWith(commentId);
+    expect(mockUserFindByIdAndUpdate).toHaveBeenCalledWith(
+      ownedComment.author._id,
+      { $pull: { comments: commentId } },
+      { session: mongoSession }
+    );
+    expect(mockBlogFindByIdAndUpdate).toHaveBeenCalledWith(
+      blogId,
+      { $pull: { comments: commentId } },
+      { session: mongoSession }
+    );
+    expect(mongoSession.commitTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.abortTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+    expect(body).toEqual({
+      success: true,
+      data: {
+        success: true,
+        message: "Comment deleted successfully",
+      },
+    });
+  });
+
+  it("aborts the transaction and returns 500 when a linked update fails", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockBlogFindByIdAndUpdate.mockRejectedValue(new Error("private DB detail"));
+    const request = createRequest({});
+
+    try {
+      const response = await DELETE(request as never, {
+        params: { commentId },
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(body).toEqual({
+        success: false,
+        error: "Failed to delete comment",
+      });
+      expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
+      expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
+      expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error deleting comment:",
+        expect.any(Error)
+      );
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
+  });
+});
+
 describe("PATCH /api/v2/user/comment/[commentId]", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockDbConnect.mockResolvedValue(undefined);
-    mockGetUserIdFromSession.mockResolvedValue(userId);
+    mockGetServerSession.mockResolvedValue({
+      user: {
+        id: userId,
+      },
+    });
     mockCommentFindById.mockReturnValue(
       createPopulateQuery({
         _id: commentId,
@@ -358,8 +673,8 @@ describe("PATCH /api/v2/user/comment/[commentId]", () => {
     mockTransformCommentPopulated.mockReturnValue(frontendComment as never);
   });
 
-  it("returns 401 for unauthenticated callers", async () => {
-    mockGetUserIdFromSession.mockResolvedValue(null);
+  it("returns the shared 401 before reading the body for unauthenticated callers", async () => {
+    mockGetServerSession.mockResolvedValue(null);
     const request = createRequest({ text: "Updated comment" });
 
     const response = await PATCH(request as never, {
@@ -370,6 +685,7 @@ describe("PATCH /api/v2/user/comment/[commentId]", () => {
     expect(response.status).toBe(401);
     expect(body).toEqual({
       success: false,
+      message: "Unauthorized",
       error: "Unauthorized",
     });
     expect(request.json).not.toHaveBeenCalled();

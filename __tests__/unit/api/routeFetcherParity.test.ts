@@ -326,18 +326,6 @@ const FETCHER_OPERATIONS: FetcherOperation[] = [
     sourceFile: "src/lib/api/user/favorites/fetchers.ts",
   },
   {
-    id: "user.favorites.addToFavourites",
-    method: "POST",
-    path: "/api/v2/user/favourite/[artworkId]",
-    sourceFile: "src/lib/api/user/favorites/fetchers.ts",
-  },
-  {
-    id: "user.favorites.removeFromFavourites",
-    method: "DELETE",
-    path: "/api/v2/user/favourite/[artworkId]",
-    sourceFile: "src/lib/api/user/favorites/fetchers.ts",
-  },
-  {
     id: "user.navigation.fetchUserNavigation",
     method: "GET",
     path: "/api/v2/user/navigation",
@@ -346,12 +334,6 @@ const FETCHER_OPERATIONS: FetcherOperation[] = [
   {
     id: "user.profile.get",
     method: "GET",
-    path: "/api/v2/user/profile",
-    sourceFile: "src/lib/api/user/profile/fetchers.ts",
-  },
-  {
-    id: "user.profile.update",
-    method: "PATCH",
     path: "/api/v2/user/profile",
     sourceFile: "src/lib/api/user/profile/fetchers.ts",
   },
@@ -367,29 +349,9 @@ const FETCHER_OPERATIONS: FetcherOperation[] = [
     path: "/api/v2/user/watchlist/[artworkId]",
     sourceFile: "src/lib/api/user/watchlist/fetchers.ts",
   },
-  {
-    id: "user.watchlist.addToWatchlist",
-    method: "POST",
-    path: "/api/v2/user/watchlist/[artworkId]",
-    sourceFile: "src/lib/api/user/watchlist/fetchers.ts",
-  },
-  {
-    id: "user.watchlist.removeFromWatchlist",
-    method: "DELETE",
-    path: "/api/v2/user/watchlist/[artworkId]",
-    sourceFile: "src/lib/api/user/watchlist/fetchers.ts",
-  },
 ];
 
-const KNOWN_ROUTE_FETCHER_GAP_IDS = new Set([
-  "admin.read.comment",
-  "admin.read.user",
-  "user.favorites.addToFavourites",
-  "user.favorites.removeFromFavourites",
-  "user.profile.update",
-  "user.watchlist.addToWatchlist",
-  "user.watchlist.removeFromWatchlist",
-]);
+const KNOWN_ROUTE_FETCHER_GAP_IDS = new Set<string>();
 
 const sortStrings = (values: string[]) =>
   [...values].sort((a, b) => a.localeCompare(b));

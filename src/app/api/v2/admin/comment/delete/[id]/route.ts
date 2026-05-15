@@ -2,43 +2,39 @@ import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import mongoose from "mongoose";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminDeleteInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/delete/routeValidation";
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
-  const { id } = params;
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminDeleteInvalidIdResponse("comment", "Invalid comment ID");
+  }
+
+  let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
 
   try {
-    if (!id) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Comment ID is required",
-        } satisfies ApiErrorResponse,
-        { status: 400 }
-      );
-    }
+    await dbConnect();
+    session = await mongoose.startSession();
+    session.startTransaction();
 
     // Find the comment first to get user and blog IDs
     const comment = await CommentModel.findById(id).session(session);
     if (!comment) {
+      await session.abortTransaction();
       return NextResponse.json(
         {
           success: false,
@@ -75,7 +71,7 @@ export async function DELETE(
     } satisfies DeleteDocumentResult);
   } catch (error) {
     // If anything fails, abort the transaction
-    await session.abortTransaction();
+    await session?.abortTransaction();
     console.error("Error in comment deletion transaction:", error);
     return NextResponse.json(
       {
@@ -86,6 +82,6 @@ export async function DELETE(
     );
   } finally {
     // Always end the session
-    session.endSession();
+    session?.endSession();
   }
 }

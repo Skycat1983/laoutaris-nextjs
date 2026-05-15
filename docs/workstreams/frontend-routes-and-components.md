@@ -49,13 +49,18 @@ Next.js server/client component boundaries.
 - A-016 found legacy search, auth, and comment controls that need accessible
   labels or button semantics, and confirmed public search/filter UI relies on
   API query parsing that is not yet bounded server-side. T-021 bounded the
-  public search route/page query parser; artwork/shop filter bounds remain.
+  public search route/page query parser; T-035 bounded artwork browse filters;
+  T-036 bounded shop browse filters.
 - T-013 fixed the sign-in credential field labels and converted the sign-in and
   sign-up modal switches from clickable spans to buttons.
 - T-019 removed the stale `/protected` App Router page and protected-route
   constant; no documented frontend workflow owned that route.
 - T-021 updated the `/search` page so its initial server render uses direct
   server data access and bounded query parsing instead of same-app HTTP.
+- T-035 validates public artwork browse query params before the artwork list
+  service receives them; existing valid frontend filter behavior was preserved.
+- T-036 validates public shop browse query params at the API boundary while
+  preserving existing valid shop filter UI behavior.
 
 ## Backlog
 
@@ -114,9 +119,20 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-14: Completed T-021; `/search` now parses bounded query params,
   displays stable invalid-query states, and gets initial results from
   `getPublicSearchResults` instead of `serverApi.public.search.search(...)`.
+- 2026-05-15: Prepared T-035 to bound public artwork browse query params while
+  preserving existing valid filter behavior.
+- 2026-05-15: Completed T-035 without changing artwork filter UI behavior; the
+  API route now normalizes valid filter/sort/color/pagination params and rejects
+  invalid public query values before service work.
+- 2026-05-15: Prepared T-036 as an API-boundary slice for shop browse query
+  params. It should keep existing valid shop filter UI behavior unchanged and
+  escalate only if the UI sends values outside canonical constants.
+- 2026-05-15: Completed T-036 without changing shop filter UI behavior; the API
+  route now normalizes valid shop listing filters and rejects invalid public
+  query values before MongoDB or Shopify work.
 
 ## Next Agent Action
 
-Keep broader client/server import mapping as the frontend priority, and pair
-remaining search/comment accessibility fixes with their corresponding
-validation-flow tasks instead of running them as isolated visual cleanup.
+Start broader frontend UX work only after API, auth, and data contracts are
+stable; unsupported shop color/dimension filters, pagination, and sorting
+alignment remain separate work.

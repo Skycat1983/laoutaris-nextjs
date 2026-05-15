@@ -9,7 +9,7 @@ import {
   ApiUserCommentsGetResult,
   ApiUserCommentCreateResult,
 } from "@/lib/api/user/comments/fetchers";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { requireApiUser } from "@/lib/api/requireApiUser";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { transformCommentPopulated } from "@/lib/transforms";
@@ -73,18 +73,15 @@ const findPopulatedCommentById = (
 export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiUserCommentsGetResult>> {
+  const userGuard = await requireApiUser();
+  if (!userGuard.ok) {
+    return userGuard.response;
+  }
+
   try {
     await dbConnect();
 
-    const userId = await getUserIdFromSession();
-
-    if (!userId) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
-    }
-    const rawUserComments = await UserModel.findById(userId)
+    const rawUserComments = await UserModel.findById(userGuard.userId)
       .select("comments")
       .populate({
         path: "comments",
@@ -102,17 +99,14 @@ export async function GET(
       .lean<UserWithComentsLean>();
 
     if (!rawUserComments) {
-      return NextResponse.json({
-        success: false,
-        error: "User not found",
-      } satisfies ApiErrorResponse);
+      return errorResponse("User not found", 404);
     }
 
-    const { comments, ...user } = rawUserComments as UserWithComentsLean;
+    const { comments } = rawUserComments as UserWithComentsLean;
 
     const frontendComments: CommentFrontendPopulated[] = comments.map(
       (comment) => {
-        return transformCommentPopulated(comment);
+        return transformCommentPopulated(comment, userGuard.userId);
       }
     );
 
@@ -131,18 +125,15 @@ export async function GET(
       throw error;
     }
     console.error("Error fetching user comments:", error);
-    return NextResponse.json({
-      success: false,
-      error: "Failed to fetch user comments",
-    } satisfies ApiErrorResponse);
+    return errorResponse("Failed to fetch user comments", 500);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const userId = await getUserIdFromSession();
+  const userGuard = await requireApiUser();
 
-  if (!userId) {
-    return errorResponse("Authentication required", 401);
+  if (!userGuard.ok) {
+    return userGuard.response;
   }
 
   let body: unknown;
@@ -177,7 +168,7 @@ export async function POST(req: NextRequest) {
         [
           {
             text,
-            author: userId,
+            author: userGuard.userId,
             blog: blog._id,
             displayDate: new Date(),
           },
@@ -197,7 +188,7 @@ export async function POST(req: NextRequest) {
       );
 
       await UserModel.findByIdAndUpdate(
-        userId,
+        userGuard.userId,
         { $push: { comments: createdComment._id } },
         { session: mongoSession }
       );
@@ -215,7 +206,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         success: true,
-        data: transformCommentPopulated(populatedComment, userId),
+        data: transformCommentPopulated(populatedComment, userGuard.userId),
       } satisfies ApiUserCommentCreateResult);
     } catch (error) {
       await mongoSession.abortTransaction();

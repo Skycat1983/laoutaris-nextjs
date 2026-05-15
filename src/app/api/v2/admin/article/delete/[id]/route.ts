@@ -1,40 +1,33 @@
 import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { ArticleModel } from "@/lib/data/models";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminDeleteInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/delete/routeValidation";
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminDeleteInvalidIdResponse("article", "Invalid article ID");
+  }
 
   console.log("Deleting article with ID:", id);
 
   try {
-    if (!id) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Article ID is required",
-          error: "Article ID is required",
-        } satisfies ApiErrorResponse,
-        { status: 400 }
-      );
-    }
+    await dbConnect();
 
     const deletedArticle = await ArticleModel.findByIdAndDelete(id);
 

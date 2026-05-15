@@ -2,34 +2,37 @@ import { BlogModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadBlogResult } from "@/lib/api/admin/read/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminReadInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/read/routeValidation";
 import {
   AdminBlogTransformationsPopulated,
   AdminCommentTransformations,
   AdminUserTransformations,
   BlogEntryFrontend,
 } from "@/lib/data/types";
-import { transformAdminBlogPopulated } from "@/lib/transforms/transformAdmin";
 import { transformBlogPopulated } from "@/lib/transforms";
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadBlogResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminReadInvalidIdResponse("blog", "Invalid blog ID");
+  }
 
   try {
+    await dbConnect();
+
     const leanDocument = await BlogModel.findById(id)
       .populate<{
         author: AdminUserTransformations["Lean"];

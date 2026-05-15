@@ -61,7 +61,7 @@ describe("GET /api/v2/public/artwork", () => {
   it("parses search params and returns the service success envelope", async () => {
     const response = await GET(
       createRequest(
-        "https://example.test/api/v2/public/artwork?filterMode=ANY&sortBy=colorProximity&sortColor=%23111111&page=2&limit=5&decade=1970s&decade=1980s&medium=oil"
+        "https://example.test/api/v2/public/artwork?filterMode=ANY&sortBy=colorProximity&sortColor=%23111111&page=2&limit=50&decade=1970s&decade=1980s&artstyle=abstract&medium=oil&surface=canvas"
       )
     );
     const body = await response.json();
@@ -72,11 +72,11 @@ describe("GET /api/v2/public/artwork", () => {
       sortBy: "colorProximity",
       sortColor: "#111111",
       page: 2,
-      limit: 5,
+      limit: 50,
       decade: ["1970s", "1980s"],
-      artstyle: [],
+      artstyle: ["abstract"],
       medium: ["oil"],
-      surface: [],
+      surface: ["canvas"],
       userId: "user-123",
     });
     expect(body).toBe(listResult);
@@ -97,6 +97,97 @@ describe("GET /api/v2/public/artwork", () => {
       surface: [],
       userId: "user-123",
     });
+  });
+
+  it("returns 400 for invalid enum params before session or service work", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/artwork?filterMode=SOME&sortBy=oldest"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid artwork query",
+      fieldErrors: {
+        filterMode: ["Filter mode must be ALL or ANY"],
+        sortBy: [
+          "Sort option must be colorProximity, mostRecent, mostPopular, or mostFeatured",
+        ],
+      },
+      formErrors: [],
+    });
+    expect(mockGetUserIdFromSession).not.toHaveBeenCalled();
+    expect(mockGetArtworkList).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for invalid repeated filter values", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/artwork?decade=1970s&decade=1900s&artstyle=cubist&medium=stone&surface=metal"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid artwork query",
+      fieldErrors: {
+        decade: ["Decade filter contains an invalid value"],
+        artstyle: ["Art style filter contains an invalid value"],
+        medium: ["Medium filter contains an invalid value"],
+        surface: ["Surface filter contains an invalid value"],
+      },
+      formErrors: [],
+    });
+    expect(mockGetUserIdFromSession).not.toHaveBeenCalled();
+    expect(mockGetArtworkList).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for invalid sort colors", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/artwork?sortBy=colorProximity&sortColor=red"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid artwork query",
+      fieldErrors: {
+        sortColor: ["Sort color must be a valid hex color"],
+      },
+      formErrors: [],
+    });
+    expect(mockGetUserIdFromSession).not.toHaveBeenCalled();
+    expect(mockGetArtworkList).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for invalid pagination values", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/artwork?page=0&limit=51"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid artwork query",
+      fieldErrors: {
+        page: ["Page must be at least 1"],
+        limit: ["Limit must be 50 or less"],
+      },
+      formErrors: [],
+    });
+    expect(mockGetUserIdFromSession).not.toHaveBeenCalled();
+    expect(mockGetArtworkList).not.toHaveBeenCalled();
   });
 
   it("returns a public-safe 500 envelope when the service throws", async () => {

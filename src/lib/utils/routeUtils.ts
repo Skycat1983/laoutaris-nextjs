@@ -3,6 +3,10 @@ import {
   PROTECTED_FRONTEND_ROUTES,
 } from "@/lib/constants/routeConstants";
 
+export const isApiRoute = (path: string): boolean => {
+  return path === "/api" || path.startsWith("/api/");
+};
+
 // Helper function to check if a path starts with any of the protected routes
 export const isProtectedRoute = (path: string): boolean => {
   return (

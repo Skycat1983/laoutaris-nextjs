@@ -1,57 +1,156 @@
 import { ArticleModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import slugify from "slugify";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
-import { createArticleSchema } from "@/lib/data/schemas";
-import { isAdmin } from "@/lib/session/isAdmin";
-import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  createArticleRouteSchema,
+  type CreateArticleRouteInput,
+} from "@/lib/data/schemas/articleSchema";
+import type { AdminArticle } from "@/lib/data/types";
 
-export async function POST(
-  request: NextRequest
-): Promise<RouteResponse<CreateArticleResult>> {
-  const hasPermission = await isAdmin();
-  const userId = await getUserIdFromSession();
-  if (!hasPermission || !userId) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
+type ArticleCreateFieldErrors = Partial<
+  Record<keyof CreateArticleRouteInput, string[] | undefined>
+>;
+
+type ArticleValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: ArticleCreateFieldErrors;
+  formErrors: string[];
+};
+
+type ArticleDocumentLike = {
+  toObject?: (options?: {
+    versionKey?: boolean;
+    flattenObjectIds?: boolean;
+  }) => unknown;
+};
+
+const validationErrorResponse = (
+  fieldErrors: ArticleCreateFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ArticleValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid article input",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
+
+const normalizeArticleResponse = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeArticleResponse);
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (value && typeof value === "object") {
+    const maybeObjectId = value as { constructor?: { name?: string } };
+
+    if (
+      maybeObjectId.constructor?.name === "ObjectId" &&
+      typeof value.toString === "function"
+    ) {
+      return value.toString();
+    }
+
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([key]) => key !== "__v")
+        .map(([key, nestedValue]) => [
+          key,
+          normalizeArticleResponse(nestedValue),
+        ])
     );
   }
+
+  return value;
+};
+
+const toArticleResponse = (article: ArticleDocumentLike): AdminArticle => {
+  const plainArticle =
+    typeof article.toObject === "function"
+      ? article.toObject({ versionKey: false, flattenObjectIds: true })
+      : article;
+
+  return normalizeArticleResponse(plainArticle) as AdminArticle;
+};
+
+export async function POST(
+  request: Request
+): Promise<RouteResponse<CreateArticleResult>> {
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
+  }
+
+  let body: unknown;
+
   try {
-    const body = await request.json();
-    const validatedData = createArticleSchema.parse(body);
+    body = await request.json();
+  } catch {
+    return validationErrorResponse({}, ["Request body must be valid JSON."]);
+  }
 
-    // Create slug from title
-    const slug = slugify(validatedData.title, { lower: true });
+  const parsedBody = createArticleRouteSchema.safeParse(body);
 
-    // Combine the request body with additional data
-    const articleData = {
-      ...validatedData,
+  if (!parsedBody.success) {
+    const { fieldErrors, formErrors } = parsedBody.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  try {
+    await dbConnect();
+
+    const {
+      title,
+      subtitle,
+      summary,
+      text,
+      imageUrl,
+      section,
+      overlayColour,
+      artwork,
+    } = parsedBody.data;
+    const slug = slugify(title, { lower: true });
+
+    const article = await ArticleModel.create({
+      title,
+      subtitle,
+      summary,
+      text,
+      imageUrl,
+      section,
+      overlayColour,
+      artwork,
       slug,
-      author: userId,
-    };
+      author: admin.userId,
+    });
 
-    const article = new ArticleModel(articleData);
-    await article.save();
-
-    return NextResponse.json({
-      success: true,
-      data: article,
-    } satisfies CreateArticleResult);
-  } catch (error) {
-    console.error("Error creating article:", error);
     return NextResponse.json(
       {
-        success: false,
-        message: "Failed to create article",
-        error: "Failed to create article",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
+        success: true,
+        data: toArticleResponse(article),
+      } satisfies CreateArticleResult,
+      { status: 201 }
     );
+  } catch (error) {
+    console.error("Error creating article:", error);
+    return errorResponse("Failed to create article", 500);
   }
 }

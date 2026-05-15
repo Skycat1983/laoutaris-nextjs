@@ -3,7 +3,11 @@ import {
   PROTECTED_FRONTEND_ROUTES,
   PUBLIC_ROUTES,
 } from "@/lib/constants/routeConstants";
-import { isProtectedRoute, isAdminRoute } from "@/lib/utils/routeUtils";
+import {
+  isApiRoute,
+  isProtectedRoute,
+  isAdminRoute,
+} from "@/lib/utils/routeUtils";
 
 type RouteTestCase = {
   path: string;
@@ -13,6 +17,40 @@ type RouteTestCase = {
 
 describe("routeUtils", () => {
   const retiredProtectedRoute = ["", "protected"].join("/");
+
+  describe("isApiRoute", () => {
+    const apiRouteTests: RouteTestCase[] = [
+      {
+        path: "/api",
+        expected: true,
+        description: "matches the API root route",
+      },
+      {
+        path: `${PROTECTED_API_ROUTES.USER_API}/navigation`,
+        expected: true,
+        description: "matches nested protected user API routes",
+      },
+      {
+        path: `${PROTECTED_API_ROUTES.AUTH_API}/signin`,
+        expected: true,
+        description: "matches NextAuth API routes",
+      },
+      {
+        path: PROTECTED_FRONTEND_ROUTES.ACCOUNT,
+        expected: false,
+        description: "does not match protected frontend routes",
+      },
+      {
+        path: "/apiculture",
+        expected: false,
+        description: "does not match API-like frontend paths",
+      },
+    ];
+
+    test.each(apiRouteTests)("$description", ({ path, expected }) => {
+      expect(isApiRoute(path)).toBe(expected);
+    });
+  });
 
   describe("isProtectedRoute", () => {
     const protectedRouteTests: RouteTestCase[] = [

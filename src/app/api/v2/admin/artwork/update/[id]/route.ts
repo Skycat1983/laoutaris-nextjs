@@ -1,59 +1,150 @@
 import { ArtworkModel } from "@/lib/data/models";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  updateArtworkRouteBodySchema,
+  updateArtworkRouteParamsSchema,
+  type UpdateArtworkRouteBody,
+  type UpdateArtworkRouteParams,
+} from "@/lib/data/schemas/artworkSchema";
+import type { AdminArtwork } from "@/lib/data/types";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<RouteResponse<UpdateArtworkResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
+type ArtworkUpdateFieldErrors = Partial<
+  Record<
+    keyof (UpdateArtworkRouteBody & UpdateArtworkRouteParams),
+    string[] | undefined
+  >
+>;
+
+type ArtworkValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: ArtworkUpdateFieldErrors;
+  formErrors: string[];
+};
+
+type ArtworkDocumentLike = {
+  toObject?: (options?: {
+    versionKey?: boolean;
+    flattenObjectIds?: boolean;
+  }) => unknown;
+};
+
+const validationErrorResponse = (
+  fieldErrors: ArtworkUpdateFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ArtworkValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid artwork input",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
+const errorResponse = (error: string, status: number) =>
+  NextResponse.json<ApiErrorResponse>(
+    {
+      success: false,
+      error,
+    },
+    { status }
+  );
+
+const normalizeArtworkResponse = (value: unknown): unknown => {
+  if (Array.isArray(value)) {
+    return value.map(normalizeArtworkResponse);
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  if (value && typeof value === "object") {
+    const maybeObjectId = value as { constructor?: { name?: string } };
+
+    if (
+      maybeObjectId.constructor?.name === "ObjectId" &&
+      typeof value.toString === "function"
+    ) {
+      return value.toString();
+    }
+
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([key]) => key !== "__v")
+        .map(([key, nestedValue]) => [
+          key,
+          normalizeArtworkResponse(nestedValue),
+        ])
     );
   }
-  const { id } = params;
+
+  return value;
+};
+
+const toArtworkResponse = (artwork: ArtworkDocumentLike): AdminArtwork => {
+  const plainArtwork =
+    typeof artwork.toObject === "function"
+      ? artwork.toObject({ versionKey: false, flattenObjectIds: true })
+      : artwork;
+
+  return normalizeArtworkResponse(plainArtwork) as AdminArtwork;
+};
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+): Promise<RouteResponse<UpdateArtworkResult>> {
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
+  }
+
+  const parsedParams = updateArtworkRouteParamsSchema.safeParse(params);
+
+  if (!parsedParams.success) {
+    const { fieldErrors, formErrors } = parsedParams.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  let body: unknown;
 
   try {
-    const updateData = await request.json();
+    body = await request.json();
+  } catch {
+    return validationErrorResponse({}, ["Request body must be valid JSON."]);
+  }
+
+  const parsedBody = updateArtworkRouteBodySchema.safeParse(body);
+
+  if (!parsedBody.success) {
+    const { fieldErrors, formErrors } = parsedBody.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  try {
+    await dbConnect();
 
     const updatedArtwork = await ArtworkModel.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true } // Return the updated document
+      parsedParams.data.id,
+      { $set: parsedBody.data },
+      { new: true }
     );
 
     if (!updatedArtwork) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Artwork not found",
-          error: "Artwork not found",
-        } satisfies ApiErrorResponse,
-        { status: 404 }
-      );
+      return errorResponse("Artwork not found", 404);
     }
 
     return NextResponse.json({
       success: true,
-      data: updatedArtwork,
+      data: toArtworkResponse(updatedArtwork),
     } satisfies UpdateArtworkResult);
   } catch (error) {
     console.error("Error updating artwork:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to update artwork",
-        error: "Failed to update artwork",
-      } satisfies ApiErrorResponse,
-      { status: 500 }
-    );
+    return errorResponse("Failed to update artwork", 500);
   }
 }

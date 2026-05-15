@@ -39,7 +39,20 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-027 Migrate user saved routes to shared guard](T-027-user-saved-routes-shared-guard.md) | Completed | Applied `requireApiUser()` to user navigation, favourites, and watchlist read routes with real JSON `401` responses and focused tests. |
 | [T-028 Harden saved item actions DB ownership and revalidation](T-028-saved-item-actions-db-revalidation.md) | Completed | Added explicit MongoDB connection ownership and route revalidation to favourite/watchlist server actions with focused action tests. |
 | [T-029 Add route fetcher parity inventory](T-029-route-fetcher-parity-inventory.md) | Completed | Added a focused static route/fetcher parity test with an explicit self-checking known-gap allowlist for F-037 mismatches. |
-| [T-030 Implement admin user and comment detail read routes](T-030-admin-user-comment-detail-read-routes.md) | Ready | Add missing admin user/comment detail read routes and remove those two entries from the route/fetcher parity allowlist. |
+| [T-030 Implement admin user and comment detail read routes](T-030-admin-user-comment-detail-read-routes.md) | Completed | Added missing admin user/comment detail read routes, focused route tests, and removed those two entries from the route/fetcher parity allowlist. |
+| [T-031 Prune unused saved item write fetchers](T-031-prune-unused-saved-item-write-fetchers.md) | Completed | Removed unused favourite/watchlist write fetchers and reduced the route/fetcher parity allowlist to the profile update gap. |
+| [T-032 Prune unused profile update fetcher](T-032-prune-unused-profile-update-fetcher.md) | Completed | Removed the unused profile update fetcher and emptied the route/fetcher parity allowlist. |
+| [T-033 Harden user comment delete route](T-033-harden-user-comment-delete-route.md) | Completed | Moved user comment delete to the shared user guard, validates params before DB work, preserves the transaction, and returns the typed delete envelope. |
+| [T-034 Harden admin article write validation](T-034-harden-admin-article-write-validation.md) | Completed | Applied strict admin article create/update validation, allowlisted persistence, route-local DB ownership, and focused route tests. |
+| [T-035 Bound public artwork browse query](T-035-bound-public-artwork-browse-query.md) | Completed | Validated and bounded public artwork browse query params before artwork list service calls. |
+| [T-036 Bound public shop browse query](T-036-bound-public-shop-browse-query.md) | Completed | Validated and bounded public shop listing query params before MongoDB query construction or Shopify product fan-out. |
+| [T-037 Harden admin artwork write validation](T-037-harden-admin-artwork-write-validation.md) | Completed | Applied strict admin artwork create/update validation, allowlisted persistence, route-local DB ownership, and focused route tests. |
+| [T-038 Harden admin blog write validation](T-038-harden-admin-blog-write-validation.md) | Completed | Applied strict admin blog create/update validation, allowlisted persistence, route-local DB ownership, slug-conflict handling, and focused route tests. |
+| [T-039 Migrate admin read routes to shared guard](T-039-migrate-admin-read-routes-shared-guard.md) | Completed | Moved remaining admin read routes from `isAdmin()` to `requireApiAdmin()` with focused route tests. |
+| [T-040 Migrate admin delete routes to shared guard](T-040-migrate-admin-delete-routes-shared-guard.md) | Completed | Moved admin delete routes to `requireApiAdmin()`, added destructive ID validation and DB ownership, and preserved cascade behavior with focused tests. |
+| [T-041 Harden middleware API auth responses](T-041-harden-middleware-api-auth-responses.md) | Completed | Make middleware return JSON `401` for unauthenticated protected API requests while preserving frontend redirects and admin API `403` behavior. |
+| [T-042 Migrate user comment read/write routes to shared guard](T-042-migrate-user-comment-read-write-shared-guard.md) | Completed | Moved user comment GET/POST/PATCH onto `requireApiUser()` and added focused route coverage. |
+| [T-043 Add protected API guard inventory](T-043-add-protected-api-guard-inventory.md) | Ready | Add a static regression test proving protected user/admin API routes use shared guards and no direct session/admin checks. |
 
 ## Rules
 

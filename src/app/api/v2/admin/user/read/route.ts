@@ -2,7 +2,8 @@ import { UserModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
 import { UserLeanPopulated } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
 
@@ -10,22 +11,18 @@ import { transformUser } from "@/lib/transforms";
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadUserListResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { searchParams } = request.nextUrl;
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");
   const skip = (page - 1) * limit;
   try {
+    await dbConnect();
+
     const total = await UserModel.countDocuments();
 
     const rawUsers = await UserModel.find()

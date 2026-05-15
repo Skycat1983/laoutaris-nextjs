@@ -1,6 +1,6 @@
 # T-030 Implement Admin User And Comment Detail Read Routes
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Data models and API](../workstreams/data-models-and-api.md),
@@ -118,12 +118,33 @@ npm run build
 
 ## Completion
 
-Fill this in after implementation:
-
-- Routes added and response behavior.
-- Allowlist entries removed from the parity test.
-- Verification commands and results.
-- Remaining F-037 allowlist entries.
+- Added `GET /api/v2/admin/user/read/[id]` and
+  `GET /api/v2/admin/comment/read/[id]`.
+- Both routes use `requireApiAdmin()` before target model reads, call
+  `dbConnect()` before the detail lookup, return `{ success: true, data }` with
+  `transformUser.toFrontend` or `transformCommentPopulated`, return real JSON
+  `404` responses for missing records, and return public-safe JSON `500`
+  responses for target-read failures.
+- Removed `admin.read.user` and `admin.read.comment` from
+  `KNOWN_ROUTE_FETCHER_GAP_IDS`. Because those operations are no longer
+  allowlisted, removing either new route or its `GET` export would make the
+  parity test fail as an unsupported non-allowlisted fetcher operation.
+- Remaining F-037 allowlist entries:
+  - `user.favorites.addToFavourites`: `POST`
+    `/api/v2/user/favourite/[artworkId]`.
+  - `user.favorites.removeFromFavourites`: `DELETE`
+    `/api/v2/user/favourite/[artworkId]`.
+  - `user.watchlist.addToWatchlist`: `POST`
+    `/api/v2/user/watchlist/[artworkId]`.
+  - `user.watchlist.removeFromWatchlist`: `DELETE`
+    `/api/v2/user/watchlist/[artworkId]`.
+  - `user.profile.update`: `PATCH` `/api/v2/user/profile`.
+- Verification:
+  - `npm test -- --runTestsByPath __tests__/unit/api/adminUserCommentReadRoute.test.ts __tests__/unit/api/routeFetcherParity.test.ts`
+    passed: 2 suites, 13 tests.
+  - `npm run lint` passed.
+  - `npm run build` passed with existing MongoDB/fetcher/static-generation log
+    noise.
 
 ## Escalate
 

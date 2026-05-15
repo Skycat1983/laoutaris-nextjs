@@ -11,13 +11,16 @@ future artwork, print, and book sales.
 ## Start Here For Agents
 
 1. Read [../AGENTS.md](../AGENTS.md).
-2. For audit or reconciliation work, start from
+2. If acting as orchestrator, read
+   [orchestration/state.md](orchestration/state.md) first, then
+   [orchestration/orchestrator-guide.md](orchestration/orchestrator-guide.md).
+3. For audit or reconciliation work, start from
    [audits/goals.md](audits/goals.md), the assigned result file, or
    [audits/reconciliation.md](audits/reconciliation.md).
-3. For implementation work, choose the relevant workstream from
+4. For implementation work, choose the relevant workstream from
    [workstreams/README.md](workstreams/README.md).
-4. Follow the linked dependencies before editing.
-5. Update the workstream brief and any affected architecture, runbook, decision,
+5. Follow the linked dependencies before editing.
+6. Update the workstream brief and any affected architecture, runbook, decision,
    or risk docs before handoff.
 
 ## Documentation Map

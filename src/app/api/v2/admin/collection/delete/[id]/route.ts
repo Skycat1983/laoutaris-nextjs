@@ -1,37 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CollectionModel } from "@/lib/data/models";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { ApiResponse } from "@/lib/data/types/apiTypes";
 import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminDeleteInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/delete/routeValidation";
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminDeleteInvalidIdResponse("collection", "Invalid collection ID");
+  }
 
   try {
-    if (!id) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Collection ID is required",
-        } satisfies ApiErrorResponse,
-        { status: 400 }
-      );
-    }
+    await dbConnect();
 
     const deletedCollection = await CollectionModel.findByIdAndDelete(id);
 

@@ -108,8 +108,36 @@ refactoring without turning every change into a manual QA pass.
   no revalidation on persistence failure.
 - T-029 added static route/fetcher parity coverage with a documented
   self-checking known-gap allowlist.
-- T-030 is ready with focused route-test expectations for admin user/comment
-  detail read routes plus T-029 parity allowlist cleanup.
+- T-030 added focused admin user/comment detail read route tests and removed the
+  two backed admin operations from the T-029 parity allowlist.
+- T-031 removed unused favourite/watchlist write fetchers and kept the
+  route/fetcher parity inventory current, with focused action/parity tests,
+  lint, build, and reference-check verification.
+- T-032 removed the remaining unused F-037 profile write fetcher and left the
+  route/fetcher parity allowlist empty, with focused profile/parity tests, lint,
+  build, and reference-check verification.
+- T-033 added focused user comment delete route tests for unauthenticated and
+  invalid-ID short-circuiting, missing/forbidden comments, typed success
+  envelope, and transaction abort on linked update failure.
+- T-036 added focused public shop listing route tests before broadening to lint
+  and build.
+- T-037 added focused admin artwork create/update route tests.
+- T-038 added focused admin blog create/update route tests.
+- T-039 added focused admin read route guard tests covering shared guard
+  `401`/`403` short-circuiting, invalid detail IDs, representative success,
+  empty-list/not-found, and public-safe target-read failure paths.
+- T-040 added focused admin delete route guard/cascade tests covering shared
+  guard short-circuiting, invalid IDs before target/session work, representative
+  not-found/conflict/success paths, cascade behavior, transaction abort, and
+  public-safe failures.
+- T-041 added focused middleware and route utility coverage for API `401`,
+  frontend redirects, admin API `403`, `/api/auth` bypass, authenticated
+  pass-through behavior, and removal of direct middleware debug logs.
+- T-042 extended focused user comment route tests for shared-guard
+  GET/POST/PATCH auth short-circuiting, GET list/status behavior, and preserved
+  create/update/delete behavior.
+- T-043 is ready with a focused static protected API guard inventory test for
+  user/admin route files.
 
 ## Backlog
 
@@ -125,8 +153,8 @@ refactoring without turning every change into a manual QA pass.
   route handlers are added, removed, or backed by new methods.
 - Add a DB ownership check for MongoDB-backed route handlers and server actions
   once the shared wrapper/service pattern is chosen.
-- Add auth/route-protection tests around middleware utilities and high-risk
-  session helpers.
+- Continue adding auth/route-protection tests around high-risk session helpers
+  and route-local protected API migrations.
 - Add credentials admin, credentials non-admin, OAuth user, middleware admin,
   and representative user/admin API route-guard tests.
 - Add transform/schema tests for field matrix decisions, profile/comment/enquiry
@@ -303,11 +331,114 @@ npm run lint
   route/method backing, and stale F-037 allowlist entries.
 - 2026-05-14: Prepared T-030 with focused route and parity-test expectations
   for the admin user/comment detail read mismatch cleanup.
+- 2026-05-15: T-030 added
+  `__tests__/unit/api/adminUserCommentReadRoute.test.ts` for admin
+  user/comment detail read auth short-circuiting, success, not-found, and
+  public-safe target-read failures. The focused route/parity tests, lint, and
+  build passed; build retained existing MongoDB/fetcher/static-generation log
+  noise.
+- 2026-05-15: Prepared T-031 and T-032 with focused route/fetcher parity,
+  saved-item action, profile route, lint, build, and reference-check
+  verification requirements.
+- 2026-05-15: T-031 removed the unused favourite/watchlist write fetchers and
+  their four parity inventory/allowlist entries. The focused saved-item
+  action/parity tests, lint, build, and reference check passed; build retained
+  existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: T-032 removed the unused profile update fetcher and its final
+  parity inventory/allowlist entry. Focused profile/parity tests, lint, build,
+  and the profile-update reference check passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: Prepared T-033, T-034, and T-035 with focused route tests plus
+  lint/build verification for the next protected API, admin validation, and
+  public query-bounds slices.
+- 2026-05-15: T-033 added focused user comment delete route coverage and passed
+  the targeted comment route test, lint, and build. Build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: T-034 added
+  `__tests__/unit/api/adminArticleRoute.test.ts` for admin article create/update
+  auth short-circuiting, invalid JSON, invalid fields, unknown fields, invalid
+  update IDs, not-found, success, and public-safe persistence failures. The
+  focused route test, lint, and build passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: T-035 expanded
+  `__tests__/unit/api/publicArtworkListRoute.test.ts` for public artwork browse
+  query defaults, valid normalization, invalid enum/filter/color/pagination
+  values, limit bounds, and invalid-query short-circuiting before session or
+  service work. The focused route/service tests, lint, and build passed; build
+  retained existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: Prepared T-036 with focused shop products route coverage
+  expectations for defaults, valid filters, invalid repeated filters, invalid
+  booleans, valid `false` product-type filters, invalid-query short-circuiting
+  before DB/Shopify calls, and public-safe internal failure behavior.
+- 2026-05-15: T-036 added
+  `__tests__/unit/api/shopProductsRoute.test.ts` for public shop listing query
+  defaults, valid filter normalization, valid `false` product-type filters,
+  invalid repeated filters, invalid booleans/sort options, invalid-query
+  short-circuiting before DB/Shopify calls, and public-safe internal failures.
+  The focused route test, lint, and build passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: Prepared T-037 and T-038 with focused route-test expectations for
+  admin artwork create/update validation and admin blog create/update
+  validation.
+- 2026-05-15: T-037 added
+  `__tests__/unit/api/adminArtworkRoute.test.ts` for admin artwork
+  create/update auth short-circuiting, invalid JSON, invalid fields, unknown
+  fields, invalid update IDs before body reads, not-found, success, optional
+  replacement-image updates, and public-safe persistence failures. The focused
+  route test, lint, and build passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: T-038 added
+  `__tests__/unit/api/adminBlogRoute.test.ts` for admin blog create/update auth
+  short-circuiting, invalid JSON, invalid fields, unknown fields, invalid update
+  IDs before body reads, not-found, slug conflict, success, unchanged-title
+  updates, and public-safe persistence failures. The focused route test, lint,
+  and build passed; build retained existing MongoDB/fetcher/static-generation
+  log noise.
+- 2026-05-15: Prepared T-039 and T-040 with focused route-test expectations for
+  admin read route guard migration and admin delete route guard/ID validation.
+- 2026-05-15: T-039 added
+  `__tests__/unit/api/adminReadRouteGuard.test.ts` and extended
+  `adminUserCommentReadRoute` invalid-ID coverage. Focused admin read route
+  tests, lint, and build passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: T-040 added
+  `__tests__/unit/api/adminDeleteRouteGuard.test.ts` covering admin delete
+  shared guard behavior, invalid IDs before destructive work, cascade semantics,
+  transaction abort, and public-safe failures. Focused admin delete route tests,
+  lint, and build passed; build retained existing
+  MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: Prepared T-041 with focused middleware/route utility coverage
+  expectations for protected API JSON `401`, frontend redirects, admin API
+  `403`, `/api/auth` bypass, authenticated pass-through, and middleware debug
+  log removal.
+- 2026-05-15: T-041 added `__tests__/unit/middleware.test.ts` and extended
+  `__tests__/unit/utils/routeUtils.test.ts` for API route classification,
+  protected API `401`, protected frontend redirect, admin API `403`, admin
+  frontend redirect, `/api/auth` bypass, authenticated pass-through, and no
+  direct middleware debug logging. Focused tests, lint, and build passed; build
+  retained existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-15: Prepared T-042 with focused user comment route coverage
+  expectations for GET/POST/PATCH shared-guard `401` short-circuiting, GET list
+  success and failure statuses, and preservation of existing create/update/delete
+  behavior.
+- 2026-05-15: T-042 extended
+  `__tests__/unit/api/userCommentRoute.test.ts` for GET shared-guard `401`
+  short-circuiting before DB/model work, GET success/missing-user/internal
+  failure statuses, and POST/PATCH shared-guard `401` before body reads.
+  Focused tests, lint, and build passed; build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug log
+  noise.
+- 2026-05-15: Prepared T-043 with focused static coverage expectations for
+  protected user/admin API route guard imports/calls and banned direct
+  session/admin helper checks.
 
 ## Next Agent Action
 
-Commission
-`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
+Keep the route/fetcher parity inventory current when fetchers or route handlers
+change. For T-043, add
+`__tests__/unit/api/protectedApiGuardInventory.test.ts` before broadening to
+lint and build. For later response-helper hardening tasks, add focused route
+tests before broadening to lint and build.
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
 for owner/orchestrator acceptance of a Next target, then execute the

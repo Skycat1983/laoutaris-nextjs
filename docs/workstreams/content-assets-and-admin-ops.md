@@ -58,8 +58,19 @@ content operations repeatable and safe.
   with strict route schemas, allowlisted parsed persistence, collection/artwork
   ObjectId checks, real validation statuses, and focused route tests.
 - T-029 found active admin dashboard detail fetchers for user and comment
-  records without matching route files; T-030 is ready to back those read
-  operations.
+  records without matching route files; T-030 backed those read operations with
+  admin detail routes.
+- T-034 applied the T-020 collection write-validation pattern to article
+  create/update routes with strict schemas, allowlisted persistence, ObjectId
+  validation, session author ownership, route-local `dbConnect()`, and focused
+  route tests.
+- T-037 applied the same admin write-validation pattern to artwork
+  create/update while leaving Shopify product-link editing separate.
+- T-038 applied the same admin write-validation pattern to blog create/update
+  while leaving `pinned`/`tags` workflow support separate.
+- T-040 migrated admin delete routes to the shared admin guard, added
+  destructive ID validation before target/session work, and preserved existing
+  artwork/blog/comment/user cascade behavior with focused tests.
 
 ## Backlog
 
@@ -130,11 +141,37 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-14: Prepared T-030 to add missing admin user/comment detail read
   routes for active dashboard operation-tab fetchers, with focused route tests
   and route/fetcher parity allowlist cleanup.
+- 2026-05-15: Completed T-030 by adding admin user/comment detail read routes
+  for the existing operation-tab fetchers, using the shared admin guard and
+  existing DTO transforms without changing operation tab behavior.
+- 2026-05-15: Prepared T-034 to harden admin article create/update validation
+  as the next F-057 content/admin write slice after collection.
+- 2026-05-15: Completed T-034 by hardening admin article create/update
+  validation, rejecting unknown fields before persistence, preserving the
+  session admin user as create author, and removing the invalid `collections`
+  article section option from the admin article forms.
+- 2026-05-15: Prepared T-037 and T-038 as the remaining F-057 admin
+  write-validation queue. T-037 owns artwork create/update first; T-038 owns
+  blog create/update after T-037 is reconciled.
+- 2026-05-15: Completed T-037 by hardening admin artwork create/update
+  validation with strict route schemas, canonical artwork constants,
+  allowlisted parsed persistence, optional replacement-image updates,
+  session-owned create author, and focused route tests while keeping Shopify
+  product-link editing separate.
+- 2026-05-15: Completed T-038 by hardening admin blog create/update validation
+  with strict route schemas, trimmed and allowlisted parsed persistence,
+  update ID validation before body reads, title-based slug-conflict handling,
+  session-owned create author, public-safe failures, and focused route tests.
+- 2026-05-15: Prepared T-040 as the queued admin delete route guard and
+  destructive ID validation slice after T-039 migrates admin read routes.
+- 2026-05-15: Completed T-040 by moving admin delete routes for article,
+  artwork, blog, collection, comment, and user to `requireApiAdmin()`, adding
+  destructive ID validation before target/session work, and preserving existing
+  delete and cascade semantics with focused route tests.
 
 ## Next Agent Action
 
-Commission
-`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`
-for the active admin read-route mismatch. Keep T-020-style article, artwork,
-and blog admin write-route validation, remaining Cloudinary upload policy, and
-public image payload decisions separate.
+Choose the next content/admin operations slice after T-040, such as documenting
+admin content workflows or delete behavior for operators.
+Keep Cloudinary upload policy, Shopify product-link workflow, admin content
+workflow runbooks, and public image payload decisions separate.

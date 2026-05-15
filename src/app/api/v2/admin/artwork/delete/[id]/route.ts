@@ -3,28 +3,34 @@ import { ArtworkModel, ArticleModel, CollectionModel } from "@/lib/data/models";
 import mongoose from "mongoose";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminDeleteInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/delete/routeValidation";
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
-  const session = await mongoose.startSession();
-  session.startTransaction();
+
   const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminDeleteInvalidIdResponse("artwork", "Invalid artwork ID");
+  }
+
+  let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
 
   try {
+    await dbConnect();
+    session = await mongoose.startSession();
+    session.startTransaction();
+
     //  check if artwork is used in any articles
     const articleUsingArtwork = await ArticleModel.findOne({ artwork: id });
     if (articleUsingArtwork) {
@@ -40,7 +46,7 @@ export async function DELETE(
     }
 
     // if no articles are using it, proceed with deletion and updating collections
-    const [deletedArtwork, updatedCollections] = await Promise.all([
+    const [deletedArtwork] = await Promise.all([
       // Delete the artwork
       ArtworkModel.findByIdAndDelete(id).session(session),
 
@@ -70,7 +76,7 @@ export async function DELETE(
       data: null,
     } satisfies DeleteDocumentResult);
   } catch (error) {
-    await session.abortTransaction();
+    await session?.abortTransaction();
     console.error("Error in cascade delete:", error);
     return NextResponse.json(
       {
@@ -81,6 +87,6 @@ export async function DELETE(
       { status: 500 }
     );
   } finally {
-    session.endSession();
+    session?.endSession();
   }
 }

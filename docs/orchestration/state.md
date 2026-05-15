@@ -1,15 +1,87 @@
 # Current Orchestration State
 
-Last updated: 2026-05-14
+Last updated: 2026-05-15
 
 ## Current Priority
 
-Commission the first route/fetcher parity cleanup after T-029 made F-037
-measurable, while keeping the residual Next/PostCSS owner decision separate.
+Commission T-043 as the protected API guard inventory closure task. T-043 adds
+a static regression test proving protected user/admin API routes use the shared
+route-local guards and do not reintroduce direct session/admin helper checks.
+Keep shared API response-helper standardization, production logging policy,
+Shopify product ID/admin-linking/checkout decisions, and the residual
+Next/PostCSS owner decision separate.
 
 ## Active Phase
 
 Implementation commissioning and high-risk follow-up sequencing.
+
+## Successor Takeover Snapshot
+
+Use this section as the first operational handoff for a new orchestrator.
+
+- Current orchestrator role: sequence agent tasks, keep docs canonical, and
+  reconcile returned work into task/workstream/risk/finding trackers.
+- No active audits are recorded.
+- No active running agent is recorded in docs.
+- T-030 is complete and reconciled: it added the missing admin user/comment
+  detail read routes, added focused route tests, and removed
+  `admin.read.user` plus `admin.read.comment` from the T-029 route/fetcher
+  parity allowlist.
+- T-031 is complete and reconciled: it removed the unused favourite/watchlist
+  API write fetchers, removed those four operations from the route/fetcher
+  parity inventory and allowlist, and preserved the T-028 server-action
+  saved-item mutation path.
+- T-032 is complete: it removed the unused profile update fetcher, removed
+  `user.profile.update` from the route/fetcher parity inventory, left
+  `KNOWN_ROUTE_FETCHER_GAP_IDS` empty, and resolved F-037.
+- T-033 is complete: it migrated user comment delete to the shared user guard
+  before DB/transaction work, validates the comment ID before DB work, preserves
+  transactional delete behavior, and returns the typed delete envelope.
+- T-034 is complete: it hardened admin article create/update validation with
+  strict route schemas, parsed allowlisted persistence, route-local
+  `dbConnect()`, and focused route tests.
+- T-035 is complete: it added route-safe public artwork browse query parsing
+  for filter/sort/color/pagination params before session or artwork service
+  work.
+- T-036 is complete: it added route-safe public shop listing query parsing for
+  repeated filters, product-type boolean strings, and optional `sortBy` before
+  `dbConnect()`, MongoDB query construction, or Shopify product fan-out.
+- T-037 is complete: it hardened admin artwork create/update validation with
+  strict route schemas, canonical artwork constants, allowlisted persistence,
+  optional replacement-image updates, route-local DB ownership, and focused
+  route tests while leaving Shopify product-link editing separate.
+- T-038 is complete: it hardened admin blog create/update validation with
+  strict route schemas, allowlisted persistence, route-local DB ownership,
+  slug-conflict handling, and focused route tests.
+- T-039 is complete: it migrated admin article, artwork, blog, collection,
+  comment, and user read routes to `requireApiAdmin()`, added target-read DB
+  ownership, detail ID validation, and focused route tests.
+- T-040 is complete: it migrated admin article, artwork, blog, collection,
+  comment, and user delete routes to `requireApiAdmin()`, added ID validation
+  before destructive target/session work, added route-local DB ownership, and
+  preserved existing cascade behavior with focused route tests.
+- T-041 is complete: it fixed middleware API redirect cleanup by returning
+  shared JSON `401` for unauthenticated protected API callers, preserving
+  frontend redirects and admin API/frontend denial behavior, and removing
+  always-on middleware debug logs. Do not fold remaining user comment route
+  migration, shared response-helper standardization, or Shopify decisions into
+  its follow-up docs.
+- T-042 is complete: it migrated user comment GET/POST/PATCH route-local auth
+  to `requireApiUser()`, moved GET auth before DB/model work, preserved
+  create/update/delete behavior, added focused comment route tests, and passed
+  focused tests, lint, and build.
+- T-043 is ready: it owns a static protected API guard inventory test for
+  `src/app/api/v2/user` and `src/app/api/v2/admin`. Do not fold shared
+  response-helper standardization, public optional-session policy, or logging
+  cleanup into T-043.
+- Next one-line assignment: `/task effort: high details:
+  docs/tasks/T-043-add-protected-api-guard-inventory.md`
+- The worktree is expected to be dirty from recent completed tasks and
+  orchestration updates. Do not revert or overwrite unrelated files. Run
+  `git status --short` before edits and treat existing changes as other agents'
+  work unless the owner explicitly asks for cleanup.
+- Chat history is not canonical. If chat and docs disagree, use the docs and
+  update them before commissioning the next agent.
 
 ## Current Facts
 
@@ -71,11 +143,13 @@ Implementation commissioning and high-risk follow-up sequencing.
   by moving `/artwork` initial list loading to `getArtworkList`.
 - T-019 resolved the stale custom login/session path and `/protected` route
   pruning; now-unused `jose` is a package-cleanup candidate.
-- T-020 resolved the admin collection create/update validation slice; article,
-  artwork, and blog admin writes remain open.
+- T-020 resolved the admin collection create/update validation slice, T-034
+  resolved the admin article create/update validation slice, T-037 resolved the
+  admin artwork create/update validation slice, and T-038 resolved the admin
+  blog create/update validation slice.
 - T-021 partially mitigated public query bounds and ADR 0004 migration by
-  moving public search to `getPublicSearchResults`; artwork browse and shop
-  browse query bounds remain open.
+  moving public search to `getPublicSearchResults`; T-035 completed artwork
+  browse query bounds, and T-036 completed shop browse query bounds.
 - T-022 resolved the package cleanup slice for confirmed-unused direct
   dependencies and removed the unused `core-js` install-script path.
 - The Vercel bcrypt native trace incident is fixed locally by tracing bcrypt
@@ -101,19 +175,66 @@ Implementation commissioning and high-risk follow-up sequencing.
   successful toggles, defensive saved-item input handling, and focused action
   tests.
 - T-029 is complete. It added a static route/fetcher parity inventory test with
-  a self-checking seven-item known-gap allowlist for F-037 and found no
-  additional mismatches.
-- T-030 is ready. It scopes the active admin user/comment detail read route
-  mismatches to two new admin detail routes, focused route tests, and removal of
-  `admin.read.user` and `admin.read.comment` from the T-029 allowlist.
+  a self-checking known-gap allowlist for F-037 and found no additional
+  mismatches.
+- T-030 is complete. It added the active admin user/comment detail read routes
+  behind the shared admin guard, added focused route tests, and reduced the
+  T-029 known-gap allowlist to the five remaining favourite/watchlist/profile
+  entries.
+- T-031 is complete. It removed the unused favourite/watchlist write fetchers
+  and reduced the T-029 known-gap allowlist to only `user.profile.update`.
+- T-032 is complete. It removed the unused profile update fetcher instead of
+  adding an unscoped profile edit route, emptied the parity allowlist, and
+  resolved F-037.
+- T-033 is complete. It hardened user comment delete auth/status/envelope
+  behavior without changing comment create/update or admin comment delete.
+- T-034 is complete. It applies the T-020 admin write-validation pattern to
+  article create/update with strict schemas, allowlisted persistence,
+  route-local `dbConnect()`, session-owned create authors, structured validation
+  errors, and focused route tests.
+- T-035 is complete. It validates and bounds public artwork browse query params
+  before session lookup and artwork list service calls, with focused route
+  coverage.
+- T-036 is complete. It validates public shop listing repeated filters,
+  product-type boolean strings, and optional `sortBy` before DB or Shopify work,
+  without changing checkout, product ID migration, server-side sorting, or
+  pagination behavior.
+- T-037 is complete. It applies the T-020/T-034 admin write-validation pattern
+  to artwork create/update with strict route schemas, allowlisted persistence,
+  route-local `dbConnect()`, optional replacement-image updates, structured
+  validation errors, and focused route tests.
+- T-038 is complete. It applies the T-020/T-034/T-037 admin write-validation
+  pattern to blog create/update with strict route schemas, allowlisted
+  persistence, route-local `dbConnect()`, structured validation errors,
+  slug-conflict handling, and focused route tests.
+- T-039 is complete. It migrated admin read routes from `isAdmin()` to
+  `requireApiAdmin()`, added explicit target-read DB ownership, returned
+  structured JSON `400` for invalid detail IDs before target reads, preserved
+  existing read response semantics, and passed focused route tests, lint, and
+  build.
+- T-040 is complete. It migrated admin delete routes from `isAdmin()` to
+  `requireApiAdmin()`, returned shared JSON `401`/`403` guard responses before
+  destructive work, added structured JSON `400` invalid-ID handling before
+  target/session work, preserved existing delete/cascade semantics, and passed
+  focused route tests, lint, and build.
+- T-041 is complete. It resolved the middleware-level F-036 auth-status gap so
+  protected API callers receive JSON `401` responses rather than NextAuth
+  sign-in redirects while frontend protected routes keep their redirect
+  behavior.
+- T-042 is complete. It moved user comment GET/POST/PATCH handlers to
+  `requireApiUser()` before body, DB, model, or transaction work, preserved
+  comment validation/DTO behavior, and returned real GET missing-user/internal
+  failure statuses.
+- T-043 is ready. It locks the protected route-local guard invariant with a
+  static inventory test before moving on to response-helper or logging-policy
+  work.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
-  Vercel project-setting and rollback ownership, broader protected API
-  auth-status consistency, remaining route/fetcher parity drift, broader
-  root-layout DB/session/cache ownership, remaining admin write validation,
-  artwork/shop browse query bounds, staged ADR 0004 server data-access
-  migrations, package-manager/Node runtime pins, Cloudinary upload policy, admin
-  bootstrap/recovery, and the broader CORS/CSP and logging policy decisions.
+  Vercel project-setting and rollback ownership, remaining protected API
+  auth-status consistency, broader root-layout DB/session/cache ownership,
+  staged ADR 0004 server data-access migrations, package-manager/Node runtime
+  pins, Cloudinary upload policy, admin bootstrap/recovery, and the broader
+  CORS/CSP and logging policy decisions.
 
 ## Active Audits
 
@@ -170,12 +291,17 @@ completed:
 
 ## Next Orchestrator Action
 
-Commission
-`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
+Commission T-043 with:
 
-After T-030, choose between another F-037 allowlist cleanup group,
-broader protected API guard migration, remaining artwork/shop browse query
-bounds, or admin write validation.
+```text
+/task effort: high details: docs/tasks/T-043-add-protected-api-guard-inventory.md
+```
+
+After T-043 returns, reconcile its docs and choose between shared API
+response-helper standardization, a focused production logging slice, or the
+next field/transform contract cleanup. Keep Shopify product ID/admin-linking
+work and Cloudinary upload policy as separate task tracks unless priority
+changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

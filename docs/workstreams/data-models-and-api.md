@@ -91,8 +91,40 @@ consistent enough for production refactoring and Shopify integration.
   action tests.
 - T-029 added a focused static route/fetcher parity inventory test for the
   known F-037 mismatches before runtime contract fixes.
-- T-030 is ready to implement the active admin user/comment detail read routes
-  and remove those two known-gap entries from the T-029 parity allowlist.
+- T-030 added the active admin user/comment detail read routes and removed those
+  two known-gap entries from the T-029 parity allowlist.
+- T-031 removed the unused favourite/watchlist write fetchers and reduced the
+  F-037 route/fetcher parity allowlist to the remaining profile update gap.
+- T-032 removed the unused profile update fetcher, emptied the route/fetcher
+  parity allowlist, and resolved F-037 without adding an unneeded profile write
+  route.
+- T-033 completed protected user comment delete status/envelope cleanup.
+- T-034 completed admin article create/update validation with strict route
+  schemas, allowlisted persistence, article/artwork ObjectId checks, session
+  author ownership, route-local `dbConnect()`, and focused route tests.
+- T-035 completed public artwork browse query validation with route-safe
+  filter/sort/color/pagination parsing before session lookup or artwork list
+  service calls.
+- T-036 completed the remaining F-060 shop browse query-bounds slice by
+  validating repeated filters, product-type booleans, and optional `sortBy`
+  before MongoDB or Shopify work.
+- T-037 completed the F-057 admin artwork create/update validation slice.
+- T-038 completed the remaining F-057 admin blog create/update validation slice
+  with strict schemas, allowlisted persistence, route-local DB ownership, and
+  slug-conflict coverage.
+- T-039 continued F-036 by moving remaining admin read routes to the shared
+  admin guard, adding explicit target-read DB ownership, and validating detail
+  IDs before target model reads.
+- T-040 continued F-036 by moving admin delete routes to the shared admin guard,
+  adding explicit route-local DB ownership before destructive model work, and
+  validating delete IDs before target/session work.
+- T-041 addressed the middleware-level F-036 gap where protected API callers
+  were redirected instead of receiving JSON `401` responses.
+- T-042 finished the user comment route group's route-local protected auth
+  cleanup by moving GET/POST/PATCH to `requireApiUser()`, preserving comment
+  DTOs and validation behavior, and returning real GET failure statuses.
+- T-043 is ready to add a static protected API guard inventory before broader
+  response-helper standardization begins.
 
 ## Backlog
 
@@ -117,8 +149,6 @@ consistent enough for production refactoring and Shopify integration.
 - Fix high-risk route DTO mismatches for user profile and admin content writes.
 - Migrate admin create/update routes toward allowlisted schemas, ObjectId
   validation, real 400 validation responses, and route tests by content type.
-- Validate and bound artwork browse and shop browse query parameters before
-  building Mongo filters or Shopify query behavior.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
 - Add Shopify product ID normalization and validation for admin writes, API
@@ -214,11 +244,94 @@ Add API route tests where behavior is changed.
 - 2026-05-14: Prepared T-030 to back `clientApi.admin.read.user(id)` and
   `clientApi.admin.read.comment(id)` with admin detail routes, focused route
   tests, and parity allowlist cleanup.
+- 2026-05-15: Completed T-030 by adding
+  `GET /api/v2/admin/user/read/[id]` and
+  `GET /api/v2/admin/comment/read/[id]` behind `requireApiAdmin()`, with
+  transformed success envelopes, real `404` responses, public-safe `500`
+  responses, explicit target-read `dbConnect()` ownership, focused route tests,
+  and removal of the two admin read operations from the parity allowlist.
+- 2026-05-15: Prepared T-031 and T-032 to clean up the remaining F-037
+  favourite/watchlist/profile user fetcher drift by pruning unsupported unused
+  write fetchers. This keeps the saved-item server actions and profile read
+  route behavior unchanged.
+- 2026-05-15: Completed T-031 by removing the unused favourite/watchlist API
+  write fetchers, removing their four operations from the route/fetcher parity
+  inventory and known-gap allowlist, preserving the T-028 server-action
+  mutation path, and reducing the remaining F-037 allowlist to
+  `user.profile.update`.
+- 2026-05-15: Completed T-032 by removing the unused profile update fetcher,
+  removing `user.profile.update` from the route/fetcher parity inventory,
+  leaving `KNOWN_ROUTE_FETCHER_GAP_IDS` empty, and resolving F-037 with focused
+  profile/parity tests, lint, build, and reference-check verification.
+- 2026-05-15: Prepared T-033, T-034, and T-035 as the next post-F-037 task
+  queue: user comment delete guard/status/envelope cleanup, admin article
+  create/update validation, and public artwork browse query validation.
+- 2026-05-15: Completed T-033 by moving user comment delete to the shared user
+  guard before DB work, validating route params before transactions, preserving
+  the user/blog/comment delete transaction, and returning the typed delete
+  envelope with focused route coverage.
+- 2026-05-15: Completed T-034 by hardening admin article create/update route
+  validation with strict route schemas, parsed allowlisted persistence,
+  article/artwork ObjectId validation, session-owned create author, route-local
+  `dbConnect()` before article model writes, public-safe persistence failures,
+  and focused route tests.
+- 2026-05-15: Completed T-035 by adding route-safe public artwork browse query
+  parsing for filter mode, sort option, optional hex color, repeated artwork
+  filters, and bounded pagination before session lookup or `getArtworkList`.
+  Focused route/service tests, lint, and build passed.
+- 2026-05-15: Prepared T-036 for the remaining F-060 public shop browse query
+  validation slice. It should validate shop listing query params before
+  `dbConnect()`, MongoDB query construction, or Shopify product fan-out while
+  preserving existing success response and valid filter behavior.
+- 2026-05-15: Completed T-036 by adding route-safe public shop listing query
+  parsing for repeated artwork-derived filters, product-type boolean strings,
+  and optional `sortBy` before `dbConnect()`, MongoDB query construction, or
+  Shopify product fan-out. Focused route tests, lint, and build passed.
+- 2026-05-15: Prepared T-037 and T-038 as the remaining F-057 admin
+  write-validation queue. T-037 covers artwork create/update first; T-038 covers
+  blog create/update after T-037 is reconciled.
+- 2026-05-15: Completed T-037 by hardening admin artwork create/update route
+  validation with strict schemas, canonical artwork constants, parsed
+  allowlisted persistence, update ID validation, optional replacement-image
+  updates, session-owned create author, route-local `dbConnect()` before artwork
+  model writes, public-safe persistence failures, and focused route tests.
+- 2026-05-15: Completed T-038 by hardening admin blog create/update route
+  validation with strict schemas, parsed allowlisted persistence, update ID
+  validation before body reads, validated title-based slug updates and
+  conflicts, session-owned create author, route-local `dbConnect()` before blog
+  model work, public-safe persistence failures, and focused route tests.
+- 2026-05-15: Prepared T-039 and T-040 as the next F-036 protected admin API
+  guard migration queue. T-039 covers remaining admin read routes; T-040 covers
+  admin delete routes after T-039 is reconciled.
+- 2026-05-15: Completed T-039 by moving admin article, artwork, blog,
+  collection, comment, and user read routes to `requireApiAdmin()`, preserving
+  existing success/not-found/empty-list/public-safe failure semantics, adding
+  route-local `dbConnect()` before target reads, and adding JSON `400` invalid
+  ID handling before detail target reads.
+- 2026-05-15: Completed T-040 by moving admin article, artwork, blog,
+  collection, comment, and user delete routes to `requireApiAdmin()`, preserving
+  existing success/not-found/conflict/cascade semantics, adding route-local
+  `dbConnect()` before destructive target work, and adding JSON `400` invalid
+  ID handling before target reads/writes and transaction session startup.
+- 2026-05-15: Prepared T-041 for middleware API auth-response cleanup so
+  unauthenticated protected API requests return JSON `401` rather than
+  browser-oriented redirects.
+- 2026-05-15: Completed T-041 by returning shared JSON `401` middleware
+  responses for unauthenticated protected API requests, preserving admin API
+  `403` behavior, and verifying focused middleware/route utility tests, lint,
+  and build.
+- 2026-05-15: Prepared T-042 for user comment GET/POST/PATCH route-local guard
+  cleanup, including real GET failure statuses and focused comment route tests.
+- 2026-05-15: Completed T-042 by moving user comment GET/POST/PATCH to
+  `requireApiUser()`, moving GET auth before DB/model work, returning real
+  `404`/`500` GET failures, preserving create/update validation and DTO
+  behavior, and verifying focused route tests, lint, and build.
+- 2026-05-15: Prepared T-043 for protected API guard inventory closure across
+  user/admin route files, keeping response-helper standardization separate.
 
 ## Next Agent Action
 
-Commission
-`/task effort: high details: docs/tasks/T-030-admin-user-comment-detail-read-routes.md`.
-Keep favourite/watchlist unsupported API methods, profile update behavior,
-F-060 artwork/shop browse query bounds, protected API guard migration, and
-article/artwork/blog admin write validation as separate follow-up slices.
+Commission T-043 for protected API guard inventory closure. After it returns,
+choose the next data/API hardening slice from shared response-helper
+standardization, field/transform contract cleanup, or Shopify product
+ID/admin-linking work.

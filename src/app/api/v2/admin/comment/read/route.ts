@@ -2,28 +2,26 @@ import { CommentModel } from "@/lib/data/models";
 import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCommentListResult } from "@/lib/api/admin/read/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
 import { CommentLeanPopulated } from "@/lib/data/types";
 import { transformCommentPopulated } from "@/lib/transforms";
+
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadCommentListResult>> {
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
   const { searchParams } = new URL(request.url);
   const limit = parseInt(searchParams.get("limit") || "10");
   const page = parseInt(searchParams.get("page") || "1");
   const skip = (page - 1) * limit;
   try {
+    await dbConnect();
+
     const total = await CommentModel.countDocuments();
 
     const rawComments = await CommentModel.find()

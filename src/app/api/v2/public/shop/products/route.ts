@@ -5,23 +5,63 @@ import { SimpleProduct } from "@/lib/data/types/shopify";
 import { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { ArtworkLean } from "@/lib/data/types/artworkTypes";
-import { FilterQuery } from "mongoose";
+import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import {
+  parseShopProductListQuery,
+  searchParamsToShopProductListQueryInput,
+  type ShopProductListQueryFieldErrors,
+} from "@/lib/data/schemas/shopProductListQuerySchema";
+import type { FilterQuery } from "mongoose";
+
+type ShopProductsListResult = {
+  success: true;
+  data: SimpleProduct[];
+  metadata: {
+    totalArtworks: number;
+    totalProducts: number;
+  };
+};
+
+type ShopProductsValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: ShopProductListQueryFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: ShopProductListQueryFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ShopProductsValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid shop products query",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
 
 /**
  * Shop Products API Route
  * Filters MongoDB artworks, extracts Shopify product IDs, and fetches products
  */
 export async function GET(request: NextRequest) {
-  await dbConnect();
+  const parsedQuery = parseShopProductListQuery(
+    searchParamsToShopProductListQueryInput(request.nextUrl.searchParams)
+  );
+
+  if (!parsedQuery.success) {
+    const { fieldErrors, formErrors } = parsedQuery.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
 
   try {
-    const { searchParams } = request.nextUrl;
+    await dbConnect();
 
     // Extract filter params (same as artwork route)
-    const conditions = [];
-    for (const key of ["decade", "artstyle", "medium", "surface"]) {
-      const values = searchParams.getAll(key);
+    const conditions: FilterQuery<ArtworkDB>[] = [];
+    for (const key of ["decade", "artstyle", "medium", "surface"] as const) {
+      const values = parsedQuery.data[key];
       if (values.length) {
         conditions.push({ [key]: { $in: values } });
       }
@@ -67,9 +107,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Get product type filters from checkboxes
-    const showOriginals = searchParams.get("showOriginals") !== "false";
-    const showPrints = searchParams.get("showPrints") !== "false";
-    const showBooks = searchParams.get("showBooks") !== "false";
+    const { showOriginals, showPrints, showBooks } = parsedQuery.data;
 
     console.log("Shop products route - Product type filters in route.ts: ", {
       showOriginals,
@@ -132,7 +170,7 @@ export async function GET(request: NextRequest) {
         totalArtworks: artworks.length,
         totalProducts: products.length,
       },
-    });
+    } satisfies ShopProductsListResult);
   } catch (error) {
     if (isNextError(error)) {
       throw error;
@@ -142,7 +180,7 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: "Failed to fetch shop products",
-      },
+      } satisfies ApiErrorResponse,
       { status: 500 }
     );
   }

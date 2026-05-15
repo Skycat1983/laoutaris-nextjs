@@ -2,7 +2,12 @@ import { CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
-import { isAdmin } from "@/lib/session/isAdmin";
+import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
+import dbConnect from "@/lib/db/mongodb";
+import {
+  adminReadInvalidIdResponse,
+  isValidObjectIdParam,
+} from "@/lib/api/admin/read/routeValidation";
 import {
   AdminCollectionTransformationsPopulated,
   AdminArtworkTransformations,
@@ -11,23 +16,22 @@ import {
 import { transformCollectionPopulated } from "@/lib/transforms";
 
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadCollectionResult>> {
-  const { id } = params;
-
-  const hasPermission = await isAdmin();
-  if (!hasPermission) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Unauthorized",
-        error: "Unauthorized",
-      } satisfies ApiErrorResponse,
-      { status: 401 }
-    );
+  const admin = await requireApiAdmin();
+  if (!admin.ok) {
+    return admin.response;
   }
+
+  const { id } = params;
+  if (!isValidObjectIdParam(id)) {
+    return adminReadInvalidIdResponse("collection", "Invalid collection ID");
+  }
+
   try {
+    await dbConnect();
+
     const leanCollection = await CollectionModel.findById(id)
       .populate<{
         artworks: AdminArtworkTransformations["Lean"][];

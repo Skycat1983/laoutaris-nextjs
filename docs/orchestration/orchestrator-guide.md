@@ -121,10 +121,14 @@ When becoming orchestrator:
 
 - Confirm the latest user priority.
 - Check `git status --short` and avoid overwriting unrelated changes.
-- Read [state.md](state.md) for current priority and open coordination tasks.
+- Read [state.md](state.md), especially `Successor Takeover Snapshot`, current
+  priority, and open coordination tasks.
 - Check audit result files for audits marked `In progress`.
 - Check workstream briefs for `Next Agent Action`.
 - Check risks for High severity open items.
+- If the current task has been commissioned and returned, reconcile its task
+  brief, task index, state, relevant workstreams, findings register, and risk
+  tracker before preparing the next assignment.
 - Update [state.md](state.md) if the priority or next action has changed.
 
 ## Handoff Checklist
