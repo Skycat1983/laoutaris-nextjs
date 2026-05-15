@@ -28,6 +28,27 @@ import {
 import { calculateReadTime } from "../utils/textUtils";
 import { isUserInArray } from "../utils/userUtils";
 
+const getIdString = (value: unknown): string | null => {
+  if (!value) return null;
+
+  if (typeof value === "string") return value;
+
+  if (typeof value === "object") {
+    const valueWithId = value as { _id?: unknown; toString?: () => string };
+
+    if (valueWithId._id) {
+      return getIdString(valueWithId._id);
+    }
+
+    if (typeof valueWithId.toString === "function") {
+      const stringValue = valueWithId.toString();
+      return stringValue === "[object Object]" ? null : stringValue;
+    }
+  }
+
+  return null;
+};
+
 export const extendArticleFields = (doc: ArticleDB, userId?: string | null) => {
   return {
     readTime: calculateReadTime(doc.text),
@@ -49,6 +70,7 @@ export const extendArtworkFields = (
 
 export const extendBlogFields = (doc: BlogEntryDB, userId?: string | null) => {
   return {
+    readTime: calculateReadTime(doc.text),
     commentCount: doc.comments.length,
   } satisfies Partial<ExtendedPublicBlogFields>;
 };
@@ -59,19 +81,19 @@ export const extendCollectionFields = (
 ) => {
   return {
     artworkCount: doc.artworks.length,
-    firstArtworkId: doc.artworks[0]?.toString(),
+    firstArtworkId: getIdString(doc.artworks[0]),
   } satisfies Partial<ExtendedPublicCollectionFields>;
 };
 
 export const extendCommentFields = (doc: CommentDB, userId?: string | null) => {
   return {
-    isOwner: doc.author.toString() === userId,
+    isOwner: Boolean(userId && getIdString(doc.author) === userId),
   } satisfies Partial<ExtendedPublicCommentFields>;
 };
 
 export const extendUserFields = (doc: UserDB, userId?: string | null) => {
   return {
-    isOwner: doc.toString() === userId,
+    isOwner: Boolean(userId && getIdString(doc) === userId),
   } satisfies Partial<ExtendedPublicUserFields>;
 };
 

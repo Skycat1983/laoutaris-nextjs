@@ -149,9 +149,16 @@ consistent enough for production refactoring and Shopify integration.
   scoped to admin create/update routes with shared success/error helpers while
   preserving validation responses, success DTOs, create statuses, allowlisted
   persistence, not-found/conflict statuses, and guard/DB ordering.
-- T-051 is prepared for the next bounded field/transform contract slice:
-  focused public transform tests and fixes for blog `readTime`, collection
-  `firstArtworkId`, public user `isOwner`, and comment ownership state.
+- T-051 completed the focused F-040 public transform contract slice: blog
+  `readTime` is derived from text, collection `firstArtworkId` uses `null`
+  instead of `undefined` for empty collections, public user transforms compute
+  `isOwner` from caller context while filtering sensitive fields, and populated
+  blog/comment transforms preserve comment/user ownership context. The public
+  collection card link now coalesces null `firstArtworkId` values to the
+  existing empty-string fallback.
+- T-052 is prepared for the next bounded F-041 public artwork image contract
+  slice: public image sanitization, explicit color-proximity metadata behavior,
+  and Cloudinary color schema tightening.
 
 ## Backlog
 
@@ -186,9 +193,9 @@ consistent enough for production refactoring and Shopify integration.
 - Document whether admin action-segment API paths are canonical, or open an ADR
   for a resource-oriented migration plan.
 - Audit form/input validation from UI through API persistence.
-- Add tests for high-risk transforms and route utilities, including blog
-  `readTime`, collection `firstArtworkId`, user/comment ownership state, artwork
-  image sanitization, and color-sort payloads.
+- Add tests for remaining high-risk transforms and route utilities, including
+  artwork image sanitization, color-sort payloads, and broader field-matrix
+  decisions.
 
 ## Acceptance Criteria
 
@@ -437,8 +444,22 @@ Add API route tests where behavior is changed.
   `isOwner`, and comment ownership-state coverage/fixes while leaving the
   broader F-039 field matrix, F-041 image sanitization, Shopify product
   ID/admin-linking, and global logging policy separate.
+- 2026-05-15: Completed T-051 by adding focused public transform contract
+  tests and fixing the F-040 drift: blog transforms now derive `readTime`,
+  collection transforms return `firstArtworkId: null` for empty collections,
+  public user transforms compute `isOwner` without exposing `email` or
+  `password`, and populated comment/blog paths preserve caller `userId`
+  ownership context. The public collection card link coalesces null
+  `firstArtworkId` values to the existing empty-string fallback. Focused
+  transform tests, full Jest, lint, and build passed.
+- 2026-05-15: Prepared T-052 for the focused F-041 public artwork image
+  contract slice. It owns `image.public_id` sanitization, explicit
+  color-proximity `similarityScore` behavior, Cloudinary color schema
+  validation, and focused public/admin artwork tests while leaving upload
+  policy, Shopify product-linking, global logging, and the broader F-039 field
+  matrix separate.
 
 ## Next Agent Action
 
-Assign T-051:
-`/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`
+Assign T-052:
+`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`

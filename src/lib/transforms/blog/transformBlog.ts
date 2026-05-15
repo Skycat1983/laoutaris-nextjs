@@ -40,7 +40,7 @@ export const transformBlogWithAuthor = (
 ) => {
   const blogPublic = transformBlog.toFrontend(doc, userId);
   const { author, ...baseDoc } = doc;
-  const transformedAuthor = transformUser.toFrontend(author);
+  const transformedAuthor = transformUser.toFrontend(author, userId);
   const blogWithAuthor = {
     ...blogPublic,
     author: transformedAuthor,
@@ -54,9 +54,9 @@ export const transformBlogPopulated = (
 ) => {
   const blogPublic = transformBlog.toFrontend(doc, userId);
   const { author, comments, ...baseDoc } = doc;
-  const transformedAuthor = transformUser.toFrontend(author);
+  const transformedAuthor = transformUser.toFrontend(author, userId);
   const transformedComments = comments.map((comment) =>
-    transformComment.toFrontend(comment)
+    transformComment.toFrontend(comment, userId)
   );
   const populatedBlog = {
     ...blogPublic,
@@ -72,7 +72,7 @@ export const transformBlogPopulatedWithCommentsPopulated = (
 ): BlogEntryPopulatedCommentsPopulatedFrontend => {
   const blogPublic = transformBlog.toFrontend(doc, userId);
   const { author, comments, ...baseDoc } = doc;
-  const transformedAuthor = transformUser.toFrontend(author);
+  const transformedAuthor = transformUser.toFrontend(author, userId);
   const transformedComments = comments.map((comment: CommentLeanPopulated) =>
     transformCommentPopulated(comment, userId)
   );

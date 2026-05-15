@@ -33,7 +33,7 @@ export const transformCommentPopulated = (
   const { author, blog, ...rest } = doc;
   return {
     ...comment,
-    author: transformUser.toFrontend(author),
+    author: transformUser.toFrontend(author, userId),
     blog: transformBlog.toFrontend(blog),
   } satisfies CommentFrontendPopulated;
 };

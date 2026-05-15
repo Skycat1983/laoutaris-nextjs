@@ -60,7 +60,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-048 Apply API response helpers to admin read routes](T-048-apply-api-response-helpers-admin-read-routes.md) | Completed | Applied shared response helpers to admin read routes while preserving guards, invalid-ID validation, DTOs, and metadata. |
 | [T-049 Apply API response helpers to admin delete routes](T-049-apply-api-response-helpers-admin-delete-routes.md) | Completed | Applied shared response helpers to admin delete routes while preserving success messages, cascade behavior, conflict handling, and transaction ordering. |
 | [T-050 Apply API response helpers to admin create update routes](T-050-apply-api-response-helpers-admin-create-update-routes.md) | Completed | Applied shared response helpers to admin create/update routes while preserving validation, DTOs, create statuses, and allowlisted persistence. |
-| [T-051 Add public transform contract coverage](T-051-add-public-transform-contract-coverage.md) | Ready | Add focused tests and fixes for blog read time, collection first artwork, user ownership, and comment ownership transform contracts. |
+| [T-051 Add public transform contract coverage](T-051-add-public-transform-contract-coverage.md) | Completed | Added focused tests and fixes for blog read time, collection first artwork, user ownership, and comment ownership transform contracts. |
+| [T-052 Sanitize public artwork image contracts](T-052-sanitize-public-artwork-image-contracts.md) | Ready | Sanitize public artwork image DTOs, type color-proximity metadata, and tighten Cloudinary color validation. |
 
 ## Rules
 

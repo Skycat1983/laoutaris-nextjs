@@ -168,10 +168,15 @@ Use manual admin checks when changing dashboard behavior.
   artwork, blog, collection, comment, and user to `requireApiAdmin()`, adding
   destructive ID validation before target/session work, and preserving existing
   delete and cascade semantics with focused route tests.
+- 2026-05-15: Prepared T-052 for the F-041 public artwork image contract slice.
+  It owns public artwork image sanitization, explicit color-proximity metadata
+  behavior, and Cloudinary color schema validation while leaving broader
+  Cloudinary upload policy and Shopify product-link workflow decisions
+  separate.
 
 ## Next Agent Action
 
-Choose the next content/admin operations slice after T-040, such as documenting
-admin content workflows or delete behavior for operators.
-Keep Cloudinary upload policy, Shopify product-link workflow, admin content
-workflow runbooks, and public image payload decisions separate.
+Assign T-052:
+`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
+Keep broader Cloudinary upload policy, Shopify product-link workflow, and admin
+content workflow runbooks separate.

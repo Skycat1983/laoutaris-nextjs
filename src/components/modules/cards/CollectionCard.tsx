@@ -9,7 +9,7 @@ type CollectionCardProps = {
 export const CollectionCard = ({ collection }: CollectionCardProps) => {
   return (
     <Link
-      href={`/collections/${collection.slug}/${collection.firstArtworkId}`}
+      href={`/collections/${collection.slug}/${collection.firstArtworkId ?? ""}`}
       className="relative row-span-1 col-span-1 h-64 overflow-hidden group"
     >
       <Image

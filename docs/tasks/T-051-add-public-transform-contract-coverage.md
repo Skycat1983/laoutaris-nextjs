@@ -1,6 +1,6 @@
 # T-051 Add Public Transform Contract Coverage
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Data models and API](../workstreams/data-models-and-api.md),
@@ -108,11 +108,41 @@ focused Jest command in this task and in the handoff notes.
 
 ## Handoff Notes
 
-- Keep this limited to public transform contract behavior and focused coverage.
+- Completed on 2026-05-15.
+- Added focused coverage in
+  `__tests__/unit/transforms/publicTransformContracts.test.ts`.
+- `transformBlog.toFrontend()` and populated blog transforms now derive
+  `readTime` from text.
+- `transformCollection.toFrontend()` now returns `firstArtworkId: null` for
+  empty collections, matching the navigation empty-state convention and avoiding
+  `undefined`.
+- `CollectionCard` now coalesces a null `firstArtworkId` when building the
+  collection artwork link, preserving the previous empty-string fallback
+  behavior for empty collections.
+- Public user transforms now use the ownership extender while continuing to
+  remove `email` and `password`.
+- Comment and populated blog/comment transforms now preserve supplied `userId`
+  context through nested comments and public users.
+- Kept this limited to public transform contract behavior and focused coverage.
 - If a type contract is ambiguous, document the smallest local decision in this
   task and escalate broader field-matrix work for a follow-up.
 - Treat existing dirty worktree changes as other agents' work unless they are
   required to complete this task.
+
+## Verification Result
+
+Passed on 2026-05-15:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/transforms/publicTransformContracts.test.ts
+npm test
+npm run lint
+npm run build
+```
+
+`npm test` passed with the existing `dateUtils` invalid-date console noise.
+`npm run build` retained existing MongoDB/static-generation, branch-verification,
+link, and fetcher debug-log noise, but completed successfully.
 
 ## Escalate
 

@@ -532,11 +532,24 @@ npm run lint
   expectations for blog `readTime`, collection `firstArtworkId`, public user
   `isOwner`, comment ownership state, sensitive-field filtering, and populated
   blog/comment user-context propagation.
+- 2026-05-15: T-051 added
+  `__tests__/unit/transforms/publicTransformContracts.test.ts` for blog
+  `readTime`, collection empty-state `firstArtworkId`, public user/comment
+  ownership, sensitive user-field filtering, and populated blog/comment
+  user-context propagation. Focused transform tests, full Jest, lint, and build
+  passed; full Jest retained existing `dateUtils` invalid-date console noise,
+  and build retained existing MongoDB/static-generation, branch-verification,
+  link, and fetcher debug log noise.
+- 2026-05-15: Prepared T-052 with focused public artwork image contract
+  coverage expectations for `image.public_id` sanitization, frontend image
+  field preservation, color-proximity `similarityScore` behavior, Cloudinary
+  color schema validation, and affected public/admin artwork route fixtures.
 
 ## Next Agent Action
 
-Assign T-051 and start with focused transform tests before implementation:
-`/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`
+Assign T-052 and start with focused transform/schema tests before
+implementation:
+`/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,

@@ -4,15 +4,15 @@ Last updated: 2026-05-15
 
 ## Current Priority
 
-T-051 is ready to assign: add focused public transform contract coverage and
-fixes for blog `readTime`, collection `firstArtworkId`, public user `isOwner`,
-and comment ownership state. Keep Shopify product ID/admin-linking, Cloudinary
-upload policy, global logging/redaction policy, and the residual Next/PostCSS
-owner decision separate.
+T-052 is ready to assign: sanitize public artwork image DTOs, make the
+color-proximity `similarityScore` contract explicit, and tighten Cloudinary
+color validation for artwork image payloads. Keep Cloudinary upload policy,
+Shopify product ID/admin-linking, global logging/redaction policy, the broader
+F-039 field matrix, and the residual Next/PostCSS owner decision separate.
 
 ## Active Phase
 
-T-051 public transform contract cleanup is prepared and ready for agent
+T-052 public artwork image contract cleanup is prepared and ready for agent
 assignment.
 
 ## Successor Takeover Snapshot
@@ -101,11 +101,14 @@ Use this section as the first operational handoff for a new orchestrator.
   create/update routes to shared response helpers while preserving structured
   validation responses, create/update success contracts, `201` create statuses,
   not-found/conflict statuses, allowlisted persistence, and guard/DB ordering.
-- T-051 is ready: it owns the focused F-040 public transform contract slice for
+- T-051 is complete: it added focused public transform contract tests and fixed
   blog `readTime`, collection `firstArtworkId`, public user `isOwner`, and
-  comment ownership state.
+  populated comment/blog ownership-context drift.
+- T-052 is ready: it owns the focused F-041 public artwork image contract slice
+  for Cloudinary image sanitization, color-proximity metadata typing, and
+  Cloudinary color schema tightening.
 - Next task assignment:
-  `/task effort: high details: docs/tasks/T-051-add-public-transform-contract-coverage.md`
+  `/task effort: high details: docs/tasks/T-052-sanitize-public-artwork-image-contracts.md`
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -276,9 +279,12 @@ Use this section as the first operational handoff for a new orchestrator.
 - T-050 is complete. It applied the same helper pattern to admin create/update
   APIs before broader field-contract, Shopify product-linking, or logging-policy
   work.
-- T-051 is prepared. It should add focused public transform tests and fixes for
-  the F-040 blog `readTime`, collection `firstArtworkId`, public user
-  `isOwner`, and comment ownership-state drift.
+- T-051 is complete. It resolved the focused F-040 public transform drift for
+  blog `readTime`, collection `firstArtworkId`, public user `isOwner`, and
+  comment ownership-state propagation through populated blog/comment paths.
+- T-052 is prepared. It should sanitize public artwork image DTOs, make the
+  color-proximity `similarityScore` contract explicit, and tighten Cloudinary
+  color validation without changing upload policy or Shopify behavior.
 - The highest current blockers are residual Next/PostCSS production advisories,
   owner confirmation of whether the removed Shopify value requires rotation,
   Vercel project-setting and rollback ownership, broader root-layout
@@ -342,10 +348,10 @@ completed:
 
 ## Next Orchestrator Action
 
-Choose the next bounded slice: field/transform contract cleanup, Shopify
-product ID/admin-linking, or focused production logging cleanup. Keep
-Cloudinary upload policy and the residual Next/PostCSS owner decision separate
-unless priority changes.
+Choose the next bounded slice: F-041 public artwork image sanitization, the
+broader F-039 field matrix, Shopify product ID/admin-linking, or focused
+production logging cleanup. Keep Cloudinary upload policy and the residual
+Next/PostCSS owner decision separate unless priority changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

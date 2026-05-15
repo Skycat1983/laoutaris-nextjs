@@ -120,12 +120,12 @@ export type SensitivePublicCollectionFields =
 export const EXTENDED_PUBLIC_COLLECTION_FIELDS: ExtendedPublicCollectionFields =
   {
     artworkCount: 0,
-    firstArtworkId: "",
+    firstArtworkId: null,
   } as const;
 
 export type ExtendedPublicCollectionFields = {
   artworkCount: number;
-  firstArtworkId: string;
+  firstArtworkId: string | null;
 };
 
 export const COLLECTION_FIELD_EXTENDER = extendCollectionFields as (
