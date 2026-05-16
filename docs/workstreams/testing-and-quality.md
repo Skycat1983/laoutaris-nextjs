@@ -166,6 +166,24 @@ refactoring without turning every change into a manual QA pass.
 - T-061 added focused Shopify transform and shop gallery sorting coverage for
   explicit `productType`/`tags`, metadata type sorting, unknown type ordering,
   and preserved price/title sort modes.
+- T-062 extended focused Shopify transform coverage for variant metadata across
+  list, handle, and ID reads, including multiple variants, compare-at
+  price/image handling, no-variant fallback behavior, and preserved
+  `productType`/`tags`.
+- T-063 extended focused Shopify transform coverage for preserving plain
+  `description` and Shopify `descriptionHtml` across list, handle, and ID
+  reads while keeping metadata and variant behavior covered.
+- T-064 pinned the local runtime/install baseline and added the lockfile install
+  dry-run to setup, deployment, and testing docs. Verification passed with Node
+  `v22.14.0`, npm `10.9.2`, `npm ci --dry-run --ignore-scripts`, full Jest,
+  lint, and build.
+- T-066 added focused Cloudinary signing route coverage for accepted
+  current-widget params, rejected unknown params, rejected invalid allowed-param
+  value shapes, and preserved auth/body-shape/missing-secret/success behavior.
+- T-067 added focused source hygiene and component coverage proving
+  `UploadButton` has no direct console debugging, no availability polling or
+  DOM inspection, and still preserves current Cloudinary widget props, open
+  behavior, loading state, and success forwarding.
 
 ## Backlog
 
@@ -648,14 +666,61 @@ npm run lint
 - 2026-05-16: Prepared T-062 with focused Shopify transform coverage
   expectations for multiple variants, compare-at price, variant image handling,
   no-variant fallback behavior, and preservation of T-061 product metadata.
+- 2026-05-16: T-062 extended
+  `__tests__/unit/shopifyClientTransform.test.ts` for multiple variants,
+  compare-at price, variant image handling, no-variant fallback behavior, and
+  T-061 product metadata preservation. Focused Shopify transform plus adjacent
+  shop page/gallery/API route tests, lint, and build passed; build retained
+  existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-16: Prepared T-063 with focused Shopify transform coverage
+  expectations for preserving `descriptionHtml` across list, handle, and ID
+  reads while preserving plain descriptions, product metadata, and variant
+  metadata.
+- 2026-05-16: T-063 extended
+  `__tests__/unit/shopifyClientTransform.test.ts` for preserving plain
+  `description` and Shopify `descriptionHtml` across list, handle, and ID
+  reads. Focused transform tests, lint, and build passed; build retained
+  existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-16: Prepared T-064 with install/runtime verification expectations:
+  record Node/npm versions, prove the lockfile install path with
+  `npm ci --dry-run --ignore-scripts`, then run the normal test, lint, and
+  build baseline.
+- 2026-05-16: T-064 completed install/runtime verification: Node `v22.14.0`,
+  npm `10.9.2`, `npm ci --dry-run --ignore-scripts`, full Jest with 56 suites
+  and 512 tests, lint, and build passed. Existing date utility console output,
+  Browserslist notice, Google Fonts retries, MongoDB/static-generation logs,
+  branch-verification logs, and fetcher debug logs remained expected noise.
+- 2026-05-16: Prepared T-065 as a documentation-only environment inventory
+  slice. Verification should use targeted env-reference search, `npm run
+  env:guard`, and `git diff --check`; no full runtime suite is required unless
+  runtime code changes unexpectedly.
+- 2026-05-16: Completed T-065 with documentation-only verification: targeted
+  env-reference search, `npm run env:guard`, and `git diff --check`. No full
+  runtime suite was required because no runtime code changed.
+- 2026-05-16: Prepared T-066 with focused Cloudinary signing route coverage
+  expectations for accepted current-widget signing params, rejected unknown
+  params, rejected invalid allowed-param value shapes, and preserved auth,
+  missing-secret, and success contracts.
+- 2026-05-16: Completed T-066 focused coverage for Cloudinary signing allowed
+  params, unknown params, invalid allowed-param shapes, auth/body validation,
+  missing-secret handling, and top-level signature compatibility. Focused Jest,
+  lint, build, and `git diff --check` passed; build retained existing
+  MongoDB/static-generation and fetcher debug-log noise.
+- 2026-05-16: Completed T-067 by adding
+  `__tests__/unit/uploadButton.test.tsx` plus source hygiene coverage for
+  `UploadButton`. Focused tests passed, proving current Cloudinary widget
+  props, loading/open behavior, success forwarding, and the absence of direct
+  console debugging/polling/DOM inspection in the upload button. Lint, build,
+  and `git diff --check` passed; build retained existing
+  MongoDB/static-generation/fetcher log noise.
+- 2026-05-16: Prepared T-068 with focused source/API/component expectations
+  for removing public shop `console.log` debug output while preserving the
+  existing shop products route and gallery behavior.
 
 ## Next Agent Action
 
-Assign T-062:
-`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
-
-For the next implementation slice, add focused tests before broadening to lint
-and build.
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
 Keep the route/fetcher parity and protected API guard inventories
 current when fetchers or route handlers change.

@@ -65,6 +65,9 @@ Next.js server/client component boundaries.
   behavior: colour/dimension filters and hard-coded pagination.
 - T-061 replaced public shop default type sorting that read product titles with
   metadata-based sorting from Shopify `productType`.
+- T-067 removed direct debug logging, polling, and widget DOM/iframe inspection
+  from the admin Cloudinary upload button without changing upload widget
+  behavior.
 
 ## Backlog
 
@@ -147,10 +150,17 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-16: Completed T-061; `ShopProductGallery` now sorts the default
   type view from explicit Shopify `productType` metadata, keeps unknown types
   last, and preserves existing price/title sort behavior.
+- 2026-05-16: Completed T-067 as a focused frontend/admin component cleanup
+  slice for `UploadButton` debug logging. It preserves the current
+  `CldUploadWidget` props, loading/open behavior, and success callback.
+- 2026-05-16: Prepared T-068 as a focused public shop frontend cleanup for
+  `ShopProductGallery` and `ShopProductsLoader` debug logs while preserving
+  backed filter, sort, loading, and empty-state behavior.
 
 ## Next Agent Action
 
-Prepare the next focused frontend slice from the remaining backlog.
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
 Keep real pagination, checkout/cart, remaining Shopify product transform fields,
 and admin product-linking separate.

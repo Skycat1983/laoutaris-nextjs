@@ -1,6 +1,6 @@
 # T-062 Preserve Shopify Variant Metadata
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),
@@ -100,7 +100,26 @@ Record the exact focused test path in the handoff notes.
 
 ## Handoff Notes
 
-- Not started.
+- Completed 2026-05-16.
+- Added `SimpleProductVariant` and a required `SimpleProduct.variants` array
+  preserving queried Shopify variant IDs, titles, availability, price money,
+  compare-at price money, and optional variant image URL/alt text.
+- Kept top-level product price, currency, compare-at price, image, and
+  availability behavior unchanged; no-variant products return `variants: []`
+  and still use the existing `priceRange.minVariantPrice` fallback.
+- Added focused transform coverage in
+  `__tests__/unit/shopifyClientTransform.test.ts` for list, handle, and ID
+  reads, including multiple variants, compare-at price/image handling,
+  no-variant fallback behavior, and T-061 `productType`/`tags` preservation.
+- No checkout/cart, product-detail CTA, visible variant-selection UI,
+  description HTML, pagination, admin-linking, migration, or Shopify API
+  validation behavior was changed.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/shopifyClientTransform.test.ts`;
+  `npm test -- --runTestsByPath __tests__/unit/shopProductDetailPage.test.tsx __tests__/unit/shopProductGallerySorting.test.tsx __tests__/unit/api/shopProductsRoute.test.ts __tests__/unit/api/shopSingleProductRoute.test.ts`;
+  `npm run lint`;
+  `npm run build`.
+- Build passed with the existing MongoDB/fetcher/static-generation log noise.
 
 ## Escalate
 

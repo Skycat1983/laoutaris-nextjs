@@ -84,6 +84,13 @@ production while preserving MongoDB as the archive source of truth.
 - T-061 carries Shopify `productType` and `tags` through public product DTOs
   and uses `productType` metadata, not title keywords, for the default client
   shop type sort.
+- T-062 carries queried Shopify variant IDs, titles, availability, price money,
+  compare-at price money, and optional variant image URL/alt text through
+  `SimpleProduct.variants` for list, handle, and ID reads without changing
+  checkout/cart, product-detail CTA, or visible variant-selection behavior.
+- T-063 carries queried Shopify `descriptionHtml` through `SimpleProduct` for
+  list, handle, and ID reads while keeping product detail rendering on the
+  existing plain `description`.
 
 ## Backlog
 
@@ -96,8 +103,9 @@ production while preserving MongoDB as the archive source of truth.
 - Obtain the owner-approved MongoDB target/environment label, configure
   `MONGO_URI`, rerun the read-only Shopify product-link audit, then plan any
   owner-approved cleanup or migration for reported invalid values.
-- Standardize remaining shop product API envelopes and carry any remaining
-  variant IDs, availability, and description fields needed by product detail.
+- Standardize remaining shop product API envelopes, define checkout line-item
+  requirements, and decide rich-description rendering/sanitization before
+  using `descriptionHtml` in product-detail UI.
 - Define the real public shop pagination contract before rendering pagination
   controls again.
 - Define any future server-side shop sorting contract before moving current
@@ -206,13 +214,29 @@ Add targeted tests as shop behavior is hardened.
   carries queried Shopify variant metadata through product DTOs without
   implementing checkout/cart, product-detail CTA changes, or visible
   variant-selection UI.
+- 2026-05-16: Completed T-062; `SimpleProduct` now exposes a stable `variants`
+  array with queried Shopify variant IDs, titles, availability, price money,
+  compare-at price money, and optional variant image URL/alt text while keeping
+  existing top-level product price/image/availability behavior unchanged.
+- 2026-05-16: Prepared T-063 as the next focused F-014 transform slice. It
+  carries queried Shopify `descriptionHtml` through product DTOs without
+  rendering rich HTML or changing product-detail UI, checkout/cart, or variant
+  selection behavior.
+- 2026-05-16: Completed T-063; `SimpleProduct` now preserves Shopify
+  `descriptionHtml` for list, handle, and ID reads while existing plain
+  `description`, product metadata, variant metadata, product-detail UI,
+  checkout/cart, and variant-selection behavior remain unchanged.
+- 2026-05-16: Prepared T-068 as a focused public shop debug-log cleanup. It
+  should remove always-on console output from the product listing route,
+  gallery, and loader while preserving current filtering, sorting, product
+  response metadata, malformed ID skipping, and deduplication behavior.
 
 ## Next Agent Action
 
-Assign T-062:
-`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
-T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI` are
+Keep T-059 blocked until an owner-approved MongoDB target and `MONGO_URI` are
 available.
 
 Owner confirmation on the removed Shopify value, checkout handoff, admin

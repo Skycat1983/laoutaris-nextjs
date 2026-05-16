@@ -30,6 +30,7 @@ const product: SimpleProduct = {
   handle: "test-product",
   title: "Test Product",
   description: "A product used by the route contract test.",
+  descriptionHtml: "<p>A product used by the route contract test.</p>",
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],
@@ -38,6 +39,7 @@ const product: SimpleProduct = {
   compareAtPrice: null,
   image: null,
   availableForSale: true,
+  variants: [],
 };
 
 describe("GET /api/v2/public/shop/products/[productId]", () => {

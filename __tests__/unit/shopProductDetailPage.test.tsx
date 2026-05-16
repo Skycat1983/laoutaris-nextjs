@@ -33,6 +33,7 @@ const createProduct = (overrides: Partial<SimpleProduct> = {}): SimpleProduct =>
   handle: "test-product",
   title: "Test Product",
   description: "A product used by the page test.",
+  descriptionHtml: "<p>A product used by the page test.</p>",
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],
@@ -41,6 +42,7 @@ const createProduct = (overrides: Partial<SimpleProduct> = {}): SimpleProduct =>
   compareAtPrice: null,
   image: null,
   availableForSale: true,
+  variants: [],
   ...overrides,
 });
 

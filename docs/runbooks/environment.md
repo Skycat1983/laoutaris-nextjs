@@ -1,36 +1,76 @@
 # Environment Variables Runbook
 
 Do not store secret values in this repo. This file records variable names,
-purposes, and likely owners only.
+purposes, classifications, required environments, and owner/status notes only.
 
-## Known Variables
+This inventory is based on source searches for `process.env`, public env names,
+platform env names, and the unresolved A-007 environment evidence. It does not
+depend on local `.env` contents.
 
-| Variable | Purpose | Notes |
-| --- | --- | --- |
-| `MONGO_URI` | MongoDB connection for app data | Required server-only secret for DB helpers. Configure it in server runtime/build environments, not in `next.config.mjs` `env` or any `NEXT_PUBLIC_*` variable. |
-| `NEXTAUTH_SECRET` | NextAuth JWT/session secret | Required by middleware token lookup |
-| `GITHUB_ID` | GitHub OAuth client ID | Optional unless GitHub sign-in is enabled |
-| `GITHUB_SECRET` | GitHub OAuth client secret | Secret |
-| `GOOGLE_ID` | Google OAuth client ID | Optional unless Google sign-in is enabled |
-| `GOOGLE_SECRET` | Google OAuth client secret | Secret |
-| `SHOPIFY_STORE_DOMAIN` | Shopify shop domain | Used to build Storefront API URL |
-| `SHOPIFY_STOREFRONT_ACCESS_TOKEN` | Shopify Storefront API token | Secret |
+## Runtime Variables
 
-## Needs Inventory
+| Variable | Purpose | Classification | Required environments | Owner/status and notes |
+| --- | --- | --- | --- | --- |
+| `MONGO_URI` | MongoDB connection for app data, NextAuth adapter storage, and the read-only Shopify product-link audit script. | Server-only secret. | Local development when MongoDB-backed routes or scripts run; preview; production; any shell running `npm run audit:shopify-products`. | Database/deployment owner. Configure only in server runtime/build environments. Do not expose through `next.config.mjs` `env` or any `NEXT_PUBLIC_*` variable. Rotate through MongoDB and the deployment provider if exposed. |
+| `NEXTAUTH_SECRET` | NextAuth JWT/session signing secret used by NextAuth and middleware token lookup. | Server-only secret. | Local development when auth/protected routes are exercised; preview; production. | Auth/deployment owner. Keep stable per environment so sessions remain valid. Rotate intentionally because existing sessions will be invalidated. |
+| `GITHUB_ID` | GitHub OAuth client ID for the NextAuth GitHub provider. | Provider identifier; not a server secret, but should remain environment-managed. | Only environments where GitHub sign-in is enabled. | Auth/OAuth owner. Provider callback URLs must match the active Vercel or custom domain for each enabled environment. |
+| `GITHUB_SECRET` | GitHub OAuth client secret for the NextAuth GitHub provider. | Server-only secret. | Only environments where GitHub sign-in is enabled. | Auth/OAuth owner. Rotate in the GitHub OAuth app if exposed or when ownership changes. |
+| `GOOGLE_ID` | Google OAuth client ID for the NextAuth Google provider. | Provider identifier; not a server secret, but should remain environment-managed. | Only environments where Google sign-in is enabled. | Auth/OAuth owner. Provider redirect URIs must match the active Vercel or custom domain for each enabled environment. |
+| `GOOGLE_SECRET` | Google OAuth client secret for the NextAuth Google provider. | Server-only secret. | Only environments where Google sign-in is enabled. | Auth/OAuth owner. Rotate in Google Cloud if exposed or when ownership changes. |
+| `SHOPIFY_STORE_DOMAIN` | Shopify shop domain used to build the Storefront GraphQL endpoint. | Server-side commerce configuration; non-secret. | Local development when shop routes are exercised; preview; production. | Commerce/deployment owner. Source constructs the Storefront URL from this value; keep the value domain-only, without a protocol. |
+| `SHOPIFY_STOREFRONT_ACCESS_TOKEN` | Shopify Storefront API token used in Storefront GraphQL requests. | Server-only secret. | Local development when shop routes are exercised; preview; production. | Commerce/deployment owner. T-009 removed a token-shaped source comment; owner verification of whether the removed value was real, and rotation if needed, remains separate. |
+| `NEXT_PUBLIC_BASE_URL` | Absolute app origin used by the current shop listing server loader while it still performs a same-app HTTP fetch. | Public URL configuration. | Preview and production while the shop loader depends on same-app HTTP; optional in local development because the current code falls back to localhost. | Deployment/architecture owner. Set to the canonical origin for the target environment. Prefer removing this dependency through the ADR 0004 direct server data-access pattern instead of expanding same-app HTTP usage. |
+| `VERCEL_ENV` | Vercel environment selector used by server fetchers to choose production, preview, or local URL behavior. | Platform-provided non-secret. | Vercel preview and production. | Vercel platform owner. Do not manage as an app secret. Local shells may omit it. Broader URL ownership remains open because production URL behavior is still split across helpers. |
+| `VERCEL_URL` | Vercel deployment hostname used by preview server fetchers and the current `/project` redirect. | Platform-provided non-secret hostname. | Vercel preview and production. | Vercel platform owner. Vercel provides a hostname without protocol; current source handles this inconsistently, so URL centralization remains separate work. |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name used by the admin upload signing route and public Cloudinary delivery configuration. | Public Cloudinary account identifier. | Local development when admin uploads are exercised; preview; production. | Assets/deployment owner. Keep aligned with Cloudinary delivery settings and `next.config.mjs` image host policy. |
+| `NEXT_PUBLIC_CLOUDINARY_API_KEY` | Cloudinary API key used by the admin upload signing route configuration. | Public Cloudinary account identifier. | Local development when admin uploads are exercised; preview; production. | Assets/deployment owner. This is not the signing secret, but it should still be managed with the matching Cloudinary account. |
+| `CLOUDINARY_API_SECRET` | Cloudinary signing secret used by `POST /api/v2/admin/sign-cloudinary-params`. | Server-only secret. | Local development when admin uploads are exercised; preview; production. | Assets/security owner. Missing values return a public-safe configuration error. Rotate in Cloudinary if exposed or when ownership changes. |
+| `NODE_ENV` | Standard Node/Next environment mode used for development-only DB client caching, auth/test helper behavior, and Shopify cache policy. | Runtime/platform variable; non-secret. | All Node/Next commands. | Node/Next runtime. Do not use as the only production safety control for secrets or authorization. |
 
-The codebase may require additional Cloudinary and NextAuth variables not yet
-captured here. The deployment workstream should audit all `process.env` usage and
-update this file before production.
+## Script-Only Variables
+
+These variables are not production runtime configuration. They are optional
+operator inputs for `npm run smoke:public` unless marked required.
+
+| Variable | Purpose | Classification | Required environments | Owner/status and notes |
+| --- | --- | --- | --- | --- |
+| `SMOKE_BASE_URL` | Base URL for unauthenticated public-route smoke checks when `--base-url` is not supplied. | Operator-supplied non-secret URL. | Required only for `npm run smoke:public` if `--base-url` is omitted. | Deployment tester. Use a production or preview URL; do not include credentials or tokens. |
+| `SMOKE_TIMEOUT_MS` | Request timeout override for public smoke checks. | Operator-supplied non-secret test setting. | Optional for `npm run smoke:public`. | Deployment tester. Keep values practical enough to detect deployment hangs. |
+| `SMOKE_SEARCH_QUERY` | Search query used by the public smoke script. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`. | Deployment tester. Use a query safe to record in smoke evidence. |
+| `SMOKE_ARTWORK_ID` | Optional approved artwork detail record for smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required for complete production evidence. | Content/deployment tester. Use an owner-approved public record ID. |
+| `SMOKE_COLLECTION_SLUG` | Optional approved collection slug for smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required with `SMOKE_COLLECTION_ARTWORK_ID` for complete collection detail evidence. | Content/deployment tester. Use an owner-approved public record. |
+| `SMOKE_COLLECTION_ARTWORK_ID` | Optional approved artwork ID for collection detail smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required with `SMOKE_COLLECTION_SLUG` for complete collection detail evidence. | Content/deployment tester. Use an owner-approved public record. |
+| `SMOKE_BLOG_SLUG` | Optional approved blog detail slug for smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required for complete production evidence. | Content/deployment tester. Use an owner-approved public record. |
+| `SMOKE_PRODUCT_HANDLE` | Optional approved Shopify product handle for smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required for complete production shop evidence. | Commerce/deployment tester. Use an owner-approved product handle. |
+| `SMOKE_MISSING_PRODUCT_HANDLE` | Product handle expected to return `404` in public smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`. | Commerce/deployment tester. Keep it intentionally nonexistent and safe to record. |
+
+## Legacy Or Decision Candidates
+
+These names were raised by A-007, guard policy, or commented historical source
+references. They are not currently required runtime variables based on the
+current source search.
+
+| Variable | Purpose | Classification | Required environments | Owner/status and notes |
+| --- | --- | --- | --- | --- |
+| `JWT_SECRET` | Previously used by the removed custom JWT cookie session path. | Deprecated server-only secret candidate. | Not required by current source after T-019 removed the legacy custom session path. | Auth/deployment owner decision. Remove from managed environments after confirming no external consumer still depends on it. It remains blocked by `npm run env:guard` if someone tries to expose it through Next config. |
+| `AUTH_SECRET` | NextAuth/Auth.js-style secret alias found by A-007 as an unmanaged candidate. | Unused server-only secret candidate. | Not required by current source; the app uses `NEXTAUTH_SECRET`. | Auth/deployment owner decision. Either remove from managed environments or document a specific external reason for keeping it. It remains blocked by `npm run env:guard` if exposed through Next config. |
+| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | Potential public upload preset configuration. | Unused public upload-policy candidate. | Not required by current source; `UploadButton` currently hard-codes the upload preset. | Assets/deployment owner decision. Decide whether the preset is canonical hard-coded policy or should become environment-managed. Do not add it to required production config until code uses it. |
+| `NEXT_PUBLIC_VERCEL_ENV` | Public Vercel environment value referenced only in commented debug lines. | Commented-only public candidate. | Not required. | Deployment owner decision. Do not configure as an app contract unless future source uses it intentionally. |
+| `NEXT_PUBLIC_VERCEL_URL` | Public Vercel URL value referenced only in commented debug lines. | Commented-only public candidate. | Not required. | Deployment owner decision. Do not configure as an app contract unless future source uses it intentionally. |
+| `MONGODB_URI` | Common MongoDB alias reserved by the Next config env guard. | Guard-only server-only secret candidate. | Not required by current source; use `MONGO_URI`. | Database/deployment owner. If this alias is introduced later, document and keep it server-only before use. |
 
 ## Rules
 
 - Never commit `.env` values.
+- Do not read, copy, or paste local `.env` contents into docs or chat.
 - Keep server-only secrets out of `next.config.mjs` `env`; values defined there
   can be inlined into application bundles by Next.js.
+- Keep server-only secrets out of `NEXT_PUBLIC_*` names.
 - Run `npm run env:guard` after editing `next.config.mjs`; `npm run build` also
   runs this guard before `next build`.
 - Document new variables here when adding config.
-- Include purpose, required environments, and rotation owner when known.
+- Include purpose, classification, required environments, owner/status notes,
+  and rotation/configuration guidance when known.
 
 ## Next Config Env Guard
 

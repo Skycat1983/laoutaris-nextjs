@@ -73,12 +73,25 @@ export interface ShopifyMetafield {
   type: string;
 }
 
+export interface SimpleProductVariant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: ShopifyMoney;
+  compareAtPrice: ShopifyMoney | null;
+  image: {
+    url: string;
+    altText: string | null;
+  } | null;
+}
+
 // Simplified product type for UI display
 export interface SimpleProduct {
   id: string;
   handle: string;
   title: string;
   description: string;
+  descriptionHtml: string;
   vendor: string;
   productType: string;
   tags: string[];
@@ -90,6 +103,7 @@ export interface SimpleProduct {
     altText: string | null;
   } | null;
   availableForSale: boolean;
+  variants: SimpleProductVariant[];
 
   // For linking to MongoDB artworks
   mongodbArtworkId?: string; // For individual artwork products (from metafield)

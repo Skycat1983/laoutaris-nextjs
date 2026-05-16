@@ -4,19 +4,23 @@ Last updated: 2026-05-16
 
 ## Current Priority
 
-T-062 is ready to assign: carry queried Shopify variant metadata through
-product DTOs without implementing checkout, cart, or visible variant-selection
-UI. T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI`
-are available. Keep automatic data mutation, Shopify API validation, admin
-Shopify product-linking, checkout/cart ownership, Cloudinary upload policy,
-global logging/redaction policy, visible blog pinned/tag admin workflow, and
-the residual Next/PostCSS owner decision separate unless priority changes.
+T-068 is ready as the next focused implementation slice: remove always-on debug
+logging from the public shop products route, gallery, and loader while
+preserving backed filtering, sorting, and product response behavior. T-059
+remains blocked until an owner-approved MongoDB target and `MONGO_URI` are
+available. Keep automatic data mutation, Shopify API validation, admin Shopify
+product-linking, checkout/cart ownership, broader Cloudinary upload policy,
+global logging/redaction policy, visible blog pinned/tag admin workflow,
+CI/dependency-update automation, Vercel project-setting ownership, credential
+rotation, and the residual Next/PostCSS owner decision separate unless priority
+changes.
 
 ## Active Phase
 
-T-062 Shopify variant metadata preservation is prepared and ready for agent
-assignment. T-059 Shopify product link audit execution remains blocked until an
-owner-approved MongoDB target and `MONGO_URI` are available in the execution
+T-068 public shop debug-log cleanup is the active ready task. T-067 Cloudinary
+upload debug-log cleanup is complete. T-066 Cloudinary signing param hardening
+is complete. T-059 Shopify product link audit execution remains blocked until
+an owner-approved MongoDB target and `MONGO_URI` are available in the execution
 shell. No cleanup or migration task should be assigned from T-059 until real
 audit evidence exists.
 
@@ -147,11 +151,41 @@ Use this section as the first operational handoff for a new orchestrator.
 - T-061 is complete: it added Shopify `productType` and `tags` to
   `SimpleProduct`, preserved those fields in list/handle/ID transforms, and
   replaced title-keyword default type sorting with metadata-based sorting.
-- T-062 is ready: it owns carrying queried Shopify variant metadata through
-  `SimpleProduct` while leaving checkout/cart, product-detail CTA, and visible
-  variant selection separate.
-- Next task assignment:
-  `/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+- T-062 is complete: `SimpleProduct.variants` now preserves queried Shopify
+  variant IDs, titles, availability, price money, compare-at price money, and
+  optional variant image URL/alt text while leaving checkout/cart,
+  product-detail CTA, and visible variant selection separate.
+- T-063 is complete: `SimpleProduct.descriptionHtml` now preserves queried
+  Shopify `descriptionHtml` across list, handle, and ID transforms while
+  leaving rendering/sanitization policy, product-detail UI, checkout/cart,
+  variant selection, pagination, and admin product-linking separate.
+- T-064 is complete: it added the npm package-manager pin, Node 22 runtime
+  policy, root Node version files, npm engine enforcement, lockfile metadata,
+  and `npm ci` install docs, while leaving CI/dependency-update automation,
+  Vercel project-setting ownership, and Next/PostCSS package decisions
+  separate.
+- T-065 is complete: it updated the environment runbook from source-search
+  evidence and A-007 context without reading local `.env` files, recording
+  secret values, changing runtime config, or deciding credential rotation.
+- T-066 is complete: it added a Cloudinary signing parameter allowlist for the
+  current admin upload widget, restricted signing to `timestamp`,
+  `upload_preset: "laoutaris_art"`, and `source: "uw"`, preserved
+  `requireApiAdmin()` and top-level signature compatibility, and left upload
+  preset ownership, folder policy, asset lifecycle, credential rotation, and
+  broader Cloudinary operations separate.
+- T-067 is complete: it removed direct debug logging, polling, and DOM/iframe
+  inspection from `src/components/elements/buttons/UploadButton.tsx` while
+  preserving the current `CldUploadWidget` preset, signing endpoint, options,
+  loading/open behavior, and success callback. Focused source/component tests
+  cover the preserved behavior and no-console invariant. Keep global logging
+  policy and broader Cloudinary upload policy separate.
+- T-068 is ready: it should remove direct public shop `console.log` debug output
+  from `src/app/api/v2/public/shop/products/route.ts`,
+  `src/components/compositions/ShopProductGallery.tsx`, and
+  `src/components/loaders/viewLoaders/ShopProductsLoader.tsx` while preserving
+  query validation, backed filters, metadata sorting, loader behavior, and the
+  existing response envelope. Keep same-app HTTP migration, pagination,
+  checkout/cart, admin linking, and global logging policy separate.
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -347,9 +381,9 @@ Use this section as the first operational handoff for a new orchestrator.
   owner confirmation of whether the removed Shopify value requires rotation,
   Vercel project-setting and rollback ownership, broader root-layout
   DB/session/cache ownership, staged ADR 0004
-  server data-access migrations, package-manager/Node runtime pins, Cloudinary
-  upload policy, admin bootstrap/recovery, and the broader CORS/CSP and logging
-  policy decisions.
+  server data-access migrations, CI/dependency-update automation, Cloudinary
+  upload policy, admin bootstrap/recovery, and the broader CORS/CSP
+  and logging policy decisions.
 
 ## Active Audits
 
@@ -400,14 +434,17 @@ completed:
   checkout scope, admin Shopify linking, i18n scope, auth/session pruning,
   Shopify credential verification/rotation, residual Next/PostCSS dependency
   risk, and public enquiry/commercial contact ownership.
-- Resolve or escalate the new A-002/A-007 decisions: admin API route convention,
-  legacy/env variable status, Vercel rollback owner, and Cloudinary upload
-  preset ownership.
+- Resolve or escalate the remaining A-002/A-007 decisions: admin API route
+  convention, cleanup of unused legacy/public environment candidates, Vercel
+  rollback owner, and Cloudinary upload preset ownership.
 
 ## Next Orchestrator Action
 
-Assign T-062:
-`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+
+T-066 and T-067 are complete; do not reassign them unless a regression or
+explicit follow-up is opened.
 
 After the owner-approved MongoDB target/environment label and `MONGO_URI` are
 available, rerun T-059:
@@ -415,9 +452,10 @@ available, rerun T-059:
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
 product-linking validation, checkout/cart ownership, remaining Cloudinary upload
-policy/runbook work, focused production logging cleanup, visible blog pinned/tag
-admin workflow, and the residual Next/PostCSS owner decision separate unless
-priority changes.
+policy/runbook work, global production logging/redaction policy, visible blog
+pinned/tag admin workflow, CI/dependency-update automation, Vercel
+project-setting ownership, credential rotation, and the residual Next/PostCSS
+owner decision separate unless priority changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

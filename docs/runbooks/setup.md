@@ -1,10 +1,22 @@
 # Setup Runbook
 
+## Runtime Baseline
+
+Use Node `22.14.0` and npm `10.9.2`.
+
+The repo records the Node baseline in `.nvmrc` and `.node-version`, declares
+`npm@10.9.2` in `package.json`, and enables npm engine checks through `.npmrc`.
+
 ## Local Install
 
 ```bash
-npm install
+npm ci
 ```
+
+Use `npm ci` for fresh local installs and reproducible agent setup. Use explicit
+package commands only when intentionally changing dependencies, for example
+`npm install <package>` or `npm install --save-dev <package>`, then commit the
+matching `package.json` and `package-lock.json` changes.
 
 ## Development Server
 

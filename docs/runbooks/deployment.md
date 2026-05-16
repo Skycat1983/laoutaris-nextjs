@@ -2,9 +2,23 @@
 
 Deployment target: Vercel, based on the project README.
 
+## Install Baseline
+
+Deployments and clean verification environments should install from the
+lockfile:
+
+```bash
+npm ci
+```
+
+The committed runtime baseline is Node `22.14.0` with npm `10.9.2`. The Node
+baseline is recorded in `.nvmrc`, `.node-version`, and `package.json` engines;
+npm is pinned through `packageManager`.
+
 ## Pre-Deployment Checks
 
 ```bash
+npm ci --dry-run --ignore-scripts
 npm run env:guard
 npm test
 npm run build
@@ -13,19 +27,26 @@ npm run lint
 
 ## Environment Checklist
 
-Before deploying, confirm production values exist for:
+Before deploying, use the full
+[environment variables inventory](environment.md) as the source of truth.
+At minimum, confirm production values exist for:
 
 - MongoDB connection via server-only `MONGO_URI`.
 - NextAuth secret and provider credentials.
 - Shopify store domain and Storefront token.
 - Cloudinary upload and delivery configuration.
-
-See [environment variables](environment.md).
+- Public/platform URL configuration while same-app HTTP fetches remain:
+  `NEXT_PUBLIC_BASE_URL`, `VERCEL_ENV`, and `VERCEL_URL`.
 
 Server-only secrets must be configured in the deployment environment and must
 not be exposed through `next.config.mjs` `env` or `NEXT_PUBLIC_*` variables.
 `npm run build` runs `npm run env:guard` before `next build` to prevent known
 server-only secret names from being exposed through Next config.
+
+Legacy or unused candidates such as `JWT_SECRET`, `AUTH_SECRET`, and
+`NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` are documented in the environment
+runbook. Do not add or keep them in production settings without an owner
+decision.
 
 ## Smoke Checks After Deploy
 

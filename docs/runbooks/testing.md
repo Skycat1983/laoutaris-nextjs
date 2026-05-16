@@ -3,10 +3,18 @@
 ## Commands
 
 ```bash
+node -v
+npm -v
+npm ci --dry-run --ignore-scripts
 npm test
 npm run build
 npm run lint
 ```
+
+The expected runtime baseline is Node `22.14.0` and npm `10.9.2`. Use `npm ci`
+for clean installs and `npm ci --dry-run --ignore-scripts` when verifying that
+the lockfile install path is still reproducible without running lifecycle
+scripts.
 
 ## Browser And Playwright Discipline
 

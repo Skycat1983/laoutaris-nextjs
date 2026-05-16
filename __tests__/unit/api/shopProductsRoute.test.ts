@@ -41,6 +41,8 @@ const createProduct = (productId: string): SimpleProduct => ({
   handle: `product-${productId}`,
   title: `Product ${productId}`,
   description: "A product used by the shop listing route contract test.",
+  descriptionHtml:
+    "<p>A product used by the shop listing route contract test.</p>",
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],
@@ -49,6 +51,7 @@ const createProduct = (productId: string): SimpleProduct => ({
   compareAtPrice: null,
   image: null,
   availableForSale: true,
+  variants: [],
 });
 
 const mockArtworkQuery = (

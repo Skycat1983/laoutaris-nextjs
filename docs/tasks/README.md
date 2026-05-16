@@ -71,7 +71,13 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-059 Run Shopify product link audit](T-059-run-shopify-product-link-audit.md) | Blocked | Run the read-only Shopify product-link audit against an owner-approved MongoDB environment and record follow-up evidence. |
 | [T-060 Remove unsupported shop controls](T-060-remove-unsupported-shop-controls.md) | Completed | Removed public shop colour/dimension filters and fake pagination that are not backed by API behavior. |
 | [T-061 Use explicit shop product type sorting](T-061-use-explicit-shop-product-type-sorting.md) | Completed | Carried Shopify productType/tags through product DTOs and sorted shop products by explicit metadata instead of title keywords. |
-| [T-062 Preserve Shopify variant metadata](T-062-preserve-shopify-variant-metadata.md) | Ready | Carry queried Shopify variant metadata through product DTOs without implementing checkout or variant-selection UI. |
+| [T-062 Preserve Shopify variant metadata](T-062-preserve-shopify-variant-metadata.md) | Completed | Carried queried Shopify variant metadata through product DTOs without implementing checkout or variant-selection UI. |
+| [T-063 Preserve Shopify description HTML](T-063-preserve-shopify-description-html.md) | Completed | Carried queried Shopify descriptionHtml through product DTOs without rendering rich HTML or changing product-detail UI. |
+| [T-064 Pin Node and npm runtime](T-064-pin-node-npm-runtime.md) | Completed | Pinned the Node/npm install baseline and updated setup/deployment docs to use lockfile-based installs. |
+| [T-065 Update environment inventory](T-065-update-environment-inventory.md) | Completed | Updated the environment runbook from current env usage without recording secret values or changing runtime config. |
+| [T-066 Harden Cloudinary signing params](T-066-harden-cloudinary-signing-params.md) | Completed | Restricted Cloudinary upload signing to explicit current-widget params and documented remaining preset/folder/lifecycle decisions. |
+| [T-067 Remove Cloudinary upload debug logs](T-067-remove-cloudinary-upload-debug-logs.md) | Completed | Removed always-on debug logging, polling, and DOM inspection from the admin Cloudinary upload button while preserving widget behavior. |
+| [T-068 Remove public shop debug logs](T-068-remove-public-shop-debug-logs.md) | Ready | Remove always-on debug logging from public shop route/gallery/loader paths while preserving backed shop behavior. |
 
 ## Rules
 

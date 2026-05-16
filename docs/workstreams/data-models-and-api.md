@@ -550,16 +550,32 @@ Add API route tests where behavior is changed.
 - 2026-05-16: Completed T-061; the Shopify transform now carries
   `productType` and `tags` through `SimpleProduct` for list, handle, and ID
   reads, while variants, checkout data, description HTML, pagination, and admin
-  linking remain separate.
+  linking remained separate.
 - 2026-05-16: Prepared T-062 as the next F-014 Shopify transform slice. It
   should preserve queried variant metadata in `SimpleProduct` while leaving
   checkout/cart behavior, product-detail CTA changes, description HTML,
   pagination, admin linking, and data migration separate.
+- 2026-05-16: Completed T-062; the Shopify transform now preserves variant
+  IDs, titles, availability, price money, compare-at price money, and optional
+  variant image URL/alt text for list, handle, and ID reads, with no-variant
+  products returning `variants: []`.
+- 2026-05-16: Prepared T-063 as the next F-014 Shopify transform slice. It
+  should preserve queried `descriptionHtml` in `SimpleProduct` while leaving
+  rich HTML rendering, sanitization policy, product-detail UI, checkout/cart,
+  pagination, admin linking, and data migration separate.
+- 2026-05-16: Completed T-063; `SimpleProduct` now preserves queried Shopify
+  `descriptionHtml` for list, handle, and ID reads while existing plain
+  `description`, product metadata, variant metadata, API envelopes,
+  product-detail UI, checkout/cart, and admin linking remain unchanged.
+- 2026-05-16: Prepared T-068 as a no-contract-change shop API cleanup. It
+  should remove public shop product-listing route debug logs while preserving
+  query validation, MongoDB filter construction, malformed ID skipping,
+  deduplication, Shopify fan-out, success envelope, and metadata.
 
 ## Next Agent Action
 
-Assign T-062:
-`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
 Shopify admin product-link validation and existing-data migration remain
 separate from the completed public-read normalization and the blocked live

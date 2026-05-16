@@ -47,6 +47,7 @@ const createProduct = (
   handle: title.toLowerCase().replace(/\s+/g, "-"),
   title,
   description: "A product used by gallery sorting tests.",
+  descriptionHtml: "<p>A product used by gallery sorting tests.</p>",
   vendor: "Joseph Laoutaris",
   productType,
   tags: [],
@@ -55,6 +56,7 @@ const createProduct = (
   compareAtPrice: null,
   image: null,
   availableForSale: true,
+  variants: [],
 });
 
 const products: SimpleProduct[] = [

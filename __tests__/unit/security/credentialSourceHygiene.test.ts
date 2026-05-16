@@ -22,4 +22,15 @@ describe("credential source hygiene", () => {
       /SHOPIFY_STOREFRONT_ACCESS_TOKEN\s*=\s*[A-Za-z0-9_-]{20,}/
     );
   });
+
+  it("keeps the Cloudinary upload button free of direct console debugging", () => {
+    const source = readRepoFile(
+      "src/components/elements/buttons/UploadButton.tsx"
+    );
+
+    expect(source).not.toMatch(/console\.(?:debug|error|info|log|warn)\s*\(/);
+    expect(source).not.toMatch(/\bsetInterval\s*\(/);
+    expect(source).not.toMatch(/document\.querySelector/);
+    expect(source).not.toMatch(/document\.querySelectorAll/);
+  });
 });

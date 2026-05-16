@@ -65,8 +65,30 @@ const shopifyFetch = async <T>({
  * Transform Shopify product to simplified format for UI
  */
 const transformProduct = (product: ShopifyProduct): SimpleProduct => {
-  const firstVariant = product.variants.edges[0]?.node;
+  const variantEdges = product.variants.edges;
+  const firstVariant = variantEdges[0]?.node;
   const firstImage = product.images.edges[0]?.node;
+  const variants = variantEdges.map(({ node }) => ({
+    id: node.id,
+    title: node.title,
+    availableForSale: node.availableForSale,
+    price: {
+      amount: node.price.amount,
+      currencyCode: node.price.currencyCode,
+    },
+    compareAtPrice: node.compareAtPrice
+      ? {
+          amount: node.compareAtPrice.amount,
+          currencyCode: node.compareAtPrice.currencyCode,
+        }
+      : null,
+    image: node.image
+      ? {
+          url: node.image.url,
+          altText: node.image.altText,
+        }
+      : null,
+  }));
 
   // Extract metafields - filter out null values first
   const validMetafields = product.metafields?.filter(Boolean) || [];
@@ -96,6 +118,7 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
     handle: product.handle,
     title: product.title,
     description: product.description,
+    descriptionHtml: product.descriptionHtml,
     vendor: product.vendor,
     productType: product.productType || "",
     tags: Array.isArray(product.tags) ? product.tags : [],
@@ -112,6 +135,7 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
         }
       : null,
     availableForSale: product.availableForSale,
+    variants,
     mongodbArtworkId,
     featuredArtworkIds,
   };

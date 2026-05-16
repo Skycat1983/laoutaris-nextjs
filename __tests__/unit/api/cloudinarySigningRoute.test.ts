@@ -150,7 +150,13 @@ describe("POST /api/v2/admin/sign-cloudinary-params", () => {
     delete process.env.CLOUDINARY_API_SECRET;
 
     const response = await POST(
-      createRequest({ paramsToSign: { timestamp: 12345 } })
+      createRequest({
+        paramsToSign: {
+          timestamp: 12345,
+          upload_preset: "laoutaris_art",
+          source: "uw",
+        },
+      })
     );
     const body = await response.json();
 
@@ -162,12 +168,142 @@ describe("POST /api/v2/admin/sign-cloudinary-params", () => {
     expect(mockSignRequest).not.toHaveBeenCalled();
   });
 
+  it("rejects unknown signing params before signing", async () => {
+    setAdminSession();
+
+    const response = await POST(
+      createRequest({
+        paramsToSign: {
+          timestamp: 12345,
+          upload_preset: "laoutaris_art",
+          source: "uw",
+          folder: "laoutaris_art",
+        },
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Unsupported Cloudinary signing param: folder",
+    });
+    expect(mockSignRequest).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [
+      "missing timestamp",
+      {
+        upload_preset: "laoutaris_art",
+        source: "uw",
+      },
+      "Cloudinary signing param timestamp is required",
+    ],
+    [
+      "missing upload preset",
+      {
+        timestamp: 12345,
+        source: "uw",
+      },
+      "Cloudinary signing param upload_preset is required",
+    ],
+    [
+      "array timestamp",
+      {
+        timestamp: [12345],
+        upload_preset: "laoutaris_art",
+        source: "uw",
+      },
+      "Cloudinary signing param timestamp must be a positive integer",
+    ],
+    [
+      "nested timestamp",
+      {
+        timestamp: { value: 12345 },
+        upload_preset: "laoutaris_art",
+        source: "uw",
+      },
+      "Cloudinary signing param timestamp must be a positive integer",
+    ],
+    [
+      "boolean timestamp",
+      {
+        timestamp: true,
+        upload_preset: "laoutaris_art",
+        source: "uw",
+      },
+      "Cloudinary signing param timestamp must be a positive integer",
+    ],
+    [
+      "unsafe timestamp string",
+      {
+        timestamp: "12345;folder=other",
+        upload_preset: "laoutaris_art",
+        source: "uw",
+      },
+      "Cloudinary signing param timestamp must be a positive integer",
+    ],
+    [
+      "unexpected upload preset",
+      {
+        timestamp: 12345,
+        upload_preset: "other_preset",
+        source: "uw",
+      },
+      "Cloudinary signing param upload_preset is not allowed",
+    ],
+    [
+      "nested upload preset",
+      {
+        timestamp: 12345,
+        upload_preset: { value: "laoutaris_art" },
+        source: "uw",
+      },
+      "Cloudinary signing param upload_preset is not allowed",
+    ],
+    [
+      "unexpected source",
+      {
+        timestamp: 12345,
+        upload_preset: "laoutaris_art",
+        source: "api",
+      },
+      "Cloudinary signing param source is not allowed",
+    ],
+    [
+      "array source",
+      {
+        timestamp: 12345,
+        upload_preset: "laoutaris_art",
+        source: ["uw"],
+      },
+      "Cloudinary signing param source is not allowed",
+    ],
+  ])(
+    "returns 400 for invalid allowed signing param shape: %s",
+    async (_label, paramsToSign, expectedError) => {
+      setAdminSession();
+
+      const response = await POST(createRequest({ paramsToSign }));
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(body).toEqual({
+        success: false,
+        error: expectedError,
+      });
+      expect(mockSignRequest).not.toHaveBeenCalled();
+    }
+  );
+
   it("signs validated params for admins and preserves the top-level signature", async () => {
     setAdminSession();
 
     const paramsToSign = {
       timestamp: 12345,
-      folder: "laoutaris_art",
+      upload_preset: "laoutaris_art",
+      source: "uw",
     };
 
     const response = await POST(createRequest({ paramsToSign }));
@@ -187,5 +323,23 @@ describe("POST /api/v2/admin/sign-cloudinary-params", () => {
         signature: "signed-cloudinary-params",
       },
     });
+  });
+
+  it("accepts a numeric timestamp string from the upload widget", async () => {
+    setAdminSession();
+
+    const paramsToSign = {
+      timestamp: "12345",
+      upload_preset: "laoutaris_art",
+      source: "uw",
+    };
+
+    const response = await POST(createRequest({ paramsToSign }));
+
+    expect(response.status).toBe(200);
+    expect(mockSignRequest).toHaveBeenCalledWith(
+      paramsToSign,
+      "test-cloudinary-secret"
+    );
   });
 });

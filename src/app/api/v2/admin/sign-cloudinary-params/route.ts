@@ -22,6 +22,18 @@ type CloudinarySigningResponse = {
   };
 };
 
+type AllowedCloudinarySigningParam = "timestamp" | "upload_preset" | "source";
+type CloudinarySigningParams = Partial<
+  Record<AllowedCloudinarySigningParam, string | number>
+>;
+
+const CURRENT_UPLOAD_PRESET = "laoutaris_art";
+const ALLOWED_SIGNING_PARAM_KEYS = new Set<AllowedCloudinarySigningParam>([
+  "timestamp",
+  "upload_preset",
+  "source",
+]);
+
 const errorResponse = (error: string, status: 400 | 500) =>
   NextResponse.json(
     {
@@ -38,6 +50,64 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
 
   const prototype = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
+};
+
+const isValidTimestamp = (value: unknown) => {
+  if (typeof value === "number") {
+    return Number.isSafeInteger(value) && value > 0;
+  }
+
+  if (typeof value !== "string" || !/^\d+$/.test(value)) {
+    return false;
+  }
+
+  const numericValue = Number(value);
+  return Number.isSafeInteger(numericValue) && numericValue > 0;
+};
+
+const validateParamsToSign = (
+  paramsToSign: Record<string, unknown>
+): CloudinarySigningParams | string => {
+  const validatedParams: CloudinarySigningParams = {};
+
+  if (!Object.prototype.hasOwnProperty.call(paramsToSign, "timestamp")) {
+    return "Cloudinary signing param timestamp is required";
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(paramsToSign, "upload_preset")) {
+    return "Cloudinary signing param upload_preset is required";
+  }
+
+  for (const [key, value] of Object.entries(paramsToSign)) {
+    if (!ALLOWED_SIGNING_PARAM_KEYS.has(key as AllowedCloudinarySigningParam)) {
+      return `Unsupported Cloudinary signing param: ${key}`;
+    }
+
+    if (key === "timestamp") {
+      if (!isValidTimestamp(value)) {
+        return "Cloudinary signing param timestamp must be a positive integer";
+      }
+      validatedParams.timestamp = value as string | number;
+      continue;
+    }
+
+    if (key === "upload_preset") {
+      if (value !== CURRENT_UPLOAD_PRESET) {
+        return "Cloudinary signing param upload_preset is not allowed";
+      }
+      validatedParams.upload_preset = value;
+      continue;
+    }
+
+    if (key === "source") {
+      if (value !== "uw") {
+        return "Cloudinary signing param source is not allowed";
+      }
+      validatedParams.source = value;
+    }
+  }
+
+  return validatedParams;
 };
 
 export async function POST(request: Request) {
@@ -63,13 +133,18 @@ export async function POST(request: Request) {
     return errorResponse("paramsToSign must be a JSON object", 400);
   }
 
+  const validatedParamsToSign = validateParamsToSign(paramsToSign);
+  if (typeof validatedParamsToSign === "string") {
+    return errorResponse(validatedParamsToSign, 400);
+  }
+
   const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
   if (!cloudinaryApiSecret) {
     return errorResponse("Cloudinary signing is not configured", 500);
   }
 
   const signature = cloudinary.utils.api_sign_request(
-    paramsToSign,
+    validatedParamsToSign,
     cloudinaryApiSecret
   );
 

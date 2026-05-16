@@ -52,6 +52,13 @@ content operations repeatable and safe.
   preserving the `next-cloudinary` top-level `signature` response contract.
 - A-008 reconfirmed allowed Cloudinary signing params, public/server variable
   ownership, and asset lifecycle policy remain open after T-005.
+- T-066 restricts the Cloudinary signing route to `timestamp`,
+  `upload_preset: "laoutaris_art"`, and `source: "uw"` for the current admin
+  upload widget while leaving upload preset ownership, folder policy, and asset
+  lifecycle policy separate.
+- T-067 removed debug output, availability polling, and DOM/iframe inspection
+  from the current admin Cloudinary upload button without changing upload preset
+  ownership, folder policy, asset lifecycle, or dashboard workflow.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -82,13 +89,15 @@ content operations repeatable and safe.
 - Add validation and duplicate-prevention expectations for Shopify product link
   operations.
 - Define backup and restore expectations for MongoDB and Cloudinary assets.
-- Audit Cloudinary upload signing and allowed upload parameters.
-- Define allowed Cloudinary signing params, folder rules, upload preset
-  ownership, and asset lifecycle expectations for `sign-cloudinary-params`.
+- Define Cloudinary folder rules, upload preset ownership, and asset lifecycle
+  expectations for `sign-cloudinary-params`.
 - Migrate admin content create/update routes toward allowlisted validation
   schemas, ObjectId validation, and structured 400 field-error responses.
-- Document Cloudinary variables, upload preset ownership, rotation owner, and
-  allowed upload policy in the Cloudinary/environment runbooks.
+- Keep Cloudinary variables current in the environment runbook. T-065 documents
+  current variable ownership/status and confirms upload preset ownership remains
+  an open policy decision.
+- Define upload preset/folder rules and asset lifecycle expectations in the
+  Cloudinary runbook.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
   if not, wire image sanitization into artwork transforms and tests.
 - Confirm delete behavior for content with related records.
@@ -187,9 +196,33 @@ Use manual admin checks when changing dashboard behavior.
   defaulting `tags` to `[]`, accepting/defaulting route-safe `pinned` and
   `tags`, and adding focused admin blog route coverage. Visible admin blog
   controls for pinned status and tags remain a separate workflow decision.
+- 2026-05-16: Prepared T-065 for the environment inventory slice. It should
+  document Cloudinary environment variables and upload-preset ownership status
+  from source-search evidence while leaving Cloudinary upload policy and
+  dashboard behavior unchanged.
+- 2026-05-16: Completed T-065 by documenting active Cloudinary environment
+  variables and confirming `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` is not
+  currently read from `process.env`; upload preset, folder, allowed signing
+  params, and asset lifecycle policy remain separate.
+- 2026-05-16: Prepared T-066 as the next F-044 Cloudinary upload-security
+  slice. It restricts `sign-cloudinary-params` to explicit signing params for
+  the current admin upload widget while preserving route-local admin auth and
+  leaving upload preset ownership, folders, asset lifecycle, and widget
+  workflow changes separate.
+- 2026-05-16: Completed T-066 by allowing only `timestamp`,
+  `upload_preset: "laoutaris_art"`, and `source: "uw"` in Cloudinary signing
+  requests, rejecting unknown or malformed params before signing, preserving
+  admin auth and top-level signature compatibility, and documenting the
+  remaining preset/folder/lifecycle decisions.
+- 2026-05-16: Completed T-067 by removing always-on debug logs, Cloudinary
+  availability polling, and DOM/iframe inspection from `UploadButton` while
+  preserving current upload widget behavior.
 
 ## Next Agent Action
 
-No immediate content/admin follow-up is assigned from T-055. Keep broader
-Cloudinary upload policy/runbook, Shopify product-link workflow, and visible
-pinned/tag admin controls separate unless explicitly assigned.
+Select the next content/assets/admin slice after reconciling current priority
+with the orchestrator.
+
+For Cloudinary, keep upload preset ownership, folder policy, asset lifecycle,
+deletion/backup/rollback, Shopify product-link workflow, and visible pinned/tag
+admin controls separate unless explicitly assigned.

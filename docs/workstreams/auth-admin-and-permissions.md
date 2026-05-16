@@ -53,6 +53,8 @@ features before production launch.
   helpers.
 - T-005 added a route-local API admin guard and JSON 401/403 behavior to the
   Cloudinary signing endpoint without broad admin route migration.
+- T-066 preserved the Cloudinary signing endpoint's shared admin guard behavior
+  while adding route-local signing-param allowlist validation before signing.
 - T-009 removed direct registration console logging that exposed raw password,
   hashed password, and saved user document data.
 - T-016 upgraded credential hashing to `bcrypt@6.0.0`, verified new and
@@ -136,9 +138,9 @@ features before production launch.
   inventory coverage.
 - Migrate any future admin API routes to the API admin guard only through
   separate scoped tasks with focused route tests.
-- Route legacy `JWT_SECRET` env remnants through deployment/auth docs. T-022
-  completed the direct `jose` package cleanup; auth packages still own their
-  transitive `jose` dependencies.
+- Keep auth environment variables documented in the environment and auth
+  runbooks. T-065 records `JWT_SECRET` and `AUTH_SECRET` as legacy/unused
+  candidates; owner cleanup remains separate from runtime auth behavior.
 - Remove or gate remaining noisy auth/admin logs before production.
 - Confirm credential, OAuth, sign-in, sign-out, and redirect flows. For
   deployment smoke, use the T-025 owner-approved smoke-account handling and do
@@ -347,10 +349,25 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   verification while preserving credentials registration password hashing,
   hashed-user role propagation, and account-linking/password-setup scope
   boundaries.
+- 2026-05-16: Prepared T-065 for the environment inventory slice. It should
+  document active auth/OAuth variables and legacy/deprecated candidates such as
+  `JWT_SECRET` and `AUTH_SECRET` from source-search evidence without changing
+  auth runtime behavior or provider settings.
+- 2026-05-16: Completed T-065 by documenting `NEXTAUTH_SECRET`, OAuth provider
+  variables, and the current non-required status of `JWT_SECRET` and
+  `AUTH_SECRET` in the environment/auth runbooks without changing auth runtime
+  behavior or provider settings.
+- 2026-05-16: Prepared T-066 for the Cloudinary signing parameter slice. It
+  should preserve the T-005/T-043 shared admin guard behavior while tightening
+  allowed upload params.
+- 2026-05-16: Completed T-066 for the Cloudinary signing parameter slice. The
+  route still uses `requireApiAdmin()` for JSON `401`/`403` responses and now
+  rejects unknown or malformed signing params before calling Cloudinary.
 
 ## Next Agent Action
 
-Keep admin bootstrap/recovery documentation, broader production logging policy,
-root-layout session redesign, and any future protected-route migrations
-separate. Preserve the T-043 shared guard invariant and add focused route
-coverage before changing protected user/admin route behavior.
+Choose the next ready auth/admin slice. Keep admin bootstrap/recovery
+documentation, broader production logging policy, root-layout session redesign,
+and any future protected-route migrations separate. Preserve the T-043 shared
+guard invariant and add focused route coverage before changing protected
+user/admin route behavior.

@@ -17,6 +17,17 @@ Authentication uses NextAuth with JWT sessions.
 - GitHub OAuth.
 - Google OAuth.
 
+## Environment Configuration
+
+Auth environment variables are inventoried in
+[environment.md](environment.md). Current source requires `NEXTAUTH_SECRET` for
+middleware token lookup, plus `GITHUB_ID`/`GITHUB_SECRET` and
+`GOOGLE_ID`/`GOOGLE_SECRET` only when those OAuth providers are enabled.
+
+`JWT_SECRET` and `AUTH_SECRET` are legacy or unused candidates, not current
+runtime requirements. Do not keep them in managed environments unless the owner
+documents a specific external reason.
+
 ## Admin Access
 
 Middleware checks route protection and admin access. Admin authorization depends

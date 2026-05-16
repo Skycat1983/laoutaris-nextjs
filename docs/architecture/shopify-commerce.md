@@ -96,6 +96,14 @@ an app-managed cart flow.
 
 - Product availability, price, variants, image, and handle should come from
   Shopify.
+- Public product DTOs expose queried variant IDs, titles, availability, price
+  money, compare-at price money, and optional variant image URL/alt text through
+  `SimpleProduct.variants`. This is contract preparation only; it does not
+  choose cart ownership, checkout line-item behavior, or visible variant
+  selection.
+- Public product DTOs preserve Shopify `descriptionHtml`, but product detail
+  pages still render the existing plain `description`. Rich description
+  rendering requires a separate sanitization and design decision.
 - Archive metadata, artwork history, collection context, and artist content
   should come from MongoDB.
 - Books can appear on many artwork records, so product listing logic must

@@ -2,6 +2,10 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=22.14.0 <23"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run env:guard && next build",

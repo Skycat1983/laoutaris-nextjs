@@ -124,14 +124,30 @@ security headers, environment documentation, and actionable operational signals.
 - T-049 completed the next route-local public-safe API response slice, scoped
   to admin delete route failure bodies and touched delete-handler debug-log
   removal. Broader logging/redaction policy remains separate.
+- T-064 resolved the first F-064 supply-chain control slice by pinning
+  `npm@10.9.2`, Node `>=22.14.0 <23`, root Node version files, npm engine
+  enforcement, lockfile metadata, and `npm ci` install discipline.
+  CI/dependency-update automation, Vercel project settings, and the residual
+  Next/PostCSS decision remain separate.
+- T-065 updated the environment runbook with current source-search evidence for
+  active, script-only, platform-provided, legacy, and owner-decision environment
+  variables without reading local `.env` files, recording secret values, or
+  changing runtime configuration.
+- T-066 hardened the Cloudinary signing policy gap by rejecting unknown or
+  malformed signing params before `api_sign_request` and allowing only current
+  admin widget params.
+- T-067 removed the remaining admin Cloudinary upload widget debug logs,
+  availability polling, and DOM/iframe inspection while preserving current
+  upload widget behavior. It intentionally leaves the global logging/redaction
+  and monitoring policy separate.
 
 ## Backlog
 
-- Inventory required environment variables without recording secret values.
-- Update the environment runbook with `JWT_SECRET`, `AUTH_SECRET` decision
-  status, `NEXT_PUBLIC_BASE_URL`, `VERCEL_ENV`, `VERCEL_URL`, Cloudinary
-  variables, upload preset ownership, required environments, owners, and
-  rotation guidance.
+- Keep the environment runbook current when runtime or script configuration
+  changes.
+- Resolve owner decisions for unused or legacy environment candidates:
+  `JWT_SECRET`, `AUTH_SECRET`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`,
+  commented-only public Vercel variables, and any future MongoDB alias.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
 - Tighten CSP and CORS policy with production allowlists and missing hardening
@@ -147,9 +163,9 @@ security headers, environment documentation, and actionable operational signals.
 - Centralize or remove same-app base URL construction; until ADR 0004 is applied
   broadly, avoid production localhost fallbacks and hard-coded production
   domains.
-- Pin or document remaining Vercel project settings and Node/runtime ownership;
-  T-025 now covers smoke evidence and rollback triggers, while runtime pins stay
-  separate under F-064/R-028.
+- Pin or document remaining Vercel project settings and deployment ownership;
+  T-025 covers smoke evidence and rollback triggers, while T-064 covers repo
+  runtime/package-manager pins.
 - Keep the deployment smoke checklist and `npm run smoke:public` route list
   current as production route contracts, approved smoke records, auth roles, and
   Shopify product handles change.
@@ -158,8 +174,8 @@ security headers, environment documentation, and actionable operational signals.
   temporary PostCSS advisory acceptance, or accept canary framework risk.
 - Before any future Next package edit, re-run npm metadata/audit checks and use
   T-015's Node/React/lint/proxy/image/App Router verification plan.
-- Add package-manager and Node runtime pins, document `npm ci` as the install
-  path, and define dependency audit/update automation or cadence.
+- Define dependency audit/update automation or cadence after the package-manager
+  and Node runtime pinning slice completed in T-064.
 - Keep native-package deployment smoke checks for `GET /` and credentials
   sign-in after bcrypt, Next, runtime, or auth import-boundary changes.
 - Audit privacy, consent, and commerce compliance gaps for owner/legal review.
@@ -320,13 +336,47 @@ npm run lint
   response helpers with real `201`/`200`/`404`/`409`/`500` statuses and
   public-safe internal failure bodies. Broader logging/redaction, monitoring,
   and request-correlation policy remains separate.
+- 2026-05-16: Prepared T-064 as the first F-064 supply-chain control slice. It
+  pins the Node/npm runtime baseline and updates setup/deployment install docs
+  to use `npm ci` while leaving CI/dependency-update automation, Vercel
+  project-setting ownership, and Next/PostCSS migration decisions separate.
+- 2026-05-16: Completed T-064 by adding npm and Node runtime pins,
+  `.nvmrc`, `.node-version`, `.npmrc`, lockfile metadata, and `npm ci`
+  setup/deployment/testing docs. Verification passed with Node `v22.14.0`, npm
+  `10.9.2`, `npm ci --dry-run --ignore-scripts`, full Jest, lint, and build.
+- 2026-05-16: Prepared T-065 as the next F-047 deployment-environment slice. It
+  updates the environment runbook from source-search evidence and A-007 context
+  while leaving runtime config, Vercel settings, Cloudinary upload policy,
+  credential rotation, and CI/dependency automation separate.
+- 2026-05-16: Completed T-065 by expanding the environment runbook to classify
+  active runtime variables, smoke-script variables, Vercel/Node platform
+  variables, and legacy/deprecated candidates with required environments,
+  likely owners, and configuration/rotation notes. Runtime config, Vercel
+  settings, Cloudinary upload policy, credential rotation, and CI/dependency
+  automation remain separate.
+- 2026-05-16: Prepared T-066 as the next F-044/F-054 Cloudinary signing slice.
+  It should restrict signed upload params for the current admin widget while
+  leaving upload preset ownership, asset lifecycle, Vercel settings, and
+  credential rotation separate.
+- 2026-05-16: Completed T-066 by restricting Cloudinary upload signing to
+  `timestamp`, `upload_preset: "laoutaris_art"`, and `source: "uw"`, adding
+  focused rejection coverage for unknown and malformed values, and documenting
+  remaining preset/folder/lifecycle policy gaps.
+- 2026-05-16: Completed T-067 by removing always-on debug logging, polling, and
+  DOM/iframe inspection from `UploadButton` while preserving the current
+  `CldUploadWidget` behavior and leaving global logging/redaction policy
+  separate.
+- 2026-05-16: Prepared T-068 to remove always-on public shop debug logging
+  from the shop products route, gallery, and loader while preserving current
+  shop behavior and leaving global logging/redaction policy separate.
 
 ## Next Agent Action
 
-Resolve the remaining deployment operations gaps that T-025 intentionally left
-separate: package-manager and Node runtime pins, Vercel project-setting
-ownership, dependency-update automation, environment inventory, and broader
-production logging/redaction policy. Keep the Next/PostCSS owner choice
-separate: wait for a stable Next release with bundled `postcss@8.5.10+`, accept
-a partial stable `next@16.2.6` migration with residual PostCSS risk, or
-explicitly accept canary framework risk.
+Assign T-068:
+`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+
+T-059 remains blocked pending an owner-approved MongoDB target and `MONGO_URI`.
+
+Keep CI/dependency-update automation, Vercel project-setting ownership, broader
+production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
+credential rotation, and the Next/PostCSS owner choice separate.
