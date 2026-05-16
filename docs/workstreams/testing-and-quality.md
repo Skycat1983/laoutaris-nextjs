@@ -184,6 +184,10 @@ refactoring without turning every change into a manual QA pass.
   `UploadButton` has no direct console debugging, no availability polling or
   DOM inspection, and still preserves current Cloudinary widget props, open
   behavior, loading state, and success forwarding.
+- T-068 added focused public shop source/API/component/loader coverage proving
+  the products route, gallery, and loader have no direct `console.log` debug
+  output while preserving the shop route contract, metadata sorting, loader
+  fetch behavior, and neutral loader error copy.
 
 ## Backlog
 
@@ -716,14 +720,34 @@ npm run lint
 - 2026-05-16: Prepared T-068 with focused source/API/component expectations
   for removing public shop `console.log` debug output while preserving the
   existing shop products route and gallery behavior.
+- 2026-05-16: Completed T-068 focused coverage by extending
+  `__tests__/unit/api/shopProductsRoute.test.ts`,
+  `__tests__/unit/shopProductGallerySorting.test.tsx`, and
+  `__tests__/unit/security/credentialSourceHygiene.test.ts`, and adding
+  `__tests__/unit/loaders/ShopProductsLoader.test.tsx`. Focused Jest, lint,
+  build, and `git diff --check` passed; build retained existing
+  MongoDB/static-generation, branch-verification, link, and fetcher debug
+  noise.
+- 2026-05-16: Prepared T-069 with focused source hygiene expectations for
+  shared fetcher and server API helper debug output while preserving current
+  fetch behavior.
+- 2026-05-16: Completed T-069 by adding
+  `__tests__/unit/api/createFetcher.test.ts` and extending
+  `__tests__/unit/security/credentialSourceHygiene.test.ts`. Focused coverage
+  now proves the shared fetcher/server API helper files have no direct
+  `console.log` debug output or stale URL debug phrases, while `createFetcher`
+  still merges headers, executes fetch, parses JSON, returns success/error
+  envelopes, handles fetch failures, and rethrows Next control-flow errors.
+- 2026-05-16: Prepared T-070 with focused service, route, and loader coverage
+  expectations for the collections subnav same-app HTTP migration.
 
 ## Next Agent Action
 
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+Assign T-070:
+`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
 
-Keep the route/fetcher parity and protected API guard inventories
-current when fetchers or route handlers change.
+Keep the route/fetcher parity and protected API guard inventories current when
+fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
 for owner/orchestrator acceptance of a Next target, then execute the

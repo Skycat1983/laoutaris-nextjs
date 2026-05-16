@@ -91,6 +91,10 @@ production while preserving MongoDB as the archive source of truth.
 - T-063 carries queried Shopify `descriptionHtml` through `SimpleProduct` for
   list, handle, and ID reads while keeping product detail rendering on the
   existing plain `description`.
+- T-068 removed always-on public shop `console.log` output from the product
+  listing route, gallery, and loader while preserving current filtering,
+  sorting, malformed ID skipping, deduplication, response envelope, and
+  metadata behavior.
 
 ## Backlog
 
@@ -230,11 +234,13 @@ Add targeted tests as shop behavior is hardened.
   should remove always-on console output from the product listing route,
   gallery, and loader while preserving current filtering, sorting, product
   response metadata, malformed ID skipping, and deduplication behavior.
+- 2026-05-16: Completed T-068; the public shop product listing route, gallery,
+  and loader no longer emit direct `console.log` debug output on normal
+  requests/interactions, the loader error hint no longer directs public users
+  to the console, and focused source/API/component tests preserve the current
+  public shop contracts.
 
 ## Next Agent Action
-
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
 Keep T-059 blocked until an owner-approved MongoDB target and `MONGO_URI` are
 available.

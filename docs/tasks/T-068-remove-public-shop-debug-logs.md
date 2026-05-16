@@ -1,6 +1,6 @@
 # T-068 Remove Public Shop Debug Logs
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),
@@ -72,6 +72,7 @@ Out of scope:
   shop source hygiene test
 - `__tests__/unit/api/shopProductsRoute.test.ts`
 - `__tests__/unit/shopProductGallerySorting.test.tsx`
+- `__tests__/unit/loaders/ShopProductsLoader.test.tsx`
 - `docs/tasks/T-068-remove-public-shop-debug-logs.md`
 - `docs/tasks/README.md`
 - `docs/workstreams/shopify-commerce.md`
@@ -105,7 +106,7 @@ Run:
 
 ```bash
 rg -n "console\\.log" src/app/api/v2/public/shop/products/route.ts src/components/compositions/ShopProductGallery.tsx src/components/loaders/viewLoaders/ShopProductsLoader.tsx
-npm test -- --runTestsByPath __tests__/unit/api/shopProductsRoute.test.ts __tests__/unit/shopProductGallerySorting.test.tsx
+npm test -- --runTestsByPath __tests__/unit/api/shopProductsRoute.test.ts __tests__/unit/shopProductGallerySorting.test.tsx __tests__/unit/loaders/ShopProductsLoader.test.tsx __tests__/unit/security/credentialSourceHygiene.test.ts
 npm run lint
 npm run build
 git diff --check
@@ -118,6 +119,22 @@ verification set.
 ## Handoff Notes
 
 - Prepared 2026-05-16.
+- Completed 2026-05-16.
+- Removed direct `console.log` output from the public shop products route,
+  `ShopProductGallery`, and `ShopProductsLoader`.
+- Replaced the loader's public "Check the console" error hint with a neutral
+  retry/contact hint.
+- Added focused loader coverage and extended route, gallery, and source hygiene
+  coverage so the direct public shop `console.log` output and console-directed
+  loader copy cannot return unnoticed.
+- Verification passed: `rg -n "console\\.log"` on the three touched shop files
+  returned no matches; focused Jest for
+  `__tests__/unit/api/shopProductsRoute.test.ts`,
+  `__tests__/unit/shopProductGallerySorting.test.tsx`,
+  `__tests__/unit/loaders/ShopProductsLoader.test.tsx`, and
+  `__tests__/unit/security/credentialSourceHygiene.test.ts`; `npm run lint`;
+  and `npm run build`. Build still emitted existing MongoDB/static-generation,
+  branch-verification, link, and fetcher debug noise outside this slice.
 - Keep broader logging/redaction policy under F-020/F-053/R-019.
 - Keep shop pagination, checkout/cart, variant selection, admin product-linking,
   T-059 audit execution, and ADR 0004 shop-loader migration separate.

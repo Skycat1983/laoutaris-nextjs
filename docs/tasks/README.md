@@ -77,7 +77,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-065 Update environment inventory](T-065-update-environment-inventory.md) | Completed | Updated the environment runbook from current env usage without recording secret values or changing runtime config. |
 | [T-066 Harden Cloudinary signing params](T-066-harden-cloudinary-signing-params.md) | Completed | Restricted Cloudinary upload signing to explicit current-widget params and documented remaining preset/folder/lifecycle decisions. |
 | [T-067 Remove Cloudinary upload debug logs](T-067-remove-cloudinary-upload-debug-logs.md) | Completed | Removed always-on debug logging, polling, and DOM inspection from the admin Cloudinary upload button while preserving widget behavior. |
-| [T-068 Remove public shop debug logs](T-068-remove-public-shop-debug-logs.md) | Ready | Remove always-on debug logging from public shop route/gallery/loader paths while preserving backed shop behavior. |
+| [T-068 Remove public shop debug logs](T-068-remove-public-shop-debug-logs.md) | Completed | Removed always-on debug logging from public shop route/gallery/loader paths while preserving backed shop behavior. |
+| [T-069 Remove shared fetcher debug logs](T-069-remove-shared-fetcher-debug-logs.md) | Completed | Removed always-on debug logging from the shared API fetcher and server API URL helper files without changing fetch behavior. |
+| [T-070 Migrate collections subnav loader service](T-070-migrate-collections-subnav-loader-service.md) | Ready | Move the collections subnav loader off same-app HTTP by sharing a server-only collection navigation service with the public route. |
 
 ## Rules
 

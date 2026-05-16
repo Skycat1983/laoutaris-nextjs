@@ -34,9 +34,6 @@ export const ShopProductGallery = ({
   initialProducts,
   initialFilters,
 }: ShopProductGalleryProps) => {
-  console.log("initialProducts in ShopProductGallery: ", initialProducts);
-  console.log("initialFilters in ShopProductGallery: ", initialFilters);
-
   const [products, setProducts] = useState<SimpleProduct[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState<ShopSortOption>(
@@ -80,10 +77,6 @@ export const ShopProductGallery = ({
   }, [products, sortBy]);
 
   const handleSortChange = (newSortBy: ShopSortOption) => {
-    console.log(
-      "ShopProductGallery - Sort changed to in ShopProductGallery.tsx: ",
-      newSortBy
-    );
     setSortBy(newSortBy);
   };
 
@@ -119,11 +112,6 @@ export const ShopProductGallery = ({
       params.append("showPrints", String(updatedFilters.showPrints ?? true));
       params.append("showBooks", String(updatedFilters.showBooks ?? true));
 
-      console.log(
-        "ShopProductGallery - Fetching with params in ShopProductGallery.tsx: ",
-        params.toString()
-      );
-
       const response = await fetch(`/api/v2/public/shop/products?${params}`);
 
       if (!response.ok) {
@@ -135,11 +123,6 @@ export const ShopProductGallery = ({
       if (!data.success) {
         throw new Error(data.error || "Failed to fetch products");
       }
-
-      console.log(
-        "ShopProductGallery - Received products in ShopProductGallery.tsx: ",
-        data.data.length
-      );
 
       setProducts(data.data);
     } catch (error) {

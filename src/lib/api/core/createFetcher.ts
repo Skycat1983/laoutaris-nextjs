@@ -24,11 +24,6 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T | ApiErrorResponse> => {
-    console.log("🔍 Fetcher called:", {
-      endpoint,
-      options,
-      stack: new Error().stack?.split("\n").slice(1, 5).join("\n"), // First 4 lines of stack
-    });
     try {
       const baseHeaders = config.getHeaders();
       const combinedHeaders = {
@@ -40,19 +35,12 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
       };
 
       const finalUrl = config.getUrl(endpoint);
-      console.log("🌐 Final URL:", finalUrl);
 
       const response = await fetch(finalUrl, {
         ...options,
         headers: combinedHeaders,
       });
 
-      // Log response info
-      console.log("📥 Response:", {
-        url: finalUrl,
-        status: response.status,
-        ok: response.ok,
-      });
       const result = await response.json();
 
       if (!response.ok || !result.success) {
@@ -68,7 +56,6 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
       return result satisfies T;
     } catch (error) {
       if (isNextError(error)) {
-        // console.error(`NextError error for ${endpoint}:`, error);
         throw error;
       }
       console.error(`Fetch error for ${endpoint}:`, error);

@@ -68,6 +68,9 @@ Next.js server/client component boundaries.
 - T-067 removed direct debug logging, polling, and widget DOM/iframe inspection
   from the admin Cloudinary upload button without changing upload widget
   behavior.
+- T-068 removed direct public shop gallery and loader debug logging, and the
+  loader no longer tells public users to check the console on product-loading
+  failures.
 
 ## Backlog
 
@@ -156,11 +159,19 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-16: Prepared T-068 as a focused public shop frontend cleanup for
   `ShopProductGallery` and `ShopProductsLoader` debug logs while preserving
   backed filter, sort, loading, and empty-state behavior.
+- 2026-05-16: Completed T-068; `ShopProductGallery` and `ShopProductsLoader`
+  no longer emit direct `console.log` output during normal rendering,
+  filtering, or sorting, and the loader failure state now uses neutral
+  retry/contact copy while focused component/source tests preserve behavior.
+- 2026-05-16: Prepared T-070 as a route-critical frontend loader migration.
+  `CollectionsSubnavLoader` should use a shared server-only collection
+  navigation service instead of `serverPublicApi` while rendering the same
+  `Subnav` links.
 
 ## Next Agent Action
 
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+Assign T-070:
+`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
 
 Keep real pagination, checkout/cart, remaining Shopify product transform fields,
 and admin product-linking separate.

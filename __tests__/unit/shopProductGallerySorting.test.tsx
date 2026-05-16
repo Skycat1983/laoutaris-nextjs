@@ -77,6 +77,7 @@ describe("ShopProductGallery sorting", () => {
   });
 
   afterEach(() => {
+    expect(consoleLogSpy).not.toHaveBeenCalled();
     consoleLogSpy.mockRestore();
   });
 

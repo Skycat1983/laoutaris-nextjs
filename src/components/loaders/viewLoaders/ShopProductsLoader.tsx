@@ -43,11 +43,6 @@ export const ShopProductsLoader = async ({
       ? `${baseUrl}/api/v2/public/shop/products?${queryString}`
       : `${baseUrl}/api/v2/public/shop/products`;
 
-    console.log(
-      "ShopProductsLoader - Fetching from in ShopProductsLoader.tsx: ",
-      url
-    );
-
     const response = await fetch(url, {
       cache: "no-store",
     });
@@ -63,11 +58,6 @@ export const ShopProductsLoader = async ({
     }
 
     products = data.data;
-
-    console.log(
-      "ShopProductsLoader - Received products in ShopProductsLoader.tsx: ",
-      products.length
-    );
   } catch (err) {
     console.error(
       "Error in ShopProductsLoader in ShopProductsLoader.tsx: ",
@@ -81,7 +71,8 @@ export const ShopProductsLoader = async ({
       <div className="px-8 py-12 text-center">
         <p className="text-red-600 mb-4">{error}</p>
         <p className="text-sm text-gray-500">
-          Check the console for more details
+          Please try again later or contact the gallery if the problem
+          continues.
         </p>
       </div>
     );

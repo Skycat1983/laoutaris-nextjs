@@ -33,4 +33,42 @@ describe("credential source hygiene", () => {
     expect(source).not.toMatch(/document\.querySelector/);
     expect(source).not.toMatch(/document\.querySelectorAll/);
   });
+
+  it("keeps public shop browse files free of direct console.log debugging", () => {
+    const sourceFiles = [
+      "src/app/api/v2/public/shop/products/route.ts",
+      "src/components/compositions/ShopProductGallery.tsx",
+      "src/components/loaders/viewLoaders/ShopProductsLoader.tsx",
+    ];
+
+    for (const sourceFile of sourceFiles) {
+      expect(readRepoFile(sourceFile)).not.toMatch(/console\.log\s*\(/);
+    }
+  });
+
+  it("keeps public shop loader error copy free of console-directed guidance", () => {
+    const source = readRepoFile(
+      "src/components/loaders/viewLoaders/ShopProductsLoader.tsx"
+    );
+
+    expect(source).not.toMatch(/check the console/i);
+  });
+
+  it("keeps shared API fetcher files free of direct console.log debugging", () => {
+    const sourceFiles = [
+      "src/lib/api/core/createFetcher.ts",
+      "src/lib/api/public/serverPublicApi.ts",
+      "src/lib/api/user/serverUserApi.ts",
+      "src/lib/api/admin/serverAdminApi.ts",
+    ];
+
+    for (const sourceFile of sourceFiles) {
+      const source = readRepoFile(sourceFile);
+
+      expect(source).not.toMatch(/console\.log\s*\(/);
+      expect(source).not.toMatch(
+        /URL Construction Debug|Fetcher called|Final URL|📥 Response/
+      );
+    }
+  });
 });

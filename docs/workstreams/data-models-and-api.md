@@ -108,6 +108,10 @@ consistent enough for production refactoring and Shopify integration.
 - T-036 completed the remaining F-060 shop browse query-bounds slice by
   validating repeated filters, product-type booleans, and optional `sortBy`
   before MongoDB or Shopify work.
+- T-068 removed direct debug `console.log` output from the public shop listing
+  route while preserving query validation, MongoDB filter construction,
+  malformed ID skipping, product ID deduplication, Shopify fetch fan-out,
+  success envelope, and metadata behavior.
 - T-037 completed the F-057 admin artwork create/update validation slice.
 - T-038 completed the remaining F-057 admin blog create/update validation slice
   with strict schemas, allowlisted persistence, route-local DB ownership, and
@@ -571,11 +575,29 @@ Add API route tests where behavior is changed.
   should remove public shop product-listing route debug logs while preserving
   query validation, MongoDB filter construction, malformed ID skipping,
   deduplication, Shopify fan-out, success envelope, and metadata.
+- 2026-05-16: Completed T-068; the public shop product-listing route no longer
+  emits direct `console.log` debug output on normal requests, and focused route
+  plus source hygiene tests preserve the existing query validation, filter,
+  malformed ID skipping, deduplication, response envelope, and metadata
+  behavior.
+- 2026-05-16: Prepared T-069 as a no-contract-change shared fetcher cleanup. It
+  should remove direct request/URL/response debug logs from `createFetcher` and
+  URL debug logs from server public/user/admin API helpers while preserving
+  current fetch error handling and same-app URL construction.
+- 2026-05-16: Completed T-069 as a no-contract-change shared fetcher cleanup.
+  `createFetcher` no longer emits direct request/URL/response debug logs, and
+  the server public/user/admin API helpers no longer emit URL debug logs or keep
+  stale commented URL debug blocks. Focused tests cover the preserved fetcher
+  envelope, header, and error behavior.
+- 2026-05-16: Prepared T-070 as a collection navigation service extraction.
+  The public collection navigation route and `CollectionsSubnavLoader` should
+  share one server-only query/transform service while preserving route
+  envelopes and loader link behavior.
 
 ## Next Agent Action
 
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+Assign T-070:
+`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
 
 Shopify admin product-link validation and existing-data migration remain
 separate from the completed public-read normalization and the blocked live

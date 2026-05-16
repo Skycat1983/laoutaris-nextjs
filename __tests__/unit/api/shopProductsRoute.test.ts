@@ -139,6 +139,7 @@ describe("GET /api/v2/public/shop/products", () => {
         totalProducts: 4,
       },
     });
+    expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
   it("normalizes valid filters before building MongoDB conditions", async () => {

@@ -173,14 +173,26 @@ Use targeted import/reference searches for pruning tasks.
   implementation inside the NextAuth credentials provider, keeping bcrypt out of
   normal root-layout public imports, and adding focused auth/root-layout
   import-boundary tests.
+- 2026-05-16: Prepared T-069 as a no-behavior-change cleanup for shared fetcher
+  and server API URL-helper debug logs. It intentionally preserves same-app HTTP
+  and base URL construction while leaving the next ADR 0004 migration separate.
+- 2026-05-16: Completed T-069; shared fetcher and server API URL-helper direct
+  `console.log` debug output and stale URL debug blocks are removed, with
+  focused source hygiene and fetcher behavior coverage. Same-app HTTP and base
+  URL construction remain intentionally unchanged for later ADR 0004 slices.
+- 2026-05-16: Prepared T-070 as the next focused ADR 0004/F-021 migration. It
+  moves `CollectionsSubnavLoader` off same-app HTTP by sharing collection
+  navigation data access with the public collection navigation route.
 
 ## Next Agent Action
 
-Use the completed T-007/T-018/T-021 proof routes to choose the next
-route-critical same-app HTTP migration, and keep broader root-layout
-session/cache refactors separate from the completed T-023 import-boundary
-mitigation. Prepare a later A-014 source pruning task for unused leaf files, WIP
-variants, barrels, and starter assets. If Next dependency work takes priority,
-wait for owner/orchestrator acceptance of a Next target, then use
+Assign T-070:
+`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+
+Keep broader root-layout session/cache refactors separate from the completed
+T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for
+unused leaf files, WIP variants, barrels, and starter assets. If Next dependency
+work takes priority, wait for owner/orchestrator acceptance of a Next target,
+then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.

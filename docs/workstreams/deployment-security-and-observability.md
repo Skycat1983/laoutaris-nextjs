@@ -140,6 +140,10 @@ security headers, environment documentation, and actionable operational signals.
   availability polling, and DOM/iframe inspection while preserving current
   upload widget behavior. It intentionally leaves the global logging/redaction
   and monitoring policy separate.
+- T-068 removed always-on public shop products route, gallery, and loader
+  `console.log` debug output, and replaced the loader's console-directed public
+  error hint. Broader production logging/redaction and monitoring policy
+  remain separate.
 
 ## Backlog
 
@@ -369,11 +373,22 @@ npm run lint
 - 2026-05-16: Prepared T-068 to remove always-on public shop debug logging
   from the shop products route, gallery, and loader while preserving current
   shop behavior and leaving global logging/redaction policy separate.
+- 2026-05-16: Completed T-068 by removing direct public shop route/gallery/loader
+  `console.log` output, replacing the console-directed loader error hint, and
+  adding focused no-debug-log regression coverage. Lint and build passed; build
+  retained existing MongoDB/static-generation, branch-verification, link, and
+  fetcher debug noise outside this slice.
+- 2026-05-16: Prepared T-069 to remove always-on debug logging from the shared
+  API fetcher and server API URL helper files while preserving current fetch
+  behavior and same-app URL construction.
+- 2026-05-16: Completed T-069 by removing shared fetcher request/URL/response
+  `console.log` debug output, server public/user/admin API helper URL debug
+  logs, and stale commented URL debug blocks. Build, lint, focused Jest, and
+  `git diff --check` passed; build still emits already tracked
+  MongoDB/static-generation, branch-verification, and link console noise outside
+  this slice.
 
 ## Next Agent Action
-
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
 
 T-059 remains blocked pending an owner-approved MongoDB target and `MONGO_URI`.
 

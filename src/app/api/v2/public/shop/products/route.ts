@@ -82,20 +82,10 @@ export async function GET(request: NextRequest) {
 
     const query = { $and: baseConditions };
 
-    console.log(
-      "Shop products route - MongoDB query in route.ts: ",
-      JSON.stringify(query, null, 2)
-    );
-
     // Fetch matching artworks
     const artworks = await ArtworkModel.find(query)
       .select("shopifyProducts") // Only need shopifyProducts field
       .lean();
-
-    console.log(
-      "Shop products route - Found artworks with products in route.ts: ",
-      artworks.length
-    );
 
     // Extract all Shopify product links
     const allProductLinks: ShopifyProductLink[] = [];
@@ -105,19 +95,8 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    console.log(
-      "Shop products route - Total product links (with duplicates) in route.ts: ",
-      allProductLinks.length
-    );
-
     // Get product type filters from checkboxes
     const { showOriginals, showPrints, showBooks } = parsedQuery.data;
-
-    console.log("Shop products route - Product type filters in route.ts: ", {
-      showOriginals,
-      showPrints,
-      showBooks,
-    });
 
     // Filter by product type
     const filteredLinks = allProductLinks.filter((link) => {
@@ -127,11 +106,6 @@ export async function GET(request: NextRequest) {
       return true;
     });
 
-    console.log(
-      "Shop products route - Filtered links in route.ts: ",
-      filteredLinks.length
-    );
-
     // Normalize and deduplicate product IDs before Shopify requests.
     const uniqueProductIds = Array.from(
       new Set(
@@ -139,11 +113,6 @@ export async function GET(request: NextRequest) {
           .map((link) => normalizeShopifyProductId(link.productId))
           .filter((productId): productId is string => productId !== null)
       )
-    );
-
-    console.log(
-      "Shop products route - Unique product IDs in route.ts: ",
-      uniqueProductIds.length
     );
 
     // Batch fetch from Shopify
@@ -168,11 +137,6 @@ export async function GET(request: NextRequest) {
     // Filter out null results (failed fetches)
     const products: SimpleProduct[] = productsResults.filter(
       (p): p is SimpleProduct => p !== null
-    );
-
-    console.log(
-      "Shop products route - Successfully fetched products in route.ts: ",
-      products.length
     );
 
     return NextResponse.json({

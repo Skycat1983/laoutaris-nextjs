@@ -4,9 +4,9 @@ Last updated: 2026-05-16
 
 ## Current Priority
 
-T-068 is ready as the next focused implementation slice: remove always-on debug
-logging from the public shop products route, gallery, and loader while
-preserving backed filtering, sorting, and product response behavior. T-059
+T-070 is ready as the next focused implementation slice: move
+`CollectionsSubnavLoader` off same-app HTTP by sharing a server-only collection
+navigation service with the public collection navigation API route. T-059
 remains blocked until an owner-approved MongoDB target and `MONGO_URI` are
 available. Keep automatic data mutation, Shopify API validation, admin Shopify
 product-linking, checkout/cart ownership, broader Cloudinary upload policy,
@@ -17,12 +17,13 @@ changes.
 
 ## Active Phase
 
-T-068 public shop debug-log cleanup is the active ready task. T-067 Cloudinary
-upload debug-log cleanup is complete. T-066 Cloudinary signing param hardening
-is complete. T-059 Shopify product link audit execution remains blocked until
-an owner-approved MongoDB target and `MONGO_URI` are available in the execution
-shell. No cleanup or migration task should be assigned from T-059 until real
-audit evidence exists.
+T-070 collections subnav loader service migration is the active ready task.
+T-069 shared fetcher debug-log cleanup is complete. T-068 public shop debug-log
+cleanup is complete. T-067 Cloudinary upload debug-log cleanup is complete.
+T-066 Cloudinary signing param hardening is complete. T-059 Shopify product
+link audit execution remains blocked until an owner-approved MongoDB target and
+`MONGO_URI` are available in the execution shell. No cleanup or migration task
+should be assigned from T-059 until real audit evidence exists.
 
 ## Successor Takeover Snapshot
 
@@ -179,13 +180,29 @@ Use this section as the first operational handoff for a new orchestrator.
   loading/open behavior, and success callback. Focused source/component tests
   cover the preserved behavior and no-console invariant. Keep global logging
   policy and broader Cloudinary upload policy separate.
-- T-068 is ready: it should remove direct public shop `console.log` debug output
+- T-068 is complete: it removed direct public shop `console.log` debug output
   from `src/app/api/v2/public/shop/products/route.ts`,
   `src/components/compositions/ShopProductGallery.tsx`, and
-  `src/components/loaders/viewLoaders/ShopProductsLoader.tsx` while preserving
-  query validation, backed filters, metadata sorting, loader behavior, and the
-  existing response envelope. Keep same-app HTTP migration, pagination,
-  checkout/cart, admin linking, and global logging policy separate.
+  `src/components/loaders/viewLoaders/ShopProductsLoader.tsx`, replaced the
+  loader's console-directed public error hint, and added focused
+  source/API/component/loader regression coverage. Keep same-app HTTP
+  migration, pagination, checkout/cart, admin linking, and global logging
+  policy separate.
+- T-069 is complete: it removed direct `console.log` request/URL/response debug
+  output from `src/lib/api/core/createFetcher.ts` plus constructed/final URL
+  logs and stale commented URL debug blocks from
+  `src/lib/api/public/serverPublicApi.ts`,
+  `src/lib/api/user/serverUserApi.ts`, and
+  `src/lib/api/admin/serverAdminApi.ts`. Focused source hygiene and fetcher
+  behavior tests preserve the existing fetch contract. ADR 0004 migrations,
+  base URL policy, Next `headers()` migration, remaining build/DB/SSR noise,
+  and global logging policy remain separate.
+- T-070 is ready: it should add a shared server-only collection navigation list
+  service, use it from both `GET /api/v2/public/navigation/collections` and
+  `CollectionsSubnavLoader`, and remove the loader's `serverPublicApi`
+  same-app HTTP dependency while preserving route envelopes, metadata, `404`,
+  public-safe `500`, link construction, selection, ordering, and transform
+  behavior.
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -440,11 +457,15 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-068:
-`/task effort: high details: docs/tasks/T-068-remove-public-shop-debug-logs.md`
+Choose the next implementation slice from the active workstream backlogs. The
+architecture follow-up candidate is a route-critical ADR 0004 same-app HTTP
+migration using the completed T-007/T-018/T-021 proof routes.
 
-T-066 and T-067 are complete; do not reassign them unless a regression or
-explicit follow-up is opened.
+T-066, T-067, T-068, and T-069 are complete; do not reassign them unless a
+regression or explicit follow-up is opened.
+
+Assign T-070:
+`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
 
 After the owner-approved MongoDB target/environment label and `MONGO_URI` are
 available, rerun T-059:
