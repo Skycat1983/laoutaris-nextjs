@@ -170,6 +170,39 @@ Shopify/API transformation path.
   the existing artwork form, a dedicated admin workflow, or a controlled
   operator script.
 
+## T-059 Product Link Audit Attempt
+
+Date: 2026-05-15
+
+Target environment label: unavailable; no owner-approved `MONGO_URI` was
+configured in the task shell.
+
+Command run:
+
+```bash
+npm run audit:shopify-products
+```
+
+Exit code: `1`
+
+Result classification: blocked environment precondition, not existing-data
+evidence. The audit exited before connecting to MongoDB with:
+`Missing MONGO_URI. Export the MongoDB connection string before running npm run audit:shopify-products.`
+
+| Report Field | Value |
+| --- | --- |
+| Total artworks scanned | Not available; command exited before database connection. |
+| Artworks with Shopify links | Not available. |
+| Total Shopify links | Not available. |
+| Invalid product IDs | Not available. |
+| Unknown product types | Not available. |
+| Within-artwork duplicates | Not available. |
+| Cross-artwork duplicates | Not available. |
+
+Recommended next task: obtain the owner-approved MongoDB target/environment
+label, configure `MONGO_URI` in the execution shell, and rerun this T-059 audit
+before planning cleanup, migration, or admin product-link validation.
+
 ## Completion Audit
 
 | Requirement | Evidence | Status |
@@ -191,6 +224,7 @@ Shopify/API transformation path.
 
 ## Next Action
 
-Decide the first-release checkout handoff and admin Shopify-linking workflow,
-then fix product detail artwork fetching and API envelope consistency before
-adding or hardening listing filters, pagination, and sorting tests.
+Provide the owner-approved MongoDB target/environment label and configure
+`MONGO_URI`, then rerun `npm run audit:shopify-products` and record the actual
+product-link counts before assigning cleanup, migration, or admin write
+validation.

@@ -31,6 +31,8 @@ const product: SimpleProduct = {
   title: "Test Product",
   description: "A product used by the route contract test.",
   vendor: "Joseph Laoutaris",
+  productType: "original",
+  tags: ["archive"],
   price: "100.00",
   currencyCode: "GBP",
   compareAtPrice: null,

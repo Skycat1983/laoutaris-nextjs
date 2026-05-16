@@ -203,7 +203,7 @@ consistent enough for production refactoring and Shopify integration.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
 - Add Shopify product ID validation for admin writes and one-time data
-  migration/audit work.
+  migration work after the T-058 audit report is reviewed.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
@@ -532,12 +532,35 @@ Add API route tests where behavior is changed.
 - 2026-05-15: Prepared T-058 for the read-only F-012 existing-data audit. It
   should report invalid Shopify product IDs, duplicate links, and migration
   needs without mutating MongoDB or calling Shopify APIs.
+- 2026-05-15: Completed T-058 by adding a read-only MongoDB audit for artwork
+  Shopify product links. The audit mirrors public-read numeric ID validation,
+  flags stored GID-style and other malformed values, reports duplicate links,
+  and leaves admin writes and actual data migration separate.
+- 2026-05-15: Prepared T-059 to execute the read-only Shopify product-link audit
+  against the owner-approved MongoDB environment and use the evidence to scope
+  any owner-approved cleanup or admin-write validation follow-up.
+- 2026-05-15: T-059 attempted `npm run audit:shopify-products`, but the command
+  exited `1` before connecting because `MONGO_URI` was not set. Existing-data
+  audit evidence remains blocked on the owner-approved MongoDB target.
+- 2026-05-16: Prepared T-061 as the next F-014/F-013 product DTO contract slice.
+  It should carry Shopify `productType` and `tags` through `SimpleProduct` and
+  use that explicit metadata for default shop type sorting while leaving
+  variants, checkout data, description HTML, pagination, and admin linking
+  separate.
+- 2026-05-16: Completed T-061; the Shopify transform now carries
+  `productType` and `tags` through `SimpleProduct` for list, handle, and ID
+  reads, while variants, checkout data, description HTML, pagination, and admin
+  linking remain separate.
+- 2026-05-16: Prepared T-062 as the next F-014 Shopify transform slice. It
+  should preserve queried variant metadata in `SimpleProduct` while leaving
+  checkout/cart behavior, product-detail CTA changes, description HTML,
+  pagination, admin linking, and data migration separate.
 
 ## Next Agent Action
 
-Assign T-058:
-`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
+Assign T-062:
+`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
 
 Shopify admin product-link validation and existing-data migration remain
-separate from the completed public-read normalization and prepared read-only
-audit work.
+separate from the completed public-read normalization and the blocked live
+read-only audit execution.

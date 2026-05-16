@@ -1,20 +1,24 @@
 # Current Orchestration State
 
-Last updated: 2026-05-15
+Last updated: 2026-05-16
 
 ## Current Priority
 
-T-058 is ready to assign: add a read-only audit for existing MongoDB artwork
-`shopifyProducts` links before migration or admin-linking work. Keep automatic
-data mutation, Shopify API validation, admin Shopify product-linking,
-checkout/cart ownership, Cloudinary upload policy, global logging/redaction
-policy, visible blog pinned/tag admin workflow, and the residual Next/PostCSS
-owner decision separate unless priority changes.
+T-062 is ready to assign: carry queried Shopify variant metadata through
+product DTOs without implementing checkout, cart, or visible variant-selection
+UI. T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI`
+are available. Keep automatic data mutation, Shopify API validation, admin
+Shopify product-linking, checkout/cart ownership, Cloudinary upload policy,
+global logging/redaction policy, visible blog pinned/tag admin workflow, and
+the residual Next/PostCSS owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-058 Shopify product link data audit is prepared and ready for agent
-assignment.
+T-062 Shopify variant metadata preservation is prepared and ready for agent
+assignment. T-059 Shopify product link audit execution remains blocked until an
+owner-approved MongoDB target and `MONGO_URI` are available in the execution
+shell. No cleanup or migration task should be assigned from T-059 until real
+audit evidence exists.
 
 ## Successor Takeover Snapshot
 
@@ -127,11 +131,27 @@ Use this section as the first operational handoff for a new orchestrator.
   normalization/GID construction for public product reads, preserved invalid
   path-ID `400`s before Shopify work, and skips malformed stored listing IDs
   before Shopify fan-out.
-- T-058 is ready: it owns the read-only existing-data audit for artwork
-  `shopifyProducts` links so invalid IDs, duplicate links, and migration needs
-  are visible before mutation/admin-linking work.
+- T-058 is complete: it added `npm run audit:shopify-products`, a read-only
+  MongoDB audit for artwork `shopifyProducts` links. It reports invalid IDs,
+  unknown product types, within-artwork duplicates, and cross-artwork
+  duplicates without writes or Shopify API calls. The live audit was not run in
+  the implementation shell because `MONGO_URI` was not set.
+- T-059 was attempted: `npm run audit:shopify-products` exited `1` before
+  connecting to MongoDB because `MONGO_URI` was not set. No artwork data was
+  scanned, no Shopify API was called, and no cleanup or migration task should
+  be assigned from this attempt.
+- T-060 is complete: it removed unsupported shop colour/dimension filters,
+  stale client-only colour/dimension state, and placeholder pagination while
+  preserving backed listing filters, product-type checkboxes, result count, and
+  sort controls. Focused component tests, lint, and build passed.
+- T-061 is complete: it added Shopify `productType` and `tags` to
+  `SimpleProduct`, preserved those fields in list/handle/ID transforms, and
+  replaced title-keyword default type sorting with metadata-based sorting.
+- T-062 is ready: it owns carrying queried Shopify variant metadata through
+  `SimpleProduct` while leaving checkout/cart, product-detail CTA, and visible
+  variant selection separate.
 - Next task assignment:
-  `/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
+  `/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -386,8 +406,12 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-058:
-`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
+Assign T-062:
+`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+
+After the owner-approved MongoDB target/environment label and `MONGO_URI` are
+available, rerun T-059:
+`/task effort: high details: docs/tasks/T-059-run-shopify-product-link-audit.md`
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
 product-linking validation, checkout/cart ownership, remaining Cloudinary upload

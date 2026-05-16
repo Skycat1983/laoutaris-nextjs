@@ -29,23 +29,6 @@ const ShopResultsBar = ({
           Found: <span className="font-medium">{totalResults}</span>
         </div>
 
-        {/* Pagination - Placeholder for now */}
-        <div className="flex items-center gap-2">
-          <button className="px-3 py-1 text-sm border-b-2 border-gray-900 font-medium">
-            1
-          </button>
-          <button className="px-3 py-1 text-sm hover:text-gray-900 text-gray-500">
-            2
-          </button>
-          <span className="px-2 text-gray-400">...</span>
-          <button className="px-3 py-1 text-sm hover:text-gray-900 text-gray-500">
-            5
-          </button>
-          <button className="px-2 py-1 text-sm hover:text-gray-900 text-gray-500">
-            →
-          </button>
-        </div>
-
         {/* Sort Dropdown */}
         <div className="flex items-center gap-3">
           <Select

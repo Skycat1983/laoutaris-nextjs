@@ -160,6 +160,12 @@ refactoring without turning every change into a manual QA pass.
 - T-055 extended focused admin blog route coverage for missing `imageUrl`,
   omitted/defaulted `pinned` and `tags`, explicit create/update replacements,
   invalid tag rejection before blog reads/writes, and unknown-field rejection.
+- T-060 added focused public shop component coverage for removed unsupported
+  colour/dimension filters, removed fake pagination, and preserved backed shop
+  controls.
+- T-061 added focused Shopify transform and shop gallery sorting coverage for
+  explicit `productType`/`tags`, metadata type sorting, unknown type ordering,
+  and preserved price/title sort modes.
 
 ## Backlog
 
@@ -184,8 +190,9 @@ refactoring without turning every change into a manual QA pass.
   user/comment ownership state, and artwork image sanitization.
 - Replace or supplement the mocked Home integration test with a test that
   exercises the intended production component boundary.
-- Add Shopify transformation, product link, product detail, and public shop API
-  tests before commerce implementation work.
+- Add remaining Shopify transformation and product detail tests before
+  commerce implementation work; product-link audit helper coverage exists from
+  T-058.
 - Add SSR/server-loader tests that do not require a live `localhost:3000`
   server.
 - Add a documented coverage command and targeted thresholds for route guards,
@@ -607,14 +614,50 @@ npm run lint
   for invalid Shopify product IDs, GID-style persisted values, duplicate
   within-artwork links, cross-artwork duplicates, unknown product types, and
   read-only command syntax.
+- 2026-05-15: T-058 added
+  `__tests__/unit/scripts/auditShopifyProductLinkHelpers.test.js` for invalid
+  Shopify product IDs, GID-style persisted values, unknown product types,
+  duplicate within-artwork links, cross-artwork duplicates, and duplicate-only
+  non-failing behavior. Focused tests, script syntax checks, lint, and build
+  passed; the live audit was not run because `MONGO_URI` was not set in the
+  shell.
+- 2026-05-15: Prepared T-059 to run the read-only Shopify product-link audit
+  against the owner-approved MongoDB environment and record the command result
+  as durable evidence. No new runtime tests are expected unless the audit
+  command itself changes.
+- 2026-05-15: T-059 attempted `npm run audit:shopify-products`, which exited
+  `1` before MongoDB connection because `MONGO_URI` was not set. This confirms
+  the environment precondition but does not provide data-quality evidence; rerun
+  the same command after the owner-approved target is configured.
+- 2026-05-16: Prepared T-060 with focused shop component coverage expectations
+  for removed unsupported colour/dimension filters, removed fake pagination, and
+  preserved backed filters, result count, and sort controls.
+- 2026-05-16: T-060 added
+  `__tests__/unit/shopUnsupportedControls.test.tsx` for absent unsupported shop
+  controls and preserved backed controls. Focused component tests, lint, and
+  build passed; build retained existing MongoDB/fetcher/static-generation log
+  noise.
+- 2026-05-16: Prepared T-061 with focused Shopify transform and shop gallery
+  sorting coverage expectations for explicit `productType`/`tags`, metadata
+  type sorting, unknown type ordering, and preserved price/title sorting.
+- 2026-05-16: T-061 added
+  `__tests__/unit/shopifyClientTransform.test.ts` and
+  `__tests__/unit/shopProductGallerySorting.test.tsx`. Focused Shopify
+  transform/gallery/route/page tests, lint, and build passed; build retained
+  existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-16: Prepared T-062 with focused Shopify transform coverage
+  expectations for multiple variants, compare-at price, variant image handling,
+  no-variant fallback behavior, and preservation of T-061 product metadata.
 
 ## Next Agent Action
 
-Assign T-058:
-`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
+Assign T-062:
+`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
 
 For the next implementation slice, add focused tests before broadening to lint
-and build. Keep the route/fetcher parity and protected API guard inventories
+and build.
+
+Keep the route/fetcher parity and protected API guard inventories
 current when fetchers or route handlers change.
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

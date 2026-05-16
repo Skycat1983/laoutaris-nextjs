@@ -42,6 +42,8 @@ const createProduct = (productId: string): SimpleProduct => ({
   title: `Product ${productId}`,
   description: "A product used by the shop listing route contract test.",
   vendor: "Joseph Laoutaris",
+  productType: "original",
+  tags: ["archive"],
   price: "100.00",
   currencyCode: "GBP",
   compareAtPrice: null,

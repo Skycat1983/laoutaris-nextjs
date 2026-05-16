@@ -11,10 +11,8 @@ export type ShopSortOption = (typeof SHOP_SORT_OPTIONS)[number];
 export type ShopFiltersState = {
   artstyle?: string;
   medium?: string;
-  colour?: string;
   surface?: string;
   decade?: string;
-  dimension?: string;
   showOriginals?: boolean;
   showPrints?: boolean;
   showBooks?: boolean;

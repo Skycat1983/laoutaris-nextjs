@@ -42,6 +42,42 @@ Public product reads normalize IDs at the Shopify API boundary. Malformed
 stored values, including full `gid://shopify/Product/...` strings, are ignored
 by the public product listing until the MongoDB link is corrected.
 
+## Read-Only Product Link Audit
+
+Run the MongoDB product-link audit before planning a data cleanup or admin
+linking workflow:
+
+```bash
+npm run audit:shopify-products
+```
+
+Required environment:
+
+- `MONGO_URI` must point to the MongoDB database to audit.
+- Shopify credentials are not required because the audit does not call Shopify.
+
+The audit reads only the `artworks` collection with `_id`, `title`, and
+`shopifyProducts` projected. It does not mutate MongoDB data and does not verify
+whether Shopify products exist.
+
+The report includes:
+
+- total artworks scanned,
+- artworks with Shopify links,
+- total Shopify links,
+- invalid product IDs, including empty, whitespace-only, non-numeric, and
+  `gid://shopify/Product/...` values,
+- duplicate product IDs within one artwork,
+- duplicate product IDs across artworks grouped by product type,
+- unknown product `type` values.
+
+Exit behavior:
+
+- `0`: no invalid product IDs or unknown product types were found. Duplicate
+  reports may still require owner review.
+- `1`: invalid product IDs, unknown product types, missing `MONGO_URI`, or an
+  audit runtime failure occurred.
+
 ## First-Release Purchase Handoff
 
 Product detail pages currently use an enquiry handoff instead of cart or
@@ -67,4 +103,6 @@ variant ID handling, line-item construction, and unavailable-product behavior.
 
 - Define and implement the full cart or checkout handoff.
 - Define admin UI workflow for adding and removing Shopify links.
-- Add tests for link helpers and product transformation.
+- Run the product-link audit against the owner-approved database and plan any
+  owner-approved cleanup.
+- Add tests for product transformation.

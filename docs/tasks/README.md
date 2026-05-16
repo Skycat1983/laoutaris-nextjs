@@ -67,7 +67,11 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-055 Align blog field contracts](T-055-align-blog-field-contracts.md) | Completed | Aligned blog imageUrl, pinned, and tags model/schema/admin route contracts with focused validation and persistence coverage. |
 | [T-056 Align user password OAuth contract](T-056-align-user-password-oauth-contract.md) | Completed | Aligned optional persisted user passwords with OAuth users while preserving credentials password requirements and auth tests. |
 | [T-057 Normalize Shopify product IDs](T-057-normalize-shopify-product-ids.md) | Completed | Centralized numeric Shopify product ID validation/GID construction and applied it to public product reads. |
-| [T-058 Audit Shopify product link data](T-058-audit-shopify-product-link-data.md) | Ready | Add a read-only audit for existing artwork Shopify product links before migration or admin-linking work. |
+| [T-058 Audit Shopify product link data](T-058-audit-shopify-product-link-data.md) | Completed | Added a read-only audit for existing artwork Shopify product links before migration or admin-linking work. |
+| [T-059 Run Shopify product link audit](T-059-run-shopify-product-link-audit.md) | Blocked | Run the read-only Shopify product-link audit against an owner-approved MongoDB environment and record follow-up evidence. |
+| [T-060 Remove unsupported shop controls](T-060-remove-unsupported-shop-controls.md) | Completed | Removed public shop colour/dimension filters and fake pagination that are not backed by API behavior. |
+| [T-061 Use explicit shop product type sorting](T-061-use-explicit-shop-product-type-sorting.md) | Completed | Carried Shopify productType/tags through product DTOs and sorted shop products by explicit metadata instead of title keywords. |
+| [T-062 Preserve Shopify variant metadata](T-062-preserve-shopify-variant-metadata.md) | Ready | Carry queried Shopify variant metadata through product DTOs without implementing checkout or variant-selection UI. |
 
 ## Rules
 

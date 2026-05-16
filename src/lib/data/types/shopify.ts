@@ -80,6 +80,8 @@ export interface SimpleProduct {
   title: string;
   description: string;
   vendor: string;
+  productType: string;
+  tags: string[];
   price: string;
   currencyCode: string;
   compareAtPrice: string | null;

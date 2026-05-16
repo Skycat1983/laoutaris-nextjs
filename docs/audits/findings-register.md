@@ -20,9 +20,9 @@ prioritize, and route actionable findings.
 | F-009 | A-001 | High | Converted | Checkout/cart handoff is undefined while product detail shows an `Add to Cart` affordance. | A-001 found the product detail button has no handler, cart mutation, checkout URL, or variant selection. | [production risks](../risks/production-readiness.md), [Shopify workstream](../workstreams/shopify-commerce.md) | Reconciled 2026-05-14 |
 | F-010 | A-001, A-003 | High | Converted | Admin Shopify product-linking workflow and validation are missing. | A-001 found `shopifyProducts` exists in the model while schemas/admin forms lack a dedicated validated workflow; A-003 confirmed artwork create/update schemas still omit Shopify product links. | [production risks](../risks/production-readiness.md), [Shopify workstream](../workstreams/shopify-commerce.md), [content/admin workstream](../workstreams/content-assets-and-admin-ops.md) | Reconciled 2026-05-14 |
 | F-011 | A-001, A-007, A-008 | High | Partially mitigated | Shopify credential handling violates the env-only documentation expectation. | T-009 removed the concrete Storefront-token-shaped comment from `src/lib/config/shopifyConfig.ts` and added a focused source-comment regression check. Owner verification of whether the removed value was real, and rotation if needed, remains open. | [production risks](../risks/production-readiness.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [Shopify workstream](../workstreams/shopify-commerce.md), [T-009](../tasks/T-009-remove-credential-logging-and-source-secret.md) | T-009 2026-05-14 |
-| F-012 | A-001, A-002, A-003 | Medium | Partially mitigated | Shopify product ID shape is documented as numeric but not fully validated or migrated. | T-004 validated the public single-product path ID. T-057 centralized public-read numeric product ID normalization/GID construction, kept invalid path IDs at `400` before Shopify calls, and made the listing route skip malformed stored IDs before Shopify fan-out. Admin writes and existing-data audit/migration remain open. | [production risks](../risks/production-readiness.md), [data/API workstream](../workstreams/data-models-and-api.md), [Shopify workstream](../workstreams/shopify-commerce.md), [T-057](../tasks/T-057-normalize-shopify-product-ids.md) | T-057 2026-05-15 |
-| F-013 | A-001, A-013 | Medium | Converted | Shop filters, pagination, and sorting expose UI behavior that is not backed by canonical API data. | A-001 found color/dimension filters are not sent, pagination controls are hard-coded, and type sorting depends on title keywords; A-013 found duplicated filter sentinels. | [Shopify workstream](../workstreams/shopify-commerce.md), [frontend workstream](../workstreams/frontend-routes-and-components.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md) | Reconciled 2026-05-14 |
-| F-014 | A-001 | Medium | Converted | Shopify product transformation drops fields needed for product detail and checkout hardening. | A-001 found GraphQL queries include variants, product type, tags, and descriptions, but the simple transform drops variant IDs, availability, type, tags, and description HTML. | [Shopify workstream](../workstreams/shopify-commerce.md), [data/API workstream](../workstreams/data-models-and-api.md) | Reconciled 2026-05-14 |
+| F-012 | A-001, A-002, A-003 | Medium | Partially mitigated | Shopify product ID shape is documented as numeric but not fully validated or migrated. | T-004 validated the public single-product path ID. T-057 centralized public-read numeric product ID normalization/GID construction, kept invalid path IDs at `400` before Shopify calls, and made the listing route skip malformed stored IDs before Shopify fan-out. T-058 added a read-only MongoDB audit command for existing artwork `shopifyProducts` links that reports invalid IDs, unknown types, and duplicate links without writes or Shopify API calls. T-059 attempted the live audit, but `MONGO_URI` was not set, so no database was scanned. Admin writes, live audit evidence, and actual data migration remain open. | [production risks](../risks/production-readiness.md), [data/API workstream](../workstreams/data-models-and-api.md), [Shopify workstream](../workstreams/shopify-commerce.md), [T-057](../tasks/T-057-normalize-shopify-product-ids.md), [T-058](../tasks/T-058-audit-shopify-product-link-data.md), [T-059](../tasks/T-059-run-shopify-product-link-audit.md) | T-059 blocked 2026-05-15 |
+| F-013 | A-001, A-013 | Medium | Partially mitigated | Shop filters, pagination, and sorting expose UI behavior that is not backed by canonical API data. | T-060 removed unsupported colour/dimension filters, removed hard-coded placeholder pagination, removed stale client-only colour/dimension filter state, and added focused component coverage for absent unsupported controls plus preserved backed controls. T-061 replaced title-keyword default type sorting with explicit Shopify `productType` metadata sorting and focused gallery coverage. Future real pagination and any server-side sorting contracts remain open. | [Shopify workstream](../workstreams/shopify-commerce.md), [frontend workstream](../workstreams/frontend-routes-and-components.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-060](../tasks/T-060-remove-unsupported-shop-controls.md), [T-061](../tasks/T-061-use-explicit-shop-product-type-sorting.md) | T-061 2026-05-16 |
+| F-014 | A-001 | Medium | Partially mitigated | Shopify product transformation drops fields needed for product detail and checkout hardening. | T-061 carries Shopify `productType` and `tags` through `SimpleProduct` for list, handle, and ID reads with focused transform coverage. Variant IDs, variant titles, description HTML, and checkout line item data remain intentionally out of scope. | [Shopify workstream](../workstreams/shopify-commerce.md), [data/API workstream](../workstreams/data-models-and-api.md), [T-061](../tasks/T-061-use-explicit-shop-product-type-sorting.md) | T-061 2026-05-16 |
 | F-015 | A-001, A-002, A-003, A-013 | High | Partially mitigated | API response and transform contracts are uneven across public, user, admin, and shop routes. | A-001 found inconsistent shop listing versus single-product envelopes; A-013 found raw errors, missing statuses, and raw Mongoose documents; A-002 and A-003 expanded this to public, user, admin, shop, profile, comment, enquiry, and admin write routes. T-044 introduced shared API response helpers and applied them to protected user profile/navigation/favourite/watchlist read routes while preserving existing success contracts. T-045 applied the helpers to public artwork/article/blog detail routes while preserving transformed DTO success envelopes. T-046 applied the helpers to public collection list/detail/artwork routes while preserving current success contracts. T-047 applied the helpers to public article/collection navigation routes while preserving current navigation success contracts. T-048 applied the helpers to admin article/artwork/blog/collection/comment/user read list/detail routes while preserving admin success DTOs and metadata. T-049 applied the helpers to admin article/artwork/blog/collection/comment/user delete routes while preserving delete success messages, `data: null`, conflict handling, cascade behavior, and transaction ordering. T-050 applied the helpers to admin article/artwork/blog/collection create/update routes while preserving validation bodies, success DTOs, create statuses, not-found/conflict handling, and allowlisted persistence. | [production risks](../risks/production-readiness.md), [data/API workstream](../workstreams/data-models-and-api.md), [Shopify workstream](../workstreams/shopify-commerce.md), [T-044](../tasks/T-044-introduce-api-response-helpers-user-read-routes.md), [T-045](../tasks/T-045-apply-api-response-helpers-public-content-detail-routes.md), [T-046](../tasks/T-046-apply-api-response-helpers-public-collection-routes.md), [T-047](../tasks/T-047-apply-api-response-helpers-public-navigation-routes.md), [T-048](../tasks/T-048-apply-api-response-helpers-admin-read-routes.md), [T-049](../tasks/T-049-apply-api-response-helpers-admin-delete-routes.md), [T-050](../tasks/T-050-apply-api-response-helpers-admin-create-update-routes.md) | T-050 2026-05-15 |
 | F-016 | A-002, A-003, A-004, A-006, A-007, A-015, A-016 | High | Converted | Production-critical APIs, auth/admin flows, Shopify paths, deployment smoke checks, SSR behavior, and input persistence boundaries lack reliable tests. | A-006 found no API/auth/admin/Shopify coverage; A-015 found no route handler, server loader, Shopify cache, or page-render tests; A-002, A-003, A-004, and A-007 added route contract, transform, auth/session, and deployment smoke coverage gaps; A-016 found no focused tests for enquiry, subscription, comments, admin write validation, or search query parsing. | [production risks](../risks/production-readiness.md), [testing workstream](../workstreams/testing-and-quality.md) | Reconciled 2026-05-14 |
 | F-017 | A-006 | Medium | Converted | The only integration test mostly verifies mocks rather than production Home behavior. | A-006 found `Home.test.tsx` mocks the component under test and its child modules. | [testing workstream](../workstreams/testing-and-quality.md) | Reconciled 2026-05-14 |
@@ -528,6 +528,56 @@ audit/migration remain open.
 read-only audit for persisted artwork `shopifyProducts` links so invalid IDs,
 duplicates, unknown product types, and migration needs can be reported before
 any mutation or admin-linking workflow is assigned.
+
+2026-05-15: T-058 partially mitigated F-012 by adding
+`npm run audit:shopify-products`, a read-only MongoDB audit over artwork `_id`,
+`title`, and `shopifyProducts`. The command reports invalid product IDs,
+unknown product types, within-artwork duplicates, and cross-artwork duplicates
+without data mutation or Shopify API calls. Live audit execution, admin write
+validation, and data migration remain open.
+
+2026-05-15: T-059 was prepared to run the T-058 audit against the
+owner-approved MongoDB environment and record the resulting Shopify product-link
+evidence in the A-001 Shopify audit result before any cleanup, migration, or
+admin-write validation task is assigned.
+
+2026-05-15: T-059 was attempted, but the task shell had no `MONGO_URI`.
+`npm run audit:shopify-products` exited `1` before connecting to MongoDB with
+the missing-environment message. Existing-data audit evidence is still
+incomplete; the next action is to obtain the owner-approved MongoDB target and
+rerun the read-only audit.
+
+2026-05-16: T-060 was prepared as the first focused F-013 shop UI alignment
+slice. It removes visible colour/dimension filters and hard-coded pagination
+controls that are not backed by public shop API behavior while preserving backed
+filters, product-type checkboxes, result count, and sort controls. F-013 remains
+open for title-keyword product type sorting and any future real pagination or
+sorting contract work.
+
+2026-05-16: T-060 partially mitigated F-013 by removing the unsupported public
+shop colour/dimension filters, removing fake pagination controls, removing
+stale client-only colour/dimension state, and adding focused component tests for
+the removed and preserved controls. F-013 remains open for title-keyword product
+type sorting and any future real pagination or sorting contract work.
+
+2026-05-16: T-061 was prepared as the next focused F-013/F-014 shop slice. It
+targets the title-keyword product type sorting gap by carrying Shopify
+`productType` and `tags` through product DTOs and using explicit metadata for
+default shop type sorting while leaving variant/checkout fields, real
+pagination, and admin product-linking separate.
+
+2026-05-16: T-061 partially mitigated F-013 and F-014 by adding
+`productType` and `tags` to `SimpleProduct`, preserving those fields in Shopify
+list/handle/ID transforms, and making default shop type sorting use normalized
+`productType` metadata without title fallback. Future real pagination,
+server-side sorting contracts, variant/checkout fields, description HTML, and
+admin product-linking remain separate.
+
+2026-05-16: T-062 was prepared as the next focused F-014 Shopify transform
+slice. It targets variant metadata already queried from Shopify by preserving
+variant IDs, titles, availability, prices, compare-at prices, and variant images
+in product DTOs while leaving checkout/cart behavior, product-detail CTA
+changes, description HTML, real pagination, and admin product-linking separate.
 
 Unresolved owner/orchestrator decisions remain:
 

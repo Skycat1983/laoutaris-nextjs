@@ -61,31 +61,6 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
             </SelectContent>
           </Select>
 
-          {/* Colours Filter */}
-          <Select
-            value={filters.colour || "all-colours"}
-            onValueChange={(value) => onFilterChange({ colour: value })}
-          >
-            <SelectTrigger className="w-[160px] rounded-none bg-white">
-              <SelectValue placeholder="Colours" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all-colours">All Colours</SelectItem>
-              <SelectItem value="red">Red</SelectItem>
-              <SelectItem value="blue">Blue</SelectItem>
-              <SelectItem value="green">Green</SelectItem>
-              <SelectItem value="yellow">Yellow</SelectItem>
-              <SelectItem value="orange">Orange</SelectItem>
-              <SelectItem value="purple">Purple</SelectItem>
-              <SelectItem value="pink">Pink</SelectItem>
-              <SelectItem value="brown">Brown</SelectItem>
-              <SelectItem value="black">Black</SelectItem>
-              <SelectItem value="white">White</SelectItem>
-              <SelectItem value="gray">Gray</SelectItem>
-              <SelectItem value="multicolor">Multicolor</SelectItem>
-            </SelectContent>
-          </Select>
-
           {/* Surface/Technique Filter */}
           <Select
             value={filters.surface || "all-surface"}
@@ -123,21 +98,6 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
             </SelectContent>
           </Select>
 
-          {/* Dimensions/Size Filter */}
-          <Select
-            value={filters.dimension || "all-dimensions"}
-            onValueChange={(value) => onFilterChange({ dimension: value })}
-          >
-            <SelectTrigger className="w-[160px] rounded-none bg-white">
-              <SelectValue placeholder="Dimensions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all-dimensions">All Sizes</SelectItem>
-              <SelectItem value="small">Small</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="large">Large</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Checkbox Filters */}

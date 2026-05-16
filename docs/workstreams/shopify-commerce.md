@@ -71,6 +71,19 @@ production while preserving MongoDB as the archive source of truth.
 - T-036 validates public shop listing query params before MongoDB query
   construction or Shopify product fan-out, while leaving checkout, product ID
   migration, admin linking, sorting, and pagination separate.
+- T-058 adds a read-only MongoDB audit command for existing artwork
+  `shopifyProducts` links. It reports invalid IDs, unknown product types,
+  within-artwork duplicates, and cross-artwork duplicates without mutating data
+  or calling Shopify.
+- T-059 attempted to run the live read-only product-link audit, but no
+  owner-approved `MONGO_URI` was configured in the task shell, so no MongoDB
+  data was scanned.
+- T-060 removed unsupported colour/dimension public shop filters and fake
+  pagination controls while preserving backed listing filters, product-type
+  checkboxes, result count, and client-side sort controls.
+- T-061 carries Shopify `productType` and `tags` through public product DTOs
+  and uses `productType` metadata, not title keywords, for the default client
+  shop type sort.
 
 ## Backlog
 
@@ -80,14 +93,15 @@ production while preserving MongoDB as the archive source of truth.
   including numeric ID/type validation and duplicate prevention.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
-- Audit existing Shopify product link data for legacy GID-style or malformed
-  values, and plan any owner-approved cleanup.
-- Standardize shop product API envelopes and carry product type, tags, variant
-  IDs, availability, and description fields needed by product detail.
-- Remove or implement visible color/dimension filters and placeholder
-  pagination.
-- Sort shop products on explicit product/link metadata instead of title
-  keywords.
+- Obtain the owner-approved MongoDB target/environment label, configure
+  `MONGO_URI`, rerun the read-only Shopify product-link audit, then plan any
+  owner-approved cleanup or migration for reported invalid values.
+- Standardize remaining shop product API envelopes and carry any remaining
+  variant IDs, availability, and description fields needed by product detail.
+- Define the real public shop pagination contract before rendering pagination
+  controls again.
+- Define any future server-side shop sorting contract before moving current
+  client-side sorting into the API.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -163,11 +177,43 @@ Add targeted tests as shop behavior is hardened.
   read-only audit for artwork `shopifyProducts` links so invalid IDs,
   duplicates, and migration needs are visible before any mutation or admin
   linking task.
+- 2026-05-15: Completed T-058; `npm run audit:shopify-products` now reads
+  artwork Shopify links from MongoDB, reports invalid IDs, unknown product
+  types, within-artwork duplicates, and cross-artwork duplicates, and exits
+  non-zero for invalid IDs or unknown types while remaining read-only.
+- 2026-05-15: Prepared T-059 to run the T-058 audit against the owner-approved
+  MongoDB environment, record the report in the Shopify audit evidence, and
+  scope the next cleanup or admin-link validation task from actual data.
+- 2026-05-15: T-059 attempted `npm run audit:shopify-products`, but the command
+  exited `1` before connecting because `MONGO_URI` was not set. No artwork data
+  was scanned, no Shopify API was called, and cleanup/migration planning remains
+  blocked on an owner-approved MongoDB target.
+- 2026-05-16: Prepared T-060 as a runnable F-013 shop UI cleanup while T-059 is
+  blocked on database environment input. It removes unsupported colour/dimension
+  filters and fake pagination while preserving backed listing filters and sort
+  controls.
+- 2026-05-16: Completed T-060; the public shop no longer renders unsupported
+  colour/dimension filters or placeholder pagination, stale client-only
+  colour/dimension filter state was removed, and focused component tests cover
+  the absence of unsupported controls plus preservation of backed controls.
+- 2026-05-16: Prepared T-061 as the next focused F-013/F-014 shop slice. It
+  carries Shopify `productType` and `tags` through product DTOs and replaces
+  title-keyword default type sorting with metadata-based sorting.
+- 2026-05-16: Completed T-061; `SimpleProduct` now preserves Shopify
+  `productType` and `tags` for list, handle, and ID reads, and the public shop
+  default type sort uses normalized product metadata without title fallback.
+- 2026-05-16: Prepared T-062 as the next focused F-014 transform slice. It
+  carries queried Shopify variant metadata through product DTOs without
+  implementing checkout/cart, product-detail CTA changes, or visible
+  variant-selection UI.
 
 ## Next Agent Action
 
-Assign T-058:
-`/task effort: high details: docs/tasks/T-058-audit-shopify-product-link-data.md`
+Assign T-062:
+`/task effort: high details: docs/tasks/T-062-preserve-shopify-variant-metadata.md`
+
+T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI` are
+available.
 
 Owner confirmation on the removed Shopify value, checkout handoff, admin
 linking workflow, data migration, and server-side sorting/pagination remain

@@ -97,6 +97,8 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
     title: product.title,
     description: product.description,
     vendor: product.vendor,
+    productType: product.productType || "",
+    tags: Array.isArray(product.tags) ? product.tags : [],
     price:
       firstVariant?.price.amount || product.priceRange.minVariantPrice.amount,
     currencyCode:

@@ -1,6 +1,6 @@
 # Frontend Routes And Components Workstream
 
-Status: Planned
+Status: Active
 
 Goal: stabilize public pages, component composition, responsive behavior, and
 Next.js server/client component boundaries.
@@ -61,6 +61,10 @@ Next.js server/client component boundaries.
   service receives them; existing valid frontend filter behavior was preserved.
 - T-036 validates public shop browse query params at the API boundary while
   preserving existing valid shop filter UI behavior.
+- T-060 removed public shop controls that were visible but not backed by API
+  behavior: colour/dimension filters and hard-coded pagination.
+- T-061 replaced public shop default type sorting that read product titles with
+  metadata-based sorting from Shopify `productType`.
 
 ## Backlog
 
@@ -76,8 +80,8 @@ Next.js server/client component boundaries.
 - Audit search, navigation, breadcrumbs, filters, and content discovery paths.
 - Align public empty, not-found, and search-result states with the data/API
   route contracts once A-002 empty-list and search metadata semantics are chosen.
-- Align shop filters, pagination, and sorting UI with backed API behavior or hide
-  unsupported controls.
+- Align any future shop pagination or server-side sorting UI with backed API
+  behavior before exposing new controls.
 - Replace clickable search icons, unlabeled drawer triggers, and icon-only
   comment actions with accessible controls when each flow is refactored.
 - Decide the i18n/frontend language direction before pruning unused translation
@@ -130,9 +134,23 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-15: Completed T-036 without changing shop filter UI behavior; the API
   route now normalizes valid shop listing filters and rejects invalid public
   query values before MongoDB or Shopify work.
+- 2026-05-16: Prepared T-060 as the first focused F-013 shop UI alignment
+  slice. It removes visible colour/dimension filters and placeholder pagination
+  that are not backed by API behavior while preserving backed shop filters,
+  product-type checkboxes, result count, and sort controls.
+- 2026-05-16: Completed T-060; `ShopFilters` no longer renders unsupported
+  colour/dimension selects, `ShopResultsBar` no longer renders fake pagination,
+  and focused component tests prove backed controls remain available.
+- 2026-05-16: Prepared T-061 as the next shop UI/data-contract alignment slice.
+  It should stop default shop type sorting from reading product titles and use
+  explicit Shopify product metadata instead.
+- 2026-05-16: Completed T-061; `ShopProductGallery` now sorts the default
+  type view from explicit Shopify `productType` metadata, keeps unknown types
+  last, and preserves existing price/title sort behavior.
 
 ## Next Agent Action
 
-Start broader frontend UX work only after API, auth, and data contracts are
-stable; unsupported shop color/dimension filters, pagination, and sorting
-alignment remain separate work.
+Prepare the next focused frontend slice from the remaining backlog.
+
+Keep real pagination, checkout/cart, remaining Shopify product transform fields,
+and admin product-linking separate.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { SimpleProduct } from "@/lib/data/types/shopify";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
@@ -11,6 +11,24 @@ interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
   initialFilters?: ShopFiltersState;
 }
+
+const PRODUCT_TYPE_SORT_ORDER: Record<string, number> = {
+  book: 0,
+  publication: 0,
+  original: 1,
+  "original artwork": 1,
+  print: 2,
+  "limited edition print": 2,
+};
+
+const normalizeProductType = (productType: string) =>
+  productType.trim().toLowerCase().replace(/\s+/g, " ");
+
+export const getShopProductTypeSortOrder = (product: SimpleProduct) => {
+  const normalizedType = normalizeProductType(product.productType);
+
+  return PRODUCT_TYPE_SORT_ORDER[normalizedType] ?? 3;
+};
 
 export const ShopProductGallery = ({
   initialProducts,
@@ -28,10 +46,8 @@ export const ShopProductGallery = ({
     initialFilters || {
       artstyle: "all-style",
       medium: "all-medium",
-      colour: "all-colours",
       surface: "all-surface",
       decade: "all-epochs",
-      dimension: "all-dimensions",
       showOriginals: true,
       showPrints: true,
       showBooks: true,
@@ -54,16 +70,11 @@ export const ShopProductGallery = ({
         return sorted.sort((a, b) => b.title.localeCompare(a.title));
       case "type":
       default:
-        // Sort by product type: books first, then originals, then prints
+        // Sort by explicit Shopify product type: books, originals, prints, then unknowns.
         return sorted.sort((a, b) => {
-          const getTypeOrder = (title: string) => {
-            const lowerTitle = title.toLowerCase();
-            if (lowerTitle.includes("book")) return 0;
-            if (lowerTitle.includes("original")) return 1;
-            if (lowerTitle.includes("print")) return 2;
-            return 3;
-          };
-          return getTypeOrder(a.title) - getTypeOrder(b.title);
+          return (
+            getShopProductTypeSortOrder(a) - getShopProductTypeSortOrder(b)
+          );
         });
     }
   }, [products, sortBy]);
@@ -145,10 +156,8 @@ export const ShopProductGallery = ({
     setFilters({
       artstyle: "all-style",
       medium: "all-medium",
-      colour: "all-colours",
       surface: "all-surface",
       decade: "all-epochs",
-      dimension: "all-dimensions",
       showOriginals: true,
       showPrints: true,
       showBooks: true,

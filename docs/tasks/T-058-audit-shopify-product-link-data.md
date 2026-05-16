@@ -1,6 +1,6 @@
 # T-058 Audit Shopify Product Link Data
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),
@@ -115,7 +115,32 @@ code/test portion of this task.
 
 ## Handoff Notes
 
-- Not started.
+- Completed 2026-05-15.
+- Added `npm run audit:shopify-products`, backed by
+  `scripts/audit-shopify-product-links.mjs`.
+- The command reads MongoDB `artworks` with `_id`, `title`, and
+  `shopifyProducts` projection only. It does not write to MongoDB and does not
+  call Shopify APIs.
+- Added `scripts/audit-shopify-product-link-helpers.cjs` so product ID/type
+  classification and duplicate detection are covered by focused Jest tests.
+- The audit exits non-zero only for invalid product IDs, unknown product types,
+  missing `MONGO_URI`, or runtime failures; duplicate-only reports are printed
+  for review without failing the command.
+- Live audit was not run in this shell because `MONGO_URI` was not set.
+
+Verification run:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/scripts/auditShopifyProductLinkHelpers.test.js
+node --check scripts/audit-shopify-product-links.mjs
+node --check scripts/audit-shopify-product-link-helpers.cjs
+npm run lint
+npm run build
+```
+
+All passed. Focused Jest retained the existing `punycode` deprecation warning;
+build retained existing Browserslist, MongoDB, branch-verification, link, and
+fetcher log noise.
 
 ## Escalate
 
