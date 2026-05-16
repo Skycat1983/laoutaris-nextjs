@@ -2,18 +2,19 @@
 
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/utils/paginationTransforms";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
-import { serverApi } from "@/lib/api/serverApi";
 import { PaginationMetadata } from "@/lib/data/types/apiTypes";
 import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
-import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
+import {
+  getBlogList,
+  type BlogListSortBy,
+} from "@/lib/data/services/getBlogList";
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
   limit: 10,
 } as const;
 
 interface BlogEntriesLoaderProps {
-  sortby?: "latest" | "oldest" | "popular" | "featured";
+  sortby?: BlogListSortBy;
   page: number;
 }
 
@@ -33,16 +34,11 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     let blogData: SortedBlogData;
 
     if (sortby) {
-      // Single sort type fetch
-      const result = await serverApi.public.blog.multiple({
+      const result = await getBlogList({
         sortby,
         page,
         limit: BLOG_ENTRIES_CONFIG.limit,
       });
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to fetch blog entries");
-      }
 
       const {
         data: blogs,
@@ -52,7 +48,7 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
           total: blogs.length,
           totalPages: 1,
         },
-      } = result as ApiBlogListResult;
+      } = result;
 
       blogData = {
         single: {
@@ -62,32 +58,23 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
         metadata,
       };
     } else {
-      // Multiple sort types fetch
       const [featuredResult, latestResult, popularResult] = await Promise.all([
-        serverPublicApi.blog.multiple({
+        getBlogList({
           sortby: "featured",
           page: 1,
           limit: 5,
         }),
-        serverPublicApi.blog.multiple({
+        getBlogList({
           sortby: "latest",
           page: 1,
           limit: 6,
         }),
-        serverPublicApi.blog.multiple({
+        getBlogList({
           sortby: "popular",
           page: 1,
           limit: 8,
         }),
       ]);
-
-      if (
-        !featuredResult.success ||
-        !latestResult.success ||
-        !popularResult.success
-      ) {
-        throw new Error("Failed to fetch one or more blog sets");
-      }
 
       blogData = {
         featured: featuredResult.data,

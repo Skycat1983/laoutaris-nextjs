@@ -2,23 +2,33 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiErrorResponse } from "@/lib/data/types";
-import React from "react";
-import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
+import {
+  getOwnUserNavigation,
+  type OwnUserNavigationServiceResult,
+} from "@/lib/data/services/getOwnUserNavigation";
 import { createSubnavLink } from "@/lib/helpers/createSubnavLink";
-
-type UserNavFetchResult = ApiOwnUserNavResult | ApiErrorResponse;
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import React from "react";
 
 const AccountSubnavLoader = async () => {
-  const result: UserNavFetchResult =
-    await serverApi.user.navigation.fetchUserNavigation();
+  const userId = await getUserIdFromSession();
 
-  if (!result.success) {
-    throw new Error(result.error);
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const { data } = result;
+  let data: OwnUserNavigationServiceResult;
+
+  try {
+    data = await getOwnUserNavigation(userId);
+  } catch {
+    throw new Error("Failed to fetch user navigation");
+  }
+
+  if (!data) {
+    throw new Error("User not found");
+  }
+
   const stem = "account";
 
   const settings = createSubnavLink(

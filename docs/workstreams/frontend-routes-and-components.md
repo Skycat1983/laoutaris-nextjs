@@ -74,9 +74,36 @@ Next.js server/client component boundaries.
 - T-070 moved `CollectionsSubnavLoader` to the shared server-only
   `getCollectionNavigationList` service while preserving rendered `Subnav`
   link construction.
-- T-071 is prepared to move `BiographySubnavLoader` and `MainNavLoader` to
-  shared server-only navigation services while preserving rendered `Subnav` and
-  `MainNav` links.
+- T-071 moved `BiographySubnavLoader` and `MainNavLoader` to shared server-only
+  navigation services while preserving rendered `Subnav` and `MainNav` links.
+- T-072 moved the biography default redirect page and `ArticleLoader`
+  navigation path to `getArticleNavigationList` while preserving redirect and
+  previous/next link behavior.
+- T-073 moved the collection redirect pages to server-only collection
+  navigation services while preserving redirect target paths.
+- T-074 moved `ArticleLoader`'s populated article detail data to
+  `getArticleBySlugPopulated` while preserving `ArticleView` props, optional
+  form rendering, and previous/next navigation.
+- T-075 moved `BlogDetailLoader` to shared server-only blog detail services
+  while preserving `BlogDetail` props and `showComments` behavior.
+- T-076 moved `BlogListLoader` and `BlogSectionLoader` to a shared server-only
+  blog list service while preserving blog list/section props and current sort
+  behavior.
+- T-077 moved `ArtworkLoader` to the existing server-only artwork detail
+  service while preserving `ArtworkView` props, the subscribe section, and
+  generic load-failure behavior.
+- T-078 moved `CollectionArtworkLoader` and
+  `CollectionArtworksPaginationLoader` to shared server-only collection artwork
+  services while preserving selected artwork rendering and pagination links.
+- T-079 moved `BiographySectionLoader` to the shared server-only
+  `getArticleList` service while preserving `BiographySection` props and
+  fallback behavior.
+- T-080 moved `CollectionSectionLoader` to the shared server-only
+  `getCollectionList` service while preserving `CollectionSection` props and
+  fallback behavior.
+- T-081 is prepared to move `AccountSubnavLoader` to a shared server-only
+  account navigation service while preserving account subnav links, disabled
+  states, and first favourite/watchlist segment behavior.
 
 ## Backlog
 
@@ -181,12 +208,91 @@ Use browser checks for layout-sensitive changes.
   migration. It should remove article-navigation same-app HTTP from
   `BiographySubnavLoader` and `MainNavLoader` while preserving link labels,
   path formats, and existing nav component behavior.
+- 2026-05-16: Completed T-071; `BiographySubnavLoader` now calls
+  `getArticleNavigationList("biography")` directly, and `MainNavLoader` now
+  calls `getArticleNavigationList("biography")` plus
+  `getCollectionNavigationList()` directly while preserving link labels and
+  path formats.
+- 2026-05-16: Prepared T-072 as the next article-navigation frontend migration.
+  It should remove navigation same-app HTTP from `src/app/biography/page.tsx`
+  and `ArticleLoader` while preserving the default redirect and previous/next
+  article links.
+- 2026-05-16: Completed T-072; the biography default page now redirects from
+  the ordered server-only article navigation service, and `ArticleLoader` now
+  builds previous/next links from `getArticleNavigationList(section)` while
+  preserving `ArticleView` props and article detail fetching.
+- 2026-05-16: Completed T-073; `/collections` now redirects from
+  `getCollectionNavigationList`, and `/collections/[slug]` now redirects from
+  `getCollectionNavigationItem` without same-app navigation HTTP or slug debug
+  logging.
+- 2026-05-16: Completed T-074 as the next route-critical frontend migration;
+  `ArticleLoader` now calls `getArticleBySlugPopulated` for article detail data
+  and `getArticleNavigationList(section)` for previous/next navigation, with
+  no same-app HTTP dependency and unchanged `ArticleView` props.
+- 2026-05-16: Completed T-075 as the next route-critical frontend migration;
+  `BlogDetailLoader` now calls `getBlogBySlugWithAuthor` or
+  `getBlogBySlugWithComments` directly, no longer imports `serverPublicApi`,
+  no longer emits direct result `console.log` output, and preserves both
+  comments and non-comments `BlogDetail` props.
+- 2026-05-16: Prepared T-076 as the next blog frontend migration. It should
+  remove blog list same-app HTTP from `BlogListLoader` and `BlogSectionLoader`
+  while preserving grouped list data, single-sort list data, pagination link
+  construction, and section card rendering.
+- 2026-05-16: Completed T-076; `BlogListLoader` and `BlogSectionLoader` now
+  call `getBlogList` directly, no longer import `serverApi` or
+  `serverPublicApi` for blog lists, and preserve grouped list data,
+  single-sort list data, pagination link construction, and section card
+  rendering.
+- 2026-05-16: Prepared T-077 as the next route-critical frontend loader
+  migration. It should remove artwork detail same-app HTTP from
+  `ArtworkLoader` while preserving `ArtworkView` props, the subscribe section,
+  and generic load-failure behavior.
+- 2026-05-16: Completed T-077; `ArtworkLoader` now calls
+  `getArtworkById(params.id, userId)` directly after reading optional session
+  user context, no longer imports `serverApi`, no longer waits on `delay`, and
+  no longer logs direct artwork load results.
+- 2026-05-16: Prepared T-078 as the next route-family frontend migration. It
+  should remove collection artwork same-app HTTP from
+  `CollectionArtworkLoader` and `CollectionArtworksPaginationLoader` while
+  preserving selected artwork rendering, collection artwork pagination links,
+  and existing non-Next failure fallback behavior.
+- 2026-05-16: Completed T-078; `CollectionArtworkLoader` now calls
+  `getCollectionArtwork(slug, artworkId)` directly, and
+  `CollectionArtworksPaginationLoader` now calls
+  `getCollectionWithArtworks(slug)` directly while preserving selected artwork
+  props, pagination link construction, heading text, and null fallback behavior
+  for non-Next loading failures.
+- 2026-05-16: Prepared T-079 as the next frontend section-loader migration. It
+  should remove article list same-app HTTP from `BiographySectionLoader` while
+  preserving `BiographySection` props and null fallback behavior for non-Next
+  loading failures.
+- 2026-05-16: Completed T-079; `BiographySectionLoader` now calls
+  `getArticleList({ section: "biography" })` directly, no longer imports
+  `serverPublicApi`, and preserves `BiographySection` props plus null fallback
+  behavior for non-Next loading failures.
+- 2026-05-16: Prepared T-080 as the next frontend section-loader migration. It
+  should remove collection list same-app HTTP from `CollectionSectionLoader`
+  while preserving `CollectionSection` props and null fallback behavior for
+  non-Next loading failures.
+- 2026-05-16: Completed T-080; `CollectionSectionLoader` now calls
+  `getCollectionList({ section: "collections", limit: 9 })` directly, no
+  longer imports `serverApi`, and preserves `CollectionSection` props plus null
+  fallback behavior for non-Next loading failures.
+- 2026-05-17: Prepared T-081 as the next frontend loader migration. It should
+  remove user navigation same-app HTTP from `AccountSubnavLoader` while
+  preserving account subnav link labels, order, paths, disabled states, and
+  first favourite/watchlist segment behavior.
+- 2026-05-17: Completed T-081; `AccountSubnavLoader` now reads the current
+  session user ID and calls `getOwnUserNavigation` directly, no longer imports
+  `serverApi`, and preserves account subnav labels, order, paths, disabled
+  states, first favourite/watchlist segment links, and cart/orders disabled
+  behavior.
 
 ## Next Agent Action
 
-Assign
-[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
-as the next route-critical frontend loader migration.
+Prepare the next scoped frontend task from the remaining workstream backlog.
+Do not reassign T-081 unless a regression is opened.
 
-Keep real pagination, checkout/cart, remaining Shopify product transform fields,
-and admin product-linking separate.
+Keep favourites/watchlist pagination/detail loaders, user comments/settings
+loaders, shop products, real pagination, checkout/cart, remaining Shopify
+product transform fields, and admin product-linking separate.

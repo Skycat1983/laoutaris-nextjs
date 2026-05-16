@@ -1,12 +1,9 @@
 import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import { UserModel } from "@/lib/data/models";
-import { Prettify, RouteResponse } from "@/lib/data/types";
-import { OwnUserSelectFieldsLean } from "@/lib/data/types/navigationTypes";
-import dbConnect from "@/lib/db/mongodb";
+import { getOwnUserNavigation } from "@/lib/data/services/getOwnUserNavigation";
+import { RouteResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
 import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -20,22 +17,14 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
+    const userNavData = await getOwnUserNavigation(userGuard.userId);
 
-    const leanUserData = await UserModel.findById(userGuard.userId)
-      .select("favourites watchlist comments")
-      .lean<OwnUserSelectFieldsLean>();
-
-    if (!leanUserData) {
+    if (!userNavData) {
       return apiErrorResponse({
         message: "User not found",
         status: 404,
       });
     }
-
-    const userNavData: Prettify<
-      ReturnType<typeof transformAccountNav.toFrontend>
-    > = transformAccountNav.toFrontend(leanUserData);
 
     return apiSuccessResponse<ApiOwnUserNavResult["data"]>(userNavData);
   } catch (error) {

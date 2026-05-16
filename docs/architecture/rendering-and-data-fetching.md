@@ -45,6 +45,36 @@ Implemented proof slices:
   `CollectionsSubnavLoader` and
   `GET /api/v2/public/navigation/collections`, so the collections subnav no
   longer self-fetches the same app for its initial navigation links.
+- `src/lib/data/services/getArticleNavigationList.ts` is shared by
+  `BiographySubnavLoader`, `MainNavLoader`, and
+  `GET /api/v2/public/navigation/articles/[section]`, so those navigation
+  loaders no longer self-fetch the same app for biography article navigation.
+  The biography default redirect page and `ArticleLoader` previous/next
+  navigation path also use this service directly.
+- `src/lib/data/services/getArticleBySlugPopulated.ts` is shared by
+  `ArticleLoader` and `GET /api/v2/public/article/[slug]`, so public article
+  detail server rendering no longer self-fetches the same app for populated
+  article data.
+- `src/lib/data/services/getArticleList.ts` is shared by
+  `BiographySectionLoader` and `GET /api/v2/public/article`, so the home
+  biography section no longer self-fetches the same app for biography article
+  list data.
+- `src/lib/data/services/getBlogBySlugWithAuthor.ts` and
+  `src/lib/data/services/getBlogBySlugWithComments.ts` are shared by
+  `BlogDetailLoader`, `GET /api/v2/public/blog/[slug]`, and
+  `GET /api/v2/public/blog/[slug]/comments`, so public blog detail server
+  rendering no longer self-fetches the same app for either comments mode.
+- `src/lib/data/services/getBlogList.ts` is shared by `BlogListLoader`,
+  `BlogSectionLoader`, and `GET /api/v2/public/blog`, so public blog list and
+  home blog section server rendering no longer self-fetch the same app for blog
+  list data.
+- `src/lib/data/services/getCollectionWithArtworks.ts` and
+  `src/lib/data/services/getCollectionArtwork.ts` are shared by
+  `CollectionArtworksPaginationLoader`, `CollectionArtworkLoader`,
+  `GET /api/v2/public/collection/[slug]/artwork`, and
+  `GET /api/v2/public/collection/[slug]/artwork/[id]`, so collection artwork
+  pagination and selected-artwork server rendering no longer self-fetch the
+  same app for collection artwork reads.
 
 ## Patterns To Audit
 

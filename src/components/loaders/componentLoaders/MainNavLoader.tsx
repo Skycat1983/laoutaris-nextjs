@@ -1,53 +1,32 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
-import {
-  ArticleNavDataFrontend,
-  CollectionNavDataFrontend,
-} from "@/lib/data/types";
-import { ApiSuccessResponse, ApiErrorResponse } from "@/lib/data/types";
-import {
-  ApiArticleNavListResult,
-  ApiCollectionNavListResult,
-} from "@/lib/api/public/navigation/fetchers";
+import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { isNextError } from "@/lib/helpers/isNextError";
-import dbConnect from "@/lib/db/mongodb";
-import { serverApi } from "@/lib/api/serverApi";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
 export interface NavBarLink {
   label: string;
   path: string;
   disabled?: boolean;
 }
 
-type ArticleNavResult = ApiArticleNavListResult | ApiErrorResponse;
-type CollectionNavResult = ApiCollectionNavListResult | ApiErrorResponse;
-
-type MainNavFetchResults = [ArticleNavResult, CollectionNavResult];
-
 export const MainNavLoader = async () => {
   try {
-    await dbConnect();
+    const [articleNavigation, collectionNavigation] = await Promise.all([
+      getArticleNavigationList("biography"),
+      getCollectionNavigationList(),
+    ]);
 
-    const [articleNavigation, collectionNavigation]: MainNavFetchResults =
-      await Promise.all([
-        serverApi.public.navigation.fetchArticleNavigationList("biography"),
-        serverApi.public.navigation.fetchCollectionNavigationList(),
-      ]);
-    if (!articleNavigation.success) {
-      throw new Error(
-        articleNavigation.error || "Failed to fetch article navigation"
-      );
+    if (!articleNavigation) {
+      throw new Error("No articles found");
     }
 
-    if (!collectionNavigation.success) {
-      throw new Error(
-        collectionNavigation.error || "Failed to fetch collection navigation"
-      );
+    if (!collectionNavigation) {
+      throw new Error("No collections found");
     }
 
-    const { data: articleNavigationList } =
-      articleNavigation as ApiSuccessResponse<ArticleNavDataFrontend[]>;
-    const { data: collectionNavigationList } =
-      collectionNavigation as ApiSuccessResponse<CollectionNavDataFrontend[]>;
+    const { data: articleNavigationList } = articleNavigation;
+    const { data: collectionNavigationList } = collectionNavigation;
 
     const navLinks: NavBarLink[] = [
       {

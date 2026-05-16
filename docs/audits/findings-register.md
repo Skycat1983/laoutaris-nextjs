@@ -28,8 +28,8 @@ prioritize, and route actionable findings.
 | F-017 | A-006 | Medium | Converted | The only integration test mostly verifies mocks rather than production Home behavior. | A-006 found `Home.test.tsx` mocks the component under test and its child modules. | [testing workstream](../workstreams/testing-and-quality.md) | Reconciled 2026-05-14 |
 | F-018 | A-006 | Medium | Converted | Coverage is not a documented or enforced gate. | A-006 found no coverage script, no coverage thresholds, and a probe showing 1.78% statement coverage across `src`. | [testing workstream](../workstreams/testing-and-quality.md), [testing runbook](../runbooks/testing.md) | Reconciled 2026-05-14 |
 | F-019 | A-006, A-007 | High | Converted | Build verification is coupled to external Google Fonts and live MongoDB/environment access. | A-006 found sandbox build failure on Google Fonts and successful network build that still performed production MongoDB connection and route/data fetch work; A-007 found a sandbox build failed on MongoDB DNS/egress and the external-access build passed while still using live MongoDB. | [production risks](../risks/production-readiness.md), [testing workstream](../workstreams/testing-and-quality.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing runbook](../runbooks/testing.md) | Reconciled 2026-05-14 |
-| F-020 | A-001, A-002, A-006, A-007, A-013, A-015 | Low | Partially mitigated | Debug logs, expected error output, and debug-only delays make tests, builds, SSR, API, upload, and commerce paths noisy. | Completed audits found console output in tests/builds, fetcher stack logs, DB logs, route logs, product logs, upload widget logs, root layout logs, and an `ArtworkLoader` delay. T-041 removed the always-on middleware path/token/role debug logs. T-067 removed the admin Cloudinary upload widget debug logs, availability polling, and DOM/iframe inspection with source/component regression coverage. T-068 removed direct public shop products route, gallery, and loader `console.log` debug output, replaced the loader's console-directed public error hint, and added focused source/API/component/loader regression coverage. T-069 removed the shared fetcher request/URL/response `console.log` debug output plus server public/user/admin API URL-helper logs and stale commented URL debug blocks, with focused source hygiene and fetcher behavior coverage. Other build, DB, commerce, and SSR noise remains. | [production risks](../risks/production-readiness.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing workstream](../workstreams/testing-and-quality.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-041](../tasks/T-041-harden-middleware-api-auth-responses.md), [T-067](../tasks/T-067-remove-cloudinary-upload-debug-logs.md), [T-068](../tasks/T-068-remove-public-shop-debug-logs.md), [T-069](../tasks/T-069-remove-shared-fetcher-debug-logs.md) | T-069 2026-05-16 |
-| F-021 | A-013, A-015 | High | Partially mitigated | Server-side data access has competing ownership models and relies on same-app HTTP self-fetching. | T-007, T-018, T-021, and T-070 proved the ADR 0004 service pattern for artwork-by-ID, `/artwork` list, `/search`, and collection navigation. T-071 is ready to move article navigation loaders to a shared server-only article navigation service. Other route-critical loaders/actions still need staged migration off same-app HTTP wrappers. | [ADR 0004](../decisions/0004-server-data-access-ownership.md), [production risks](../risks/production-readiness.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [rendering architecture](../architecture/rendering-and-data-fetching.md), [T-018](../tasks/T-018-artwork-list-server-data-proof.md), [T-021](../tasks/T-021-public-search-query-service.md), [T-070](../tasks/T-070-migrate-collections-subnav-loader-service.md), [T-071](../tasks/T-071-migrate-article-navigation-loaders-service.md) | T-070 completed and T-071 prepared 2026-05-16 |
+| F-020 | A-001, A-002, A-006, A-007, A-013, A-015 | Low | Partially mitigated | Debug logs, expected error output, and debug-only delays make tests, builds, SSR, API, upload, and commerce paths noisy. | Completed audits found console output in tests/builds, fetcher stack logs, DB logs, route logs, product logs, upload widget logs, root layout logs, and an `ArtworkLoader` delay. T-041 removed the always-on middleware path/token/role debug logs. T-067 removed the admin Cloudinary upload widget debug logs, availability polling, and DOM/iframe inspection with source/component regression coverage. T-068 removed direct public shop products route, gallery, and loader `console.log` debug output, replaced the loader's console-directed public error hint, and added focused source/API/component/loader regression coverage. T-069 removed the shared fetcher request/URL/response `console.log` debug output plus server public/user/admin API URL-helper logs and stale commented URL debug blocks, with focused source hygiene and fetcher behavior coverage. T-076 removed the public blog list route's touched MongoDB query `console.log` while leaving global logging policy separate. T-077 removed the touched `ArtworkLoader` debug delay and result log. T-079 removed the public article list route's touched direct `console.log` debug output and stack log. Other build, DB, commerce, and SSR noise remains. | [production risks](../risks/production-readiness.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing workstream](../workstreams/testing-and-quality.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-041](../tasks/T-041-harden-middleware-api-auth-responses.md), [T-067](../tasks/T-067-remove-cloudinary-upload-debug-logs.md), [T-068](../tasks/T-068-remove-public-shop-debug-logs.md), [T-069](../tasks/T-069-remove-shared-fetcher-debug-logs.md), [T-076](../tasks/T-076-migrate-blog-list-section-loaders-service.md), [T-077](../tasks/T-077-migrate-artwork-detail-loader-service.md), [T-079](../tasks/T-079-migrate-biography-section-loader-service.md) | T-079 2026-05-16 |
+| F-021 | A-013, A-015 | High | Partially mitigated | Server-side data access has competing ownership models and relies on same-app HTTP self-fetching. | T-007, T-018, T-021, T-070, T-071, T-072, T-073, T-074, T-075, T-076, T-077, T-078, T-079, T-080, and T-081 proved the ADR 0004 service pattern for artwork-by-ID, `/artwork` list, `/search`, collection navigation, article navigation, collection redirect pages, populated article detail data, blog detail data, blog list data, `ArtworkLoader` detail data, collection artwork list/detail data, biography article list data, collection section list data, and account navigation data. `BiographySubnavLoader`, `BiographySectionLoader`, `CollectionSectionLoader`, `MainNavLoader`, `AccountSubnavLoader`, the biography default redirect page, `ArticleLoader` previous/next navigation and article detail data, `BlogDetailLoader`, `BlogListLoader`, `BlogSectionLoader`, `ArtworkLoader`, `CollectionArtworkLoader`, `CollectionArtworksPaginationLoader`, `/collections`, `/collections/[slug]`, the collection navigation item route, the public collection list route, the user navigation route, and the collection artwork routes now use shared server-only services instead of same-app HTTP for those paths. Other route-critical loaders/actions still need staged migration off same-app HTTP wrappers. | [ADR 0004](../decisions/0004-server-data-access-ownership.md), [production risks](../risks/production-readiness.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [rendering architecture](../architecture/rendering-and-data-fetching.md), [T-018](../tasks/T-018-artwork-list-server-data-proof.md), [T-021](../tasks/T-021-public-search-query-service.md), [T-070](../tasks/T-070-migrate-collections-subnav-loader-service.md), [T-071](../tasks/T-071-migrate-article-navigation-loaders-service.md), [T-072](../tasks/T-072-migrate-article-navigation-page-consumers.md), [T-073](../tasks/T-073-migrate-collection-redirect-pages-service.md), [T-074](../tasks/T-074-migrate-article-detail-loader-service.md), [T-075](../tasks/T-075-migrate-blog-detail-loader-service.md), [T-076](../tasks/T-076-migrate-blog-list-section-loaders-service.md), [T-077](../tasks/T-077-migrate-artwork-detail-loader-service.md), [T-078](../tasks/T-078-migrate-collection-artwork-loaders-service.md), [T-079](../tasks/T-079-migrate-biography-section-loader-service.md), [T-080](../tasks/T-080-migrate-collection-section-loader-service.md), [T-081](../tasks/T-081-migrate-account-subnav-loader-service.md) | T-081 completed 2026-05-17 |
 | F-022 | A-013, A-015 | High | Converted | Client/server import boundaries are leaky and can pull server/model modules into client components. | A-013 and A-015 found client components importing `serverApi`, Mongoose model types as values, broad barrels, and server/model modules. | [production risks](../risks/production-readiness.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [frontend workstream](../workstreams/frontend-routes-and-components.md) | Reconciled 2026-05-14 |
 | F-023 | A-013 | Medium | Converted | Domain taxonomy and filter state are duplicated across constants, schemas, public filters, admin forms, and shop filters. | A-013 found repeated artwork option literals and separate shop sentinel values. | [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [data/API workstream](../workstreams/data-models-and-api.md), [frontend workstream](../workstreams/frontend-routes-and-components.md), [Shopify workstream](../workstreams/shopify-commerce.md) | Reconciled 2026-05-14 |
 | F-024 | A-002, A-013, A-015 | High | Partially mitigated | Several MongoDB-backed API routes used by SSR omit route-local `dbConnect()` setup. | T-018, T-021, T-027, and T-028 added explicit DB ownership to the public artwork list, public search, user saved read-route, and favourite/watchlist account action slices. T-046 added explicit route-local `dbConnect()` ownership before model reads in public collection list/detail/artwork routes. T-047 added explicit route-local `dbConnect()` ownership before model reads in public collection navigation detail and collection artworks navigation routes while preserving existing ownership in the list routes. A-002's broader inventory still includes remaining public/admin routes without explicit connection ownership. | [production risks](../risks/production-readiness.md), [data/API workstream](../workstreams/data-models-and-api.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-018](../tasks/T-018-artwork-list-server-data-proof.md), [T-021](../tasks/T-021-public-search-query-service.md), [T-027](../tasks/T-027-user-saved-routes-shared-guard.md), [T-028](../tasks/T-028-saved-item-actions-db-revalidation.md), [T-046](../tasks/T-046-apply-api-response-helpers-public-collection-routes.md), [T-047](../tasks/T-047-apply-api-response-helpers-public-navigation-routes.md) | T-047 2026-05-15 |
@@ -673,8 +673,143 @@ and UI contracts.
 slice. `CollectionsSubnavLoader` and
 `GET /api/v2/public/navigation/collections` now share
 `getCollectionNavigationList`, preserving route envelopes, no-results behavior,
-and rendered subnav links. T-071 is prepared as the next focused article
-navigation loader slice for `BiographySubnavLoader` and `MainNavLoader`.
+and rendered subnav links.
+
+2026-05-16: T-071 completed the focused F-021/ADR 0004 article navigation
+slice. `BiographySubnavLoader`, `MainNavLoader`, and
+`GET /api/v2/public/navigation/articles/[section]` now share
+`getArticleNavigationList`, and `MainNavLoader` reuses
+`getCollectionNavigationList` for the collections link. Route envelopes,
+no-results behavior, public-safe failures, and rendered navigation link formats
+were preserved.
+
+2026-05-16: T-072 completed the current article-navigation cleanup by moving
+`src/app/biography/page.tsx` and the navigation path in `ArticleLoader` to
+`getArticleNavigationList`. Article detail service extraction, collection
+redirect pages, blog loaders, root-layout ownership, and cache policy remain
+separate.
+
+2026-05-16: T-073 completed the collection redirect page migration.
+`/collections` now uses `getCollectionNavigationList`, `/collections/[slug]`
+and `GET /api/v2/public/navigation/collections/[slug]` now use
+`getCollectionNavigationItem`, and the slug redirect page debug
+`console.log` was removed. Collection artworks navigation, collection detail
+pages, blog loaders, root-layout ownership, and cache policy remain separate.
+
+2026-05-16: T-074 was prepared to move `ArticleLoader` populated article detail
+data off same-app HTTP by sharing article detail data access with
+`GET /api/v2/public/article/[slug]`. Blog loaders, blog detail service
+extraction, article list routes, collection detail pages, root-layout
+ownership, and cache policy remain separate.
+
+2026-05-16: T-074 completed the populated article detail migration.
+`ArticleLoader` and `GET /api/v2/public/article/[slug]` now share
+`getArticleBySlugPopulated`; the route preserves its optional session lookup
+and response envelopes, and the loader preserves `ArticleView` props plus
+previous/next navigation behavior. Blog loaders, blog detail service
+extraction, article list routes, collection detail pages, root-layout
+ownership, and cache policy remain separate.
+
+2026-05-16: T-075 was prepared to move `BlogDetailLoader` off same-app HTTP by
+sharing service logic with the public blog detail routes. Blog list/section
+loaders, comment mutation behavior, route URL/base URL policy, root-layout
+ownership, and cache policy remain separate.
+
+2026-05-16: T-075 completed the blog detail migration. `BlogDetailLoader`,
+`GET /api/v2/public/blog/[slug]`, and
+`GET /api/v2/public/blog/[slug]/comments` now share
+`getBlogBySlugWithAuthor` and `getBlogBySlugWithComments`; both route
+contracts and both `showComments` loader modes are preserved, and the loader's
+direct result debug logs are removed. Blog list/section loaders, comment
+mutation behavior, route URL/base URL policy, root-layout ownership, and cache
+policy remain separate.
+
+2026-05-16: T-076 was prepared to move `BlogListLoader` and
+`BlogSectionLoader` off same-app HTTP by sharing blog list service logic with
+`GET /api/v2/public/blog`. Blog detail/comment behavior, unrelated loaders,
+route URL/base URL policy, root-layout ownership, cache policy, and global
+logging/redaction policy remain separate.
+
+2026-05-16: T-076 completed the blog list/section loader migration.
+`getBlogList` now owns public blog list DB connection setup, current
+sort/filter behavior, pagination, transform, and metadata;
+`GET /api/v2/public/blog`, `BlogListLoader`, and `BlogSectionLoader` share it.
+The two loaders no longer use same-app HTTP for blog lists, and the public blog
+list route's touched MongoDB query `console.log` was removed. Focused
+service/API/loader tests, lint, build, and `git diff --check` passed.
+
+2026-05-16: T-077 was prepared to move `ArtworkLoader` off same-app HTTP by
+reusing the existing `getArtworkById` service that already backs
+`GET /api/v2/public/artwork/[id]`. Collection artwork routes/loaders,
+account/user loaders, shop loaders, route URL/base URL policy, root-layout
+ownership, cache policy, and global logging/redaction policy remain separate.
+
+2026-05-16: T-077 completed the artwork detail loader migration.
+`ArtworkLoader` now reads optional user context with `getUserIdFromSession()`
+and calls `getArtworkById(params.id, userId)` directly. It no longer imports
+`serverApi`, uses the debug `delay`, or emits direct artwork load result logs.
+Focused loader/service/API tests, lint, build, and `git diff --check` passed.
+
+2026-05-16: T-078 was prepared to move `CollectionArtworkLoader` and
+`CollectionArtworksPaginationLoader` off same-app HTTP by sharing collection
+artwork service logic with the public collection artwork routes. Keep
+`CollectionSectionLoader`, collection list/detail pages, account/user loaders,
+shop loaders, route URL/base URL policy, root-layout ownership, cache policy,
+and global logging/redaction policy separate.
+
+2026-05-16: T-078 completed the collection artwork loader service migration.
+`getCollectionWithArtworks` now owns the transformed populated collection
+artwork list query, and `getCollectionArtwork` now owns the selected
+artwork-in-collection lookup while preserving the public route's current
+success data shape. `CollectionArtworkLoader`,
+`CollectionArtworksPaginationLoader`, and the two public collection artwork
+routes share those services; the loaders no longer use same-app HTTP for
+collection artwork reads. Focused service/API/loader tests, no-self-fetch
+source checks, lint, build, and `git diff --check` passed.
+
+2026-05-16: T-079 was prepared to move `BiographySectionLoader` off same-app
+HTTP by sharing article list service logic with `GET /api/v2/public/article`.
+Keep `CollectionSectionLoader`, article detail/navigation routes, account/shop
+loaders, route URL/base URL policy, root-layout ownership, cache policy, and
+global logging/redaction policy separate.
+
+2026-05-16: T-079 completed the biography section loader service migration.
+`getArticleList` now owns the public article list query, optional section and
+field selection, pagination, transform, metadata, no-results service behavior,
+and DB connection setup. `BiographySectionLoader` and
+`GET /api/v2/public/article` share that service; the loader no longer uses
+same-app HTTP, and the route preserves its current success, no-results, and
+public-safe `500` bodies while removing touched direct debug logs.
+
+2026-05-16: T-080 was prepared to move `CollectionSectionLoader` off same-app
+HTTP by sharing collection list service logic with
+`GET /api/v2/public/collection`. Keep collection detail/artwork/navigation
+routes, account/user loaders, shop loaders, route URL/base URL policy,
+root-layout ownership, cache policy, and global logging/redaction policy
+separate.
+
+2026-05-16: T-080 completed the collection section loader service migration.
+`getCollectionList` now owns the public collection list query, optional section
+filter, pagination, transform, metadata, missing-list service behavior,
+empty-array success semantics, and DB connection setup.
+`CollectionSectionLoader` and `GET /api/v2/public/collection` share that
+service; the loader no longer uses same-app HTTP, and the route preserves its
+current success, missing-list, and public-safe `500` bodies.
+
+2026-05-17: T-081 was prepared to move `AccountSubnavLoader` off same-app HTTP
+by sharing account navigation service logic with
+`GET /api/v2/user/navigation`. Keep favourites/watchlist loaders, user
+comments/settings loaders, shop loaders, middleware/global auth policy,
+root-layout ownership, cache policy, and global logging/redaction policy
+separate.
+
+2026-05-17: T-081 completed the account subnav loader service migration.
+`getOwnUserNavigation` now owns the user account navigation query, selected
+`favourites`/`watchlist`/`comments` fields, transform, missing-user service
+behavior, and DB connection setup. `AccountSubnavLoader` and
+`GET /api/v2/user/navigation` share that service; the loader no longer uses
+same-app HTTP, and the route preserves its `requireApiUser()` guard, success
+envelope, user-missing `404`, and public-safe `500` body.
 
 Unresolved owner/orchestrator decisions remain:
 

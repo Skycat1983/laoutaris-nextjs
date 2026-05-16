@@ -1,7 +1,5 @@
 import { ArtworkView } from "@/components/views";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiSuccessResponse } from "@/lib/data/types/apiTypes";
-import { CollectionFrontendPopulated } from "@/lib/data/types/collectionTypes";
+import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function CollectionArtworkLoader({
@@ -12,20 +10,13 @@ export async function CollectionArtworkLoader({
   artworkId: string;
 }) {
   try {
-    const result =
-      await serverApi.public.collection.singleCollectionSingleArtwork(
-        slug,
-        artworkId
-      );
+    const result = await getCollectionArtwork(slug, artworkId);
 
-    if (!result.success) {
-      throw new Error(result.error || "Failed to fetch collection artwork");
+    if (result.status !== "found") {
+      throw new Error("Failed to fetch collection artwork");
     }
 
-    const { data: collection } =
-      result as ApiSuccessResponse<CollectionFrontendPopulated>;
-
-    const { artworks } = collection;
+    const { artworks } = result.collection;
 
     return (
       <>

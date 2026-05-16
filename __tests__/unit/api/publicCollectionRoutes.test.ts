@@ -3,9 +3,10 @@ import { GET as GET_COLLECTION_DETAIL } from "@/app/api/v2/public/collection/[sl
 import { GET as GET_COLLECTION_ARTWORK_LIST } from "@/app/api/v2/public/collection/[slug]/artwork/route";
 import { GET as GET_COLLECTION_ARTWORK_DETAIL } from "@/app/api/v2/public/collection/[slug]/artwork/[id]/route";
 import { CollectionModel } from "@/lib/data/models";
+import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
+import { getCollectionList } from "@/lib/data/services/getCollectionList";
+import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
 import dbConnect from "@/lib/db/mongodb";
-import { transformCollection } from "@/lib/transforms/collection/transformCollection";
-import { transformCollectionPopulated } from "@/lib/transforms";
 
 jest.mock("next/server", () => ({
   NextResponse: {
@@ -23,20 +24,20 @@ jest.mock("@/lib/db/mongodb", () => ({
 
 jest.mock("@/lib/data/models", () => ({
   CollectionModel: {
-    find: jest.fn(),
     findOne: jest.fn(),
-    countDocuments: jest.fn(),
   },
 }));
 
-jest.mock("@/lib/transforms/collection/transformCollection", () => ({
-  transformCollection: {
-    toFrontend: jest.fn(),
-  },
+jest.mock("@/lib/data/services/getCollectionWithArtworks", () => ({
+  getCollectionWithArtworks: jest.fn(),
 }));
 
-jest.mock("@/lib/transforms", () => ({
-  transformCollectionPopulated: jest.fn(),
+jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
+  getCollectionArtwork: jest.fn(),
+}));
+
+jest.mock("@/lib/data/services/getCollectionList", () => ({
+  getCollectionList: jest.fn(),
 }));
 
 jest.mock("mongoose", () => ({
@@ -46,15 +47,17 @@ jest.mock("mongoose", () => ({
 }));
 
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
-const mockCollectionFind = CollectionModel.find as jest.Mock;
 const mockCollectionFindOne = CollectionModel.findOne as jest.Mock;
-const mockCountDocuments = CollectionModel.countDocuments as jest.Mock;
-const mockTransformCollectionToFrontend =
-  transformCollection.toFrontend as jest.Mock;
-const mockTransformCollectionPopulated =
-  transformCollectionPopulated as jest.MockedFunction<
-    typeof transformCollectionPopulated
+const mockGetCollectionWithArtworks =
+  getCollectionWithArtworks as jest.MockedFunction<
+    typeof getCollectionWithArtworks
   >;
+const mockGetCollectionArtwork = getCollectionArtwork as jest.MockedFunction<
+  typeof getCollectionArtwork
+>;
+const mockGetCollectionList = getCollectionList as jest.MockedFunction<
+  typeof getCollectionList
+>;
 
 const request = {
   nextUrl: new URL("https://example.test/api/v2/public/collection"),
@@ -73,46 +76,6 @@ const createArtworkParams = (slug: string, id = "64f1f77bcf86cd7994390111") => (
   params: { slug, id },
 });
 
-const createFindQuery = (result: unknown) => {
-  const query = {
-    skip: jest.fn(),
-    limit: jest.fn(),
-    lean: jest.fn().mockResolvedValue(result),
-  };
-  query.skip.mockReturnValue(query);
-  query.limit.mockReturnValue(query);
-  return query;
-};
-
-const createRejectedFindQuery = (error: unknown) => {
-  const query = {
-    skip: jest.fn(),
-    limit: jest.fn(),
-    lean: jest.fn().mockRejectedValue(error),
-  };
-  query.skip.mockReturnValue(query);
-  query.limit.mockReturnValue(query);
-  return query;
-};
-
-const createPopulatedLeanQuery = (result: unknown) => {
-  const query = {
-    populate: jest.fn(),
-    lean: jest.fn().mockResolvedValue(result),
-  };
-  query.populate.mockReturnValue(query);
-  return query;
-};
-
-const createRejectedPopulatedLeanQuery = (error: unknown) => {
-  const query = {
-    populate: jest.fn(),
-    lean: jest.fn().mockRejectedValue(error),
-  };
-  query.populate.mockReturnValue(query);
-  return query;
-};
-
 describe("public collection routes", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -129,21 +92,21 @@ describe("public collection routes", () => {
   });
 
   describe("GET /api/v2/public/collection", () => {
-    it("returns a list success envelope with existing metadata", async () => {
-      const rawCollections = [
-        { slug: "paintings", title: "Paintings" },
-        { slug: "drawings", title: "Drawings" },
-      ];
+    it("returns a list success envelope with existing metadata from the collection list service", async () => {
       const frontendCollections = [
         { slug: "paintings", title: "Paintings", linkTo: "/paintings" },
         { slug: "drawings", title: "Drawings", linkTo: "/drawings" },
       ];
-      const query = createFindQuery(rawCollections);
-      mockCollectionFind.mockReturnValue(query);
-      mockCountDocuments.mockResolvedValue(12);
-      mockTransformCollectionToFrontend
-        .mockReturnValueOnce(frontendCollections[0])
-        .mockReturnValueOnce(frontendCollections[1]);
+      mockGetCollectionList.mockResolvedValue({
+        success: true,
+        data: frontendCollections,
+        metadata: {
+          page: 2,
+          limit: 5,
+          total: 12,
+          totalPages: 3,
+        },
+      } as never);
 
       const response = await GET_COLLECTION_LIST(
         requestWithSearch(
@@ -153,14 +116,11 @@ describe("public collection routes", () => {
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(mockDbConnect).toHaveBeenCalledTimes(1);
-      expect(mockDbConnect.mock.invocationCallOrder[0]).toBeLessThan(
-        mockCollectionFind.mock.invocationCallOrder[0]
-      );
-      expect(mockCollectionFind).toHaveBeenCalledWith({ section: "archive" });
-      expect(query.skip).toHaveBeenCalledWith(5);
-      expect(query.limit).toHaveBeenCalledWith(5);
-      expect(mockCountDocuments).toHaveBeenCalledWith({ section: "archive" });
+      expect(mockGetCollectionList).toHaveBeenCalledWith({
+        section: "archive",
+        page: 2,
+        limit: 5,
+      });
       expect(body).toEqual({
         success: true,
         data: frontendCollections,
@@ -174,11 +134,58 @@ describe("public collection routes", () => {
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
+    it("preserves default list params when query values are omitted", async () => {
+      mockGetCollectionList.mockResolvedValue({
+        success: true,
+        data: [],
+        metadata: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+        },
+      } as never);
+
+      const response = await GET_COLLECTION_LIST(request);
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockGetCollectionList).toHaveBeenCalledWith({
+        section: null,
+        page: 1,
+        limit: 10,
+      });
+      expect(body).toEqual({
+        success: true,
+        data: [],
+        metadata: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+        },
+      });
+    });
+
+    it("preserves the missing-list response body", async () => {
+      mockGetCollectionList.mockResolvedValue(null);
+
+      const response = await GET_COLLECTION_LIST(request);
+      const body = await response.json();
+
+      expect(response.status).toBe(404);
+      expect(body).toEqual({
+        success: false,
+        message: "No collections found",
+        error: "No collections found",
+      });
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+
     it("returns a public-safe 500 when list lookup fails", async () => {
-      mockCollectionFind.mockReturnValue(
-        createRejectedFindQuery(new Error("private collection list"))
+      mockGetCollectionList.mockRejectedValue(
+        new Error("private collection list")
       );
-      mockCountDocuments.mockResolvedValue(0);
 
       const response = await GET_COLLECTION_LIST(request);
       const body = await response.json();
@@ -255,17 +262,11 @@ describe("public collection routes", () => {
 
   describe("GET /api/v2/public/collection/[slug]/artwork", () => {
     it("returns a success envelope for a populated collection", async () => {
-      const rawCollection = {
-        slug: "paintings",
-        artworks: [{ slug: "blue-study" }],
-      };
       const frontendCollection = {
         slug: "paintings",
         artworks: [{ slug: "blue-study", linkTo: "/artwork/blue-study" }],
       };
-      const query = createPopulatedLeanQuery(rawCollection);
-      mockCollectionFindOne.mockReturnValue(query);
-      mockTransformCollectionPopulated.mockReturnValue(
+      mockGetCollectionWithArtworks.mockResolvedValue(
         frontendCollection as never
       );
 
@@ -276,14 +277,7 @@ describe("public collection routes", () => {
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(mockDbConnect.mock.invocationCallOrder[0]).toBeLessThan(
-        mockCollectionFindOne.mock.invocationCallOrder[0]
-      );
-      expect(mockCollectionFindOne).toHaveBeenCalledWith({ slug: "paintings" });
-      expect(query.populate).toHaveBeenCalledWith("artworks");
-      expect(mockTransformCollectionPopulated).toHaveBeenCalledWith(
-        rawCollection
-      );
+      expect(mockGetCollectionWithArtworks).toHaveBeenCalledWith("paintings");
       expect(body).toEqual({
         success: true,
         data: frontendCollection,
@@ -291,7 +285,7 @@ describe("public collection routes", () => {
     });
 
     it("returns 404 when the populated collection does not exist", async () => {
-      mockCollectionFindOne.mockReturnValue(createPopulatedLeanQuery(null));
+      mockGetCollectionWithArtworks.mockResolvedValue(null);
 
       const response = await GET_COLLECTION_ARTWORK_LIST(
         request,
@@ -305,12 +299,12 @@ describe("public collection routes", () => {
         message: "Collection not found",
         error: "Collection not found",
       });
-      expect(mockTransformCollectionPopulated).not.toHaveBeenCalled();
+      expect(mockGetCollectionWithArtworks).toHaveBeenCalledWith("missing");
     });
 
     it("returns a public-safe 500 when populated lookup fails", async () => {
-      mockCollectionFindOne.mockReturnValue(
-        createRejectedPopulatedLeanQuery(new Error("private populated list"))
+      mockGetCollectionWithArtworks.mockRejectedValue(
+        new Error("private populated list")
       );
 
       const response = await GET_COLLECTION_ARTWORK_LIST(
@@ -331,10 +325,10 @@ describe("public collection routes", () => {
 
   describe("GET /api/v2/public/collection/[slug]/artwork/[id]", () => {
     it("returns 404 when the collection does not exist", async () => {
-      const query = {
-        populate: jest.fn().mockResolvedValue(null),
-      };
-      mockCollectionFindOne.mockReturnValue(query);
+      mockGetCollectionArtwork.mockResolvedValue({
+        status: "collection-not-found",
+        collection: null,
+      });
 
       const response = await GET_COLLECTION_ARTWORK_DETAIL(
         request,
@@ -348,16 +342,17 @@ describe("public collection routes", () => {
         message: "Collection not found",
         error: "Collection not found",
       });
+      expect(mockGetCollectionArtwork).toHaveBeenCalledWith(
+        "missing",
+        "64f1f77bcf86cd7994390111"
+      );
     });
 
     it("returns 404 when the artwork is not in the collection", async () => {
-      const query = {
-        populate: jest.fn().mockResolvedValue({
-          slug: "paintings",
-          artworks: [],
-        }),
-      };
-      mockCollectionFindOne.mockReturnValue(query);
+      mockGetCollectionArtwork.mockResolvedValue({
+        status: "artwork-not-found",
+        collection: null,
+      });
 
       const response = await GET_COLLECTION_ARTWORK_DETAIL(
         request,
@@ -378,10 +373,10 @@ describe("public collection routes", () => {
         slug: "paintings",
         artworks: [{ _id: "64f1f77bcf86cd7994390111" }],
       };
-      const query = {
-        populate: jest.fn().mockResolvedValue(collection),
-      };
-      mockCollectionFindOne.mockReturnValue(query);
+      mockGetCollectionArtwork.mockResolvedValue({
+        status: "found",
+        collection: collection as never,
+      });
 
       const response = await GET_COLLECTION_ARTWORK_DETAIL(
         request,
@@ -390,14 +385,10 @@ describe("public collection routes", () => {
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(mockDbConnect.mock.invocationCallOrder[0]).toBeLessThan(
-        mockCollectionFindOne.mock.invocationCallOrder[0]
+      expect(mockGetCollectionArtwork).toHaveBeenCalledWith(
+        "paintings",
+        "64f1f77bcf86cd7994390111"
       );
-      expect(mockCollectionFindOne).toHaveBeenCalledWith({ slug: "paintings" });
-      expect(query.populate).toHaveBeenCalledWith({
-        path: "artworks",
-        match: { _id: expect.any(Object) },
-      });
       expect(body).toEqual({
         success: true,
         data: collection,
@@ -405,12 +396,9 @@ describe("public collection routes", () => {
     });
 
     it("returns a public-safe 500 when artwork detail lookup fails", async () => {
-      const query = {
-        populate: jest
-          .fn()
-          .mockRejectedValue(new Error("private artwork detail")),
-      };
-      mockCollectionFindOne.mockReturnValue(query);
+      mockGetCollectionArtwork.mockRejectedValue(
+        new Error("private artwork detail")
+      );
 
       const response = await GET_COLLECTION_ARTWORK_DETAIL(
         request,

@@ -191,9 +191,31 @@ refactoring without turning every change into a manual QA pass.
 - T-070 added focused collection navigation service, API route, and loader
   coverage proving the collections subnav no longer requires same-app HTTP
   while preserving route envelope/status behavior and `Subnav` links.
-- T-071 is prepared with focused article navigation service, API route, and
-  loader coverage expectations for `BiographySubnavLoader` and `MainNavLoader`
-  no-self-fetch behavior.
+- T-071 added focused article navigation service, API route, and loader
+  coverage for `BiographySubnavLoader` and `MainNavLoader` no-self-fetch
+  behavior.
+- T-072 added focused page and loader coverage for the remaining article
+  navigation page consumers.
+- T-073 added focused service, route, and page coverage for the collection
+  redirect page migration.
+- T-074 added focused populated article detail service, route, and loader
+  coverage.
+- T-075 added focused blog detail service, route, and loader coverage for both
+  `showComments` modes.
+- T-076 added focused blog list service, route, and loader coverage for
+  `BlogListLoader` and `BlogSectionLoader` no-self-fetch behavior.
+- T-077 added focused `ArtworkLoader` coverage for direct `getArtworkById`
+  usage, user-context service calls, no same-app HTTP, generic failure
+  behavior, and no debug delay/result logging.
+- T-078 added focused collection artwork service, route, and loader coverage
+  for detail and pagination no-self-fetch behavior.
+- T-079 added focused article list service, route, and
+  `BiographySectionLoader` coverage for no-self-fetch behavior and touched
+  debug-log cleanup.
+- T-080 added focused collection list service, route, and
+  `CollectionSectionLoader` coverage for no-self-fetch behavior.
+- T-081 added focused account navigation service, user route, and
+  `AccountSubnavLoader` coverage for no-self-fetch behavior.
 
 ## Backlog
 
@@ -754,16 +776,116 @@ npm run lint
   MongoDB/static-generation, branch-verification, and link debug noise.
 - 2026-05-16: Prepared T-071 with focused service, route, and loader coverage
   expectations for the article navigation same-app HTTP migration.
+- 2026-05-16: Completed T-071 focused coverage by adding
+  `__tests__/unit/data/getArticleNavigationList.test.ts`,
+  `__tests__/unit/loaders/BiographySubnavLoader.test.tsx`, and
+  `__tests__/unit/loaders/MainNavLoader.test.tsx`, and updating
+  `__tests__/unit/api/publicNavigationRoutes.test.ts`. Focused Jest, lint,
+  build, and `git diff --check` passed; build retained existing
+  MongoDB/static-generation, branch-verification, and link debug noise.
+- 2026-05-16: Prepared T-072 with focused biography default redirect and
+  `ArticleLoader` navigation coverage expectations.
+- 2026-05-16: Completed T-072 by adding
+  `__tests__/unit/pages/BiographyPage.test.tsx` and
+  `__tests__/unit/loaders/ArticleLoader.test.tsx`. Focused Jest, lint, build,
+  and `git diff --check` passed; build retained existing
+  MongoDB/static-generation, branch-verification, and navigation link debug
+  noise.
+- 2026-05-16: Completed T-073 focused coverage by adding
+  `__tests__/unit/data/getCollectionNavigationItem.test.ts`,
+  `__tests__/unit/pages/CollectionsPage.test.tsx`, and
+  `__tests__/unit/pages/CollectionSlugPage.test.tsx`, and by updating
+  `__tests__/unit/api/publicNavigationRoutes.test.ts`. Focused Jest, full
+  Jest, lint, build, and `git diff --check` passed; build retained existing
+  MongoDB/static-generation, branch-verification, and navigation link debug
+  noise.
+- 2026-05-16: Completed T-074 focused coverage by adding
+  `__tests__/unit/data/getArticleBySlugPopulated.test.ts` and updating
+  `__tests__/unit/api/publicContentDetailRoutes.test.ts` plus
+  `__tests__/unit/loaders/ArticleLoader.test.tsx`. Focused Jest, full Jest,
+  lint, build, and `git diff --check` passed. Full Jest retained existing
+  expected `dateUtils` invalid-date console error output, and build retained
+  existing MongoDB/static-generation, branch-verification, navigation link, and
+  `ArticleView` debug noise.
+- 2026-05-16: Completed T-075 focused coverage by adding
+  `__tests__/unit/data/getBlogBySlugWithAuthor.test.ts`,
+  `__tests__/unit/data/getBlogBySlugWithComments.test.ts`, and
+  `__tests__/unit/loaders/BlogDetailLoader.test.tsx`, and updating
+  `__tests__/unit/api/publicContentDetailRoutes.test.ts`. Focused Jest, full
+  Jest, lint, build, and `git diff --check` passed. Full Jest retained
+  existing expected `dateUtils` invalid-date console error output, and build
+  retained existing MongoDB/static-generation, branch-verification, navigation
+  link, and `ArticleView` debug noise.
+- 2026-05-16: Prepared T-076 with expected focused coverage for the shared blog
+  list service, public blog list route contract, `BlogListLoader` grouped and
+  single-sort paths, and `BlogSectionLoader` no-self-fetch behavior.
+- 2026-05-16: Completed T-076 focused coverage by adding
+  `__tests__/unit/data/getBlogList.test.ts`,
+  `__tests__/unit/api/publicBlogListRoute.test.ts`,
+  `__tests__/unit/loaders/BlogListLoader.test.tsx`, and
+  `__tests__/unit/loaders/BlogSectionLoader.test.tsx`. Focused Jest, lint,
+  build, and `git diff --check` passed. Build retained existing
+  MongoDB/static-generation, branch-verification, navigation link, and
+  `ArticleView` debug noise.
+- 2026-05-16: Prepared T-077 with expected focused coverage for
+  `ArtworkLoader` successful rendering, `getArtworkById` call arguments,
+  missing-artwork behavior, and no self-fetch/debug-delay dependency.
+- 2026-05-16: Completed T-077 focused coverage by adding
+  `__tests__/unit/loaders/ArtworkLoader.test.tsx` for successful rendering,
+  user-context service arguments, anonymous service arguments, missing/failing
+  artwork behavior, no same-app fetches, and source hygiene. Focused Jest,
+  lint, build, and `git diff --check` passed.
+- 2026-05-16: Prepared T-078 with expected focused coverage for collection
+  artwork service success/not-found/failure behavior, public route envelope
+  preservation, selected artwork rendering, collection artwork pagination link
+  construction, and no-self-fetch loader behavior.
+- 2026-05-16: Completed T-078 focused coverage by adding
+  `__tests__/unit/data/getCollectionWithArtworks.test.ts`,
+  `__tests__/unit/data/getCollectionArtwork.test.ts`,
+  `__tests__/unit/loaders/CollectionArtworkLoader.test.tsx`, and
+  `__tests__/unit/loaders/CollectionArtworksPaginationLoader.test.tsx`, plus
+  route-adapter coverage in `__tests__/unit/api/publicCollectionRoutes.test.ts`.
+  Focused Jest, no-self-fetch source checks, lint, build, and
+  `git diff --check` passed. Build retained existing MongoDB/static-generation,
+  branch-verification, navigation link, and `ArticleView` debug noise.
+- 2026-05-16: Prepared T-079 with expected focused coverage for article list
+  service success/no-results/failure behavior, public route envelope
+  preservation, biography section filter behavior, loader no-self-fetch
+  behavior, and touched article list debug-log cleanup.
+- 2026-05-16: Completed T-079 focused coverage by adding
+  `__tests__/unit/data/getArticleList.test.ts`,
+  `__tests__/unit/api/publicArticleListRoute.test.ts`, and
+  `__tests__/unit/loaders/BiographySectionLoader.test.tsx`. Focused Jest and
+  no-self-fetch/debug-log source checks passed.
+- 2026-05-16: Prepared T-080 with expected focused coverage for collection list
+  service success/missing-list/failure behavior, public route envelope
+  preservation, section filter and limit behavior, and loader no-self-fetch
+  behavior.
+- 2026-05-16: Completed T-080 focused coverage by adding
+  `__tests__/unit/data/getCollectionList.test.ts` and
+  `__tests__/unit/loaders/CollectionSectionLoader.test.tsx`, plus
+  route-adapter coverage in `__tests__/unit/api/publicCollectionRoutes.test.ts`.
+  Focused Jest, no-self-fetch source checks, lint, build, and
+  `git diff --check` passed. Build retained existing MongoDB/static-generation
+  and debug-log noise from unrelated paths.
+- 2026-05-17: Prepared T-081 with expected focused coverage for account
+  navigation service success/missing-user/failure behavior, user navigation
+  route guard and envelope preservation, loader no-self-fetch behavior,
+  unauthenticated loader behavior, and account subnav link construction.
+- 2026-05-17: Completed T-081 focused coverage by adding
+  `__tests__/unit/data/getOwnUserNavigation.test.ts` and
+  `__tests__/unit/loaders/AccountSubnavLoader.test.tsx`, plus route-adapter
+  coverage in `__tests__/unit/api/userSavedRoutes.test.ts`. Focused Jest,
+  no-self-fetch source checks, lint, build, and `git diff --check` passed.
+  Build retained existing MongoDB/static-generation and `Subnav` debug-log
+  noise from unrelated paths.
 
 ## Next Agent Action
 
-Assign
-[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
-with focused service, route, and loader coverage for the article navigation
-same-app HTTP migration.
-
 Keep the route/fetcher parity and protected API guard inventories current when
-fetchers or route handlers change.
+fetchers or route handlers change. Do not reassign T-081 unless a regression is
+opened.
+
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
 for owner/orchestrator acceptance of a Next target, then execute the

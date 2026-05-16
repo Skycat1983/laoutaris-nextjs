@@ -2,7 +2,8 @@
 
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
-import { serverApi } from "@/lib/api/serverApi";
+import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
+import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import {
   ArticleFrontendPopulated,
   ArticleNavDataFrontend,
@@ -10,6 +11,7 @@ import {
   ApiSuccessResponse,
 } from "@/lib/data/types";
 import { ArticleSection } from "@/lib/constants";
+import { isNextError } from "@/lib/helpers/isNextError";
 
 interface ArticleLoaderProps {
   slug: string;
@@ -22,18 +24,73 @@ type FetcherResponses = [
   ApiResponse<ArticleNavDataFrontend[]>
 ];
 
+const fetchArticleDetail = async (
+  slug: string
+): Promise<ApiResponse<ArticleFrontendPopulated>> => {
+  try {
+    const result = await getArticleBySlugPopulated(slug);
+
+    if (!result) {
+      return {
+        success: false,
+        error: "Article not found",
+      };
+    }
+
+    return {
+      success: true,
+      data: result,
+    };
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    return {
+      success: false,
+      error: "Failed to fetch article",
+    };
+  }
+};
+
+const fetchArticleNavigation = async (
+  section: ArticleSection
+): Promise<ApiResponse<ArticleNavDataFrontend[]>> => {
+  try {
+    const result = await getArticleNavigationList(section);
+
+    if (!result) {
+      return {
+        success: false,
+        error: "No articles found",
+      };
+    }
+
+    return result;
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    return {
+      success: false,
+      error: "Failed to fetch article navigation",
+    };
+  }
+};
+
 export async function ArticleLoader({
   slug,
   section,
   form,
 }: ArticleLoaderProps) {
   const [articleResponse, navigationResponse] = (await Promise.all([
-    serverApi.public.article.singlePopulated(slug),
-    serverApi.public.navigation.fetchArticleNavigationList(section),
+    fetchArticleDetail(slug),
+    fetchArticleNavigation(section),
   ])) as FetcherResponses;
 
   if (!articleResponse.success) {
-    throw new Error(articleResponse.error || "Failed to fetch article artwork");
+    throw new Error(articleResponse.error || "Failed to fetch article");
   }
 
   if (!navigationResponse.success) {

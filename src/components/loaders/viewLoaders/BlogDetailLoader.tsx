@@ -1,12 +1,11 @@
 import { BlogDetail } from "@/components/views/BlogDetail";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
 import { ApiResponse } from "@/lib/data/types/apiTypes";
 import {
-  BlogEntryFrontend,
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
-import { delay } from "@/lib/utils/debugUtils";
+import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getBlogBySlugWithComments } from "@/lib/data/services/getBlogBySlugWithComments";
 
 interface Props {
   slug: string;
@@ -17,18 +16,35 @@ export type BlogDetailLoaderResult =
   | ApiResponse<BlogEntryPopulatedCommentsPopulatedFrontend>
   | ApiResponse<BlogEntryFrontendWithAuthor>;
 
+const fetchBlogDetail = async ({
+  slug,
+  showComments,
+}: Required<Props>): Promise<BlogDetailLoaderResult> => {
+  const data = showComments
+    ? await getBlogBySlugWithComments(slug)
+    : await getBlogBySlugWithAuthor(slug);
+
+  if (!data) {
+    return {
+      success: false,
+      error: "Blog entry not found",
+    };
+  }
+
+  return {
+    success: true,
+    data,
+  };
+};
+
 export async function BlogDetailLoader({ slug, showComments = false }: Props) {
-  // await delay(2000);
   try {
-    const result: BlogDetailLoaderResult = showComments
-      ? await serverPublicApi.blog.singlePopulated(slug)
-      : await serverPublicApi.blog.single(slug);
-    console.log("result", result);
+    const result = await fetchBlogDetail({ slug, showComments });
 
     if (!result.success) {
       throw new Error(result.error);
     }
-    console.log("result in blog loader", result);
+
     const { data } = result;
 
     if (showComments) {

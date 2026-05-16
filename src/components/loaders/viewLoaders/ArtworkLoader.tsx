@@ -1,19 +1,28 @@
 import { SubscribeSection } from "@/components/sections";
 import { ArtworkView } from "@/components/views";
-import { serverApi } from "@/lib/api/serverApi";
-import { ArtworkFrontend } from "@/lib/data/types";
-import { ApiSuccessResponse } from "@/lib/data/types";
-import { delay } from "@/lib/utils/debugUtils";
+import { getArtworkById } from "@/lib/data/services/getArtworkById";
+import { isNextError } from "@/lib/helpers/isNextError";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import React from "react";
 
 const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
-  await delay(1000);
-  const result = await serverApi.public.artwork.single(params.id);
-  console.log("artwork loader result in ArtworkLoader: ", result);
-  if (!result.success) {
+  let data: Awaited<ReturnType<typeof getArtworkById>>;
+
+  try {
+    const userId = await getUserIdFromSession();
+    data = await getArtworkById(params.id, userId);
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     throw new Error("Failed to fetch artwork");
   }
-  const { data } = result as ApiSuccessResponse<ArtworkFrontend>;
+
+  if (!data) {
+    throw new Error("Failed to fetch artwork");
+  }
+
   return (
     <>
       <div className="py-16">

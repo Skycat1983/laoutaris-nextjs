@@ -1,11 +1,9 @@
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
-import { CollectionModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import { CollectionSelectFieldsLean, RouteResponse } from "@/lib/data/types";
+import { RouteResponse } from "@/lib/data/types";
 import { ApiCollectionNavItemResult } from "@/lib/api/public/navigation/fetchers";
-import { transformCollectionNav } from "@/lib/transforms/navigation/transformNavData";
-import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 
 export const GET = async (
   _request: NextRequest,
@@ -14,23 +12,14 @@ export const GET = async (
   const { slug } = params;
 
   try {
-    await dbConnect();
+    const collectionNavData = await getCollectionNavigationItem(slug);
 
-    const collectionLean = await CollectionModel.findOne({
-      section: "collections",
-      slug,
-    })
-      .select("title slug artworks")
-      .lean<CollectionSelectFieldsLean>(); //? add type to lean() ?
-
-    if (!collectionLean) {
+    if (!collectionNavData) {
       return apiErrorResponse({
         message: "Collection not found",
         status: 404,
       });
     }
-
-    const collectionNavData = transformCollectionNav.toFrontend(collectionLean);
 
     return apiSuccessResponse<ApiCollectionNavItemResult["data"]>(
       collectionNavData

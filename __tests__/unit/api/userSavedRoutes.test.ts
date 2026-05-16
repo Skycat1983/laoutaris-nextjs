@@ -3,10 +3,10 @@ import { GET as getUserFavouriteItem } from "@/app/api/v2/user/favourite/[artwor
 import { GET as getUserNavigation } from "@/app/api/v2/user/navigation/route";
 import { GET as getUserWatchlist } from "@/app/api/v2/user/watchlist/route";
 import { GET as getUserWatchlistItem } from "@/app/api/v2/user/watchlist/[artworkId]/route";
+import { getOwnUserNavigation } from "@/lib/data/services/getOwnUserNavigation";
 import dbConnect from "@/lib/db/mongodb";
 import { ArtworkModel, UserModel } from "@/lib/data/models";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
-import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
@@ -40,14 +40,12 @@ jest.mock("@/lib/data/models", () => ({
   },
 }));
 
-jest.mock("@/lib/transforms/artwork/transformArtwork", () => ({
-  transformArtwork: {
-    toFrontend: jest.fn(),
-  },
+jest.mock("@/lib/data/services/getOwnUserNavigation", () => ({
+  getOwnUserNavigation: jest.fn(),
 }));
 
-jest.mock("@/lib/transforms/navigation/transformNavData", () => ({
-  transformAccountNav: {
+jest.mock("@/lib/transforms/artwork/transformArtwork", () => ({
+  transformArtwork: {
     toFrontend: jest.fn(),
   },
 }));
@@ -64,7 +62,9 @@ const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockArtworkFindById = ArtworkModel.findById as jest.Mock;
 const mockTransformArtwork = transformArtwork.toFrontend as jest.Mock;
-const mockTransformAccountNav = transformAccountNav.toFrontend as jest.Mock;
+const mockGetOwnUserNavigation = getOwnUserNavigation as jest.MockedFunction<
+  typeof getOwnUserNavigation
+>;
 
 const userId = "507f1f77bcf86cd799439011";
 const artworkId = "64f1f77bcf86cd799439022";
@@ -98,7 +98,7 @@ const expectUnauthorized = async (response: JsonResponse) => {
   expect(mockDbConnect).not.toHaveBeenCalled();
   expect(mockUserFindById).not.toHaveBeenCalled();
   expect(mockArtworkFindById).not.toHaveBeenCalled();
-  expect(mockTransformAccountNav).not.toHaveBeenCalled();
+  expect(mockGetOwnUserNavigation).not.toHaveBeenCalled();
   expect(mockTransformArtwork).not.toHaveBeenCalled();
 };
 
@@ -138,6 +138,17 @@ describe("user saved route guards", () => {
     consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     mockGetServerSession.mockResolvedValue(null);
     mockDbConnect.mockResolvedValue(undefined);
+    mockGetOwnUserNavigation.mockResolvedValue({
+      favourites: ["art-1"],
+      watchlist: ["art-2"],
+      comments: ["comment-1"],
+      firstFavouriteId: "art-1",
+      firstWatchlistId: "art-2",
+      firstCommentId: "comment-1",
+      hasFavourites: true,
+      hasWatchlist: true,
+      hasComments: true,
+    } as never);
   });
 
   afterEach(() => {
@@ -170,11 +181,6 @@ describe("user saved route guards", () => {
 
   it.each([
     [
-      "navigation",
-      () => mockSelectLeanUser(null),
-      () => getUserNavigation({} as never),
-    ],
-    [
       "favourites list",
       () => mockSelectPopulateLeanUser(null),
       () => getUserFavourite({} as never),
@@ -195,17 +201,24 @@ describe("user saved route guards", () => {
       await expectErrorResponse(response, 404, "User not found");
       expect(mockDbConnect).toHaveBeenCalledTimes(1);
       expect(mockUserFindById).toHaveBeenCalledWith(userId);
-      expect(mockTransformAccountNav).not.toHaveBeenCalled();
       expect(mockTransformArtwork).not.toHaveBeenCalled();
     }
   );
 
+  it("returns a real JSON 404 when the current user is missing for navigation", async () => {
+    setAuthenticatedSession();
+    mockGetOwnUserNavigation.mockResolvedValue(null);
+
+    const response = (await getUserNavigation({} as never)) as JsonResponse;
+
+    await expectErrorResponse(response, 404, "User not found");
+    expect(mockGetOwnUserNavigation).toHaveBeenCalledWith(userId);
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockTransformArtwork).not.toHaveBeenCalled();
+  });
+
   it.each([
-    [
-      "navigation",
-      () => getUserNavigation({} as never),
-      "Failed to fetch user navigation",
-    ],
     [
       "favourites list",
       () => getUserFavourite({} as never),
@@ -230,30 +243,44 @@ describe("user saved route guards", () => {
     }
   );
 
+  it("returns a public-safe 500 when navigation loading fails", async () => {
+    setAuthenticatedSession();
+    mockGetOwnUserNavigation.mockRejectedValue(
+      new Error("private navigation failure")
+    );
+
+    const response = (await getUserNavigation({} as never)) as JsonResponse;
+
+    await expectErrorResponse(response, 500, "Failed to fetch user navigation");
+    expect(mockGetOwnUserNavigation).toHaveBeenCalledWith(userId);
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockArtworkFindById).not.toHaveBeenCalled();
+    expect(mockTransformArtwork).not.toHaveBeenCalled();
+  });
+
   it("loads account navigation for authenticated callers", async () => {
     setAuthenticatedSession();
-    const leanUserData = {
+    const navData = {
       favourites: ["art-1"],
       watchlist: ["art-2"],
       comments: ["comment-1"],
-    };
-    const navData = {
-      favouritedCount: 1,
-      watchlistCount: 1,
-      commentCount: 1,
-    };
-    const { select, lean } = mockSelectLeanUser(leanUserData);
-    mockTransformAccountNav.mockReturnValue(navData);
+      firstFavouriteId: "art-1",
+      firstWatchlistId: "art-2",
+      firstCommentId: "comment-1",
+      hasFavourites: true,
+      hasWatchlist: true,
+      hasComments: true,
+    } as never;
+    mockGetOwnUserNavigation.mockResolvedValue(navData);
 
     const response = (await getUserNavigation({} as never)) as JsonResponse;
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockUserFindById).toHaveBeenCalledWith(userId);
-    expect(select).toHaveBeenCalledWith("favourites watchlist comments");
-    expect(lean).toHaveBeenCalledTimes(1);
-    expect(mockTransformAccountNav).toHaveBeenCalledWith(leanUserData);
+    expect(mockGetOwnUserNavigation).toHaveBeenCalledWith(userId);
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
     expect(body).toEqual({
       success: true,
       data: navData,

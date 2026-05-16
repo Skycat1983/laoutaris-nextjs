@@ -2,30 +2,20 @@ import { buildUrl } from "@/lib/utils/urlUtils";
 
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { ArtworkFrontend } from "@/lib/data/types";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
+import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
 import { isNextError } from "@/lib/helpers/isNextError";
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;
 }
 
-type PaginationLoaderResult = Awaited<
-  ReturnType<typeof serverApi.public.collection.singleCollectionAllArtwork>
->;
-
 export async function CollectionArtworksPaginationLoader({
   slug,
 }: CollectionArtworksPaginationLoaderProps) {
   try {
-    const result: PaginationLoaderResult =
-      await serverApi.public.collection.singleCollectionAllArtwork(slug);
-    if (!result.success) {
-      throw new Error(
-        result.error || "Failed to fetch collection artworks navigation"
-      );
+    const data = await getCollectionWithArtworks(slug);
+    if (!data) {
+      throw new Error("Failed to fetch collection artworks navigation");
     }
-
-    const { data } = result as ApiCollectionPopulatedResult;
 
     const buildCollectionLink = (artwork: ArtworkFrontend) =>
       buildUrl(["collections", slug, artwork._id]);

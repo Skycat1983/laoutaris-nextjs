@@ -1,15 +1,9 @@
 import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { ArticleSection } from "@/lib/constants";
-import { ArticleModel } from "@/lib/data/models";
-import {
-  ArticleSelectFieldsLean,
-  ArticleNavDataFrontend,
-  RouteResponse,
-} from "@/lib/data/types";
+import { RouteResponse } from "@/lib/data/types";
+import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { NextRequest } from "next/server";
-import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
-import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export const dynamic = "force-dynamic";
@@ -21,29 +15,16 @@ export const GET = async (
   const { section } = params;
 
   try {
-    await dbConnect();
-    const articleLean = await ArticleModel.find({ section: section })
-      .select("title slug")
-      .sort({ displayDate: -1 })
-      .lean<ArticleSelectFieldsLean[]>();
+    const result = await getArticleNavigationList(section);
 
-    if (!articleLean.length) {
+    if (!result) {
       return apiErrorResponse({
         message: "No articles found",
         status: 404,
       });
     }
 
-    const navItems: ArticleNavDataFrontend[] = articleLean.map((article) =>
-      transformBiographyNav.toFrontend(article)
-    );
-
-    return apiListResponse(navItems, {
-      total: navItems.length,
-      page: 1,
-      limit: navItems.length,
-      totalPages: 1,
-    });
+    return apiListResponse(result.data, result.metadata);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

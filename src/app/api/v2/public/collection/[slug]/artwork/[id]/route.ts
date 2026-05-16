@@ -1,10 +1,8 @@
 import { NextRequest } from "next/server";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
-import { CollectionModel } from "@/lib/data/models";
-import { Types } from "mongoose";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
-import dbConnect from "@/lib/db/mongodb";
+import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
@@ -12,25 +10,17 @@ export async function GET(
   { params }: { params: { slug: string; id: string } }
 ): Promise<RouteResponse<ApiCollectionPopulatedResult>> {
   try {
-    await dbConnect();
-
     const { slug, id } = params;
+    const result = await getCollectionArtwork(slug, id);
 
-    // find collection and populate only the matching artwork
-    const collection = await CollectionModel.findOne({ slug }).populate({
-      path: "artworks",
-      match: { _id: new Types.ObjectId(id) },
-    });
-
-    if (!collection) {
+    if (result.status === "collection-not-found") {
       return apiErrorResponse({
         message: "Collection not found",
         status: 404,
       });
     }
 
-    // check if artwork exists in this collection
-    if (!collection.artworks?.length) {
+    if (result.status === "artwork-not-found") {
       return apiErrorResponse({
         message: "Artwork not found in this collection",
         status: 404,
@@ -38,7 +28,7 @@ export async function GET(
     }
 
     return apiSuccessResponse<ApiCollectionPopulatedResult["data"]>(
-      collection as ApiCollectionPopulatedResult["data"]
+      result.collection
     );
   } catch (error) {
     if (isNextError(error)) {

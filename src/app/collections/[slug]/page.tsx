@@ -1,8 +1,8 @@
 "use server";
 
 import { buildUrl } from "@/lib/utils/urlUtils";
-
-import { serverApi } from "@/lib/api/serverApi";
+import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
+import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
 export default async function CollectionSlug({
@@ -11,20 +11,12 @@ export default async function CollectionSlug({
   params: { slug: string };
 }) {
   try {
-    console.log("params slug in collection slug page", params.slug);
-    // Fetch the specific collection
-    const result =
-      await serverApi.public.navigation.fetchCollectionNavigationItem(
-        params.slug
-      );
+    const collection = await getCollectionNavigationItem(params.slug);
 
-    if (!result.success) {
-      throw new Error(result.error);
+    if (!collection) {
+      throw new Error("Collection not found");
     }
 
-    const collection = result.data;
-
-    // Build and redirect to the full path
     const redirectPath = buildUrl([
       "collections",
       collection.slug,
@@ -33,6 +25,10 @@ export default async function CollectionSlug({
 
     return redirect(redirectPath);
   } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
     console.error("Error in collection slug redirect:", error);
     throw error; // Let Next.js error boundary handle it
   }

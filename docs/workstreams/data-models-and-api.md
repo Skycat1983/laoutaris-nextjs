@@ -187,10 +187,30 @@ consistent enough for production refactoring and Shopify integration.
 - T-070 completed the public collection navigation service slice: the API route
   now adapts `getCollectionNavigationList` results into the existing success
   envelope, `404` no-results response, and public-safe `500` response.
-- T-071 is prepared as the article navigation service slice: the public article
-  navigation route should adapt a shared `getArticleNavigationList` service into
-  the existing success envelope, `404` no-results response, and public-safe
-  `500` response.
+- T-071 completed the article navigation service slice: the public article
+  navigation route now adapts the shared `getArticleNavigationList` service
+  into the existing success envelope, `404` no-results response, and
+  public-safe `500` response.
+- T-072 reused `getArticleNavigationList` from remaining article navigation page
+  consumers without changing the API route contract.
+- T-073 added a shared collection navigation item service and reused collection
+  navigation services from collection redirect pages and the public collection
+  navigation item route.
+- T-074 added a shared populated article detail service for the public article
+  detail route and `ArticleLoader`.
+- T-075 shares blog detail service logic between `BlogDetailLoader` and the
+  public blog detail routes.
+- T-076 shares blog list service logic between `GET /api/v2/public/blog`,
+  `BlogListLoader`, and `BlogSectionLoader`.
+- T-078 shares collection artwork service logic between the public collection
+  artwork routes, `CollectionArtworkLoader`, and
+  `CollectionArtworksPaginationLoader`.
+- T-079 shares article list service logic between
+  `GET /api/v2/public/article` and `BiographySectionLoader`.
+- T-080 shares collection list service logic between
+  `GET /api/v2/public/collection` and `CollectionSectionLoader`.
+- T-081 shares account navigation service logic between
+  `GET /api/v2/user/navigation` and `AccountSubnavLoader`.
 
 ## Backlog
 
@@ -612,13 +632,83 @@ Add API route tests where behavior is changed.
   public article navigation route, `BiographySubnavLoader`, and `MainNavLoader`
   should share one server-only query/transform service while preserving route
   envelopes and loader link behavior.
+- 2026-05-16: Completed T-071; `getArticleNavigationList` now owns the article
+  navigation list `dbConnect()`, query, selection, `displayDate: -1` sort,
+  transform, no-results signal, and metadata, while the public route preserves
+  the existing success, `404`, and public-safe `500` envelopes.
+- 2026-05-16: Prepared T-072 to reuse the completed article navigation service
+  from `src/app/biography/page.tsx` and the navigation path in `ArticleLoader`
+  without changing article detail data access.
+- 2026-05-16: Completed T-072; remaining article navigation page consumers now
+  use `getArticleNavigationList` directly, with no public article navigation
+  API contract changes and no article-detail service extraction.
+- 2026-05-16: Completed T-073; `getCollectionNavigationItem` now owns the
+  single collection navigation item DB connection, query, selection, transform,
+  and not-found result, while the public route preserves the existing success,
+  `404`, and public-safe `500` response contract.
+- 2026-05-16: Completed T-074; `getArticleBySlugPopulated` now owns the
+  populated article detail DB connection, `slug` lookup, `author artwork`
+  population, lean typing, transform, and not-found result, while the public
+  article detail route preserves its optional session lookup before service
+  work plus the existing success, `404`, and public-safe `500` contract.
+- 2026-05-16: Completed T-075; `getBlogBySlugWithAuthor` now owns the
+  non-comments blog detail DB connection, `slug` lookup, `comments` and
+  `author` population, lean typing, transform, and not-found result.
+  `getBlogBySlugWithComments` now owns the populated-comments detail DB
+  connection, `slug` lookup, `comments.author` population, lean typing,
+  transform, and not-found result. Both public blog detail routes preserve
+  their existing success, `404`, and public-safe `500` contracts.
+- 2026-05-16: Prepared T-076 to move the public blog list query, sort/filter,
+  transform, metadata, and DB ownership into a shared service used by
+  `GET /api/v2/public/blog`, `BlogListLoader`, and `BlogSectionLoader`.
+- 2026-05-16: Completed T-076; `getBlogList` now owns public blog list DB
+  connection setup, current sort/filter behavior, pagination, transform, and
+  metadata, while `GET /api/v2/public/blog` preserves the existing valid
+  success envelope, invalid `sortby` body, and public-safe `500` body.
+- 2026-05-16: Prepared T-078 to move collection artwork list/detail lookup
+  behavior into shared service logic used by
+  `GET /api/v2/public/collection/[slug]/artwork`,
+  `GET /api/v2/public/collection/[slug]/artwork/[id]`, and the corresponding
+  server loaders.
+- 2026-05-16: Completed T-078; `getCollectionWithArtworks` now owns the
+  populated collection artwork list DB connection, `slug` lookup, `artworks`
+  population, lean typing, and transform. `getCollectionArtwork` now owns the
+  selected artwork-in-collection DB connection, `slug` lookup, matching artwork
+  population, collection-missing/artwork-missing distinction, and preserved
+  success data shape. Both public routes preserve their existing success,
+  `404`, and public-safe `500` contracts.
+- 2026-05-16: Prepared T-079 to move the public article list query, optional
+  section/field filters, pagination, transform, metadata, and DB ownership into
+  shared service logic used by `GET /api/v2/public/article` and
+  `BiographySectionLoader`.
+- 2026-05-16: Completed T-079; `getArticleList` now owns public article list
+  DB connection setup, optional section and field selection, pagination,
+  transform, metadata, and no-results service behavior while the public article
+  list route preserves its existing success, no-results, and public-safe `500`
+  response bodies.
+- 2026-05-16: Prepared T-080 to move the public collection list query, optional
+  section filter, pagination, transform, metadata, and DB ownership into shared
+  service logic used by `GET /api/v2/public/collection` and
+  `CollectionSectionLoader`.
+- 2026-05-16: Completed T-080; `getCollectionList` now owns public collection
+  list DB connection setup, optional section filtering, pagination, transform,
+  metadata, missing-list service behavior, and empty-array success semantics
+  while the public collection list route preserves its existing success,
+  missing-list, and public-safe `500` response bodies.
+- 2026-05-17: Prepared T-081 to move the user account navigation query,
+  `favourites`/`watchlist`/`comments` field selection, transform, missing-user
+  handling, and DB ownership into shared service logic used by
+  `GET /api/v2/user/navigation` and `AccountSubnavLoader`.
+- 2026-05-17: Completed T-081; `getOwnUserNavigation` now owns user account
+  navigation DB connection setup, current-user lookup, selected
+  `favourites`/`watchlist`/`comments` fields, `transformAccountNav` mapping,
+  and missing-user service behavior while the user navigation route preserves
+  its existing guard, success, `404`, and public-safe `500` bodies.
 
 ## Next Agent Action
 
-Assign
-[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
-as the next data/API slice for shared article navigation route-owned data
-access.
+Prepare the next scoped data/API task from the remaining workstream backlog.
+Do not reassign T-081 unless a regression is opened.
 
 Shopify admin product-link validation and existing-data migration remain
 separate from the completed public-read normalization and the blocked live

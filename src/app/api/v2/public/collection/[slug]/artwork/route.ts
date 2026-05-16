@@ -1,14 +1,8 @@
 import { NextRequest } from "next/server";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
-import { CollectionModel } from "@/lib/data/models";
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
-import {
-  CollectionLeanPopulated,
-  CollectionFrontendPopulated,
-} from "@/lib/data/types";
-import { transformCollectionPopulated } from "@/lib/transforms";
-import dbConnect from "@/lib/db/mongodb";
+import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export const GET = async (
@@ -16,26 +10,17 @@ export const GET = async (
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiCollectionPopulatedResult>> => {
   try {
-    await dbConnect();
+    const collection = await getCollectionWithArtworks(params.slug);
 
-    const rawCollection: CollectionLeanPopulated =
-      (await CollectionModel.findOne({
-        slug: params.slug,
-      })
-        .populate<CollectionLeanPopulated>("artworks")
-        .lean()) as CollectionLeanPopulated;
-
-    if (!rawCollection) {
+    if (!collection) {
       return apiErrorResponse({
         message: "Collection not found",
         status: 404,
       });
     }
 
-    const frontendCollection: CollectionFrontendPopulated =
-      transformCollectionPopulated(rawCollection);
     return apiSuccessResponse<ApiCollectionPopulatedResult["data"]>(
-      frontendCollection
+      collection
     );
   } catch (error) {
     if (isNextError(error)) {

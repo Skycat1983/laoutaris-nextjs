@@ -75,10 +75,40 @@ or inconsistent code forward.
   `GET /api/v2/public/navigation/collections` now share the server-only
   `getCollectionNavigationList` service instead of same-app HTTP for the
   initial navigation links.
-- T-071 is prepared as the next ADR 0004 service-adapter slice for article
+- T-071 completed the next ADR 0004 service-adapter slice for article
   navigation: `BiographySubnavLoader`, `MainNavLoader`, and
-  `GET /api/v2/public/navigation/articles/[section]` should share a
-  server-only article navigation service.
+  `GET /api/v2/public/navigation/articles/[section]` now share the
+  server-only `getArticleNavigationList` service, and `MainNavLoader` reuses
+  `getCollectionNavigationList` for its collection link.
+- T-072 finished the current article-navigation cleanup by moving the biography
+  default redirect page and `ArticleLoader` navigation path to
+  `getArticleNavigationList` while leaving article detail fetching separate.
+- T-073 completed the collection navigation redirect service-adapter slice:
+  `/collections`, `/collections/[slug]`, and
+  `GET /api/v2/public/navigation/collections/[slug]` now share server-only
+  collection navigation services instead of same-app HTTP for redirect data.
+- T-074 completed the next ADR 0004 service-adapter slice:
+  `ArticleLoader` and `GET /api/v2/public/article/[slug]` now share
+  `getArticleBySlugPopulated` for populated article detail data.
+- T-075 completed the next ADR 0004 service-adapter slice:
+  `BlogDetailLoader`, `GET /api/v2/public/blog/[slug]`, and
+  `GET /api/v2/public/blog/[slug]/comments` now share server-only blog detail
+  services.
+- T-076 completed the ADR 0004 service-adapter slice for `BlogListLoader`,
+  `BlogSectionLoader`, and `GET /api/v2/public/blog`.
+- T-077 completed the loader-only ADR 0004 slice for `ArtworkLoader`, reusing
+  the existing `getArtworkById` service that already backs the public artwork
+  detail route.
+- T-078 completed the next ADR 0004 route-family slice:
+  `CollectionArtworkLoader`, `CollectionArtworksPaginationLoader`, and the
+  public collection artwork routes now share server-only collection artwork
+  services.
+- T-079 completed the next ADR 0004 slice for `BiographySectionLoader`
+  and `GET /api/v2/public/article`, which now share `getArticleList`.
+- T-080 completed the next ADR 0004 slice for `CollectionSectionLoader`
+  and `GET /api/v2/public/collection`, which now share `getCollectionList`.
+- T-081 is prepared as the next ADR 0004 slice for `AccountSubnavLoader` and
+  `GET /api/v2/user/navigation`.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -201,14 +231,99 @@ Use targeted import/reference searches for pruning tasks.
   same-app HTTP by sharing article navigation data access with the public
   article navigation route, and it reuses T-070's collection navigation service
   for the main nav collection link.
+- 2026-05-16: Completed T-071; added `getArticleNavigationList`, refactored
+  the public article navigation API route, `BiographySubnavLoader`, and
+  `MainNavLoader` to share it, reused `getCollectionNavigationList` from the
+  main nav, removed those loaders' navigation same-app HTTP dependency, and
+  added focused service/API/loader tests.
+- 2026-05-16: Prepared T-072 to remove the remaining article-navigation
+  same-app HTTP calls from `src/app/biography/page.tsx` and the navigation path
+  in `ArticleLoader`, while leaving article-detail service extraction separate.
+- 2026-05-16: Completed T-072; `src/app/biography/page.tsx` now calls
+  `getArticleNavigationList("biography")` directly for its default redirect,
+  and `ArticleLoader` now calls `getArticleNavigationList(section)` for
+  previous/next navigation while intentionally keeping article detail on
+  `serverApi.public.article.singlePopulated(slug)`.
+- 2026-05-16: Completed T-073; added `getCollectionNavigationItem`, refactored
+  the collection navigation item API route and collection redirect pages to use
+  server-only collection navigation services, removed the slug page debug
+  `console.log`, and added focused service/API/page tests.
+- 2026-05-16: Completed T-074; added `getArticleBySlugPopulated`,
+  refactored the public article detail API route and `ArticleLoader` to share
+  it, removed the loader's `serverApi.public.article.singlePopulated(slug)`
+  same-app HTTP dependency, and added focused service/API/loader tests.
+- 2026-05-16: Completed T-075; added `getBlogBySlugWithAuthor` and
+  `getBlogBySlugWithComments`, refactored both public blog detail routes and
+  `BlogDetailLoader` to share them, removed the loader's `serverPublicApi`
+  blog detail dependency, removed direct result debug logging, and added
+  focused service/API/loader tests.
+- 2026-05-16: Prepared T-076 to move `BlogListLoader` and
+  `BlogSectionLoader` off same-app HTTP by sharing blog list data access with
+  `GET /api/v2/public/blog`, while keeping blog detail/comment behavior,
+  unrelated loaders, route URL/base URL policy, root-layout ownership, and
+  cache policy separate.
+- 2026-05-16: Completed T-076; added `getBlogList`, refactored the public blog
+  list route, `BlogListLoader`, and `BlogSectionLoader` to share it, removed
+  the loaders' same-app blog list HTTP dependency, removed the touched route
+  query debug log, and added focused service/API/loader tests.
+- 2026-05-16: Prepared T-077 to move `ArtworkLoader` off same-app HTTP by
+  reusing the existing `getArtworkById` service, while keeping the public
+  artwork detail route, collection artwork loaders/routes, route URL/base URL
+  policy, root-layout ownership, and cache policy separate.
+- 2026-05-16: Completed T-077; `ArtworkLoader` now calls
+  `getUserIdFromSession()` and `getArtworkById(params.id, userId)` directly,
+  no longer imports `serverApi`, no longer waits on the debug `delay`, and no
+  longer emits direct result `console.log` output.
+- 2026-05-16: Prepared T-078 to move the collection artwork detail and
+  pagination loaders off same-app HTTP by sharing server-only collection
+  artwork service logic with
+  `GET /api/v2/public/collection/[slug]/artwork` and
+  `GET /api/v2/public/collection/[slug]/artwork/[id]`.
+- 2026-05-16: Completed T-078; added `getCollectionWithArtworks` and
+  `getCollectionArtwork`, refactored the two public collection artwork routes
+  and the two collection artwork loaders to share them, removed the loaders'
+  collection artwork same-app HTTP dependencies, and added focused
+  service/API/loader tests.
+- 2026-05-16: Prepared T-079 to move `BiographySectionLoader` off same-app
+  HTTP by sharing article list service logic with
+  `GET /api/v2/public/article`, while keeping `CollectionSectionLoader`,
+  article detail/navigation routes, account/shop loaders, cache policy, and
+  route URL/base URL policy separate.
+- 2026-05-16: Completed T-079; added `getArticleList`, refactored
+  `BiographySectionLoader` and `GET /api/v2/public/article` to share it,
+  removed the loader's article list same-app HTTP dependency, removed touched
+  article list route debug logs, and added focused service/API/loader tests.
+- 2026-05-16: Prepared T-080 to move `CollectionSectionLoader` off same-app
+  HTTP by sharing collection list service logic with
+  `GET /api/v2/public/collection`, while keeping collection detail/artwork/
+  navigation routes, account/shop loaders, cache policy, and route URL/base URL
+  policy separate.
+- 2026-05-16: Completed T-080; added `getCollectionList`, refactored
+  `CollectionSectionLoader` and `GET /api/v2/public/collection` to share it,
+  removed the loader's collection list same-app HTTP dependency, preserved the
+  public route's success/missing-list/public-safe failure bodies and empty-list
+  success semantics, and added focused service/API/loader tests.
+- 2026-05-17: Prepared T-081 to move `AccountSubnavLoader` off same-app HTTP
+  by sharing account navigation service logic with
+  `GET /api/v2/user/navigation`, while keeping favourites/watchlist loaders,
+  user comments/settings loaders, shop loaders, middleware/global auth policy,
+  cache policy, and route URL/base URL policy separate.
+- 2026-05-17: Completed T-081; added `getOwnUserNavigation`, refactored
+  `AccountSubnavLoader` and `GET /api/v2/user/navigation` to share it, removed
+  the loader's user-navigation same-app HTTP dependency, preserved the route's
+  `requireApiUser()` guard and response envelopes, and added focused service,
+  route, and loader tests.
 
 ## Next Agent Action
 
-Assign
-[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
-as the next focused ADR 0004 same-app HTTP migration, keeping unrelated route
-URL/base URL policy, cache policy, root-layout session ownership, and global
-logging/redaction policy separate.
+Prepare the next scoped ADR 0004/F-021 migration from the remaining same-app
+HTTP inventory, or assign the next owner-approved production-readiness task.
+Do not reassign T-081 unless a regression is opened.
+
+Keep favourites/watchlist loaders, user comments/settings loaders, shop
+loaders, unrelated route URL/base URL policy, cache policy, root-layout session
+ownership, middleware/global auth policy, and global logging/redaction policy
+separate unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

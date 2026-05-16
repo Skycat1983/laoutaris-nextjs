@@ -1,6 +1,6 @@
 # T-071 Migrate Article Navigation Loaders Service
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md),
@@ -126,6 +126,22 @@ same service, route, and loader behavior.
 ## Handoff Notes
 
 - Prepared 2026-05-16.
+- Completed 2026-05-16.
+- Added `getArticleNavigationList` as the shared server-only article navigation
+  data service, then reused it from
+  `GET /api/v2/public/navigation/articles/[section]`,
+  `BiographySubnavLoader`, and `MainNavLoader`.
+- `MainNavLoader` now also reuses `getCollectionNavigationList` for the
+  collections link, so it no longer imports `serverApi` or owns a separate
+  `dbConnect()` call.
+- Preserved article navigation selection, `displayDate: -1` ordering,
+  transform behavior, route success envelope/metadata, `404` no-results
+  response, public-safe `500`, and existing loader link path formats.
+- Verification passed:
+  `rg -n "serverPublicApi|serverApi|fetch\\(" src/components/loaders/componentLoaders/BiographySubnavLoader.tsx src/components/loaders/componentLoaders/MainNavLoader.tsx`
+  returned no matches;
+  `npm test -- --runTestsByPath __tests__/unit/api/publicNavigationRoutes.test.ts __tests__/unit/data/getArticleNavigationList.test.ts __tests__/unit/loaders/BiographySubnavLoader.test.tsx __tests__/unit/loaders/MainNavLoader.test.tsx`;
+  `npm run lint`; `npm run build`; `git diff --check`.
 - Keep other same-app HTTP migrations separate.
 - Keep route URL/base URL policy, global logging/redaction policy, root layout
   DB/session ownership, and cache policy separate.

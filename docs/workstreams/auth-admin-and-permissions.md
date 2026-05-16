@@ -121,6 +121,9 @@ features before production launch.
 - T-044 standardized response helpers and real failure statuses for protected
   user profile, navigation, favourite, and watchlist read routes without
   changing the shared guard invariant.
+- T-081 moved `AccountSubnavLoader` off same-app HTTP by sharing account
+  navigation service logic with `GET /api/v2/user/navigation` while preserving
+  the route's `requireApiUser()` guard.
 - T-048 applied shared response helpers to admin read list/detail routes while
   preserving `requireApiAdmin()` guard behavior, invalid-ID `400`
   short-circuiting, and DB-before-model ordering.
@@ -363,11 +366,23 @@ Add targeted tests for `routeUtils` and session helpers when changed.
 - 2026-05-16: Completed T-066 for the Cloudinary signing parameter slice. The
   route still uses `requireApiAdmin()` for JSON `401`/`403` responses and now
   rejects unknown or malformed signing params before calling Cloudinary.
+- 2026-05-17: Prepared T-081 for the authenticated account navigation loader
+  slice. It should keep `GET /api/v2/user/navigation` on `requireApiUser()`,
+  share only the post-auth account navigation read with `AccountSubnavLoader`,
+  and leave favourites/watchlist loaders, user comments/settings loaders,
+  middleware, and global auth/session policy separate.
+- 2026-05-17: Completed T-081; `GET /api/v2/user/navigation` still uses
+  `requireApiUser()` as the route guard, and `AccountSubnavLoader` reads the
+  authenticated user ID with the existing session helper before calling the
+  shared post-auth account navigation service.
 
 ## Next Agent Action
 
-Choose the next ready auth/admin slice. Keep admin bootstrap/recovery
-documentation, broader production logging policy, root-layout session redesign,
-and any future protected-route migrations separate. Preserve the T-043 shared
-guard invariant and add focused route coverage before changing protected
-user/admin route behavior.
+Prepare the next scoped auth/admin task from the remaining workstream backlog.
+Do not reassign T-081 unless a regression is opened.
+
+Keep admin bootstrap/recovery documentation, broader production logging policy,
+root-layout session redesign, favourites/watchlist loaders, user
+comments/settings loaders, middleware, and future protected-route migrations
+separate. Preserve the T-043 shared guard invariant and add focused route
+coverage before changing protected user/admin route behavior.

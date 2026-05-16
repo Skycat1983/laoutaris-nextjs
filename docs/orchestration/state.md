@@ -1,28 +1,39 @@
 # Current Orchestration State
 
-Last updated: 2026-05-16
+Last updated: 2026-05-17
 
 ## Current Priority
 
-T-071 is ready to assign: migrate article navigation loaders off same-app HTTP
-by sharing a server-only article navigation service between
-`BiographySubnavLoader`, `MainNavLoader`, and the public article navigation API
-route. T-070 is complete and proved the same service pattern for
-`CollectionsSubnavLoader`. T-059 remains blocked until an owner-approved
-MongoDB target and `MONGO_URI` are available. Keep automatic data mutation,
-Shopify API validation, admin Shopify product-linking, checkout/cart ownership,
-broader Cloudinary upload policy, global logging/redaction policy, visible blog
-pinned/tag admin workflow, CI/dependency-update automation, Vercel
-project-setting ownership, credential rotation, and the residual Next/PostCSS
-owner decision separate unless priority changes.
+T-081 is complete: `AccountSubnavLoader` and
+`GET /api/v2/user/navigation` now share server-only `getOwnUserNavigation`;
+the loader is off same-app HTTP, and the user navigation route preserves its
+`requireApiUser()` guard, success envelope, user-missing `404`, and public-safe
+`500` body. Keep favourites/watchlist loaders, user comments/settings loaders,
+shop loaders, middleware/global auth policy, root-layout data access, cache
+policy, and base URL policy separate.
+T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI`
+are available. Keep automatic data mutation, Shopify API validation, admin
+Shopify product-linking, checkout/cart ownership, broader Cloudinary upload
+policy, global logging/redaction policy, visible blog pinned/tag admin
+workflow, CI/dependency-update automation, Vercel project-setting ownership,
+credential rotation, and the residual Next/PostCSS owner decision separate
+unless priority changes.
 
 ## Active Phase
 
-T-071 article navigation loader service migration is ready. T-070 collections
-subnav loader service migration is complete. T-069 shared fetcher debug-log
-cleanup is complete. T-068 public shop debug-log cleanup is complete. T-067
-Cloudinary upload debug-log cleanup is complete. T-066 Cloudinary signing param
-hardening is complete. T-059 Shopify product link audit execution remains
+T-081 account subnav loader service migration is complete. T-080 collection
+section loader service migration is complete. T-079 biography
+section loader service migration is complete. T-078 collection artwork loader
+service migration is complete. T-077 artwork detail loader service migration is
+complete. T-076 blog list/section loader service migration is complete. T-075
+blog detail loader service migration is complete. T-074 article detail loader
+service migration is complete. T-073 collection redirect page service migration
+is complete. T-072 article navigation page-consumer migration is complete.
+T-071 article navigation loader service migration is complete. T-070
+collections subnav loader service migration is complete. T-069 shared fetcher
+debug-log cleanup is complete. T-068 public shop debug-log cleanup is complete.
+T-067 Cloudinary upload debug-log cleanup is complete. T-066 Cloudinary signing
+param hardening is complete. T-059 Shopify product link audit execution remains
 blocked until an owner-approved MongoDB target and `MONGO_URI` are available in
 the execution shell. No cleanup or migration task should be assigned from T-059
 until real audit evidence exists.
@@ -206,12 +217,61 @@ Use this section as the first operational handoff for a new orchestrator.
   HTTP dependency, preserved route envelopes, metadata, `404`, public-safe
   `500`, link construction, selection, ordering, and transform behavior, and
   passed focused tests, lint, build, and diff-check verification.
-- T-071 is ready: migrate `BiographySubnavLoader` and `MainNavLoader` off
-  article navigation same-app HTTP by sharing a server-only
-  `getArticleNavigationList` service with
-  `GET /api/v2/public/navigation/articles/[section]`. `MainNavLoader` should
-  also reuse the existing `getCollectionNavigationList` service for its
-  collection link instead of reintroducing collection navigation self-fetching.
+- T-071 is complete: it added the shared server-only
+  `getArticleNavigationList` service, reused it from
+  `GET /api/v2/public/navigation/articles/[section]`,
+  `BiographySubnavLoader`, and `MainNavLoader`, reused
+  `getCollectionNavigationList` for the main nav collection link, removed those
+  loader same-app HTTP dependencies, preserved route envelopes and link path
+  formats, and passed focused tests, lint, build, and diff-check verification.
+- T-072 is complete: `src/app/biography/page.tsx` and the navigation path in
+  `src/components/loaders/viewLoaders/ArticleLoader.tsx` now use
+  `getArticleNavigationList`. `ArticleLoader` article-detail fetching remains
+  separate.
+- T-073 is complete: `src/app/collections/page.tsx` now uses
+  `getCollectionNavigationList`, `src/app/collections/[slug]/page.tsx` and
+  `GET /api/v2/public/navigation/collections/[slug]` now use
+  `getCollectionNavigationItem`, the slug debug `console.log` is removed, and
+  collection artworks navigation/detail pages remain separate.
+- T-074 is complete: `src/components/loaders/viewLoaders/ArticleLoader.tsx`
+  and `GET /api/v2/public/article/[slug]` now share
+  `getArticleBySlugPopulated`; the route preserves the optional session lookup
+  before service work plus response envelopes, and `ArticleLoader` preserves
+  `ArticleView` props, optional form rendering, and previous/next navigation.
+- T-075 is complete: `src/components/loaders/viewLoaders/BlogDetailLoader.tsx`,
+  `GET /api/v2/public/blog/[slug]`, and
+  `GET /api/v2/public/blog/[slug]/comments` now share
+  `getBlogBySlugWithAuthor` and `getBlogBySlugWithComments`; the route
+  contracts and both `showComments` modes are preserved, and the loader's
+  direct result debug logs are removed.
+- T-076 is complete: `BlogListLoader`, `BlogSectionLoader`, and
+  `GET /api/v2/public/blog` now share `getBlogList`; blog list/section props,
+  current sort behavior, metadata, and route contracts are preserved, and the
+  touched public blog list query `console.log` is removed.
+- T-077 is complete: `ArtworkLoader` now calls `getUserIdFromSession()` and
+  `getArtworkById(params.id, userId)` directly, preserving `ArtworkView` props,
+  the subscribe section, and generic load-failure behavior while removing the
+  touched debug delay and result log.
+- T-078 is complete: `CollectionArtworkLoader`,
+  `CollectionArtworksPaginationLoader`,
+  `GET /api/v2/public/collection/[slug]/artwork`, and
+  `GET /api/v2/public/collection/[slug]/artwork/[id]` now share
+  `getCollectionWithArtworks` and `getCollectionArtwork`; the loaders no
+  longer use same-app HTTP for collection artwork reads.
+- T-079 is complete: `BiographySectionLoader` and
+  `GET /api/v2/public/article` now share `getArticleList`; the loader no longer
+  uses same-app HTTP for biography articles, and the route's current success,
+  no-results, and public-safe `500` bodies are preserved.
+- T-080 is complete: `CollectionSectionLoader` and
+  `GET /api/v2/public/collection` now share `getCollectionList`; the loader no
+  longer uses same-app HTTP for collection list reads, and the route's current
+  success, missing-list, public-safe `500`, metadata, and empty-list semantics
+  are preserved.
+- T-081 is complete: `AccountSubnavLoader` and
+  `GET /api/v2/user/navigation` now share `getOwnUserNavigation`; the loader no
+  longer uses same-app HTTP for user navigation reads, and the route's current
+  `requireApiUser()` guard, success envelope, user-missing `404`, and
+  public-safe `500` body are preserved.
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -466,15 +526,13 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-071:
-`/task effort: high details: docs/tasks/T-071-migrate-article-navigation-loaders-service.md`
+Prepare the next scoped task from the remaining production-readiness backlog,
+or prepare the next ADR 0004/F-021 same-app HTTP migration from the remaining
+inventory.
 
-T-066, T-067, T-068, T-069, and T-070 are complete; do not reassign them
+T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075, T-076,
+T-077, T-078, T-079, T-080, and T-081 are complete; do not reassign them
 unless a regression or explicit follow-up is opened.
-
-T-071 is the prepared focused ADR 0004 same-app HTTP migration from the
-remaining route-critical navigation loader consumers. It should use T-007,
-T-018, T-021, and T-070 as service-adapter examples.
 
 After the owner-approved MongoDB target/environment label and `MONGO_URI` are
 available, rerun T-059:
