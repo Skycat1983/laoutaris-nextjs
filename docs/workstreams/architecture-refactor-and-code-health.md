@@ -70,6 +70,15 @@ or inconsistent code forward.
   `/search` and `GET /api/v2/public/search` now share the server-only
   `getPublicSearchResults` service instead of relying on same-app HTTP for the
   initial search render.
+- T-070 applied the ADR 0004 service-adapter pattern to the collections subnav:
+  `CollectionsSubnavLoader` and
+  `GET /api/v2/public/navigation/collections` now share the server-only
+  `getCollectionNavigationList` service instead of same-app HTTP for the
+  initial navigation links.
+- T-071 is prepared as the next ADR 0004 service-adapter slice for article
+  navigation: `BiographySubnavLoader`, `MainNavLoader`, and
+  `GET /api/v2/public/navigation/articles/[section]` should share a
+  server-only article navigation service.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -183,11 +192,23 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-16: Prepared T-070 as the next focused ADR 0004/F-021 migration. It
   moves `CollectionsSubnavLoader` off same-app HTTP by sharing collection
   navigation data access with the public collection navigation route.
+- 2026-05-16: Completed T-070; added `getCollectionNavigationList`, refactored
+  the public collection navigation API route and `CollectionsSubnavLoader` to
+  share it, removed the loader's same-app HTTP dependency, and added focused
+  service/API/loader tests.
+- 2026-05-16: Prepared T-071 as the next focused ADR 0004/F-021 migration. It
+  moves `BiographySubnavLoader` and `MainNavLoader` off article-navigation
+  same-app HTTP by sharing article navigation data access with the public
+  article navigation route, and it reuses T-070's collection navigation service
+  for the main nav collection link.
 
 ## Next Agent Action
 
-Assign T-070:
-`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+Assign
+[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
+as the next focused ADR 0004 same-app HTTP migration, keeping unrelated route
+URL/base URL policy, cache policy, root-layout session ownership, and global
+logging/redaction policy separate.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

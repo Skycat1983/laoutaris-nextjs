@@ -3,6 +3,7 @@ import { GET as GET_COLLECTION_NAVIGATION_LIST } from "@/app/api/v2/public/navig
 import { GET as GET_COLLECTION_NAVIGATION_DETAIL } from "@/app/api/v2/public/navigation/collections/[slug]/route";
 import { GET as GET_COLLECTION_ARTWORKS_NAVIGATION } from "@/app/api/v2/public/navigation/collections/[slug]/artworks/route";
 import { ArticleModel, CollectionModel } from "@/lib/data/models";
+import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import dbConnect from "@/lib/db/mongodb";
 import {
   transformBiographyNav,
@@ -34,6 +35,10 @@ jest.mock("@/lib/data/models", () => ({
   },
 }));
 
+jest.mock("@/lib/data/services/getCollectionNavigationList", () => ({
+  getCollectionNavigationList: jest.fn(),
+}));
+
 jest.mock("@/lib/transforms/navigation/transformNavData", () => ({
   transformBiographyNav: {
     toFrontend: jest.fn(),
@@ -51,6 +56,10 @@ const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockArticleFind = ArticleModel.find as jest.Mock;
 const mockCollectionFind = CollectionModel.find as jest.Mock;
 const mockCollectionFindOne = CollectionModel.findOne as jest.Mock;
+const mockGetCollectionNavigationList =
+  getCollectionNavigationList as jest.MockedFunction<
+    typeof getCollectionNavigationList
+  >;
 const mockTransformBiographyNavToFrontend =
   transformBiographyNav.toFrontend as jest.Mock;
 const mockTransformCollectionNavToFrontend =
@@ -89,32 +98,6 @@ const createRejectedArticleFindQuery = (error: unknown) => {
   };
   query.select.mockReturnValue(query);
   query.sort.mockReturnValue(query);
-  return query;
-};
-
-const createCollectionListQuery = (result: unknown) => {
-  const query = {
-    select: jest.fn(),
-    sort: jest.fn(),
-    lean: jest.fn(),
-    maxTimeMS: jest.fn().mockResolvedValue(result),
-  };
-  query.select.mockReturnValue(query);
-  query.sort.mockReturnValue(query);
-  query.lean.mockReturnValue(query);
-  return query;
-};
-
-const createRejectedCollectionListQuery = (error: unknown) => {
-  const query = {
-    select: jest.fn(),
-    sort: jest.fn(),
-    lean: jest.fn(),
-    maxTimeMS: jest.fn().mockRejectedValue(error),
-  };
-  query.select.mockReturnValue(query);
-  query.sort.mockReturnValue(query);
-  query.lean.mockReturnValue(query);
   return query;
 };
 
@@ -258,33 +241,36 @@ describe("public navigation routes", () => {
 
   describe("GET /api/v2/public/navigation/collections", () => {
     it("returns collection navigation with existing metadata", async () => {
-      const rawCollections = [
-        { slug: "paintings", title: "Paintings" },
-        { slug: "drawings", title: "Drawings" },
-      ];
       const navItems = [
-        { slug: "paintings", title: "Paintings", linkTo: "/paintings" },
-        { slug: "drawings", title: "Drawings", linkTo: "/drawings" },
+        {
+          slug: "paintings",
+          title: "Paintings",
+          firstArtworkId: "artwork-1",
+          hasArtwork: true,
+        },
+        {
+          slug: "drawings",
+          title: "Drawings",
+          firstArtworkId: null,
+          hasArtwork: false,
+        },
       ];
-      const query = createCollectionListQuery(rawCollections);
-      mockCollectionFind.mockReturnValue(query);
-      mockTransformCollectionNavToFrontend
-        .mockReturnValueOnce(navItems[0])
-        .mockReturnValueOnce(navItems[1]);
+      mockGetCollectionNavigationList.mockResolvedValue({
+        success: true,
+        data: navItems,
+        metadata: {
+          total: 2,
+          page: 1,
+          limit: 2,
+          totalPages: 1,
+        },
+      });
 
       const response = await GET_COLLECTION_NAVIGATION_LIST(request);
       const body = await response.json();
 
       expect(response.status).toBe(200);
-      expect(mockDbConnect.mock.invocationCallOrder[0]).toBeLessThan(
-        mockCollectionFind.mock.invocationCallOrder[0]
-      );
-      expect(mockCollectionFind).toHaveBeenCalledWith({
-        section: "collections",
-      });
-      expect(query.select).toHaveBeenCalledWith("title slug artworks");
-      expect(query.sort).toHaveBeenCalledWith({ updatedAt: 1 });
-      expect(query.maxTimeMS).toHaveBeenCalledWith(30000);
+      expect(mockGetCollectionNavigationList).toHaveBeenCalledWith();
       expect(body).toEqual({
         success: true,
         data: navItems,
@@ -299,7 +285,7 @@ describe("public navigation routes", () => {
     });
 
     it("returns 404 when no collection navigation items exist", async () => {
-      mockCollectionFind.mockReturnValue(createCollectionListQuery([]));
+      mockGetCollectionNavigationList.mockResolvedValue(null);
 
       const response = await GET_COLLECTION_NAVIGATION_LIST(request);
       const body = await response.json();
@@ -310,13 +296,12 @@ describe("public navigation routes", () => {
         message: "No collections found",
         error: "No collections found",
       });
-      expect(mockTransformCollectionNavToFrontend).not.toHaveBeenCalled();
       expect(consoleLogSpy).not.toHaveBeenCalled();
     });
 
     it("returns a public-safe 500 when collection navigation fails", async () => {
-      mockCollectionFind.mockReturnValue(
-        createRejectedCollectionListQuery(new Error("private collection nav"))
+      mockGetCollectionNavigationList.mockRejectedValue(
+        new Error("private collection nav")
       );
 
       const response = await GET_COLLECTION_NAVIGATION_LIST(request);

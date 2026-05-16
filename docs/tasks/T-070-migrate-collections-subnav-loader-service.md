@@ -1,6 +1,6 @@
 # T-070 Migrate Collections Subnav Loader Service
 
-Status: Ready
+Status: Completed
 
 Workstreams:
 [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md),
@@ -112,9 +112,22 @@ The `rg` command is expected to return no matches. If the implementation uses
 different focused test filenames, run those files instead while covering the
 same service, route, and loader behavior.
 
+Completed 2026-05-16:
+
+- `rg -n "serverPublicApi|serverApi|fetch\\(" src/components/loaders/componentLoaders/CollectionsSubnavLoader.tsx`
+  returned no matches, as expected.
+- `npm test -- --runTestsByPath __tests__/unit/api/publicNavigationRoutes.test.ts __tests__/unit/data/getCollectionNavigationList.test.ts __tests__/unit/loaders/CollectionsSubnavLoader.test.tsx`
+  passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `git diff --check` passed.
+
 ## Handoff Notes
 
 - Prepared 2026-05-16.
+- Completed 2026-05-16. Added `getCollectionNavigationList`, reused it from
+  `GET /api/v2/public/navigation/collections` and
+  `CollectionsSubnavLoader`, and added focused service/API/loader coverage.
 - Keep other same-app HTTP migrations separate.
 - Keep route URL/base URL policy, global logging/redaction policy, root layout
   DB/session ownership, and cache policy separate.

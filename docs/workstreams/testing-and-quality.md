@@ -188,6 +188,12 @@ refactoring without turning every change into a manual QA pass.
   the products route, gallery, and loader have no direct `console.log` debug
   output while preserving the shop route contract, metadata sorting, loader
   fetch behavior, and neutral loader error copy.
+- T-070 added focused collection navigation service, API route, and loader
+  coverage proving the collections subnav no longer requires same-app HTTP
+  while preserving route envelope/status behavior and `Subnav` links.
+- T-071 is prepared with focused article navigation service, API route, and
+  loader coverage expectations for `BiographySubnavLoader` and `MainNavLoader`
+  no-self-fetch behavior.
 
 ## Backlog
 
@@ -740,11 +746,21 @@ npm run lint
   envelopes, handles fetch failures, and rethrows Next control-flow errors.
 - 2026-05-16: Prepared T-070 with focused service, route, and loader coverage
   expectations for the collections subnav same-app HTTP migration.
+- 2026-05-16: Completed T-070 focused coverage by adding
+  `__tests__/unit/data/getCollectionNavigationList.test.ts` and
+  `__tests__/unit/loaders/CollectionsSubnavLoader.test.tsx`, and updating
+  `__tests__/unit/api/publicNavigationRoutes.test.ts`. Focused Jest, lint,
+  build, and `git diff --check` passed; build retained existing
+  MongoDB/static-generation, branch-verification, and link debug noise.
+- 2026-05-16: Prepared T-071 with focused service, route, and loader coverage
+  expectations for the article navigation same-app HTTP migration.
 
 ## Next Agent Action
 
-Assign T-070:
-`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+Assign
+[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
+with focused service, route, and loader coverage for the article navigation
+same-app HTTP migration.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change.

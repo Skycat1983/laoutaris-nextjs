@@ -141,6 +141,10 @@ consistent enough for production refactoring and Shopify integration.
 - T-047 completed the next response-helper slice, scoped to public navigation
   article/collection routes, explicit route-local DB ownership, and public-safe
   `404`/`500` envelopes.
+- T-070 moved the public collection navigation list query, selected fields,
+  ordering, transform, `maxTimeMS`, metadata construction, and `dbConnect()`
+  ownership into `getCollectionNavigationList`, shared by the API route and
+  collections subnav loader.
 - T-048 completed the next response-helper slice, scoped to admin read routes
   with shared success/error helpers, real empty-list/missing-resource/internal
   failure statuses, public-safe `500` bodies, and preserved guard behavior,
@@ -180,6 +184,13 @@ consistent enough for production refactoring and Shopify integration.
   credentials auth rejects users without stored hashes before bcrypt
   verification, existing hashed credentials users still authorize with roles,
   and public/own user DTOs continue omitting passwords.
+- T-070 completed the public collection navigation service slice: the API route
+  now adapts `getCollectionNavigationList` results into the existing success
+  envelope, `404` no-results response, and public-safe `500` response.
+- T-071 is prepared as the article navigation service slice: the public article
+  navigation route should adapt a shared `getArticleNavigationList` service into
+  the existing success envelope, `404` no-results response, and public-safe
+  `500` response.
 
 ## Backlog
 
@@ -593,11 +604,21 @@ Add API route tests where behavior is changed.
   The public collection navigation route and `CollectionsSubnavLoader` should
   share one server-only query/transform service while preserving route
   envelopes and loader link behavior.
+- 2026-05-16: Completed T-070; `getCollectionNavigationList` now owns the
+  collection navigation list `dbConnect()`, query, selection, sort, timeout,
+  transform, no-results signal, and metadata, while the public route preserves
+  the existing success, `404`, and public-safe `500` envelopes.
+- 2026-05-16: Prepared T-071 as an article navigation service extraction. The
+  public article navigation route, `BiographySubnavLoader`, and `MainNavLoader`
+  should share one server-only query/transform service while preserving route
+  envelopes and loader link behavior.
 
 ## Next Agent Action
 
-Assign T-070:
-`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+Assign
+[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
+as the next data/API slice for shared article navigation route-owned data
+access.
 
 Shopify admin product-link validation and existing-data migration remain
 separate from the completed public-read normalization and the blocked live

@@ -71,6 +71,12 @@ Next.js server/client component boundaries.
 - T-068 removed direct public shop gallery and loader debug logging, and the
   loader no longer tells public users to check the console on product-loading
   failures.
+- T-070 moved `CollectionsSubnavLoader` to the shared server-only
+  `getCollectionNavigationList` service while preserving rendered `Subnav`
+  link construction.
+- T-071 is prepared to move `BiographySubnavLoader` and `MainNavLoader` to
+  shared server-only navigation services while preserving rendered `Subnav` and
+  `MainNav` links.
 
 ## Backlog
 
@@ -167,11 +173,20 @@ Use browser checks for layout-sensitive changes.
   `CollectionsSubnavLoader` should use a shared server-only collection
   navigation service instead of `serverPublicApi` while rendering the same
   `Subnav` links.
+- 2026-05-16: Completed T-070; `CollectionsSubnavLoader` now calls
+  `getCollectionNavigationList` directly, no longer imports `serverPublicApi`,
+  and remains covered by focused loader tests for link construction and no
+  same-app fetches.
+- 2026-05-16: Prepared T-071 as the next route-critical frontend loader
+  migration. It should remove article-navigation same-app HTTP from
+  `BiographySubnavLoader` and `MainNavLoader` while preserving link labels,
+  path formats, and existing nav component behavior.
 
 ## Next Agent Action
 
-Assign T-070:
-`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+Assign
+[T-071 Migrate article navigation loaders service](../tasks/T-071-migrate-article-navigation-loaders-service.md)
+as the next route-critical frontend loader migration.
 
 Keep real pagination, checkout/cart, remaining Shopify product transform fields,
 and admin product-linking separate.

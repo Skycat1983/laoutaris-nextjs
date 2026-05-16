@@ -4,26 +4,28 @@ Last updated: 2026-05-16
 
 ## Current Priority
 
-T-070 is ready as the next focused implementation slice: move
-`CollectionsSubnavLoader` off same-app HTTP by sharing a server-only collection
-navigation service with the public collection navigation API route. T-059
-remains blocked until an owner-approved MongoDB target and `MONGO_URI` are
-available. Keep automatic data mutation, Shopify API validation, admin Shopify
-product-linking, checkout/cart ownership, broader Cloudinary upload policy,
-global logging/redaction policy, visible blog pinned/tag admin workflow,
-CI/dependency-update automation, Vercel project-setting ownership, credential
-rotation, and the residual Next/PostCSS owner decision separate unless priority
-changes.
+T-071 is ready to assign: migrate article navigation loaders off same-app HTTP
+by sharing a server-only article navigation service between
+`BiographySubnavLoader`, `MainNavLoader`, and the public article navigation API
+route. T-070 is complete and proved the same service pattern for
+`CollectionsSubnavLoader`. T-059 remains blocked until an owner-approved
+MongoDB target and `MONGO_URI` are available. Keep automatic data mutation,
+Shopify API validation, admin Shopify product-linking, checkout/cart ownership,
+broader Cloudinary upload policy, global logging/redaction policy, visible blog
+pinned/tag admin workflow, CI/dependency-update automation, Vercel
+project-setting ownership, credential rotation, and the residual Next/PostCSS
+owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-070 collections subnav loader service migration is the active ready task.
-T-069 shared fetcher debug-log cleanup is complete. T-068 public shop debug-log
-cleanup is complete. T-067 Cloudinary upload debug-log cleanup is complete.
-T-066 Cloudinary signing param hardening is complete. T-059 Shopify product
-link audit execution remains blocked until an owner-approved MongoDB target and
-`MONGO_URI` are available in the execution shell. No cleanup or migration task
-should be assigned from T-059 until real audit evidence exists.
+T-071 article navigation loader service migration is ready. T-070 collections
+subnav loader service migration is complete. T-069 shared fetcher debug-log
+cleanup is complete. T-068 public shop debug-log cleanup is complete. T-067
+Cloudinary upload debug-log cleanup is complete. T-066 Cloudinary signing param
+hardening is complete. T-059 Shopify product link audit execution remains
+blocked until an owner-approved MongoDB target and `MONGO_URI` are available in
+the execution shell. No cleanup or migration task should be assigned from T-059
+until real audit evidence exists.
 
 ## Successor Takeover Snapshot
 
@@ -197,12 +199,19 @@ Use this section as the first operational handoff for a new orchestrator.
   behavior tests preserve the existing fetch contract. ADR 0004 migrations,
   base URL policy, Next `headers()` migration, remaining build/DB/SSR noise,
   and global logging policy remain separate.
-- T-070 is ready: it should add a shared server-only collection navigation list
-  service, use it from both `GET /api/v2/public/navigation/collections` and
-  `CollectionsSubnavLoader`, and remove the loader's `serverPublicApi`
-  same-app HTTP dependency while preserving route envelopes, metadata, `404`,
-  public-safe `500`, link construction, selection, ordering, and transform
-  behavior.
+- T-070 is complete: it added the shared server-only
+  `getCollectionNavigationList` service, reused it from both
+  `GET /api/v2/public/navigation/collections` and
+  `CollectionsSubnavLoader`, removed the loader's `serverPublicApi` same-app
+  HTTP dependency, preserved route envelopes, metadata, `404`, public-safe
+  `500`, link construction, selection, ordering, and transform behavior, and
+  passed focused tests, lint, build, and diff-check verification.
+- T-071 is ready: migrate `BiographySubnavLoader` and `MainNavLoader` off
+  article navigation same-app HTTP by sharing a server-only
+  `getArticleNavigationList` service with
+  `GET /api/v2/public/navigation/articles/[section]`. `MainNavLoader` should
+  also reuse the existing `getCollectionNavigationList` service for its
+  collection link instead of reintroducing collection navigation self-fetching.
 - The worktree is expected to be dirty from recent completed tasks and
   orchestration updates. Do not revert or overwrite unrelated files. Run
   `git status --short` before edits and treat existing changes as other agents'
@@ -457,15 +466,15 @@ completed:
 
 ## Next Orchestrator Action
 
-Choose the next implementation slice from the active workstream backlogs. The
-architecture follow-up candidate is a route-critical ADR 0004 same-app HTTP
-migration using the completed T-007/T-018/T-021 proof routes.
+Assign T-071:
+`/task effort: high details: docs/tasks/T-071-migrate-article-navigation-loaders-service.md`
 
-T-066, T-067, T-068, and T-069 are complete; do not reassign them unless a
-regression or explicit follow-up is opened.
+T-066, T-067, T-068, T-069, and T-070 are complete; do not reassign them
+unless a regression or explicit follow-up is opened.
 
-Assign T-070:
-`/task effort: high details: docs/tasks/T-070-migrate-collections-subnav-loader-service.md`
+T-071 is the prepared focused ADR 0004 same-app HTTP migration from the
+remaining route-critical navigation loader consumers. It should use T-007,
+T-018, T-021, and T-070 as service-adapter examples.
 
 After the owner-approved MongoDB target/environment label and `MONGO_URI` are
 available, rerun T-059:

@@ -79,7 +79,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-067 Remove Cloudinary upload debug logs](T-067-remove-cloudinary-upload-debug-logs.md) | Completed | Removed always-on debug logging, polling, and DOM inspection from the admin Cloudinary upload button while preserving widget behavior. |
 | [T-068 Remove public shop debug logs](T-068-remove-public-shop-debug-logs.md) | Completed | Removed always-on debug logging from public shop route/gallery/loader paths while preserving backed shop behavior. |
 | [T-069 Remove shared fetcher debug logs](T-069-remove-shared-fetcher-debug-logs.md) | Completed | Removed always-on debug logging from the shared API fetcher and server API URL helper files without changing fetch behavior. |
-| [T-070 Migrate collections subnav loader service](T-070-migrate-collections-subnav-loader-service.md) | Ready | Move the collections subnav loader off same-app HTTP by sharing a server-only collection navigation service with the public route. |
+| [T-070 Migrate collections subnav loader service](T-070-migrate-collections-subnav-loader-service.md) | Completed | Moved the collections subnav loader off same-app HTTP by sharing a server-only collection navigation service with the public route. |
+| [T-071 Migrate article navigation loaders service](T-071-migrate-article-navigation-loaders-service.md) | Ready | Move biography and main navigation loaders off same-app HTTP by sharing a server-only article navigation service with the public route. |
 
 ## Rules
 

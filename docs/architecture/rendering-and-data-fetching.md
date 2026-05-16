@@ -41,6 +41,10 @@ Implemented proof slices:
   `src/app/search/page.tsx` and `GET /api/v2/public/search`, so the initial
   `/search` server render no longer self-fetches the same app for search
   results.
+- `src/lib/data/services/getCollectionNavigationList.ts` is shared by
+  `CollectionsSubnavLoader` and
+  `GET /api/v2/public/navigation/collections`, so the collections subnav no
+  longer self-fetches the same app for its initial navigation links.
 
 ## Patterns To Audit
 

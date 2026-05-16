@@ -1,9 +1,7 @@
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { ApiCollectionNavListResult } from "@/lib/api/public/navigation/fetchers";
-import { CollectionModel } from "@/lib/data/models";
-import { RouteResponse, CollectionSelectFieldsLean } from "@/lib/data/types";
-import { transformCollectionNav } from "@/lib/transforms/navigation/transformNavData";
-import dbConnect from "@/lib/db/mongodb";
+import { RouteResponse } from "@/lib/data/types";
+import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { NextRequest } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";
 
@@ -13,33 +11,16 @@ export const GET = async (
   _request: NextRequest
 ): Promise<RouteResponse<ApiCollectionNavListResult>> => {
   try {
-    await dbConnect();
+    const result = await getCollectionNavigationList();
 
-    const collectionsLean = await CollectionModel.find({
-      section: "collections",
-    })
-      .select("title slug artworks")
-      .sort({ updatedAt: 1 })
-      .lean<CollectionSelectFieldsLean[]>()
-      .maxTimeMS(30000); // Add maximum execution time
-
-    if (!collectionsLean.length) {
+    if (!result) {
       return apiErrorResponse({
         message: "No collections found",
         status: 404,
       });
     }
 
-    const collectionNavData = collectionsLean.map((collection) => {
-      return transformCollectionNav.toFrontend(collection);
-    });
-
-    return apiListResponse(collectionNavData, {
-      total: collectionNavData.length,
-      page: 1,
-      limit: collectionNavData.length,
-      totalPages: 1,
-    });
+    return apiListResponse(result.data, result.metadata);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

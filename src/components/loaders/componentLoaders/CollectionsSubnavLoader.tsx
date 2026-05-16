@@ -1,34 +1,23 @@
 "use server";
 
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { serverPublicApi } from "@/lib/api/public/serverPublicApi";
-import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
-import {
-  ApiErrorResponse,
-  CollectionNavDataFrontend,
-  ApiSuccessResponse,
-} from "@/lib/data/types";
+import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { createSubnavLink } from "@/lib/helpers/createSubnavLink";
 
 interface CollectionsSubnavLoaderProps {
   section: string;
 }
 
-type SubnavLoaderResult = ApiArticleNavListResult | ApiErrorResponse;
-
 export async function CollectionsSubnavLoader({
-  section,
+  section: _section,
 }: CollectionsSubnavLoaderProps) {
-  const result: SubnavLoaderResult =
-    await serverPublicApi.navigation.fetchCollectionNavigationList();
+  const result = await getCollectionNavigationList();
 
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch collection navigation");
+  if (!result) {
+    throw new Error("No collections found");
   }
 
-  const { data } = result as ApiSuccessResponse<CollectionNavDataFrontend[]>;
-
-  const subnavLinks = data.map((collection) =>
+  const subnavLinks = result.data.map((collection) =>
     createSubnavLink(
       {
         label: collection.title,
