@@ -80,8 +80,6 @@ export const authorizeUser = async (
   const usernameData = credentials?.username as unknown;
   const passwordData = credentials?.password as unknown;
 
-  // console.log("userNameData :>> ", usernameData, passwordData);
-
   const validatedData = validateLoginData({ usernameData, passwordData });
 
   if (!validatedData.success) {
@@ -91,10 +89,7 @@ export const authorizeUser = async (
 
   const { username, password } = validatedData;
 
-  // console.log("username, password validatexcd data:>> ", username, password);
-
   const result = await authenticateUsername({ username, password });
-  // console.log("result :>> ", result);
   //? changed to return username as 'name' for consistency with github signin session
   if (result.success) {
     return {

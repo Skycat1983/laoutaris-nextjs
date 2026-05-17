@@ -225,6 +225,38 @@ refactoring without turning every change into a manual QA pass.
 - T-087 updated source hygiene coverage so deleted retired server API wrapper
   entrypoints stay deleted, active source has no retired wrapper imports, and
   `src/lib/api` has no retired same-app server URL construction.
+- T-088 added focused DB helper behavior coverage for `withDbConnect()` and
+  `CustomMongoDBAdapter.createUser()`, plus source hygiene coverage proving the
+  scoped DB helper files have no direct console calls, retired MongoDB URI
+  debug strings, raw OAuth profile/user logging strings, or stale callback URL
+  examples.
+- T-089 added focused render source-hygiene coverage proving root layout,
+  `Subnav`, article views, and account comments no longer contain direct
+  `console.log()` calls or retired render debug strings.
+- T-090 extended focused render/source-hygiene coverage to the remaining scoped
+  user-facing public/account client files and account page, proving they no
+  longer contain direct `console.log()` calls or retired debug strings.
+- T-091 extended focused render/source-hygiene coverage to the scoped admin
+  dashboard create/update form and artwork-filter files, proving they no
+  longer contain direct `console.log()` calls.
+- T-092 updated `copy_id()` unit coverage so success paths prove clipboard
+  writes without expecting `console.log()` output and extended focused source
+  hygiene to the scoped admin read-list, `ArtworkFeedCard`, and `copy_id()`
+  files.
+- T-093 extended focused source hygiene to the scoped shared UI/public artwork
+  fetcher files and added public artwork fetcher URL-construction coverage for
+  default, repeated-filter, color-sort, and pagination params.
+- T-094 added focused `getUserFromSession` development test-header coverage
+  for persisted test-user lookup, missing/failing lookup fallback, test-admin
+  override behavior, normal NextAuth session fallback, delegated helper
+  behavior, and source hygiene preventing direct `console.log()` calls from
+  returning to the helper.
+- T-095 added full-source source-hygiene coverage in
+  `__tests__/unit/security/consoleLogSourceHygiene.test.ts` so direct or
+  commented `console.log()` calls cannot return under `src`.
+- T-096 is prepared with expected static Next config coverage for baseline
+  security header invariants, including the absence of wildcard credential
+  CORS and the presence of required hardening headers/CSP directives.
 
 ## Backlog
 
@@ -940,16 +972,83 @@ npm run lint
   `__tests__/unit/security/credentialSourceHygiene.test.ts`; focused Jest
   passed, and the required retired-import plus retired URL-construction source
   searches returned no matches.
+- 2026-05-17: Prepared T-088 with expected source-hygiene coverage proving DB
+  helper files no longer contain direct console calls, MongoDB URI existence
+  debug strings, raw adapter profile/user logs, or hard-coded OAuth callback URL
+  examples.
+- 2026-05-17: Completed T-088 by adding DB helper behavior coverage in
+  `__tests__/unit/db/dbHelpers.test.ts` and MongoDB helper source hygiene
+  coverage in `__tests__/unit/security/credentialSourceHygiene.test.ts`.
+  Focused Jest passed for both files, followed by lint, build, required
+  `src/lib/db` source search, and `git diff --check`. Build still emits
+  unrelated branch-verification and navigation link logs.
+- 2026-05-17: Prepared T-089 with expected source-hygiene coverage for the
+  remaining high-noise render debug logs in root layout, `Subnav`, article
+  views, and account comments.
+- 2026-05-17: Completed T-089 by adding
+  `__tests__/unit/security/renderSourceHygiene.test.ts` for the scoped render
+  files. Focused Jest, lint, build, required render source search, and
+  `git diff --check` passed.
+- 2026-05-17: Prepared T-090 with expected source-hygiene coverage for the
+  remaining user-facing public/account `console.log()` output in scoped client
+  components and account pages.
+- 2026-05-17: Completed T-090 by extending
+  `__tests__/unit/security/renderSourceHygiene.test.ts` for the scoped
+  user-facing client/page files and updating `ArtworkListLoader` focused
+  coverage for the renamed `ArtworkGallery` prop handoff. Focused Jest,
+  required source search, lint, and build passed.
+- 2026-05-17: Prepared T-091 with expected source-hygiene coverage proving
+  scoped admin dashboard create/update form and artwork-filter files no longer
+  contain direct `console.log()` calls.
+- 2026-05-17: Completed T-091 by extending
+  `__tests__/unit/security/renderSourceHygiene.test.ts` for the scoped admin
+  dashboard form/filter files. Focused Jest, required source search, lint,
+  build, and `git diff --check` passed.
+- 2026-05-17: Prepared T-092 with expected `copy_id()` unit-test updates and
+  source-hygiene coverage proving scoped admin read/copy files no longer
+  contain direct `console.log()` calls.
+- 2026-05-17: Completed T-092 by updating
+  `__tests__/unit/copy_id.test.ts` success-path assertions and extending
+  `__tests__/unit/security/renderSourceHygiene.test.ts` to cover the scoped
+  admin read/copy files. Focused Jest, required source search, lint, build,
+  and `git diff --check` passed.
+- 2026-05-17: Prepared T-093 with expected source-hygiene coverage, plus cheap
+  behavior coverage where existing local patterns make it useful, for shared UI
+  components and the public artwork fetcher.
+- 2026-05-17: Completed T-093 by extending
+  `__tests__/unit/security/renderSourceHygiene.test.ts` to the scoped shared
+  UI/public fetcher files and adding
+  `__tests__/unit/api/publicArtworkFetchers.test.ts` for artwork list URL
+  construction.
+- 2026-05-17: Prepared T-094 with expected source-hygiene coverage, plus cheap
+  behavior coverage where practical, for the `getUserFromSession` development
+  test-header paths.
+- 2026-05-17: Completed T-094 by adding
+  `__tests__/unit/auth/sessionTestHeaders.test.ts` for development test-header
+  behavior and session helper source hygiene. Focused Jest passed, the scoped
+  session helper `console.log()` search returned no matches, and the full
+  source `console.log()` search reported only existing commented-out lines.
+  `npm run lint`, `npm run build`, and `git diff --check` also passed.
+- 2026-05-17: Prepared T-095 so the full-source `console.log()` search should
+  return no matches after stale commented debug snippets are removed.
+- 2026-05-17: Completed T-095 by adding
+  `__tests__/unit/security/consoleLogSourceHygiene.test.ts`, which recursively
+  checks `src` source files for direct or commented `console.log()` calls. The
+  focused test passed and the full-source `rg -n "console\\.log\\(" src`
+  search returned no matches.
+- 2026-05-17: Prepared T-096 with focused static Next config tests expected
+  for API CORS and baseline security-header invariants.
 
 ## Next Agent Action
 
-Choose the next testing/quality task from the remaining backlog after T-087.
-Keep source-hygiene checks current when deleting wrappers, fetchers, or route
-handlers.
+Assign T-096:
+[Harden baseline security headers and API CORS](../tasks/T-096-harden-baseline-security-headers-cors.md).
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
-T-085, T-086, or T-087 unless a regression is opened.
+T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
+Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094 and
+T-095 are complete; do not reassign them unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

@@ -40,7 +40,6 @@ const NavItem = ({
       e.preventDefault();
       return;
     }
-    console.log("clicked");
   };
 
   return (

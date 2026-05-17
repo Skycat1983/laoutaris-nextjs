@@ -39,8 +39,6 @@ export function CreateArtworkForm({
   onSuccess,
 }: CreateArtworkFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  console.log("isSubmitting", isSubmitting);
-  console.log("uploadInfo", uploadInfo);
   const form = useForm<ArtworkFormValues>({
     resolver: zodResolver(artworkFormSchema),
     defaultValues: {
@@ -54,7 +52,6 @@ export function CreateArtworkForm({
   });
 
   async function onSubmit(values: ArtworkFormValues) {
-    console.log("values", values);
     if (!uploadInfo) return;
     setIsSubmitting(true);
 
@@ -64,8 +61,6 @@ export function CreateArtworkForm({
         image: uploadInfo,
       };
 
-      console.log("artworkData", artworkData);
-
       const response = await clientApi.admin.create.artwork(artworkData);
       if (response.success) {
         onSuccess();
@@ -73,7 +68,6 @@ export function CreateArtworkForm({
         console.error("Failed to create artwork:", response.error);
       }
 
-      console.log("response", response);
       // Revalidate the admin artwork page
       // revalidatePath("/admin/artwork");
     } catch (error) {

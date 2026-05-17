@@ -41,7 +41,6 @@ export const UpdateArticleForm = ({
   articleInfo,
   onSuccess,
 }: UpdateArticleFormProps) => {
-  console.log("articleInfo", articleInfo);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(articleInfo.imageUrl);
   const [newArtwork, setNewArtwork] = useState<ArtworkFrontend | null>(null);

@@ -39,7 +39,6 @@ export const UpdateArtworkForm = ({
   onSuccess,
 }: //   onSuccess,
 UpdateArtworkFormProps) => {
-  console.log("artworkInfo :>> ", artworkInfo);
   const [imagePreview, setImagePreview] = useState(
     artworkInfo.image.secure_url
   );
@@ -86,7 +85,6 @@ UpdateArtworkFormProps) => {
           <form
             onSubmit={form.handleSubmit(
               (data) => {
-                console.log("Validation successful, calling onSubmit");
                 onSubmit(data);
               },
               (errors) => {

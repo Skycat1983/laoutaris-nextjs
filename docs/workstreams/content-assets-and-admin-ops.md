@@ -59,6 +59,14 @@ content operations repeatable and safe.
 - T-067 removed debug output, availability polling, and DOM/iframe inspection
   from the current admin Cloudinary upload button without changing upload preset
   ownership, folder policy, asset lifecycle, or dashboard workflow.
+- T-091 removed direct `console.log()` debug output from the scoped admin
+  dashboard create/update forms and artwork filter dropdowns without changing
+  validation, upload-state handoff, submit/update, success/error, or filter
+  callback behavior.
+- T-092 removed success-path copy `console.log()` output from scoped admin
+  read-list files, `ArtworkFeedCard`, and the shared `copy_id()` helper while
+  preserving clipboard writes, failure logging, read-list fetch/filter/loading/
+  error states, cards, and skeleton exports.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -217,12 +225,31 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-16: Completed T-067 by removing always-on debug logs, Cloudinary
   availability polling, and DOM/iframe inspection from `UploadButton` while
   preserving current upload widget behavior.
+- 2026-05-17: Prepared T-091 to remove direct `console.log()` debug output from
+  scoped admin dashboard create/update forms and artwork filter dropdowns while
+  preserving validation, upload state handoff, submit/update behavior, and
+  filter callbacks.
+- 2026-05-17: Completed T-091 by removing the scoped admin dashboard
+  create/update form and artwork-filter direct `console.log()` calls and adding
+  source-hygiene coverage. Admin read-list copy logs and shared helper logging
+  were handled by T-092; route-level API logging and global logging/redaction
+  policy remain separate.
+- 2026-05-17: Prepared T-092 to remove success-path `console.log()` output
+  from scoped admin read-list copy flows, `ArtworkFeedCard`, and the shared
+  `copy_id()` helper while preserving clipboard, read-list, card, and skeleton
+  behavior.
+- 2026-05-17: Completed T-092 by removing the scoped admin read-list copy
+  success logs, the `ReadArtworkList` render log, the `ArtworkFeedCard` copy
+  success log, and the shared `copy_id()` success log without changing
+  clipboard failure logging or read-list behavior.
 
 ## Next Agent Action
 
-Select the next content/assets/admin slice after reconciling current priority
-with the orchestrator.
+Pick the next content/admin operations slice from the remaining open findings
+and risks.
 
 For Cloudinary, keep upload preset ownership, folder policy, asset lifecycle,
 deletion/backup/rollback, Shopify product-link workflow, and visible pinned/tag
-admin controls separate unless explicitly assigned.
+admin controls separate unless explicitly assigned. Keep route-level API
+logging, shared UI click logs, test-session override logs, public artwork
+fetcher logs, and global logging policy separate from T-092.

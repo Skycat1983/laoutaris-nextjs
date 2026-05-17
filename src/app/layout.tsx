@@ -26,10 +26,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   await dbConnect();
-  console.log(
-    "Branch verification test - deployed from main branch - timestamp:",
-    new Date().toISOString()
-  );
   const session = await getServerSession(authOptions);
 
   return (

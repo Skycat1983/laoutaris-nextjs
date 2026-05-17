@@ -57,8 +57,6 @@ export const authCallbacks = {
       token.id = user.id;
       token.role = user.role;
     }
-    // console.log("jwt in authOptions", isNewUser);
-    // console.log("token in jwt authOptions", token);
 
     return token;
   },

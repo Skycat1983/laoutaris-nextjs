@@ -52,7 +52,6 @@ export function ArtworkFilterDropdowns({
       setSelectedKey(key);
       setSelectedValue(null);
       onFilterChange(key, null);
-      console.log("Selected key:", key);
     },
     [onFilterChange]
   );
@@ -61,7 +60,6 @@ export function ArtworkFilterDropdowns({
     (value: string) => {
       setSelectedValue(value);
       onFilterChange(selectedKey, value);
-      console.log("Selected value:", value);
     },
     [selectedKey, onFilterChange]
   );

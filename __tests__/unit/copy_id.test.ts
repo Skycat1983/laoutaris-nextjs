@@ -35,7 +35,7 @@ describe("copy_id", () => {
     await handler(testItem);
 
     expect(mockClipboardWrite).toHaveBeenCalledWith("123456789");
-    expect(consoleLogSpy).toHaveBeenCalledWith("Copied ID:", "123456789");
+    expect(consoleLogSpy).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
@@ -64,7 +64,7 @@ describe("copy_id", () => {
     for (const testCase of testCases) {
       await handler(testCase);
       expect(mockClipboardWrite).toHaveBeenCalledWith(testCase._id);
-      expect(consoleLogSpy).toHaveBeenCalledWith("Copied ID:", testCase._id);
     }
+    expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 });

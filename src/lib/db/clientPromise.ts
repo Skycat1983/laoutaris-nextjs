@@ -1,9 +1,6 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 // import dbConnect from "./mongodb";
 
-console.log("Raw MongoDB Driver - Environment:", process.env.NODE_ENV);
-console.log("Raw MongoDB Driver - MONGO_URI exists:", !!process.env.MONGO_URI);
-
 const uri = process.env.MONGO_URI as string;
 
 if (!uri) {
@@ -30,8 +27,6 @@ let clientPromise: Promise<MongoClient>;
 
 // Wrap connection in a retry function
 const connectWithRetry = async (client: MongoClient): Promise<MongoClient> => {
-  console.log("Attempting MongoDB connection with retry logic");
-
   // Maximum retry attempts
   const MAX_RETRIES = 3;
   let currentAttempt = 0;
@@ -40,22 +35,14 @@ const connectWithRetry = async (client: MongoClient): Promise<MongoClient> => {
   while (currentAttempt < MAX_RETRIES) {
     try {
       currentAttempt++;
-      console.log(
-        `MongoDB connection attempt ${currentAttempt}/${MAX_RETRIES}`
-      );
       return await client.connect();
     } catch (error) {
-      console.error(
-        `MongoDB connection attempt ${currentAttempt} failed:`,
-        error
-      );
       lastError = error;
 
       // Only retry if we haven't reached max attempts
       if (currentAttempt < MAX_RETRIES) {
         // Exponential backoff: 500ms, 1500ms, 4500ms
         const backoffTime = Math.min(Math.pow(3, currentAttempt) * 500, 10000);
-        console.log(`Retrying in ${backoffTime}ms...`);
         await new Promise((resolve) => setTimeout(resolve, backoffTime));
       }
     }
@@ -71,13 +58,11 @@ if (process.env.NODE_ENV === "development") {
   };
 
   if (!globalWithMongo._mongoClientPromise) {
-    console.log("Development: Creating new MongoDB client connection");
     client = new MongoClient(uri, options);
     globalWithMongo._mongoClientPromise = connectWithRetry(client);
   }
   clientPromise = globalWithMongo._mongoClientPromise;
 } else {
-  console.log("Production: Creating new MongoDB client connection");
   client = new MongoClient(uri, options);
   clientPromise = connectWithRetry(client);
 }

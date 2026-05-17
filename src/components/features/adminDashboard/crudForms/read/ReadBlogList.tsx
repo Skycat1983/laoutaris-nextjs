@@ -68,7 +68,6 @@ export function ReadBlogList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-      console.log("Copied ID:", id);
     } catch (err) {
       console.error("Failed to copy:", err);
     }

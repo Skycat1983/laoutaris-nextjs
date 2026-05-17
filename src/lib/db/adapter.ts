@@ -8,8 +8,6 @@ export const CustomMongoDBAdapter = (client: Promise<MongoClient>) => {
   return {
     ...baseAdapter,
     async createUser(profile: any) {
-      console.log("Custom createUser called:", profile);
-
       const customUser = {
         ...profile,
         username: profile.name,
@@ -30,7 +28,6 @@ export const CustomMongoDBAdapter = (client: Promise<MongoClient>) => {
         return null;
       }
 
-      console.log("Custom user created:", user);
       return user;
     },
   };

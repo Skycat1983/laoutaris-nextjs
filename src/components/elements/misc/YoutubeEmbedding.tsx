@@ -8,7 +8,6 @@ const videoAspectRatio = {
 
 const YoutubeEmbedding = ({ videoId }: YoutubeEmbeddingProps) => {
   if (!videoId) {
-    console.log("Missing videoId in YoutubeEmbedding component");
     return null;
   }
 

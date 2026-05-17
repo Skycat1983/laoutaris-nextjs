@@ -88,8 +88,8 @@ interface BasicAccordionFilterProps {
   filterMode: FilterMode;
   onFilterModeChange: (mode: FilterMode) => void;
   onApply?: () => void;
-  initialSort?: ArtworkSortConfig;
-  initialFilters?: ArtworkFilterParams;
+  sortDefaults?: ArtworkSortConfig;
+  filterDefaults?: ArtworkFilterParams;
 }
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
@@ -102,30 +102,30 @@ export const ArtworkSortAndFilter = ({
   filterMode,
   onFilterModeChange,
   onApply,
-  initialSort,
-  initialFilters,
+  sortDefaults,
+  filterDefaults,
 }: BasicAccordionFilterProps) => {
   const [pendingFilters, setPendingFilters] = useState<ArtworkFilterParams>(
     () => ({
-      decade: initialFilters?.decade || [],
-      artstyle: initialFilters?.artstyle || [],
-      medium: initialFilters?.medium || [],
-      surface: initialFilters?.surface || [],
-      filterMode: initialFilters?.filterMode || "ALL",
+      decade: filterDefaults?.decade || [],
+      artstyle: filterDefaults?.artstyle || [],
+      medium: filterDefaults?.medium || [],
+      surface: filterDefaults?.surface || [],
+      filterMode: filterDefaults?.filterMode || "ALL",
     })
   );
 
   const [openItems, setOpenItems] = useState<string[]>(() => {
     const items: string[] = [];
-    if (initialFilters?.decade?.length) items.push("decade");
-    if (initialFilters?.artstyle?.length) items.push("style");
-    if (initialFilters?.medium?.length) items.push("medium");
-    if (initialFilters?.surface?.length) items.push("surface");
+    if (filterDefaults?.decade?.length) items.push("decade");
+    if (filterDefaults?.artstyle?.length) items.push("style");
+    if (filterDefaults?.medium?.length) items.push("medium");
+    if (filterDefaults?.surface?.length) items.push("surface");
     return items;
   });
 
   const [pendingSort, setPendingSort] = useState<ArtworkSortConfig>(
-    initialSort || {
+    sortDefaults || {
       by: "colorProximity",
       color: "#000000",
     }

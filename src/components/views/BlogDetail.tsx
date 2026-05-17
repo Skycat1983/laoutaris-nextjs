@@ -44,7 +44,6 @@ const BlogDetail = ({ blog, showComments = false }: BlogDetailProps) => {
         ReturnType<typeof clientApi.public.blog.singlePopulated>
       > = await clientApi.public.blog.singlePopulated(slug);
       if (result.success) {
-        console.log("result", result);
         const { comments } = result.data;
         setPopulatedComments(comments);
         setHasLoadedComments(true);

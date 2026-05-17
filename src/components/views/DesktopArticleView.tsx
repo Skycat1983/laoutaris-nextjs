@@ -24,7 +24,6 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
   const pathname = usePathname();
   const firstSegment = pathname.split("/")[1];
   const title = firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1);
-  console.log("title", title);
   const paragraphs = article.text.replace(/\r\n/g, "\n").split(/\n\n+/);
   return (
     <>

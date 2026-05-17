@@ -130,6 +130,21 @@ or inconsistent code forward.
   now keeps only the current `/account/settings` redirect, active source no
   longer imports the retired wrappers, and `src/lib/api` no longer owns
   runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base URL construction.
+- T-088 removed direct DB helper logging and stale commented MongoDB
+  connection/OAuth callback examples from `src/lib/db` while preserving the
+  existing connection/retry/cache behavior and adapter-created user defaults.
+- T-089 removed direct render logging from root layout, `Subnav`, article
+  views, and account comments without changing the current root-layout
+  DB/session ownership or public/account component contracts.
+- T-090 removed the remaining scoped user-facing public/account direct
+  `console.log()` output and added source-hygiene coverage. The only adjacent
+  contract cleanup was renaming `ArtworkGallery`'s callee-facing starting-data
+  and filter-default props while preserving the loader and filter-control
+  behavior.
+- T-095 removed the stale commented `console.log()` snippets from scoped auth,
+  session provider, public collection, main navigation, and admin layout
+  source. Full-source source-hygiene coverage now keeps `src` free of direct or
+  commented `console.log()` calls.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -369,21 +384,58 @@ Use targeted import/reference searches for pruning tasks.
   self-fetch block, preserved client API wrappers and route-specific fetcher
   factories, and added source hygiene coverage for deleted wrappers, retired
   imports, and retired same-app server URL construction.
+- 2026-05-17: Prepared T-088 to remove direct debug logging and stale commented
+  connection/OAuth callback examples from the MongoDB helper layer while
+  preserving DB connection, retry, cache, and auth adapter behavior.
+- 2026-05-17: Completed T-088; `src/lib/db/mongodb.ts`,
+  `clientPromise.ts`, `connectWithRetry.ts`, and `adapter.ts` no longer contain
+  direct console calls, `mongodb.ts` no longer carries stale old connection
+  blocks or OAuth callback URL examples, and focused source hygiene plus DB
+  helper behavior tests cover the cleaned contracts.
+- 2026-05-17: Prepared T-089 to remove direct public/account render debug logs
+  from root layout, `Subnav`, article views, and account comments while
+  preserving behavior and leaving root-layout DB/session ownership separate.
+- 2026-05-17: Completed T-089; the scoped public/account render files no
+  longer contain direct `console.log()` calls or retired branch/link/article/
+  title/comments debug strings, with focused source-hygiene coverage.
+- 2026-05-17: Prepared T-090 to remove remaining user-facing public/account
+  `console.log()` output from scoped client components and account pages while
+  leaving admin dashboard logging and global logging policy separate.
+- 2026-05-17: Completed T-090; the scoped public/account client/page files no
+  longer contain direct `console.log()` calls or retired debug strings, and
+  focused source hygiene covers the invariant. `ArtworkListLoader` still owns
+  the initial search-param-derived sort/filter inputs, while `ArtworkGallery`
+  consumes them through neutral starting-data/default prop names.
+- 2026-05-17: Prepared T-093 as a small shared UI/public fetcher source
+  hygiene slice. It should remove direct debug output from `Feed`, `NavItem`,
+  `RefreshButton`, `YoutubeEmbedding`, and the public artwork fetcher while
+  preserving component contracts and artwork query construction.
+- 2026-05-17: Completed T-093; the scoped shared UI components and public
+  artwork fetcher no longer contain direct `console.log()` calls, and the
+  public artwork fetcher URL-construction contract is covered by focused tests.
+- 2026-05-17: Prepared T-095 as a source-hygiene cleanup for stale commented
+  `console.log()` snippets after T-094 removed the last active direct
+  `console.log()` calls.
+- 2026-05-17: Completed T-095 by removing the stale commented `console.log()`
+  snippets from the scoped auth, session provider, public collection, main
+  navigation, and admin layout source. Full-source source-hygiene coverage now
+  keeps `src` free of direct or commented `console.log()` calls.
 
 ## Next Agent Action
 
-Choose the next architecture task from the remaining backlog after T-087.
-Likely candidates are client/server import-boundary cleanup, staged A-014
-source pruning, route-builder ownership, or root-layout session/cache ownership.
+Pick the next scoped architecture/source-health task from the remaining open
+findings and risks.
 
-Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, or T-087 unless a
-regression is opened.
+Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
+T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
+opened.
 
 Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
-`serverApi` option, broad route-builder centralization, favourite/watchlist
-server actions, account navigation, cache policy, root-layout session
-ownership, middleware/global auth policy, and global logging/redaction policy
-separate unless explicitly scoped.
+`serverApi` option, DB connection semantics, broad route-builder centralization,
+favourite/watchlist server actions, account navigation, cache policy,
+root-layout session ownership, middleware/global auth policy, test-session
+override logs, and global logging/redaction policy separate unless explicitly
+scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

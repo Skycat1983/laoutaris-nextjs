@@ -137,6 +137,18 @@ features before production launch.
   the shared admin guard invariant, invalid-ID `400` short-circuiting,
   destructive DB-before-model ordering, cascade behavior, and transaction
   cleanup semantics.
+- T-088 removed direct OAuth profile and created-user logging from
+  `CustomMongoDBAdapter.createUser()` while preserving adapter-created
+  `username`, `role`, `watchlist`, `favourites`, `createdAt`, and `updatedAt`
+  defaults.
+- T-094 removed the remaining active direct `console.log()` output from
+  `getUserFromSession` development test-header paths while preserving
+  `X-Test-User-Id`, `X-Test-Admin-Id`, normal NextAuth session lookup,
+  delegated helper behavior, and lookup failure `console.error()` handling.
+- T-095 removed stale commented `console.log()` snippets from auth callback and
+  credentials auth source without changing auth runtime behavior. Full-source
+  source-hygiene coverage now keeps `src` free of direct or commented
+  `console.log()` calls.
 
 ## Backlog
 
@@ -389,18 +401,41 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   `requireApiUser()` before service work, and the account settings/comments
   loaders read the authenticated user ID with the existing session helper
   before calling shared post-auth profile/comment services.
+- 2026-05-17: Prepared T-088 to remove direct debug logging from
+  `CustomMongoDBAdapter.createUser()` while preserving OAuth adapter-created
+  user defaults and leaving auth provider/callback behavior unchanged.
+- 2026-05-17: Completed T-088 for the auth adapter slice: direct profile/user
+  logging is removed from `CustomMongoDBAdapter.createUser()`, behavior tests
+  cover the adapter-created user defaults/delegation/null result/error path,
+  and OAuth provider/callback behavior remains unchanged.
+- 2026-05-17: Prepared T-094 to remove the remaining active direct
+  `console.log()` output from `getUserFromSession` development test-header
+  paths while preserving `X-Test-User-Id`, `X-Test-Admin-Id`, normal NextAuth
+  session lookup, and delegated helper behavior.
+- 2026-05-17: Completed T-094 by removing the active direct
+  `getUserFromSession` test-header `console.log()` calls and adding focused
+  session helper coverage for persisted test-user lookup, fallback behavior,
+  test-admin override, normal NextAuth fallback, delegated helper behavior, and
+  source hygiene.
+- 2026-05-17: Prepared T-095 to remove stale commented `console.log()` snippets
+  from auth callback and credentials auth source without changing auth runtime
+  behavior.
+- 2026-05-17: Completed T-095 by removing stale commented `console.log()`
+  snippets from auth callback and credentials auth source without changing auth
+  runtime behavior. Full-source source-hygiene coverage now keeps `src` free of
+  direct or commented `console.log()` calls.
 
 ## Next Agent Action
 
-Choose or prepare the next scoped auth/admin/permissions task. The
-T-081/T-083/T-084 account read-loader migrations preserve the
-`requireApiUser()` route guard invariant.
+Pick the next scoped auth/source hygiene task from the remaining open findings
+and risks.
 
-Do not reassign T-081, T-082, T-083, or T-084 unless a regression is opened.
+Do not reassign T-081, T-082, T-083, T-084, or T-088 unless a regression is
+opened. Do not reassign T-094 or T-095 unless a regression is opened.
 
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, favourite/watchlist server actions, account
-navigation, comment mutations, profile editing, middleware, and future
-protected-route migrations separate. Preserve the T-043 shared guard invariant
-and add focused route coverage before changing protected user/admin route
-behavior.
+navigation, comment mutations, profile editing, middleware, OAuth provider
+configuration, and future protected-route migrations separate. Preserve the
+T-043 shared guard invariant and add focused route coverage before changing
+protected user/admin route behavior.

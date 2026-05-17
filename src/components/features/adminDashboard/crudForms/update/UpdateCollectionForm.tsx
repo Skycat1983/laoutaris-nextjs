@@ -106,7 +106,7 @@ export const UpdateCollectionForm = ({
     setIsSubmitting(true);
     try {
       // Send both the form data and artwork changes
-      const updatedCollection = await clientApi.admin.update.patchCollection(
+      await clientApi.admin.update.patchCollection(
         collectionInfo._id,
         {
           ...data,
@@ -115,7 +115,6 @@ export const UpdateCollectionForm = ({
         }
       );
 
-      console.log("Updated collection:", updatedCollection);
       onSuccess();
     } catch (error) {
       console.error("Error in UpdateCollectionForm:", error);

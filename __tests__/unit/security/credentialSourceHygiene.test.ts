@@ -118,4 +118,37 @@ describe("credential source hygiene", () => {
       );
     }
   });
+
+  it("keeps MongoDB helper files free of direct debug logging", () => {
+    const dbSourceFiles = [
+      "src/lib/db/mongodb.ts",
+      "src/lib/db/clientPromise.ts",
+      "src/lib/db/connectWithRetry.ts",
+      "src/lib/db/adapter.ts",
+    ];
+
+    for (const sourceFile of dbSourceFiles) {
+      expect(readRepoFile(sourceFile)).not.toMatch(
+        /console\.(?:debug|error|info|log|warn)\s*\(/
+      );
+    }
+  });
+
+  it("keeps MongoDB helper files free of retired debug strings and callback examples", () => {
+    const dbHelperSource = [
+      "src/lib/db/mongodb.ts",
+      "src/lib/db/clientPromise.ts",
+      "src/lib/db/connectWithRetry.ts",
+      "src/lib/db/adapter.ts",
+    ]
+      .map(readRepoFile)
+      .join("\n");
+
+    expect(dbHelperSource).not.toMatch(
+      /MONGO_URI exists|Raw MongoDB|DB Connect called|Custom createUser|Custom user created/
+    );
+    expect(readRepoFile("src/lib/db/mongodb.ts")).not.toMatch(
+      /api\/auth\/callback|http:\/\/localhost:3000|OLD CODE/
+    );
+  });
 });

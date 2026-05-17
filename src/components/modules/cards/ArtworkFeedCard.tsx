@@ -12,7 +12,6 @@ export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
   const handleCopyClick = async () => {
     try {
       await navigator.clipboard.writeText(item._id);
-      console.log("Copied ID:", item._id);
     } catch (err) {
       console.error("Failed to copy:", err);
     }

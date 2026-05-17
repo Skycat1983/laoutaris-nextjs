@@ -119,6 +119,29 @@ Next.js server/client component boundaries.
 - T-087 removed the stale account favourites `serverApi` import and commented
   old self-fetch block while preserving the current redirect to
   `/account/settings`.
+- T-089 removed direct render `console.log()` output from root layout,
+  `Subnav`, `ArticleView`, `DesktopArticleView`, and `UserCommentsView` while
+  preserving layout, navigation, article, and account comments behavior.
+- T-090 removed remaining scoped user-facing public/account `console.log()`
+  output from `ClientContextBoundary`, `ArtworkGallery`, `BlogDetail`,
+  `EnquiryForm`, `SubscribeSectionLoader`, the account favourite artwork page,
+  and `CollectionViewPagination` while preserving the current public/account
+  behavior.
+- T-091 removed direct `console.log()` output from the scoped admin dashboard
+  create/update forms and artwork filter dropdowns while preserving current
+  dashboard validation, upload, submit/update, and filter behavior.
+- T-092 removed success-path `console.log()` output from scoped admin read-list
+  copy flows, `ArtworkFeedCard`, and the shared `copy_id()` helper while
+  preserving copy-to-clipboard, read-list fetch, filter, loading, error, card,
+  and skeleton behavior.
+- T-093 removed direct `console.log()` output from shared UI components and
+  the public artwork fetcher while preserving feed rendering, navigation
+  active/disabled behavior, refresh behavior, YouTube embed behavior, and
+  artwork query URL construction.
+- T-095 removed stale commented `console.log()` snippets from the session
+  provider, collection section, main navigation, and admin content layout while
+  preserving rendering behavior. Full-source source-hygiene coverage now keeps
+  `src` free of direct or commented `console.log()` calls.
 
 ## Backlog
 
@@ -330,16 +353,68 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-17: Completed T-087; `src/app/account/favourites/page.tsx` now only
   imports `redirect`, keeps the `/account/settings` redirect, and carries no
   stale server-wrapper self-fetch code.
+- 2026-05-17: Prepared T-089 to remove direct render `console.log()` calls from
+  root layout, `Subnav`, `ArticleView`, `DesktopArticleView`, and
+  `UserCommentsView` while preserving layout, navigation, article, and account
+  comments behavior.
+- 2026-05-17: Completed T-089; root layout, `Subnav`, `ArticleView`,
+  `DesktopArticleView`, and `UserCommentsView` no longer emit direct render
+  `console.log()` output, and focused source-hygiene coverage prevents the
+  retired branch verification, link, article, title, and comments debug strings
+  from returning.
+- 2026-05-17: Prepared T-090 to remove remaining user-facing public/account
+  `console.log()` output from `ClientContextBoundary`, `ArtworkGallery`,
+  `BlogDetail`, `EnquiryForm`, `SubscribeSectionLoader`, the account favourite
+  artwork page, and `CollectionViewPagination` while preserving behavior.
+- 2026-05-17: Completed T-090; the scoped user-facing public/account files no
+  longer emit direct `console.log()` output. `ArtworkGallery` now receives
+  neutral starting-data/default prop names from `ArtworkListLoader` while
+  preserving initial filters, sorting, filter clearing, load-more behavior,
+  duplicate prevention, and empty-state rendering.
+- 2026-05-17: Prepared T-091 to remove direct `console.log()` output from
+  scoped admin dashboard create/update forms and artwork filter dropdowns while
+  preserving current dashboard validation, upload, submit/update, and filter
+  behavior.
+- 2026-05-17: Completed T-091; the scoped admin dashboard create/update form
+  and artwork filter files no longer emit direct `console.log()` output, and
+  focused source-hygiene coverage prevents those logs from returning.
+- 2026-05-17: Prepared T-092 to remove success-path `console.log()` output
+  from scoped admin read-list copy flows, `ArtworkFeedCard`, and the shared
+  `copy_id()` helper while preserving copy-to-clipboard, read-list fetch,
+  filter, loading, error, card, and skeleton behavior.
+- 2026-05-17: Completed T-092; the scoped admin read-list copy flows,
+  `ArtworkFeedCard`, and shared `copy_id()` helper no longer emit success-path
+  `console.log()` output, and `ReadArtworkList` no longer logs artwork arrays
+  during render.
+- 2026-05-17: Prepared T-093 to remove direct `console.log()` output from
+  shared UI components and the public artwork fetcher while preserving feed
+  rendering, navigation active/disabled behavior, refresh behavior, YouTube
+  embed behavior, and artwork query URL construction.
+- 2026-05-17: Completed T-093; `Feed`, `NavItem`, `RefreshButton`,
+  `YoutubeEmbedding`, and the public artwork fetcher no longer emit direct
+  `console.log()` output, and focused coverage preserves artwork fetcher URL
+  construction.
+- 2026-05-17: Prepared T-095 to remove stale commented `console.log()` snippets
+  from the session provider, collection section, main navigation, and admin
+  content layout paths while preserving rendering behavior.
+- 2026-05-17: Completed T-095 by removing stale commented `console.log()`
+  snippets from the session provider, collection section, main navigation, and
+  admin content layout paths while preserving rendering behavior. Full-source
+  source-hygiene coverage now keeps `src` free of direct or commented
+  `console.log()` calls.
 
 ## Next Agent Action
 
-Choose the next frontend/source cleanup task from the remaining backlog after
-T-087.
+Pick the next scoped frontend/source cleanup from the remaining open findings
+and risks.
 
-Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, or T-087 unless a
-regression is opened.
+Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
+T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
+opened.
 
 Keep favourite/watchlist server actions, broader account navigation, user
 comment mutations, profile editing, real pagination, checkout/cart, remaining
 Shopify product transform fields, visible admin product-linking UI, client
-fetcher behavior, and broad route-builder centralization separate.
+fetcher behavior beyond the scoped public artwork fetcher, test-session
+override logs, root-layout DB/session ownership, and broad route-builder
+centralization separate.

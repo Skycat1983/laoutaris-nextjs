@@ -31,7 +31,6 @@ export const getUserFromSession = async (
   if (process.env.NODE_ENV === "development" && req) {
     const testUserId = req.headers.get("X-Test-User-Id");
     if (testUserId) {
-      console.log("Using test user ID:", testUserId);
       try {
         const rawUser = await UserModel.findById(testUserId)
           .select("role username")
@@ -55,7 +54,6 @@ export const getUserFromSession = async (
 
     const testAdminId = req.headers.get("X-Test-Admin-Id");
     if (testAdminId) {
-      console.log("Using test admin ID:", testAdminId);
       return { id: testAdminId, role: "admin" };
     }
   }

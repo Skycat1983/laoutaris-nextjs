@@ -23,7 +23,6 @@ interface CollectionSectionProps {
 }
 
 export const CollectionSection = ({ collections }: CollectionSectionProps) => {
-  // console.log("collections", collections);
   return (
     <SectionLayout
       heading="Collections:"

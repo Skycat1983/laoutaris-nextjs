@@ -14,7 +14,6 @@ interface ArticleViewProps {
 
 export function ArticleView({ article, navigation, form }: ArticleViewProps) {
   const { prev, next } = navigation;
-  console.log("article in ArticleView", article);
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
       <div className="block md:hidden">

@@ -50,9 +50,9 @@ describe("ArtworkListLoader", () => {
       initialSort,
       initialFilters,
     })) as ReactElement<{
-      initialArtworks: typeof artwork[];
-      initialSort: typeof initialSort;
-      initialFilters: typeof initialFilters;
+      startingArtworks: typeof artwork[];
+      sortDefaults: typeof initialSort;
+      filterDefaults: typeof initialFilters;
     }>;
 
     expect(mockGetArtworkList).toHaveBeenCalledWith({
@@ -64,9 +64,9 @@ describe("ArtworkListLoader", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(ArtworkGallery);
     expect(element.props).toEqual({
-      initialArtworks: [artwork],
-      initialSort,
-      initialFilters,
+      startingArtworks: [artwork],
+      sortDefaults: initialSort,
+      filterDefaults: initialFilters,
     });
   });
 

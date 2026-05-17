@@ -14,10 +14,6 @@ export default function ClientContextBoundary({
   children,
   session,
 }: ClientContextBoundaryProps) {
-  if (!session && typeof window !== "undefined") {
-    console.log("Session not available in ClientContextBoundary");
-  }
-
   return (
     <SessionProvider session={session}>
       <GlobalFeaturesProvider>{children}</GlobalFeaturesProvider>

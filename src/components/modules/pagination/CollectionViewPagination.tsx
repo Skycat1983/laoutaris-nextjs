@@ -23,7 +23,6 @@ export function ArtworkPagination({
   heading,
   link_to,
 }: PaginationProps) {
-  console.log("items", items);
   return (
     <>
       <CollectionInfo heading={heading} subheading={`${items.length} pieces`} />

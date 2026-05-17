@@ -12,10 +12,8 @@ type Props = {
 };
 
 const UserCommentsView = ({ comments }: Props) => {
-  console.log("comments", comments);
   const blogLink = (comment: CommentFrontendPopulated) =>
     `/blog/${comment.blog.slug}`;
-  console.log("comments", comments);
 
   // group comments by blog slug
   const commentsByBlog = comments.reduce((acc, comment) => {

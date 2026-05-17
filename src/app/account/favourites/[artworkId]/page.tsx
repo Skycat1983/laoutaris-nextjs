@@ -13,8 +13,6 @@ export default async function FavouritedArtwork({
   await dbConnect();
   const { artworkId } = params;
 
-  console.log("artworkId", artworkId);
-
   return (
     <>
       <Suspense fallback={<ArtworkViewSkeleton />}>

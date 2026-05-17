@@ -4,6 +4,79 @@ Last updated: 2026-05-17
 
 ## Current Priority
 
+T-096 is prepared: harden the baseline security headers and API CORS in
+`next.config.mjs` by removing the invalid wildcard-origin plus credentialed
+CORS pairing, avoiding wildcard allowed headers, and adding low-risk hardening
+headers/CSP directives. Keep full strict CSP allowlist design, dynamic
+per-origin CORS middleware, HSTS, monitoring, Cloudinary upload lifecycle, and
+broader production logging/redaction policy separate.
+T-095 is complete: stale commented-out `console.log()` snippets were removed
+from auth callbacks, credentials auth, session provider, collection section,
+main navigation, and admin content layout source. The full-source
+`rg -n "console\\.log\\(" src` search now returns no matches, and focused
+source-hygiene coverage prevents direct or commented `console.log()` calls from
+returning under `src`. Keep route-level API error logging, `console.error()`
+handling, and broader production logging/redaction policy separate.
+T-094 is complete: the remaining active direct `console.log()` output was
+removed from `src/lib/session/getUserFromSession.ts` development test-header
+paths while preserving `X-Test-User-Id`, `X-Test-Admin-Id`, normal NextAuth
+session lookup, `getUserIdFromSession()`, `isUserAdmin()`, and the existing
+test-user lookup failure `console.error()` behavior. Focused session helper
+tests now cover the development test-header paths and source hygiene. T-095
+later handled the commented-out debug lines; keep route-level API error
+logging and broader production logging/redaction policy separate.
+T-093 is complete: direct `console.log()` output was removed from shared UI
+components (`Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`) and the
+public artwork fetcher while preserving feed rendering, navigation state,
+refresh behavior, YouTube embed behavior, and artwork query URL construction.
+Focused source hygiene and public artwork fetcher URL-construction coverage
+were added. T-094 later handled the `getUserFromSession` development
+test-header logs, and T-095 later handled commented-out debug logs; keep
+route-level API error logging and broader production logging/redaction policy
+separate.
+T-092 is complete: direct success-path `console.log()` output was removed from
+admin read-list copy flows, `ArtworkFeedCard`, and the shared `copy_id()`
+helper; `ReadArtworkList` no longer logs artwork arrays during render.
+Clipboard behavior, read-list fetch/filter/loading/error states, and clipboard
+failure `console.error()` behavior were preserved. T-093 and T-094 later
+handled the public artwork fetcher, shared UI, and test-session override logs;
+keep route-level API error logging and broader production logging/redaction
+policy separate.
+T-091 is complete: direct admin dashboard create/update form and artwork-filter
+`console.log()` output was removed from the scoped admin dashboard files while
+preserving validation, upload-state handoff, submit/update, success/error, and
+filter callback behavior. Focused source-hygiene coverage now prevents those
+direct logs from returning. Keep admin read-list copy logs, shared helpers,
+route-level API error logging, and broader production logging/redaction policy
+separate from T-091; T-092 handled the admin read-list and shared copy helper
+logs.
+T-090 is complete: remaining scoped user-facing public/account `console.log()`
+debug output was removed from `ClientContextBoundary`, `ArtworkGallery`,
+`BlogDetail`, `EnquiryForm`, `SubscribeSectionLoader`,
+`src/app/account/favourites/[artworkId]/page.tsx`, and
+`CollectionViewPagination`. Focused source hygiene now prevents the retired
+client/page debug strings from returning. Pick the next scoped
+production-readiness task from the remaining open findings and risks. Keep
+route-level API error logging, admin dashboard logs, and global logging/
+redaction policy separate.
+T-089 is complete: high-noise public/account render `console.log()` calls were
+removed from `src/app/layout.tsx`, `Subnav`, `ArticleView`,
+`DesktopArticleView`, and `UserCommentsView`; focused render source-hygiene
+coverage now prevents the retired branch verification, link, article, title,
+and comments debug strings from returning. Pick the next scoped
+production-readiness task from the remaining open findings and risks. Keep
+root-layout DB/session ownership, route-level API error logging, non-touched
+admin/gallery debug logs, and broader production logging/redaction policy
+separate.
+T-088 is complete: direct MongoDB helper and auth adapter debug logs were
+removed from `src/lib/db/mongodb.ts`, `src/lib/db/clientPromise.ts`,
+`src/lib/db/connectWithRetry.ts`, and `src/lib/db/adapter.ts`; stale MongoDB
+connection and OAuth callback examples were removed from `mongodb.ts`; focused
+source hygiene and DB helper behavior tests cover the preserved contracts. Pick
+the next scoped production-readiness task from the remaining open findings and
+risks. Keep broader production logging/redaction, request correlation,
+monitoring, route-level API logging, and build-time live MongoDB/static
+generation coupling separate.
 T-087 is complete: the retired server-side same-app API wrapper entrypoints
 were deleted after T-070 through T-086 removed their route-critical callers.
 `src/app/account/favourites/page.tsx` now keeps only the current
@@ -56,6 +129,15 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
+T-096 baseline security headers/API CORS hardening is ready to assign.
+T-095 commented debug-log leftovers cleanup is complete.
+T-094 session test-header debug-log cleanup is complete.
+T-093 shared UI/public artwork fetcher debug-log cleanup is complete.
+T-092 admin read-list/copy debug-log cleanup is complete.
+T-091 admin dashboard form/filter debug-log cleanup is complete.
+T-090 user-facing client debug-log cleanup is complete.
+T-089 public/account render debug-log cleanup is complete.
+T-088 MongoDB DB helper debug-log cleanup is complete.
 T-087 server API self-fetch wrapper retirement is complete.
 T-086 hard-coded localhost navigation URL cleanup is complete.
 T-085 public shop products loader service migration is complete. T-084 account
@@ -86,6 +168,41 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
+- T-096 is prepared as the next focused F-052/R-004 deployment-security slice:
+  update `next.config.mjs` so global API CORS no longer combines wildcard
+  origin with credentials or wildcard allowed headers, add baseline app
+  hardening headers, add low-risk CSP directives, and cover the invariants with
+  focused static tests.
+- T-095 is complete: stale commented `console.log()` snippets were removed from
+  the scoped auth, session provider, public collection, main navigation, and
+  admin layout source while preserving runtime behavior. The full-source
+  `console.log()` search returns no matches, and route-level API logging,
+  `console.error()` handling, and global logging policy remain separate.
+- T-094 is complete: `getUserFromSession` development test-header paths no
+  longer contain active direct `console.log()` calls. Focused tests cover
+  persisted test-user lookup, missing/failing lookup fallback, test-admin
+  override behavior, normal NextAuth fallback, delegated helper behavior, and
+  source hygiene. Commented-out debug lines, route-level API logging, and
+  global logging policy remain separate.
+- T-093 is complete: `Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`,
+  and the public artwork fetcher no longer contain direct `console.log()`
+  calls. Focused source hygiene covers the scoped files, public artwork fetcher
+  URL construction is covered, and T-094 later handled the `getUserFromSession`
+  development test-header logs. Commented-out debug logs, API logging, and
+  global logging policy remain separate.
+- T-092 is complete: scoped admin read-list files, `ArtworkFeedCard`,
+  `ReadArtworkList`, and `copy_id()` no longer contain direct success-path
+  `console.log()` output. `copy_id()` unit tests now assert clipboard success
+  without success logging, focused source hygiene covers the read/copy files,
+  and T-093 plus T-094 later handled the public artwork fetcher, shared UI
+  click, and test-session override logs. API logging and global logging policy
+  remain separate.
+- T-091 is complete: the scoped admin dashboard create/update form and
+  artwork-filter components no longer contain direct `console.log()` calls,
+  focused source-hygiene coverage was added, and dashboard validation,
+  upload-state handoff, submit/update, success/error, and filter callback
+  behavior were preserved. Read-list copy logs, shared helpers, route-level API
+  error logging, and global logging policy remain separate.
 - T-085 is complete: public shop product-list reads now share
   `getShopProductList` between `ShopProductsLoader` and
   `GET /api/v2/public/shop/products`, removing the loader's
@@ -104,6 +221,22 @@ Use this section as the first operational handoff for a new orchestrator.
   longer carries `VERCEL_ENV`/`VERCEL_URL`/localhost same-app URL construction.
   Keep client API wrappers, route-specific fetcher factories, the MongoDB
   driver `serverApi` option, and OAuth callback policy separate.
+- T-088 is complete: direct DB helper console calls, stale commented MongoDB
+  connection blocks, and OAuth callback URL examples are removed from the
+  scoped DB helper layer. `withDbConnect()` sequencing/rethrow behavior and
+  `CustomMongoDBAdapter.createUser()` defaults/delegation are covered by
+  focused tests. Keep global logging policy and build-time DB coupling
+  separate.
+- T-089 is complete: root-layout branch verification, Subnav link, ArticleView
+  article/title, and UserCommentsView comments `console.log()` output were
+  removed without changing rendering behavior, and
+  `__tests__/unit/security/renderSourceHygiene.test.ts` covers the retired
+  strings.
+- T-090 is complete: direct public/account `console.log()` output was removed
+  from the scoped client components and account page without changing
+  filtering, comments, enquiry, subscription, saved-artwork, provider/session
+  handoff, or pagination behavior. Focused source hygiene covers the removed
+  debug strings.
 - T-030 is complete and reconciled: it added the missing admin user/comment
   detail read routes, added focused route tests, and removed
   `admin.read.user` plus `admin.read.comment` from the T-029 route/fetcher
@@ -587,20 +720,21 @@ completed:
 
 ## Next Orchestrator Action
 
-Choose the next implementation task from the remaining backlog. Strong
-candidates are client/server import-boundary cleanup, staged A-014 source
-pruning, route-builder ownership, root-layout session/cache ownership, Vercel
-project-setting ownership, Cloudinary upload policy, or global
-logging/redaction policy.
+Assign T-096 to harden the baseline security headers and API CORS:
+`docs/tasks/T-096-harden-baseline-security-headers-cors.md`.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
-T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, and
-T-086, and T-087 are complete; do not reassign them unless a regression or
-explicit follow-up is opened.
+T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
+T-087, T-088, T-089, T-090, T-091, and T-092 are complete; do not reassign
+them unless a regression or explicit follow-up is opened. T-093 is also
+complete and should not be reassigned unless a regression is opened. T-094 is
+complete and should not be reassigned unless a regression is opened. T-095 is
+complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
 visible product-linking UI, checkout/cart ownership, remaining Cloudinary upload
-policy/runbook work, global production logging/redaction policy, visible blog
+policy/runbook work, full strict CSP allowlist design, dynamic per-origin CORS,
+HSTS rollout, global production logging/redaction policy, visible blog
 pinned/tag admin workflow, CI/dependency-update automation, Vercel
 project-setting ownership, credential rotation, and the residual Next/PostCSS
 owner decision separate unless priority changes.

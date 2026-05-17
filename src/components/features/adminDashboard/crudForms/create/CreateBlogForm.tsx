@@ -81,7 +81,6 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
           <form
             onSubmit={form.handleSubmit(
               (data) => {
-                console.log("Validation successful, calling onSubmit");
                 onSubmit(data);
               },
               (errors) => {
@@ -249,11 +248,7 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
               )}
             />
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              onClick={() => console.log("Button clicked")}
-            >
+            <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Creating..." : "Create Blog"}
             </Button>
           </form>

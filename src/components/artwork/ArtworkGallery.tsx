@@ -14,31 +14,28 @@ import { FilterMode } from "@/lib/constants";
 import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
 import { isValidValue } from "@/lib/helpers/validation";
 interface ArtworkGalleryProps {
-  initialArtworks: ArtworkFrontend[];
-  initialSort?: ArtworkSortConfig;
-  initialFilters?: ArtworkFilterParams;
+  startingArtworks: ArtworkFrontend[];
+  sortDefaults?: ArtworkSortConfig;
+  filterDefaults?: ArtworkFilterParams;
 }
 
 export const ArtworkGallery = ({
-  initialArtworks,
-  initialSort,
-  initialFilters,
+  startingArtworks,
+  sortDefaults,
+  filterDefaults,
 }: ArtworkGalleryProps) => {
-  console.log("initialArtworks", initialArtworks);
-  console.log("initialSort", initialSort);
-  console.log("initialFilters", initialFilters);
   const router = useRouter();
-  const [artworks, setArtworks] = useState(initialArtworks);
+  const [artworks, setArtworks] = useState(startingArtworks);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<ArtworkFilterParams>(
-    initialFilters || {
+    filterDefaults || {
       filterMode: "ALL",
     }
   );
   const [filterMode, setFilterMode] = useState<FilterMode>(
-    initialFilters?.filterMode || "ALL"
+    filterDefaults?.filterMode || "ALL"
   );
 
   const handleFilterChange = async (
@@ -79,7 +76,7 @@ export const ArtworkGallery = ({
       setFilters(cleanFilters);
 
       if (Object.keys(cleanFilters).length === 0) {
-        setArtworks(initialArtworks);
+        setArtworks(startingArtworks);
         return;
       }
 
@@ -102,7 +99,7 @@ export const ArtworkGallery = ({
     setFilters({
       filterMode: "ALL",
     });
-    setArtworks(initialArtworks);
+    setArtworks(startingArtworks);
   };
 
   const loadMoreArtworks = async () => {
@@ -156,8 +153,8 @@ export const ArtworkGallery = ({
         onClearFilters: clearFilters,
         filterMode,
         onFilterModeChange: (mode: FilterMode) => setFilterMode(mode),
-        initialSort,
-        initialFilters,
+        sortDefaults,
+        filterDefaults,
       }}
     >
       {artworks.length > 0 ? (

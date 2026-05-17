@@ -97,6 +97,15 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-085 Migrate shop products loader service](T-085-migrate-shop-products-loader-service.md) | Completed | Moved the public shop products loader off same-app HTTP by sharing server-only shop product listing service logic with the public shop route. |
 | [T-086 Remove hard-coded localhost navigation URLs](T-086-remove-hard-coded-localhost-navigation-urls.md) | Completed | Replaced hard-coded same-app origins in user-facing navigation and the `/project` redirect with relative app paths, then refreshed stale environment docs. |
 | [T-087 Retire server API self-fetch wrappers](T-087-retire-server-api-self-fetch-wrappers.md) | Completed | Removed the unused server-side same-app API wrapper layer and stale account page import while preserving client fetchers and direct server services. |
+| [T-088 Remove MongoDB DB helper debug logs](T-088-remove-mongodb-db-helper-debug-logs.md) | Completed | Removed direct MongoDB helper and auth adapter debug logs while preserving DB connection, retry, and adapter behavior. |
+| [T-089 Remove public render debug logs](T-089-remove-public-render-debug-logs.md) | Completed | Removed high-noise public/account render `console.log()` calls from root layout, subnav, article views, and account comments without changing rendering behavior. |
+| [T-090 Remove user-facing client debug logs](T-090-remove-user-facing-client-debug-logs.md) | Completed | Removed remaining user-facing public/account `console.log()` debug output from scoped client components and account pages without changing behavior. |
+| [T-091 Remove admin dashboard form debug logs](T-091-remove-admin-dashboard-form-debug-logs.md) | Completed | Removed direct `console.log()` debug output from admin create/update forms and artwork filter dropdowns without changing dashboard behavior. |
+| [T-092 Remove admin read copy debug logs](T-092-remove-admin-read-copy-debug-logs.md) | Completed | Removed success-path `console.log()` output from admin read-list copy flows, `ArtworkFeedCard`, and the shared copy-ID helper without changing copy behavior. |
+| [T-093 Remove shared UI and public fetcher debug logs](T-093-remove-shared-ui-public-fetcher-debug-logs.md) | Completed | Removed direct `console.log()` output from shared UI components and the public artwork fetcher without changing behavior. |
+| [T-094 Remove session test header debug logs](T-094-remove-session-test-header-debug-logs.md) | Completed | Removed the remaining active direct `console.log()` output from the development test-header session helper without changing auth behavior. |
+| [T-095 Remove commented debug log leftovers](T-095-remove-commented-debug-log-leftovers.md) | Completed | Removed stale commented-out `console.log()` snippets so the full source search is clean without changing behavior. |
+| [T-096 Harden baseline security headers and API CORS](T-096-harden-baseline-security-headers-cors.md) | Planned | Remove the invalid global wildcard credential CORS pairing and add low-risk baseline security headers/CSP directives. |
 
 ## Rules
 

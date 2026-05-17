@@ -80,7 +80,6 @@ export const UpdateBlogForm = ({
           <form
             onSubmit={form.handleSubmit(
               (data) => {
-                console.log("Validation successful, calling onSubmit");
                 onSubmit(data);
               },
               (errors) => {

@@ -59,7 +59,6 @@ export const createArtworkFetchers = (fetcher: Fetcher) => ({
     if (page) params.append("page", page.toString());
 
     const url = `/api/v2/public/artwork?${params.toString()}`;
-    console.log("Fetching URL:", url);
 
     return fetcher<ApiArtworkListResult>(url);
   },

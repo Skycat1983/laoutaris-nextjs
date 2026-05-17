@@ -21,9 +21,9 @@ export const ArtworkListLoader = async ({
 
   return (
     <ArtworkGallery
-      initialArtworks={artworks}
-      initialSort={initialSort}
-      initialFilters={initialFilters}
+      startingArtworks={artworks}
+      sortDefaults={initialSort}
+      filterDefaults={initialFilters}
     />
   );
 };

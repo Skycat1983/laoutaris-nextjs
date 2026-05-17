@@ -61,7 +61,6 @@ const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
 
     try {
       const result = await clientApi.public.enquiry.create(enquiry);
-      console.log("result of submit enquiry", result);
       if (result.success) {
         openModal(
           <ModalMessage
@@ -74,10 +73,8 @@ const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
           <ModalMessage message="Enquiry submission failed" type="error" />
         );
       }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
-      console.log(errorMessage);
+    } catch {
+      return;
     }
   }
 

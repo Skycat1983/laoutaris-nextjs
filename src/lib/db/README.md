@@ -5,7 +5,7 @@ This directory contains utilities for connecting to MongoDB in a Next.js applica
 ## Key Files
 
 - `mongodb.ts`: Mongoose connection with retry logic and caching
-- `clientPromise.ts`: Raw MongoDB driver connection for Next-Auth
+- `clientPromise.ts`: Native MongoDB driver connection for Next-Auth
 - `connectWithRetry.ts`: A wrapper utility for API routes
 - `adapter.ts`: Custom MongoDB adapter for Next-Auth
 

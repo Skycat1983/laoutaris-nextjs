@@ -16,18 +16,11 @@ import dbConnect from "./mongodb";
  * ```
  */
 export async function withDbConnect<T>(handler: () => Promise<T>): Promise<T> {
-  try {
-    console.log("withDbConnect: Connecting to MongoDB");
-    // Use the improved dbConnect with retry from mongodb.ts
-    await dbConnect();
-    console.log("withDbConnect: Connected to MongoDB");
+  // Use the improved dbConnect with retry from mongodb.ts
+  await dbConnect();
 
-    // Execute the handler function once connected
-    return await handler();
-  } catch (error) {
-    console.error("withDbConnect: Error connecting to MongoDB", error);
-    throw error;
-  }
+  // Execute the handler function once connected
+  return await handler();
 }
 
 export default withDbConnect;

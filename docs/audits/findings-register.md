@@ -28,7 +28,7 @@ prioritize, and route actionable findings.
 | F-017 | A-006 | Medium | Converted | The only integration test mostly verifies mocks rather than production Home behavior. | A-006 found `Home.test.tsx` mocks the component under test and its child modules. | [testing workstream](../workstreams/testing-and-quality.md) | Reconciled 2026-05-14 |
 | F-018 | A-006 | Medium | Converted | Coverage is not a documented or enforced gate. | A-006 found no coverage script, no coverage thresholds, and a probe showing 1.78% statement coverage across `src`. | [testing workstream](../workstreams/testing-and-quality.md), [testing runbook](../runbooks/testing.md) | Reconciled 2026-05-14 |
 | F-019 | A-006, A-007 | High | Converted | Build verification is coupled to external Google Fonts and live MongoDB/environment access. | A-006 found sandbox build failure on Google Fonts and successful network build that still performed production MongoDB connection and route/data fetch work; A-007 found a sandbox build failed on MongoDB DNS/egress and the external-access build passed while still using live MongoDB. | [production risks](../risks/production-readiness.md), [testing workstream](../workstreams/testing-and-quality.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing runbook](../runbooks/testing.md) | Reconciled 2026-05-14 |
-| F-020 | A-001, A-002, A-006, A-007, A-013, A-015 | Low | Partially mitigated | Debug logs, expected error output, and debug-only delays make tests, builds, SSR, API, upload, and commerce paths noisy. | Completed audits found console output in tests/builds, fetcher stack logs, DB logs, route logs, product logs, upload widget logs, root layout logs, and an `ArtworkLoader` delay. T-041 removed the always-on middleware path/token/role debug logs. T-067 removed the admin Cloudinary upload widget debug logs, availability polling, and DOM/iframe inspection with source/component regression coverage. T-068 removed direct public shop products route, gallery, and loader `console.log` debug output, replaced the loader's console-directed public error hint, and added focused source/API/component/loader regression coverage. T-069 removed the shared fetcher request/URL/response `console.log` debug output plus server public/user/admin API URL-helper logs and stale commented URL debug blocks, with focused source hygiene and fetcher behavior coverage. T-076 removed the public blog list route's touched MongoDB query `console.log` while leaving global logging policy separate. T-077 removed the touched `ArtworkLoader` debug delay and result log. T-079 removed the public article list route's touched direct `console.log` debug output and stack log. Other build, DB, commerce, and SSR noise remains. | [production risks](../risks/production-readiness.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing workstream](../workstreams/testing-and-quality.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-041](../tasks/T-041-harden-middleware-api-auth-responses.md), [T-067](../tasks/T-067-remove-cloudinary-upload-debug-logs.md), [T-068](../tasks/T-068-remove-public-shop-debug-logs.md), [T-069](../tasks/T-069-remove-shared-fetcher-debug-logs.md), [T-076](../tasks/T-076-migrate-blog-list-section-loaders-service.md), [T-077](../tasks/T-077-migrate-artwork-detail-loader-service.md), [T-079](../tasks/T-079-migrate-biography-section-loader-service.md) | T-079 2026-05-16 |
+| F-020 | A-001, A-002, A-006, A-007, A-013, A-015 | Low | Partially mitigated | Debug logs, expected error output, and debug-only delays make tests, builds, SSR, API, upload, and commerce paths noisy. | Completed audits found console output in tests/builds, fetcher stack logs, DB logs, route logs, product logs, upload widget logs, root layout logs, and an `ArtworkLoader` delay. T-041 removed the always-on middleware path/token/role debug logs. T-067 removed the admin Cloudinary upload widget debug logs, availability polling, and DOM/iframe inspection with source/component regression coverage. T-068 removed direct public shop products route, gallery, and loader `console.log` debug output, replaced the loader's console-directed public error hint, and added focused source/API/component/loader regression coverage. T-069 removed the shared fetcher request/URL/response `console.log` debug output plus server public/user/admin API URL-helper logs and stale commented URL debug blocks, with focused source hygiene and fetcher behavior coverage. T-076 removed the public blog list route's touched MongoDB query `console.log` while leaving global logging policy separate. T-077 removed the touched `ArtworkLoader` debug delay and result log. T-079 removed the public article list route's touched direct `console.log` debug output and stack log. T-088 removed direct MongoDB helper and auth adapter debug logs plus stale MongoDB connection/OAuth callback examples, with focused source hygiene and DB helper behavior coverage. T-089 removed root-layout branch verification, navigation-link, article, title, and account-comments render `console.log()` output, with focused render source-hygiene coverage. T-090 removed remaining scoped user-facing public/account client/page `console.log()` output from `ClientContextBoundary`, `ArtworkGallery`, `BlogDetail`, `EnquiryForm`, `SubscribeSectionLoader`, the account favourite artwork page, and `CollectionViewPagination`, with focused source-hygiene coverage. T-091 removed direct admin dashboard create/update form and artwork-filter `console.log()` output from the scoped admin dashboard files, with focused source-hygiene coverage. T-092 removed success-path admin read-list copy, `ArtworkFeedCard`, shared `copy_id()`, and `ReadArtworkList` render `console.log()` output, with helper and source-hygiene coverage. T-093 removed direct shared UI/public artwork fetcher `console.log()` output from `Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`, and the public artwork fetcher, with source-hygiene and artwork fetcher URL-construction coverage. T-094 removed the remaining active direct `getUserFromSession` development test-header `console.log()` output, with focused session helper behavior and source-hygiene coverage. T-095 removed stale commented-out `console.log()` snippets from auth callbacks, credentials auth, the session provider, collection section, main navigation, and admin content layout, with full-source source-hygiene coverage proving `src` has no direct or commented `console.log()` calls. Other build, commerce, SSR, route-level API, and expected error-path noise remains. | [production risks](../risks/production-readiness.md), [deployment workstream](../workstreams/deployment-security-and-observability.md), [testing workstream](../workstreams/testing-and-quality.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [T-041](../tasks/T-041-harden-middleware-api-auth-responses.md), [T-067](../tasks/T-067-remove-cloudinary-upload-debug-logs.md), [T-068](../tasks/T-068-remove-public-shop-debug-logs.md), [T-069](../tasks/T-069-remove-shared-fetcher-debug-logs.md), [T-076](../tasks/T-076-migrate-blog-list-section-loaders-service.md), [T-077](../tasks/T-077-migrate-artwork-detail-loader-service.md), [T-079](../tasks/T-079-migrate-biography-section-loader-service.md), [T-088](../tasks/T-088-remove-mongodb-db-helper-debug-logs.md), [T-089](../tasks/T-089-remove-public-render-debug-logs.md), [T-090](../tasks/T-090-remove-user-facing-client-debug-logs.md), [T-091](../tasks/T-091-remove-admin-dashboard-form-debug-logs.md), [T-092](../tasks/T-092-remove-admin-read-copy-debug-logs.md), [T-093](../tasks/T-093-remove-shared-ui-public-fetcher-debug-logs.md), [T-094](../tasks/T-094-remove-session-test-header-debug-logs.md), [T-095](../tasks/T-095-remove-commented-debug-log-leftovers.md) | T-095 2026-05-17 |
 | F-021 | A-013, A-015 | High | Partially mitigated | Server-side data access has competing ownership models and relies on same-app HTTP self-fetching. | T-007, T-018, T-021, T-070, T-071, T-072, T-073, T-074, T-075, T-076, T-077, T-078, T-079, T-080, T-081, T-083, T-084, and T-085 proved the ADR 0004 service pattern for artwork-by-ID, `/artwork` list, `/search`, collection navigation, article navigation, collection redirect pages, populated article detail data, blog detail data, blog list data, `ArtworkLoader` detail data, collection artwork list/detail data, biography article list data, collection section list data, account navigation data, account saved-artwork data, account profile/comment data, and public shop product listing data. `BiographySubnavLoader`, `BiographySectionLoader`, `CollectionSectionLoader`, `MainNavLoader`, `AccountSubnavLoader`, `FavouritesPaginationLoader`, `WatchlistPaginationLoader`, `FavouritedArtworkLoader`, `WatchlistedArtworkLoader`, `UserSettingsLoader`, `UserCommentsLoader`, `ShopProductsLoader`, the biography default redirect page, `ArticleLoader` previous/next navigation and article detail data, `BlogDetailLoader`, `BlogListLoader`, `BlogSectionLoader`, `ArtworkLoader`, `CollectionArtworkLoader`, `CollectionArtworksPaginationLoader`, `/collections`, `/collections/[slug]`, the collection navigation item route, the public collection list route, the public shop products route, the user navigation route, the user favourite/watchlist read routes, the user profile/comment read routes, and the collection artwork routes now use shared server-only services instead of same-app HTTP for those paths. T-087 deleted the retired server-side same-app API wrapper layer after those callers were migrated. Broader root-layout DB/session ownership, cache policy, and any future action/service ownership cleanup remain separate. | [ADR 0004](../decisions/0004-server-data-access-ownership.md), [production risks](../risks/production-readiness.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [rendering architecture](../architecture/rendering-and-data-fetching.md), [T-018](../tasks/T-018-artwork-list-server-data-proof.md), [T-021](../tasks/T-021-public-search-query-service.md), [T-070](../tasks/T-070-migrate-collections-subnav-loader-service.md), [T-071](../tasks/T-071-migrate-article-navigation-loaders-service.md), [T-072](../tasks/T-072-migrate-article-navigation-page-consumers.md), [T-073](../tasks/T-073-migrate-collection-redirect-pages-service.md), [T-074](../tasks/T-074-migrate-article-detail-loader-service.md), [T-075](../tasks/T-075-migrate-blog-detail-loader-service.md), [T-076](../tasks/T-076-migrate-blog-list-section-loaders-service.md), [T-077](../tasks/T-077-migrate-artwork-detail-loader-service.md), [T-078](../tasks/T-078-migrate-collection-artwork-loaders-service.md), [T-079](../tasks/T-079-migrate-biography-section-loader-service.md), [T-080](../tasks/T-080-migrate-collection-section-loader-service.md), [T-081](../tasks/T-081-migrate-account-subnav-loader-service.md), [T-083](../tasks/T-083-migrate-account-saved-artwork-loaders-service.md), [T-084](../tasks/T-084-migrate-account-profile-comments-loaders-service.md), [T-085](../tasks/T-085-migrate-shop-products-loader-service.md), [T-087](../tasks/T-087-retire-server-api-self-fetch-wrappers.md) | T-087 completed 2026-05-17 |
 | F-022 | A-013, A-015 | High | Converted | Client/server import boundaries are leaky and can pull server/model modules into client components. | A-013 and A-015 found client components importing `serverApi`, Mongoose model types as values, broad barrels, and server/model modules. | [production risks](../risks/production-readiness.md), [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [frontend workstream](../workstreams/frontend-routes-and-components.md) | Reconciled 2026-05-14 |
 | F-023 | A-013 | Medium | Converted | Domain taxonomy and filter state are duplicated across constants, schemas, public filters, admin forms, and shop filters. | A-013 found repeated artwork option literals and separate shop sentinel values. | [architecture workstream](../workstreams/architecture-refactor-and-code-health.md), [data/API workstream](../workstreams/data-models-and-api.md), [frontend workstream](../workstreams/frontend-routes-and-components.md), [Shopify workstream](../workstreams/shopify-commerce.md) | Reconciled 2026-05-14 |
@@ -876,6 +876,92 @@ retired wrapper imports, and `src/lib/api` no longer contains
 `VERCEL_ENV`/`VERCEL_URL`/localhost same-app server URL construction. The
 environment runbook now records `VERCEL_ENV` and `VERCEL_URL` as not required
 by current source.
+
+2026-05-17: T-090 completed the focused F-020/R-019 user-facing client/page
+debug-log cleanup. `ClientContextBoundary`, `ArtworkGallery`, `BlogDetail`,
+`EnquiryForm`, `SubscribeSectionLoader`, the account favourite artwork page,
+and `CollectionViewPagination` no longer contain direct `console.log()` calls
+or the retired scoped debug strings, and focused source-hygiene coverage
+prevents those logs from returning. Route-level API error logging, admin
+dashboard logs, and broader production logging/redaction policy remain
+separate.
+
+2026-05-17: T-091 was prepared as the next focused F-020/R-019 admin dashboard
+form/filter debug-log cleanup. It targets direct `console.log()` output in the
+scoped admin create/update form and artwork-filter components while keeping
+admin read-list copy logs, shared helpers, route-level API error logging, and
+global logging/redaction policy separate.
+
+2026-05-17: T-091 completed the focused F-020/R-019 admin dashboard
+form/filter debug-log cleanup. The scoped admin create/update form and artwork
+filter dropdown files no longer contain direct `console.log()` calls, focused
+source-hygiene coverage prevents those logs from returning, and admin read-list
+copy logs, shared helpers, route-level API error logging, and broader
+production logging/redaction policy remain separate.
+
+2026-05-17: T-092 was prepared as the next focused F-020/R-019 admin
+read/copy debug-log cleanup. It targets success-path `console.log()` output in
+scoped admin read-list copy flows, `ArtworkFeedCard`, and the shared
+`copy_id()` helper while keeping clipboard failure logging, public artwork
+fetcher logs, test-session override logs, shared UI click logs, route-level API
+logging, and global logging/redaction policy separate.
+
+2026-05-17: T-092 completed the focused F-020/R-019 admin read/copy debug-log
+cleanup. The scoped admin read-list copy flows, `ArtworkFeedCard`,
+`ReadArtworkList`, and shared `copy_id()` helper no longer contain direct
+success-path `console.log()` output, helper success tests assert clipboard
+behavior without success logging, and focused source-hygiene coverage prevents
+those direct logs from returning. Public artwork fetcher logs, shared UI click
+logs, test-session override logs, route-level API logging, and broader
+production logging/redaction policy remain separate.
+
+2026-05-17: T-093 was prepared as the next focused F-020/R-019 shared
+UI/public fetcher debug-log cleanup. It targets direct `console.log()` output
+in `Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`, and the public
+artwork fetcher while keeping `getUserFromSession` development test-header
+logs, commented-out debug logs later handled by T-095, route-level API logging,
+and global logging/redaction policy separate.
+
+2026-05-17: T-093 completed the focused F-020/R-019 shared UI/public fetcher
+debug-log cleanup. `Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`, and
+the public artwork fetcher no longer contain direct `console.log()` calls;
+focused source hygiene prevents those logs from returning, and public artwork
+fetcher tests cover default, repeated-filter, color-sort, and pagination URL
+construction.
+
+2026-05-17: T-094 was prepared as the next focused F-020/R-019 auth/session
+helper debug-log cleanup. It targets the remaining active direct
+`console.log()` output in `getUserFromSession` development test-header paths
+while preserving test-header override behavior and keeping commented-out debug
+lines later handled by T-095, route-level API logging, and global
+logging/redaction policy separate.
+
+2026-05-17: T-094 completed the focused F-020/R-019 auth/session helper
+debug-log cleanup. `getUserFromSession` no longer contains active direct
+`console.log()` output in development test-header paths, focused tests cover
+persisted test-user lookup, missing/failing lookup fallback, test-admin
+override, normal NextAuth fallback, delegated helper behavior, and source
+hygiene. T-095 later handled the commented-out debug lines; route-level API
+logging and broader production logging/redaction policy remain separate.
+
+2026-05-17: T-095 was prepared as the final `console.log()` source-hygiene
+cleanup slice. It targets stale commented-out debug snippets so
+`rg -n "console\\.log\\(" src` returns no matches, while keeping route-level
+API logging, `console.error()` handling, and broader production
+logging/redaction policy separate.
+
+2026-05-17: T-095 completed the final `console.log()` source-hygiene cleanup
+slice. The scoped stale commented debug snippets are removed, the full-source
+`rg -n "console\\.log\\(" src` search returns no matches, and focused
+full-source source-hygiene coverage prevents direct or commented
+`console.log()` calls from returning under `src`.
+
+2026-05-17: T-096 was prepared as the first focused F-052/R-004 implementation
+slice after the logging cleanup stream. It targets the invalid global API
+wildcard credential CORS pairing, wildcard allowed headers, and missing
+baseline hardening headers/CSP directives while leaving full strict CSP
+allowlisting, dynamic CORS, HSTS, monitoring, Cloudinary lifecycle, and global
+logging policy separate.
 
 Unresolved owner/orchestrator decisions remain:
 

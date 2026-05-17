@@ -153,6 +153,48 @@ security headers, environment documentation, and actionable operational signals.
   construction. The environment runbook now classifies `VERCEL_ENV` and
   `VERCEL_URL` as platform-provided names that are not required by current
   source.
+- T-088 removed direct console logging from the MongoDB helper layer and
+  `CustomMongoDBAdapter.createUser()`, removed stale MongoDB connection and
+  OAuth callback examples from `src/lib/db/mongodb.ts`, and added focused
+  source hygiene plus DB helper behavior coverage. Broader production
+  logging/redaction and build-time live MongoDB coupling remain separate.
+- T-089 removed direct public/account render `console.log()` output from root
+  layout, `Subnav`, article views, and account comments while preserving
+  rendering behavior. Broader production logging/redaction and root-layout
+  DB/session ownership remain separate.
+- T-090 removed the remaining scoped user-facing public/account `console.log()`
+  output from `ClientContextBoundary`, `ArtworkGallery`, `BlogDetail`,
+  `EnquiryForm`, `SubscribeSectionLoader`, the account favourite artwork page,
+  and `CollectionViewPagination`. Route-level API error logging, admin
+  dashboard logs, and broader production logging/redaction remain separate.
+- T-091 removed direct admin dashboard create/update form and artwork-filter
+  `console.log()` output from the scoped admin dashboard files. Admin read-list
+  copy logs, route-level API error logging, and broader production
+  logging/redaction remain separate.
+- T-092 removed success-path admin read-list copy, `ArtworkFeedCard`, shared
+  `copy_id()`, and `ReadArtworkList` render `console.log()` output while
+  preserving clipboard failure `console.error()` behavior. Route-level API
+  logging and broader production logging/redaction remain separate.
+- T-093 removed direct shared UI/public artwork fetcher `console.log()` output
+  from `Feed`, `NavItem`, `RefreshButton`, `YoutubeEmbedding`, and the public
+  artwork fetcher. Route-level API logging and broader production
+  logging/redaction remain separate.
+- T-094 removed the remaining active direct `console.log()` output from
+  `getUserFromSession` development test-header paths while preserving
+  test-header override behavior, normal NextAuth session lookup, delegated
+  helper behavior, and lookup failure `console.error()` handling. T-095 later
+  handled the commented-out debug lines; route-level API logging and broader
+  production logging/redaction remain separate.
+- T-095 removed the stale commented-out `console.log()` snippets from the
+  scoped auth, session provider, public collection, main navigation, and admin
+  layout source. The full-source `rg -n "console\\.log\\(" src` search now
+  returns no matches; route-level API logging, `console.error()` handling, and
+  broader production logging/redaction remain separate.
+- T-096 is prepared as a baseline F-052/R-004 hardening slice for
+  `next.config.mjs`: remove the invalid global API wildcard credential CORS
+  pairing, avoid wildcard allowed request headers, and add low-risk app
+  hardening headers plus missing CSP directives before a future full strict CSP
+  allowlist task.
 
 ## Backlog
 
@@ -412,15 +454,89 @@ npm run lint
   `src/lib/api` no longer contains `VERCEL_ENV`/`VERCEL_URL`/localhost same-app
   URL construction, and the environment runbook now records those Vercel names
   as not required by current source.
+- 2026-05-17: Prepared T-088 as the next F-020 DB logging slice. It should
+  remove direct MongoDB helper and auth adapter debug logs while preserving DB
+  connection options, retry/backoff behavior, cached client behavior, thrown
+  errors, and adapter-created user defaults.
+- 2026-05-17: Completed T-088 by removing direct DB helper and auth adapter
+  debug logs, deleting stale MongoDB connection/OAuth callback examples from
+  `mongodb.ts`, preserving retry/backoff/cache/adapter defaults, and adding
+  focused source hygiene plus DB helper behavior tests. Focused Jest, lint,
+  build, required source search, and `git diff --check` passed; build still
+  emits unrelated branch-verification and navigation link logs.
+- 2026-05-17: Prepared T-089 as the next F-020 public render-log slice. It
+  should remove root-layout branch verification, navigation-link, article, and
+  account comments render `console.log()` output while leaving root-layout
+  DB/session ownership and global logging policy separate.
+- 2026-05-17: Completed T-089 by removing root-layout branch verification,
+  navigation-link, article, title, and account-comments render `console.log()`
+  output, adding focused render source-hygiene coverage, and preserving
+  root-layout DB/session ownership plus current component rendering behavior.
+- 2026-05-17: Prepared T-090 as the next F-020 user-facing client/page log
+  slice. It should remove remaining public/account `console.log()` output from
+  scoped client components and account pages while leaving admin logs, route
+  error logging, and global logging policy separate.
+- 2026-05-17: Completed T-090 by removing the scoped user-facing public/account
+  `console.log()` output, preserving filtering/comments/enquiry/subscription/
+  saved-artwork/pagination behavior, and extending focused source-hygiene
+  coverage. Focused Jest, required source search, lint, and build passed.
+- 2026-05-17: Prepared T-091 as the next F-020/R-019 admin dashboard
+  form/filter debug-log slice. It should remove direct `console.log()` output
+  from scoped admin create/update form and artwork-filter components while
+  leaving read-list copy logs, route-level API logging, and global
+  logging/redaction policy separate.
+- 2026-05-17: Completed T-091 by removing direct admin dashboard
+  create/update form and artwork-filter `console.log()` output from the scoped
+  files, adding focused source-hygiene coverage, and preserving admin
+  validation, upload-state handoff, submit/update, success/error, and filter
+  callback behavior.
+- 2026-05-17: Prepared T-092 as the next F-020/R-019 admin read/copy
+  debug-log slice. It should remove success-path `console.log()` output from
+  scoped admin read-list copy flows, `ArtworkFeedCard`, and the shared
+  `copy_id()` helper while leaving failure `console.error()` behavior,
+  route-level API logging, and global logging/redaction policy separate.
+- 2026-05-17: Completed T-092 by removing success-path admin read-list copy,
+  `ArtworkFeedCard`, shared `copy_id()`, and `ReadArtworkList` render
+  `console.log()` output while preserving clipboard failure logging and leaving
+  route-level API logging plus global logging/redaction policy separate.
+- 2026-05-17: Prepared T-093 as the next F-020/R-019 shared UI/public fetcher
+  debug-log slice. It should remove direct `console.log()` output from `Feed`,
+  `NavItem`, `RefreshButton`, `YoutubeEmbedding`, and the public artwork
+  fetcher while leaving `getUserFromSession` test-header logs, route-level API
+  logging, and global logging/redaction policy separate.
+- 2026-05-17: Completed T-093 by removing direct `console.log()` output from
+  the scoped shared UI components and public artwork fetcher while preserving
+  current feed, navigation, refresh, YouTube embed, and artwork URL-building
+  behavior.
+- 2026-05-17: Prepared T-094 as the next F-020/R-019 auth/session helper
+  debug-log slice. It should remove the remaining active direct
+  `console.log()` output from `getUserFromSession` development test-header
+  paths while preserving the override behavior and leaving commented-out debug
+  lines, route-level API logging, and global logging/redaction policy separate.
+- 2026-05-17: Completed T-094 by removing the remaining active direct
+  `getUserFromSession` test-header `console.log()` output while preserving
+  test-user lookup/fallback behavior, test-admin override behavior, normal
+  NextAuth session lookup, delegated helper behavior, and lookup failure
+  `console.error()` handling.
+- 2026-05-17: Prepared T-095 as the final `console.log()` source-hygiene
+  cleanup slice. It should remove stale commented debug snippets from auth,
+  session provider, collection section, main navigation, and admin layout
+  source so the full-source `console.log()` search returns no matches.
+- 2026-05-17: Completed T-095 by removing stale commented `console.log()`
+  snippets from the scoped source files and adding full-source source hygiene
+  coverage so direct or commented `console.log()` calls cannot return under
+  `src`.
+- 2026-05-17: Prepared T-096 to harden the baseline security headers and API
+  CORS configuration without expanding into strict CSP allowlists, dynamic
+  CORS, HSTS, monitoring, Cloudinary lifecycle, or global logging policy.
 
 ## Next Agent Action
 
-Choose the next deployment/environment task from the remaining backlog after
-T-087. Keep environment cleanup focused on owner-managed legacy variables,
-Vercel project settings, Cloudinary policy, logging/redaction, and the residual
-Next/PostCSS decision.
+Assign T-096:
+[Harden baseline security headers and API CORS](../tasks/T-096-harden-baseline-security-headers-cors.md).
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
-credential rotation, OAuth callback configuration, and the Next/PostCSS owner
-choice separate.
+credential rotation, OAuth callback configuration, full strict CSP allowlist
+design, dynamic per-origin CORS, HSTS rollout, build-time live MongoDB
+coupling, and the Next/PostCSS owner choice separate.

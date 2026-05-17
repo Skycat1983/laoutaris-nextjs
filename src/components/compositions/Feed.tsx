@@ -1,8 +1,7 @@
 import { ReactNode } from "react";
-import { RefreshButton } from "@/components/elements/buttons";
 import { SkeletonFactory } from "./SkeletonFactory";
 import { Skeleton } from "../shadcn/skeleton";
-import { ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
+import { ApiResponse } from "@/lib/data/types";
 
 // type for the fetch function that returns data
 type FetchFn<T> = (params: {
@@ -53,17 +52,12 @@ export async function Feed<T>({
     throw new Error(result.error);
   }
 
-  const successResult: ApiSuccessResponse<T[]> = result;
-  const metadata = successResult.metadata;
-  // Now TypeScript should warn us about metadata being optional
   const { data } = result;
 
   // Should use type guard
   // if (!result.metadata) {
   //   throw new Error("Missing pagination metadata");
   // }
-
-  console.log("metadata", metadata);
 
   return (
     <FeedLayout title={title}>
