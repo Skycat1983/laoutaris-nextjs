@@ -1,17 +1,32 @@
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiFavoritesListResult } from "@/lib/api/user/favorites/fetchers";
-import { ArtworkFrontend, Prettify } from "@/lib/data/types";
+import { getOwnWatchlistArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
+import { ArtworkFrontend } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function WatchlistPaginationLoader() {
-  const result = await serverApi.user.watchlist.getList();
+  const userId = await getUserIdFromSession();
 
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch watchlist");
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const { data } = result as Prettify<ApiFavoritesListResult>;
+  let result: Awaited<ReturnType<typeof getOwnWatchlistArtworkList>>;
+
+  try {
+    result = await getOwnWatchlistArtworkList(userId);
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    throw new Error("Failed to fetch user watchlist");
+  }
+
+  if (!result) {
+    throw new Error("User not found");
+  }
 
   const buildWatchlistLink = (artwork: ArtworkFrontend) =>
     buildUrl(["account", "watchlist", artwork._id]);
@@ -19,7 +34,7 @@ export async function WatchlistPaginationLoader() {
   return (
     <>
       <ScrollableArtworkPagination
-        items={data.map((artwork) => ({
+        items={result.artworks.map((artwork) => ({
           ...artwork,
           link: buildWatchlistLink(artwork),
         }))}

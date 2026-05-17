@@ -1,17 +1,32 @@
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiFavoritesListResult } from "@/lib/api/user/favorites/fetchers";
-import { ArtworkFrontend, Prettify } from "@/lib/data/types";
+import { getOwnFavouriteArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
+import { ArtworkFrontend } from "@/lib/data/types";
+import { isNextError } from "@/lib/helpers/isNextError";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export async function FavouritesPaginationLoader() {
-  const result = await serverApi.user.favourites.getList();
+  const userId = await getUserIdFromSession();
 
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch favourites");
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const { data } = result as Prettify<ApiFavoritesListResult>;
+  let result: Awaited<ReturnType<typeof getOwnFavouriteArtworkList>>;
+
+  try {
+    result = await getOwnFavouriteArtworkList(userId);
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    throw new Error("Failed to fetch user favourites");
+  }
+
+  if (!result) {
+    throw new Error("User not found");
+  }
 
   const buildFavouritesLink = (artwork: ArtworkFrontend) =>
     buildUrl(["account", "favourites", artwork._id]);
@@ -19,7 +34,7 @@ export async function FavouritesPaginationLoader() {
   return (
     <>
       <ScrollableArtworkPagination
-        items={data.map((artwork) => ({
+        items={result.artworks.map((artwork) => ({
           ...artwork,
           link: buildFavouritesLink(artwork),
         }))}

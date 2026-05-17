@@ -1,13 +1,10 @@
-import { ArtworkModel } from "@/lib/data/models";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
 import { RouteResponse } from "@/lib/data/types";
-import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
-import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
-import dbConnect from "@/lib/db/mongodb";
+import { getOwnFavouriteArtwork } from "@/lib/data/services/getOwnSavedArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function GET(
@@ -20,34 +17,24 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
-
     const { artworkId } = params;
+    const result = await getOwnFavouriteArtwork(userGuard.userId, artworkId);
 
-    const leanArtwork = (await ArtworkModel.findById(
-      artworkId
-    ).lean()) as ArtworkLean | null;
-
-    if (!leanArtwork) {
+    if (result.status === "artwork-not-found") {
       return apiErrorResponse({
         message: "Artwork not found",
         status: 404,
       });
     }
 
-    const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
-      leanArtwork,
-      userGuard.userId
-    );
-
-    if (!artworkFrontend.isFavourited) {
+    if (result.status === "not-in-favourites") {
       return apiErrorResponse({
         message: "Artwork not in favourites",
         status: 404,
       });
     }
 
-    return apiSuccessResponse<ApiFavoritesItemResult["data"]>(artworkFrontend);
+    return apiSuccessResponse<ApiFavoritesItemResult["data"]>(result.artwork);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

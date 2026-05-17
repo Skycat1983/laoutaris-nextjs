@@ -101,9 +101,12 @@ Next.js server/client component boundaries.
 - T-080 moved `CollectionSectionLoader` to the shared server-only
   `getCollectionList` service while preserving `CollectionSection` props and
   fallback behavior.
-- T-081 is prepared to move `AccountSubnavLoader` to a shared server-only
-  account navigation service while preserving account subnav links, disabled
-  states, and first favourite/watchlist segment behavior.
+- T-081 moved `AccountSubnavLoader` to a shared server-only account navigation
+  service while preserving account subnav links, disabled states, and first
+  favourite/watchlist segment behavior.
+- T-083 moved the account favourites/watchlist list and detail loaders to
+  shared server-only saved-artwork services while preserving saved-item
+  pagination links and `ArtworkView` props.
 
 ## Backlog
 
@@ -287,12 +290,22 @@ Use browser checks for layout-sensitive changes.
   `serverApi`, and preserves account subnav labels, order, paths, disabled
   states, first favourite/watchlist segment links, and cart/orders disabled
   behavior.
+- 2026-05-17: Completed T-083; `FavouritesPaginationLoader`,
+  `WatchlistPaginationLoader`, `FavouritedArtworkLoader`, and
+  `WatchlistedArtworkLoader` now read the current session user ID and call
+  shared saved-artwork services directly, no longer import `serverApi`, and
+  preserve saved-item pagination headings, account saved-item links,
+  `ArtworkView` props, and focused failure behavior.
 
 ## Next Agent Action
 
-Prepare the next scoped frontend task from the remaining workstream backlog.
-Do not reassign T-081 unless a regression is opened.
+Prepare the next scoped frontend loader migration from the remaining same-app
+HTTP inventory after a fresh source check, likely user comments/settings or
+shop product loaders.
 
-Keep favourites/watchlist pagination/detail loaders, user comments/settings
-loaders, shop products, real pagination, checkout/cart, remaining Shopify
-product transform fields, and admin product-linking separate.
+Do not reassign T-081, T-082, or T-083 unless a regression is opened.
+
+Keep favourite/watchlist server actions, account navigation, user
+comments/settings loaders, shop products, real pagination, checkout/cart,
+remaining Shopify product transform fields, and visible admin product-linking
+UI separate.

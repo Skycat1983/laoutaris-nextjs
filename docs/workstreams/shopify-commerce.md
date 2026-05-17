@@ -75,9 +75,11 @@ production while preserving MongoDB as the archive source of truth.
   `shopifyProducts` links. It reports invalid IDs, unknown product types,
   within-artwork duplicates, and cross-artwork duplicates without mutating data
   or calling Shopify.
-- T-059 attempted to run the live read-only product-link audit, but no
-  owner-approved `MONGO_URI` was configured in the task shell, so no MongoDB
-  data was scanned.
+- T-059 completed the live read-only product-link audit against the
+  owner-approved MongoDB Atlas `laoutarisDB` target. It scanned 215 artworks,
+  found 92 artworks with Shopify links and 99 total Shopify links, and reported
+  0 invalid IDs, 0 unknown types, 0 within-artwork duplicates, and 1
+  review-only cross-artwork book duplicate group.
 - T-060 removed unsupported colour/dimension public shop filters and fake
   pagination controls while preserving backed listing filters, product-type
   checkboxes, result count, and client-side sort controls.
@@ -95,18 +97,18 @@ production while preserving MongoDB as the archive source of truth.
   listing route, gallery, and loader while preserving current filtering,
   sorting, malformed ID skipping, deduplication, response envelope, and
   metadata behavior.
+- T-082 recorded the shared book-link policy and added strict admin artwork
+  create/update validation for Shopify product links: numeric product IDs,
+  known types, and no within-artwork duplicate product IDs.
 
 ## Backlog
 
 - Decide the full checkout handoff: Shopify-hosted product/checkout link or
   Shopify cart/checkout with variant selection.
-- Define the admin linking workflow for original, print, and book product links,
-  including numeric ID/type validation and duplicate prevention.
+- Define the visible admin UI workflow for adding and removing original, print,
+  and book product links.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
-- Obtain the owner-approved MongoDB target/environment label, configure
-  `MONGO_URI`, rerun the read-only Shopify product-link audit, then plan any
-  owner-approved cleanup or migration for reported invalid values.
 - Standardize remaining shop product API envelopes, define checkout line-item
   requirements, and decide rich-description rendering/sanitization before
   using `descriptionHtml` in product-detail UI.
@@ -198,8 +200,13 @@ Add targeted tests as shop behavior is hardened.
   scope the next cleanup or admin-link validation task from actual data.
 - 2026-05-15: T-059 attempted `npm run audit:shopify-products`, but the command
   exited `1` before connecting because `MONGO_URI` was not set. No artwork data
-  was scanned, no Shopify API was called, and cleanup/migration planning remains
-  blocked on an owner-approved MongoDB target.
+  was scanned, no Shopify API was called, and cleanup/migration planning
+  remained blocked on an owner-approved MongoDB target.
+- 2026-05-17: Completed T-059 against the owner-approved MongoDB Atlas
+  `laoutarisDB` target. The audit exited `0` with 215 artworks scanned, 92
+  artworks with Shopify links, 99 total Shopify links, 0 invalid IDs, 0 unknown
+  types, 0 within-artwork duplicates, and 1 review-only cross-artwork duplicate
+  book group for product `10538937319688` across 92 artworks.
 - 2026-05-16: Prepared T-060 as a runnable F-013 shop UI cleanup while T-059 is
   blocked on database environment input. It removes unsupported colour/dimension
   filters and fake pagination while preserving backed listing filters and sort
@@ -239,12 +246,18 @@ Add targeted tests as shop behavior is hardened.
   requests/interactions, the loader error hint no longer directs public users
   to the console, and focused source/API/component tests preserve the current
   public shop contracts.
+- 2026-05-17: Completed T-082; the shared book-link policy is recorded, admin
+  artwork create/update writes now accept only canonical Shopify product links
+  with trimmed numeric IDs and known types, and within-artwork duplicate product
+  IDs are rejected before persistence. Cross-artwork book duplicates remain
+  allowed when they represent a legitimate shared publication.
 
 ## Next Agent Action
 
-Keep T-059 blocked until an owner-approved MongoDB target and `MONGO_URI` are
-available.
+Choose the next Shopify blocker from checkout handoff, visible admin
+product-linking UI, remaining shop API envelope work, real pagination, or
+server-side sorting. No product-ID cleanup or migration is indicated by T-059
+or T-082.
 
-Owner confirmation on the removed Shopify value, checkout handoff, admin
-linking workflow, data migration, and server-side sorting/pagination remain
-separate commerce blockers.
+Owner confirmation on the removed Shopify value remains a separate commerce
+blocker.

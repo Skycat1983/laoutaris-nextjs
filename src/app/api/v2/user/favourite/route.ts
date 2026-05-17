@@ -1,18 +1,10 @@
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import { UserModel } from "@/lib/data/models";
+import { getOwnFavouriteArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
 import { RouteResponse } from "@/lib/data/types";
-import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { NextRequest } from "next/server";
-import dbConnect from "@/lib/db/mongodb";
-
-type UserWithFavourites = {
-  _id: string;
-  favourites: ArtworkLean[];
-};
 
 export const dynamic = "force-dynamic";
 
@@ -25,30 +17,16 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
+    const result = await getOwnFavouriteArtworkList(userGuard.userId);
 
-    const userWithFavourites = await UserModel.findById(userGuard.userId)
-      .select("favourites")
-      .populate("favourites")
-      .lean<UserWithFavourites>();
-
-    if (!userWithFavourites) {
+    if (!result) {
       return apiErrorResponse({
         message: "User not found",
         status: 404,
       });
     }
 
-    const artworks = userWithFavourites.favourites.map((artwork) =>
-      transformArtwork.toFrontend(artwork)
-    );
-
-    return apiListResponse(artworks, {
-      total: artworks.length,
-      page: 1,
-      limit: artworks.length,
-      totalPages: 1,
-    });
+    return apiListResponse(result.artworks, result.metadata);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

@@ -1,13 +1,10 @@
-import { ArtworkModel } from "@/lib/data/models";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
 import { RouteResponse } from "@/lib/data/types";
-import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { ApiWatchlistItemResult } from "@/lib/api/user/watchlist/fetchers";
-import { ArtworkLean, ArtworkFrontend } from "@/lib/data/types";
-import dbConnect from "@/lib/db/mongodb";
+import { getOwnWatchlistArtwork } from "@/lib/data/services/getOwnSavedArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export const dynamic = "force-dynamic";
@@ -24,32 +21,23 @@ export async function GET(
   const { artworkId } = params;
 
   try {
-    await dbConnect();
+    const result = await getOwnWatchlistArtwork(userGuard.userId, artworkId);
 
-    const leanArtwork = (await ArtworkModel.findById(
-      artworkId
-    ).lean()) as ArtworkLean | null;
-
-    if (!leanArtwork) {
+    if (result.status === "artwork-not-found") {
       return apiErrorResponse({
         message: "Artwork not found",
         status: 404,
       });
     }
 
-    const artworkFrontend: ArtworkFrontend = transformArtwork.toFrontend(
-      leanArtwork,
-      userGuard.userId
-    );
-
-    if (!artworkFrontend.isWatchlisted) {
+    if (result.status === "not-in-watchlist") {
       return apiErrorResponse({
         message: "Artwork not in watchlist",
         status: 404,
       });
     }
 
-    return apiSuccessResponse<ApiWatchlistItemResult["data"]>(artworkFrontend);
+    return apiSuccessResponse<ApiWatchlistItemResult["data"]>(result.artwork);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

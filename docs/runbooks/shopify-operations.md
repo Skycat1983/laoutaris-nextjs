@@ -22,6 +22,10 @@ For a book:
 4. Add the book product link to each related MongoDB artwork when the artwork
    should surface that book.
 
+Books may appear on multiple artwork records when the publication legitimately
+features those artworks. Cross-artwork duplicate product IDs are expected for
+that book case and should be reviewed for intent, not rejected globally.
+
 ## MongoDB Link Shape
 
 ```json
@@ -41,6 +45,22 @@ only when calling Shopify APIs.
 Public product reads normalize IDs at the Shopify API boundary. Malformed
 stored values, including full `gid://shopify/Product/...` strings, are ignored
 by the public product listing until the MongoDB link is corrected.
+
+## Admin Link Validation
+
+Admin artwork create/update writes that include `shopifyProducts` must preserve
+the canonical link shape before persistence:
+
+- `productId` must be a string containing only the numeric Shopify product ID;
+  full Shopify GID values are rejected.
+- `type` must be one of `original`, `print`, or `book`.
+- One artwork cannot contain duplicate `productId` values, even if the duplicate
+  entries use different types.
+- Cross-artwork duplicates are not globally rejected because shared book links
+  can be legitimate.
+
+This validation does not call Shopify and does not verify product existence or
+availability.
 
 ## Read-Only Product Link Audit
 
@@ -102,7 +122,5 @@ variant ID handling, line-item construction, and unavailable-product behavior.
 ## Open Work
 
 - Define and implement the full cart or checkout handoff.
-- Define admin UI workflow for adding and removing Shopify links.
-- Run the product-link audit against the owner-approved database and plan any
-  owner-approved cleanup.
+- Define the visible admin UI workflow for adding and removing Shopify links.
 - Add tests for product transformation.

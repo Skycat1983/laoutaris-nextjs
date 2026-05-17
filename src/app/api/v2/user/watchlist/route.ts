@@ -1,18 +1,10 @@
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import { UserModel } from "@/lib/data/models";
+import { getOwnWatchlistArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
 import { RouteResponse } from "@/lib/data/types";
-import { ArtworkLean } from "@/lib/data/types/artworkTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
-import dbConnect from "@/lib/db/mongodb";
 import { NextRequest } from "next/server";
-
-type UserWithWatchlist = {
-  _id: string;
-  watchlist: ArtworkLean[];
-};
 
 export const dynamic = "force-dynamic";
 
@@ -25,30 +17,16 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
+    const result = await getOwnWatchlistArtworkList(userGuard.userId);
 
-    const userWithWatchlist = await UserModel.findById(userGuard.userId)
-      .select("watchlist")
-      .populate("watchlist")
-      .lean<UserWithWatchlist>();
-
-    if (!userWithWatchlist) {
+    if (!result) {
       return apiErrorResponse({
         message: "User not found",
         status: 404,
       });
     }
 
-    const artworks = userWithWatchlist.watchlist.map((artwork) =>
-      transformArtwork.toFrontend(artwork)
-    );
-
-    return apiListResponse(artworks, {
-      total: artworks.length,
-      page: 1,
-      limit: artworks.length,
-      totalPages: 1,
-    });
+    return apiListResponse(result.artworks, result.metadata);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

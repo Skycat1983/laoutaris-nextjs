@@ -68,7 +68,7 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-056 Align user password OAuth contract](T-056-align-user-password-oauth-contract.md) | Completed | Aligned optional persisted user passwords with OAuth users while preserving credentials password requirements and auth tests. |
 | [T-057 Normalize Shopify product IDs](T-057-normalize-shopify-product-ids.md) | Completed | Centralized numeric Shopify product ID validation/GID construction and applied it to public product reads. |
 | [T-058 Audit Shopify product link data](T-058-audit-shopify-product-link-data.md) | Completed | Added a read-only audit for existing artwork Shopify product links before migration or admin-linking work. |
-| [T-059 Run Shopify product link audit](T-059-run-shopify-product-link-audit.md) | Blocked | Run the read-only Shopify product-link audit against an owner-approved MongoDB environment and record follow-up evidence. |
+| [T-059 Run Shopify product link audit](T-059-run-shopify-product-link-audit.md) | Completed | Ran the read-only Shopify product-link audit against the owner-approved MongoDB target and recorded follow-up evidence. |
 | [T-060 Remove unsupported shop controls](T-060-remove-unsupported-shop-controls.md) | Completed | Removed public shop colour/dimension filters and fake pagination that are not backed by API behavior. |
 | [T-061 Use explicit shop product type sorting](T-061-use-explicit-shop-product-type-sorting.md) | Completed | Carried Shopify productType/tags through product DTOs and sorted shop products by explicit metadata instead of title keywords. |
 | [T-062 Preserve Shopify variant metadata](T-062-preserve-shopify-variant-metadata.md) | Completed | Carried queried Shopify variant metadata through product DTOs without implementing checkout or variant-selection UI. |
@@ -91,6 +91,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-079 Migrate biography section loader service](T-079-migrate-biography-section-loader-service.md) | Completed | Moved BiographySectionLoader off same-app HTTP by sharing server-only article list service logic with the public article list route. |
 | [T-080 Migrate collection section loader service](T-080-migrate-collection-section-loader-service.md) | Completed | Moved CollectionSectionLoader off same-app HTTP by sharing server-only collection list service logic with the public collection list route. |
 | [T-081 Migrate account subnav loader service](T-081-migrate-account-subnav-loader-service.md) | Completed | Moved AccountSubnavLoader off same-app HTTP by sharing server-only account navigation service logic with the user navigation route. |
+| [T-082 Harden admin Shopify product link validation](T-082-harden-admin-shopify-product-link-validation.md) | Completed | Recorded the shared book-link policy and hardened admin artwork Shopify product-link validation. |
+| [T-083 Migrate account saved artwork loaders service](T-083-migrate-account-saved-artwork-loaders-service.md) | Completed | Moved favourites/watchlist account loaders off same-app HTTP by sharing server-only saved-artwork services with the user read routes. |
 
 ## Rules
 

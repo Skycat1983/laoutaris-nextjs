@@ -73,6 +73,11 @@ const validCreatePayload = {
   image: validImage,
 };
 
+const validShopifyProducts = [
+  { productId: "10538938761480", type: "original" },
+  { productId: "10538937319688", type: "book" },
+] as const;
+
 const validUpdatePayload = {
   title: "Updated Archive",
   decade: "1990s",
@@ -242,7 +247,6 @@ describe("POST /api/v2/admin/artwork/create", () => {
     const request = createRequest({
       ...validCreatePayload,
       author: "507f1f77bcf86cd799439099",
-      shopifyProducts: [{ productId: "123", type: "original" }],
     });
 
     const response = await POST(request as never);
@@ -253,12 +257,62 @@ describe("POST /api/v2/admin/artwork/create", () => {
       success: false,
       error: "Invalid artwork input",
       fieldErrors: {},
-      formErrors: [
-        "Unrecognized key(s) in object: 'author', 'shopifyProducts'",
-      ],
+      formErrors: ["Unrecognized key(s) in object: 'author'"],
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkCreate).not.toHaveBeenCalled();
+  });
+
+  it("creates an artwork with validated Shopify product links", async () => {
+    const request = createRequest({
+      ...validCreatePayload,
+      shopifyProducts: [
+        { productId: " 10538938761480 ", type: "original" },
+        { productId: "10538937319688", type: "book" },
+      ],
+    });
+
+    const response = await POST(request as never);
+
+    expect(response.status).toBe(201);
+    expect(mockArtworkCreate).toHaveBeenCalledWith({
+      ...validCreatePayload,
+      shopifyProducts: validShopifyProducts,
+      author: adminUserId,
+    });
+  });
+
+  it.each([
+    ["non-numeric IDs", [{ productId: "not-a-product-id", type: "original" }]],
+    [
+      "GID-style IDs",
+      [{ productId: "gid://shopify/Product/10538938761480", type: "print" }],
+    ],
+    ["missing types", [{ productId: "10538938761480" }]],
+    ["unknown types", [{ productId: "10538938761480", type: "poster" }]],
+    [
+      "within-artwork duplicate product IDs",
+      [
+        { productId: "10538938761480", type: "original" },
+        { productId: " 10538938761480 ", type: "book" },
+      ],
+    ],
+  ])("rejects create Shopify product links with %s", async (_label, links) => {
+    const response = await POST(
+      createRequest({
+        ...validCreatePayload,
+        shopifyProducts: links,
+      }) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.success).toBe(false);
+    expect(body.error).toBe("Invalid artwork input");
+    expect(body.fieldErrors.shopifyProducts).toEqual(
+      expect.arrayContaining([expect.any(String)])
+    );
     expect(mockArtworkCreate).not.toHaveBeenCalled();
   });
 
@@ -452,7 +506,6 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
     const request = createRequest({
       title: "Updated Archive",
       author: "507f1f77bcf86cd799439099",
-      shopifyProducts: [{ productId: "123", type: "original" }],
     });
 
     const response = await PATCH(request as never, {
@@ -465,12 +518,67 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
       success: false,
       error: "Invalid artwork input",
       fieldErrors: {},
-      formErrors: [
-        "Unrecognized key(s) in object: 'author', 'shopifyProducts'",
-      ],
+      formErrors: ["Unrecognized key(s) in object: 'author'"],
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkFindByIdAndUpdate).not.toHaveBeenCalled();
+  });
+
+  it("updates Shopify product links with validated canonical values", async () => {
+    const request = createRequest({
+      shopifyProducts: [
+        { productId: " 10538938761480 ", type: "original" },
+        { productId: "10538937319688", type: "book" },
+      ],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: artworkId },
+    });
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFindByIdAndUpdate).toHaveBeenCalledWith(
+      artworkId,
+      {
+        $set: {
+          shopifyProducts: validShopifyProducts,
+        },
+      },
+      { new: true }
+    );
+  });
+
+  it.each([
+    ["non-numeric IDs", [{ productId: "not-a-product-id", type: "original" }]],
+    [
+      "GID-style IDs",
+      [{ productId: "gid://shopify/Product/10538938761480", type: "print" }],
+    ],
+    ["missing types", [{ productId: "10538938761480" }]],
+    ["unknown types", [{ productId: "10538938761480", type: "poster" }]],
+    [
+      "within-artwork duplicate product IDs",
+      [
+        { productId: "10538938761480", type: "original" },
+        { productId: " 10538938761480 ", type: "book" },
+      ],
+    ],
+  ])("rejects update Shopify product links with %s", async (_label, links) => {
+    const response = await PATCH(
+      createRequest({
+        shopifyProducts: links,
+      }) as never,
+      { params: { id: artworkId } }
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body.success).toBe(false);
+    expect(body.error).toBe("Invalid artwork input");
+    expect(body.fieldErrors.shopifyProducts).toEqual(
+      expect.arrayContaining([expect.any(String)])
+    );
     expect(mockArtworkFindByIdAndUpdate).not.toHaveBeenCalled();
   });
 

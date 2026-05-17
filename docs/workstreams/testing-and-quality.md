@@ -679,6 +679,12 @@ npm run lint
   `1` before MongoDB connection because `MONGO_URI` was not set. This confirms
   the environment precondition but does not provide data-quality evidence; rerun
   the same command after the owner-approved target is configured.
+- 2026-05-17: T-059 completed the live read-only audit against the
+  owner-approved MongoDB Atlas `laoutarisDB` target. The final
+  `npm run audit:shopify-products` run exited `0` with 215 artworks scanned, 0
+  invalid IDs, 0 unknown types, 0 within-artwork duplicates, and 1 review-only
+  cross-artwork book duplicate group. No new runtime tests were added because
+  the command behavior did not change.
 - 2026-05-16: Prepared T-060 with focused shop component coverage expectations
   for removed unsupported colour/dimension filters, removed fake pagination, and
   preserved backed filters, result count, and sort controls.
@@ -879,12 +885,29 @@ npm run lint
   no-self-fetch source checks, lint, build, and `git diff --check` passed.
   Build retained existing MongoDB/static-generation and `Subnav` debug-log
   noise from unrelated paths.
+- 2026-05-17: Completed T-082 focused coverage by extending
+  `__tests__/unit/api/adminArtworkRoute.test.ts` for valid admin Shopify links,
+  non-numeric IDs, GID-style IDs, missing/unknown types, and within-artwork
+  duplicate product IDs on artwork create/update. The focused admin artwork
+  route test passed with 29 tests, followed by lint, build, and
+  `git diff --check`.
+- 2026-05-17: Completed T-083 focused coverage by adding
+  `__tests__/unit/data/getOwnSavedArtwork.test.ts` and
+  `__tests__/unit/loaders/SavedArtworkLoaders.test.tsx`, plus route-adapter
+  coverage in `__tests__/unit/api/userSavedRoutes.test.ts`. Focused Jest,
+  route/fetcher parity, protected API guard inventory, no-self-fetch source
+  checks, lint, build, and `git diff --check` passed. Build retained existing
+  unrelated static-generation DB, branch-verification, `Subnav`, and
+  `ArticleView` debug output.
 
 ## Next Agent Action
 
+For the next same-app HTTP or protected-route migration, add focused service,
+route-adapter, and loader coverage before broadening to lint and build.
+
 Keep the route/fetcher parity and protected API guard inventories current when
-fetchers or route handlers change. Do not reassign T-081 unless a regression is
-opened.
+fetchers or route handlers change. Do not reassign T-081, T-082, or T-083
+unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait
@@ -892,3 +915,6 @@ for owner/orchestrator acceptance of a Next target, then execute the
 verification plan in
 [T-015](../tasks/T-015-next-major-migration-preflight.md) during the package
 implementation task.
+
+T-082 focused admin product-link validation coverage was added to
+`__tests__/unit/api/adminArtworkRoute.test.ts` and passed.

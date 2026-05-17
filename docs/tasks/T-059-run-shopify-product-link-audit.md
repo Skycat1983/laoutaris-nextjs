@@ -1,6 +1,6 @@
 # T-059 Run Shopify Product Link Audit
 
-Status: Blocked
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),
@@ -107,15 +107,36 @@ database target.
   The command exited `1` before connecting to MongoDB because `MONGO_URI` was
   not set. No artwork data was scanned, no Shopify APIs were called, and no
   data was mutated.
-- Required unblocker: owner-approved MongoDB target/environment label and
-  `MONGO_URI` configured in the execution shell. Do not invent audit counts or
-  assign cleanup/migration until the command runs against that target.
+- 2026-05-17: The owner supplied an approved MongoDB Atlas `laoutarisDB` target
+  through the execution shell. The connection string is intentionally not
+  recorded in docs.
+- A first sandboxed command attempt exited `1` before connection because DNS
+  access to the MongoDB SRV record was blocked. The approved-network rerun
+  completed successfully.
+- Final command:
+
+```bash
+npm run audit:shopify-products
+```
+
+- Final exit code: `0`.
+- Final report: 215 artworks scanned, 92 artworks with Shopify links, 99 total
+  Shopify links, 0 invalid product IDs, 0 unknown product types, 0
+  within-artwork duplicates, and 1 cross-artwork duplicate group.
+- The duplicate group is `type=book`, `productId=10538937319688`,
+  `artworkCount=92`, and `linkCount=92`. Duplicate-only output is review
+  evidence and did not fail the audit.
+- No product-ID cleanup or migration is indicated by the current audit target.
+  The next follow-up is
+  [T-082](T-082-harden-admin-shopify-product-link-validation.md): confirm the
+  shared book-link policy with the owner, then harden admin Shopify product-link
+  validation so future writes preserve numeric IDs, known types, and no
+  within-artwork duplicates.
 
 ## Escalate
 
 Escalate to the orchestrator if:
 
-- No owner-approved MongoDB target is available.
 - The audit reports invalid IDs or unknown product types that require a data
   cleanup plan.
 - Cross-artwork duplicate product IDs require an owner decision, especially for

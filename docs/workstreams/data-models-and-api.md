@@ -112,6 +112,9 @@ consistent enough for production refactoring and Shopify integration.
   route while preserving query validation, MongoDB filter construction,
   malformed ID skipping, product ID deduplication, Shopify fetch fan-out,
   success envelope, and metadata behavior.
+- T-082 added admin artwork create/update validation for optional
+  `shopifyProducts` writes, enforcing numeric product IDs, known product types,
+  and no within-artwork duplicate product IDs before persistence.
 - T-037 completed the F-057 admin artwork create/update validation slice.
 - T-038 completed the remaining F-057 admin blog create/update validation slice
   with strict schemas, allowlisted persistence, route-local DB ownership, and
@@ -211,6 +214,8 @@ consistent enough for production refactoring and Shopify integration.
   `GET /api/v2/public/collection` and `CollectionSectionLoader`.
 - T-081 shares account navigation service logic between
   `GET /api/v2/user/navigation` and `AccountSubnavLoader`.
+- T-083 shares saved-artwork service logic between the protected user
+  favourite/watchlist read routes and the account favourites/watchlist loaders.
 
 ## Backlog
 
@@ -237,8 +242,6 @@ consistent enough for production refactoring and Shopify integration.
   validation, real 400 validation responses, and route tests by content type.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
-- Add Shopify product ID validation for admin writes and one-time data
-  migration work after the T-058 audit report is reviewed.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
@@ -577,6 +580,12 @@ Add API route tests where behavior is changed.
 - 2026-05-15: T-059 attempted `npm run audit:shopify-products`, but the command
   exited `1` before connecting because `MONGO_URI` was not set. Existing-data
   audit evidence remains blocked on the owner-approved MongoDB target.
+- 2026-05-17: Completed T-059 against the owner-approved MongoDB Atlas
+  `laoutarisDB` target. The audit exited `0` after scanning 215 artworks and
+  found 0 invalid Shopify product IDs, 0 unknown product types, and 0
+  within-artwork duplicates. It reported 1 review-only cross-artwork duplicate
+  book group for product `10538937319688` across 92 artworks, so current audit
+  evidence does not indicate a product-ID cleanup or migration.
 - 2026-05-16: Prepared T-061 as the next F-014/F-013 product DTO contract slice.
   It should carry Shopify `productType` and `tags` through `SimpleProduct` and
   use that explicit metadata for default shop type sorting while leaving
@@ -704,12 +713,22 @@ Add API route tests where behavior is changed.
   `favourites`/`watchlist`/`comments` fields, `transformAccountNav` mapping,
   and missing-user service behavior while the user navigation route preserves
   its existing guard, success, `404`, and public-safe `500` bodies.
+- 2026-05-17: Completed T-082; admin artwork create/update route schemas now
+  validate optional `shopifyProducts` writes before persistence, trimming
+  numeric product IDs, rejecting GID-style or non-numeric IDs, requiring known
+  product types, and blocking within-artwork duplicate product IDs. The T-059
+  audit found no data migration need, and T-082 performed no MongoDB mutation.
+- 2026-05-17: Completed T-083; `getOwnSavedArtwork` now owns current-user
+  favourite/watchlist list and detail DB connection setup, populated saved-list
+  reads, artwork detail lookup, user-aware transform state, list metadata, and
+  missing/not-saved service behavior while the protected user routes preserve
+  their existing guards, success envelopes, `404`s, and public-safe `500`s.
 
 ## Next Agent Action
 
-Prepare the next scoped data/API task from the remaining workstream backlog.
-Do not reassign T-081 unless a regression is opened.
+Prepare the next data/API task from the remaining route ownership, field
+contract, or same-app HTTP inventory after a fresh source check.
 
-Shopify admin product-link validation and existing-data migration remain
-separate from the completed public-read normalization and the blocked live
-read-only audit execution.
+Do not reassign T-081, T-082, or T-083 unless a regression is opened. Existing
+Shopify product-link data migration is not indicated by the completed T-059
+audit and T-082 validation work.

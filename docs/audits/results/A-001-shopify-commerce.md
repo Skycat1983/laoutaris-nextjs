@@ -170,12 +170,13 @@ Shopify/API transformation path.
   the existing artwork form, a dedicated admin workflow, or a controlled
   operator script.
 
-## T-059 Product Link Audit Attempt
+## T-059 Product Link Audit
 
-Date: 2026-05-15
+Date: 2026-05-17
 
-Target environment label: unavailable; no owner-approved `MONGO_URI` was
-configured in the task shell.
+Target environment label: owner-approved MongoDB Atlas `laoutarisDB` target.
+The connection string was supplied through the task shell and is not recorded in
+docs.
 
 Command run:
 
@@ -183,25 +184,29 @@ Command run:
 npm run audit:shopify-products
 ```
 
-Exit code: `1`
+Exit code: `0`
 
-Result classification: blocked environment precondition, not existing-data
-evidence. The audit exited before connecting to MongoDB with:
-`Missing MONGO_URI. Export the MongoDB connection string before running npm run audit:shopify-products.`
+Result classification: completed existing-data audit evidence. The first
+sandboxed attempt failed before connection because DNS/network access was
+blocked; the approved-network rerun connected to MongoDB, read only the
+projected artwork fields, did not call Shopify APIs, and did not mutate data.
 
 | Report Field | Value |
 | --- | --- |
-| Total artworks scanned | Not available; command exited before database connection. |
-| Artworks with Shopify links | Not available. |
-| Total Shopify links | Not available. |
-| Invalid product IDs | Not available. |
-| Unknown product types | Not available. |
-| Within-artwork duplicates | Not available. |
-| Cross-artwork duplicates | Not available. |
+| Total artworks scanned | 215 |
+| Artworks with Shopify links | 92 |
+| Total Shopify links | 99 |
+| Invalid product IDs | 0 |
+| Unknown product types | 0 |
+| Within-artwork duplicates | 0 |
+| Cross-artwork duplicates | 1 group: `type=book`, `productId=10538937319688`, `artworkCount=92`, `linkCount=92`. |
 
-Recommended next task: obtain the owner-approved MongoDB target/environment
-label, configure `MONGO_URI` in the execution shell, and rerun this T-059 audit
-before planning cleanup, migration, or admin product-link validation.
+Recommended next task: use
+[T-082](../../tasks/T-082-harden-admin-shopify-product-link-validation.md) to
+confirm whether the shared book product link is intentional, then harden the
+admin product-link validation boundary so future writes keep numeric product
+IDs, known product types, and no within-artwork duplicates. No current
+product-ID cleanup or migration is indicated by this audit.
 
 ## Completion Audit
 
@@ -224,7 +229,7 @@ before planning cleanup, migration, or admin product-link validation.
 
 ## Next Action
 
-Provide the owner-approved MongoDB target/environment label and configure
-`MONGO_URI`, then rerun `npm run audit:shopify-products` and record the actual
-product-link counts before assigning cleanup, migration, or admin write
-validation.
+Use the completed T-059 evidence to confirm shared book-link policy and then
+assign admin Shopify product-link validation. Do not plan a product-ID cleanup
+or migration from this audit unless the owner rejects the reported shared book
+link pattern.

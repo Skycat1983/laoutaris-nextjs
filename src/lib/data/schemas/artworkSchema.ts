@@ -11,6 +11,9 @@ const ARTWORK_FIELD_LIMITS = {
   title: 200,
 } as const;
 
+const SHOPIFY_PRODUCT_TYPES = ["original", "print", "book"] as const;
+const SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN = /^\d+$/;
+
 const objectIdStringSchema = (message: string) =>
   z
     .string({
@@ -55,6 +58,45 @@ export const updateArtworkSchema = artworkFormSchema;
 
 const routeCloudinaryImageSchema = cloudinaryImageSchema.strict();
 
+const shopifyProductLinkSchema = z
+  .object({
+    productId: z
+      .string({
+        required_error: "Shopify product ID is required",
+        invalid_type_error: "Shopify product ID must be a string",
+      })
+      .trim()
+      .regex(
+        SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN,
+        "Shopify product ID must be numeric"
+      ),
+    type: z.enum(SHOPIFY_PRODUCT_TYPES, {
+      required_error: "Shopify product type is required",
+      invalid_type_error: "Shopify product type is required",
+    }),
+  })
+  .strict();
+
+const shopifyProductsSchema = z
+  .array(shopifyProductLinkSchema, {
+    invalid_type_error: "Shopify products must be an array",
+  })
+  .superRefine((links, ctx) => {
+    const seenProductIds = new Set<string>();
+
+    links.forEach((link) => {
+      if (seenProductIds.has(link.productId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Shopify product IDs must be unique within an artwork",
+        });
+        return;
+      }
+
+      seenProductIds.add(link.productId);
+    });
+  });
+
 const artworkRouteFields = {
   title: artworkFormSchema.shape.title,
   decade: artworkFormSchema.shape.decade,
@@ -62,11 +104,13 @@ const artworkRouteFields = {
   medium: artworkFormSchema.shape.medium,
   surface: artworkFormSchema.shape.surface,
   featured: artworkFormSchema.shape.featured,
+  shopifyProducts: shopifyProductsSchema,
 };
 
 export const createArtworkRouteSchema = z
   .object({
     ...artworkRouteFields,
+    shopifyProducts: artworkRouteFields.shopifyProducts.optional(),
     image: routeCloudinaryImageSchema,
   })
   .strict();
@@ -83,6 +127,7 @@ export const updateArtworkRouteBodySchema = z
     medium: artworkRouteFields.medium.optional(),
     surface: artworkRouteFields.surface.optional(),
     featured: artworkRouteFields.featured.optional(),
+    shopifyProducts: artworkRouteFields.shopifyProducts.optional(),
     image: routeCloudinaryImageSchema.optional(),
   })
   .strict();

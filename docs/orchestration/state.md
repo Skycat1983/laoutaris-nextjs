@@ -4,25 +4,35 @@ Last updated: 2026-05-17
 
 ## Current Priority
 
-T-081 is complete: `AccountSubnavLoader` and
-`GET /api/v2/user/navigation` now share server-only `getOwnUserNavigation`;
-the loader is off same-app HTTP, and the user navigation route preserves its
-`requireApiUser()` guard, success envelope, user-missing `404`, and public-safe
-`500` body. Keep favourites/watchlist loaders, user comments/settings loaders,
-shop loaders, middleware/global auth policy, root-layout data access, cache
-policy, and base URL policy separate.
-T-059 remains blocked until an owner-approved MongoDB target and `MONGO_URI`
-are available. Keep automatic data mutation, Shopify API validation, admin
-Shopify product-linking, checkout/cart ownership, broader Cloudinary upload
-policy, global logging/redaction policy, visible blog pinned/tag admin
-workflow, CI/dependency-update automation, Vercel project-setting ownership,
-credential rotation, and the residual Next/PostCSS owner decision separate
-unless priority changes.
+T-083 is complete: account favourites/watchlist loaders and protected user
+saved-artwork read routes now share server-only `getOwnSavedArtwork` services;
+the loaders are off same-app HTTP, and the user saved-artwork routes preserve
+their `requireApiUser()` guards, success envelopes, list metadata, `404`s, and
+public-safe `500` bodies. Keep favourite/watchlist server actions, account
+navigation, user comments/settings loaders, shop loaders, middleware/global
+auth policy, root-layout data access, cache policy, and base URL policy
+separate.
+T-059 is complete: the read-only Shopify product-link audit ran against the
+owner-approved MongoDB Atlas `laoutarisDB` target and exited `0` with 215
+artworks scanned, 92 artworks with Shopify links, 99 total Shopify links, 0
+invalid IDs, 0 unknown product types, 0 within-artwork duplicates, and 1
+review-only cross-artwork book duplicate group. T-082 is complete: the shared
+book-link policy is recorded, and admin artwork create/update now rejects
+malformed Shopify product IDs, missing/unknown product types, and
+within-artwork duplicate product IDs before persistence.
+Keep automatic data mutation, Shopify API validation, checkout/cart ownership,
+broader Cloudinary upload policy, global logging/redaction policy, visible blog
+pinned/tag admin workflow, CI/dependency-update automation, Vercel
+project-setting ownership, credential rotation, and the residual Next/PostCSS
+owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-081 account subnav loader service migration is complete. T-080 collection
-section loader service migration is complete. T-079 biography
+T-083 account saved-artwork loader service migration is complete. T-082 admin
+Shopify product-link validation is complete. T-081 account subnav loader service
+migration is complete. T-059 Shopify product link audit
+execution is complete. T-080 collection section loader service migration is
+complete. T-079 biography
 section loader service migration is complete. T-078 collection artwork loader
 service migration is complete. T-077 artwork detail loader service migration is
 complete. T-076 blog list/section loader service migration is complete. T-075
@@ -33,10 +43,8 @@ T-071 article navigation loader service migration is complete. T-070
 collections subnav loader service migration is complete. T-069 shared fetcher
 debug-log cleanup is complete. T-068 public shop debug-log cleanup is complete.
 T-067 Cloudinary upload debug-log cleanup is complete. T-066 Cloudinary signing
-param hardening is complete. T-059 Shopify product link audit execution remains
-blocked until an owner-approved MongoDB target and `MONGO_URI` are available in
-the execution shell. No cleanup or migration task should be assigned from T-059
-until real audit evidence exists.
+param hardening is complete. No product-ID cleanup or migration task is
+indicated by T-059/T-082.
 
 ## Successor Takeover Snapshot
 
@@ -154,10 +162,13 @@ Use this section as the first operational handoff for a new orchestrator.
   unknown product types, within-artwork duplicates, and cross-artwork
   duplicates without writes or Shopify API calls. The live audit was not run in
   the implementation shell because `MONGO_URI` was not set.
-- T-059 was attempted: `npm run audit:shopify-products` exited `1` before
-  connecting to MongoDB because `MONGO_URI` was not set. No artwork data was
-  scanned, no Shopify API was called, and no cleanup or migration task should
-  be assigned from this attempt.
+- T-059 is complete: `npm run audit:shopify-products` exited `0` against the
+  owner-approved MongoDB Atlas `laoutarisDB` target after scanning 215 artworks.
+  The audit found 92 artworks with Shopify links, 99 total Shopify links, 0
+  invalid product IDs, 0 unknown product types, 0 within-artwork duplicates,
+  and 1 review-only cross-artwork book duplicate group for product
+  `10538937319688` across 92 artworks. No Shopify APIs were called and no
+  MongoDB data was mutated.
 - T-060 is complete: it removed unsupported shop colour/dimension filters,
   stale client-only colour/dimension state, and placeholder pagination while
   preserving backed listing filters, product-type checkboxes, result count, and
@@ -528,18 +539,14 @@ completed:
 
 Prepare the next scoped task from the remaining production-readiness backlog,
 or prepare the next ADR 0004/F-021 same-app HTTP migration from the remaining
-inventory.
+inventory after a fresh source check.
 
-T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075, T-076,
-T-077, T-078, T-079, T-080, and T-081 are complete; do not reassign them
-unless a regression or explicit follow-up is opened.
-
-After the owner-approved MongoDB target/environment label and `MONGO_URI` are
-available, rerun T-059:
-`/task effort: high details: docs/tasks/T-059-run-shopify-product-link-audit.md`
+T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
+T-076, T-077, T-078, T-079, T-080, T-081, T-082, and T-083 are complete; do
+not reassign them unless a regression or explicit follow-up is opened.
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
-product-linking validation, checkout/cart ownership, remaining Cloudinary upload
+visible product-linking UI, checkout/cart ownership, remaining Cloudinary upload
 policy/runbook work, global production logging/redaction policy, visible blog
 pinned/tag admin workflow, CI/dependency-update automation, Vercel
 project-setting ownership, credential rotation, and the residual Next/PostCSS

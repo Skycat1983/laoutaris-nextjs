@@ -390,7 +390,9 @@ npm run lint
 
 ## Next Agent Action
 
-T-059 remains blocked pending an owner-approved MongoDB target and `MONGO_URI`.
+T-059 is complete and no longer blocks the Shopify product-link audit evidence.
+Use T-082 for the next Shopify product-link validation follow-up if commerce
+work takes priority.
 
 Keep CI/dependency-update automation, Vercel project-setting ownership, broader
 production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,

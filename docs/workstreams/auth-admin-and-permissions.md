@@ -124,6 +124,9 @@ features before production launch.
 - T-081 moved `AccountSubnavLoader` off same-app HTTP by sharing account
   navigation service logic with `GET /api/v2/user/navigation` while preserving
   the route's `requireApiUser()` guard.
+- T-083 moved account favourites/watchlist read loaders off same-app HTTP by
+  sharing saved-artwork service logic with the protected user saved-artwork
+  read routes while preserving their `requireApiUser()` guards.
 - T-048 applied shared response helpers to admin read list/detail routes while
   preserving `requireApiAdmin()` guard behavior, invalid-ID `400`
   short-circuiting, and DB-before-model ordering.
@@ -375,14 +378,23 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   `requireApiUser()` as the route guard, and `AccountSubnavLoader` reads the
   authenticated user ID with the existing session helper before calling the
   shared post-auth account navigation service.
+- 2026-05-17: Completed T-083; the user favourite/watchlist read routes still
+  use `requireApiUser()` before service work, and the account saved-artwork
+  loaders read the authenticated user ID with the existing session helper
+  before calling shared post-auth saved-artwork services.
 
 ## Next Agent Action
 
-Prepare the next scoped auth/admin task from the remaining workstream backlog.
-Do not reassign T-081 unless a regression is opened.
+Prepare the next protected-route or account-loader task from the remaining
+inventory after a fresh source check. Preserve the existing `requireApiUser()`
+and `requireApiAdmin()` route guard invariants when sharing post-auth service
+logic with server loaders.
+
+Do not reassign T-081, T-082, or T-083 unless a regression is opened.
 
 Keep admin bootstrap/recovery documentation, broader production logging policy,
-root-layout session redesign, favourites/watchlist loaders, user
-comments/settings loaders, middleware, and future protected-route migrations
-separate. Preserve the T-043 shared guard invariant and add focused route
-coverage before changing protected user/admin route behavior.
+root-layout session redesign, favourite/watchlist server actions, account
+navigation, user comments/settings loaders, middleware, and future
+protected-route migrations separate. Preserve the T-043 shared guard invariant
+and add focused route coverage before changing protected user/admin route
+behavior.

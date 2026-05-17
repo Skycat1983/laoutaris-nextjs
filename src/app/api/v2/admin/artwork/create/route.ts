@@ -109,8 +109,16 @@ export async function POST(
   try {
     await dbConnect();
 
-    const { title, decade, artstyle, medium, surface, featured, image } =
-      parsedBody.data;
+    const {
+      title,
+      decade,
+      artstyle,
+      medium,
+      surface,
+      featured,
+      image,
+      shopifyProducts,
+    } = parsedBody.data;
 
     const artwork = await ArtworkModel.create({
       title,
@@ -120,6 +128,7 @@ export async function POST(
       surface,
       featured,
       image,
+      ...(shopifyProducts ? { shopifyProducts } : {}),
       author: admin.userId,
     });
 

@@ -1,24 +1,33 @@
 import { ArtworkView } from "@/components/views/ArtworkView";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiSuccessResponse, ArtworkFrontend } from "@/lib/data/types";
-import { ApiResponse } from "@/lib/data/types";
+import { getOwnFavouriteArtwork } from "@/lib/data/services/getOwnSavedArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+
 export const FavouritedArtworkLoader = async ({
   artworkId,
 }: {
   artworkId: string;
 }) => {
   try {
-    const result: ApiResponse<ArtworkFrontend> =
-      await serverApi.user.favourites.getOne(artworkId);
-    if (!result.success) {
-      throw new Error(result.error);
+    const userId = await getUserIdFromSession();
+
+    if (!userId) {
+      throw new Error("Unauthorized");
     }
-    const { data } = result as ApiSuccessResponse<ArtworkFrontend>;
+
+    const result = await getOwnFavouriteArtwork(userId, artworkId);
+
+    if (result.status === "artwork-not-found") {
+      throw new Error("Artwork not found");
+    }
+
+    if (result.status === "not-in-favourites") {
+      throw new Error("Artwork not in favourites");
+    }
 
     return (
       <>
-        <ArtworkView {...data} />
+        <ArtworkView {...result.artwork} />
       </>
     );
   } catch (error) {
