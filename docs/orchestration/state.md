@@ -4,13 +4,17 @@ Last updated: 2026-05-17
 
 ## Current Priority
 
+T-087 is complete: the retired server-side same-app API wrapper entrypoints
+were deleted after T-070 through T-086 removed their route-critical callers.
+`src/app/account/favourites/page.tsx` now keeps only the current
+`/account/settings` redirect, client API wrappers and route-specific fetcher
+factories remain intact, and the environment runbook now records
+`VERCEL_ENV`/`VERCEL_URL` as not required by current source.
 T-086 is complete: `LogoutForm`, `MobileNavDrawer`, and the `/project` redirect
 now use relative same-app paths, and the environment runbook no longer treats
 `NEXT_PUBLIC_BASE_URL` as required current-source configuration or names
-`VERCEL_URL` as the `/project` redirect owner. Keep the shared
-`serverPublicApi`/`serverUserApi`/`serverAdminApi` base URL helpers, NextAuth
-callback policy, OAuth callback configuration, and broad route-builder
-centralization separate.
+`VERCEL_URL` as the `/project` redirect owner. Keep NextAuth callback policy,
+OAuth callback configuration, and broad route-builder centralization separate.
 T-085 is complete: `ShopProductsLoader` and
 `GET /api/v2/public/shop/products` now share server-only
 `getShopProductList` service logic. The loader no longer reads
@@ -52,6 +56,7 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
+T-087 server API self-fetch wrapper retirement is complete.
 T-086 hard-coded localhost navigation URL cleanup is complete.
 T-085 public shop products loader service migration is complete. T-084 account
 profile/comments loader service migration is complete. T-083
@@ -92,8 +97,13 @@ Use this section as the first operational handoff for a new orchestrator.
   `src/app/project/page.tsx` redirects to `/project/about` without
   `VERCEL_URL` or localhost origin construction. Environment docs now mark
   `NEXT_PUBLIC_BASE_URL` as deprecated current-source configuration. Do not
-  fold shared server API helper base URL policy or NextAuth/OAuth callback
-  policy into this completed task.
+  fold NextAuth/OAuth callback policy into this completed task.
+- T-087 is complete: retired server-side same-app API wrapper entrypoints are
+  deleted, the stale account favourites import/commented self-fetch block is
+  removed, active source has no retired wrapper imports, and `src/lib/api` no
+  longer carries `VERCEL_ENV`/`VERCEL_URL`/localhost same-app URL construction.
+  Keep client API wrappers, route-specific fetcher factories, the MongoDB
+  driver `serverApi` option, and OAuth callback policy separate.
 - T-030 is complete and reconciled: it added the missing admin user/comment
   detail read routes, added focused route tests, and removed
   `admin.read.user` plus `admin.read.comment` from the T-029 route/fetcher
@@ -577,17 +587,16 @@ completed:
 
 ## Next Orchestrator Action
 
-Select the next bounded task from the remaining workstream backlogs. T-086 is
-complete and should not be reassigned unless a regression is opened.
-
-Keep shared server API helper base URL policy, NextAuth callback policy, OAuth
-callback configuration, and broad route-builder centralization separate from
-the completed T-086 cleanup.
+Choose the next implementation task from the remaining backlog. Strong
+candidates are client/server import-boundary cleanup, staged A-014 source
+pruning, route-builder ownership, root-layout session/cache ownership, Vercel
+project-setting ownership, Cloudinary upload policy, or global
+logging/redaction policy.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
-T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, and T-086 are
-complete; do not reassign them unless a regression or explicit follow-up is
-opened.
+T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, and
+T-086, and T-087 are complete; do not reassign them unless a regression or
+explicit follow-up is opened.
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
 visible product-linking UI, checkout/cart ownership, remaining Cloudinary upload

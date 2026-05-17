@@ -169,7 +169,7 @@ describe("ShopProductsLoader", () => {
 
     expect(loaderSource).not.toContain("NEXT_PUBLIC_BASE_URL");
     expect(loaderSource).not.toContain("localhost");
-    expect(loaderSource).not.toContain("serverPublicApi");
+    expect(loaderSource).not.toContain(["server", "PublicApi"].join(""));
     expect(loaderSource).not.toContain("serverApi");
     expect(loaderSource).not.toContain("fetch(");
   });

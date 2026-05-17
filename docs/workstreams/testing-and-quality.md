@@ -222,6 +222,9 @@ refactoring without turning every change into a manual QA pass.
 - T-086 added focused navigation/redirect URL coverage for `LogoutForm`,
   `MobileNavDrawer`, and `src/app/project/page.tsx`, including source hygiene
   checks that the touched files do not contain hard-coded same-app origins.
+- T-087 updated source hygiene coverage so deleted retired server API wrapper
+  entrypoints stay deleted, active source has no retired wrapper imports, and
+  `src/lib/api` has no retired same-app server URL construction.
 
 ## Backlog
 
@@ -930,15 +933,23 @@ npm run lint
   redirect target, logout success navigation to `/`, mobile auth link source
   hygiene, and absence of hard-coded same-app origins in the touched files.
   Focused Jest, lint, build, source search, and `git diff --check` passed.
+- 2026-05-17: Prepared T-087 with expected source-hygiene coverage for retired
+  server wrapper deletion, absence of active `serverApi` wrapper imports, and
+  preservation of client API/fetcher modules.
+- 2026-05-17: Completed T-087 source hygiene coverage in
+  `__tests__/unit/security/credentialSourceHygiene.test.ts`; focused Jest
+  passed, and the required retired-import plus retired URL-construction source
+  searches returned no matches.
 
 ## Next Agent Action
 
-Select the next testing task from the remaining backlog; the T-086
-navigation/redirect URL coverage is complete.
+Choose the next testing/quality task from the remaining backlog after T-087.
+Keep source-hygiene checks current when deleting wrappers, fetchers, or route
+handlers.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
-T-085, or T-086 unless a regression is opened.
+T-085, T-086, or T-087 unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

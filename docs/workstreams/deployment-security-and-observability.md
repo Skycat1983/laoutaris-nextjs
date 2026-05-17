@@ -148,6 +148,11 @@ security headers, environment documentation, and actionable operational signals.
   `/project` redirect cleanup: `NEXT_PUBLIC_BASE_URL` is now a deprecated
   public URL candidate, and `VERCEL_URL` no longer names the current
   `/project` redirect.
+- T-087 removed the retired server-side same-app API wrappers that were the
+  remaining current-source users of `VERCEL_ENV`/`VERCEL_URL` app URL
+  construction. The environment runbook now classifies `VERCEL_ENV` and
+  `VERCEL_URL` as platform-provided names that are not required by current
+  source.
 
 ## Backlog
 
@@ -168,9 +173,9 @@ security headers, environment documentation, and actionable operational signals.
 - Confirm build behavior on a clean environment.
 - Decide whether CI builds should be isolated from Google Fonts and live MongoDB
   access or document those external dependencies explicitly.
-- Centralize or remove same-app base URL construction; until ADR 0004 is applied
-  broadly, avoid production localhost fallbacks and hard-coded production
-  domains.
+- Keep broad route-builder ownership separate from retired same-app server
+  wrapper cleanup; avoid reintroducing production localhost fallbacks or
+  hard-coded production domains.
 - Pin or document remaining Vercel project settings and deployment ownership;
   T-025 covers smoke evidence and rollback triggers, while T-064 covers repo
   runtime/package-manager pins.
@@ -399,14 +404,23 @@ npm run lint
   `/project` `VERCEL_URL` redirect dependency were removed, and the environment
   runbook now records `NEXT_PUBLIC_BASE_URL` as deprecated current-source
   configuration.
+- 2026-05-17: Prepared T-087 to retire the unused server-side same-app API
+  wrappers that still contain runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base
+  URL construction, while preserving client fetchers and route-specific fetcher
+  factories.
+- 2026-05-17: Completed T-087; retired server API wrapper files were deleted,
+  `src/lib/api` no longer contains `VERCEL_ENV`/`VERCEL_URL`/localhost same-app
+  URL construction, and the environment runbook now records those Vercel names
+  as not required by current source.
 
 ## Next Agent Action
 
-Select the next deployment/environment task from the remaining backlog; the
-T-086 navigation/redirect URL cleanup and environment runbook refresh are
-complete.
+Choose the next deployment/environment task from the remaining backlog after
+T-087. Keep environment cleanup focused on owner-managed legacy variables,
+Vercel project settings, Cloudinary policy, logging/redaction, and the residual
+Next/PostCSS decision.
 
-Keep shared server API helper base URL policy, Vercel project-setting
-ownership, CI/dependency-update automation, broader production
-logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
-credential rotation, and the Next/PostCSS owner choice separate.
+Keep Vercel project-setting ownership, CI/dependency-update automation, broader
+production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
+credential rotation, OAuth callback configuration, and the Next/PostCSS owner
+choice separate.

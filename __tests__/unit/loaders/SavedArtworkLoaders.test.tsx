@@ -278,11 +278,14 @@ describe("saved artwork account loaders", () => {
       "src/components/loaders/viewLoaders/FavouritedArtworkLoader.tsx",
       "src/components/loaders/viewLoaders/WatclistedArtworkLoader.tsx",
     ];
+    const retiredUserApiName = ["server", "UserApi"].join("");
 
     for (const file of files) {
       const source = fs.readFileSync(path.join(process.cwd(), file), "utf8");
       expect(source).not.toMatch(
-        /serverUserApi|serverApi|fetchUser|favourites\.get|watchlist\.get|fetch\(/
+        new RegExp(
+          `${retiredUserApiName}|serverApi|fetchUser|favourites\\.get|watchlist\\.get|fetch\\(`
+        )
       );
     }
   });

@@ -116,6 +116,9 @@ Next.js server/client component boundaries.
 - T-086 replaced the remaining hard-coded same-app origins in `LogoutForm`,
   `MobileNavDrawer`, and the `/project` redirect with relative app paths while
   preserving current account drawer labels, order, and disabled states.
+- T-087 removed the stale account favourites `serverApi` import and commented
+  old self-fetch block while preserving the current redirect to
+  `/account/settings`.
 
 ## Backlog
 
@@ -321,16 +324,22 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-17: Completed T-086; logout success navigation now pushes `/`, the
   mobile drawer's Sign Up and Log In account links use `/api/auth/signin`, and
   `/project` redirects to `/project/about` without an origin.
+- 2026-05-17: Prepared T-087 to remove the stale account favourites
+  `serverApi` import/commented self-fetch block while preserving the current
+  redirect to `/account/settings`.
+- 2026-05-17: Completed T-087; `src/app/account/favourites/page.tsx` now only
+  imports `redirect`, keeps the `/account/settings` redirect, and carries no
+  stale server-wrapper self-fetch code.
 
 ## Next Agent Action
 
-Select the next frontend task from the remaining backlog; the T-086
-navigation/redirect URL cleanup is complete.
+Choose the next frontend/source cleanup task from the remaining backlog after
+T-087.
 
-Do not reassign T-081, T-082, T-083, T-084, T-085, or T-086 unless a
+Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, or T-087 unless a
 regression is opened.
 
 Keep favourite/watchlist server actions, broader account navigation, user
 comment mutations, profile editing, real pagination, checkout/cart, remaining
-Shopify product transform fields, visible admin product-linking UI, and broad
-route-builder centralization separate.
+Shopify product transform fields, visible admin product-linking UI, client
+fetcher behavior, and broad route-builder centralization separate.

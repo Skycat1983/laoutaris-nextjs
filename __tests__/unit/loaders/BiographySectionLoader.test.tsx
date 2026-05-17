@@ -119,7 +119,7 @@ describe("BiographySectionLoader", () => {
       "utf8"
     );
 
-    expect(loaderSource).not.toContain("serverPublicApi");
+    expect(loaderSource).not.toContain(["server", "PublicApi"].join(""));
     expect(loaderSource).not.toContain("serverApi");
     expect(loaderSource).not.toContain(".multiple(");
     expect(loaderSource).not.toContain("fetch(");

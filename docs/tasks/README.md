@@ -96,6 +96,7 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-084 Migrate account profile comments loaders service](T-084-migrate-account-profile-comments-loaders-service.md) | Completed | Moved account settings and user-comments loaders off same-app HTTP by sharing server-only profile/comment read services with the user routes. |
 | [T-085 Migrate shop products loader service](T-085-migrate-shop-products-loader-service.md) | Completed | Moved the public shop products loader off same-app HTTP by sharing server-only shop product listing service logic with the public shop route. |
 | [T-086 Remove hard-coded localhost navigation URLs](T-086-remove-hard-coded-localhost-navigation-urls.md) | Completed | Replaced hard-coded same-app origins in user-facing navigation and the `/project` redirect with relative app paths, then refreshed stale environment docs. |
+| [T-087 Retire server API self-fetch wrappers](T-087-retire-server-api-self-fetch-wrappers.md) | Completed | Removed the unused server-side same-app API wrapper layer and stale account page import while preserving client fetchers and direct server services. |
 
 ## Rules
 

@@ -203,8 +203,10 @@ describe("AccountSubnavLoader", () => {
       "utf8"
     );
 
+    const retiredUserApiName = ["server", "UserApi"].join("");
+
     expect(loaderSource).not.toMatch(
-      /serverUserApi|serverApi|fetchUserNavigation|fetch\(/
+      new RegExp(`${retiredUserApiName}|serverApi|fetchUserNavigation|fetch\\(`)
     );
   });
 });

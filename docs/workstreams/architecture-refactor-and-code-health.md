@@ -123,8 +123,13 @@ or inconsistent code forward.
   policy tasks.
 - T-086 removed hard-coded same-app origins from `LogoutForm`,
   `MobileNavDrawer`, and the `/project` redirect by using relative app paths.
-  Remaining localhost/base URL source occurrences are the shared server API
-  helper policy path and a historical OAuth callback comment.
+  That left the shared server API helper policy path and a historical OAuth
+  callback comment for later cleanup.
+- T-087 retired the server-side same-app API wrapper entrypoints after the
+  route-critical callers were migrated. `src/app/account/favourites/page.tsx`
+  now keeps only the current `/account/settings` redirect, active source no
+  longer imports the retired wrappers, and `src/lib/api` no longer owns
+  runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base URL construction.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -354,19 +359,31 @@ Use targeted import/reference searches for pruning tasks.
   `src/app/project/page.tsx` now use relative app paths for home navigation,
   auth account links, and the `/project/about` redirect. The shared server API
   helper base URL policy remains separate.
+- 2026-05-17: Prepared T-087 to retire the unused server-side same-app API
+  wrappers after confirming no active route-critical caller remains. It should
+  remove the stale account favourites import/commented block, delete the server
+  wrapper entrypoints, and preserve client API wrappers plus route-specific
+  fetcher factories.
+- 2026-05-17: Completed T-087; deleted the retired server-side same-app API
+  wrapper entrypoints, removed the stale account favourites import/commented
+  self-fetch block, preserved client API wrappers and route-specific fetcher
+  factories, and added source hygiene coverage for deleted wrappers, retired
+  imports, and retired same-app server URL construction.
 
 ## Next Agent Action
 
-Select the next architecture task from the remaining backlog; the T-086
-navigation/redirect URL cleanup is complete.
+Choose the next architecture task from the remaining backlog after T-087.
+Likely candidates are client/server import-boundary cleanup, staged A-014
+source pruning, route-builder ownership, or root-layout session/cache ownership.
 
-Do not reassign T-081, T-082, T-083, T-084, T-085, or T-086 unless a
+Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, or T-087 unless a
 regression is opened.
 
-Keep shared server API helper base URL policy, broad route-builder
-centralization, favourite/watchlist server actions, account navigation, cache
-policy, root-layout session ownership, middleware/global auth policy, and
-global logging/redaction policy separate unless explicitly scoped.
+Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
+`serverApi` option, broad route-builder centralization, favourite/watchlist
+server actions, account navigation, cache policy, root-layout session
+ownership, middleware/global auth policy, and global logging/redaction policy
+separate unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

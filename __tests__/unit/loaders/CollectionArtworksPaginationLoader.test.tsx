@@ -131,8 +131,12 @@ describe("CollectionArtworksPaginationLoader", () => {
       "utf8"
     );
 
+    const retiredPublicApiName = ["server", "PublicApi"].join("");
+
     expect(source).not.toMatch(
-      /serverPublicApi|serverApi|singleCollectionAllArtwork|fetch\(/
+      new RegExp(
+        `${retiredPublicApiName}|serverApi|singleCollectionAllArtwork|fetch\\(`
+      )
     );
   });
 });

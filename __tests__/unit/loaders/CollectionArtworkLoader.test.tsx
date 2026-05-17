@@ -127,8 +127,12 @@ describe("CollectionArtworkLoader", () => {
       "utf8"
     );
 
+    const retiredPublicApiName = ["server", "PublicApi"].join("");
+
     expect(source).not.toMatch(
-      /serverPublicApi|serverApi|singleCollectionSingleArtwork|fetch\(/
+      new RegExp(
+        `${retiredPublicApiName}|serverApi|singleCollectionSingleArtwork|fetch\\(`
+      )
     );
   });
 });

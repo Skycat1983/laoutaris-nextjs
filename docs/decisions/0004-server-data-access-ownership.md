@@ -35,9 +35,11 @@ The ownership split is:
   to reach app data.
 - Server actions call services directly after validating action input and auth
   context.
-- `serverApi`, `serverPublicApi`, `serverUserApi`, and `serverAdminApi` are
-  deprecated for same-app SSR and server actions. They may stay temporarily
-  while each route is migrated, but new server-side code should not use them.
+- `serverApi`, `serverPublicApi`, `serverUserApi`, and `serverAdminApi` were
+  deprecated for same-app SSR and server actions, then removed by T-087 after
+  route-critical callers were migrated. New server-side code should continue to
+  use server-only data services; browser client components should continue to
+  use the client API wrappers and route-specific fetcher factories.
 
 A deliberate internal HTTP layer is rejected for ordinary same-app server reads.
 It would require header forwarding, absolute base URL ownership, deployment

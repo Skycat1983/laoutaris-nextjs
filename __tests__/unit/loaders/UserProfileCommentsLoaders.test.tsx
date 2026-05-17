@@ -147,11 +147,14 @@ describe("account profile and comment loaders", () => {
       "src/components/loaders/componentLoaders/UserSettingsLoader.tsx",
       "src/components/loaders/viewLoaders/UserCommentsLoader.tsx",
     ];
+    const retiredUserApiName = ["server", "UserApi"].join("");
 
     for (const file of files) {
       const source = fs.readFileSync(path.join(process.cwd(), file), "utf8");
       expect(source).not.toMatch(
-        /serverUserApi|serverApi|getUserComments|profile\.get|fetch\(/
+        new RegExp(
+          `${retiredUserApiName}|serverApi|getUserComments|profile\\.get|fetch\\(`
+        )
       );
     }
   });

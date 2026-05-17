@@ -130,8 +130,12 @@ describe("ArtworkLoader", () => {
       "utf8"
     );
 
+    const retiredPublicApiName = ["server", "PublicApi"].join("");
+
     expect(source).not.toMatch(
-      /serverPublicApi|serverApi|\.single\(|fetch\(|console\.log|delay\(/
+      new RegExp(
+        `${retiredPublicApiName}|serverApi|\\.single\\(|fetch\\(|console\\.log|delay\\(`
+      )
     );
   });
 });
