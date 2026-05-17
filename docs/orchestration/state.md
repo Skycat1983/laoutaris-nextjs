@@ -4,14 +4,38 @@ Last updated: 2026-05-17
 
 ## Current Priority
 
+T-086 is complete: `LogoutForm`, `MobileNavDrawer`, and the `/project` redirect
+now use relative same-app paths, and the environment runbook no longer treats
+`NEXT_PUBLIC_BASE_URL` as required current-source configuration or names
+`VERCEL_URL` as the `/project` redirect owner. Keep the shared
+`serverPublicApi`/`serverUserApi`/`serverAdminApi` base URL helpers, NextAuth
+callback policy, OAuth callback configuration, and broad route-builder
+centralization separate.
+T-085 is complete: `ShopProductsLoader` and
+`GET /api/v2/public/shop/products` now share server-only
+`getShopProductList` service logic. The loader no longer reads
+`NEXT_PUBLIC_BASE_URL`, falls back to localhost, or calls same-app `fetch()`;
+the route preserves query validation, success metadata, validation `400`s, and
+public-safe `500`s. Keep real shop pagination, server-side sorting,
+checkout/cart, variant selection, product detail UI, admin product-linking
+workflow, global route URL/base URL policy, hard-coded auth redirects, and
+Shopify API validation separate.
+T-084 is complete: account settings/comments loaders and protected user
+profile/comment GET routes now share server-only `getOwnUserProfile` and
+`getOwnUserComments` services; the loaders are off same-app HTTP, and the user
+profile/comment routes preserve their `requireApiUser()` guards, success
+envelopes, failure statuses, comment list metadata, and public-safe `500`
+bodies. Keep comment mutations, profile editing, favourite/watchlist server
+actions, account navigation, shop loaders, root-layout data access, cache
+policy, base URL policy, middleware/global auth policy, and global
+logging/redaction policy separate.
 T-083 is complete: account favourites/watchlist loaders and protected user
 saved-artwork read routes now share server-only `getOwnSavedArtwork` services;
 the loaders are off same-app HTTP, and the user saved-artwork routes preserve
 their `requireApiUser()` guards, success envelopes, list metadata, `404`s, and
 public-safe `500` bodies. Keep favourite/watchlist server actions, account
-navigation, user comments/settings loaders, shop loaders, middleware/global
-auth policy, root-layout data access, cache policy, and base URL policy
-separate.
+navigation, shop loaders, middleware/global auth policy, root-layout data
+access, cache policy, and base URL policy separate.
 T-059 is complete: the read-only Shopify product-link audit ran against the
 owner-approved MongoDB Atlas `laoutarisDB` target and exited `0` with 215
 artworks scanned, 92 artworks with Shopify links, 99 total Shopify links, 0
@@ -28,8 +52,11 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-083 account saved-artwork loader service migration is complete. T-082 admin
-Shopify product-link validation is complete. T-081 account subnav loader service
+T-086 hard-coded localhost navigation URL cleanup is complete.
+T-085 public shop products loader service migration is complete. T-084 account
+profile/comments loader service migration is complete. T-083
+account saved-artwork loader service migration is complete. T-082 admin Shopify
+product-link validation is complete. T-081 account subnav loader service
 migration is complete. T-059 Shopify product link audit
 execution is complete. T-080 collection section loader service migration is
 complete. T-079 biography
@@ -54,6 +81,19 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
+- T-085 is complete: public shop product-list reads now share
+  `getShopProductList` between `ShopProductsLoader` and
+  `GET /api/v2/public/shop/products`, removing the loader's
+  `NEXT_PUBLIC_BASE_URL`/localhost same-app HTTP dependency while preserving
+  route validation, metadata, ID skipping/deduplication, Shopify fan-out, and
+  focused service/route/loader coverage.
+- T-086 is complete: `LogoutForm` pushes `/`, `MobileNavDrawer` uses
+  `/api/auth/signin` for its current Sign Up and Log In links, and
+  `src/app/project/page.tsx` redirects to `/project/about` without
+  `VERCEL_URL` or localhost origin construction. Environment docs now mark
+  `NEXT_PUBLIC_BASE_URL` as deprecated current-source configuration. Do not
+  fold shared server API helper base URL policy or NextAuth/OAuth callback
+  policy into this completed task.
 - T-030 is complete and reconciled: it added the missing admin user/comment
   detail read routes, added focused route tests, and removed
   `admin.read.user` plus `admin.read.comment` from the T-029 route/fetcher
@@ -537,13 +577,17 @@ completed:
 
 ## Next Orchestrator Action
 
-Prepare the next scoped task from the remaining production-readiness backlog,
-or prepare the next ADR 0004/F-021 same-app HTTP migration from the remaining
-inventory after a fresh source check.
+Select the next bounded task from the remaining workstream backlogs. T-086 is
+complete and should not be reassigned unless a regression is opened.
+
+Keep shared server API helper base URL policy, NextAuth callback policy, OAuth
+callback configuration, and broad route-builder centralization separate from
+the completed T-086 cleanup.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
-T-076, T-077, T-078, T-079, T-080, T-081, T-082, and T-083 are complete; do
-not reassign them unless a regression or explicit follow-up is opened.
+T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, and T-086 are
+complete; do not reassign them unless a regression or explicit follow-up is
+opened.
 
 Keep automatic data mutation, Shopify API validation, admin Shopify
 visible product-linking UI, checkout/cart ownership, remaining Cloudinary upload

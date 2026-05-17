@@ -127,6 +127,9 @@ features before production launch.
 - T-083 moved account favourites/watchlist read loaders off same-app HTTP by
   sharing saved-artwork service logic with the protected user saved-artwork
   read routes while preserving their `requireApiUser()` guards.
+- T-084 moved account settings/comments read loaders off same-app HTTP by
+  sharing profile/comment service logic with the protected user profile/comment
+  read routes while preserving their `requireApiUser()` guards.
 - T-048 applied shared response helpers to admin read list/detail routes while
   preserving `requireApiAdmin()` guard behavior, invalid-ID `400`
   short-circuiting, and DB-before-model ordering.
@@ -382,19 +385,22 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   use `requireApiUser()` before service work, and the account saved-artwork
   loaders read the authenticated user ID with the existing session helper
   before calling shared post-auth saved-artwork services.
+- 2026-05-17: Completed T-084; the user profile/comment read routes still use
+  `requireApiUser()` before service work, and the account settings/comments
+  loaders read the authenticated user ID with the existing session helper
+  before calling shared post-auth profile/comment services.
 
 ## Next Agent Action
 
-Prepare the next protected-route or account-loader task from the remaining
-inventory after a fresh source check. Preserve the existing `requireApiUser()`
-and `requireApiAdmin()` route guard invariants when sharing post-auth service
-logic with server loaders.
+Choose or prepare the next scoped auth/admin/permissions task. The
+T-081/T-083/T-084 account read-loader migrations preserve the
+`requireApiUser()` route guard invariant.
 
-Do not reassign T-081, T-082, or T-083 unless a regression is opened.
+Do not reassign T-081, T-082, T-083, or T-084 unless a regression is opened.
 
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, favourite/watchlist server actions, account
-navigation, user comments/settings loaders, middleware, and future
+navigation, comment mutations, profile editing, middleware, and future
 protected-route migrations separate. Preserve the T-043 shared guard invariant
 and add focused route coverage before changing protected user/admin route
 behavior.

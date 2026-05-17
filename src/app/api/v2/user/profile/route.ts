@@ -1,9 +1,8 @@
 import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import { UserModel } from "@/lib/data/models";
 import { RouteResponse } from "@/lib/data/types";
-import dbConnect from "@/lib/db/mongodb";
+import { getOwnUserProfile } from "@/lib/data/services/getOwnUserProfile";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { NextRequest } from "next/server";
 
@@ -18,9 +17,7 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
-
-    const user = await UserModel.findById(userGuard.userId).select("-password");
+    const user = await getOwnUserProfile(userGuard.userId);
 
     if (!user) {
       return apiErrorResponse({

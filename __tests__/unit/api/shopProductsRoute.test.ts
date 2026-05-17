@@ -1,8 +1,6 @@
 import { GET } from "@/app/api/v2/public/shop/products/route";
-import { getProductById } from "@/lib/api/shopify/shopifyClient";
-import { ArtworkModel } from "@/lib/data/models";
+import { getShopProductList } from "@/lib/data/services/getShopProductList";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import dbConnect from "@/lib/db/mongodb";
 
 jest.mock("next/server", () => ({
   NextResponse: {
@@ -13,23 +11,13 @@ jest.mock("next/server", () => ({
   },
 }));
 
-jest.mock("@/lib/db/mongodb", () => jest.fn());
-
-jest.mock("@/lib/api/shopify/shopifyClient", () => ({
-  getProductById: jest.fn(),
+jest.mock("@/lib/data/services/getShopProductList", () => ({
+  getShopProductList: jest.fn(),
 }));
 
-jest.mock("@/lib/data/models", () => ({
-  ArtworkModel: {
-    find: jest.fn(),
-  },
-}));
-
-const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
-const mockGetProductById = getProductById as jest.MockedFunction<
-  typeof getProductById
+const mockGetShopProductList = getShopProductList as jest.MockedFunction<
+  typeof getShopProductList
 >;
-const mockArtworkFind = ArtworkModel.find as jest.Mock;
 
 const createRequest = (url: string) =>
   ({
@@ -54,44 +42,19 @@ const createProduct = (productId: string): SimpleProduct => ({
   variants: [],
 });
 
-const mockArtworkQuery = (
-  artworks: Array<{
-    shopifyProducts?: Array<{
-      productId: string;
-      type: "original" | "print" | "book";
-    }>;
-  }>
-) => {
-  const lean = jest.fn().mockResolvedValue(artworks);
-  const select = jest.fn(() => ({ lean }));
-  mockArtworkFind.mockReturnValue({ select });
-
-  return { select, lean };
-};
-
 describe("GET /api/v2/public/shop/products", () => {
   let consoleErrorSpy: jest.SpyInstance;
   let consoleLogSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockDbConnect.mockResolvedValue(undefined as never);
-    mockArtworkQuery([
-      {
-        shopifyProducts: [
-          { productId: "101", type: "original" },
-          { productId: "102", type: "print" },
-          { productId: "103", type: "book" },
-          { productId: "101", type: "original" },
-        ],
+    mockGetShopProductList.mockResolvedValue({
+      success: true,
+      data: [createProduct("101")],
+      metadata: {
+        totalArtworks: 1,
+        totalProducts: 1,
       },
-      {
-        shopifyProducts: [{ productId: "104", type: "print" }],
-      },
-    ]);
-    mockGetProductById.mockImplementation((gid) => {
-      const gidParts = gid.split("/");
-      return Promise.resolve(createProduct(gidParts[gidParts.length - 1]));
     });
     consoleErrorSpy = jest
       .spyOn(console, "error")
@@ -102,108 +65,33 @@ describe("GET /api/v2/public/shop/products", () => {
   });
 
   afterEach(() => {
+    expect(consoleLogSpy).not.toHaveBeenCalled();
     consoleErrorSpy.mockRestore();
     consoleLogSpy.mockRestore();
   });
 
-  it("uses route defaults and preserves the success envelope", async () => {
-    const response = await GET(
-      createRequest("https://example.test/api/v2/public/shop/products")
-    );
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockArtworkFind).toHaveBeenCalledWith({
-      $and: [{ shopifyProducts: { $exists: true, $ne: [] } }],
-    });
-    expect(mockGetProductById).toHaveBeenCalledTimes(4);
-    expect(mockGetProductById).toHaveBeenNthCalledWith(
-      1,
-      "gid://shopify/Product/101"
-    );
-    expect(mockGetProductById).toHaveBeenNthCalledWith(
-      4,
-      "gid://shopify/Product/104"
-    );
-    expect(body).toEqual({
-      success: true,
-      data: [
-        createProduct("101"),
-        createProduct("102"),
-        createProduct("103"),
-        createProduct("104"),
-      ],
-      metadata: {
-        totalArtworks: 2,
-        totalProducts: 4,
-      },
-    });
-    expect(consoleLogSpy).not.toHaveBeenCalled();
-  });
-
-  it("normalizes valid filters before building MongoDB conditions", async () => {
-    await GET(
-      createRequest(
-        "https://example.test/api/v2/public/shop/products?sortBy=price-low&decade=1970s&decade=1980s&artstyle=abstract&medium=oil&surface=canvas"
-      )
-    );
-
-    expect(mockArtworkFind).toHaveBeenCalledWith({
-      $and: [
-        { shopifyProducts: { $exists: true, $ne: [] } },
-        { decade: { $in: ["1970s", "1980s"] } },
-        { artstyle: { $in: ["abstract"] } },
-        { medium: { $in: ["oil"] } },
-        { surface: { $in: ["canvas"] } },
-      ],
-    });
-  });
-
-  it("honors valid false product-type filters", async () => {
+  it("validates route query params, calls the shared service, and preserves the success envelope", async () => {
     const response = await GET(
       createRequest(
-        "https://example.test/api/v2/public/shop/products?showOriginals=false&showPrints=false&showBooks=true"
+        "https://example.test/api/v2/public/shop/products?sortBy=price-low&decade=1970s&decade=1980s&artstyle=abstract&medium=oil&surface=canvas&showOriginals=true&showPrints=false&showBooks=true"
       )
     );
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockGetProductById).toHaveBeenCalledTimes(1);
-    expect(mockGetProductById).toHaveBeenCalledWith(
-      "gid://shopify/Product/103"
-    );
-    expect(body.metadata).toEqual({
-      totalArtworks: 2,
-      totalProducts: 1,
+    expect(mockGetShopProductList).toHaveBeenCalledWith({
+      sortBy: "price-low",
+      showOriginals: true,
+      showPrints: false,
+      showBooks: true,
+      decade: ["1970s", "1980s"],
+      artstyle: ["abstract"],
+      medium: ["oil"],
+      surface: ["canvas"],
     });
-  });
-
-  it("skips invalid stored product IDs before calling Shopify", async () => {
-    mockArtworkQuery([
-      {
-        shopifyProducts: [
-          { productId: "201", type: "original" },
-          { productId: "gid://shopify/Product/202", type: "print" },
-          { productId: "not-a-product-id", type: "book" },
-          { productId: "", type: "book" },
-        ],
-      },
-    ]);
-
-    const response = await GET(
-      createRequest("https://example.test/api/v2/public/shop/products")
-    );
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(mockGetProductById).toHaveBeenCalledTimes(1);
-    expect(mockGetProductById).toHaveBeenCalledWith(
-      "gid://shopify/Product/201"
-    );
     expect(body).toEqual({
       success: true,
-      data: [createProduct("201")],
+      data: [createProduct("101")],
       metadata: {
         totalArtworks: 1,
         totalProducts: 1,
@@ -211,42 +99,7 @@ describe("GET /api/v2/public/shop/products", () => {
     });
   });
 
-  it("deduplicates product IDs after normalization", async () => {
-    mockArtworkQuery([
-      {
-        shopifyProducts: [
-          { productId: "301", type: "original" },
-          { productId: " 301 ", type: "print" },
-          { productId: "302", type: "book" },
-        ],
-      },
-      {
-        shopifyProducts: [{ productId: "302", type: "book" }],
-      },
-    ]);
-
-    const response = await GET(
-      createRequest("https://example.test/api/v2/public/shop/products")
-    );
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(mockGetProductById).toHaveBeenCalledTimes(2);
-    expect(mockGetProductById).toHaveBeenNthCalledWith(
-      1,
-      "gid://shopify/Product/301"
-    );
-    expect(mockGetProductById).toHaveBeenNthCalledWith(
-      2,
-      "gid://shopify/Product/302"
-    );
-    expect(body.metadata).toEqual({
-      totalArtworks: 2,
-      totalProducts: 2,
-    });
-  });
-
-  it("returns 400 for invalid repeated filter values before DB or Shopify work", async () => {
+  it("returns 400 for invalid repeated filter values before service work", async () => {
     const response = await GET(
       createRequest(
         "https://example.test/api/v2/public/shop/products?decade=1900s&artstyle=cubist&medium=stone&surface=metal"
@@ -266,9 +119,7 @@ describe("GET /api/v2/public/shop/products", () => {
       },
       formErrors: [],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockArtworkFind).not.toHaveBeenCalled();
-    expect(mockGetProductById).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
   });
 
   it("returns 400 for invalid product-type booleans and sort options", async () => {
@@ -293,15 +144,13 @@ describe("GET /api/v2/public/shop/products", () => {
       },
       formErrors: [],
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockArtworkFind).not.toHaveBeenCalled();
-    expect(mockGetProductById).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
   });
 
-  it("returns a public-safe 500 envelope when internal work fails", async () => {
-    mockArtworkFind.mockImplementation(() => {
-      throw new Error("private database detail");
-    });
+  it("returns a public-safe 500 envelope when service work fails", async () => {
+    mockGetShopProductList.mockRejectedValue(
+      new Error("private database detail")
+    );
 
     const response = await GET(
       createRequest("https://example.test/api/v2/public/shop/products")

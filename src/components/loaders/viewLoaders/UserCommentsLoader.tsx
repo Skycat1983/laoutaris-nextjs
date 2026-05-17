@@ -2,24 +2,31 @@
 
 import React from "react";
 import { UserCommentsView } from "@/components/views/UserCommentsView";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiErrorResponse, CommentFrontendPopulated } from "@/lib/data/types";
-import { ApiUserCommentsGetResult } from "@/lib/api/user/comments/fetchers";
-
-type LoadUserComments = ApiUserCommentsGetResult | ApiErrorResponse;
+import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 export const UserCommentsLoader = async () => {
-  const result: LoadUserComments =
-    await serverApi.user.comments.getUserComments();
-  if (!result.success) {
-    throw new Error(result.error);
+  const userId = await getUserIdFromSession();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const comments = result.data as CommentFrontendPopulated[];
+  let result: Awaited<ReturnType<typeof getOwnUserComments>>;
+
+  try {
+    result = await getOwnUserComments(userId);
+  } catch {
+    throw new Error("Failed to fetch user comments");
+  }
+
+  if (!result) {
+    throw new Error("User not found");
+  }
 
   return (
     <>
-      <UserCommentsView comments={comments} />
+      <UserCommentsView comments={result.comments} />
     </>
   );
 };

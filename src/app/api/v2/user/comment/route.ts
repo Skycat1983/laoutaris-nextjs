@@ -3,7 +3,6 @@ import {
   ApiErrorResponse,
   CommentLeanPopulated,
   RouteResponse,
-  CommentFrontendPopulated,
 } from "@/lib/data/types";
 import {
   ApiUserCommentsGetResult,
@@ -19,12 +18,8 @@ import {
   createCommentRouteSchema,
   type CreateCommentRouteInput,
 } from "@/lib/data/schemas/commentSchema";
+import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";
 export const dynamic = "force-dynamic";
-
-interface UserWithComentsLean {
-  _id: string;
-  comments: CommentLeanPopulated[];
-}
 
 type CommentFieldErrors = Partial<
   Record<keyof CreateCommentRouteInput, string[] | undefined>
@@ -79,46 +74,16 @@ export async function GET(
   }
 
   try {
-    await dbConnect();
+    const userComments = await getOwnUserComments(userGuard.userId);
 
-    const rawUserComments = await UserModel.findById(userGuard.userId)
-      .select("comments")
-      .populate({
-        path: "comments",
-        populate: [
-          {
-            path: "blog",
-            model: "Blog",
-          },
-          {
-            path: "author",
-            model: "User",
-          },
-        ],
-      })
-      .lean<UserWithComentsLean>();
-
-    if (!rawUserComments) {
+    if (!userComments) {
       return errorResponse("User not found", 404);
     }
 
-    const { comments } = rawUserComments as UserWithComentsLean;
-
-    const frontendComments: CommentFrontendPopulated[] = comments.map(
-      (comment) => {
-        return transformCommentPopulated(comment, userGuard.userId);
-      }
-    );
-
     return NextResponse.json({
       success: true,
-      data: frontendComments,
-      metadata: {
-        total: comments.length,
-        page: 1,
-        limit: comments.length,
-        totalPages: 1,
-      },
+      data: userComments.comments,
+      metadata: userComments.metadata,
     } satisfies ApiUserCommentsGetResult);
   } catch (error) {
     if (isDynamicServerError(error)) {

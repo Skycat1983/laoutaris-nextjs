@@ -11,7 +11,7 @@ import { Button } from "@/components/shadcn/button";
 const LogoutForm = () => {
   const router = useRouter();
   const redirectToHome = () => {
-    router.push("http://localhost:3000/");
+    router.push("/");
   };
   const { openModal } = useGlobalFeatures();
   const [isLoading, setIsLoading] = useState(false);

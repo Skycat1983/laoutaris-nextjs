@@ -111,6 +111,20 @@ or inconsistent code forward.
   `GET /api/v2/user/navigation`.
 - T-083 completed the ADR 0004 slice for account favourites/watchlist loaders
   and protected user saved-artwork read routes.
+- T-084 completed the ADR 0004 slice for account settings/comments loaders and
+  protected user profile/comment read routes.
+- T-085 completed the ADR 0004 slice for the initial public shop product list:
+  `ShopProductsLoader` and `GET /api/v2/public/shop/products` now share
+  server-only `getShopProductList` service logic instead of same-app HTTP.
+- A targeted source search after T-085 found no remaining same-app HTTP imports
+  or direct same-app `fetch()` calls under `src/components/loaders`. Remaining
+  localhost/base URL occurrences are in shared server API helpers, an auth
+  redirect comment, and `src/app/project/page.tsx`; those are separate URL
+  policy tasks.
+- T-086 removed hard-coded same-app origins from `LogoutForm`,
+  `MobileNavDrawer`, and the `/project` redirect by using relative app paths.
+  Remaining localhost/base URL source occurrences are the shared server API
+  helper policy path and a historical OAuth callback comment.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -321,18 +335,37 @@ Use targeted import/reference searches for pruning tasks.
   loaders to share them, removed those loaders' same-app HTTP dependencies,
   and added focused service, route-adapter, loader, parity, and guard-inventory
   coverage.
+- 2026-05-17: Completed T-084; added `getOwnUserProfile` and
+  `getOwnUserComments`, refactored the protected user profile/comment GET
+  routes and account settings/comments loaders to share them, removed those
+  loaders' same-app HTTP dependencies, and added focused service,
+  route-adapter, loader, parity, and guard-inventory coverage.
+- 2026-05-17: Completed T-085; added `getShopProductList`, refactored
+  `GET /api/v2/public/shop/products` and `ShopProductsLoader` to share it,
+  removed the loader's `NEXT_PUBLIC_BASE_URL`/localhost same-app HTTP
+  dependency, preserved route query validation and success/error envelopes, and
+  added focused service, route-adapter, and loader no-self-fetch tests.
+- 2026-05-17: Prepared T-086 as the next F-030 URL ownership slice. It should
+  replace hard-coded same-app origins in `LogoutForm`, `MobileNavDrawer`, and
+  `src/app/project/page.tsx` with relative app paths, while leaving shared
+  server API helper base URL policy and broad route-builder centralization
+  separate.
+- 2026-05-17: Completed T-086; `LogoutForm`, `MobileNavDrawer`, and
+  `src/app/project/page.tsx` now use relative app paths for home navigation,
+  auth account links, and the `/project/about` redirect. The shared server API
+  helper base URL policy remains separate.
 
 ## Next Agent Action
 
-Prepare the next scoped ADR 0004/F-021 migration from the remaining same-app
-HTTP inventory, likely user comments/settings loaders or shop loaders after a
-fresh source check confirms the next highest-value path.
+Select the next architecture task from the remaining backlog; the T-086
+navigation/redirect URL cleanup is complete.
 
-Do not reassign T-081, T-082, or T-083 unless a regression is opened.
+Do not reassign T-081, T-082, T-083, T-084, T-085, or T-086 unless a
+regression is opened.
 
-Keep favourite/watchlist server actions, account navigation, user
-comments/settings loaders, shop loaders, unrelated route URL/base URL policy,
-cache policy, root-layout session ownership, middleware/global auth policy, and
+Keep shared server API helper base URL policy, broad route-builder
+centralization, favourite/watchlist server actions, account navigation, cache
+policy, root-layout session ownership, middleware/global auth policy, and
 global logging/redaction policy separate unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed

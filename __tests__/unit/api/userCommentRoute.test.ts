@@ -7,6 +7,7 @@ import {
 } from "@/app/api/v2/user/comment/[commentId]/route";
 import dbConnect from "@/lib/db/mongodb";
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
+import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";
 import { transformCommentPopulated } from "@/lib/transforms";
 
 jest.mock("next/server", () => ({
@@ -65,6 +66,10 @@ jest.mock("@/lib/data/models", () => ({
 
 jest.mock("@/lib/transforms", () => ({
   transformCommentPopulated: jest.fn(),
+}));
+
+jest.mock("@/lib/data/services/getOwnUserComments", () => ({
+  getOwnUserComments: jest.fn(),
 }));
 
 type MockRequest = {
@@ -167,6 +172,9 @@ const mockCommentFindByIdAndDelete =
 const mockCommentStartSession = CommentModel.startSession as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockUserFindByIdAndUpdate = UserModel.findByIdAndUpdate as jest.Mock;
+const mockGetOwnUserComments = getOwnUserComments as jest.MockedFunction<
+  typeof getOwnUserComments
+>;
 const mockTransformCommentPopulated =
   transformCommentPopulated as jest.MockedFunction<
     typeof transformCommentPopulated
@@ -176,19 +184,20 @@ const mockStartSession = mongoose.startSession as jest.Mock;
 describe("GET /api/v2/user/comment", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockDbConnect.mockResolvedValue(undefined);
     mockGetServerSession.mockResolvedValue({
       user: {
         id: userId,
       },
     });
-    mockUserFindById.mockReturnValue(
-      createUserCommentsQuery({
-        _id: userId,
-        comments: [populatedComment],
-      })
-    );
-    mockTransformCommentPopulated.mockReturnValue(frontendComment as never);
+    mockGetOwnUserComments.mockResolvedValue({
+      comments: [frontendComment],
+      metadata: {
+        total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+      },
+    } as never);
   });
 
   it("returns the shared 401 before DB or model work for unauthenticated callers", async () => {
@@ -206,6 +215,7 @@ describe("GET /api/v2/user/comment", () => {
     });
     expect(mockDbConnect).not.toHaveBeenCalled();
     expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockGetOwnUserComments).not.toHaveBeenCalled();
     expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
   });
 
@@ -214,12 +224,10 @@ describe("GET /api/v2/user/comment", () => {
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockUserFindById).toHaveBeenCalledWith(userId);
-    expect(mockTransformCommentPopulated).toHaveBeenCalledWith(
-      populatedComment,
-      userId
-    );
+    expect(mockGetOwnUserComments).toHaveBeenCalledWith(userId);
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
+    expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
     expect(body).toEqual({
       success: true,
       data: [frontendComment],
@@ -233,7 +241,7 @@ describe("GET /api/v2/user/comment", () => {
   });
 
   it("returns 404 when the authenticated user is missing", async () => {
-    mockUserFindById.mockReturnValue(createUserCommentsQuery(null));
+    mockGetOwnUserComments.mockResolvedValue(null);
 
     const response = await GET(createRequest({}) as never);
     const body = await response.json();
@@ -243,7 +251,9 @@ describe("GET /api/v2/user/comment", () => {
       success: false,
       error: "User not found",
     });
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockGetOwnUserComments).toHaveBeenCalledWith(userId);
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockUserFindById).not.toHaveBeenCalled();
     expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
   });
 
@@ -251,9 +261,7 @@ describe("GET /api/v2/user/comment", () => {
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    mockUserFindById.mockImplementation(() => {
-      throw new Error("private DB detail");
-    });
+    mockGetOwnUserComments.mockRejectedValue(new Error("private DB detail"));
 
     try {
       const response = await GET(createRequest({}) as never);
@@ -264,7 +272,9 @@ describe("GET /api/v2/user/comment", () => {
         success: false,
         error: "Failed to fetch user comments",
       });
-      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(mockGetOwnUserComments).toHaveBeenCalledWith(userId);
+      expect(mockDbConnect).not.toHaveBeenCalled();
+      expect(mockUserFindById).not.toHaveBeenCalled();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         "Error fetching user comments:",
         expect.any(Error)

@@ -1,19 +1,26 @@
 import { AccountSettings } from "@/components/sections/AccountSettings";
-import { serverApi } from "@/lib/api/serverApi";
-import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
-import { ApiErrorResponse } from "@/lib/data/types";
+import { getOwnUserProfile } from "@/lib/data/services/getOwnUserProfile";
+import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import React from "react";
 
-type Response = ApiProfileResult | ApiErrorResponse;
-
 export const UserSettingsLoader = async () => {
-  const result = await serverApi.user.profile.get();
+  const userId = await getUserIdFromSession();
 
-  if (!result.success) {
-    throw new Error(result.error || "Failed to fetch user settings");
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const { data } = result as ApiProfileResult;
+  let data: Awaited<ReturnType<typeof getOwnUserProfile>>;
+
+  try {
+    data = await getOwnUserProfile(userId);
+  } catch {
+    throw new Error("Failed to fetch user settings");
+  }
+
+  if (!data) {
+    throw new Error("User not found");
+  }
 
   return <AccountSettings {...data} />;
 };

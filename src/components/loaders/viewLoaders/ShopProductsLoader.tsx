@@ -1,63 +1,57 @@
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
 import { ShopFiltersState } from "@/lib/data/types/shopTypes";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
+import {
+  parseShopProductListQuery,
+  type ShopProductListQueryInput,
+} from "@/lib/data/schemas/shopProductListQuerySchema";
+import { getShopProductList } from "@/lib/data/services/getShopProductList";
 
 interface ShopProductsLoaderProps {
   initialFilters?: ShopFiltersState;
 }
 
+const filterValueToQueryArray = (value: string | undefined, allValue: string) =>
+  value && value !== allValue ? [value] : [];
+
+const filtersToShopProductListQueryInput = (
+  initialFilters?: ShopFiltersState
+): ShopProductListQueryInput => ({
+  artstyle: filterValueToQueryArray(initialFilters?.artstyle, "all-style"),
+  medium: filterValueToQueryArray(initialFilters?.medium, "all-medium"),
+  surface: filterValueToQueryArray(initialFilters?.surface, "all-surface"),
+  decade: filterValueToQueryArray(initialFilters?.decade, "all-epochs"),
+  showOriginals:
+    initialFilters?.showOriginals == null
+      ? undefined
+      : String(initialFilters.showOriginals),
+  showPrints:
+    initialFilters?.showPrints == null
+      ? undefined
+      : String(initialFilters.showPrints),
+  showBooks:
+    initialFilters?.showBooks == null
+      ? undefined
+      : String(initialFilters.showBooks),
+});
+
 export const ShopProductsLoader = async ({
   initialFilters,
 }: ShopProductsLoaderProps) => {
-  let products = [];
+  let products: SimpleProduct[] = [];
   let error: string | null = null;
 
   try {
-    // Build query params from initialFilters
-    const params = new URLSearchParams();
+    const parsedQuery = parseShopProductListQuery(
+      filtersToShopProductListQueryInput(initialFilters)
+    );
 
-    if (initialFilters) {
-      if (initialFilters.artstyle && initialFilters.artstyle !== "all-style") {
-        params.append("artstyle", initialFilters.artstyle);
-      }
-      if (initialFilters.medium && initialFilters.medium !== "all-medium") {
-        params.append("medium", initialFilters.medium);
-      }
-      if (initialFilters.surface && initialFilters.surface !== "all-surface") {
-        params.append("surface", initialFilters.surface);
-      }
-      if (initialFilters.decade && initialFilters.decade !== "all-epochs") {
-        params.append("decade", initialFilters.decade);
-      }
-
-      params.append(
-        "showOriginals",
-        String(initialFilters.showOriginals ?? true)
-      );
-      params.append("showPrints", String(initialFilters.showPrints ?? true));
-      params.append("showBooks", String(initialFilters.showBooks ?? true));
+    if (!parsedQuery.success) {
+      throw new Error("Invalid shop products query");
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const queryString = params.toString();
-    const url = queryString
-      ? `${baseUrl}/api/v2/public/shop/products?${queryString}`
-      : `${baseUrl}/api/v2/public/shop/products`;
-
-    const response = await fetch(url, {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.error || "Failed to fetch products");
-    }
-
-    products = data.data;
+    const result = await getShopProductList(parsedQuery.data);
+    products = result.data;
   } catch (err) {
     console.error(
       "Error in ShopProductsLoader in ShopProductsLoader.tsx: ",

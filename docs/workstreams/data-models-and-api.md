@@ -216,6 +216,13 @@ consistent enough for production refactoring and Shopify integration.
   `GET /api/v2/user/navigation` and `AccountSubnavLoader`.
 - T-083 shares saved-artwork service logic between the protected user
   favourite/watchlist read routes and the account favourites/watchlist loaders.
+- T-084 shares profile/comment read service logic between the protected user
+  profile/comment GET routes and the account settings/comments loaders.
+- T-085 shares public shop product listing service logic between
+  `GET /api/v2/public/shop/products` and `ShopProductsLoader`. The service owns
+  DB connection setup, artwork Shopify-link filtering, product-type filtering,
+  numeric product ID normalization/skipping, deduplication, Shopify fan-out,
+  and metadata construction after route query parsing succeeds.
 
 ## Backlog
 
@@ -723,12 +730,28 @@ Add API route tests where behavior is changed.
   reads, artwork detail lookup, user-aware transform state, list metadata, and
   missing/not-saved service behavior while the protected user routes preserve
   their existing guards, success envelopes, `404`s, and public-safe `500`s.
+- 2026-05-17: Completed T-084; `getOwnUserProfile` now owns current-user
+  profile DB connection setup, password exclusion, and own-user frontend DTO
+  transformation, while `getOwnUserComments` owns current-user populated
+  comment reads, transformed comment DTOs, list metadata, missing-user service
+  behavior, and DB connection setup. The protected user profile/comment GET
+  routes preserve their existing guards, success envelopes, failure statuses,
+  and public-safe `500`s.
+- 2026-05-17: Completed T-085; `getShopProductList` now owns public shop
+  product listing DB connection setup, artwork filtering, Shopify product-link
+  extraction, product-type filtering, product ID normalization/skipping and
+  deduplication, Shopify fan-out, per-product fetch failure skipping, and
+  metadata construction. The public shop products route preserves its query
+  validation, success envelope, validation `400`s, and public-safe `500`.
 
 ## Next Agent Action
 
-Prepare the next data/API task from the remaining route ownership, field
-contract, or same-app HTTP inventory after a fresh source check.
+Prepare the next data/API task from the remaining backlog: broader response
+helper cleanup, route-local DB ownership gaps, field-contract matrices,
+server-side shop pagination/sorting contracts, or admin Shopify-link UI/API
+workflow. Keep each separate from the completed T-085 product-list read path.
 
-Do not reassign T-081, T-082, or T-083 unless a regression is opened. Existing
-Shopify product-link data migration is not indicated by the completed T-059
-audit and T-082 validation work.
+Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
+opened.
+Existing Shopify product-link data migration is not indicated by the completed
+T-059 audit and T-082 validation work.

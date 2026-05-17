@@ -93,6 +93,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-081 Migrate account subnav loader service](T-081-migrate-account-subnav-loader-service.md) | Completed | Moved AccountSubnavLoader off same-app HTTP by sharing server-only account navigation service logic with the user navigation route. |
 | [T-082 Harden admin Shopify product link validation](T-082-harden-admin-shopify-product-link-validation.md) | Completed | Recorded the shared book-link policy and hardened admin artwork Shopify product-link validation. |
 | [T-083 Migrate account saved artwork loaders service](T-083-migrate-account-saved-artwork-loaders-service.md) | Completed | Moved favourites/watchlist account loaders off same-app HTTP by sharing server-only saved-artwork services with the user read routes. |
+| [T-084 Migrate account profile comments loaders service](T-084-migrate-account-profile-comments-loaders-service.md) | Completed | Moved account settings and user-comments loaders off same-app HTTP by sharing server-only profile/comment read services with the user routes. |
+| [T-085 Migrate shop products loader service](T-085-migrate-shop-products-loader-service.md) | Completed | Moved the public shop products loader off same-app HTTP by sharing server-only shop product listing service logic with the public shop route. |
+| [T-086 Remove hard-coded localhost navigation URLs](T-086-remove-hard-coded-localhost-navigation-urls.md) | Completed | Replaced hard-coded same-app origins in user-facing navigation and the `/project` redirect with relative app paths, then refreshed stale environment docs. |
 
 ## Rules
 

@@ -107,6 +107,15 @@ Next.js server/client component boundaries.
 - T-083 moved the account favourites/watchlist list and detail loaders to
   shared server-only saved-artwork services while preserving saved-item
   pagination links and `ArtworkView` props.
+- T-084 moved `UserSettingsLoader` and `UserCommentsLoader` to shared
+  server-only profile/comment services while preserving account settings props,
+  comment view props, and focused loader failure behavior.
+- T-085 moved `ShopProductsLoader` to shared server-only `getShopProductList`
+  service logic while preserving `ShopProductGallery` props, backed shop filter
+  inputs, and the neutral loader failure UI.
+- T-086 replaced the remaining hard-coded same-app origins in `LogoutForm`,
+  `MobileNavDrawer`, and the `/project` redirect with relative app paths while
+  preserving current account drawer labels, order, and disabled states.
 
 ## Backlog
 
@@ -296,16 +305,32 @@ Use browser checks for layout-sensitive changes.
   shared saved-artwork services directly, no longer import `serverApi`, and
   preserve saved-item pagination headings, account saved-item links,
   `ArtworkView` props, and focused failure behavior.
+- 2026-05-17: Completed T-084; `UserSettingsLoader` and
+  `UserCommentsLoader` now read the current session user ID and call shared
+  profile/comment read services directly, no longer import `serverApi`, and
+  preserve account settings props, `UserCommentsView` props, and focused
+  unauthorized/missing-user/failure behavior.
+- 2026-05-17: Completed T-085; `ShopProductsLoader` now validates converted
+  `initialFilters` through the shared shop product query schema and calls
+  `getShopProductList` directly, no longer reads `NEXT_PUBLIC_BASE_URL`, no
+  longer falls back to localhost, and no longer calls same-app `fetch()` for
+  initial products.
+- 2026-05-17: Prepared T-086 to remove hard-coded localhost app origins from
+  logout navigation, mobile auth links, and the `/project` redirect while
+  preserving current labels, ordering, disabled states, and redirect targets.
+- 2026-05-17: Completed T-086; logout success navigation now pushes `/`, the
+  mobile drawer's Sign Up and Log In account links use `/api/auth/signin`, and
+  `/project` redirects to `/project/about` without an origin.
 
 ## Next Agent Action
 
-Prepare the next scoped frontend loader migration from the remaining same-app
-HTTP inventory after a fresh source check, likely user comments/settings or
-shop product loaders.
+Select the next frontend task from the remaining backlog; the T-086
+navigation/redirect URL cleanup is complete.
 
-Do not reassign T-081, T-082, or T-083 unless a regression is opened.
+Do not reassign T-081, T-082, T-083, T-084, T-085, or T-086 unless a
+regression is opened.
 
-Keep favourite/watchlist server actions, account navigation, user
-comments/settings loaders, shop products, real pagination, checkout/cart,
-remaining Shopify product transform fields, and visible admin product-linking
-UI separate.
+Keep favourite/watchlist server actions, broader account navigation, user
+comment mutations, profile editing, real pagination, checkout/cart, remaining
+Shopify product transform fields, visible admin product-linking UI, and broad
+route-builder centralization separate.

@@ -36,12 +36,12 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
     },
     {
       label: "Sign Up",
-      path: "http://localhost:3000/api/auth/signin",
+      path: "/api/auth/signin",
       disabled: isLoggedIn,
     },
     {
       label: "Log In",
-      path: "http://localhost:3000/api/auth/signin",
+      path: "/api/auth/signin",
       disabled: isLoggedIn,
     },
     { label: "Logout", path: "/sign-out", disabled: !isLoggedIn },

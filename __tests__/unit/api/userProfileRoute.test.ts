@@ -1,6 +1,5 @@
 import { GET } from "@/app/api/v2/user/profile/route";
-import dbConnect from "@/lib/db/mongodb";
-import { UserModel } from "@/lib/data/models";
+import { getOwnUserProfile } from "@/lib/data/services/getOwnUserProfile";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
@@ -20,22 +19,16 @@ jest.mock("next-auth", () => ({
   getServerSession: jest.fn(),
 }));
 
-jest.mock("@/lib/db/mongodb", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-jest.mock("@/lib/data/models", () => ({
-  UserModel: {
-    findById: jest.fn(),
-  },
+jest.mock("@/lib/data/services/getOwnUserProfile", () => ({
+  getOwnUserProfile: jest.fn(),
 }));
 
 const mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
 >;
-const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
-const mockFindById = UserModel.findById as jest.Mock;
+const mockGetOwnUserProfile = getOwnUserProfile as jest.MockedFunction<
+  typeof getOwnUserProfile
+>;
 
 const userId = "507f1f77bcf86cd799439011";
 const profile = {
@@ -43,6 +36,12 @@ const profile = {
   username: "joseph",
   email: "joseph@example.com",
   role: "user",
+  favourites: [],
+  watchlist: [],
+  comments: [],
+  favouritedCount: 0,
+  watchlistCount: 0,
+  commentCount: 0,
 };
 let consoleErrorSpy: jest.SpyInstance;
 
@@ -62,10 +61,7 @@ describe("GET /api/v2/user/profile", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-    mockDbConnect.mockResolvedValue(undefined);
-    mockFindById.mockReturnValue({
-      select: jest.fn().mockResolvedValue(profile),
-    });
+    mockGetOwnUserProfile.mockResolvedValue(profile as never);
   });
 
   afterEach(() => {
@@ -84,22 +80,17 @@ describe("GET /api/v2/user/profile", () => {
       message: "Unauthorized",
       error: "Unauthorized",
     });
-    expect(mockDbConnect).not.toHaveBeenCalled();
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockGetOwnUserProfile).not.toHaveBeenCalled();
   });
 
-  it("loads the current user's raw profile document for authenticated callers", async () => {
+  it("loads the current user's profile service DTO for authenticated callers", async () => {
     setAuthenticatedSession();
-    const select = jest.fn().mockResolvedValue(profile);
-    mockFindById.mockReturnValue({ select });
 
     const response = await GET({} as never);
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockFindById).toHaveBeenCalledWith(userId);
-    expect(select).toHaveBeenCalledWith("-password");
+    expect(mockGetOwnUserProfile).toHaveBeenCalledWith(userId);
     expect(body).toEqual({
       success: true,
       data: profile,
@@ -108,15 +99,13 @@ describe("GET /api/v2/user/profile", () => {
 
   it("returns a real JSON 404 when the current user no longer exists", async () => {
     setAuthenticatedSession();
-    const select = jest.fn().mockResolvedValue(null);
-    mockFindById.mockReturnValue({ select });
+    mockGetOwnUserProfile.mockResolvedValue(null);
 
     const response = await GET({} as never);
     const body = await response.json();
 
     expect(response.status).toBe(404);
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockFindById).toHaveBeenCalledWith(userId);
+    expect(mockGetOwnUserProfile).toHaveBeenCalledWith(userId);
     expect(body).toEqual({
       success: false,
       message: "User not found",
@@ -126,13 +115,13 @@ describe("GET /api/v2/user/profile", () => {
 
   it("returns a public-safe 500 when profile loading fails", async () => {
     setAuthenticatedSession();
-    mockDbConnect.mockRejectedValue(new Error("database unavailable"));
+    mockGetOwnUserProfile.mockRejectedValue(new Error("database unavailable"));
 
     const response = await GET({} as never);
     const body = await response.json();
 
     expect(response.status).toBe(500);
-    expect(mockFindById).not.toHaveBeenCalled();
+    expect(mockGetOwnUserProfile).toHaveBeenCalledWith(userId);
     expect(body).toEqual({
       success: false,
       message: "Failed to fetch user profile",

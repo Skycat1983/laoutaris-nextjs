@@ -216,6 +216,12 @@ refactoring without turning every change into a manual QA pass.
   `CollectionSectionLoader` coverage for no-self-fetch behavior.
 - T-081 added focused account navigation service, user route, and
   `AccountSubnavLoader` coverage for no-self-fetch behavior.
+- T-084 added focused account profile/comment service, protected user
+  route-adapter, loader no-self-fetch, route/fetcher parity, and protected API
+  guard-inventory coverage.
+- T-086 added focused navigation/redirect URL coverage for `LogoutForm`,
+  `MobileNavDrawer`, and `src/app/project/page.tsx`, including source hygiene
+  checks that the touched files do not contain hard-coded same-app origins.
 
 ## Backlog
 
@@ -899,15 +905,40 @@ npm run lint
   checks, lint, build, and `git diff --check` passed. Build retained existing
   unrelated static-generation DB, branch-verification, `Subnav`, and
   `ArticleView` debug output.
+- 2026-05-17: Completed T-084 focused coverage by adding
+  `__tests__/unit/data/getOwnUserProfile.test.ts`,
+  `__tests__/unit/data/getOwnUserComments.test.ts`, and
+  `__tests__/unit/loaders/UserProfileCommentsLoaders.test.tsx`, and updating
+  `__tests__/unit/api/userProfileRoute.test.ts` plus
+  `__tests__/unit/api/userCommentRoute.test.ts`. Focused Jest, route/fetcher
+  parity, protected API guard inventory, no-self-fetch source checks, lint,
+  build, and `git diff --check` passed. Build retained existing unrelated
+  static-generation DB, branch-verification, navigation-link, and `ArticleView`
+  debug output.
+- 2026-05-17: Completed T-085 focused coverage by adding
+  `__tests__/unit/data/getShopProductList.test.ts` and updating
+  `__tests__/unit/api/shopProductsRoute.test.ts` plus
+  `__tests__/unit/loaders/ShopProductsLoader.test.tsx`. Focused Jest, loader
+  no-self-fetch/source checks, lint, build, and `git diff --check` passed.
+  Build retained existing unrelated static-generation MongoDB,
+  branch-verification, navigation-link, and `ArticleView` debug output.
+- 2026-05-17: Prepared T-086 with expected focused coverage or source hygiene
+  checks proving touched navigation and redirect files no longer contain
+  hard-coded app origins while preserving current route targets.
+- 2026-05-17: Completed T-086 focused coverage by adding
+  `__tests__/unit/navigationRelativeUrls.test.tsx` for the `/project/about`
+  redirect target, logout success navigation to `/`, mobile auth link source
+  hygiene, and absence of hard-coded same-app origins in the touched files.
+  Focused Jest, lint, build, source search, and `git diff --check` passed.
 
 ## Next Agent Action
 
-For the next same-app HTTP or protected-route migration, add focused service,
-route-adapter, and loader coverage before broadening to lint and build.
+Select the next testing task from the remaining backlog; the T-086
+navigation/redirect URL coverage is complete.
 
 Keep the route/fetcher parity and protected API guard inventories current when
-fetchers or route handlers change. Do not reassign T-081, T-082, or T-083
-unless a regression is opened.
+fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
+T-085, or T-086 unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

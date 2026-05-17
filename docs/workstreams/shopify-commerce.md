@@ -100,6 +100,11 @@ production while preserving MongoDB as the archive source of truth.
 - T-082 recorded the shared book-link policy and added strict admin artwork
   create/update validation for Shopify product links: numeric product IDs,
   known types, and no within-artwork duplicate product IDs.
+- T-085 moved the initial public shop product list onto shared server-only
+  `getShopProductList` service logic. The public route preserves query
+  validation, stored ID skipping, deduplication, Shopify fan-out, success
+  metadata, validation `400`s, and public-safe `500`s; `ShopProductsLoader` no
+  longer depends on `NEXT_PUBLIC_BASE_URL`, localhost, or same-app `fetch()`.
 
 ## Backlog
 
@@ -251,13 +256,22 @@ Add targeted tests as shop behavior is hardened.
   with trimmed numeric IDs and known types, and within-artwork duplicate product
   IDs are rejected before persistence. Cross-artwork book duplicates remain
   allowed when they represent a legitimate shared publication.
+- 2026-05-17: Completed T-085; `getShopProductList` now owns the public shop
+  product listing read path shared by `GET /api/v2/public/shop/products` and
+  `ShopProductsLoader`, preserving current filtering, malformed ID skipping,
+  product ID deduplication, Shopify fan-out, and metadata semantics while
+  removing the loader's same-app HTTP dependency.
 
 ## Next Agent Action
 
-Choose the next Shopify blocker from checkout handoff, visible admin
-product-linking UI, remaining shop API envelope work, real pagination, or
-server-side sorting. No product-ID cleanup or migration is indicated by T-059
-or T-082.
+Choose the next Shopify slice from the remaining commerce backlog: checkout
+handoff, visible admin product-linking UI, real pagination, server-side sorting,
+product-detail UI, or broader Shopify API validation. Keep each separate from
+the completed T-085 initial product-list read migration.
+
+Keep checkout handoff, visible admin product-linking UI, real pagination,
+server-side sorting, product-detail UI, and broader Shopify API validation
+separate. No product-ID cleanup or migration is indicated by T-059 or T-082.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

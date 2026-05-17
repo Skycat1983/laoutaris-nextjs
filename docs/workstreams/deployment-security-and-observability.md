@@ -144,6 +144,10 @@ security headers, environment documentation, and actionable operational signals.
   `console.log` debug output, and replaced the loader's console-directed public
   error hint. Broader production logging/redaction and monitoring policy
   remain separate.
+- T-086 refreshed the environment runbook after the shop loader migration and
+  `/project` redirect cleanup: `NEXT_PUBLIC_BASE_URL` is now a deprecated
+  public URL candidate, and `VERCEL_URL` no longer names the current
+  `/project` redirect.
 
 ## Backlog
 
@@ -387,13 +391,22 @@ npm run lint
   `git diff --check` passed; build still emits already tracked
   MongoDB/static-generation, branch-verification, and link console noise outside
   this slice.
+- 2026-05-17: Prepared T-086 as the next F-030 URL/environment slice. It should
+  replace user-facing hard-coded same-app origins with relative app paths and
+  refresh the environment runbook now that T-085 removed the shop loader's
+  `NEXT_PUBLIC_BASE_URL` dependency.
+- 2026-05-17: Completed T-086; user-facing localhost navigation origins and the
+  `/project` `VERCEL_URL` redirect dependency were removed, and the environment
+  runbook now records `NEXT_PUBLIC_BASE_URL` as deprecated current-source
+  configuration.
 
 ## Next Agent Action
 
-T-059 is complete and no longer blocks the Shopify product-link audit evidence.
-Use T-082 for the next Shopify product-link validation follow-up if commerce
-work takes priority.
+Select the next deployment/environment task from the remaining backlog; the
+T-086 navigation/redirect URL cleanup and environment runbook refresh are
+complete.
 
-Keep CI/dependency-update automation, Vercel project-setting ownership, broader
-production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
+Keep shared server API helper base URL policy, Vercel project-setting
+ownership, CI/dependency-update automation, broader production
+logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
 credential rotation, and the Next/PostCSS owner choice separate.

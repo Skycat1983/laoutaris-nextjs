@@ -1,14 +1,23 @@
 import type { ReactElement } from "react";
+import fs from "fs";
+import path from "path";
 import { render, screen } from "@testing-library/react";
 import { ShopProductsLoader } from "@/components/loaders/viewLoaders/ShopProductsLoader";
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
+import { getShopProductList } from "@/lib/data/services/getShopProductList";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+
+jest.mock("@/lib/data/services/getShopProductList", () => ({
+  getShopProductList: jest.fn(),
+}));
 
 jest.mock("@/components/compositions/ShopProductGallery", () => ({
   ShopProductGallery: jest.fn(() => null),
 }));
 
-const mockFetch = global.fetch as jest.MockedFunction<typeof fetch>;
+const mockGetShopProductList = getShopProductList as jest.MockedFunction<
+  typeof getShopProductList
+>;
 const mockShopProductGallery = ShopProductGallery as jest.MockedFunction<
   typeof ShopProductGallery
 >;
@@ -30,13 +39,6 @@ const product: SimpleProduct = {
   variants: [],
 };
 
-const createJsonResponse = (body: unknown, ok = true, statusText = "OK") =>
-  ({
-    ok,
-    statusText,
-    json: async () => body,
-  } as Response);
-
 describe("ShopProductsLoader", () => {
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
@@ -44,17 +46,15 @@ describe("ShopProductsLoader", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.NEXT_PUBLIC_BASE_URL = "https://example.test";
-    mockFetch.mockResolvedValue(
-      createJsonResponse({
-        success: true,
-        data: [product],
-        metadata: {
-          totalArtworks: 1,
-          totalProducts: 1,
-        },
-      })
-    );
+    delete process.env.NEXT_PUBLIC_BASE_URL;
+    mockGetShopProductList.mockResolvedValue({
+      success: true,
+      data: [product],
+      metadata: {
+        totalArtworks: 1,
+        totalProducts: 1,
+      },
+    });
     consoleLogSpy = jest
       .spyOn(console, "log")
       .mockImplementation(() => undefined);
@@ -74,7 +74,7 @@ describe("ShopProductsLoader", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("loads products with backed filters and passes them to the gallery", async () => {
+  it("loads products with backed filters through the server service and passes them to the gallery", async () => {
     const initialFilters = {
       artstyle: "abstract" as const,
       medium: "oil" as const,
@@ -93,10 +93,17 @@ describe("ShopProductsLoader", () => {
       initialFilters: typeof initialFilters;
     }>;
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://example.test/api/v2/public/shop/products?artstyle=abstract&medium=oil&surface=canvas&decade=1970s&showOriginals=true&showPrints=false&showBooks=true",
-      { cache: "no-store" }
-    );
+    expect(mockGetShopProductList).toHaveBeenCalledWith({
+      sortBy: undefined,
+      showOriginals: true,
+      showPrints: false,
+      showBooks: true,
+      decade: ["1970s"],
+      artstyle: ["abstract"],
+      medium: ["oil"],
+      surface: ["canvas"],
+    });
+    expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(ShopProductGallery);
     expect(element.props).toEqual({
       initialProducts: [product],
@@ -105,15 +112,65 @@ describe("ShopProductsLoader", () => {
     expect(mockShopProductGallery).not.toHaveBeenCalled();
   });
 
+  it("uses route-equivalent defaults when no initial filters are present", async () => {
+    await ShopProductsLoader({});
+
+    expect(mockGetShopProductList).toHaveBeenCalledWith({
+      sortBy: undefined,
+      showOriginals: true,
+      showPrints: true,
+      showBooks: true,
+      decade: [],
+      artstyle: [],
+      medium: [],
+      surface: [],
+    });
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
   it("shows a neutral retry hint when product loading fails", async () => {
-    mockFetch.mockResolvedValue(createJsonResponse({}, false, "Bad Gateway"));
+    mockGetShopProductList.mockRejectedValue(
+      new Error("Failed to fetch products")
+    );
 
     render(await ShopProductsLoader({}));
 
-    expect(
-      screen.getByText("Failed to fetch products: Bad Gateway")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Failed to fetch products")).toBeInTheDocument();
     expect(screen.queryByText(/check the console/i)).not.toBeInTheDocument();
     expect(screen.getByText(/please try again later/i)).toBeInTheDocument();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("rejects invalid loader filters before service work", async () => {
+    render(
+      await ShopProductsLoader({
+        initialFilters: {
+          artstyle: "cubist",
+          showOriginals: true,
+          showPrints: true,
+          showBooks: true,
+        },
+      })
+    );
+
+    expect(screen.getByText("Invalid shop products query")).toBeInTheDocument();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("does not import same-app HTTP dependencies, localhost fallbacks, or direct fetches", () => {
+    const loaderSource = fs.readFileSync(
+      path.join(
+        process.cwd(),
+        "src/components/loaders/viewLoaders/ShopProductsLoader.tsx"
+      ),
+      "utf8"
+    );
+
+    expect(loaderSource).not.toContain("NEXT_PUBLIC_BASE_URL");
+    expect(loaderSource).not.toContain("localhost");
+    expect(loaderSource).not.toContain("serverPublicApi");
+    expect(loaderSource).not.toContain("serverApi");
+    expect(loaderSource).not.toContain("fetch(");
   });
 });
