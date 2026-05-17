@@ -22,12 +22,16 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { artworkFormSchema, ArtworkFormValues } from "@/lib/data/schemas";
-import { ArtworkBase } from "@/lib/data/models";
+import {
+  artworkFormSchema,
+  type ArtworkFormValues,
+  type CreateArtworkFormValues,
+} from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
 import Image from "next/image";
 import { CloudinaryImageDB } from "@/lib/data/types";
 import { Checkbox } from "@/components/shadcn/checkbox";
+import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
 
 interface CreateArtworkFormProps {
   uploadInfo: CloudinaryImageDB | null;
@@ -48,6 +52,7 @@ export function CreateArtworkForm({
       medium: "oil",
       surface: "canvas",
       featured: false,
+      shopifyProducts: [],
     },
   });
 
@@ -56,7 +61,7 @@ export function CreateArtworkForm({
     setIsSubmitting(true);
 
     try {
-      const artworkData: ArtworkBase = {
+      const artworkData: CreateArtworkFormValues = {
         ...values,
         image: uploadInfo,
       };
@@ -257,6 +262,13 @@ export function CreateArtworkForm({
                   </div>
                 </FormItem>
               )}
+            />
+
+            <ShopifyProductLinksInput
+              control={form.control}
+              register={form.register}
+              errors={form.formState.errors.shopifyProducts}
+              disabled={isSubmitting || !uploadInfo}
             />
 
             <Button type="submit" disabled={isSubmitting || !uploadInfo}>

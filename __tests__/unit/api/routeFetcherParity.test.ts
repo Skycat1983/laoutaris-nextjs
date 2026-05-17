@@ -290,6 +290,12 @@ const FETCHER_OPERATIONS: FetcherOperation[] = [
     sourceFile: "src/lib/api/public/search/fetchers.ts",
   },
   {
+    id: "public.shop.productById",
+    method: "GET",
+    path: "/api/v2/public/shop/products/[productId]",
+    sourceFile: "src/lib/api/public/shop/fetchers.ts",
+  },
+  {
     id: "user.comments.getUserComments",
     method: "GET",
     path: "/api/v2/user/comment",

@@ -254,9 +254,17 @@ refactoring without turning every change into a manual QA pass.
 - T-095 added full-source source-hygiene coverage in
   `__tests__/unit/security/consoleLogSourceHygiene.test.ts` so direct or
   commented `console.log()` calls cannot return under `src`.
-- T-096 is prepared with expected static Next config coverage for baseline
-  security header invariants, including the absence of wildcard credential
-  CORS and the presence of required hardening headers/CSP directives.
+- T-096 added static Next config coverage in
+  `__tests__/unit/deployment/nextConfigSecurityHeaders.test.ts` for the
+  resolved `headers()` output, including the absence of wildcard credential
+  CORS and wildcard allowed request headers, presence of baseline hardening
+  headers and CSP directives, and preserved Cloudinary/Shopify/YouTube
+  allowances.
+- T-097 added focused form/schema workflow coverage for admin artwork Shopify
+  product-link add/edit/remove behavior, and preserved existing admin artwork
+  route validation coverage.
+- T-098 added focused coverage for product-link verification fetcher behavior
+  and admin input verification states.
 
 ## Backlog
 
@@ -1038,17 +1046,42 @@ npm run lint
   search returned no matches.
 - 2026-05-17: Prepared T-096 with focused static Next config tests expected
   for API CORS and baseline security-header invariants.
+- 2026-05-17: Completed T-096 by adding
+  `__tests__/unit/deployment/nextConfigSecurityHeaders.test.ts` to evaluate
+  `next.config.mjs` `headers()` output for removed wildcard credential CORS,
+  removed wildcard allowed request headers, baseline hardening headers, required
+  CSP directives, and preserved Cloudinary/Shopify/YouTube allowances.
+- 2026-05-17: Completed T-097 by adding
+  `__tests__/unit/forms/adminArtworkShopifyProductLinks.test.tsx` for shared
+  schema defaults, trim/type/duplicate validation, create-form submission,
+  duplicate preflight rejection, and update-form link clearing. Existing
+  `__tests__/unit/api/adminArtworkRoute.test.ts` now also covers empty-array
+  update clearing while preserving T-082 route validation coverage.
+- 2026-05-17: Prepared T-098 with expected tests for admin Shopify
+  product-link verification success, invalid local input, missing/upstream
+  failures, stale-state reset, and client fetcher URL behavior.
+- 2026-05-17: Completed T-098 by adding
+  `__tests__/unit/api/publicShopFetchers.test.ts` for public shop fetcher URL
+  and response behavior, extending
+  `__tests__/unit/forms/adminArtworkShopifyProductLinks.test.tsx` for
+  verification success, local invalid input, missing/upstream failures,
+  advisory save behavior, and stale-state reset, and updating the route/fetcher
+  parity inventory for `clientPublicApi.shop.productById()`. The focused
+  T-098/T-097/T-082 Jest set, `npm run lint`, `npm run build`, the scoped
+  verification reference search, and `git diff --check` passed; build retained
+  the existing Browserslist caniuse-lite notice.
 
 ## Next Agent Action
 
-Assign T-096:
-[Harden baseline security headers and API CORS](../tasks/T-096-harden-baseline-security-headers-cors.md).
+Choose the next testing slice from the backlog, keeping route/fetcher parity
+current when API fetchers change.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
 T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
-Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094 and
-T-095 are complete; do not reassign them unless a regression is opened.
+Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094,
+T-095, T-096, T-097, and T-098 are complete; do not reassign them unless a
+regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

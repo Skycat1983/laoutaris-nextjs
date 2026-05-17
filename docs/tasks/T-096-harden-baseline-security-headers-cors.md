@@ -1,6 +1,6 @@
 # T-096 Harden Baseline Security Headers And API CORS
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment, Security, And Observability](../workstreams/deployment-security-and-observability.md),
@@ -95,9 +95,29 @@ rg -n "Access-Control-Allow-Credentials|Access-Control-Allow-Headers.*\\*" next.
 git diff --check
 ```
 
+Completed verification on 2026-05-17:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/deployment/nextConfigSecurityHeaders.test.ts
+npm run lint
+npm run build
+rg -n "Access-Control-Allow-Credentials|Access-Control-Allow-Headers.*\\*" next.config.mjs
+git diff --check
+```
+
+The required `rg` command returned no matches.
+
 ## Handoff Notes
 
 - Prepared after T-095 closed the direct/commented `console.log()` cleanup
   stream and left F-052/R-004 as the next focused deployment/security risk.
 - Keep this as a baseline hardening slice; do not expand it into full CSP,
   dynamic CORS, HSTS, monitoring, or logging-policy work.
+- Completed on 2026-05-17 by removing the global `/api/:path*` CORS header
+  rule from `next.config.mjs`, adding `X-Content-Type-Options`,
+  `Referrer-Policy`, conservative `Permissions-Policy`, and CSP
+  `object-src`, `base-uri`, `form-action`, and `frame-ancestors` directives
+  while preserving the existing broad Cloudinary, Shopify CDN, YouTube, image,
+  font, media, and connection allowances. Added focused static Next config
+  tests so wildcard credential CORS, wildcard allowed request headers, missing
+  hardening headers, and removed allowances cannot regress silently.

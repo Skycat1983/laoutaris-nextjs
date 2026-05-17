@@ -549,6 +549,27 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
     );
   });
 
+  it("allows update Shopify product links to be cleared with an empty array", async () => {
+    const request = createRequest({
+      shopifyProducts: [],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: artworkId },
+    });
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFindByIdAndUpdate).toHaveBeenCalledWith(
+      artworkId,
+      {
+        $set: {
+          shopifyProducts: [],
+        },
+      },
+      { new: true }
+    );
+  });
+
   it.each([
     ["non-numeric IDs", [{ productId: "not-a-product-id", type: "original" }]],
     [

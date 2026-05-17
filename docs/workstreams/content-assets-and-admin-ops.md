@@ -1,6 +1,6 @@
 # Content, Assets, And Admin Operations Workstream
 
-Status: Planned
+Status: Active
 
 Goal: make artwork, collection, biography, blog, article, Cloudinary, and admin
 content operations repeatable and safe.
@@ -67,6 +67,10 @@ content operations repeatable and safe.
   read-list files, `ArtworkFeedCard`, and the shared `copy_id()` helper while
   preserving clipboard writes, failure logging, read-list fetch/filter/loading/
   error states, cards, and skeleton exports.
+- T-097 added the visible admin artwork form workflow for managing canonical
+  Shopify product links.
+- T-098 added explicit Shopify product-existence verification controls for
+  those admin product links.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -92,10 +96,6 @@ content operations repeatable and safe.
 ## Backlog
 
 - Document admin content workflows for each content type.
-- Document and implement the admin workflow for linking original, print, and
-  book Shopify products to artwork records.
-- Add validation and duplicate-prevention expectations for Shopify product link
-  operations.
 - Define backup and restore expectations for MongoDB and Cloudinary assets.
 - Define Cloudinary folder rules, upload preset ownership, and asset lifecycle
   expectations for `sign-cloudinary-params`.
@@ -115,7 +115,7 @@ content operations repeatable and safe.
   consistency.
 - Decide whether the mostly unused translation pipeline is in launch scope; if
   not, route it to a pruning task.
-- Add operator runbooks for adding artworks and linking Shopify products.
+- Add operator runbooks for non-Shopify artwork and content operations.
 - Consolidate useful root Shopify historical notes before deleting or archiving
   the root files.
 
@@ -242,14 +242,25 @@ Use manual admin checks when changing dashboard behavior.
   success logs, the `ReadArtworkList` render log, the `ArtworkFeedCard` copy
   success log, and the shared `copy_id()` success log without changing
   clipboard failure logging or read-list behavior.
+- 2026-05-17: Prepared T-097 to implement the visible admin Shopify
+  product-link workflow in artwork create/update forms with shared schema
+  wiring, focused tests, and operator docs.
+- 2026-05-17: Completed T-097; admin artwork create/update forms now let
+  operators add, edit, remove, and clear Shopify product links while preserving
+  canonical numeric ID/type validation and duplicate prevention.
+- 2026-05-17: Prepared T-098 to extend the admin product-link control with
+  explicit Shopify product verification states and focused tests.
+- 2026-05-17: Completed T-098; admin artwork product-link rows now expose a
+  verify action, show unchecked/checking/verified/invalid/not-found/upstream
+  states, display returned Shopify product context on success, and keep save
+  behavior advisory rather than persistence-blocking.
 
 ## Next Agent Action
 
-Pick the next content/admin operations slice from the remaining open findings
-and risks.
+Choose the next admin/content operations slice from the backlog.
 
 For Cloudinary, keep upload preset ownership, folder policy, asset lifecycle,
-deletion/backup/rollback, Shopify product-link workflow, and visible pinned/tag
-admin controls separate unless explicitly assigned. Keep route-level API
-logging, shared UI click logs, test-session override logs, public artwork
-fetcher logs, and global logging policy separate from T-092.
+deletion/backup/rollback, and visible pinned/tag admin controls separate unless
+explicitly assigned. Keep persistence-time Shopify API validation,
+checkout/cart ownership, product-link data migration, route-level API logging,
+and global logging policy separate.

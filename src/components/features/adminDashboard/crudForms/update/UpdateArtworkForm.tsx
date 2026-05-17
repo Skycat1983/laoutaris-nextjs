@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Image from "next/image";
 import {
   Form,
@@ -24,10 +23,12 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Checkbox } from "@/components/shadcn/checkbox";
-import { updateArtworkSchema } from "@/lib/data/schemas";
+import {
+  updateArtworkSchema,
+  type UpdateArtworkFormValues,
+} from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
-
-type UpdateArtworkFormValues = z.infer<typeof updateArtworkSchema>;
+import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
 
 interface UpdateArtworkFormProps {
   artworkInfo: ArtworkFrontend; // Define this type based on your data structure
@@ -53,6 +54,7 @@ UpdateArtworkFormProps) => {
       medium: artworkInfo.medium,
       surface: artworkInfo.surface,
       featured: artworkInfo.featured,
+      shopifyProducts: artworkInfo.shopifyProducts ?? [],
 
       //   imageUrl: artworkInfo.imageUrl,
     },
@@ -268,6 +270,13 @@ UpdateArtworkFormProps) => {
                   </div>
                 </FormItem>
               )}
+            />
+
+            <ShopifyProductLinksInput
+              control={form.control}
+              register={form.register}
+              errors={form.formState.errors.shopifyProducts}
+              disabled={isSubmitting}
             />
 
             <Button type="submit" disabled={isSubmitting}>

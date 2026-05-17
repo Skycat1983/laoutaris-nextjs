@@ -190,11 +190,15 @@ security headers, environment documentation, and actionable operational signals.
   layout source. The full-source `rg -n "console\\.log\\(" src` search now
   returns no matches; route-level API logging, `console.error()` handling, and
   broader production logging/redaction remain separate.
-- T-096 is prepared as a baseline F-052/R-004 hardening slice for
-  `next.config.mjs`: remove the invalid global API wildcard credential CORS
-  pairing, avoid wildcard allowed request headers, and add low-risk app
-  hardening headers plus missing CSP directives before a future full strict CSP
-  allowlist task.
+- T-096 removed the global `/api/:path*` CORS header rule from
+  `next.config.mjs`, eliminating the wildcard-origin plus credential pairing
+  and wildcard allowed request headers. It also added
+  `X-Content-Type-Options`, `Referrer-Policy`, conservative
+  `Permissions-Policy`, and CSP `object-src`, `base-uri`, `form-action`, and
+  `frame-ancestors` directives while preserving the current broad Cloudinary,
+  Shopify CDN, YouTube, image, font, media, and connection allowances. Full
+  strict CSP allowlisting, HSTS, dynamic route-level CORS, CSP reporting, and
+  monitoring remain separate.
 
 ## Backlog
 
@@ -205,8 +209,8 @@ security headers, environment documentation, and actionable operational signals.
   commented-only public Vercel variables, and any future MongoDB alias.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
-- Tighten CSP and CORS policy with production allowlists and missing hardening
-  headers.
+- Tighten the remaining broad CSP policy with production allowlists and decide
+  whether any route-level dynamic CORS policy is needed.
 - Define production logging and redaction policy.
 - Gate or remove debug logs that currently pollute tests, builds, SSR, and shop
   flows.
@@ -529,11 +533,17 @@ npm run lint
 - 2026-05-17: Prepared T-096 to harden the baseline security headers and API
   CORS configuration without expanding into strict CSP allowlists, dynamic
   CORS, HSTS, monitoring, Cloudinary lifecycle, or global logging policy.
+- 2026-05-17: Completed T-096 by removing global API CORS headers from
+  `next.config.mjs`, adding baseline hardening headers and missing low-risk CSP
+  directives, preserving current Cloudinary/Shopify/YouTube allowances, and
+  adding focused static Next config coverage. Full strict CSP allowlisting,
+  HSTS, route-level dynamic CORS, CSP reporting, and monitoring remain
+  separate.
 
 ## Next Agent Action
 
-Assign T-096:
-[Harden baseline security headers and API CORS](../tasks/T-096-harden-baseline-security-headers-cors.md).
+Choose the next deployment/security slice from the remaining backlog after
+orchestrator review.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,

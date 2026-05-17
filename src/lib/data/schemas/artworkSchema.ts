@@ -11,7 +11,11 @@ const ARTWORK_FIELD_LIMITS = {
   title: 200,
 } as const;
 
-const SHOPIFY_PRODUCT_TYPES = ["original", "print", "book"] as const;
+export const SHOPIFY_PRODUCT_TYPE_OPTIONS = [
+  "original",
+  "print",
+  "book",
+] as const;
 const SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN = /^\d+$/;
 
 const objectIdStringSchema = (message: string) =>
@@ -31,33 +35,6 @@ const requiredTrimmedString = (fieldName: string) =>
     })
     .trim();
 
-// Schema for form input data
-export const artworkFormSchema = z.object({
-  title: requiredTrimmedString("Title")
-    .min(1, "Title is required")
-    .max(
-      ARTWORK_FIELD_LIMITS.title,
-      `Title must be ${ARTWORK_FIELD_LIMITS.title} characters or fewer`
-    ),
-  decade: z.enum(DECADE_OPTIONS),
-  artstyle: z.enum(ARTSTYLE_OPTIONS),
-  medium: z.enum(MEDIUM_OPTIONS),
-  surface: z.enum(SURFACE_OPTIONS),
-  featured: z.boolean().default(false),
-});
-
-export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
-
-export const createArtworkSchema = artworkFormSchema.extend({
-  image: cloudinaryImageSchema,
-});
-
-export type CreateArtworkFormValues = z.infer<typeof createArtworkSchema>;
-
-export const updateArtworkSchema = artworkFormSchema;
-
-const routeCloudinaryImageSchema = cloudinaryImageSchema.strict();
-
 const shopifyProductLinkSchema = z
   .object({
     productId: z
@@ -70,7 +47,7 @@ const shopifyProductLinkSchema = z
         SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN,
         "Shopify product ID must be numeric"
       ),
-    type: z.enum(SHOPIFY_PRODUCT_TYPES, {
+    type: z.enum(SHOPIFY_PRODUCT_TYPE_OPTIONS, {
       required_error: "Shopify product type is required",
       invalid_type_error: "Shopify product type is required",
     }),
@@ -84,11 +61,12 @@ const shopifyProductsSchema = z
   .superRefine((links, ctx) => {
     const seenProductIds = new Set<string>();
 
-    links.forEach((link) => {
+    links.forEach((link, index) => {
       if (seenProductIds.has(link.productId)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Shopify product IDs must be unique within an artwork",
+          path: [index, "productId"],
         });
         return;
       }
@@ -96,6 +74,34 @@ const shopifyProductsSchema = z
       seenProductIds.add(link.productId);
     });
   });
+
+// Schema for form input data
+export const artworkFormSchema = z.object({
+  title: requiredTrimmedString("Title")
+    .min(1, "Title is required")
+    .max(
+      ARTWORK_FIELD_LIMITS.title,
+      `Title must be ${ARTWORK_FIELD_LIMITS.title} characters or fewer`
+    ),
+  decade: z.enum(DECADE_OPTIONS),
+  artstyle: z.enum(ARTSTYLE_OPTIONS),
+  medium: z.enum(MEDIUM_OPTIONS),
+  surface: z.enum(SURFACE_OPTIONS),
+  featured: z.boolean().default(false),
+  shopifyProducts: shopifyProductsSchema.default([]),
+});
+
+export type ArtworkFormValues = z.infer<typeof artworkFormSchema>;
+
+export const createArtworkSchema = artworkFormSchema.extend({
+  image: cloudinaryImageSchema,
+});
+
+export type CreateArtworkFormValues = z.infer<typeof createArtworkSchema>;
+
+const routeCloudinaryImageSchema = cloudinaryImageSchema.strict();
+
+export const updateArtworkSchema = artworkFormSchema;
 
 const artworkRouteFields = {
   title: artworkFormSchema.shape.title,

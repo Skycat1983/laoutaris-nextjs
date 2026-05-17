@@ -62,6 +62,34 @@ the canonical link shape before persistence:
 This validation does not call Shopify and does not verify product existence or
 availability.
 
+## Admin Product Link Workflow
+
+Use the admin artwork create or update form to manage MongoDB
+`shopifyProducts` links.
+
+1. Add a Shopify product link row.
+2. Enter the numeric Shopify product ID only.
+3. Choose `original`, `print`, or `book`.
+4. Use the row's verify action when you want to confirm the product currently
+   exists in Shopify before saving.
+5. Add additional rows when an artwork should surface multiple products.
+6. Remove a row to delete one link, or remove every row on the update form to
+   clear all Shopify product links from the artwork.
+7. Submit the artwork form.
+
+The form trims product IDs and rejects non-numeric IDs, unsupported types, and
+duplicate product IDs within the same artwork before it sends the API request.
+The admin API repeats those checks before persistence. Cross-artwork duplicates
+remain allowed for legitimate shared book links.
+
+Verification calls the public single-product-by-ID route only when the row
+verify action is used. Empty or non-numeric IDs show a local invalid state
+without a Shopify request. Existing products show returned context such as
+title, handle, availability, product type, and price; missing products and
+upstream failures show warnings. These warnings do not block save. Admin
+create/update persistence still relies on the form schema and admin route
+validation, and the write routes do not call Shopify.
+
 ## Read-Only Product Link Audit
 
 Run the MongoDB product-link audit before planning a data cleanup or admin
@@ -122,5 +150,6 @@ variant ID handling, line-item construction, and unavailable-product behavior.
 ## Open Work
 
 - Define and implement the full cart or checkout handoff.
-- Define the visible admin UI workflow for adding and removing Shopify links.
+- Decide whether persistence-time Shopify validation or product-link caching is
+  ever needed.
 - Add tests for product transformation.

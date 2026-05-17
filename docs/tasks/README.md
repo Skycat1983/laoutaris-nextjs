@@ -105,7 +105,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-093 Remove shared UI and public fetcher debug logs](T-093-remove-shared-ui-public-fetcher-debug-logs.md) | Completed | Removed direct `console.log()` output from shared UI components and the public artwork fetcher without changing behavior. |
 | [T-094 Remove session test header debug logs](T-094-remove-session-test-header-debug-logs.md) | Completed | Removed the remaining active direct `console.log()` output from the development test-header session helper without changing auth behavior. |
 | [T-095 Remove commented debug log leftovers](T-095-remove-commented-debug-log-leftovers.md) | Completed | Removed stale commented-out `console.log()` snippets so the full source search is clean without changing behavior. |
-| [T-096 Harden baseline security headers and API CORS](T-096-harden-baseline-security-headers-cors.md) | Planned | Remove the invalid global wildcard credential CORS pairing and add low-risk baseline security headers/CSP directives. |
+| [T-096 Harden baseline security headers and API CORS](T-096-harden-baseline-security-headers-cors.md) | Completed | Removed the invalid global API CORS headers and added low-risk baseline security headers/CSP directives. |
+| [T-097 Add admin Shopify product-link workflow](T-097-add-admin-shopify-product-link-workflow.md) | Completed | Added the visible admin artwork form workflow for creating, editing, removing, and clearing canonical Shopify product links. |
+| [T-098 Add admin Shopify product-link verification](T-098-add-admin-shopify-product-link-verification.md) | Planned | Add explicit admin verification controls so operators can confirm linked Shopify product IDs exist before saving. |
 
 ## Rules
 

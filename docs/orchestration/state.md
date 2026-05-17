@@ -4,12 +4,24 @@ Last updated: 2026-05-17
 
 ## Current Priority
 
-T-096 is prepared: harden the baseline security headers and API CORS in
-`next.config.mjs` by removing the invalid wildcard-origin plus credentialed
-CORS pairing, avoiding wildcard allowed headers, and adding low-risk hardening
-headers/CSP directives. Keep full strict CSP allowlist design, dynamic
-per-origin CORS middleware, HSTS, monitoring, Cloudinary upload lifecycle, and
-broader production logging/redaction policy separate.
+T-098 is prepared as the next larger Shopify/admin hardening slice: add explicit
+product-link verification controls so operators can confirm linked Shopify
+product IDs exist before saving. Keep this as verification UX/fetcher work, not
+persistence-time Shopify validation or data migration.
+T-097 is complete: admin artwork create/update forms now manage canonical
+Shopify product links with add/remove controls, numeric ID/type validation,
+duplicate prevention, existing-link initialization, empty-array submission for
+clearing links, focused form tests, and operator docs. F-010/R-021's visible
+admin workflow gap is closed; Shopify product existence checks remain separate
+and are queued as T-098.
+T-096 is complete: `next.config.mjs` no longer defines global API CORS
+headers, removing the invalid wildcard-origin plus credentialed CORS pairing
+and wildcard allowed headers. Baseline `X-Content-Type-Options`,
+`Referrer-Policy`, conservative `Permissions-Policy`, and low-risk CSP
+`object-src`, `base-uri`, `form-action`, and `frame-ancestors` directives are
+now covered by static Next config tests. Full strict CSP allowlist design,
+dynamic route-level CORS, HSTS, CSP reporting, monitoring, Cloudinary upload
+lifecycle, and broader production logging/redaction policy remain separate.
 T-095 is complete: stale commented-out `console.log()` snippets were removed
 from auth callbacks, credentials auth, session provider, collection section,
 main navigation, and admin content layout source. The full-source
@@ -129,7 +141,9 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-096 baseline security headers/API CORS hardening is ready to assign.
+T-098 admin Shopify product-link verification is ready to assign.
+T-097 admin Shopify product-link workflow is complete.
+T-096 baseline security headers/API CORS hardening is complete.
 T-095 commented debug-log leftovers cleanup is complete.
 T-094 session test-header debug-log cleanup is complete.
 T-093 shared UI/public artwork fetcher debug-log cleanup is complete.
@@ -168,11 +182,18 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-096 is prepared as the next focused F-052/R-004 deployment-security slice:
-  update `next.config.mjs` so global API CORS no longer combines wildcard
-  origin with credentials or wildcard allowed headers, add baseline app
-  hardening headers, add low-risk CSP directives, and cover the invariants with
-  focused static tests.
+- T-098 is prepared as the next larger Shopify/admin slice: add explicit
+  verification controls to the T-097 admin product-link workflow so operators
+  can check whether linked Shopify product IDs exist before saving, using the
+  existing public product-by-ID route or a small wrapper only if needed.
+- T-097 is complete: admin artwork create/update forms can add, edit, remove,
+  and clear canonical `shopifyProducts` links, shared form schema validation
+  covers trimming/numeric IDs/types/duplicates, T-082 route validation remains
+  covered, and Shopify operator docs were updated.
+- T-096 is complete: global API CORS headers were removed from
+  `next.config.mjs`, baseline hardening headers and missing low-risk CSP
+  directives were added, current Cloudinary/Shopify/YouTube allowances were
+  preserved, and focused static Next config tests passed.
 - T-095 is complete: stale commented `console.log()` snippets were removed from
   the scoped auth, session provider, public collection, main navigation, and
   admin layout source while preserving runtime behavior. The full-source
@@ -720,24 +741,25 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign T-096 to harden the baseline security headers and API CORS:
-`docs/tasks/T-096-harden-baseline-security-headers-cors.md`.
+Assign T-098 to add admin Shopify product-link verification:
+`docs/tasks/T-098-add-admin-shopify-product-link-verification.md`.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
 T-087, T-088, T-089, T-090, T-091, and T-092 are complete; do not reassign
 them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
-complete and should not be reassigned unless a regression is opened. T-095 is
-complete and should not be reassigned unless a regression is opened.
+complete and should not be reassigned unless a regression is opened. T-095,
+T-096, and T-097 are complete and should not be reassigned unless a regression
+is opened.
 
-Keep automatic data mutation, Shopify API validation, admin Shopify
-visible product-linking UI, checkout/cart ownership, remaining Cloudinary upload
-policy/runbook work, full strict CSP allowlist design, dynamic per-origin CORS,
-HSTS rollout, global production logging/redaction policy, visible blog
-pinned/tag admin workflow, CI/dependency-update automation, Vercel
-project-setting ownership, credential rotation, and the residual Next/PostCSS
-owner decision separate unless priority changes.
+Keep automatic data mutation, persistence-time Shopify API validation,
+checkout/cart ownership, remaining Cloudinary upload policy/runbook work, full
+strict CSP allowlist design, dynamic per-origin CORS, HSTS rollout, global
+production logging/redaction policy, visible blog pinned/tag admin workflow,
+CI/dependency-update automation, Vercel project-setting ownership, credential
+rotation, and the residual Next/PostCSS owner decision separate unless priority
+changes.
 
 Keep the immediate bcrypt tracing include in `next.config.mjs` until a future
 native-dependency policy explicitly replaces it. Use the T-025 deployment smoke

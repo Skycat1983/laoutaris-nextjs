@@ -17,7 +17,6 @@ production while preserving MongoDB as the archive source of truth.
 
 - Public shop launch.
 - Product detail purchase flow.
-- Admin workflow for linking artworks to Shopify products.
 
 ## Related Code Areas
 
@@ -39,6 +38,8 @@ production while preserving MongoDB as the archive source of truth.
 - Shopify is accessed through the Storefront GraphQL API.
 - MongoDB artwork documents store minimal Shopify references via
   `shopifyProducts`.
+- Admin artwork create/update forms now expose a visible workflow for adding,
+  editing, and removing canonical `shopifyProducts` links.
 - The current canonical product link shape stores numeric Shopify product IDs,
   not full Shopify GIDs.
 - Historical docs describe prior shop crashes caused by barrel imports from
@@ -105,13 +106,16 @@ production while preserving MongoDB as the archive source of truth.
   validation, stored ID skipping, deduplication, Shopify fan-out, success
   metadata, validation `400`s, and public-safe `500`s; `ShopProductsLoader` no
   longer depends on `NEXT_PUBLIC_BASE_URL`, localhost, or same-app `fetch()`.
+- T-097 completed the visible admin artwork form workflow for creating,
+  editing, and removing canonical `shopifyProducts` links while preserving
+  T-082 server-side validation.
+- T-098 added explicit product-existence verification controls to the admin
+  linking UI without making Shopify availability a persistence dependency.
 
 ## Backlog
 
 - Decide the full checkout handoff: Shopify-hosted product/checkout link or
   Shopify cart/checkout with variant selection.
-- Define the visible admin UI workflow for adding and removing original, print,
-  and book product links.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
 - Standardize remaining shop product API envelopes, define checkout line-item
@@ -261,17 +265,31 @@ Add targeted tests as shop behavior is hardened.
   `ShopProductsLoader`, preserving current filtering, malformed ID skipping,
   product ID deduplication, Shopify fan-out, and metadata semantics while
   removing the loader's same-app HTTP dependency.
+- 2026-05-17: Prepared T-097 as a higher-throughput F-010/R-021 slice that
+  bundles admin artwork form UI, shared form-schema wiring, focused tests, and
+  operator docs for Shopify product-link management.
+- 2026-05-17: Completed T-097; admin artwork create/update forms now manage
+  canonical Shopify product links with add/remove controls, numeric ID/type
+  validation, duplicate prevention, existing-link initialization, and empty
+  array submission for clearing links.
+- 2026-05-17: Prepared T-098 to add admin product-link verification controls
+  so operators can confirm Shopify product IDs exist before saving, while
+  keeping persistence-time Shopify validation and data mutation separate.
+- 2026-05-17: Completed T-098; admin product-link rows now verify Shopify
+  product IDs through the existing public single-product route on operator
+  action, display returned product context on success, show invalid/not-found/
+  upstream states on failure, clear stale verification when rows change, and
+  keep artwork save governed by local and route validation.
 
 ## Next Agent Action
 
-Choose the next Shopify slice from the remaining commerce backlog: checkout
-handoff, visible admin product-linking UI, real pagination, server-side sorting,
-product-detail UI, or broader Shopify API validation. Keep each separate from
-the completed T-085 initial product-list read migration.
+Choose the next Shopify backlog slice from checkout handoff, remaining
+product-detail contract coverage, product pagination, or server-side sorting.
 
-Keep checkout handoff, visible admin product-linking UI, real pagination,
-server-side sorting, product-detail UI, and broader Shopify API validation
-separate. No product-ID cleanup or migration is indicated by T-059 or T-082.
+Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
+product-link data migration, automatic mutation, and persistence-time Shopify
+API validation separate. No product-ID cleanup or migration is indicated by
+T-059 or T-082.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.
