@@ -1,6 +1,6 @@
 jest.mock("server-only", () => ({}), { virtual: true });
 
-import { createApiLogger } from "@/lib/observability/logger";
+import { createApiLogger, createServerLogger } from "@/lib/observability/logger";
 
 describe("structured API logger", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -86,5 +86,40 @@ describe("structured API logger", () => {
     expect(payload.supportEmail).toBe("support@example.com");
     expect(payload.email).toBe("[redacted]");
     expect(payload.error.stack).toEqual(expect.any(String));
+  });
+
+  it("writes requestless server logs with redacted fields", () => {
+    const logger = createServerLogger({
+      component: "ExampleLoader",
+      operation: "public.example.loader",
+      surface: "server_loader",
+    });
+
+    logger.error("loader.public.example.failed", {
+      slug: "public-slug",
+      email: "viewer@example.com",
+      error: new Error("failed for admin@example.com"),
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+
+    expect(payload).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "loader.public.example.failed",
+        component: "ExampleLoader",
+        operation: "public.example.loader",
+        surface: "server_loader",
+        slug: "public-slug",
+        email: "[redacted]",
+        error: {
+          name: "Error",
+          message: "failed for [redacted]",
+        },
+      })
+    );
+    expect(payload.requestId).toBeUndefined();
+    expect(JSON.stringify(payload)).not.toContain("admin@example.com");
   });
 });

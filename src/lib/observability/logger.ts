@@ -6,6 +6,13 @@ type LogLevel = "debug" | "info" | "warn" | "error";
 
 type StructuredLogFields = Record<string, unknown>;
 
+type ServerLoggerContext = {
+  route?: string;
+  component?: string;
+  operation?: string;
+  surface?: string;
+};
+
 type LoggerOptions = {
   includeStack?: boolean;
   allowEmailFields?: string[];
@@ -107,6 +114,36 @@ export const createApiLogger = (
       method: context.method,
       route: context.route,
       timestamp: new Date().toISOString(),
+      ...redactFields(fields, options),
+    });
+  };
+
+  return {
+    debug: (event: string, fields?: StructuredLogFields) =>
+      log("debug", event, fields),
+    info: (event: string, fields?: StructuredLogFields) =>
+      log("info", event, fields),
+    warn: (event: string, fields?: StructuredLogFields) =>
+      log("warn", event, fields),
+    error: (event: string, fields?: StructuredLogFields) =>
+      log("error", event, fields),
+  };
+};
+
+export const createServerLogger = (
+  context: ServerLoggerContext = {},
+  options?: LoggerOptions
+) => {
+  const log = (
+    level: LogLevel,
+    event: string,
+    fields: StructuredLogFields = {}
+  ) => {
+    writeLog(level, {
+      level,
+      event,
+      timestamp: new Date().toISOString(),
+      ...context,
       ...redactFields(fields, options),
     });
   };

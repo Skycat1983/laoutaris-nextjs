@@ -13,6 +13,12 @@ import {
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
 import dbConnect from "@/lib/db/mongodb";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const shopProductListLogger = createServerLogger({
+  surface: "data_service",
+  operation: "shopify.product_list",
+});
 
 const SHOP_ARTWORK_FILTER_KEYS = [
   "decade",
@@ -75,6 +81,11 @@ const shouldIncludeProductLink = (
   return true;
 };
 
+const getErrorForLog = (error: unknown) =>
+  error instanceof Error
+    ? error
+    : new Error("Unknown Shopify product list error");
+
 export const getShopProductList = async (
   params: GetShopProductListParams = {}
 ): Promise<ShopProductListServiceResult> => {
@@ -107,10 +118,13 @@ export const getShopProductList = async (
       }
 
       return getProductById(gid).catch((error) => {
-        console.error(
-          `Shop products service - Failed to fetch product ${productId}:`,
-          error
-        );
+        shopProductListLogger.error("service.shopify.product_fetch.failed", {
+          provider: "shopify",
+          shopifyOperation: "getProductById",
+          statusCategory: "product_fanout_failed",
+          publicProductId: productId,
+          error: getErrorForLog(error),
+        });
         return null;
       });
     })

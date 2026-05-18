@@ -4,6 +4,7 @@ import { replaceMongoId } from "@/lib/helpers/transformData";
 import { SubscriberModel } from "@/lib/data/models/subscribersModel";
 import { subscriberSchema } from "@/lib/data/schemas/subscriberSchema";
 import dbConnect from "@/lib/db/mongodb";
+import { createServerLogger } from "@/lib/observability/logger";
 import type { FrontendSubscriber } from "@/lib/data/types/subscriberTypes";
 
 export interface SubscribeFormState {
@@ -11,6 +12,18 @@ export interface SubscribeFormState {
   message: string;
   data?: FrontendSubscriber;
 }
+
+const logger = createServerLogger({
+  operation: "subscription.submit",
+  surface: "server_action",
+});
+
+const getErrorForLog = (error: unknown) => {
+  const logError = new Error("Subscription action failed");
+  logError.name = error instanceof Error ? error.name : "UnknownError";
+
+  return logError;
+};
 
 export async function submitSubscription(
   prevState: SubscribeFormState,
@@ -48,8 +61,12 @@ export async function submitSubscription(
       message: "Successfully subscribed!",
       data: subscriber as FrontendSubscriber,
     };
-  } catch {
-    console.error("Subscription creation failed.");
+  } catch (error) {
+    logger.error("action.subscription.submit.failed", {
+      action: "submitSubscription",
+      statusCategory: "persistence_failed",
+      error: getErrorForLog(error),
+    });
 
     return {
       success: false,

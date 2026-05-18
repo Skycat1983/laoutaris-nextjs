@@ -4,6 +4,7 @@ import { UserModel } from "../data/models";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { FlattenMaps } from "mongoose";
+import { createServerLogger } from "@/lib/observability/logger";
 
 // Define a more comprehensive return type
 export interface SessionUser {
@@ -15,6 +16,18 @@ export interface SessionUser {
 // Type for a lean Mongoose document
 type LeanDocument = FlattenMaps<any> &
   Required<{ _id: unknown }> & { __v: number };
+
+const logger = createServerLogger({
+  operation: "session.test_header_user_lookup",
+  surface: "session_helper",
+});
+
+const getErrorForLog = (error: unknown) => {
+  const logError = new Error("Development test user lookup failed");
+  logError.name = error instanceof Error ? error.name : "UnknownError";
+
+  return logError;
+};
 
 // Helper function to ensure we're working with a single document, not an array
 function ensureSingleDocument(
@@ -47,7 +60,11 @@ export const getUserFromSession = async (
           };
         }
       } catch (error) {
-        console.error("Error fetching test user:", error);
+        logger.error("session.test_header_user.lookup_failed", {
+          statusCategory: "development_test_user_lookup_failed",
+          testHeaderType: "user",
+          error: getErrorForLog(error),
+        });
       }
       return { id: testUserId, role: "user" }; // Default to user role if not found
     }

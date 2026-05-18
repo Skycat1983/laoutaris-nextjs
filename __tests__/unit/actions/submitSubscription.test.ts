@@ -167,8 +167,22 @@ describe("submitSubscription", () => {
     });
     expect(result.message).not.toContain("duplicate key");
     expect(result.message).not.toContain("private@example.com");
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Subscription creation failed."
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "action.subscription.submit.failed",
+        operation: "subscription.submit",
+        surface: "server_action",
+        action: "submitSubscription",
+        statusCategory: "persistence_failed",
+        error: {
+          name: "Error",
+          message: "Subscription action failed",
+        },
+      })
     );
     expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
       "private@example.com"

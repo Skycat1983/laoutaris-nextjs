@@ -79,9 +79,16 @@ describe("BlogSectionLoader", () => {
     await expect(BlogSectionLoader()).resolves.toBeNull();
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Blog section loading failed:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.blog_section.failed",
+        component: "BlogSectionLoader",
+        operation: "public.blog_section.loader",
+        error: {
+          name: "Error",
+          message: "private section failure",
+        },
+      })
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BlogSection).not.toHaveBeenCalled();

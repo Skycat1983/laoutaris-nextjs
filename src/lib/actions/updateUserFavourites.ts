@@ -4,7 +4,20 @@ import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
+import { createServerLogger } from "@/lib/observability/logger";
 import type { FavouritesButtonState } from "@/components/elements/buttons/FavouritesButton";
+
+const logger = createServerLogger({
+  operation: "saved_item.favourites.update",
+  surface: "server_action",
+});
+
+const getErrorForLog = (error: unknown) => {
+  const logError = new Error("Saved item favourites action failed");
+  logError.name = error instanceof Error ? error.name : "UnknownError";
+
+  return logError;
+};
 
 export async function updateUserFavourites(
   prevState: FavouritesButtonState,
@@ -72,6 +85,14 @@ export async function updateUserFavourites(
       ]);
 
       if (!updatedUser || !updatedArtwork) {
+        logger.error("action.saved_item.favourites.update_incomplete", {
+          action: "updateUserFavourites",
+          savedItemType: "favourites",
+          statusCategory: "mutation_incomplete",
+          userUpdated: Boolean(updatedUser),
+          artworkUpdated: Boolean(updatedArtwork),
+        });
+
         return {
           success: false,
           message: "Failed to update favourites/favourited",
@@ -100,7 +121,13 @@ export async function updateUserFavourites(
       };
     }
   } catch (error) {
-    console.error("Error updating favourites:", error);
+    logger.error("action.saved_item.favourites.failed", {
+      action: "updateUserFavourites",
+      savedItemType: "favourites",
+      statusCategory: "unexpected_error",
+      error: getErrorForLog(error),
+    });
+
     return {
       success: false,
       message: "Internal Server Error",

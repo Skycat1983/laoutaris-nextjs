@@ -91,9 +91,17 @@ describe("CollectionArtworksPaginationLoader", () => {
     ).resolves.toBeNull();
 
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Collection artworks pagination loading failed:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.collection_artworks_pagination.failed",
+        component: "CollectionArtworksPaginationLoader",
+        operation: "public.collection_artworks_pagination.loader",
+        slug: "missing",
+        error: {
+          name: "Error",
+          message: "Failed to fetch collection artworks navigation",
+        },
+      })
     );
   });
 

@@ -2,6 +2,13 @@ import { ArtworkView } from "@/components/views";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const logger = createServerLogger({
+  component: "CollectionArtworkLoader",
+  operation: "public.collection_artwork.loader",
+  surface: "server_loader",
+});
 
 export async function CollectionArtworkLoader({
   slug,
@@ -30,7 +37,11 @@ export async function CollectionArtworkLoader({
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Collection artwork loading failed:", error);
+    logger.error("loader.public.collection_artwork.failed", {
+      error,
+      slug,
+      hasArtworkId: Boolean(artworkId),
+    });
     return null;
   }
 }

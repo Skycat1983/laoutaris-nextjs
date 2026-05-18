@@ -118,9 +118,24 @@ describe("getArtworkShopProducts", () => {
     expect(mockGetProductById).not.toHaveBeenCalledWith(
       "gid://shopify/Product/999"
     );
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Artwork shop products service - Failed to fetch product 204:",
-      expect.any(Error)
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+    expect(payload).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "service.shopify.artwork_product_fetch.failed",
+        surface: "data_service",
+        operation: "shopify.artwork_shop_products",
+        provider: "shopify",
+        shopifyOperation: "getProductById",
+        statusCategory: "linked_product_fetch_failed",
+        publicProductId: "204",
+        productLinkType: "original",
+        error: {
+          name: "Error",
+          message: "private Shopify failure",
+        },
+      })
     );
   });
 

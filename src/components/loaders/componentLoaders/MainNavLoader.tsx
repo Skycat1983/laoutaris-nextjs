@@ -2,6 +2,7 @@ import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
 
 export interface NavBarLink {
@@ -9,6 +10,12 @@ export interface NavBarLink {
   path: string;
   disabled?: boolean;
 }
+
+const logger = createServerLogger({
+  component: "MainNavLoader",
+  operation: "public.main_nav.loader",
+  surface: "server_loader",
+});
 
 export const MainNavLoader = async () => {
   try {
@@ -55,7 +62,7 @@ export const MainNavLoader = async () => {
     if (isNextError(error)) {
       throw error;
     } else {
-      console.error("Error in MainNavLoader", error);
+      logger.error("loader.public.main_nav.failed", { error });
     }
   }
 };

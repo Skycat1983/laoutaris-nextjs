@@ -150,6 +150,23 @@ or inconsistent code forward.
   session provider, public collection, main navigation, and admin layout
   source. Full-source source-hygiene coverage now keeps `src` free of direct or
   commented `console.log()` calls.
+- T-125 documented the non-route logging/redaction policy for services,
+  loaders, server actions, client components, utilities, and provider clients,
+  including the 2026-05-18 source inventory and migration order. T-126 is the
+  first planned implementation slice for public server loaders and App Router
+  pages.
+- T-126 completed the first policy-aligned non-route logging implementation
+  slice by adding a requestless server structured logger and routing public
+  loader/App Router page failure paths through it without changing current
+  fallback, redirect, or rendering/cache contracts.
+- T-127 completed the next policy-aligned provider/data service logging slice
+  for scoped Shopify client and product resolver failures without changing
+  product DTOs, Storefront cache policy, linked-product fallback behavior, or
+  public shop contracts.
+- T-128 is prepared as the next policy-aligned server-side logging slice for
+  scoped server actions and the development test-header session helper. It
+  should preserve action return contracts, saved-item mutation/revalidation
+  behavior, and normal/development session-helper behavior.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -462,14 +479,34 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-18: Prepared T-125 to document the non-route logging/redaction policy
   and migration inventory before changing service, loader, action, client,
   utility, or provider-client console behavior.
+- 2026-05-18: Completed T-125 by adding the logging/redaction architecture
+  policy and grouping the remaining non-route direct `console.error()`/
+  `console.warn()` calls into migration surfaces. T-126 later completed the
+  first policy-aligned implementation slice for public server loaders and App
+  Router pages.
+- 2026-05-18: Completed T-126 by adding `createServerLogger()` and migrating
+  the scoped public server loader/App Router page failure paths away from
+  direct `console.error()` calls while preserving existing route behavior.
+  Remaining logging implementation slices should follow the T-125 migration
+  order and avoid broad rewrites.
+- 2026-05-18: Prepared T-127 as the next policy-aligned provider/data service
+  logging slice for Shopify client and product resolver failures.
+- 2026-05-18: Completed T-127 by routing scoped Shopify provider/data service
+  failure paths through requestless structured server logging and adding
+  focused source hygiene for the touched files.
+- 2026-05-18: Prepared T-128 as the next policy-aligned server-side logging
+  slice for subscription, saved-item, and development test-header session
+  helper failures.
 
 ## Next Agent Action
 
-Assign T-125 if the next architecture contribution remains logging/redaction
-policy. Otherwise choose the next architecture slice from broad route-builder
-work, client/server import boundary cleanup, staged source-pruning work, or
-remaining route-local rendering follow-ups. Keep broad static/ISR migration
-separate until a dedicated cache-freshness and route-param task is assigned.
+Choose the next architecture slice from broad route-builder work, client/server
+import boundary cleanup, staged source-pruning work, or remaining route-local
+rendering follow-ups. If continuing non-route logging, assign
+[T-128](../tasks/T-128-migrate-server-action-session-logging.md) before moving
+to client/admin reporting, shared fetcher/client reporting, or utility/helper
+warning cleanup. Keep broad static/ISR migration separate until a dedicated
+cache-freshness and route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
@@ -479,8 +516,9 @@ Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
 `serverApi` option, DB connection semantics, broad route-builder centralization,
 favourite/watchlist server actions, account navigation, cache policy,
 root-layout session ownership, middleware/global auth policy, test-session
-override logs, artwork-to-shop SSR discovery, and global logging/redaction
-policy separate unless explicitly scoped.
+override logs, artwork-to-shop SSR discovery, and remaining logging
+implementation slices outside the completed T-126 and T-127 scopes separate
+unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

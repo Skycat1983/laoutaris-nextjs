@@ -116,13 +116,20 @@ describe("/collections page", () => {
 
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in collections default path:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.collections_redirect.failed",
+        route: "/collections",
+        operation: "public.collections.default_redirect",
+        error: {
+          name: "Error",
+          message: "No collections found",
+        },
+      })
     );
   });
 
-  it("preserves the logged error behavior when collection loading fails", async () => {
+  it("logs a structured error when collection loading fails", async () => {
     const error = new Error("navigation failed");
     mockGetCollectionNavigationList.mockRejectedValue(error);
 
@@ -130,9 +137,14 @@ describe("/collections page", () => {
 
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in collections default path:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.collections_redirect.failed",
+        error: {
+          name: "Error",
+          message: "navigation failed",
+        },
+      })
     );
   });
 });

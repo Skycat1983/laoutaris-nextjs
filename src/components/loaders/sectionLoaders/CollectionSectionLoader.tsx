@@ -3,6 +3,14 @@
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const logger = createServerLogger({
+  component: "CollectionsSectionLoader",
+  operation: "public.collections_section.loader",
+  surface: "server_loader",
+});
+
 // Loader Function
 export async function CollectionsSectionLoader() {
   try {
@@ -20,7 +28,7 @@ export async function CollectionsSectionLoader() {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Collections section loading failed:", error);
+    logger.error("loader.public.collections_section.failed", { error });
     return null;
   }
 }

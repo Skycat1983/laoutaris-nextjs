@@ -4,7 +4,20 @@ import { getUserIdFromSession } from "../session/getUserIdFromSession";
 import { ArtworkModel, UserModel } from "../data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
+import { createServerLogger } from "@/lib/observability/logger";
 import type { WatchlistButtonState } from "@/components/elements/buttons/WatchlistButton";
+
+const logger = createServerLogger({
+  operation: "saved_item.watchlist.update",
+  surface: "server_action",
+});
+
+const getErrorForLog = (error: unknown) => {
+  const logError = new Error("Saved item watchlist action failed");
+  logError.name = error instanceof Error ? error.name : "UnknownError";
+
+  return logError;
+};
 
 export async function updateUserWatchlist(
   prevState: WatchlistButtonState,
@@ -72,6 +85,14 @@ export async function updateUserWatchlist(
       ]);
 
       if (!updatedUser || !updatedArtwork) {
+        logger.error("action.saved_item.watchlist.update_incomplete", {
+          action: "updateUserWatchlist",
+          savedItemType: "watchlist",
+          statusCategory: "mutation_incomplete",
+          userUpdated: Boolean(updatedUser),
+          artworkUpdated: Boolean(updatedArtwork),
+        });
+
         return {
           success: false,
           message: "Failed to update watchlist/watcherlist",
@@ -100,7 +121,13 @@ export async function updateUserWatchlist(
       };
     }
   } catch (error) {
-    console.error("Error updating watchlist:", error);
+    logger.error("action.saved_item.watchlist.failed", {
+      action: "updateUserWatchlist",
+      savedItemType: "watchlist",
+      statusCategory: "unexpected_error",
+      error: getErrorForLog(error),
+    });
+
     return {
       success: false,
       message: "Internal Server Error",

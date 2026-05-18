@@ -6,6 +6,7 @@ import {
 } from "@/lib/data/types/blogTypes";
 import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
 import { getBlogBySlugWithComments } from "@/lib/data/services/getBlogBySlugWithComments";
+import { createServerLogger } from "@/lib/observability/logger";
 
 interface Props {
   slug: string;
@@ -15,6 +16,12 @@ interface Props {
 export type BlogDetailLoaderResult =
   | ApiResponse<BlogEntryPopulatedCommentsPopulatedFrontend>
   | ApiResponse<BlogEntryFrontendWithAuthor>;
+
+const logger = createServerLogger({
+  component: "BlogDetailLoader",
+  operation: "public.blog.detail_loader",
+  surface: "server_loader",
+});
 
 const fetchBlogDetail = async ({
   slug,
@@ -63,7 +70,11 @@ export async function BlogDetailLoader({ slug, showComments = false }: Props) {
       );
     }
   } catch (error) {
-    console.error("Error in BlogDetailLoader:", error);
+    logger.error("loader.public.blog_detail.failed", {
+      error,
+      slug,
+      showComments,
+    });
     throw error;
   }
 }

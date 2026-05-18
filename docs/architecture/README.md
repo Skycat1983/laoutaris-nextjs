@@ -12,8 +12,7 @@ reality changes.
 - [Shopify commerce](shopify-commerce.md)
 - [Rendering and data fetching](rendering-and-data-fetching.md)
 - [Monitoring and error reporting](monitoring-and-error-reporting.md)
-- Logging and redaction: planned by
-  [T-125](../tasks/T-125-define-service-client-logging-policy.md).
+- [Logging and redaction](logging-and-redaction.md)
 
 ## Update Rules
 

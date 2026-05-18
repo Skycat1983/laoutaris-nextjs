@@ -80,9 +80,16 @@ describe("CollectionsSectionLoader", () => {
     await expect(CollectionsSectionLoader()).resolves.toBeNull();
 
     expect(mockIsNextError).toHaveBeenCalledWith(expect.any(Error));
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Collections section loading failed:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.collections_section.failed",
+        component: "CollectionsSectionLoader",
+        operation: "public.collections_section.loader",
+        error: {
+          name: "Error",
+          message: "No collections found",
+        },
+      })
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(CollectionSection).not.toHaveBeenCalled();
@@ -95,9 +102,14 @@ describe("CollectionsSectionLoader", () => {
     await expect(CollectionsSectionLoader()).resolves.toBeNull();
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Collections section loading failed:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.collections_section.failed",
+        error: {
+          name: "Error",
+          message: "private section failure",
+        },
+      })
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(CollectionSection).not.toHaveBeenCalled();

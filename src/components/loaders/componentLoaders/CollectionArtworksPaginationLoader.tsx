@@ -4,6 +4,14 @@ import { ScrollableArtworkPagination } from "@/components/modules/pagination/Scr
 import { ArtworkFrontend } from "@/lib/data/types";
 import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const logger = createServerLogger({
+  component: "CollectionArtworksPaginationLoader",
+  operation: "public.collection_artworks_pagination.loader",
+  surface: "server_loader",
+});
+
 interface CollectionArtworksPaginationLoaderProps {
   slug: string;
 }
@@ -38,7 +46,10 @@ export async function CollectionArtworksPaginationLoader({
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Collection artworks pagination loading failed:", error);
+    logger.error("loader.public.collection_artworks_pagination.failed", {
+      error,
+      slug,
+    });
     return null;
   }
 }

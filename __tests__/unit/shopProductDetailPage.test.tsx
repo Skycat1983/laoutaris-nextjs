@@ -4,6 +4,10 @@ import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import { render, screen } from "@testing-library/react";
 
+jest.mock("@/components/metadata/PublicDetailJsonLd", () => ({
+  ProductStructuredData: jest.fn(() => null),
+}));
+
 jest.mock("@/lib/api/shopify/shopifyClient", () => ({
   getProductByHandle: jest.fn(),
 }));
@@ -57,8 +61,17 @@ const createArtwork = (id: string) =>
   } as never);
 
 describe("/shop/products/[productHandle]", () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it("resolves a linked original artwork through the server data service without same-app artwork fetches", async () => {
@@ -74,6 +87,32 @@ describe("/shop/products/[productHandle]", () => {
     expect(mockGetProductByHandle).toHaveBeenCalledWith("test-product");
     expect(mockGetArtworkById).toHaveBeenCalledWith(validArtworkId);
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("logs linked artwork failures through structured server logging while rendering the product", async () => {
+    mockGetProductByHandle.mockResolvedValue(
+      createProduct({ mongodbArtworkId: validArtworkId })
+    );
+    mockGetArtworkById.mockRejectedValue(new Error("private artwork failure"));
+
+    render(await ProductPage({ params: { productHandle: "test-product" } }));
+
+    expect(screen.getByText("Test Product")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /view full artwork details/i })
+    ).not.toBeInTheDocument();
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.shop_product.linked_artwork_failed",
+        route: "/shop/products/[productHandle]",
+        operation: "public.shop_product.linked_artwork",
+        productHandle: "test-product",
+        error: {
+          name: "Error",
+          message: "private artwork failure",
+        },
+      })
+    );
   });
 
   it("renders a safe contact handoff for available products instead of Add to Cart", async () => {

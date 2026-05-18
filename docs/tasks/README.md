@@ -134,7 +134,10 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-122 Lock API route logging source hygiene](T-122-lock-api-route-logging-source-hygiene.md) | Completed | Added a recursive API-v2 route source guard preventing direct route-level `console.error()`/`console.warn()` from returning after the logging migrations. |
 | [T-123 Define monitoring provider plan](T-123-define-monitoring-provider-plan.md) | Completed | Created a decision-ready monitoring/error-reporting architecture plan and environment contract before any SDK is installed. |
 | [T-124 Add public smoke GitHub Actions workflow](T-124-add-public-smoke-github-actions-workflow.md) | Completed | Added a repo-owned workflow for manual and scheduled unauthenticated public smoke checks without credentials or provider alerting. |
-| [T-125 Define service client logging policy](T-125-define-service-client-logging-policy.md) | Planned | Define the non-route production logging/redaction policy and migration inventory for service, loader, action, client, utility, and provider console calls. |
+| [T-125 Define service client logging policy](T-125-define-service-client-logging-policy.md) | Completed | Defined the non-route production logging/redaction policy and migration inventory for service, loader, action, client, utility, and provider console calls. |
+| [T-126 Migrate public loader page logging](T-126-migrate-public-loader-page-logging.md) | Completed | Migrated scoped public server loader and App Router page failures to server-only structured redacted logging with focused source hygiene. |
+| [T-127 Migrate Shopify provider service logging](T-127-migrate-shopify-provider-service-logging.md) | Completed | Migrated scoped Shopify provider/data service console failures to server-only structured redacted logging without changing product contracts. |
+| [T-128 Migrate server action session logging](T-128-migrate-server-action-session-logging.md) | Planned | Migrate scoped server action and session-helper console failures to server-only structured redacted logging without changing action or auth behavior. |
 
 ## Rules
 

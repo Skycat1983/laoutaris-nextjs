@@ -141,6 +141,24 @@ security headers, environment documentation, and actionable operational signals.
   schedule after repository variable `SMOKE_BASE_URL` is configured. This
   remains unauthenticated and does not cover credential/admin smoke, Vercel log
   inspection, rollback automation, or provider alerts.
+- T-125 added the
+  [logging and redaction architecture policy](../architecture/logging-and-redaction.md).
+  The 2026-05-18 non-route source inventory found 86 direct
+  `console.error()`/`console.warn()` calls across 66 files outside API-v2 route
+  handlers and the structured logger sink. T-126 completed the first public
+  loader/page implementation slice; provider SDK installation and alert
+  automation remain blocked on owner/platform approval.
+- T-126 added `createServerLogger()` for server contexts without a request ID
+  and migrated the scoped public loader/App Router page failure paths to
+  redacted structured events. The scoped source search is clean for direct
+  `console.error()`/`console.warn()` calls.
+- T-127 migrated the scoped Shopify provider/data service failure paths to
+  requestless structured server logging. Storefront HTTP/GraphQL/fetch
+  failures, malformed featured-artwork metafields, and linked-product fan-out
+  failures now log safe provider operation metadata, coarse status categories,
+  public handles/IDs, and normalized errors without raw provider payloads.
+  Server actions/session helpers, client components, admin dashboard clients,
+  shared fetcher/client reporting, and utility/helper warnings remain separate.
 - A-010 completed the performance, SEO, and accessibility audit. It found all
   public routes still build as dynamic because of global root layout and
   middleware request-time work, production metadata/discovery files are missing,
@@ -257,7 +275,8 @@ security headers, environment documentation, and actionable operational signals.
   a real value and rotate it if needed.
 - Tighten the remaining broad CSP policy with production allowlists and decide
   whether any route-level dynamic CORS policy is needed.
-- Define production logging and redaction policy.
+- Migrate remaining non-route direct `console.error()`/`console.warn()` calls
+  in policy-aligned slices, starting with public loader/page logging in T-126.
 - Gate or remove debug logs that currently pollute tests, builds, SSR, and shop
   flows.
 - Standardize public-safe API exception responses with internal redacted
@@ -802,21 +821,53 @@ npm run lint
   inventory non-route direct `console.error()`/`console.warn()` calls and define
   the service, loader, action, client, utility, and provider-client logging and
   redaction policy before broad implementation cleanup.
+- 2026-05-18: Completed T-125 by adding the durable logging/redaction
+  architecture policy, recording the non-route direct console inventory, and
+  defining allowed console use, server/client logging contracts, redaction
+  rules, request-context expectations, and migration order. The first
+  implementation slice is T-126 for public server loaders and App Router pages.
+- 2026-05-18: Completed T-126 by adding a requestless server structured logger
+  and migrating scoped public page/loader failure paths to redacted structured
+  events while preserving redirects, null fallbacks, thrown errors, and
+  user-facing shop loader copy. Focused source hygiene now covers the T-126
+  file list; broader non-route `console.error()`/`console.warn()` cleanup
+  remains staged by the T-125 migration order.
+- 2026-05-18: Prepared T-127 as the next owner-independent logging cleanup
+  slice for Shopify provider/data services. It should migrate scoped Shopify
+  client and product service logs to structured redacted server events without
+  changing Shopify DTOs, cache policy, or public shop contracts.
+- 2026-05-18: Completed T-127 by routing scoped Shopify provider/data service
+  failures through `createServerLogger()`. Focused source hygiene now covers
+  `shopifyClient`, `getArtworkShopProducts`, and `getShopProductList`; product
+  DTOs, Storefront cache policy, public-safe wrapper errors, linked-product
+  skip/null behavior, product-list metadata, and filter behavior were
+  preserved. Server action/session helper logging, client/admin reporting,
+  shared fetcher/client reporting, and utility/helper warning cleanup remain
+  separate.
+- 2026-05-18: Prepared T-128 as the next owner-independent server-side logging
+  cleanup slice for `submitSubscription`, `updateUserFavourites`,
+  `updateUserWatchlist`, and `getUserFromSession`. It should preserve action
+  return contracts, saved-item mutation/revalidation behavior, and
+  development-only test-header session semantics.
 
 ## Next Agent Action
 
-Assign T-125 to define the lower-level service/client logging policy and
-inventory. Use the T-123 monitoring architecture plan to obtain an
-owner/platform provider decision or explicit no-provider interim policy before
-installing any SDK, adding `instrumentation.ts`, or wiring provider alerts.
+Use the T-123 monitoring architecture plan to obtain an owner/platform provider
+decision or explicit no-provider interim policy before installing any SDK,
+adding `instrumentation.ts`, or wiring provider alerts. If continuing the
+non-route logging migration before provider selection, assign
+[T-128](../tasks/T-128-migrate-server-action-session-logging.md) next. Keep
+client reporting, admin dashboard logging, shared fetcher/client reporting, and
+utility/helper warning cleanup separate.
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner-approved completion of the incident-response `TBD` owner matrix, and
-broad implementation cleanup separate. T-122, T-123, and T-124 are complete and
-should not be reassigned unless their source-hygiene, documentation, or
-workflow contracts regress.
+broad remaining implementation cleanup separate. T-122, T-123, T-124, T-125,
+T-126, and T-127 are complete and should not be reassigned unless their
+source-hygiene, documentation, policy, workflow, or structured logging contracts
+regress.
 
-Keep Vercel project-setting ownership, CI/dependency-update automation, broader
-production logging/redaction policy, runtime Cloudinary cleanup or signed
-folder changes, credential rotation, OAuth callback configuration, full strict
-CSP allowlist design, dynamic per-origin CORS, HSTS rollout, build-time live
+Keep Vercel project-setting ownership, CI/dependency-update automation,
+provider-specific monitoring, runtime Cloudinary cleanup or signed folder
+changes, credential rotation, OAuth callback configuration, full strict CSP
+allowlist design, dynamic per-origin CORS, HSTS rollout, build-time live
 MongoDB coupling, and the Next/PostCSS owner choice separate.

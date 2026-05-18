@@ -132,6 +132,10 @@ production while preserving MongoDB as the archive source of truth.
   only `cache: "no-store"` and non-development reads use only
   `next.revalidate: 3600`; product transforms, request bodies, checkout, and
   product detail UI were not changed.
+- T-127 migrated scoped Shopify provider/data service failure logging to
+  structured redacted server events without changing Shopify product DTOs,
+  Storefront cache policy, linked-product fallback behavior, product-list
+  metadata, filters, checkout behavior, or product detail UI.
 
 ## Backlog
 
@@ -353,13 +357,23 @@ Add targeted tests as shop behavior is hardened.
   Shopify ID normalization, fetch behavior, client fetcher contracts, checkout,
   product detail UI, pagination, sorting, and Shopify validation behavior were
   preserved.
+- 2026-05-18: Prepared T-127 as the Shopify provider/data service logging
+  migration. It should replace scoped direct `console.error()` calls in the
+  Storefront client and product resolver services with structured redacted
+  server events while preserving product DTOs, cache policy, linked product
+  fallback behavior, and public shop contracts.
+- 2026-05-18: Completed T-127; scoped Shopify provider/data service failures
+  now use structured redacted server events for Storefront HTTP/GraphQL/fetch
+  failures, malformed featured-artwork metafields, and linked product fan-out
+  failures. The slice preserved product DTOs, Storefront cache policy,
+  public-safe wrapper errors, linked product skip/null behavior, product-list
+  metadata, filters, checkout behavior, and product detail UI.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff,
-commerce assurance copy alignment, remaining product-detail contract coverage,
-product pagination, or server-side sorting. Keep those separate unless
-explicitly assigned.
+Choose the next Shopify backlog slice from checkout handoff, commerce assurance
+copy alignment, remaining product-detail contract coverage, product pagination,
+or server-side sorting. Keep those separate unless explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

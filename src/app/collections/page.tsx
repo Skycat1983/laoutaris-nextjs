@@ -1,7 +1,14 @@
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
+const logger = createServerLogger({
+  route: "/collections",
+  operation: "public.collections.default_redirect",
+  surface: "public_page",
+});
 
 export default async function Collections() {
   try {
@@ -23,7 +30,7 @@ export default async function Collections() {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Error in collections default path:", error);
+    logger.error("page.public.collections_redirect.failed", { error });
     throw error; // Let Next.js error boundary handle it
   }
 }

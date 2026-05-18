@@ -102,9 +102,18 @@ describe("CollectionArtworkLoader", () => {
     ).resolves.toBeNull();
 
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Collection artwork loading failed:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.collection_artwork.failed",
+        component: "CollectionArtworkLoader",
+        operation: "public.collection_artwork.loader",
+        slug: "paintings",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "Failed to fetch collection artwork",
+        },
+      })
     );
     expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
   });

@@ -255,9 +255,23 @@ describe("getShopProductList", () => {
         totalProducts: 1,
       },
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Shop products service - Failed to fetch product 402:",
-      expect.any(Error)
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+    expect(payload).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "service.shopify.product_fetch.failed",
+        surface: "data_service",
+        operation: "shopify.product_list",
+        provider: "shopify",
+        shopifyOperation: "getProductById",
+        statusCategory: "product_fanout_failed",
+        publicProductId: "402",
+        error: {
+          name: "Error",
+          message: "private Shopify failure",
+        },
+      })
     );
   });
 });

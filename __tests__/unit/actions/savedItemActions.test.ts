@@ -52,6 +52,9 @@ type SavedItemActionCase = {
   addArtworkUpdate: Record<string, Record<string, string>>;
   removeUserUpdate: Record<string, Record<string, string>>;
   removeArtworkUpdate: Record<string, Record<string, string>>;
+  incompleteEvent: string;
+  failureEvent: string;
+  operation: string;
 };
 
 const mockGetUserIdFromSession =
@@ -105,6 +108,9 @@ const actionCases: SavedItemActionCase[] = [
     addArtworkUpdate: { $addToSet: { favourited: userId } },
     removeUserUpdate: { $pull: { favourites: artworkId } },
     removeArtworkUpdate: { $pull: { favourited: userId } },
+    incompleteEvent: "action.saved_item.favourites.update_incomplete",
+    failureEvent: "action.saved_item.favourites.failed",
+    operation: "saved_item.favourites.update",
   },
   {
     name: "watchlist",
@@ -130,6 +136,9 @@ const actionCases: SavedItemActionCase[] = [
     addArtworkUpdate: { $addToSet: { watcherlist: userId } },
     removeUserUpdate: { $pull: { watchlist: artworkId } },
     removeArtworkUpdate: { $pull: { watcherlist: userId } },
+    incompleteEvent: "action.saved_item.watchlist.update_incomplete",
+    failureEvent: "action.saved_item.watchlist.failed",
+    operation: "saved_item.watchlist.update",
   },
 ];
 
@@ -181,10 +190,19 @@ const expectRevalidatedPaths = (actionCase: SavedItemActionCase) => {
 };
 
 describe("saved item server actions", () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
     mockGetUserIdFromSession.mockResolvedValue(userId);
     mockDbConnect.mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it.each(actionCases)(
@@ -346,6 +364,68 @@ describe("saved item server actions", () => {
         message: actionCase.failureMessage,
         [actionCase.stateKey]: false,
       });
+
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+        expect.objectContaining({
+          level: "error",
+          event: actionCase.incompleteEvent,
+          operation: actionCase.operation,
+          surface: "server_action",
+          statusCategory: "mutation_incomplete",
+          userUpdated: false,
+          artworkUpdated: true,
+        })
+      );
+      expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(userId);
+      expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
+        artworkId
+      );
+    }
+  );
+
+  it.each(actionCases)(
+    "logs a redacted structured failure for unexpected $name errors",
+    async (actionCase) => {
+      mockSavedMembership(actionCase, false);
+      mockUserFindByIdAndUpdate.mockRejectedValue(
+        new Error(
+          `write failed for ${userId} ${artworkId} private@example.com`
+        )
+      );
+
+      const result = await actionCase.callWithFalseState(
+        createFormData(artworkId)
+      );
+
+      expect(mockRevalidatePath).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        success: false,
+        message: "Internal Server Error",
+        [actionCase.stateKey]: false,
+      });
+
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+        expect.objectContaining({
+          level: "error",
+          event: actionCase.failureEvent,
+          operation: actionCase.operation,
+          surface: "server_action",
+          statusCategory: "unexpected_error",
+          error: {
+            name: "Error",
+            message: expect.stringContaining("Saved item"),
+          },
+        })
+      );
+      expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(userId);
+      expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
+        artworkId
+      );
+      expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
+        "private@example.com"
+      );
     }
   );
 });

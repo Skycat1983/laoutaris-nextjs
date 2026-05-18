@@ -4,6 +4,12 @@ import { shopifyProductIdToGid } from "@/lib/api/shopify/productIds";
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const artworkShopProductsLogger = createServerLogger({
+  surface: "data_service",
+  operation: "shopify.artwork_shop_products",
+});
 
 export type ArtworkShopProducts = {
   original: SimpleProduct | null;
@@ -21,6 +27,11 @@ const isAvailableProduct = (
   product: SimpleProduct | null
 ): product is SimpleProduct => product !== null && product.availableForSale;
 
+const getErrorForLog = (error: unknown) =>
+  error instanceof Error
+    ? error
+    : new Error("Unknown Shopify linked product error");
+
 const getLinkedProduct = async (
   link: ShopifyProductLink
 ): Promise<SimpleProduct | null> => {
@@ -34,9 +45,16 @@ const getLinkedProduct = async (
     const product = await getProductById(gid);
     return isAvailableProduct(product) ? product : null;
   } catch (error) {
-    console.error(
-      `Artwork shop products service - Failed to fetch product ${link.productId}:`,
-      error
+    artworkShopProductsLogger.error(
+      "service.shopify.artwork_product_fetch.failed",
+      {
+        provider: "shopify",
+        shopifyOperation: "getProductById",
+        statusCategory: "linked_product_fetch_failed",
+        publicProductId: link.productId,
+        productLinkType: link.type,
+        error: getErrorForLog(error),
+      }
     );
     return null;
   }

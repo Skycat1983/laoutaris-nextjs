@@ -3,6 +3,14 @@
 import { BiographySection } from "@/components/sections/BiographySection";
 import { getArticleList } from "@/lib/data/services/getArticleList";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const logger = createServerLogger({
+  component: "BiographySectionLoader",
+  operation: "public.biography_section.loader",
+  surface: "server_loader",
+});
+
 // import { HeroLayout as BiographySection } from "@/components/sections/BiographySectionVariations";
 export async function BiographySectionLoader() {
   try {
@@ -19,7 +27,7 @@ export async function BiographySectionLoader() {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Biography section loading failed:", error);
+    logger.error("loader.public.biography_section.failed", { error });
     return null;
   }
 }

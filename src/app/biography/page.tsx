@@ -1,7 +1,14 @@
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
+const logger = createServerLogger({
+  route: "/biography",
+  operation: "public.biography.default_redirect",
+  surface: "public_page",
+});
 
 export default async function BiographyPage() {
   try {
@@ -18,7 +25,7 @@ export default async function BiographyPage() {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Error in biography default path:", error);
+    logger.error("page.public.biography_redirect.failed", { error });
     throw error; //  Next.js error boundary to handle it
   }
 }

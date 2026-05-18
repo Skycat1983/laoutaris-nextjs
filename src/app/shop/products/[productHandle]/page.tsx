@@ -10,11 +10,17 @@ import {
   buildProductDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+import { createServerLogger } from "@/lib/observability/logger";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
+
+const logger = createServerLogger({
+  route: "/shop/products/[productHandle]",
+  surface: "public_page",
+});
 
 type PageProps = {
   params: {
@@ -44,22 +50,31 @@ const fetchArtworkIfLinked = async (
   if (!product.mongodbArtworkId) return null;
 
   try {
-    return getArtworkById(product.mongodbArtworkId);
+    return await getArtworkById(product.mongodbArtworkId);
   } catch (error) {
-    console.error("Error fetching linked artwork in ProductPage: ", error);
+    logger.error("page.public.shop_product.linked_artwork_failed", {
+      error,
+      productHandle: product.handle,
+      operation: "public.shop_product.linked_artwork",
+    });
     return null;
   }
 };
 
 const fetchArtworksInBook = async (
-  artworkIds: string[]
+  artworkIds: string[],
+  productHandle: string
 ): Promise<ArtworkFrontend[]> => {
   const artworks = await Promise.all(
     artworkIds.map(async (id) => {
       try {
         return await getArtworkById(id);
       } catch (error) {
-        console.error("Error fetching book artwork in ProductPage: ", error);
+        logger.error("page.public.shop_product.book_artwork_failed", {
+          error,
+          productHandle,
+          operation: "public.shop_product.book_artwork",
+        });
         return null;
       }
     })
@@ -93,7 +108,7 @@ export default async function ProductPage({ params }: PageProps) {
   const isBook = featuredArtworkIds.length > 0;
   const linkedArtwork = isBook ? null : await fetchArtworkIfLinked(product);
   const bookArtworks = isBook
-    ? await fetchArtworksInBook(featuredArtworkIds)
+    ? await fetchArtworksInBook(featuredArtworkIds, product.handle)
     : [];
 
   return (

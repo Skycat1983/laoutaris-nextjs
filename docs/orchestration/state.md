@@ -4,12 +4,33 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-125 is prepared as the next owner-independent observability slice:
+T-128 is prepared as the next owner-independent observability implementation
+slice:
+[Migrate server action session logging](../tasks/T-128-migrate-server-action-session-logging.md).
+It should migrate scoped subscription, saved-item, and development test-header
+session helper `console.error()` calls to structured redacted server events
+while preserving public action return values, saved-item mutation/revalidation
+behavior, and development-only test-header session semantics.
+
+T-127 is complete:
+[Migrate Shopify provider service logging](../tasks/T-127-migrate-shopify-provider-service-logging.md).
+It migrated scoped Shopify provider and product service `console.error()` calls
+to structured redacted server events while preserving Shopify DTOs, Storefront
+cache policy, partial fan-out behavior, and public shop contracts.
+
+T-126 is complete:
+[Migrate public loader page logging](../tasks/T-126-migrate-public-loader-page-logging.md).
+It migrated the first public server loader and App Router page `console.error()`
+slice to the T-125 logging/redaction policy while preserving current fallback
+UI, redirects, and route rendering/cache behavior.
+
+T-125 is complete:
 [Define service client logging policy](../tasks/T-125-define-service-client-logging-policy.md).
-It should inventory non-route direct `console.error()`/`console.warn()` calls
-and define the production logging/redaction policy for services, loaders,
-server actions, client components, utilities, and provider clients before broad
-implementation cleanup is assigned.
+It added the durable
+[logging and redaction architecture policy](../architecture/logging-and-redaction.md),
+recorded the 2026-05-18 non-route direct `console.error()`/`console.warn()`
+inventory, and grouped 86 calls across 66 files into migration surfaces for
+future implementation tasks.
 
 T-124 is complete:
 [Add public smoke GitHub Actions workflow](../tasks/T-124-add-public-smoke-github-actions-workflow.md).
@@ -300,7 +321,10 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-125 service/client logging policy task is prepared and ready to assign.
+T-128 server action/session helper logging migration task is prepared and ready to assign.
+T-127 Shopify provider service logging migration task is complete.
+T-126 public loader/page logging migration task is complete.
+T-125 service/client logging policy task is complete.
 T-124 public smoke GitHub Actions workflow task is complete.
 T-123 monitoring provider plan task is complete.
 T-122 API route logging source-hygiene task is complete.
@@ -372,8 +396,14 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-125 is prepared and ready to assign: define the non-route production
-  logging/redaction policy and migration inventory.
+- T-128 is prepared and ready to assign: migrate scoped server action and
+  session-helper logging to structured redacted server events.
+- T-127 is complete: scoped Shopify provider/data service logging is migrated
+  to structured redacted server events.
+- T-126 is complete: the first public server loader/page console-error slice is
+  migrated to the T-125 logging/redaction policy.
+- T-125 is complete: the non-route production logging/redaction policy and
+  migration inventory are documented.
 - T-124 is complete: GitHub Actions can run manual and scheduled
   unauthenticated public smoke checks once repository variables are configured.
 - T-123 is complete: the monitoring/error-reporting architecture plan and
@@ -1019,12 +1049,12 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-125-define-service-client-logging-policy.md
+/task effort: high details: docs/tasks/T-128-migrate-server-action-session-logging.md
 ```
 
-After T-125 is completed, choose provider-specific SDK/instrumentation only if
+After T-128 is completed, choose provider-specific SDK/instrumentation only if
 owner/platform approval exists for the T-123 provider decision and environment
-contract. Otherwise choose the first logging implementation slice from T-125,
+contract. Otherwise choose the next logging implementation slice from T-125,
 incident owner-matrix completion, A-011 admin content operations, A-017
 search/navigation discovery, the next Cloudinary follow-up from T-101, or
 another owner-independent implementation slice from reconciled findings.
@@ -1037,8 +1067,8 @@ complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
-T-118, T-119, T-120, T-121, and T-122 are complete and should not be reassigned
-unless a regression is opened.
+T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, and T-127 are
+complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

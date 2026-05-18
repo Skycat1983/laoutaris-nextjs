@@ -84,13 +84,20 @@ describe("/biography page", () => {
 
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in biography default path:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.biography_redirect.failed",
+        route: "/biography",
+        operation: "public.biography.default_redirect",
+        error: {
+          name: "Error",
+          message: "No biography articles found",
+        },
+      })
     );
   });
 
-  it("preserves the logged error behavior when navigation loading fails", async () => {
+  it("logs a structured error when navigation loading fails", async () => {
     const error = new Error("navigation failed");
     mockGetArticleNavigationList.mockRejectedValue(error);
 
@@ -98,9 +105,14 @@ describe("/biography page", () => {
 
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in biography default path:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.biography_redirect.failed",
+        error: {
+          name: "Error",
+          message: "navigation failed",
+        },
+      })
     );
   });
 });

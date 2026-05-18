@@ -105,7 +105,7 @@ describe("getUserFromSession development test headers", () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
-  it("keeps the lookup failure console.error while falling back to a user role", async () => {
+  it("logs a redacted structured lookup failure while falling back to a user role", async () => {
     const lookupError = new Error("lookup failed");
     mockExec.mockRejectedValue(lookupError);
 
@@ -118,9 +118,26 @@ describe("getUserFromSession development test headers", () => {
       role: "user",
     });
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching test user:",
-      lookupError
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "session.test_header_user.lookup_failed",
+        operation: "session.test_header_user_lookup",
+        surface: "session_helper",
+        statusCategory: "development_test_user_lookup_failed",
+        testHeaderType: "user",
+        error: {
+          name: "Error",
+          message: "Development test user lookup failed",
+        },
+      })
+    );
+    expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
+      "failing-user-id"
+    );
+    expect(JSON.stringify(consoleErrorSpy.mock.calls)).not.toContain(
+      "lookup failed"
     );
     expect(consoleLogSpy).not.toHaveBeenCalled();
     expect(mockGetServerSession).not.toHaveBeenCalled();
@@ -181,9 +198,10 @@ describe("getUserFromSession development test headers", () => {
 });
 
 describe("session source hygiene", () => {
-  it("keeps getUserFromSession free of direct console.log debugging", () => {
+  it("keeps getUserFromSession free of direct console debugging", () => {
     const source = readRepoFile("src/lib/session/getUserFromSession.ts");
 
     expect(source).not.toMatch(/console\.log\s*\(/);
+    expect(source).not.toMatch(/console\.(error|warn)\s*\(/);
   });
 });

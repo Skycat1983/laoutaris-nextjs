@@ -325,8 +325,12 @@ refactoring without turning every change into a manual QA pass.
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
   verification.
-- Reduce expected test/build noise by gating debug logs and expected
-  error-path logging.
+- Reduce expected test/build noise by migrating remaining non-route direct
+  `console.error()`/`console.warn()` calls in policy-aligned slices, starting
+  with T-126 public loader/page logging. T-127 completed the scoped Shopify
+  provider/data service slice. T-128 is prepared for server actions/session
+  helpers; client/admin reporting, shared fetcher/client reporting, and
+  utility/helper warnings remain separate.
 - Add CI documentation after the chosen checks are stable.
 - Track residual production and dev-only dependency advisories after T-011 so
   future audits can distinguish accepted residual risk from newly introduced
@@ -1319,16 +1323,38 @@ npm run lint
   non-route direct `console.error()`/`console.warn()` calls. Verification should
   stay to targeted source inventory and `git diff --check`; source-hygiene
   enforcement belongs to later implementation slices once categories are set.
+- 2026-05-18: Completed T-125 as a policy/inventory task. The logging/redaction
+  architecture doc records 86 direct non-route `console.error()`/
+  `console.warn()` calls across 66 files, grouped by migration surface. T-126 is
+  prepared as the first source-hygiene implementation slice for public server
+  loaders and App Router pages.
+- 2026-05-18: Completed T-126 by extending focused logger/page/loader tests for
+  structured redacted server events and preserved fallback behavior, plus a
+  source-hygiene guard for the scoped public loader/App Router page file list.
+- 2026-05-18: Prepared T-127 with focused coverage expectations for Shopify
+  provider/data service structured logging, redaction, preserved product DTOs,
+  preserved partial fan-out behavior, and source hygiene for the scoped files.
+- 2026-05-18: Completed T-127 by adding focused Shopify provider/data service
+  structured logging assertions and
+  `shopifyProviderServiceLoggingSourceHygiene.test.ts`. Focused Jest, scoped
+  source search, and `git diff --check` passed.
+- 2026-05-18: Prepared T-128 with focused coverage expectations for server
+  action/session-helper structured logging, preserved action return contracts,
+  preserved saved-item mutation/revalidation behavior, preserved development
+  test-header semantics, and scoped source hygiene.
 
 ## Next Agent Action
 
-Assign T-125 if the next quality contribution remains observability policy and
-inventory. After that, choose from monitoring provider smoke coverage or other
-active quality backlog items once the owner/platform provider decision is
-available. Keep broader static/ISR migration separate from the completed T-115
-Shopify fetch-option cleanup, the docs-only T-116 runbook work, and the
-completed T-117 through T-124 observability documentation, logging,
-source-hygiene, and public-smoke workflow tasks.
+Choose from monitoring provider smoke coverage or other active quality backlog
+items once the owner/platform provider decision is available. If continuing the
+non-route logging migration first, add focused coverage for the next
+T-125-defined category by assigning
+[T-128](../tasks/T-128-migrate-server-action-session-logging.md). Keep broader
+static/ISR migration separate from the
+completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
+and the completed T-117 through T-127 observability documentation, logging,
+source-hygiene, public-smoke workflow, policy, public loader/page migration,
+and Shopify provider/data service migration tasks.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
@@ -1336,8 +1362,8 @@ T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
 Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094,
 T-095, T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105,
 T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116,
-T-117, T-118, T-119, T-120, T-121, T-122, T-123, and T-124 are complete; do
-not reassign them unless a regression is opened.
+T-117, T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, and
+T-127 are complete; do not reassign them unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

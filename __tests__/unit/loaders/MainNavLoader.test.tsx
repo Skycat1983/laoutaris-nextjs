@@ -130,14 +130,21 @@ describe("MainNavLoader", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("preserves the existing logged failure behavior when article navigation is empty", async () => {
+  it("logs a structured error when article navigation is empty", async () => {
     mockGetArticleNavigationList.mockResolvedValue(null);
 
     await expect(MainNavLoader()).resolves.toBeUndefined();
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in MainNavLoader",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.main_nav.failed",
+        component: "MainNavLoader",
+        operation: "public.main_nav.loader",
+        error: {
+          name: "Error",
+          message: "No articles found",
+        },
+      })
     );
     expect(MainNav).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();

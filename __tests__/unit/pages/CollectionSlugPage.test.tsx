@@ -101,13 +101,21 @@ describe("/collections/[slug] page", () => {
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in collection slug redirect:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.collection_slug_redirect.failed",
+        route: "/collections/[slug]",
+        operation: "public.collection_slug.redirect",
+        slug: "missing",
+        error: {
+          name: "Error",
+          message: "Collection not found",
+        },
+      })
     );
   });
 
-  it("preserves the logged error behavior when collection loading fails", async () => {
+  it("logs a structured error when collection loading fails", async () => {
     const error = new Error("navigation failed");
     mockGetCollectionNavigationItem.mockRejectedValue(error);
 
@@ -118,9 +126,15 @@ describe("/collections/[slug] page", () => {
     expect(mockRedirect).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in collection slug redirect:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "page.public.collection_slug_redirect.failed",
+        slug: "paintings",
+        error: {
+          name: "Error",
+          message: "navigation failed",
+        },
+      })
     );
   });
 });

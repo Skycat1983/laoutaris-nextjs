@@ -6,10 +6,17 @@ import {
   type ShopProductListQueryInput,
 } from "@/lib/data/schemas/shopProductListQuerySchema";
 import { getShopProductList } from "@/lib/data/services/getShopProductList";
+import { createServerLogger } from "@/lib/observability/logger";
 
 interface ShopProductsLoaderProps {
   initialFilters?: ShopFiltersState;
 }
+
+const logger = createServerLogger({
+  component: "ShopProductsLoader",
+  operation: "public.shop.products_loader",
+  surface: "server_loader",
+});
 
 const filterValueToQueryArray = (value: string | undefined, allValue: string) =>
   value && value !== allValue ? [value] : [];
@@ -53,10 +60,10 @@ export const ShopProductsLoader = async ({
     const result = await getShopProductList(parsedQuery.data);
     products = result.data;
   } catch (err) {
-    console.error(
-      "Error in ShopProductsLoader in ShopProductsLoader.tsx: ",
-      err
-    );
+    logger.error("loader.public.shop_products.failed", {
+      error: err,
+      hasInitialFilters: Boolean(initialFilters),
+    });
     error = err instanceof Error ? err.message : "Failed to load products";
   }
 

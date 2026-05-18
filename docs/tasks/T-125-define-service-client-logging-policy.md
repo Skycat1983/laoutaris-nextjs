@@ -1,6 +1,6 @@
 # T-125 Define Service Client Logging Policy
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment Security And Observability](../workstreams/deployment-security-and-observability.md),
@@ -90,3 +90,22 @@ git diff --check
   workflow automation.
 - Keep this as a policy and inventory task; implementation should be assigned
   as follow-up slices after the categories are documented.
+- Completed on 2026-05-18 by adding
+  [logging and redaction](../architecture/logging-and-redaction.md).
+- The 2026-05-18 source inventory found 86 direct non-route
+  `console.error()`/`console.warn()` calls across 66 files after excluding
+  `src/app/api/v2/**` route handlers and the structured logger sink at
+  `src/lib/observability/logger.ts`.
+- The inventory is grouped by migration surface: admin dashboard clients,
+  browser components/hooks, server loaders, provider/data services, App Router
+  pages, utilities/helpers, server actions, shared fetcher, and session helper.
+- Direct console use is now documented as disallowed for production runtime
+  code outside the central structured logger sink, with explicit redaction
+  rules for user data, request data, provider data, and secrets.
+- Request-context expectations are documented: pass T-099 request IDs from API
+  route contexts when available, but lower layers must not call Next request
+  APIs only to create a request ID.
+- The first recommended implementation slice is
+  [T-126 Migrate Public Loader Page Logging](T-126-migrate-public-loader-page-logging.md).
+- Verification passed with the required inventory search and `git diff
+  --check`. No runtime code or monitoring provider configuration changed.

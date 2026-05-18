@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import {
   GET_PRODUCT_BY_HANDLE_QUERY,
   GET_PRODUCT_BY_ID_QUERY,
@@ -75,6 +77,8 @@ const mockShopifyResponse = (data: unknown) => {
 
 describe("Shopify product transforms", () => {
   const originalNodeEnv = process.env.NODE_ENV;
+  let consoleErrorSpy: jest.SpyInstance;
+  let consoleWarnSpy: jest.SpyInstance;
 
   const setNodeEnv = (value: string) => {
     Object.defineProperty(process.env, "NODE_ENV", {
@@ -87,6 +91,17 @@ describe("Shopify product transforms", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setNodeEnv(originalNodeEnv);
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
   });
 
   afterAll(() => {
@@ -485,5 +500,94 @@ describe("Shopify product transforms", () => {
         variants: [],
       })
     );
+  });
+
+  it("logs malformed featured artwork metafields without dumping the raw metafield value", async () => {
+    mockShopifyResponse({
+      product: createShopifyProduct({
+        id: "gid://shopify/Product/123456",
+        handle: "book-product",
+        metafields: [
+          {
+            namespace: "custom",
+            key: "featured_artwork_ids",
+            value: "{\"raw\":\"provider payload\"",
+            type: "json",
+          },
+        ],
+      }),
+    });
+
+    const result = await getProductById("gid://shopify/Product/123456");
+
+    expect(result?.featuredArtworkIds).toBeUndefined();
+    expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
+    const payload = JSON.parse(consoleWarnSpy.mock.calls[0][0]);
+    expect(payload).toEqual(
+      expect.objectContaining({
+        level: "warn",
+        event: "provider.shopify.metafield_parse.failed",
+        surface: "shopify_provider",
+        operation: "shopify.product_transform",
+        provider: "shopify",
+        shopifyOperation: "transformProduct",
+        metafieldKey: "featured_artwork_ids",
+        publicProductId: "123456",
+        publicProductHandle: "book-product",
+      })
+    );
+    expect(consoleWarnSpy.mock.calls[0][0]).not.toContain("provider payload");
+  });
+
+  it("logs GraphQL failures with a count and without raw provider error arrays", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        errors: [
+          {
+            message: "private provider detail",
+            extensions: {
+              token: "secret-token",
+            },
+          },
+        ],
+      }),
+    });
+
+    await expect(getProducts()).rejects.toThrow(
+      "Failed to fetch products from Shopify"
+    );
+
+    expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
+    const payloads = consoleErrorSpy.mock.calls.map(([line]) => JSON.parse(line));
+    expect(payloads[0]).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "provider.shopify.storefront.graphql_failed",
+        surface: "shopify_provider",
+        operation: "shopify.storefront_api",
+        provider: "shopify",
+        shopifyOperation: "getProducts",
+        statusCategory: "graphql_error",
+        graphqlErrorCount: 1,
+      })
+    );
+    expect(payloads[1]).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "provider.shopify.product_list.failed",
+        provider: "shopify",
+        shopifyOperation: "getProducts",
+        statusCategory: "request_failed",
+        error: {
+          name: "Error",
+          message: "GraphQL errors in shopifyFetch",
+        },
+      })
+    );
+    expect(consoleErrorSpy.mock.calls.join("\n")).not.toContain(
+      "private provider detail"
+    );
+    expect(consoleErrorSpy.mock.calls.join("\n")).not.toContain("secret-token");
   });
 });

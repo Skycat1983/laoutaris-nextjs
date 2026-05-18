@@ -7,11 +7,36 @@ import {
   ShopifyProduct,
   SimpleProduct,
 } from "@/lib/data/types/shopify";
+import { createServerLogger } from "@/lib/observability/logger";
 import {
   GET_PRODUCTS_QUERY,
   GET_PRODUCT_BY_HANDLE_QUERY,
   GET_PRODUCT_BY_ID_QUERY,
 } from "./queries";
+
+const shopifyProviderLogger = createServerLogger({
+  surface: "shopify_provider",
+  operation: "shopify.storefront_api",
+});
+
+const shopifyTransformLogger = createServerLogger({
+  surface: "shopify_provider",
+  operation: "shopify.product_transform",
+});
+
+const getStatusCategory = (status: number) =>
+  status >= 100 && status < 600 ? `${Math.floor(status / 100)}xx` : "unknown";
+
+const getPublicProductIdFromGid = (id: string) =>
+  id.match(/^gid:\/\/shopify\/Product\/(\d+)$/)?.[1];
+
+const getErrorForLog = (error: unknown) =>
+  error instanceof Error ? error : new Error("Unknown Shopify provider error");
+
+const getGraphqlErrorCount = (errors: unknown) =>
+  Array.isArray(errors) ? errors.length : 1;
+
+class LoggedShopifyFetchError extends Error {}
 
 /**
  * Make a GraphQL request to Shopify Storefront API
@@ -24,9 +49,15 @@ const getShopifyFetchCachePolicy = () =>
 const shopifyFetch = async <T>({
   query,
   variables = {},
+  shopifyOperation,
+  publicProductId,
+  publicProductHandle,
 }: {
   query: string;
   variables?: Record<string, unknown>;
+  shopifyOperation: string;
+  publicProductId?: string;
+  publicProductHandle?: string;
 }): Promise<T> => {
   try {
     const response = await fetch(SHOPIFY_GRAPHQL_URL, {
@@ -43,7 +74,15 @@ const shopifyFetch = async <T>({
     });
 
     if (!response.ok) {
-      throw new Error(
+      shopifyProviderLogger.error("provider.shopify.storefront.http_failed", {
+        provider: "shopify",
+        shopifyOperation,
+        status: response.status,
+        statusCategory: getStatusCategory(response.status),
+        publicProductId,
+        publicProductHandle,
+      });
+      throw new LoggedShopifyFetchError(
         `Shopify API error in shopifyFetch: ${response.status} ${response.statusText}`
       );
     }
@@ -51,15 +90,29 @@ const shopifyFetch = async <T>({
     const json = await response.json();
 
     if (json.errors) {
-      console.error("GraphQL Errors in shopifyFetch: ", json.errors);
-      throw new Error(
-        `GraphQL errors in shopifyFetch: ${JSON.stringify(json.errors)}`
-      );
+      shopifyProviderLogger.error("provider.shopify.storefront.graphql_failed", {
+        provider: "shopify",
+        shopifyOperation,
+        statusCategory: "graphql_error",
+        graphqlErrorCount: getGraphqlErrorCount(json.errors),
+        publicProductId,
+        publicProductHandle,
+      });
+      throw new LoggedShopifyFetchError("GraphQL errors in shopifyFetch");
     }
 
     return json.data as T;
   } catch (error) {
-    console.error("Error in shopifyFetch: ", error);
+    if (!(error instanceof LoggedShopifyFetchError)) {
+      shopifyProviderLogger.error("provider.shopify.storefront.fetch_failed", {
+        provider: "shopify",
+        shopifyOperation,
+        statusCategory: "request_failed",
+        publicProductId,
+        publicProductHandle,
+        error: getErrorForLog(error),
+      });
+    }
     throw error;
   }
 };
@@ -109,10 +162,13 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
     try {
       featuredArtworkIds = JSON.parse(featuredArtworkIdsRaw);
     } catch {
-      console.error(
-        "Failed to parse featured_artwork_ids in transformProduct: ",
-        featuredArtworkIdsRaw
-      );
+      shopifyTransformLogger.warn("provider.shopify.metafield_parse.failed", {
+        provider: "shopify",
+        shopifyOperation: "transformProduct",
+        metafieldKey: "featured_artwork_ids",
+        publicProductId: getPublicProductIdFromGid(product.id),
+        publicProductHandle: product.handle,
+      });
     }
   }
 
@@ -163,6 +219,7 @@ export const getProducts = async (
     const data = await shopifyFetch<ShopifyProductsResponse>({
       query: GET_PRODUCTS_QUERY,
       variables: { first, after },
+      shopifyOperation: "getProducts",
     });
 
     const products = data.products.edges.map(({ node }) =>
@@ -177,7 +234,12 @@ export const getProducts = async (
       },
     };
   } catch (error) {
-    console.error("Error fetching products in getProducts: ", error);
+    shopifyProviderLogger.error("provider.shopify.product_list.failed", {
+      provider: "shopify",
+      shopifyOperation: "getProducts",
+      statusCategory: "request_failed",
+      error: getErrorForLog(error),
+    });
     throw new Error("Failed to fetch products from Shopify");
   }
 };
@@ -194,6 +256,8 @@ export const getProductByHandle = async (
       {
         query: GET_PRODUCT_BY_HANDLE_QUERY,
         variables: { handle },
+        shopifyOperation: "getProductByHandle",
+        publicProductHandle: handle,
       }
     );
 
@@ -203,10 +267,13 @@ export const getProductByHandle = async (
 
     return transformProduct(data.productByHandle);
   } catch (error) {
-    console.error(
-      "Error fetching product by handle in getProductByHandle: ",
-      error
-    );
+    shopifyProviderLogger.error("provider.shopify.product_by_handle.failed", {
+      provider: "shopify",
+      shopifyOperation: "getProductByHandle",
+      statusCategory: "request_failed",
+      publicProductHandle: handle,
+      error: getErrorForLog(error),
+    });
     throw new Error(`Failed to fetch product with handle: ${handle}`);
   }
 };
@@ -222,6 +289,8 @@ export const getProductById = async (
     const data = await shopifyFetch<{ product: ShopifyProduct | null }>({
       query: GET_PRODUCT_BY_ID_QUERY,
       variables: { id },
+      shopifyOperation: "getProductById",
+      publicProductId: getPublicProductIdFromGid(id),
     });
 
     if (!data.product) {
@@ -230,7 +299,13 @@ export const getProductById = async (
 
     return transformProduct(data.product);
   } catch (error) {
-    console.error("Error fetching product by ID in getProductById: ", error);
+    shopifyProviderLogger.error("provider.shopify.product_by_id.failed", {
+      provider: "shopify",
+      shopifyOperation: "getProductById",
+      statusCategory: "request_failed",
+      publicProductId: getPublicProductIdFromGid(id),
+      error: getErrorForLog(error),
+    });
     throw new Error(`Failed to fetch product with ID: ${id}`);
   }
 };

@@ -1,9 +1,16 @@
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
+const logger = createServerLogger({
+  route: "/collections/[slug]",
+  operation: "public.collection_slug.redirect",
+  surface: "public_page",
+});
 
 export default async function CollectionSlug({
   params,
@@ -29,7 +36,10 @@ export default async function CollectionSlug({
       throw error;
     }
 
-    console.error("Error in collection slug redirect:", error);
+    logger.error("page.public.collection_slug_redirect.failed", {
+      error,
+      slug: params.slug,
+    });
     throw error; // Let Next.js error boundary handle it
   }
 }

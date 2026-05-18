@@ -76,9 +76,16 @@ describe("BiographySectionLoader", () => {
     await expect(BiographySectionLoader()).resolves.toBeNull();
 
     expect(mockIsNextError).toHaveBeenCalledWith(expect.any(Error));
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Biography section loading failed:",
-      expect.any(Error)
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.biography_section.failed",
+        component: "BiographySectionLoader",
+        operation: "public.biography_section.loader",
+        error: {
+          name: "Error",
+          message: "No articles found",
+        },
+      })
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BiographySection).not.toHaveBeenCalled();
@@ -91,9 +98,14 @@ describe("BiographySectionLoader", () => {
     await expect(BiographySectionLoader()).resolves.toBeNull();
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Biography section loading failed:",
-      error
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.biography_section.failed",
+        error: {
+          name: "Error",
+          message: "private section failure",
+        },
+      })
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BiographySection).not.toHaveBeenCalled();

@@ -3,6 +3,14 @@
 import { BlogSection } from "@/components/sections/BlogSection";
 import { getBlogList } from "@/lib/data/services/getBlogList";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+
+const logger = createServerLogger({
+  component: "BlogSectionLoader",
+  operation: "public.blog_section.loader",
+  surface: "server_loader",
+});
+
 const BLOG_FETCH_CONFIG = {
   sortby: "latest" as const,
   limit: 4,
@@ -22,7 +30,7 @@ export async function BlogSectionLoader() {
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Blog section loading failed:", error);
+    logger.error("loader.public.blog_section.failed", { error });
     return null;
   }
 }
