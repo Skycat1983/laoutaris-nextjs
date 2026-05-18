@@ -114,39 +114,47 @@ export const CommentCard = ({
             {isEditing ? (
               <>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
+                  aria-label="Cancel editing comment"
                   onClick={() => setIsEditing(false)}
                   disabled={isLoading}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4" aria-hidden="true" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
+                  aria-label="Save updated comment"
                   onClick={handleEdit}
                   disabled={isLoading}
                 >
-                  <Check className="h-4 w-4" />
+                  <Check className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </>
             ) : (
               <>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
+                  aria-label="Edit comment"
                   onClick={handleEdit}
                   disabled={isLoading}
                 >
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
                 </Button>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
+                  aria-label="Delete comment"
                   onClick={handleDelete}
                   disabled={isLoading}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </>
             )}

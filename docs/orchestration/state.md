@@ -4,21 +4,32 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-105 is prepared as the next implementation slice from F-062:
-[Fix public comment action accessibility](../tasks/T-105-fix-public-comment-action-accessibility.md).
-It should convert owner-only comment edit/delete and edit-mode cancel/save icon
-actions into labelled semantic controls without changing comment mutation
-behavior.
+T-107 is prepared as the next implementation slice from F-085/R-030:
+[Add artwork and product detail metadata](../tasks/T-107-add-artwork-product-detail-metadata.md).
+It should add route-specific metadata, canonical/social previews, and
+conservative structured data for public artwork, collection-scoped artwork, and
+Shopify product detail pages without adding commerce/legal claims.
+
+T-106 is complete. It added route-specific metadata, canonical/social previews,
+and conservative `Article`/`BlogPosting` JSON-LD for public biography article
+and blog detail pages while preserving visible page behavior and route cache
+policy.
+
+T-105 is complete. It converted owner-only comment edit/delete and edit-mode
+cancel/save icon actions into labelled non-submit controls with hidden
+decorative icons while preserving comment mutation behavior. F-062 and R-015
+are resolved/mitigated for the reconciled A-016 scope.
 
 T-104 is complete. It converted public search submit, mobile search drawer
 trigger/close, mobile navigation drawer trigger/close, and unauthenticated
 favourite/watchlist controls to labelled semantic buttons. F-088 and R-031 are
-resolved; only the comment action slice of F-062 remains open.
+resolved.
 
 T-103 is complete. It replaced scaffolded root metadata with production-safe
 Joseph Laoutaris archive metadata and added baseline `robots.ts`/`sitemap.ts`
-discovery files for stable public routes. Route-specific detail metadata,
-JSON-LD, and richer structured data remain separate.
+discovery files for stable public routes. Artwork/product detail metadata,
+richer structured data, deployment smoke assertions, and route cache policy
+remain separate.
 
 T-102 is complete. It removed global root-layout DB/session work, avoided
 middleware token parsing for unprotected public routes, and recorded remaining
@@ -27,10 +38,9 @@ public routes including `/biography`, `/collections`, `/project`,
 `/project/about`, `/project/aims`, `/project/film`, and `/shop`.
 
 A-010 is complete and reconciled into F-084 through F-090, R-012/R-014/R-030/
-R-031, relevant workstreams, T-102, T-103, and T-104. Remaining
-owner-independent follow-ups include route-specific metadata/structured data,
-image tuning, landmark/heading cleanup, route-local cache/ISR policy, and
-artwork-to-shop SSR discovery.
+R-031, relevant workstreams, T-102 through T-107. Remaining owner-independent
+follow-ups include image tuning, landmark/heading cleanup, route-local
+cache/ISR policy, and artwork-to-shop SSR discovery.
 
 T-101 is complete. It documented the interim Cloudinary asset lifecycle,
 backup/restore, orphan cleanup, upload preset/cloud/folder ownership, delivery
@@ -193,7 +203,9 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-105 public comment action accessibility task is prepared and ready to assign.
+T-107 artwork/product detail metadata task is prepared and ready to assign.
+T-106 article/blog detail metadata task is complete.
+T-105 public comment action accessibility task is complete.
 T-104 public search/navigation accessibility task is complete.
 T-103 public metadata/discovery task is complete.
 T-102 public shell/auth boundary task is complete.
@@ -245,9 +257,16 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-105 is prepared and ready to assign: convert owner-only comment edit/delete
-  and edit-mode cancel/save icon actions to labelled semantic controls without
-  changing comment mutation behavior.
+- T-107 is prepared and ready to assign: add route-specific metadata,
+  canonical/social previews, and conservative structured data for public
+  artwork, collection-scoped artwork, and Shopify product detail pages.
+- T-106 is complete: public biography article and blog detail pages now have
+  route-specific metadata, canonical/social previews, and conservative
+  `Article`/`BlogPosting` JSON-LD.
+- T-105 is complete: owner-only comment edit/delete and edit-mode cancel/save
+  icon actions now use labelled non-submit controls with hidden decorative
+  icons; F-062 is resolved and R-015 is mitigated for the reconciled A-016
+  scope.
 - T-104 is complete: public search submit, search drawer trigger/close, mobile
   nav drawer trigger/close, and unauthenticated artwork intent controls now use
   semantic labelled buttons; F-088 and R-031 are resolved.
@@ -843,14 +862,15 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-105-fix-public-comment-action-accessibility.md
+/task effort: high details: docs/tasks/T-107-add-artwork-product-detail-metadata.md
 ```
 
-After T-105 is assigned or completed, choose route-specific metadata/JSON-LD
-from F-085, route-local cache/ISR policy from the T-102 build output, A-011
-admin content operations, A-017 search/navigation discovery, the next
-Cloudinary follow-up from T-101, or another owner-independent implementation
-slice from reconciled findings.
+After T-107 is assigned or completed, choose route-local cache/ISR policy from
+the T-102 build output, image tuning from F-086/F-087, landmark/heading cleanup
+from F-089, artwork-to-shop SSR discovery from F-090, A-011 admin content
+operations, A-017 search/navigation discovery, the next Cloudinary follow-up
+from T-101, or another owner-independent implementation slice from reconciled
+findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -858,7 +878,7 @@ T-087, T-088, T-089, T-090, T-091, and T-092 are complete; do not reassign
 them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
-T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, and T-104 are complete and
+T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, and T-106 are complete and
 should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,

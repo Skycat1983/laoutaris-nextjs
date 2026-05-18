@@ -265,6 +265,17 @@ refactoring without turning every change into a manual QA pass.
   route validation coverage.
 - T-098 added focused coverage for product-link verification fetcher behavior
   and admin input verification states.
+- T-105 added focused component coverage for public comment owner action
+  accessible names, non-submit button semantics, edit-mode controls, hidden
+  decorative icons, and owner-only rendering.
+- T-106 added
+  `__tests__/unit/deployment/publicDetailMetadataStructuredData.test.tsx` for
+  public biography article and blog detail metadata, canonical URLs,
+  scaffold-text absence, conservative JSON-LD, missing-content noindex
+  metadata, and source invariants.
+- T-107 is prepared with focused metadata/structured-data coverage expectations
+  for public artwork, collection-scoped artwork, and Shopify product detail
+  pages.
 
 ## Backlog
 
@@ -1116,16 +1127,29 @@ npm run lint
   modal buttons, labelled drawer trigger/close source invariants, and retired
   clickable-wrapper source hygiene. Focused Jest, lint, build, and
   `git diff --check` passed.
-- 2026-05-18: Prepared T-105 with focused accessibility/control coverage
-  expectations for owner-only comment edit/delete and edit-mode cancel/save
-  icon controls.
+- 2026-05-18: Completed T-105 by adding
+  `__tests__/unit/commentActionAccessibility.test.tsx` for owner-only comment
+  action accessible names, non-submit button semantics, edit-mode action names,
+  decorative hidden icons, and preserved owner-only rendering. Focused Jest,
+  lint, build, and `git diff --check` passed.
+- 2026-05-18: Prepared T-106 with focused metadata/structured-data coverage
+  expectations for public biography article and blog detail pages.
+- 2026-05-18: Completed T-106 by adding
+  `__tests__/unit/deployment/publicDetailMetadataStructuredData.test.tsx` for
+  route-specific metadata, canonical URLs, comment-query canonical exclusion,
+  missing-content metadata, conservative JSON-LD, and source invariants.
+  Focused Jest, lint, build, scaffold-text search, and `git diff --check`
+  passed.
+- 2026-05-18: Prepared T-107 with focused metadata/structured-data coverage
+  expectations for public artwork, collection-scoped artwork, and Shopify
+  product detail pages.
 
 ## Next Agent Action
 
-Add focused comment action accessibility coverage with T-105. After T-105,
-choose the next testing slice from the backlog with targeted coverage for
-route-local cache policy, discovery endpoint smoke checks, route-specific
-metadata, image tuning, landmark cleanup, or artwork-to-shop SSR discovery when
+Add focused artwork/product detail metadata and structured-data coverage with
+T-107. After T-107, choose the next testing slice from the backlog with
+targeted coverage for route-local cache policy, discovery endpoint smoke
+checks, image tuning, landmark cleanup, or artwork-to-shop SSR discovery when
 those implementation slices are assigned.
 
 Keep the route/fetcher parity and protected API guard inventories current when

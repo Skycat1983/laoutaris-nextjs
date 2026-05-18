@@ -1,15 +1,45 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import ArticleViewSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
+import { BiographyArticleJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
+import {
+  buildArticleDetailMetadata,
+  buildMissingPublicDetailMetadata,
+  buildUnavailablePublicDetailMetadata,
+} from "@/lib/metadata/publicDetailMetadata";
+
+type BiographySlugPageProps = {
+  params: { slug: string };
+};
+
+export async function generateMetadata({
+  params,
+}: BiographySlugPageProps): Promise<Metadata> {
+  try {
+    const article = await getArticleBySlugPopulated(params.slug);
+
+    if (!article) {
+      return buildMissingPublicDetailMetadata("Article");
+    }
+
+    return buildArticleDetailMetadata(article);
+  } catch {
+    return buildUnavailablePublicDetailMetadata("Article");
+  }
+}
 
 export default async function BiographySlugPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: BiographySlugPageProps) {
   const { slug } = params;
+
   return (
     <>
+      <Suspense fallback={null}>
+        <BiographyArticleJsonLd slug={slug} />
+      </Suspense>
       <Suspense fallback={<ArticleViewSkeleton />}>
         <ArticleLoader slug={slug} section="biography" />
       </Suspense>

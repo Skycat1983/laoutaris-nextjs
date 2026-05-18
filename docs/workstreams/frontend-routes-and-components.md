@@ -166,9 +166,15 @@ Next.js server/client component boundaries.
   drawer, and unauthenticated favourite/watchlist clickable icon or wrapper
   targets with labelled semantic buttons while preserving search URLs, drawer
   behavior, navigation links, authenticated saved-item forms, and tooltips.
-- T-105 is prepared to complete the remaining F-062 comment action accessibility
-  slice by adding labelled semantic controls for owner-only comment edit,
-  delete, cancel, and save actions.
+- T-105 completed the remaining F-062 comment action accessibility slice by
+  adding labelled non-submit controls for owner-only comment edit, delete,
+  cancel, and save actions while preserving owner checks and mutation behavior.
+- T-106 added route-specific metadata, canonical/social previews, and
+  conservative JSON-LD for public biography article and blog detail pages
+  without changing visible layout, comment-query behavior, or route cache
+  policy.
+- T-107 is prepared as the next F-085/R-030 metadata slice for public artwork,
+  collection-scoped artwork, and Shopify product detail pages.
 
 ## Backlog
 
@@ -186,8 +192,6 @@ Next.js server/client component boundaries.
   route contracts once A-002 empty-list and search metadata semantics are chosen.
 - Align any future shop pagination or server-side sorting UI with backed API
   behavior before exposing new controls.
-- Replace remaining icon-only comment actions with accessible controls when
-  that flow is refactored.
 - Define a public route rendering/cache plan that separates public layout work
   from session-only UI and moves middleware token parsing behind protected-route
   checks.
@@ -495,14 +499,29 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-18: Prepared T-105 for the remaining F-062 comment action
   accessibility slice covering owner-only comment edit/delete and edit-mode
   cancel/save icon controls.
+- 2026-05-18: Completed T-105; `CommentCard` owner-only edit/delete and
+  edit-mode cancel/save icon controls now have stable accessible names,
+  explicit non-submit button semantics, and decorative hidden icons without
+  changing owner-only rendering, edit state, loading state, or mutation
+  callbacks.
+- 2026-05-18: Prepared T-106 as the next F-085/R-030 slice for route-specific
+  public biography article and blog detail metadata, canonical/social previews,
+  and conservative article/blog structured data.
+- 2026-05-18: Completed T-106; `/biography/[slug]` and `/blog/[slug]` now
+  build route-specific title, description, canonical, Open Graph, and Twitter
+  metadata from existing public content services and render conservative
+  `Article`/`BlogPosting` JSON-LD without author, publisher, policy, sale, or
+  commerce claims.
+- 2026-05-18: Prepared T-107 as the next F-085/R-030 slice for public artwork,
+  collection-scoped artwork, and Shopify product detail metadata plus
+  conservative detail-page structured data.
 
 ## Next Agent Action
 
-Assign T-105 for the remaining comment action accessibility slice. After T-105,
-choose the next A-010 frontend slice: route-specific detail metadata/JSON-LD,
-image tuning, landmark cleanup, route-local cache/ISR policy, or
-artwork-to-shop SSR discovery. Keep these separate unless explicitly assigned
-together.
+Assign T-107 for artwork/product detail metadata. After T-107, choose the next
+A-010 frontend slice: image tuning, landmark cleanup, route-local cache/ISR
+policy, or artwork-to-shop SSR discovery. Keep these separate unless explicitly
+assigned together.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

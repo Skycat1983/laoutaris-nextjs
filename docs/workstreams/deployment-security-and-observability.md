@@ -136,6 +136,13 @@ security headers, environment documentation, and actionable operational signals.
   `robots.ts`/`sitemap.ts` discovery files using a fixed public site URL
   helper. Route-specific metadata, JSON-LD, and deployment smoke assertions for
   discovery endpoints remain separate.
+- T-106 added route-specific metadata and conservative JSON-LD for public
+  biography article and blog detail pages while keeping deployment smoke
+  automation, cache policy, and commerce/legal claims separate.
+- T-107 is prepared as the next route-specific metadata slice for public
+  artwork, collection-scoped artwork, and Shopify product detail pages. It
+  should keep deployment smoke automation, cache policy, and commerce/legal
+  claims separate.
 - T-048 completed the next route-local public-safe API response slice, scoped
   to admin read route failure bodies. Broader logging/redaction policy remains
   separate.
@@ -620,13 +627,23 @@ npm run lint
   root archive metadata, baseline crawler rules, and a stable public route
   sitemap. Deployment smoke automation for discovery endpoints remains a
   future deployment slice.
+- 2026-05-18: Prepared T-106 for public biography article and blog detail
+  metadata, canonical/social previews, and conservative structured data while
+  keeping route cache policy and smoke automation separate.
+- 2026-05-18: Completed T-106; focused tests, lint, build, scaffold-text
+  search, and `git diff --check` passed. Discovery endpoint smoke automation
+  and explicit route cache policy remain future deployment slices.
+- 2026-05-18: Prepared T-107 for public artwork and Shopify product detail
+  metadata, canonical/social previews, and conservative structured data while
+  keeping route cache policy and smoke automation separate.
 
 ## Next Agent Action
 
-Choose the next deployment/security slice from explicit route cache policy,
-discovery endpoint smoke checks, provider selection, incident-response runbook
-ownership, CI/scheduled smoke, or broader route-level logging migration. Keep
-owner/legal A-020 policy work separate.
+Support T-107 if route-specific metadata needs deployment/discovery review.
+After T-107, choose the next deployment/security slice from explicit route
+cache policy, discovery endpoint smoke checks, provider selection,
+incident-response runbook ownership, CI/scheduled smoke, or broader route-level
+logging migration. Keep owner/legal A-020 policy work separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

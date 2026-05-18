@@ -114,7 +114,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-102 Split public shell from auth work](T-102-split-public-shell-auth-work.md) | Completed | Removed global root-layout DB/session work and middleware token parsing for unprotected public routes; build now shows route-local dynamic blockers. |
 | [T-103 Add public metadata and discovery files](T-103-add-public-metadata-discovery.md) | Completed | Replaced scaffolded root metadata and added baseline robots/sitemap discovery files for stable public routes. |
 | [T-104 Fix public search and navigation accessibility](T-104-fix-public-search-navigation-accessibility.md) | Completed | Converted public search, drawer, mobile navigation, and unauthenticated artwork intent controls to semantic labelled controls. |
-| [T-105 Fix public comment action accessibility](T-105-fix-public-comment-action-accessibility.md) | Planned | Convert comment edit/save/cancel/delete icon actions to labelled semantic controls without changing comment mutation behavior. |
+| [T-105 Fix public comment action accessibility](T-105-fix-public-comment-action-accessibility.md) | Completed | Converted comment edit/save/cancel/delete icon actions to labelled semantic controls without changing comment mutation behavior. |
+| [T-106 Add article and blog detail metadata](T-106-add-article-blog-detail-metadata.md) | Completed | Added route-specific metadata, canonical/social previews, and conservative JSON-LD for public article and blog detail pages. |
+| [T-107 Add artwork and product detail metadata](T-107-add-artwork-product-detail-metadata.md) | Planned | Add route-specific metadata, canonical/social previews, and conservative JSON-LD for public artwork and Shopify product detail pages. |
 
 ## Rules
 

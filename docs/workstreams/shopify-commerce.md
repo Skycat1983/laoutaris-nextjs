@@ -122,6 +122,9 @@ production while preserving MongoDB as the archive source of truth.
 - A-010 found artwork-to-shop product discovery is still client-side on artwork
   detail pages: `ArtworkShopSection` fetches linked products in `useEffect`, so
   product links and prices are not present in initial server HTML.
+- T-107 is prepared to add conservative route-specific metadata and product
+  detail JSON-LD for `/shop/products/[productHandle]` without adding checkout,
+  offer, sale, shipping, refund, payment, or guarantee claims.
 
 ## Backlog
 
@@ -142,6 +145,9 @@ production while preserving MongoDB as the archive source of truth.
 - Render linked Shopify product summaries server-side on artwork detail pages
   so archive-to-commerce relationships are discoverable without client fetch
   waterfalls.
+- Add route-specific product detail metadata and conservative product JSON-LD
+  without implying checkout, offers, sale policies, shipping, refunds,
+  payments, or guarantees.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -312,12 +318,16 @@ Add targeted tests as shop behavior is hardened.
   Artwork detail pages should eventually render linked product summaries in
   initial server HTML; keep that separate from checkout/cart and product
   pagination/sorting work.
+- 2026-05-18: Prepared T-107 to add conservative product detail metadata and
+  JSON-LD while keeping checkout/cart, commerce assurance copy, and
+  artwork-to-shop SSR discovery separate.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff, commerce assurance
-copy alignment, server-rendered artwork-to-shop discovery, remaining
-product-detail contract coverage, product pagination, or server-side sorting.
+Support T-107 for product detail metadata. After T-107, choose the next Shopify
+backlog slice from checkout handoff, commerce assurance copy alignment,
+server-rendered artwork-to-shop discovery, remaining product-detail contract
+coverage, product pagination, or server-side sorting.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

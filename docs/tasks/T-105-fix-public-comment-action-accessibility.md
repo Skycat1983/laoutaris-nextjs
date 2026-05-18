@@ -1,6 +1,6 @@
 # T-105 Fix Public Comment Action Accessibility
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -77,5 +77,13 @@ git diff --check
 
 - Prepared after T-104 resolved F-088/R-031 and the search/navigation slice of
   F-062.
+- Completed on 2026-05-18. `CommentCard` owner edit/delete and edit-mode
+  cancel/save controls now have stable accessible names, explicit non-submit
+  button semantics, and decorative hidden Lucide icons.
+- Added `__tests__/unit/commentActionAccessibility.test.tsx` for owner-only
+  rendering, button names/types, edit-mode action names, and hidden icon
+  source independence.
+- Verification passed: focused Jest, `npm run lint`, `npm run build`, and
+  `git diff --check`.
 - Keep public policy notices, comment moderation/reporting, and retention
   expectations separate under A-020/F-075.
