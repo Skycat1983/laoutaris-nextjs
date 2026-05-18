@@ -54,16 +54,16 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
           </div>
         </div>
         <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
-          <h1 className="text-5xl font-bold font-cormorant">
+          <h2 className="text-5xl font-bold font-cormorant">
             {title}
             {/* <span className="text-neutral-500">Joseph Laoutaris</span> */}
-          </h1>
+          </h2>
           {/* <h1 className="text-neutral-500 italic text-xl py-6 fontface-decorative">
             <span>{article.summary}</span>
           </h1> */}
-          <h1 className="text-neutral-500 italic text-xl py-6">
+          <p className="text-neutral-500 italic text-xl py-6">
             <span>{article.summary}</span>
-          </h1>
+          </p>
           {/* Author info */}
           <div className="flex flex-row w-full justify-start items-center">
             <div className="h-16 w-16">
@@ -76,9 +76,9 @@ const DesktopArticleView: React.FC<ArticleProps> = ({
               />
             </div>
             <div className="flex flex-col justify-start items-start ml-4">
-              <h1 className="text-2xl font-bold font-cormorant">
+              <p className="text-2xl font-bold font-cormorant">
                 Heron Laoutaris
-              </h1>
+              </p>
               <h2 className="text-neutral-500">Grandson</h2>
             </div>
           </div>

@@ -122,9 +122,10 @@ production while preserving MongoDB as the archive source of truth.
 - A-010 found artwork-to-shop product discovery is still client-side on artwork
   detail pages: `ArtworkShopSection` fetches linked products in `useEffect`, so
   product links and prices are not present in initial server HTML.
-- T-107 is prepared to add conservative route-specific metadata and product
-  detail JSON-LD for `/shop/products/[productHandle]` without adding checkout,
-  offer, sale, shipping, refund, payment, or guarantee claims.
+- T-107 added conservative route-specific metadata and product detail JSON-LD
+  for `/shop/products/[productHandle]` without adding checkout, offer, sale,
+  shipping, refund, payment, guarantee, or availability claims to structured
+  data.
 
 ## Backlog
 
@@ -145,9 +146,6 @@ production while preserving MongoDB as the archive source of truth.
 - Render linked Shopify product summaries server-side on artwork detail pages
   so archive-to-commerce relationships are discoverable without client fetch
   waterfalls.
-- Add route-specific product detail metadata and conservative product JSON-LD
-  without implying checkout, offers, sale policies, shipping, refunds,
-  payments, or guarantees.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -321,13 +319,17 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-18: Prepared T-107 to add conservative product detail metadata and
   JSON-LD while keeping checkout/cart, commerce assurance copy, and
   artwork-to-shop SSR discovery separate.
+- 2026-05-18: Completed T-107; `/shop/products/[productHandle]` now builds
+  title, description, canonical, Open Graph, and Twitter metadata from
+  `getProductByHandle` and renders conservative `Product` JSON-LD limited to
+  identity and descriptive fields. Checkout/cart, commerce assurance copy, and
+  artwork-to-shop SSR discovery remain separate.
 
 ## Next Agent Action
 
-Support T-107 for product detail metadata. After T-107, choose the next Shopify
-backlog slice from checkout handoff, commerce assurance copy alignment,
-server-rendered artwork-to-shop discovery, remaining product-detail contract
-coverage, product pagination, or server-side sorting.
+Choose the next Shopify backlog slice from checkout handoff, commerce
+assurance copy alignment, server-rendered artwork-to-shop discovery, remaining
+product-detail contract coverage, product pagination, or server-side sorting.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

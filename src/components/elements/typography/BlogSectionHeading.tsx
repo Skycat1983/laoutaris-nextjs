@@ -16,9 +16,9 @@ const BlogSectionHeading = ({ heading }: Props) => {
         <div className="py-8 container mx-auto">
           <HorizontalDivider />
         </div>
-        <h1 className="text-6xl text-center font-thin fontface-crimson">
+        <h2 className="text-6xl text-center font-thin fontface-crimson">
           {formattedHeading}
-        </h1>
+        </h2>
         <div className="py-8 container mx-auto">
           <HorizontalDivider />
         </div>

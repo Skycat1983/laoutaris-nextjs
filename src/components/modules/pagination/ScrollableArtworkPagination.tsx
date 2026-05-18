@@ -199,9 +199,9 @@ export function ScrollableArtworkPagination({
         <div className="py-8 container mx-auto">
           <HorizontalDivider />
         </div>
-        <h1 className="text-5xl text-left font-thin fontface-crimson pl-24">
+        <h2 className="text-5xl text-left font-thin fontface-crimson pl-24">
           {heading}
-        </h1>
+        </h2>
         <div className="py-8 container mx-auto">
           <HorizontalDivider />
         </div>

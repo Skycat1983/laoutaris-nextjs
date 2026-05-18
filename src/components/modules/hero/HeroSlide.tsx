@@ -70,11 +70,11 @@ const HeroSlide = ({ slide }: HeroSlideProps) => {
           {overlay}
 
           {image.heading && (
-            <h1
+            <h2
               className={`${image.heading.className} col-span-4 row-start-1 row-end-2 z-0`}
             >
               {image.heading.text}
-            </h1>
+            </h2>
           )}
           {image.subheading && (
             <h2

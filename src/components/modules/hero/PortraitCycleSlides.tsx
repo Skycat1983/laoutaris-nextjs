@@ -53,9 +53,9 @@ export const RightPortraitCleanSlide = ({ data }: { data: SlideData }) => {
       </div>
       <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center px-16">
-          <h1 className="text-6xl font-cormorant text-white mb-8">
+          <h2 className="text-6xl font-cormorant text-white mb-8">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-2xl font-archivo text-white/80 mb-4">
             {data.subtitle}
           </p>
@@ -96,9 +96,9 @@ export const LeftPortraitCenteredSlide = ({ data }: { data: SlideData }) => {
       </div>
       <div className="absolute right-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center items-center text-center px-12">
-          <h1 className="text-7xl font-cormorant text-white mb-6">
+          <h2 className="text-7xl font-cormorant text-white mb-6">
             {data.title}
-          </h1>
+          </h2>
           <div className="w-24 h-[2px] bg-white mb-8" />
           <p className="text-2xl font-archivo text-white/80 mb-4">
             {data.subtitle}
@@ -140,9 +140,9 @@ export const RightPortraitLargeTypeSlide = ({ data }: { data: SlideData }) => {
       </div>
       <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center px-16">
-          <h1 className="text-8xl font-cormorant text-white mb-8 leading-tight">
+          <h2 className="text-8xl font-cormorant text-white mb-8 leading-tight">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-3xl font-archivo text-white/80 mb-6">
             {data.subtitle}
           </p>
@@ -191,9 +191,9 @@ export const LeftPortraitVerticalRhythmSlide = ({
             <p className="text-xl font-archivo text-white/60 uppercase tracking-wider mb-4">
               Featured Work
             </p>
-            <h1 className="text-6xl font-cormorant text-white mb-6">
+            <h2 className="text-6xl font-cormorant text-white mb-6">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-2xl font-archivo text-white/80 mb-4">
               {data.subtitle}
             </p>
@@ -236,7 +236,7 @@ export const RightPortraitMinimalSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center px-16">
           <div className="space-y-8">
-            <h1 className="text-7xl font-cormorant text-white">{data.title}</h1>
+            <h2 className="text-7xl font-cormorant text-white">{data.title}</h2>
             <div className="space-y-4">
               <p className="text-2xl font-archivo text-white/80">
                 {data.subtitle}

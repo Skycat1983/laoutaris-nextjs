@@ -273,9 +273,12 @@ refactoring without turning every change into a manual QA pass.
   public biography article and blog detail metadata, canonical URLs,
   scaffold-text absence, conservative JSON-LD, missing-content noindex
   metadata, and source invariants.
-- T-107 is prepared with focused metadata/structured-data coverage expectations
-  for public artwork, collection-scoped artwork, and Shopify product detail
-  pages.
+- T-107 added focused metadata/structured-data coverage for public artwork,
+  collection-scoped artwork, and Shopify product detail pages.
+- T-108 added focused coverage for public image priority, quality, responsive
+  sizes, and magnifier intent-loading behavior.
+- T-109 added focused source invariant coverage for public landmark ownership
+  and repeated visual-module heading cleanup.
 
 ## Backlog
 
@@ -1143,14 +1146,34 @@ npm run lint
 - 2026-05-18: Prepared T-107 with focused metadata/structured-data coverage
   expectations for public artwork, collection-scoped artwork, and Shopify
   product detail pages.
+- 2026-05-18: Completed T-107 by adding
+  `__tests__/unit/deployment/publicArtworkProductMetadataStructuredData.test.tsx`
+  for route-specific artwork/product metadata, canonical URLs, noindex
+  missing/unavailable fallbacks, conservative artwork/product JSON-LD, absence
+  of same-app HTTP in the metadata slice, and no product structured-data
+  commerce/legal claims. Focused Jest, lint, build, scaffold-text search, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-108 with focused coverage expectations for public
+  image priority/quality/sizes and artwork magnifier intent-loading behavior.
+- 2026-05-18: Completed T-108 by adding
+  `__tests__/unit/publicImagePreloadSizing.test.tsx` for active hero
+  priority/quality/sizes source invariants, touched shop/product image `sizes`,
+  and magnifier hover/focus intent loading. Focused Jest, lint, build, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-109 with focused landmark/heading source or component
+  coverage expectations for public routes touched by the cleanup.
+- 2026-05-18: Completed T-109 by adding
+  `__tests__/unit/publicLandmarksHeadings.test.ts` for root non-landmark
+  layout ownership, public route/view main ownership, and presentational
+  public heading cleanup across touched hero/card/sidebar/section modules.
+  Focused Jest, lint, build, and `git diff --check` passed.
 
 ## Next Agent Action
 
-Add focused artwork/product detail metadata and structured-data coverage with
-T-107. After T-107, choose the next testing slice from the backlog with
-targeted coverage for route-local cache policy, discovery endpoint smoke
-checks, image tuning, landmark cleanup, or artwork-to-shop SSR discovery when
-those implementation slices are assigned.
+For the next A-010 implementation slice, add similarly focused coverage for
+the assigned surface. Keep route-local cache policy, discovery endpoint smoke
+checks, remaining route-specific metadata, and artwork-to-shop SSR discovery
+coverage separate until those implementation slices are assigned.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

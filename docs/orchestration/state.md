@@ -4,11 +4,20 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-107 is prepared as the next implementation slice from F-085/R-030:
-[Add artwork and product detail metadata](../tasks/T-107-add-artwork-product-detail-metadata.md).
-It should add route-specific metadata, canonical/social previews, and
-conservative structured data for public artwork, collection-scoped artwork, and
-Shopify product detail pages without adding commerce/legal claims.
+T-109 is prepared as the next implementation slice from F-089:
+[Normalize public landmarks and headings](../tasks/T-109-normalize-public-landmarks-headings.md).
+It should normalize public-page main landmark ownership and demote
+presentational repeated `h1` usage without changing visible layout, route data,
+commerce behavior, or admin/account workflows.
+
+T-108 is complete. It tuned current public image priority, responsive sizes,
+and artwork magnifier intent-loading behavior across the home hero, shop pages,
+and artwork detail view without changing visible layout or Cloudinary
+ownership policy.
+
+T-107 is complete. It added route-specific metadata, canonical/social previews,
+and conservative artwork/product JSON-LD for public artwork, collection-scoped
+artwork, and Shopify product detail pages without adding commerce/legal claims.
 
 T-106 is complete. It added route-specific metadata, canonical/social previews,
 and conservative `Article`/`BlogPosting` JSON-LD for public biography article
@@ -27,9 +36,9 @@ resolved.
 
 T-103 is complete. It replaced scaffolded root metadata with production-safe
 Joseph Laoutaris archive metadata and added baseline `robots.ts`/`sitemap.ts`
-discovery files for stable public routes. Artwork/product detail metadata,
-richer structured data, deployment smoke assertions, and route cache policy
-remain separate.
+discovery files for stable public routes. Richer breadcrumb structured data,
+dynamic-detail sitemap expansion, deployment smoke assertions, and route cache
+policy remain separate.
 
 T-102 is complete. It removed global root-layout DB/session work, avoided
 middleware token parsing for unprotected public routes, and recorded remaining
@@ -38,9 +47,9 @@ public routes including `/biography`, `/collections`, `/project`,
 `/project/about`, `/project/aims`, `/project/film`, and `/shop`.
 
 A-010 is complete and reconciled into F-084 through F-090, R-012/R-014/R-030/
-R-031, relevant workstreams, T-102 through T-107. Remaining owner-independent
-follow-ups include image tuning, landmark/heading cleanup, route-local
-cache/ISR policy, and artwork-to-shop SSR discovery.
+R-031, relevant workstreams, T-102 through T-109. Remaining owner-independent
+follow-ups after T-109 include route-local cache/ISR policy, artwork-to-shop
+SSR discovery, and richer discovery structured data.
 
 T-101 is complete. It documented the interim Cloudinary asset lifecycle,
 backup/restore, orphan cleanup, upload preset/cloud/folder ownership, delivery
@@ -203,7 +212,9 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-107 artwork/product detail metadata task is prepared and ready to assign.
+T-109 public landmark/heading cleanup task is prepared and ready to assign.
+T-108 public image preload/sizing task is complete.
+T-107 artwork/product detail metadata task is complete.
 T-106 article/blog detail metadata task is complete.
 T-105 public comment action accessibility task is complete.
 T-104 public search/navigation accessibility task is complete.
@@ -257,9 +268,13 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-107 is prepared and ready to assign: add route-specific metadata,
-  canonical/social previews, and conservative structured data for public
-  artwork, collection-scoped artwork, and Shopify product detail pages.
+- T-109 is prepared and ready to assign: normalize public main landmark
+  ownership and presentational heading hierarchy without visual redesign.
+- T-108 is complete: public image priority, quality, responsive sizes, and
+  artwork magnifier intent-loading behavior were tuned.
+- T-107 is complete: public artwork, collection-scoped artwork, and Shopify
+  product detail pages now have route-specific metadata, canonical/social
+  previews, and conservative artwork/product JSON-LD.
 - T-106 is complete: public biography article and blog detail pages now have
   route-specific metadata, canonical/social previews, and conservative
   `Article`/`BlogPosting` JSON-LD.
@@ -862,13 +877,13 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-107-add-artwork-product-detail-metadata.md
+/task effort: high details: docs/tasks/T-109-normalize-public-landmarks-headings.md
 ```
 
-After T-107 is assigned or completed, choose route-local cache/ISR policy from
-the T-102 build output, image tuning from F-086/F-087, landmark/heading cleanup
-from F-089, artwork-to-shop SSR discovery from F-090, A-011 admin content
-operations, A-017 search/navigation discovery, the next Cloudinary follow-up
+After T-109 is assigned or completed, choose route-local cache/ISR policy from
+the T-102 build output, artwork-to-shop SSR discovery from F-090, A-011 admin
+content operations, A-017 search/navigation discovery, richer breadcrumb/
+dynamic-detail discovery work from F-085/R-030, the next Cloudinary follow-up
 from T-101, or another owner-independent implementation slice from reconciled
 findings.
 
@@ -878,7 +893,8 @@ T-087, T-088, T-089, T-090, T-091, and T-092 are complete; do not reassign
 them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
-T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, and T-106 are complete and
+T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
+T-107, and T-108 are complete and
 should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,

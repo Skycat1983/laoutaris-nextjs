@@ -20,8 +20,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const page = Math.max(1, parseInt(searchParams.page || "1", 10));
 
   return (
-    <Suspense fallback={<BlogsSectionFeaturedSkeleton />}>
-      <BlogListLoader sortby={sortby} page={page} />
-    </Suspense>
+    <main>
+      <h1 className="sr-only">Blog</h1>
+      <Suspense fallback={<BlogsSectionFeaturedSkeleton />}>
+        <BlogListLoader sortby={sortby} page={page} />
+      </Suspense>
+    </main>
   );
 }

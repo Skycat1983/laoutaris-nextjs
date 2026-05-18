@@ -46,8 +46,9 @@ export default async function ArtworkListView({
   };
 
   return (
-    <div>
+    <main>
+      <h1 className="sr-only">Artwork</h1>
       <ArtworkListLoader initialSort={sortConfig} initialFilters={filters} />
-    </div>
+    </main>
   );
 }

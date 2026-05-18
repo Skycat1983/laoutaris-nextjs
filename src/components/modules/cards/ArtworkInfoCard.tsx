@@ -17,17 +17,17 @@ export async function ArtworkInfoCard({ ...artwork }: ArtworkFrontend) {
           <div className="py-8 container mx-auto">
             <HorizontalDivider />
           </div>
-          <h1 className="text-4xl text-left font-thin fontface-crimson">
+          <p className="text-4xl text-left font-thin fontface-crimson">
             Artwork info
-          </h1>
+          </p>
           <div className="pt-8 container mx-auto">
             <HorizontalDivider />
           </div>
         </div>
         {/* <h1 className="font-archivo text-3xl hidden md:block">Artwork info</h1> */}
-        <h2 className="font-archivo text-lg font-normal text-gray-500 italic">
+        <h1 className="font-archivo text-lg font-normal text-gray-500 italic">
           {artwork.title}
-        </h2>
+        </h1>
         <h2 className="font-archivo text-lg font-normal text-gray-500">
           {artwork.decade}
         </h2>

@@ -27,9 +27,9 @@ export const BiographyCard = ({ entry }: BiographyCardProps) => {
           />
         </div>
         <div className="flex flex-col gap-4 p-4 w-[250px] whitespace-normal text-center pt-8">
-          <h1 className="font-archivo text-2xl font-bold break-words">
+          <h2 className="font-archivo text-2xl font-bold break-words">
             {title}
-          </h1>
+          </h2>
           <h2 className="font-archivo text-xl font-normal text-gray-500 break-words">
             {subtitle}
           </h2>

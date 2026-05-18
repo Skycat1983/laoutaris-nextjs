@@ -41,10 +41,10 @@ const SearchMessage = ({
   title: string;
   message: string;
 }) => (
-  <div className="container mx-auto p-4">
+  <main className="container mx-auto p-4">
     <h1 className="text-2xl font-bold mb-4">{title}</h1>
     <p>{message}</p>
-  </div>
+  </main>
 );
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -88,7 +88,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">
         Search Results for &quot;{query}&quot;
       </h1>
@@ -126,6 +126,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </>
         )}
       </div>
-    </div>
+    </main>
   );
 }

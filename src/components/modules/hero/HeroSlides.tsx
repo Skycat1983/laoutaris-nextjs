@@ -36,9 +36,9 @@ export const SplitLayoutSlide = ({ data }: { data: SlideData }) => {
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent">
         <div className="h-full flex flex-col justify-center px-16 max-w-2xl">
-          <h1 className="text-6xl font-cormorant text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-4">
+          <h2 className="text-6xl font-cormorant text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-4">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-xl font-archivo text-white/80 mb-8">
             {data.subtitle}
           </p>
@@ -72,9 +72,9 @@ export const CenterFocusSlide = ({ data }: { data: SlideData }) => {
       <RadialGradientOverlay />
       <div className="absolute inset-0 flex items-center justify-center text-center">
         <div className="bg-black/30 backdrop-blur-sm p-12 rounded-lg max-w-3xl mx-4">
-          <h1 className="text-5xl font-cormorant text-white mb-4">
+          <h2 className="text-5xl font-cormorant text-white mb-4">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-xl font-archivo text-white/90 mb-8">
             {data.subtitle}
           </p>
@@ -111,9 +111,9 @@ export const BottomPanelSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute bottom-1/3 inset-x-0 bg-black/40 backdrop-blur-md w-1/2">
         <div className="container mx-auto px-8 py-12 grid grid-cols-12 gap-8 w-2/3">
           <div className="col-span-8">
-            <h1 className="text-6xl font-cormorant text-white mb-3">
+            <h2 className="text-6xl font-cormorant text-white mb-3">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-xl font-archivo text-white/80">
               {data.subtitle}
             </p>
@@ -151,9 +151,9 @@ export const LeftPanelSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute inset-y-0 left-0 w-1/2 bg-black/40 backdrop-blur-sm border-r border-white/20">
         <div className="h-full flex flex-col justify-center px-16 ml-12">
           <div className="border-l-4 border-white pl-6">
-            <h1 className="text-5xl font-cormorant text-white mb-4">
+            <h2 className="text-5xl font-cormorant text-white mb-4">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-xl font-archivo text-white/80 mb-2">
               {data.subtitle}
             </p>
@@ -191,9 +191,9 @@ export const RightPanelSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute inset-y-0 right-0 w-1/2 bg-black/40 backdrop-blur-sm border-r border-white/20">
         <div className="h-full flex flex-col justify-center px-16 ml-12">
           <div className="border-l-4 border-white pl-6">
-            <h1 className="text-5xl font-cormorant text-white mb-4">
+            <h2 className="text-5xl font-cormorant text-white mb-4">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-xl font-archivo text-white/80 mb-2">
               {data.subtitle}
             </p>
@@ -231,9 +231,9 @@ export const MinimalSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute inset-0 bg-black/20 transition-colors duration-500 group-hover:bg-black/40" />
       <div className="absolute inset-24 flex items-end justify-center">
         <div className="text-center transform transition-transform duration-500 group-hover:translate-y-0 translate-y-4">
-          <h1 className="text-7xl font-cormorant text-white mb-4">
+          <h2 className="text-7xl font-cormorant text-white mb-4">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-xl font-archivo text-white/90 mb-8 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
             {data.subtitle}
           </p>
@@ -267,9 +267,9 @@ export const GridLayoutSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute inset-0 bg-black/50">
         <div className="h-full grid grid-cols-5 gap-8 p-16">
           <div className="flex flex-col justify-center col-start-4">
-            <h1 className="text-7xl font-cormorant text-white mb-4">
+            <h2 className="text-7xl font-cormorant text-white mb-4">
               {data.title}
-            </h1>
+            </h2>
             <div className="w-32 h-1 bg-white mb-8" />
             <p className="text-xl font-archivo text-white/80 mb-8">
               {data.subtitle}

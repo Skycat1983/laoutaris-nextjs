@@ -73,12 +73,12 @@ const TransitionGroup: React.FC<TransitionGroupProps> = ({
           leaveFrom="opacity-100 -translate-x-0"
           leaveTo="opacity-0 translate-x-[150px]"
         >
-          <h1
+          <h2
             className="text-4xl md:text-6xl fontface-crimson font-thin"
             style={{ color: textColour }}
           >
             {title}
-          </h1>
+          </h2>
         </Transition>
 
         <Transition

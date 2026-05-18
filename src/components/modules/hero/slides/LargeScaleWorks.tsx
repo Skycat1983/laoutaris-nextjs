@@ -39,8 +39,7 @@ const LargeScaleWorks = () => {
         src={image.url}
         fill
         alt="Browse our collection"
-        quality={100}
-        priority={true}
+        sizes="100vw"
         className="scale-110 z-0 object-cover"
       />
       <RadialGradientOverlay />
@@ -51,7 +50,7 @@ const LargeScaleWorks = () => {
         <RadialGradientOverlay />
 
         {image.heading && (
-          <h1 className={image.heading.className}>{image.heading.text}</h1>
+          <h2 className={image.heading.className}>{image.heading.text}</h2>
         )}
         <Link href={image.link.path} className={image.link.className}>
           {image.link.text}

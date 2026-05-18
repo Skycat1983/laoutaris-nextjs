@@ -32,9 +32,9 @@ export const ClassicMuseumCard = ({
           <div className="py-8 container mx-auto">
             <HorizontalDivider />
           </div>
-          <h1 className="text-4xl text-center font-thin fontface-crimson">
+          <h2 className="text-4xl text-center font-thin fontface-crimson">
             Artwork info
-          </h1>
+          </h2>
           <div className="py-8 container mx-auto">
             <HorizontalDivider />
           </div>
@@ -85,7 +85,7 @@ export const ContemporaryGridCard = ({
     <div className="w-1/2 max-w-4xl p-6 bg-whitish text-black rounded-xl p-16 shadow">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6 p-8">
         <div className="col-span-2 md:col-span-3">
-          <h1 className="font-archivo text-3xl">{artwork.title}</h1>
+          <h2 className="font-archivo text-3xl">{artwork.title}</h2>
           <p className="text-zinc-400 mt-2">Joseph Laoutaris</p>
         </div>
 
@@ -149,7 +149,7 @@ export const ContemporaryGridCardDark = ({
     <div className="w-1/2 max-w-4xl p-6 bg-zinc-900 text-white rounded-xl">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
         <div className="col-span-2 md:col-span-3">
-          <h1 className="font-archivoBlack text-3xl">{artwork.title}</h1>
+          <h2 className="font-archivoBlack text-3xl">{artwork.title}</h2>
           <p className="text-zinc-400 mt-2">Joseph Laoutaris</p>
         </div>
 
@@ -210,7 +210,7 @@ export const TimelineCard = ({
       <div className="relative pl-8 border-l-2 border-gray-200 space-y-12">
         <div className="relative">
           <div className="absolute -left-10 w-4 h-4 bg-gray-200 rounded-full" />
-          <h1 className={`font-archivo text-3xl ${pl}`}>Joseph Laoutaris</h1>
+          <h2 className={`font-archivo text-3xl ${pl}`}>Joseph Laoutaris</h2>
           <h2 className={`text-xl text-gray-600 mt-2 ${pl}`}>
             {artwork.title}
           </h2>
@@ -301,9 +301,9 @@ export const MagazineCard = ({
     <div className="w-full max-w-2xl p-12 bg-white">
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-8">
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6">
             {artwork.title}
-          </h1>
+          </h2>
           <p className="text-3xl text-gray-400 font-light">Joseph Laoutaris</p>
         </div>
 

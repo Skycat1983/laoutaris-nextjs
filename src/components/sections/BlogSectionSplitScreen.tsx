@@ -43,9 +43,9 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
                   <div className="absolute bottom-0 p-8">
                     <span className="text-emerald-400 text-sm">March 2024</span>
-                    <h1 className="text-4xl font-bold text-white mt-2 group-hover:text-emerald-400 transition-colors">
+                    <h2 className="text-4xl font-bold text-white mt-2 group-hover:text-emerald-400 transition-colors">
                       {featured.title}
-                    </h1>
+                    </h2>
                     <p className="text-white/80 text-xl mt-4">
                       {featured.subtitle}
                     </p>
@@ -99,7 +99,7 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
         <div className="flex flex-row w-full justify-end px-8 pt-4">
           <Link href={`/blog/?sortby=latest`}>
             <div className="flex flex-row items-center gap-2">
-              <h1 className="text-xl font-bold underline">VIEW ALL</h1>
+              <span className="text-xl font-bold underline">VIEW ALL</span>
 
               <ChevronRight className="w-8 h-8" />
             </div>

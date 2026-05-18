@@ -16,6 +16,7 @@ export function ArticleView({ article, navigation, form }: ArticleViewProps) {
   const { prev, next } = navigation;
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
+      <h1 className="sr-only">{article.title}</h1>
       <div className="block md:hidden">
         <MobileArticleView
           article={article}

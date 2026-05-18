@@ -24,9 +24,9 @@ export function ProjectSection() {
           </div>
           <div className="col-span-3 xl:col-span-1 z-1 mx-10 my-8 xl:my-4">
             <div className="ml-10 border-l border-black border-l-4">
-              <h1 className="text-black z-1 font-archivo bold text-3xl text-left ml-8">
+              <h2 className="text-black z-1 font-archivo bold text-3xl text-left ml-8">
                 The life, ethos & regrets of Joseph Laoutaris
-              </h1>
+              </h2>
             </div>
             <div className="ml-10">
               <h3 className="font-archivo text-xl text-left mx-10 text-gray-600 my-10">

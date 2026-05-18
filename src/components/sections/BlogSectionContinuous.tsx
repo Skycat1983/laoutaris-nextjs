@@ -74,9 +74,9 @@ export const BlogSectionContinuous = ({
                 <div className="text-emerald-400 mb-4">
                   May 2024 • Editor&apos;s Pick
                 </div>
-                <h1 className="text-4xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                <h2 className="text-4xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
                   {blogEntries[0]?.title}
-                </h1>
+                </h2>
                 <p className="text-white/80 text-xl">
                   {blogEntries[0]?.subtitle}
                 </p>

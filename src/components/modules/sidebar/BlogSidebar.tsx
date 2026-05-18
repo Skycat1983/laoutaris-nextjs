@@ -41,7 +41,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
       {/* DIARY */}
 
       <div className="bg-whitish p-4">
-        <h1 className="text-5xl font-archivo text-left py-8">Blog</h1>
+        <h2 className="text-5xl font-archivo text-left py-8">Blog</h2>
 
         <p className="text-left text-lg ">
           I have been keeping a record/diary of my thoughts/progress for this
@@ -56,7 +56,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       {/* YEARS */}
 
-      <h1 className="text-2xl font-archivo text-left py-4">Years</h1>
+      <h3 className="text-2xl font-archivo text-left py-4">Years</h3>
       <p className="text-left pb-8 ">
         Pick a year to narrow down the posts or choose All to see everything.
       </p>
@@ -101,7 +101,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
 
       {/* CONTRIBUTORS */}
 
-      <h1 className="text-2xl font-archivo text-left py-4">Contributors</h1>
+      <h3 className="text-2xl font-archivo text-left py-4">Contributors</h3>
 
       <div className="flex flex-row items-center gap-3 mt-4">
         <div>
@@ -157,7 +157,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
         <HorizontalDivider />
       </div>
 
-      <h1 className="text-2xl font-archivo text-left py-4">Recent comments</h1>
+      <h3 className="text-2xl font-archivo text-left py-4">Recent comments</h3>
       <div className="bg-whitish p-10 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl">
         {/* Recent comments */}
         <div className="bg-whitish p-4">
@@ -178,7 +178,7 @@ const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
         <HorizontalDivider />
       </div>
 
-      <h1 className="text-2xl font-archivo text-left py-4">Support</h1>
+      <h3 className="text-2xl font-archivo text-left py-4">Support</h3>
       <p className="text-left pb-8 ">
         To do: tags, categories, search, share, contact, months
       </p>

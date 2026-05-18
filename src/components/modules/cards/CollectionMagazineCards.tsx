@@ -26,9 +26,9 @@ export const CollectionMagazineCard = ({
     <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-white">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-8">
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6">
             {title}
-          </h1>
+          </h2>
           <p className="text-3xl text-gray-400 font-light">Joseph Laoutaris</p>
         </div>
 
@@ -538,9 +538,9 @@ export const CollectionMagazineCardA = ({
     <div className="w-full max-w-2xl pt-12 bg-gray-900">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-8 px-12">
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
             {title}
-          </h1>
+          </h2>
           <p className="text-3xl text-gray-400 font-light">Joseph Laoutaris</p>
         </div>
 
@@ -604,9 +604,9 @@ export const CollectionMagazineCardB = ({
     <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-black">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 mb-8">
-          <h1 className="font-archivoBlack text-5xl leading-tight mb-4 text-white">
+          <h2 className="font-archivoBlack text-5xl leading-tight mb-4 text-white">
             {title}
-          </h1>
+          </h2>
           <div className="flex justify-between items-end">
             <p className="text-2xl text-gray-400 font-light">
               Joseph Laoutaris
@@ -665,9 +665,9 @@ export const CollectionMagazineCardC = ({
           <p className="text-sm uppercase tracking-wider text-gray-400 mb-2">
             Collection
           </p>
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
             {title}
-          </h1>
+          </h2>
         </div>
 
         <div className="col-span-4">
@@ -717,9 +717,9 @@ export const CollectionMagazineCardD = ({
   return (
     <div className="w-full max-w-2xl bg-white">
       <div className="bg-black px-12 pt-12 pb-8">
-        <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+        <h2 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
           {title}
-        </h1>
+        </h2>
         <p className="text-2xl text-gray-400 font-light">Joseph Laoutaris</p>
       </div>
 
@@ -767,9 +767,9 @@ export const CollectionMagazineCardE = ({
     <div className="w-full max-w-2xl pt-12 px-12 pb-12 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-7">
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6 text-white">
             {title}
-          </h1>
+          </h2>
           <p className="text-2xl text-gray-400 font-light mb-8">
             Joseph Laoutaris
           </p>

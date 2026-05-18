@@ -38,9 +38,9 @@ export const RightPortraitSlide = ({ data }: { data: SlideData }) => {
         </div>
       </div>
       <div className="relative h-full max-w-[40%] px-16 flex flex-col justify-center items-end">
-        <h1 className="text-7xl font-cormorant text-white mb-6">
+        <h2 className="text-7xl font-cormorant text-white mb-6">
           {data.title}
-        </h1>
+        </h2>
         <p className="text-2xl font-archivo text-white/80 mb-4 max-w-2xl">
           {data.subtitle}
         </p>
@@ -77,9 +77,9 @@ export const LeftPortraitOverlapSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute right-0 h-full w-[70%] bg-gradient-to-l from-black via-black to-transparent">
         <div className="h-full flex flex-col justify-center items-end pr-16">
           <div className="max-w-2xl text-right">
-            <h1 className="text-6xl font-cormorant text-white mb-6">
+            <h2 className="text-6xl font-cormorant text-white mb-6">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-xl font-archivo text-white/80 mb-4">
               {data.subtitle}
             </p>
@@ -116,9 +116,9 @@ export const RightPortraitCardSlide = ({ data }: { data: SlideData }) => {
       </div>
       <div className="relative h-full flex items-center">
         <div className="ml-16 bg-white/10 backdrop-blur-md p-12 max-w-xl border border-white/10">
-          <h1 className="text-5xl font-cormorant text-white mb-6">
+          <h2 className="text-5xl font-cormorant text-white mb-6">
             {data.title}
-          </h1>
+          </h2>
           <div className="w-24 h-[2px] bg-white/40 mb-6" />
           <p className="text-xl font-archivo text-white/80 mb-4">
             {data.subtitle}
@@ -157,9 +157,9 @@ export const LeftPortraitVerticalSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute right-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center pl-16 pr-24">
           <div className="space-y-8">
-            <h1 className="text-6xl font-cormorant text-white leading-tight">
+            <h2 className="text-6xl font-cormorant text-white leading-tight">
               {data.title}
-            </h1>
+            </h2>
             <div className="space-y-4">
               <p className="text-2xl font-archivo text-white/80">
                 {data.subtitle}
@@ -199,9 +199,9 @@ export const RightPortraitVerticalSlide = ({ data }: { data: SlideData }) => {
       <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center pl-16 pr-24">
           <div className="space-y-8">
-            <h1 className="text-6xl font-cormorant text-white leading-tight">
+            <h2 className="text-6xl font-cormorant text-white leading-tight">
               {data.title}
-            </h1>
+            </h2>
             <div className="space-y-4">
               <p className="text-2xl font-archivo text-white/80">
                 {data.subtitle}
@@ -247,9 +247,9 @@ export const RightPortraitStackedSlide = ({ data }: { data: SlideData }) => {
             Featured Collection
           </p>
         </div>
-        <h1 className="text-7xl font-cormorant text-white mb-8 leading-tight max-w-3xl">
+        <h2 className="text-7xl font-cormorant text-white mb-8 leading-tight max-w-3xl">
           {data.title}
-        </h1>
+        </h2>
         <div className="space-y-6 max-w-xl mb-12">
           <p className="text-2xl font-archivo text-white/80">{data.subtitle}</p>
           <p className="text-lg font-archivo text-white/60">{data.summary}</p>

@@ -139,10 +139,10 @@ security headers, environment documentation, and actionable operational signals.
 - T-106 added route-specific metadata and conservative JSON-LD for public
   biography article and blog detail pages while keeping deployment smoke
   automation, cache policy, and commerce/legal claims separate.
-- T-107 is prepared as the next route-specific metadata slice for public
-  artwork, collection-scoped artwork, and Shopify product detail pages. It
-  should keep deployment smoke automation, cache policy, and commerce/legal
-  claims separate.
+- T-107 added route-specific metadata and conservative JSON-LD for public
+  artwork, collection-scoped artwork, and Shopify product detail pages while
+  keeping deployment smoke automation, cache policy, and commerce/legal claims
+  separate.
 - T-048 completed the next route-local public-safe API response slice, scoped
   to admin read route failure bodies. Broader logging/redaction policy remains
   separate.
@@ -636,12 +636,15 @@ npm run lint
 - 2026-05-18: Prepared T-107 for public artwork and Shopify product detail
   metadata, canonical/social previews, and conservative structured data while
   keeping route cache policy and smoke automation separate.
+- 2026-05-18: Completed T-107; focused tests, lint, build, scaffold-text
+  search, and `git diff --check` passed. Product JSON-LD remains descriptive
+  only and does not add checkout, offer, sale, shipping, refund, payment,
+  guarantee, or availability claims.
 
 ## Next Agent Action
 
-Support T-107 if route-specific metadata needs deployment/discovery review.
-After T-107, choose the next deployment/security slice from explicit route
-cache policy, discovery endpoint smoke checks, provider selection,
+Choose the next deployment/security slice from explicit route cache policy,
+discovery endpoint smoke checks, provider selection,
 incident-response runbook ownership, CI/scheduled smoke, or broader route-level
 logging migration. Keep owner/legal A-020 policy work separate.
 

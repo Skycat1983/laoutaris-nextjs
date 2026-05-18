@@ -35,9 +35,9 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
                   <div className="text-emerald-400 mb-4">
                     May 2024 • Editor&apos;s Pick
                   </div>
-                  <h1 className="text-4xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                  <h2 className="text-4xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors">
                     {blogEntries[0]?.title}
-                  </h1>
+                  </h2>
                   <p className="text-white/80 text-xl">
                     {blogEntries[0]?.subtitle}
                   </p>
@@ -78,7 +78,7 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
         <div className="flex flex-row w-full justify-end px-8 pt-4">
           <Link href={`/blog/?sortby=popular`}>
             <div className="flex flex-row items-center gap-2">
-              <h1 className="text-xl font-bold underline">VIEW ALL</h1>
+              <span className="text-xl font-bold underline">VIEW ALL</span>
 
               <ChevronRight className="w-8 h-8" />
             </div>

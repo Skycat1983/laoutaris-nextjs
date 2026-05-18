@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { RadialGradientOverlay } from "../Overlays";
-import Link from "next/link";
 
 interface SlideData {
   _id: { $oid: string };
@@ -26,19 +25,17 @@ export const ComingSoonSlide = ({ data }: { data: SlideData }) => {
           src={data.imageUrl}
           alt={data.title}
           fill
-          quality={100}
-          priority={true}
           className="object-cover object-center"
-          sizes="45vw"
+          sizes="55vw"
         />
         <RadialGradientOverlay />
       </div>
       <div className="absolute right-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center pl-16 pr-24">
           <div className="space-y-8">
-            <h1 className="text-6xl font-cormorant text-white leading-tight">
+            <h2 className="text-6xl font-cormorant text-white leading-tight">
               {data.title}
-            </h1>
+            </h2>
             <div className="space-y-4">
               <p className="text-2xl font-archivo text-white/80">
                 {data.subtitle}

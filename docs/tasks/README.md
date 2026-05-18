@@ -116,7 +116,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-104 Fix public search and navigation accessibility](T-104-fix-public-search-navigation-accessibility.md) | Completed | Converted public search, drawer, mobile navigation, and unauthenticated artwork intent controls to semantic labelled controls. |
 | [T-105 Fix public comment action accessibility](T-105-fix-public-comment-action-accessibility.md) | Completed | Converted comment edit/save/cancel/delete icon actions to labelled semantic controls without changing comment mutation behavior. |
 | [T-106 Add article and blog detail metadata](T-106-add-article-blog-detail-metadata.md) | Completed | Added route-specific metadata, canonical/social previews, and conservative JSON-LD for public article and blog detail pages. |
-| [T-107 Add artwork and product detail metadata](T-107-add-artwork-product-detail-metadata.md) | Planned | Add route-specific metadata, canonical/social previews, and conservative JSON-LD for public artwork and Shopify product detail pages. |
+| [T-107 Add artwork and product detail metadata](T-107-add-artwork-product-detail-metadata.md) | Completed | Added route-specific metadata, canonical/social previews, and conservative JSON-LD for public artwork and Shopify product detail pages. |
+| [T-108 Tune public image preload and sizing](T-108-tune-public-image-preload-sizing.md) | Completed | Tuned home hero, shop, and artwork detail image priority, sizes, and magnifier loading behavior. |
+| [T-109 Normalize public landmarks and headings](T-109-normalize-public-landmarks-headings.md) | Completed | Normalize public-page main landmark ownership and presentational heading levels. |
 
 ## Rules
 

@@ -98,9 +98,9 @@ export const PortraitsOfBeryl2 = () => {
       </div>
       {/* <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center px-16 ml-12">
-          <h1 className="text-8xl font-cormorant text-white mb-8 leading-tight">
+          <h2 className="text-8xl font-cormorant text-white mb-8 leading-tight">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-3xl font-archivo text-white/80 mb-6">
             {data.subtitle}
           </p>
@@ -140,9 +140,9 @@ export const PortraitsOfBeryl = () => {
       </div>
       <div className="absolute left-0 h-full w-[45%] flex">
         <div className="flex-1 flex flex-col justify-center px-16 ml-12">
-          <h1 className="text-8xl font-cormorant text-white mb-8 leading-tight">
+          <h2 className="text-8xl font-cormorant text-white mb-8 leading-tight">
             {data.title}
-          </h1>
+          </h2>
           <p className="text-3xl font-archivo text-white/80 mb-6">
             {data.subtitle}
           </p>

@@ -25,6 +25,7 @@ export default function About() {
 
   return (
     <main className="flex flex-col items-center justify-between lg:px-12 py-4">
+      <h1 className="sr-only">{article.title}</h1>
       <div className="block md:hidden">
         <div
           className="bg-cover  bg-fixed h-[530px] fade-in"
@@ -116,9 +117,9 @@ export default function About() {
           </div>
           <div className="col-start-5 col-end-8 row-start-1 row-end-1 flex flex-col justify-start items-start md:mx-[50px] lg:mx-[70px] xl:mx-[90px] mt-8">
             <article className="prose-xl text-left fade-in">
-              <h1 className="text-2xl font-bold font-archivoBlack my-5">
+              <h2 className="text-2xl font-bold font-archivoBlack my-5">
                 {article.summary}
-              </h1>
+              </h2>
               <div className="h-[2px] w-full bg-gray-500 my-10"></div>
               {article.text.split("\r\n\r\n").map((paragraph, index) => (
                 <p key={index} className="m-2 leading-8 prose-lg py-2">

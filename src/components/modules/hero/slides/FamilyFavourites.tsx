@@ -26,8 +26,6 @@ export const FamilyFavourites = ({ data }: { data: SlideData }) => {
           src={data.imageUrl}
           alt={data.title}
           fill
-          quality={100}
-          priority={true}
           className="object-cover"
           sizes="100vw"
         />
@@ -36,9 +34,9 @@ export const FamilyFavourites = ({ data }: { data: SlideData }) => {
       <div className="absolute inset-y-0 right-0 w-1/2 bg-black/40 backdrop-blur-sm border-r border-white/20">
         <div className="h-full flex flex-col justify-center px-16 ml-12">
           <div className="border-l-4 border-white pl-6">
-            <h1 className="text-5xl font-cormorant text-white mb-4">
+            <h2 className="text-5xl font-cormorant text-white mb-4">
               {data.title}
-            </h1>
+            </h2>
             <p className="text-xl font-archivo text-white/80 mb-2">
               {data.subtitle}
             </p>

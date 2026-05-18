@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, MouseEvent, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState, MouseEvent } from "react";
 import Image from "next/image";
 
 interface MagnifierImageProps {
@@ -26,18 +26,36 @@ const MagnifierImage = ({
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isZoomedImageLoaded, setIsZoomedImageLoaded] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
+  const zoomImageRef = useRef<HTMLImageElement | null>(null);
+  const zoomLoadStartedRef = useRef(false);
 
-  // preload high-res image
   useEffect(() => {
-    const img = new window.Image(
+    zoomImageRef.current = null;
+    zoomLoadStartedRef.current = false;
+    setIsZoomedImageLoaded(false);
+  }, [src, width, height, magnificationLevel]);
+
+  const loadZoomImage = useCallback(() => {
+    if (zoomLoadStartedRef.current || isZoomedImageLoaded) return;
+
+    zoomLoadStartedRef.current = true;
+    const zoomImage = new window.Image(
       width * magnificationLevel,
       height * magnificationLevel
     );
-    img.src = src;
-    img.onload = () => {
-      setIsZoomedImageLoaded(true);
+    zoomImageRef.current = zoomImage;
+    zoomImage.onload = () => {
+      if (zoomImageRef.current === zoomImage) {
+        setIsZoomedImageLoaded(true);
+      }
     };
-  }, [src, width, height, magnificationLevel]);
+    zoomImage.src = src;
+  }, [src, width, height, magnificationLevel, isZoomedImageLoaded]);
+
+  const showZoom = () => {
+    setShowMagnifier(true);
+    loadZoomImage();
+  };
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!imageRef.current) return;
@@ -55,7 +73,9 @@ const MagnifierImage = ({
       <div
         ref={imageRef}
         className="relative"
-        onMouseEnter={() => setShowMagnifier(true)}
+        tabIndex={0}
+        onFocus={showZoom}
+        onMouseEnter={showZoom}
         onMouseLeave={() => setShowMagnifier(false)}
         onMouseMove={handleMouseMove}
       >

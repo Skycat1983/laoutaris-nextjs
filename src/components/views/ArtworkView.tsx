@@ -45,7 +45,7 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
             )}
           </span>
           <div className="w-full flex justify-center items-center">
-            <h1 className="text-neutral-400 px-2">Hover for magnified view:</h1>
+            <p className="text-neutral-400 px-2">Hover for magnified view:</p>
             <Search className="text-neutral-400" />
           </div>
         </span>

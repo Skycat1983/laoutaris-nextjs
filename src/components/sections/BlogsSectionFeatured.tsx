@@ -39,9 +39,9 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
                 <div className="absolute inset-0 bg-gradient-to-tr from-black/90 via-black/50 to-transparent">
                   <div className="absolute bottom-0 left-0 right-0 p-8 max-w-2xl">
                     <span className="text-emerald-400">Featured Story</span>
-                    <h1 className="text-5xl font-bold text-white mt-2 group-hover:text-emerald-400 transition-colors">
+                    <h2 className="text-5xl font-bold text-white mt-2 group-hover:text-emerald-400 transition-colors">
                       {featured.title}
-                    </h1>
+                    </h2>
                     <p className="text-white/80 text-xl mt-4">
                       {featured.subtitle}
                     </p>
@@ -89,7 +89,7 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
         <div className="flex flex-row w-full justify-end px-8 pt-4">
           <Link href={`/blog/?sortby=featured`}>
             <div className="flex flex-row items-center gap-2">
-              <h1 className="text-xl font-bold underline">VIEW ALL</h1>
+              <span className="text-xl font-bold underline">VIEW ALL</span>
 
               <ChevronRight className="w-8 h-8" />
             </div>

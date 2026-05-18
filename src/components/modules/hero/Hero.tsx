@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import {
   Carousel,
   CarouselContent,
@@ -8,10 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/modules/hero/carousel";
-import {
-  FilterableArtworks,
-  FilterableArtworks2,
-} from "./slides/FilterableArtworks";
+import { FilterableArtworks } from "./slides/FilterableArtworks";
 import { LargeScaleWorks } from "./slides/LargeScaleWorks";
 import { Skeleton } from "@/components/shadcn/skeleton";
 

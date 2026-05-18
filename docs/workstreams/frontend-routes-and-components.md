@@ -173,8 +173,18 @@ Next.js server/client component boundaries.
   conservative JSON-LD for public biography article and blog detail pages
   without changing visible layout, comment-query behavior, or route cache
   policy.
-- T-107 is prepared as the next F-085/R-030 metadata slice for public artwork,
-  collection-scoped artwork, and Shopify product detail pages.
+- T-107 added route-specific metadata, canonical/social previews, and
+  conservative JSON-LD for public artwork, collection-scoped artwork, and
+  Shopify product detail pages without changing visible layout, saved-item
+  behavior, product enquiry handoff, or route cache policy.
+- T-108 tuned public image preload/sizing behavior for the active home hero
+  path, shop banner/product detail images, product-detail featured artwork
+  thumbnails, and artwork magnifier intent loading.
+- T-109 completed the A-010/F-089 public landmark and heading cleanup: the
+  root layout spacing wrapper is no longer a `<main>`, touched public
+  routes/views own their page landmarks, repeated public visual modules no
+  longer use `h1` for styling, and focused source invariants cover the
+  ownership pattern.
 
 ## Backlog
 
@@ -196,8 +206,8 @@ Next.js server/client component boundaries.
   from session-only UI and moves middleware token parsing behind protected-route
   checks.
 - Add route-specific metadata, canonical/social previews, and structured data
-  for public archive, blog, artwork, and shop detail pages beyond the T-103
-  root metadata and baseline discovery files.
+  for remaining public archive/detail pages beyond the T-103 root metadata and
+  T-106/T-107 detail-page slices.
 - Audit and tune Next/Cloudinary image sizing for the home hero, shop listing
   banner, product detail, artwork detail, and magnifier payloads.
 - Normalize public landmarks and heading hierarchy after route layout ownership
@@ -515,13 +525,35 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-18: Prepared T-107 as the next F-085/R-030 slice for public artwork,
   collection-scoped artwork, and Shopify product detail metadata plus
   conservative detail-page structured data.
+- 2026-05-18: Completed T-107; `/artwork/[artworkId]`,
+  `/collections/[slug]/[artworkId]`, and
+  `/shop/products/[productHandle]` now build route-specific title,
+  description, canonical, Open Graph, and Twitter metadata from existing
+  server data services and render conservative artwork/product JSON-LD without
+  changing visible layout, saved-item behavior, product enquiry handoff, or
+  route cache policy.
+- 2026-05-18: Prepared T-108 as the next A-010/F-086/F-087 slice for public
+  image preload and sizing behavior across the home hero, shop pages, product
+  detail images, and artwork magnifier.
+- 2026-05-18: Completed T-108; only the initially visible active home hero
+  image remains prioritized, active hero `quality={100}` usage was removed,
+  touched home hero and shop/product `fill` images now declare responsive
+  `sizes`, and `MagnifierImage` waits for hover/focus intent before loading its
+  high-resolution zoom image.
+- 2026-05-18: Prepared T-109 as the next A-010/F-089 accessibility slice for
+  public main landmark ownership and noisy heading hierarchy cleanup.
+- 2026-05-18: Completed T-109; root layout now uses a non-landmark spacing
+  wrapper, touched public route/view surfaces own `<main>` landmarks, public
+  hero/card/sidebar/section presentation headings were demoted away from `h1`,
+  and focused landmark/heading source invariants passed alongside lint and
+  build.
 
 ## Next Agent Action
 
-Assign T-107 for artwork/product detail metadata. After T-107, choose the next
-A-010 frontend slice: image tuning, landmark cleanup, route-local cache/ISR
-policy, or artwork-to-shop SSR discovery. Keep these separate unless explicitly
-assigned together.
+Choose the next A-010 frontend slice from the remaining backlog, with
+route-local cache/ISR policy, remaining route-specific metadata, and
+artwork-to-shop SSR discovery kept separate unless explicitly assigned
+together.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

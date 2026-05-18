@@ -87,6 +87,9 @@ content operations repeatable and safe.
   home hero carousel images are over-prioritized at quality 100, product/shop
   `fill` images lack explicit `sizes`, and artwork magnifier preloads a second
   high-resolution image on mount before user intent.
+- T-108 tuned current Next image priority/sizes and artwork magnifier
+  intent-loading behavior without changing Cloudinary ownership,
+  delivery-transform, or cleanup policy.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -299,14 +302,19 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-18: Reconciled A-010 image findings into F-086 and F-087. Public
   image preload/sizing and magnifier behavior should be tuned through the
   Cloudinary/Next delivery policy rather than ad hoc per-component changes.
+- 2026-05-18: Prepared T-108 for the public image preload/sizing slice across
+  home hero, shop pages, product detail images, and artwork magnifier behavior.
+- 2026-05-18: Completed T-108 by tuning existing Next image props and
+  magnifier loading behavior only; Cloudinary delivery-transform
+  centralization, URL rewriting, upload ownership, and cleanup policy remain
+  separate.
 
 ## Next Agent Action
 
 Choose the next Cloudinary implementation slice from T-101 follow-ups: upload
 metadata parsing and failed-persistence recovery, image URL validation for
-blog/article/collection records, delivery transformation centralization,
-public image preload/sizing tuning, or an owner-approved cleanup workflow after
-backup/restore evidence exists.
+blog/article/collection records, delivery transformation centralization, or an
+owner-approved cleanup workflow after backup/restore evidence exists.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, delivery-transform helper extraction, and Cloudinary account

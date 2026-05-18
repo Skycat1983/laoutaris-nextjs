@@ -17,9 +17,9 @@ export const ArtworkMagazineCard = ({
     <div className="w-full max-w-2xl p-12 bg-white">
       <div className="grid grid-cols-12 gap-8">
         <div className="col-span-8">
-          <h1 className="font-archivoBlack text-4xl leading-tight mb-6">
+          <h2 className="font-archivoBlack text-4xl leading-tight mb-6">
             {artwork.title}
-          </h1>
+          </h2>
           <p className="text-3xl text-gray-400 font-light">Joseph Laoutaris</p>
         </div>
 
@@ -79,12 +79,12 @@ export const ArtworkMagazineCard2 = ({
           <div className="flex flex-row items-center">
             <div className="h-[80px] w-[80px] bg-gradient-to-bl from-gray-400/10 to-gray-900/20 m-2 flex justify-center items-center">
               <div className="h-[25px] w-full m-auto flex justify-center items-center border-r-[3px] border-black pl-1">
-                <h1 className="font-archivo text-4xl">JL</h1>
+                <span className="font-archivo text-4xl">JL</span>
               </div>
             </div>
             <div className="text-left justify-start items-center my-auto pl-3">
-              <h1 className="font-archivoBlack text-xl">Joseph </h1>
-              <h1 className="font-archivoBlack text-xl">Laoutaris </h1>
+              <p className="font-archivoBlack text-xl">Joseph </p>
+              <p className="font-archivoBlack text-xl">Laoutaris </p>
             </div>
           </div>
         </div>
