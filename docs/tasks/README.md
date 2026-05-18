@@ -124,7 +124,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-112 Add public breadcrumb structured data](T-112-add-public-breadcrumb-structured-data.md) | Completed | Added conservative BreadcrumbList JSON-LD to high-value public detail pages. |
 | [T-113 Expand dynamic detail sitemap](T-113-expand-dynamic-detail-sitemap.md) | Completed | Expanded the public sitemap with available detail URLs without changing route rendering. |
 | [T-114 Add discovery endpoint smoke assertions](T-114-add-discovery-endpoint-smoke-assertions.md) | Completed | Extended public smoke checks to assert deployed robots and sitemap discovery endpoints. |
-| [T-115 Clean up Shopify fetch cache policy](T-115-clean-up-shopify-fetch-cache-policy.md) | Planned | Remove the Shopify Storefront fetch cache/revalidate option conflict surfaced by sitemap builds. |
+| [T-115 Clean up Shopify fetch cache policy](T-115-clean-up-shopify-fetch-cache-policy.md) | Completed | Removed the Shopify Storefront fetch cache/revalidate option conflict surfaced by sitemap builds. |
+| [T-116 Create incident response runbook](T-116-create-incident-response-runbook.md) | Completed | Defined severity, triage, escalation, evidence, rollback, and post-incident process. |
+| [T-117 Migrate public content API structured logging](T-117-migrate-public-content-api-structured-logging.md) | Completed | Migrated public content API internal-failure paths onto request IDs and structured redacted logging. |
 
 ## Rules
 

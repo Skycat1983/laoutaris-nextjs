@@ -770,13 +770,20 @@ Add API route tests where behavior is changed.
   `X-Request-Id`, and representative public navigation, protected user
   profile, and admin collection read failure paths use request context plus
   structured redacted logging without changing success contracts.
+- 2026-05-18: Prepared T-117 as the next request ID/logging migration slice for
+  public content API list/detail internal-failure paths that still use direct
+  route-level `console.error()`.
+- 2026-05-18: Completed T-117 for public article, blog, artwork, and
+  collection API read routes. Internal failures now use request context plus
+  structured redacted logging, real `500` responses include `requestId` and
+  `X-Request-Id`, and success, validation, `404`, and legacy list pseudo-500
+  bodies were preserved.
 
 ## Next Agent Action
 
-Choose the next reconciled data/API task. Keep broader response helper
-cleanup, route-local DB
-ownership gaps, field-contract matrices, server-side shop pagination/sorting
-contracts, and admin Shopify-link work separate.
+Keep broader response helper cleanup, route-local DB ownership gaps,
+field-contract matrices, server-side shop pagination/sorting contracts, and
+admin Shopify-link work separate.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

@@ -128,6 +128,10 @@ production while preserving MongoDB as the archive source of truth.
   data.
 - T-111 renders artwork-to-shop product summaries from the server-side artwork
   detail path instead of client-side `ArtworkShopSection` fetches.
+- T-115 cleaned up Shopify Storefront fetch options so development reads use
+  only `cache: "no-store"` and non-development reads use only
+  `next.revalidate: 3600`; product transforms, request bodies, checkout, and
+  product detail UI were not changed.
 
 ## Backlog
 
@@ -334,16 +338,16 @@ Add targeted tests as shop behavior is hardened.
   `cache`/`next.revalidate` option conflict that build reports during
   `/sitemap.xml` generation, without changing product transforms, checkout,
   product detail UI, or Shopify freshness intent.
+- 2026-05-18: Completed T-115; Shopify Storefront fetches no longer combine
+  `cache` and `next.revalidate`, focused request-option coverage was added for
+  development and production modes, and build passed without the prior
+  `/sitemap.xml` Shopify fetch warning.
 
 ## Next Agent Action
 
-Assign T-115 for Shopify fetch cache policy cleanup:
-[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
-
-After T-115, choose the next Shopify backlog slice from checkout handoff,
-commerce assurance copy alignment, remaining product-detail contract coverage,
-product pagination, or server-side sorting. Keep those separate unless
-explicitly assigned.
+Choose the next Shopify backlog slice from checkout handoff, commerce assurance
+copy alignment, remaining product-detail contract coverage, product pagination,
+or server-side sorting. Keep those separate unless explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

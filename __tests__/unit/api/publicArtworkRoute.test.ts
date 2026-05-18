@@ -1,11 +1,15 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET } from "@/app/api/v2/public/artwork/[id]/route";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -26,7 +30,13 @@ const mockGetUserIdFromSession = getUserIdFromSession as jest.MockedFunction<
   typeof getUserIdFromSession
 >;
 
-const request = {} as never;
+const requestId = "req-artwork-detail";
+const request = {
+  method: "GET",
+  headers: new Headers({ "x-request-id": requestId }),
+  nextUrl: new URL("https://example.test/api/v2/public/artwork/507f1f77bcf86cd799439011"),
+  url: "https://example.test/api/v2/public/artwork/507f1f77bcf86cd799439011",
+} as never;
 const validArtworkId = "507f1f77bcf86cd799439011";
 const frontendArtwork = {
   _id: validArtworkId,
@@ -89,13 +99,24 @@ describe("GET /api/v2/public/artwork/[id]", () => {
 
     const response = await GET(request, createParams(validArtworkId));
     const body = await response.json();
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
     expect(response.status).toBe(500);
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
     expect(body).toEqual({
       success: false,
       message: "Failed to fetch artwork",
       error: "Failed to fetch artwork",
+      requestId,
     });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId,
+        route: "/api/v2/public/artwork/[id]",
+        method: "GET",
+        errorLabel: "artwork_detail_read_failed",
+      })
+    );
     expect(JSON.stringify(body)).not.toContain("private database detail");
   });
 });

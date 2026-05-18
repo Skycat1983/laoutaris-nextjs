@@ -4,11 +4,19 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-115 is prepared as the next implementation slice from F-026:
-[Clean up Shopify fetch cache policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
-It should remove the Shopify Storefront fetch option conflict that makes
-`/sitemap.xml` builds warn about specifying both `cache: default` and
-`next.revalidate: 3600`.
+T-117 is prepared as the next implementation slice from F-081/R-019:
+[Migrate public content API structured logging](../tasks/T-117-migrate-public-content-api-structured-logging.md).
+It should move a bounded public content API route slice from direct route-level
+`console.error()` internal-failure logging to the T-099 request-context and
+structured redacted logger pattern, preserving existing public contracts.
+
+T-116 is complete. It added the durable incident-response runbook with severity
+levels, first triage steps, service checks, rollback/defer/mitigate rules,
+evidence handling, owner matrix placeholders, and post-incident follow-up.
+
+T-115 is complete. It removed the Shopify Storefront fetch option conflict that
+made `/sitemap.xml` builds warn about specifying both `cache: default` and
+`next.revalidate: 3600`; build now passes without that warning.
 
 T-114 is complete. It extended `npm run smoke:public` so deployed
 `/robots.txt` and `/sitemap.xml` discovery endpoints are checked for status and
@@ -235,7 +243,10 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-115 Shopify fetch cache policy cleanup task is prepared and ready to assign.
+T-117 public content API structured logging migration task is prepared and
+ready to assign.
+T-116 incident-response runbook task is complete.
+T-115 Shopify fetch cache policy cleanup task is complete.
 T-114 discovery endpoint smoke assertion task is complete.
 T-113 dynamic detail sitemap task is complete.
 T-112 public breadcrumb structured data task is complete.
@@ -297,8 +308,14 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-115 is prepared and ready to assign: remove the Shopify Storefront fetch
-  cache/revalidate option conflict surfaced by `/sitemap.xml` builds.
+- T-117 is prepared and ready to assign: migrate a bounded public content API
+  route slice from direct route-level `console.error()` to request IDs and
+  structured redacted logging.
+- T-116 is complete: the incident-response runbook now covers severity, triage,
+  escalation placeholders, evidence, rollback/defer/mitigate rules, and
+  post-incident follow-up.
+- T-115 is complete: Shopify Storefront fetches no longer combine `cache` and
+  `next.revalidate`, and build no longer warns during `/sitemap.xml`.
 - T-114 is complete: public smoke checks now assert deployed `/robots.txt` and
   `/sitemap.xml` status plus minimal safe content.
 - T-113 is complete: `sitemap()` now includes best-effort dynamic public detail
@@ -918,13 +935,14 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-115-clean-up-shopify-fetch-cache-policy.md
+/task effort: high details: docs/tasks/T-117-migrate-public-content-api-structured-logging.md
 ```
 
-After T-115 is assigned or completed, choose A-011 admin content operations,
-A-017 search/navigation discovery, the next Cloudinary follow-up from T-101,
-provider/incident-response work from A-021, CI/scheduled smoke, or another
-owner-independent implementation slice from reconciled findings.
+After T-117 is assigned or completed, choose monitoring provider selection from
+A-021, CI/scheduled smoke, the next request-ID/logging route slice,
+A-011 admin content operations, A-017 search/navigation discovery, the next
+Cloudinary follow-up from T-101, or another owner-independent implementation
+slice from reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -933,8 +951,8 @@ them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
-T-107, T-108, T-109, T-110, T-111, T-112, T-113, and T-114 are complete and
-should not be reassigned unless a regression is opened.
+T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, and T-116 are
+complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

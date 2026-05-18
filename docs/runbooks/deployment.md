@@ -2,6 +2,10 @@
 
 Deployment target: Vercel, based on the project README.
 
+For active production failures, security/privacy concerns, data-loss risk, or
+cross-service incidents, use the [incident response runbook](incident-response.md)
+alongside this deployment checklist.
+
 ## Install Baseline
 
 Deployments and clean verification environments should install from the

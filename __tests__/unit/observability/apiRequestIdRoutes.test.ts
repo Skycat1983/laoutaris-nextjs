@@ -1,5 +1,7 @@
 jest.mock("server-only", () => ({}), { virtual: true });
 
+import fs from "fs";
+import path from "path";
 import { GET as GET_ADMIN_COLLECTION_READ } from "@/app/api/v2/admin/collection/read/route";
 import { GET as GET_PUBLIC_COLLECTION_NAVIGATION } from "@/app/api/v2/public/navigation/collections/route";
 import { GET as GET_USER_PROFILE } from "@/app/api/v2/user/profile/route";
@@ -205,5 +207,30 @@ describe("API request IDs on migrated route failures", () => {
       })
     );
     expect(JSON.stringify(body)).not.toContain("private admin failure");
+  });
+
+  it("keeps migrated public content route files free of route-level console.error calls", () => {
+    const migratedRouteFiles = [
+      "src/app/api/v2/public/article/route.ts",
+      "src/app/api/v2/public/article/[slug]/route.ts",
+      "src/app/api/v2/public/blog/route.ts",
+      "src/app/api/v2/public/blog/[slug]/route.ts",
+      "src/app/api/v2/public/blog/[slug]/comments/route.ts",
+      "src/app/api/v2/public/artwork/route.ts",
+      "src/app/api/v2/public/artwork/[id]/route.ts",
+      "src/app/api/v2/public/collection/route.ts",
+      "src/app/api/v2/public/collection/[slug]/route.ts",
+      "src/app/api/v2/public/collection/[slug]/artwork/route.ts",
+      "src/app/api/v2/public/collection/[slug]/artwork/[id]/route.ts",
+    ];
+
+    for (const routeFile of migratedRouteFiles) {
+      const routeSource = fs.readFileSync(
+        path.join(process.cwd(), routeFile),
+        "utf8"
+      );
+
+      expect(routeSource).not.toContain("console.error(");
+    }
   });
 });

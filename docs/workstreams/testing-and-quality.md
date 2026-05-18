@@ -1212,12 +1212,35 @@ npm run lint
 - 2026-05-18: Prepared T-115 with focused Shopify fetch-policy coverage
   expectations for development and production request options, plus existing
   product transform and dynamic sitemap regression coverage.
+- 2026-05-18: Completed T-115 by extending
+  `__tests__/unit/shopifyClientTransform.test.ts` to cover Shopify Storefront
+  fetch request options in development and production, plus preserved GraphQL
+  request bodies for product list, handle, and ID reads. Focused Jest, lint,
+  build, and `git diff --check` passed.
+- 2026-05-18: Prepared T-116 as a docs-only incident-response runbook slice
+  with verification limited to `git diff --check` unless the agent adds link
+  checks or scripts.
+- 2026-05-18: Completed T-116 as a docs-only incident-response runbook slice.
+  Verification was limited to `git diff --check`; no tests, scripts, or runtime
+  behavior changed.
+- 2026-05-18: Prepared T-117 with focused observability/API coverage
+  expectations for representative public content list/detail internal-failure
+  paths, propagated/generated request IDs, `X-Request-Id`, and source hygiene
+  against direct route-level `console.error()`.
+- 2026-05-18: Completed T-117 by extending focused public content route tests
+  for representative list/detail failure paths, propagated and generated
+  request IDs, response `X-Request-Id`, structured log context, private-message
+  redaction from public bodies, and source hygiene across the migrated public
+  content route files. Focused Jest, lint, build, scoped `console.error()`
+  source search, and `git diff --check` passed.
 
 ## Next Agent Action
 
-Assign T-115 for focused Shopify fetch-policy coverage:
-[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
-Keep broader static/ISR migration separate from this fetch-option cleanup.
+Choose the next testing slice from CI/scheduled smoke ownership, the next
+route-level logging migration coverage, or other active quality backlog items.
+Keep broader static/ISR migration separate from the completed T-115 Shopify
+fetch-option cleanup, the docs-only T-116 runbook work, and the completed
+T-117 public content logging migration.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

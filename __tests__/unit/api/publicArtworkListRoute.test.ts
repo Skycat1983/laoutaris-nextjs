@@ -1,11 +1,15 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET } from "@/app/api/v2/public/artwork/route";
 import { getArtworkList } from "@/lib/data/services/getArtworkList";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -28,7 +32,10 @@ const mockGetUserIdFromSession = getUserIdFromSession as jest.MockedFunction<
 
 const createRequest = (url: string) =>
   ({
+    method: "GET",
+    headers: new Headers(),
     nextUrl: new URL(url),
+    url,
   } as never);
 
 const listResult = {
@@ -197,11 +204,24 @@ describe("GET /api/v2/public/artwork", () => {
       createRequest("https://example.test/api/v2/public/artwork")
     );
     const body = await response.json();
+    const generatedRequestId = response.headers.get(REQUEST_ID_HEADER);
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
     expect(response.status).toBe(500);
+    expect(generatedRequestId).toMatch(/^[0-9a-f-]{36}$/);
     expect(body).toEqual({
       success: false,
       error: "Internal Server Error",
+      requestId: generatedRequestId,
     });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId: generatedRequestId,
+        route: "/api/v2/public/artwork",
+        method: "GET",
+        errorLabel: "artwork_list_read_failed",
+      })
+    );
+    expect(JSON.stringify(body)).not.toContain("database unavailable");
   });
 });

@@ -1,6 +1,6 @@
 # T-115 Clean Up Shopify Fetch Cache Policy
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Shopify Commerce](../workstreams/shopify-commerce.md),
@@ -90,3 +90,13 @@ git diff --check
   and build still reproduced the Shopify fetch cache/revalidate warning.
 - Keep Shopify product caching, pagination/sorting, checkout/cart, monitoring,
   and broad route cache/static migration separate.
+- Completed 2026-05-18 by making Shopify Storefront fetches send only
+  `cache: "no-store"` in development and only `next.revalidate: 3600` outside
+  development.
+- Added focused Shopify client coverage for development and production fetch
+  request options plus preserved list, handle, and ID GraphQL request bodies.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/shopifyClientTransform.test.ts __tests__/unit/deployment/publicDynamicSitemap.test.ts`,
+  `npm run lint`, `npm run build`, and `git diff --check`.
+- The production build no longer emits the Shopify `cache: default` plus
+  `revalidate: 3600` warning during `/sitemap.xml` generation.

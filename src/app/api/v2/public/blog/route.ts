@@ -5,10 +5,14 @@ import {
   getBlogList,
   isBlogListSortBy,
 } from "@/lib/data/services/getBlogList";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiBlogListResult>> => {
+  const requestContext = createRequestContext(req, "/api/v2/public/blog");
+  const logger = createApiLogger(requestContext);
   const { searchParams } = new URL(req.url);
   try {
     const rawSortBy = searchParams.get("sortby") || "latest";
@@ -35,15 +39,16 @@ export const GET = async (
       metadata: result.metadata,
     } satisfies ApiBlogListResult);
   } catch (error) {
-    console.error("Blog fetch error:", error);
-    console.error(
-      "Error stack:",
-      error instanceof Error ? error.stack : "No stack trace"
-    );
+    logger.error("api.public.blog_list.failed", {
+      error,
+      errorLabel: "blog_list_read_failed",
+    });
     return NextResponse.json({
       success: false,
       error: "Failed to fetch blog entries",
       statusCode: 500,
-    } satisfies ApiErrorResponse);
+    } satisfies ApiErrorResponse, {
+      headers: requestContext.responseHeaders,
+    });
   }
 };

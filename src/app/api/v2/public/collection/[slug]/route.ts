@@ -5,11 +5,19 @@ import { ApiCollectionResult } from "@/lib/api/public/collection/fetchers";
 import { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const GET = async (
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiCollectionResult>> => {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/collection/[slug]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -32,10 +40,14 @@ export const GET = async (
       throw error;
     }
 
-    console.error("Collection fetch error:", error);
+    logger.error("api.public.collection_detail.failed", {
+      error,
+      errorLabel: "collection_detail_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch collection",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 };

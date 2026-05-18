@@ -9,6 +9,7 @@ when commands, environment variables, or workflows change.
 - [Testing](testing.md)
 - [Environment variables](environment.md)
 - [Deployment](deployment.md)
+- [Incident response](incident-response.md)
 - [Database](database.md)
 - [Shopify operations](shopify-operations.md)
 - [Cloudinary](cloudinary.md)

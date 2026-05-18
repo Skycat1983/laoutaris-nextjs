@@ -4,10 +4,15 @@ import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
 import { RouteResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiCollectionListResult>> => {
+  const requestContext = createRequestContext(req, "/api/v2/public/collection");
+  const logger = createApiLogger(requestContext);
+
   try {
     const { searchParams } = req.nextUrl;
     const section = searchParams.get("section");
@@ -33,10 +38,14 @@ export const GET = async (
       throw error;
     }
 
-    console.error("Collection fetch error:", error);
+    logger.error("api.public.collection_list.failed", {
+      error,
+      errorLabel: "collection_list_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch collections",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 };

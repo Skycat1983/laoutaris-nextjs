@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET as GET_COLLECTION_LIST } from "@/app/api/v2/public/collection/route";
 import { GET as GET_COLLECTION_DETAIL } from "@/app/api/v2/public/collection/[slug]/route";
 import { GET as GET_COLLECTION_ARTWORK_LIST } from "@/app/api/v2/public/collection/[slug]/artwork/route";
@@ -6,12 +8,14 @@ import { CollectionModel } from "@/lib/data/models";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
 import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import dbConnect from "@/lib/db/mongodb";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -59,14 +63,21 @@ const mockGetCollectionList = getCollectionList as jest.MockedFunction<
   typeof getCollectionList
 >;
 
-const request = {
-  nextUrl: new URL("https://example.test/api/v2/public/collection"),
-} as never;
+const propagatedRequestId = "req-collection-detail";
 
-const requestWithSearch = (url: string) =>
+const requestWithSearch = (url: string, requestId?: string) =>
   ({
+    method: "GET",
+    headers: new Headers(
+      requestId === undefined ? {} : { "x-request-id": requestId }
+    ),
     nextUrl: new URL(url),
+    url,
   }) as never;
+
+const request = requestWithSearch(
+  "https://example.test/api/v2/public/collection"
+);
 
 const createParams = (slug: string) => ({
   params: { slug },
@@ -189,13 +200,25 @@ describe("public collection routes", () => {
 
       const response = await GET_COLLECTION_LIST(request);
       const body = await response.json();
+      const generatedRequestId = response.headers.get(REQUEST_ID_HEADER);
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(generatedRequestId).toMatch(/^[0-9a-f-]{36}$/);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collections",
         error: "Failed to fetch collections",
+        requestId: generatedRequestId,
       });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId: generatedRequestId,
+          route: "/api/v2/public/collection",
+          method: "GET",
+          errorLabel: "collection_list_read_failed",
+        })
+      );
       expect(JSON.stringify(body)).not.toContain("private collection list");
     });
   });
@@ -245,17 +268,31 @@ describe("public collection routes", () => {
       );
 
       const response = await GET_COLLECTION_DETAIL(
-        request,
+        requestWithSearch(
+          "https://example.test/api/v2/public/collection/paintings",
+          propagatedRequestId
+        ),
         createParams("paintings")
       );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(propagatedRequestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection",
         error: "Failed to fetch collection",
+        requestId: propagatedRequestId,
       });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId: propagatedRequestId,
+          route: "/api/v2/public/collection/[slug]",
+          method: "GET",
+          errorLabel: "collection_detail_read_failed",
+        })
+      );
       expect(JSON.stringify(body)).not.toContain("private collection detail");
     });
   });
@@ -312,12 +349,15 @@ describe("public collection routes", () => {
         createParams("paintings")
       );
       const body = await response.json();
+      const generatedRequestId = response.headers.get(REQUEST_ID_HEADER);
 
       expect(response.status).toBe(500);
+      expect(generatedRequestId).toMatch(/^[0-9a-f-]{36}$/);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection with artworks",
         error: "Failed to fetch collection with artworks",
+        requestId: generatedRequestId,
       });
       expect(JSON.stringify(body)).not.toContain("private populated list");
     });
@@ -405,12 +445,15 @@ describe("public collection routes", () => {
         createArtworkParams("paintings")
       );
       const body = await response.json();
+      const generatedRequestId = response.headers.get(REQUEST_ID_HEADER);
 
       expect(response.status).toBe(500);
+      expect(generatedRequestId).toMatch(/^[0-9a-f-]{36}$/);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection artwork",
         error: "Failed to fetch collection artwork",
+        requestId: generatedRequestId,
       });
       expect(JSON.stringify(body)).not.toContain("private artwork detail");
     });

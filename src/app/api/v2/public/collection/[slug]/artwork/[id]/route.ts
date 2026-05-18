@@ -4,11 +4,19 @@ import { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiCollectionPopulatedResult } from "@/lib/api/public/collection/fetchers";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { slug: string; id: string } }
 ): Promise<RouteResponse<ApiCollectionPopulatedResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/collection/[slug]/artwork/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     const { slug, id } = params;
     const result = await getCollectionArtwork(slug, id);
@@ -35,10 +43,14 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error fetching collection artwork:", error);
+    logger.error("api.public.collection_artwork_detail.failed", {
+      error,
+      errorLabel: "collection_artwork_detail_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch collection artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

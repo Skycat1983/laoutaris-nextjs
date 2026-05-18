@@ -1,10 +1,14 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET as GET_BLOG_LIST } from "@/app/api/v2/public/blog/route";
 import { getBlogList } from "@/lib/data/services/getBlogList";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -19,7 +23,15 @@ jest.mock("@/lib/data/services/getBlogList", () => ({
 
 const mockGetBlogList = getBlogList as jest.MockedFunction<typeof getBlogList>;
 
-const createRequest = (url: string) => ({ url }) as never;
+const requestId = "req-blog-list";
+
+const createRequest = (url: string) =>
+  ({
+    method: "GET",
+    headers: new Headers({ "x-request-id": requestId }),
+    nextUrl: new URL(url),
+    url,
+  }) as never;
 
 describe("GET /api/v2/public/blog", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -134,13 +146,23 @@ describe("GET /api/v2/public/blog", () => {
       createRequest("https://example.com/api/v2/public/blog?sortby=featured")
     );
     const body = await response.json();
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
     expect(response.status).toBe(200);
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
     expect(body).toEqual({
       success: false,
       error: "Failed to fetch blog entries",
       statusCode: 500,
     });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId,
+        route: "/api/v2/public/blog",
+        method: "GET",
+        errorLabel: "blog_list_read_failed",
+      })
+    );
     expect(JSON.stringify(body)).not.toContain("private blog list");
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });

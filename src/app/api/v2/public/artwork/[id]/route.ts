@@ -5,11 +5,18 @@ import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ApiArtworkResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/artwork/[id]"
+  );
+  const logger = createApiLogger(requestContext);
   const { id } = params;
 
   try {
@@ -28,10 +35,14 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error fetching public artwork:", error);
+    logger.error("api.public.artwork_detail.failed", {
+      error,
+      errorLabel: "artwork_detail_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

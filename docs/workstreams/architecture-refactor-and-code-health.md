@@ -455,16 +455,17 @@ Use targeted import/reference searches for pruning tasks.
   cleanup for the `cache`/`next.revalidate` conflict surfaced by sitemap
   builds. Keep broader static/ISR migration and account/admin cache policy
   separate.
+- 2026-05-18: Completed T-115; the shared Shopify client now owns a valid
+  environment-specific Storefront fetch policy without combining `cache` and
+  `next.revalidate`. Broader static/ISR migration and account/admin cache
+  policy remain separate.
 
 ## Next Agent Action
 
-Assign T-115 for the narrow Shopify fetch cache policy cleanup:
-[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
-
-After T-115, choose the next architecture slice from broad route-builder work,
-client/server import boundary cleanup, staged source-pruning work, or remaining
-route-local rendering follow-ups. Keep broad static/ISR migration separate
-until a dedicated cache-freshness and route-param task is assigned.
+Choose the next architecture slice from broad route-builder work, client/server
+import boundary cleanup, staged source-pruning work, or remaining route-local
+rendering follow-ups. Keep broad static/ISR migration separate until a
+dedicated cache-freshness and route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

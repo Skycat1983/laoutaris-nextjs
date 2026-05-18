@@ -9,6 +9,8 @@ import {
 import { getArtworkList } from "@/lib/data/services/getArtworkList";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type ArtworkListValidationErrorResponse = ApiErrorResponse & {
   fieldErrors: ArtworkListQueryFieldErrors;
@@ -32,6 +34,8 @@ const validationErrorResponse = (
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ApiArtworkListResult>> {
+  const requestContext = createRequestContext(request, "/api/v2/public/artwork");
+  const logger = createApiLogger(requestContext);
   const parsedQuery = parseArtworkListQuery(
     searchParamsToArtworkListQueryInput(request.nextUrl.searchParams)
   );
@@ -54,13 +58,20 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error in artwork route:", error);
+    logger.error("api.public.artwork_list.failed", {
+      error,
+      errorLabel: "artwork_list_read_failed",
+    });
     return NextResponse.json(
       {
         success: false,
         error: "Internal Server Error",
+        requestId: requestContext.requestId,
       } satisfies ApiErrorResponse,
-      { status: 500 }
+      {
+        status: 500,
+        headers: requestContext.responseHeaders,
+      }
     );
   }
 }

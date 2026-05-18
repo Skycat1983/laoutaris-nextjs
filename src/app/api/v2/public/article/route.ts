@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
 import { getArticleList } from "@/lib/data/services/getArticleList";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const GET = async (
   req: NextRequest
 ): Promise<RouteResponse<ApiArticleListResult>> => {
+  const requestContext = createRequestContext(req, "/api/v2/public/article");
+  const logger = createApiLogger(requestContext);
   const { searchParams } = req.nextUrl;
 
   try {
@@ -34,11 +38,16 @@ export const GET = async (
       metadata: result.metadata,
     } satisfies ApiArticleListResult);
   } catch (error) {
-    console.error("Article fetch error:", error);
+    logger.error("api.public.article_list.failed", {
+      error,
+      errorLabel: "article_list_read_failed",
+    });
     return NextResponse.json({
       success: false,
       error: "Failed to fetch article entries",
       statusCode: 500,
-    } satisfies ApiErrorResponse);
+    } satisfies ApiErrorResponse, {
+      headers: requestContext.responseHeaders,
+    });
   }
 };

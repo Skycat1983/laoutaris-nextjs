@@ -127,7 +127,10 @@ security headers, environment documentation, and actionable operational signals.
   T-025 is a useful deployment-smoke baseline, but found no monitoring
   provider/instrumentation, no request/correlation ID policy, no structured
   redacted logger, no incident-response runbook or alert owner matrix, and no
-  continuous smoke/monitoring setup.
+  continuous smoke/monitoring setup. T-099 later added a provider-neutral
+  request ID and structured logging foundation for a representative route
+  slice, and T-116 later added the incident-response runbook with `TBD` owner
+  matrix placeholders.
 - A-010 completed the performance, SEO, and accessibility audit. It found all
   public routes still build as dynamic because of global root layout and
   middleware request-time work, production metadata/discovery files are missing,
@@ -277,9 +280,9 @@ security headers, environment documentation, and actionable operational signals.
   route-level logging cleanup or monitoring-provider integration.
 - Choose and document an error-reporting/monitoring provider, or explicitly
   record a no-provider decision for launch.
-- Create an incident-response runbook with severity levels, triage,
-  escalation, communication, rollback authority, service owner matrix, evidence
-  retention, and post-incident follow-up rules.
+- Fill in the incident-response runbook's `TBD` owner/escalation matrix entries
+  for Vercel, repository release authority, MongoDB, Shopify, Cloudinary,
+  auth/OAuth, DNS/domain, and privacy/legal communication.
 - Decide CI/scheduled/manual ownership for `npm run smoke:public`; keep
   credentialed, admin, and Vercel-log smoke evidence owner-run until safe
   synthetic accounts and access are approved.
@@ -602,8 +605,8 @@ npm run lint
   and generation, structured redacted API logging, optional public
   `requestId`/`X-Request-Id` helper support, and a representative public/user/
   admin failure-path migration. Monitoring provider selection,
-  `instrumentation.ts`, alerting, incident response, and broad route migration
-  remain separate.
+  `instrumentation.ts`, alerting, incident-response ownership, and broad route
+  migration remain separate.
 - 2026-05-18: Prepared T-101 as the Cloudinary policy/runbook slice for asset
   lifecycle, backup/restore, orphan cleanup, and upload preset/cloud/folder
   ownership before runtime cleanup or signed-folder changes.
@@ -678,16 +681,38 @@ npm run lint
 - 2026-05-18: Prepared T-115 to clean up the Shopify Storefront fetch
   `cache`/`next.revalidate` option conflict surfaced by `/sitemap.xml` builds
   while preserving development freshness and production revalidation intent.
+- 2026-05-18: Completed T-115; production Shopify Storefront fetches now send
+  only `next.revalidate: 3600`, development fetches send only
+  `cache: "no-store"`, and `npm run build` passed without the prior
+  `/sitemap.xml` Shopify fetch warning.
+- 2026-05-18: Prepared T-116 to create the missing incident-response runbook
+  for severity levels, triage, escalation, owner matrix, rollback authority,
+  evidence handling, and post-incident follow-up while keeping monitoring
+  provider selection and SDK instrumentation separate.
+- 2026-05-18: Completed T-116 by adding the incident-response runbook,
+  linking it from the runbook index and deployment runbook, and closing the
+  F-082 runbook gap. Remaining observability work is provider selection,
+  alert/scheduled-smoke automation, broad route-level logging migration, and
+  filling the runbook's `TBD` owner/escalation matrix with owner-approved
+  authorities.
+- 2026-05-18: Prepared T-117 as the next F-081/R-019 logging migration slice.
+  It should move bounded public content API internal failures from direct
+  route-level `console.error()` to request IDs and structured redacted logging
+  while leaving monitoring provider selection and alert automation separate.
+- 2026-05-18: Completed T-117 by migrating public article, blog, artwork, and
+  collection API internal-failure paths under the scoped directories to
+  request-context structured logging. Real `500` responses now return public
+  request IDs plus `X-Request-Id`; legacy article/blog list pseudo-500 bodies
+  remain unchanged while adding request ID headers. Monitoring provider
+  selection, instrumentation, alert automation, scheduled smoke, incident
+  owner-matrix completion, and broader route migration remain separate.
 
 ## Next Agent Action
 
-Assign T-115 for Shopify fetch cache policy cleanup:
-[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
-
-After T-115, choose a separate deployment/security slice from provider
-selection, incident-response runbook ownership, CI/scheduled smoke, or broader
-route-level logging migration. Keep owner/legal A-020 policy work and broad
-static/ISR migration separate.
+Choose a separate deployment/security slice from monitoring provider selection,
+CI/scheduled smoke, the next route-level logging migration, or owner-approved
+completion of the incident-response `TBD` owner matrix. Keep owner/legal A-020
+policy work and broad static/ISR migration separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

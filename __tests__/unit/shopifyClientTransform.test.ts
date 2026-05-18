@@ -1,4 +1,9 @@
 import {
+  GET_PRODUCT_BY_HANDLE_QUERY,
+  GET_PRODUCT_BY_ID_QUERY,
+  GET_PRODUCTS_QUERY,
+} from "@/lib/api/shopify/queries";
+import {
   getProductByHandle,
   getProductById,
   getProducts,
@@ -69,8 +74,102 @@ const mockShopifyResponse = (data: unknown) => {
 };
 
 describe("Shopify product transforms", () => {
+  const originalNodeEnv = process.env.NODE_ENV;
+
+  const setNodeEnv = (value: string) => {
+    Object.defineProperty(process.env, "NODE_ENV", {
+      value,
+      configurable: true,
+      writable: true,
+    });
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    setNodeEnv(originalNodeEnv);
+  });
+
+  afterAll(() => {
+    setNodeEnv(originalNodeEnv);
+  });
+
+  it("sends only no-store cache policy for development Shopify reads", async () => {
+    setNodeEnv("development");
+    mockShopifyResponse({
+      productByHandle: createShopifyProduct(),
+    });
+
+    await getProductByHandle("test-product");
+
+    const [, requestInit] = (global.fetch as jest.Mock).mock.calls[0];
+
+    expect(requestInit).toEqual(
+      expect.objectContaining({
+        method: "POST",
+        cache: "no-store",
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": expect.any(String),
+        }),
+      })
+    );
+    expect(requestInit).not.toHaveProperty("next");
+    expect(JSON.parse(requestInit.body)).toEqual({
+      query: GET_PRODUCT_BY_HANDLE_QUERY,
+      variables: { handle: "test-product" },
+    });
+  });
+
+  it("sends only revalidation policy for production Shopify reads", async () => {
+    setNodeEnv("production");
+    mockShopifyResponse({
+      products: {
+        edges: [
+          {
+            node: createShopifyProduct(),
+          },
+        ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+      },
+    });
+
+    await getProducts(12, "cursor-1");
+
+    const [, requestInit] = (global.fetch as jest.Mock).mock.calls[0];
+
+    expect(requestInit).toEqual(
+      expect.objectContaining({
+        method: "POST",
+        next: { revalidate: 3600 },
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+          "X-Shopify-Storefront-Access-Token": expect.any(String),
+        }),
+      })
+    );
+    expect(requestInit).not.toHaveProperty("cache");
+    expect(JSON.parse(requestInit.body)).toEqual({
+      query: GET_PRODUCTS_QUERY,
+      variables: { first: 12, after: "cursor-1" },
+    });
+  });
+
+  it("preserves Shopify ID read request variables and query body", async () => {
+    mockShopifyResponse({
+      product: createShopifyProduct(),
+    });
+
+    await getProductById("gid://shopify/Product/123456");
+
+    const [, requestInit] = (global.fetch as jest.Mock).mock.calls[0];
+
+    expect(JSON.parse(requestInit.body)).toEqual({
+      query: GET_PRODUCT_BY_ID_QUERY,
+      variables: { id: "gid://shopify/Product/123456" },
+    });
   });
 
   it("preserves productType and tags for product list reads", async () => {

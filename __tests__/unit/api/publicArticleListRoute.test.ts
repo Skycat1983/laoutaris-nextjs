@@ -1,12 +1,16 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import fs from "fs";
 import path from "path";
 import { GET as GET_ARTICLE_LIST } from "@/app/api/v2/public/article/route";
 import { getArticleList } from "@/lib/data/services/getArticleList";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -20,9 +24,14 @@ const mockGetArticleList = getArticleList as jest.MockedFunction<
   typeof getArticleList
 >;
 
+const requestId = "req-article-list";
+
 const createRequest = (url: string) =>
   ({
+    method: "GET",
+    headers: new Headers({ "x-request-id": requestId }),
     nextUrl: new URL(url),
+    url,
   }) as never;
 
 describe("GET /api/v2/public/article", () => {
@@ -146,13 +155,23 @@ describe("GET /api/v2/public/article", () => {
       )
     );
     const body = await response.json();
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
     expect(response.status).toBe(200);
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
     expect(body).toEqual({
       success: false,
       error: "Failed to fetch article entries",
       statusCode: 500,
     });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId,
+        route: "/api/v2/public/article",
+        method: "GET",
+        errorLabel: "article_list_read_failed",
+      })
+    );
     expect(JSON.stringify(body)).not.toContain("private article list");
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
@@ -167,6 +186,7 @@ describe("GET /api/v2/public/article", () => {
     );
 
     expect(routeSource).not.toContain("console.log");
+    expect(routeSource).not.toContain("console.error");
     expect(routeSource).not.toContain("Error stack:");
   });
 });

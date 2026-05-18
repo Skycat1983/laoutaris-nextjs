@@ -16,6 +16,11 @@ import {
 /**
  * Make a GraphQL request to Shopify Storefront API
  */
+const getShopifyFetchCachePolicy = () =>
+  process.env.NODE_ENV === "development"
+    ? ({ cache: "no-store" } as const)
+    : ({ next: { revalidate: 3600 } } as const);
+
 const shopifyFetch = async <T>({
   query,
   variables = {},
@@ -34,9 +39,7 @@ const shopifyFetch = async <T>({
         query,
         variables,
       }),
-      // Disable cache during development for fresh data
-      cache: process.env.NODE_ENV === "development" ? "no-store" : "default",
-      next: { revalidate: process.env.NODE_ENV === "development" ? 0 : 3600 },
+      ...getShopifyFetchCachePolicy(),
     });
 
     if (!response.ok) {
