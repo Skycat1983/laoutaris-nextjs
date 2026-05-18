@@ -118,7 +118,13 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-106 Add article and blog detail metadata](T-106-add-article-blog-detail-metadata.md) | Completed | Added route-specific metadata, canonical/social previews, and conservative JSON-LD for public article and blog detail pages. |
 | [T-107 Add artwork and product detail metadata](T-107-add-artwork-product-detail-metadata.md) | Completed | Added route-specific metadata, canonical/social previews, and conservative JSON-LD for public artwork and Shopify product detail pages. |
 | [T-108 Tune public image preload and sizing](T-108-tune-public-image-preload-sizing.md) | Completed | Tuned home hero, shop, and artwork detail image priority, sizes, and magnifier loading behavior. |
-| [T-109 Normalize public landmarks and headings](T-109-normalize-public-landmarks-headings.md) | Completed | Normalize public-page main landmark ownership and presentational heading levels. |
+| [T-109 Normalize public landmarks and headings](T-109-normalize-public-landmarks-headings.md) | Completed | Normalized public-page main landmark ownership and presentational heading levels. |
+| [T-110 Codify public route cache policy](T-110-codify-public-route-cache-policy.md) | Completed | Documented public route rendering/cache ownership and made remaining dynamic public routes explicit without broad ISR/static migration. |
+| [T-111 Render artwork shop links server side](T-111-render-artwork-shop-links-server-side.md) | Completed | Rendered linked Shopify product summaries in artwork detail initial server output instead of client fetches. |
+| [T-112 Add public breadcrumb structured data](T-112-add-public-breadcrumb-structured-data.md) | Completed | Added conservative BreadcrumbList JSON-LD to high-value public detail pages. |
+| [T-113 Expand dynamic detail sitemap](T-113-expand-dynamic-detail-sitemap.md) | Completed | Expanded the public sitemap with available detail URLs without changing route rendering. |
+| [T-114 Add discovery endpoint smoke assertions](T-114-add-discovery-endpoint-smoke-assertions.md) | Completed | Extended public smoke checks to assert deployed robots and sitemap discovery endpoints. |
+| [T-115 Clean up Shopify fetch cache policy](T-115-clean-up-shopify-fetch-cache-policy.md) | Planned | Remove the Shopify Storefront fetch cache/revalidate option conflict surfaced by sitemap builds. |
 
 ## Rules
 

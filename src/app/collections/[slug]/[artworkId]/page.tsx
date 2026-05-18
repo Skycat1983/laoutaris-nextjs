@@ -1,9 +1,7 @@
-"use server";
-
 import type { Metadata } from "next";
 import { CollectionArtworkLoader } from "@/components/loaders/viewLoaders/CollectionArtworkLoader";
 import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
-import { CollectionArtworkJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { CollectionArtworkStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import {
   buildCollectionArtworkDetailMetadata,
@@ -11,6 +9,8 @@ import {
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
 import { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
 
 type CollectionArtworkPageProps = {
   params: { slug: string; artworkId: string };
@@ -40,7 +40,7 @@ export default async function ArtworkId({
   return (
     <main>
       <Suspense fallback={null}>
-        <CollectionArtworkJsonLd slug={slug} artworkId={artworkId} />
+        <CollectionArtworkStructuredData slug={slug} artworkId={artworkId} />
       </Suspense>
       <Suspense fallback={<ArtworkViewSkeleton />}>
         <CollectionArtworkLoader slug={slug} artworkId={artworkId} />

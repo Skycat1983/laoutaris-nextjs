@@ -143,6 +143,9 @@ security headers, environment documentation, and actionable operational signals.
   artwork, collection-scoped artwork, and Shopify product detail pages while
   keeping deployment smoke automation, cache policy, and commerce/legal claims
   separate.
+- T-112 completed the remaining F-085 structured-data breadcrumb slice for
+  high-value public detail pages. Dynamic detail sitemap expansion and
+  deployment smoke assertions remain separate.
 - T-048 completed the next route-local public-safe API response slice, scoped
   to admin read route failure bodies. Broader logging/redaction policy remains
   separate.
@@ -640,13 +643,51 @@ npm run lint
   search, and `git diff --check` passed. Product JSON-LD remains descriptive
   only and does not add checkout, offer, sale, shipping, refund, payment,
   guarantee, or availability claims.
+- 2026-05-18: Prepared T-110 to make public route rendering/cache policy
+  explicit and keep future deployment cacheability checks tied to route-local
+  ownership instead of the now-fixed root shell blocker.
+- 2026-05-18: Completed T-110 by documenting public route cache ownership and
+  making the remaining dynamic public route list explicit in source. Future
+  deployment cacheability checks should now compare build output against the
+  route matrix rather than assuming all public pages are static candidates.
+- 2026-05-18: Prepared T-112 as the next F-085/R-030 discovery slice for
+  breadcrumb JSON-LD while keeping dynamic sitemap expansion and discovery
+  endpoint smoke automation separate.
+- 2026-05-18: Completed T-112; public biography, blog, artwork,
+  collection-scoped artwork, and Shopify product detail pages now render
+  conservative breadcrumb JSON-LD alongside their existing entity JSON-LD. The
+  focused Jest slice, lint, build, and `git diff --check` passed.
+- 2026-05-18: Prepared T-113 for dynamic detail sitemap expansion while keeping
+  deployment smoke automation separate.
+- 2026-05-18: Completed T-113; sitemap discovery now includes best-effort
+  dynamic public detail URLs from current archive and linked Shopify product
+  data while excluding duplicate, malformed, private, account, admin, and API
+  paths. Build passed, with existing Shopify client cache/revalidate warnings
+  surfacing on `/sitemap.xml`; deployment smoke automation remains separate.
+- 2026-05-18: Prepared T-114 to extend unauthenticated public smoke checks with
+  deployed `/robots.txt` and `/sitemap.xml` status plus minimal safe content
+  assertions, keeping credentialed/admin smoke, Vercel log inspection, CI
+  scheduling, monitoring, and Shopify fetch-cache cleanup separate.
+- 2026-05-18: Completed T-114; `npm run smoke:public` now checks
+  `/robots.txt` and `/sitemap.xml` by default, validates the robots sitemap
+  directive, validates stable public sitemap paths, rejects private/admin/
+  account/API sitemap paths, and reports body-check failures without dumping
+  response bodies. Focused Jest, CLI help, lint, build, and `git diff --check`
+  passed; the existing Shopify fetch cache/revalidate warning on
+  `/sitemap.xml` remains separate.
+- 2026-05-18: Prepared T-115 to clean up the Shopify Storefront fetch
+  `cache`/`next.revalidate` option conflict surfaced by `/sitemap.xml` builds
+  while preserving development freshness and production revalidation intent.
 
 ## Next Agent Action
 
-Choose the next deployment/security slice from explicit route cache policy,
-discovery endpoint smoke checks, provider selection,
-incident-response runbook ownership, CI/scheduled smoke, or broader route-level
-logging migration. Keep owner/legal A-020 policy work separate.
+Assign T-115 for Shopify fetch cache policy cleanup:
+[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
+
+After T-115, choose a separate deployment/security slice from provider
+selection, incident-response runbook ownership, CI/scheduled smoke, or broader
+route-level logging migration. Keep owner/legal A-020 policy work and broad
+static/ISR migration separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

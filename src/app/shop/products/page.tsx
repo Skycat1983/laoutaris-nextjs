@@ -2,6 +2,8 @@ import { ShopProductsLoader } from "@/components/loaders/viewLoaders/ShopProduct
 import { ShopFiltersState, ShopSearchParams } from "@/lib/data/types/shopTypes";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductsPage({
   searchParams,
 }: {

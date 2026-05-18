@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import ArtworkLoader from "@/components/loaders/viewLoaders/ArtworkLoader";
 import ArtworkViewSkeleton from "@/components/elements/skeletons/ArtworkViewSkeleton";
-import { ArtworkJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { ArtworkStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import {
   buildArtworkDetailMetadata,
@@ -10,6 +10,8 @@ import {
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 type ArtworkPageProps = {
   params: { artworkId: string };
@@ -43,7 +45,7 @@ const ArtworkView = ({ params }: ArtworkPageProps) => {
   return (
     <main>
       <Suspense fallback={null}>
-        <ArtworkJsonLd artworkId={params.artworkId} />
+        <ArtworkStructuredData artworkId={params.artworkId} />
       </Suspense>
       <Suspense fallback={<ArtworkViewSkeleton />}>
         <ArtworkLoader params={{ id: params.artworkId }} />;

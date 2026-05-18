@@ -4,7 +4,7 @@ import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
-import { ProductJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { ProductStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import {
   buildMissingPublicDetailMetadata,
   buildProductDetailMetadata,
@@ -13,6 +13,8 @@ import {
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: {
@@ -97,7 +99,7 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <>
       <Suspense fallback={null}>
-        <ProductJsonLd productHandle={productHandle} />
+        <ProductStructuredData productHandle={productHandle} />
       </Suspense>
       <main className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

@@ -185,6 +185,15 @@ Next.js server/client component boundaries.
   routes/views own their page landmarks, repeated public visual modules no
   longer use `h1` for styling, and focused source invariants cover the
   ownership pattern.
+- T-110 codified the public route rendering/cache matrix and added explicit
+  `force-dynamic` segment config to remaining route-local dynamic public pages
+  without broad static/ISR migration.
+- T-111 makes artwork-to-shop product relationships discoverable in initial
+  server-rendered artwork detail output.
+- T-112 adds conservative breadcrumb JSON-LD to biography article, blog post,
+  standalone artwork, collection-scoped artwork, and Shopify product detail
+  pages without visible breadcrumb UI, navigation, metadata, enquiry, or route
+  cache policy changes.
 
 ## Backlog
 
@@ -212,8 +221,6 @@ Next.js server/client component boundaries.
   banner, product detail, artwork detail, and magnifier payloads.
 - Normalize public landmarks and heading hierarchy after route layout ownership
   is chosen.
-- Render artwork-to-shop product relationships in initial server HTML instead
-  of relying only on client-side product fetches.
 - Add owner/legal-approved policy links and notices to newsletter, comments,
   contact, signup/OAuth entry, third-party embeds, and commerce surfaces after
   A-020 requirements are accepted.
@@ -547,13 +554,46 @@ Use browser checks for layout-sensitive changes.
   hero/card/sidebar/section presentation headings were demoted away from `h1`,
   and focused landmark/heading source invariants passed alongside lint and
   build.
+- 2026-05-18: Prepared T-110 as the next A-010/F-084/R-012 slice for
+  route-local public rendering/cache policy and conservative segment config
+  codification.
+- 2026-05-18: Completed T-110 by documenting stable static shell,
+  query-driven, DB-backed, Shopify-backed, and session-aware public route cache
+  ownership; route-local dynamic public pages now export
+  `dynamic = "force-dynamic"` while stable shell routes remain free of ISR or
+  generated-param promises.
+- 2026-05-18: Prepared T-111 as the next A-010/F-090 slice for server-rendered
+  artwork-to-shop product discovery on artwork detail pages.
+- 2026-05-18: Completed T-111; `ArtworkShopSection` now renders from
+  server-provided grouped product summaries on artwork and collection-scoped
+  artwork detail pages instead of fetching Shopify products after mount.
+- 2026-05-18: Prepared T-112 as the next F-085/R-030 discovery slice for
+  conservative breadcrumb JSON-LD on high-value public detail pages.
+- 2026-05-18: Completed T-112; high-value public detail pages now emit one
+  entity JSON-LD script and one conservative `BreadcrumbList` JSON-LD script
+  from existing server data lookups, while missing/unavailable lookups still
+  render no structured-data script.
+- 2026-05-18: Prepared T-113 as the next F-085/R-030 discovery slice for
+  dynamic detail sitemap expansion without route rendering changes.
+- 2026-05-18: Completed T-113; `sitemap()` now preserves stable public routes
+  while best-effort dynamic helper logic adds biography article, blog,
+  standalone artwork, collection, collection-scoped artwork, and linked
+  Shopify product detail URLs with duplicate, malformed, private, account,
+  admin, and API paths excluded.
+- 2026-05-18: Prepared T-114 for deployed discovery endpoint smoke assertions
+  covering `/robots.txt` and `/sitemap.xml` without changing frontend route
+  rendering, metadata helpers, structured data, or route cache policy.
+- 2026-05-18: Completed T-114 without changing frontend route rendering,
+  metadata helpers, structured data, or route cache policy. The public smoke
+  script now validates deployed robots and sitemap discovery content while
+  keeping dynamic detail URL presence tied to approved records/upstream data.
 
 ## Next Agent Action
 
-Choose the next A-010 frontend slice from the remaining backlog, with
-route-local cache/ISR policy, remaining route-specific metadata, and
-artwork-to-shop SSR discovery kept separate unless explicitly assigned
-together.
+Choose the next separate frontend discovery or production-readiness slice:
+Cloudinary delivery transform centralization, owner/legal-approved policy
+links/notices, or another reconciled public UX risk. Keep broad static/ISR
+migration and checkout/cart work separate unless explicitly assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

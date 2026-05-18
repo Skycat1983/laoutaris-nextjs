@@ -8,6 +8,8 @@ import type {
 } from "@/lib/data/types";
 import { SortOption, ART_COLOURS } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
+
 export default async function ArtworkListView({
   searchParams,
 }: {

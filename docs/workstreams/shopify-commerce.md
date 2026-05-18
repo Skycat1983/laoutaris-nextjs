@@ -126,6 +126,8 @@ production while preserving MongoDB as the archive source of truth.
   for `/shop/products/[productHandle]` without adding checkout, offer, sale,
   shipping, refund, payment, guarantee, or availability claims to structured
   data.
+- T-111 renders artwork-to-shop product summaries from the server-side artwork
+  detail path instead of client-side `ArtworkShopSection` fetches.
 
 ## Backlog
 
@@ -143,9 +145,6 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Define any future server-side shop sorting contract before moving current
   client-side sorting into the API.
-- Render linked Shopify product summaries server-side on artwork detail pages
-  so archive-to-commerce relationships are discoverable without client fetch
-  waterfalls.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -324,12 +323,27 @@ Add targeted tests as shop behavior is hardened.
   `getProductByHandle` and renders conservative `Product` JSON-LD limited to
   identity and descriptive fields. Checkout/cart, commerce assurance copy, and
   artwork-to-shop SSR discovery remain separate.
+- 2026-05-18: Prepared T-111 to move artwork-to-shop product summary
+  resolution into the server-rendered artwork detail path while keeping
+  checkout/cart and commerce claims separate.
+- 2026-05-18: Completed T-111; artwork and collection-scoped artwork detail
+  loaders now resolve linked Shopify product summaries server-side and pass
+  grouped original/print/book products into `ArtworkShopSection`, which no
+  longer performs browser product fetches.
+- 2026-05-18: Prepared T-115 to remove the Shopify Storefront fetch
+  `cache`/`next.revalidate` option conflict that build reports during
+  `/sitemap.xml` generation, without changing product transforms, checkout,
+  product detail UI, or Shopify freshness intent.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff, commerce
-assurance copy alignment, server-rendered artwork-to-shop discovery, remaining
-product-detail contract coverage, product pagination, or server-side sorting.
+Assign T-115 for Shopify fetch cache policy cleanup:
+[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
+
+After T-115, choose the next Shopify backlog slice from checkout handoff,
+commerce assurance copy alignment, remaining product-detail contract coverage,
+product pagination, or server-side sorting. Keep those separate unless
+explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify
@@ -338,3 +352,7 @@ T-059 or T-082.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.
+
+Product breadcrumb structured data for `/shop/products/[productHandle]` is
+prepared under T-112. Keep that separate from checkout handoff, offers,
+availability, payment, shipping, refund, and guarantee claims.

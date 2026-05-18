@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
-
-type SitemapEntry = {
-  path: string;
-  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
-  priority: number;
-};
+import {
+  getDynamicPublicSitemapEntries,
+  type PublicSitemapEntry,
+} from "@/lib/metadata/publicDynamicSitemap";
 
 export const stablePublicSitemapRoutes = [
   { path: "/", changeFrequency: "monthly", priority: 1 },
@@ -19,14 +17,34 @@ export const stablePublicSitemapRoutes = [
   { path: "/project/contact", changeFrequency: "monthly", priority: 0.65 },
   { path: "/shop/products", changeFrequency: "weekly", priority: 0.7 },
   { path: "/search", changeFrequency: "monthly", priority: 0.55 },
-] satisfies SitemapEntry[];
+] satisfies PublicSitemapEntry[];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return stablePublicSitemapRoutes.map(
-    ({ path, changeFrequency, priority }) => ({
+const dedupeSitemapEntries = (entries: PublicSitemapEntry[]) => {
+  const seenPaths = new Set<string>();
+
+  return entries.filter(({ path }) => {
+    if (seenPaths.has(path)) {
+      return false;
+    }
+
+    seenPaths.add(path);
+    return true;
+  });
+};
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const dynamicSitemapRoutes = await getDynamicPublicSitemapEntries();
+  const sitemapRoutes = dedupeSitemapEntries([
+    ...stablePublicSitemapRoutes,
+    ...dynamicSitemapRoutes,
+  ]);
+
+  return sitemapRoutes.map(
+    ({ path, changeFrequency, priority, lastModified }) => ({
       url: getPublicSitePathUrl(path),
       changeFrequency,
       priority,
+      lastModified,
     })
   );
 }

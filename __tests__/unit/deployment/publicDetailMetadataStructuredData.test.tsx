@@ -19,6 +19,18 @@ jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
   getBlogBySlugWithAuthor: jest.fn(),
 }));
 
+jest.mock("@/lib/data/services/getArtworkById", () => ({
+  getArtworkById: jest.fn(),
+}));
+
+jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
+  getCollectionArtwork: jest.fn(),
+}));
+
+jest.mock("@/lib/api/shopify/shopifyClient", () => ({
+  getProductByHandle: jest.fn(),
+}));
+
 jest.mock("@/components/loaders/viewLoaders/ArticleLoader", () => ({
   ArticleLoader: jest.fn(() => null),
 }));

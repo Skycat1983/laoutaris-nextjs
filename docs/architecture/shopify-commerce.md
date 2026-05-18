@@ -48,10 +48,12 @@ Artwork to shop:
 
 1. Fetch artwork from MongoDB.
 2. Inspect `artwork.shopifyProducts`.
-3. Show lightweight sale affordances from link type.
-4. Fetch Shopify product data when product price, availability, image, or handle
-   is needed.
-5. Link users to `/shop/products/[productHandle]`.
+3. For artwork detail pages, resolve linked product summaries server-side with
+   Shopify product ID normalization and `getProductById`.
+4. Skip malformed, missing, unavailable, or failed Shopify products without
+   failing the artwork page.
+5. Render available original, print, and book product links to
+   `/shop/products/[productHandle]` in the initial route output.
 
 Shop product to artwork:
 

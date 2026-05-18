@@ -4,11 +4,16 @@ import React from "react";
 import type { ReactElement } from "react";
 import { CollectionArtworkLoader } from "@/components/loaders/viewLoaders/CollectionArtworkLoader";
 import { ArtworkView } from "@/components/views";
+import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
   getCollectionArtwork: jest.fn(),
+}));
+
+jest.mock("@/lib/data/services/getArtworkShopProducts", () => ({
+  getArtworkShopProducts: jest.fn(),
 }));
 
 jest.mock("@/components/views", () => ({
@@ -22,12 +27,21 @@ jest.mock("@/lib/helpers/isNextError", () => ({
 const mockGetCollectionArtwork = getCollectionArtwork as jest.MockedFunction<
   typeof getCollectionArtwork
 >;
+const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction<
+  typeof getArtworkShopProducts
+>;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 
 const artwork = {
   _id: "64f1f77bcf86cd7994390111",
   title: "Blue Study",
+  shopifyProducts: [{ productId: "101", type: "print" }],
 } as never;
+const shopProducts = {
+  original: null,
+  prints: [],
+  books: [],
+};
 
 describe("CollectionArtworkLoader", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -42,6 +56,7 @@ describe("CollectionArtworkLoader", () => {
         artworks: [artwork],
       } as never,
     });
+    mockGetArtworkShopProducts.mockResolvedValue(shopProducts);
     consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
@@ -61,10 +76,16 @@ describe("CollectionArtworkLoader", () => {
       "paintings",
       "64f1f77bcf86cd7994390111"
     );
+    expect(mockGetArtworkShopProducts).toHaveBeenCalledWith(
+      artwork.shopifyProducts
+    );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(React.Fragment);
     expect(element.props.children.type).toBe(ArtworkView);
-    expect(element.props.children.props).toEqual(artwork);
+    expect(element.props.children.props).toEqual({
+      ...artwork,
+      shopProducts,
+    });
   });
 
   it("returns null for non-Next missing collection artwork results", async () => {
@@ -85,6 +106,7 @@ describe("CollectionArtworkLoader", () => {
       "Collection artwork loading failed:",
       expect.any(Error)
     );
+    expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
   });
 
   it("returns null for non-Next loading failures", async () => {

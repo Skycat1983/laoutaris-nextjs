@@ -4,8 +4,13 @@ import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
 import ArtworkShopSection from "../modules/cards/ArtworkShopSection";
 import { MagnifierImage } from "../modules/MagnifierImage";
 import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type { ArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 
-const ArtworkView = (artwork: ArtworkFrontend) => {
+type ArtworkViewProps = ArtworkFrontend & {
+  shopProducts?: ArtworkShopProducts;
+};
+
+const ArtworkView = ({ shopProducts, ...artwork }: ArtworkViewProps) => {
   const Card = () => {
     // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
     return (
@@ -56,7 +61,7 @@ const ArtworkView = (artwork: ArtworkFrontend) => {
       </div>
 
       {/* Shop Section - Only shows if artwork has Shopify products */}
-      <ArtworkShopSection artwork={artwork} />
+      <ArtworkShopSection artwork={artwork} shopProducts={shopProducts} />
     </>
   );
 };

@@ -1,5 +1,6 @@
 import { ArtworkView } from "@/components/views";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
+import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export async function CollectionArtworkLoader({
@@ -17,10 +18,12 @@ export async function CollectionArtworkLoader({
     }
 
     const { artworks } = result.collection;
+    const artwork = artworks[0];
+    const shopProducts = await getArtworkShopProducts(artwork.shopifyProducts);
 
     return (
       <>
-        <ArtworkView {...artworks[0]} />
+        <ArtworkView {...artwork} shopProducts={shopProducts} />
       </>
     );
   } catch (error) {

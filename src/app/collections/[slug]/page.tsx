@@ -1,9 +1,9 @@
-"use server";
-
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 
 export default async function CollectionSlug({
   params,

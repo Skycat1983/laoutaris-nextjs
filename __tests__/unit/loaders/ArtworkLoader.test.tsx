@@ -5,6 +5,7 @@ import ArtworkLoader from "@/components/loaders/viewLoaders/ArtworkLoader";
 import { SubscribeSection } from "@/components/sections";
 import { ArtworkView } from "@/components/views";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
+import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 jest.mock("@/lib/data/services/getArtworkById", () => ({
@@ -13,6 +14,10 @@ jest.mock("@/lib/data/services/getArtworkById", () => ({
 
 jest.mock("@/lib/session/getUserIdFromSession", () => ({
   getUserIdFromSession: jest.fn(),
+}));
+
+jest.mock("@/lib/data/services/getArtworkShopProducts", () => ({
+  getArtworkShopProducts: jest.fn(),
 }));
 
 jest.mock("@/components/views", () => ({
@@ -29,13 +34,22 @@ const mockGetArtworkById = getArtworkById as jest.MockedFunction<
 const mockGetUserIdFromSession = getUserIdFromSession as jest.MockedFunction<
   typeof getUserIdFromSession
 >;
+const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction<
+  typeof getArtworkShopProducts
+>;
 
 const artworkId = "507f1f77bcf86cd799439011";
 const artwork = {
   _id: artworkId,
   title: "Archive Artwork",
   slug: "archive-artwork",
+  shopifyProducts: [{ productId: "101", type: "original" }],
 } as never;
+const shopProducts = {
+  original: null,
+  prints: [],
+  books: [],
+};
 
 const getOnlyChild = (element: ReactElement): ReactElement => {
   return React.Children.only(element.props.children) as ReactElement;
@@ -48,6 +62,7 @@ describe("ArtworkLoader", () => {
     jest.clearAllMocks();
     mockGetUserIdFromSession.mockResolvedValue("user-123");
     mockGetArtworkById.mockResolvedValue(artwork);
+    mockGetArtworkShopProducts.mockResolvedValue(shopProducts);
     consoleLogSpy = jest
       .spyOn(console, "log")
       .mockImplementation(() => undefined);
@@ -78,11 +93,17 @@ describe("ArtworkLoader", () => {
 
     expect(mockGetUserIdFromSession).toHaveBeenCalledTimes(1);
     expect(mockGetArtworkById).toHaveBeenCalledWith(artworkId, "user-123");
+    expect(mockGetArtworkShopProducts).toHaveBeenCalledWith(
+      artwork.shopifyProducts
+    );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(React.Fragment);
     expect(artworkWrapper.props.className).toBe("py-16");
     expect(artworkElement.type).toBe(ArtworkView);
-    expect(artworkElement.props).toEqual(artwork);
+    expect(artworkElement.props).toEqual({
+      ...artwork,
+      shopProducts,
+    });
     expect(subscribeWrapper.props.className).toBe("pt-16");
     expect(subscribeElement.type).toBe(SubscribeSection);
     expect(subscribeElement.props).toEqual({ isLoggedIn: false });
@@ -94,6 +115,9 @@ describe("ArtworkLoader", () => {
     await ArtworkLoader({ params: { id: artworkId } });
 
     expect(mockGetArtworkById).toHaveBeenCalledWith(artworkId, null);
+    expect(mockGetArtworkShopProducts).toHaveBeenCalledWith(
+      artwork.shopifyProducts
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -108,6 +132,7 @@ describe("ArtworkLoader", () => {
       "missing-artwork",
       "user-123"
     );
+    expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

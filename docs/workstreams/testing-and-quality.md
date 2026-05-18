@@ -1167,13 +1167,57 @@ npm run lint
   layout ownership, public route/view main ownership, and presentational
   public heading cleanup across touched hero/card/sidebar/section modules.
   Focused Jest, lint, build, and `git diff --check` passed.
+- 2026-05-18: Prepared T-110 with focused source-invariant expectations for
+  public route rendering/cache policy and any conservative route segment
+  configs added by the slice.
+- 2026-05-18: Completed T-110 with
+  `__tests__/unit/publicRouteCachePolicy.test.ts`, covering explicit dynamic
+  config on route-local dynamic public pages, absence of ISR/static-param
+  promises on stable public shell routes, and the durable rendering/cache
+  matrix.
+- 2026-05-18: Prepared T-111 with focused coverage expectations for the
+  server-side artwork-linked Shopify product resolver, refactored
+  `ArtworkShopSection`, and touched artwork loaders.
+- 2026-05-18: Completed T-111 with focused resolver, component, and loader
+  tests covering server-side product grouping, skipped invalid/unavailable/
+  failed links, removed browser product fetches, and grouped section rendering.
+- 2026-05-18: Prepared T-112 with focused breadcrumb structured-data coverage
+  expectations for helper output, rendered scripts, missing data, and preserved
+  no-commerce-claims product JSON-LD.
+- 2026-05-18: Completed T-112 by adding
+  `__tests__/unit/deployment/publicBreadcrumbStructuredData.test.tsx` for
+  breadcrumb helper output, entity-plus-breadcrumb script rendering, missing
+  and failed lookup null behavior, descriptive-only product structured data,
+  and no same-app HTTP in the structured-data path. The focused metadata
+  regression suites, lint, build, and `git diff --check` passed.
+- 2026-05-18: Prepared T-113 with focused dynamic sitemap coverage
+  expectations for stable plus detail URLs, duplicate/private exclusions, and
+  graceful dynamic-source failure behavior.
+- 2026-05-18: Completed T-113 with
+  `__tests__/unit/deployment/publicDynamicSitemap.test.ts` covering stable plus
+  dynamic public detail URLs, canonical URL generation, duplicate and malformed
+  path exclusion, private path exclusion, and graceful scoped source failures.
+  The existing public metadata discovery test now awaits the async sitemap
+  output with dynamic data mocked out. Focused Jest, lint, build, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-114 with focused public smoke-script coverage
+  expectations for `/robots.txt` and `/sitemap.xml` status/content assertions,
+  actionable failure output, and preserved existing route smoke behavior.
+- 2026-05-18: Completed T-114 with
+  `__tests__/unit/deployment/publicSmokeDiscoveryEndpoints.test.ts` covering
+  successful discovery endpoint output, missing robots sitemap-directive
+  failure output without raw body dumping, and private sitemap path failure
+  output. Focused Jest, `npm run smoke:public -- --help`, lint, build, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-115 with focused Shopify fetch-policy coverage
+  expectations for development and production request options, plus existing
+  product transform and dynamic sitemap regression coverage.
 
 ## Next Agent Action
 
-For the next A-010 implementation slice, add similarly focused coverage for
-the assigned surface. Keep route-local cache policy, discovery endpoint smoke
-checks, remaining route-specific metadata, and artwork-to-shop SSR discovery
-coverage separate until those implementation slices are assigned.
+Assign T-115 for focused Shopify fetch-policy coverage:
+[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
+Keep broader static/ISR migration separate from this fetch-option cleanup.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

@@ -2,6 +2,8 @@ import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader"
 import { BlogsSectionFeaturedSkeleton } from "@/components/sections/BlogsSectionFeatured";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
 type SortOption = (typeof validSortOptions)[number];
 

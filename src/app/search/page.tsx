@@ -11,6 +11,8 @@ import type {
 } from "@/lib/data/types/searchTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
 
+export const dynamic = "force-dynamic";
+
 type SearchPageProps = {
   searchParams: SearchQueryInput;
 };

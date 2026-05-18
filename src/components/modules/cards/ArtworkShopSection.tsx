@@ -1,138 +1,24 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
-import { SimpleProduct } from "@/lib/data/types/shopify";
-import {
-  getShopifyProductsByType,
-  hasShopifyProductType,
-} from "@/lib/data/types/shopifyTypes";
+import type { ArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { ShoppingCart, BookOpen, Palette } from "lucide-react";
 
 type ArtworkShopSectionProps = {
   artwork: ArtworkFrontend;
+  shopProducts?: ArtworkShopProducts;
 };
 
-type ShopProductResponse =
-  | { success: true; data: SimpleProduct }
-  | { success: false; error: string };
-
-const fetchShopifyProduct = async (
-  productId: string
-): Promise<SimpleProduct | null> => {
-  const res = await fetch(
-    `/api/v2/public/shop/products/${encodeURIComponent(productId)}`
-  );
-
-  if (!res.ok) {
-    return null;
-  }
-
-  const result = (await res.json()) as ShopProductResponse;
-  return result.success ? result.data : null;
-};
-
-const isSimpleProduct = (
-  product: SimpleProduct | null
-): product is SimpleProduct => product !== null;
-
-const ArtworkShopSection = ({ artwork }: ArtworkShopSectionProps) => {
-  const [originalProduct, setOriginalProduct] = useState<SimpleProduct | null>(
-    null
-  );
-  const [printProducts, setPrintProducts] = useState<SimpleProduct[]>([]);
-  const [bookProducts, setBookProducts] = useState<SimpleProduct[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!artwork.shopifyProducts || artwork.shopifyProducts.length === 0) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        // Fetch original
-        const originals = getShopifyProductsByType(
-          artwork.shopifyProducts,
-          "original"
-        );
-        if (originals.length > 0) {
-          const product = await fetchShopifyProduct(originals[0].productId);
-          setOriginalProduct(product);
-        }
-
-        // Fetch prints
-        const prints = getShopifyProductsByType(
-          artwork.shopifyProducts,
-          "print"
-        );
-        if (prints.length > 0) {
-          const printData = await Promise.all(
-            prints.map((p) => fetchShopifyProduct(p.productId))
-          );
-          setPrintProducts(printData.filter(isSimpleProduct));
-        }
-
-        // Fetch books
-        const books = getShopifyProductsByType(artwork.shopifyProducts, "book");
-        if (books.length > 0) {
-          const bookData = await Promise.all(
-            books.map((b) => fetchShopifyProduct(b.productId))
-          );
-          setBookProducts(bookData.filter(isSimpleProduct));
-        }
-      } catch (error) {
-        console.error(
-          "Error fetching Shopify products in ArtworkShopSection: ",
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [artwork]);
-
+const ArtworkShopSection = ({
+  artwork,
+  shopProducts = { original: null, prints: [], books: [] },
+}: ArtworkShopSectionProps) => {
   // Don't show section if no Shopify products
   if (!artwork.shopifyProducts || artwork.shopifyProducts.length === 0) {
     return null;
   }
 
-  // Show quick badges while loading
-  const hasOriginal = hasShopifyProductType(
-    artwork.shopifyProducts,
-    "original"
-  );
-  const hasPrints = hasShopifyProductType(artwork.shopifyProducts, "print");
-  const hasBooks = hasShopifyProductType(artwork.shopifyProducts, "book");
-
-  if (loading) {
-    return (
-      <div className="bg-gray-50 border-t border-gray-200 p-6">
-        <h3 className="text-xl font-semibold mb-4">Available for Purchase</h3>
-        <div className="flex gap-2">
-          {hasOriginal && (
-            <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-              Original Available
-            </span>
-          )}
-          {hasPrints && (
-            <span className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
-              Prints Available
-            </span>
-          )}
-          {hasBooks && (
-            <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-              Featured in Books
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }
+  const { original: originalProduct, prints: printProducts, books: bookProducts } =
+    shopProducts;
 
   return (
     <div className="bg-gray-50 border-t border-gray-200 p-6">

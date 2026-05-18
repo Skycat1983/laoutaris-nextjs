@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { BlogDetailLoader } from "@/components/loaders/viewLoaders/BlogDetailLoader";
-import { BlogPostJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { BlogPostStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import { BlogDetailSkeleton } from "@/components/views/BlogDetail";
 import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
 import {
@@ -9,6 +9,8 @@ import {
   buildMissingPublicDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+
+export const dynamic = "force-dynamic";
 
 type BlogSlugPageProps = {
   params: { slug: string };
@@ -40,7 +42,7 @@ export default async function BlogSlug({
   return (
     <main className="flex min-h-screen flex-col items-center justify-between px-12 py-4 container mx-auto">
       <Suspense fallback={null}>
-        <BlogPostJsonLd slug={params.slug} />
+        <BlogPostStructuredData slug={params.slug} />
       </Suspense>
       <Suspense fallback={<BlogDetailSkeleton />}>
         <BlogDetailLoader slug={params.slug} showComments={showComments} />

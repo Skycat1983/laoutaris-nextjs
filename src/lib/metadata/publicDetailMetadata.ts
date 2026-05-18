@@ -58,7 +58,23 @@ const detailPath = (
   slug: string
 ) => `${basePath}/${encodeURIComponent(slug)}`;
 
-const collectionArtworkPath = (collectionSlug: string, artworkId: string) =>
+export const articleDetailPath = (slug: string) => detailPath("/biography", slug);
+
+export const blogDetailPath = (slug: string) => detailPath("/blog", slug);
+
+export const artworkDetailPath = (artworkId: string) =>
+  detailPath("/artwork", artworkId);
+
+export const productDetailPath = (productHandle: string) =>
+  detailPath("/shop/products", productHandle);
+
+export const collectionDetailPath = (collectionSlug: string) =>
+  `/collections/${encodeURIComponent(collectionSlug)}`;
+
+export const collectionArtworkPath = (
+  collectionSlug: string,
+  artworkId: string
+) =>
   `/collections/${encodeURIComponent(collectionSlug)}/${encodeURIComponent(
     artworkId
   )}`;
@@ -164,7 +180,7 @@ export const buildArticleDetailMetadata = (
 ): Metadata => {
   const title = normalizeText(article.title);
   const description = getDescription(article);
-  const canonicalUrl = getPublicSitePathUrl(detailPath("/biography", article.slug));
+  const canonicalUrl = getPublicSitePathUrl(articleDetailPath(article.slug));
   const images = article.imageUrl
     ? [
         {
@@ -202,7 +218,7 @@ export const buildBlogDetailMetadata = (
 ): Metadata => {
   const title = normalizeText(blog.title);
   const description = getDescription(blog);
-  const canonicalUrl = getPublicSitePathUrl(detailPath("/blog", blog.slug));
+  const canonicalUrl = getPublicSitePathUrl(blogDetailPath(blog.slug));
   const publishedTime = toIsoDate(blog.displayDate);
   const images = blog.imageUrl
     ? [
@@ -243,7 +259,7 @@ export const buildArtworkDetailMetadata = (
 ): Metadata =>
   artworkMetadata(
     artwork,
-    getPublicSitePathUrl(detailPath("/artwork", artwork._id))
+    getPublicSitePathUrl(artworkDetailPath(artwork._id))
   );
 
 export const buildCollectionArtworkDetailMetadata = (
@@ -264,7 +280,7 @@ export const buildProductDetailMetadata = (
   const title = normalizeText(product.title);
   const description = productDescription(product);
   const canonicalUrl = getPublicSitePathUrl(
-    detailPath("/shop/products", product.handle)
+    productDetailPath(product.handle)
   );
   const images = product.image
     ? [
@@ -321,11 +337,11 @@ export const buildArticleJsonLd = (
   articleJsonLdBase(
     article,
     "Article",
-    getPublicSitePathUrl(detailPath("/biography", article.slug))
+    getPublicSitePathUrl(articleDetailPath(article.slug))
   );
 
 export const buildBlogJsonLd = (blog: PublicBlogDetailContent): JsonLdObject => {
-  const canonicalUrl = getPublicSitePathUrl(detailPath("/blog", blog.slug));
+  const canonicalUrl = getPublicSitePathUrl(blogDetailPath(blog.slug));
   const jsonLd = articleJsonLdBase(blog, "BlogPosting", canonicalUrl);
   const publishedDate = toIsoDate(blog.displayDate);
 
@@ -342,7 +358,7 @@ export const buildBlogJsonLd = (blog: PublicBlogDetailContent): JsonLdObject => 
 
 export const buildArtworkJsonLd = (
   artwork: ArtworkFrontend,
-  canonicalUrl = getPublicSitePathUrl(detailPath("/artwork", artwork._id)),
+  canonicalUrl = getPublicSitePathUrl(artworkDetailPath(artwork._id)),
   collectionTitle?: string
 ): JsonLdObject => ({
   "@context": "https://schema.org",
@@ -378,7 +394,7 @@ export const buildCollectionArtworkJsonLd = (
 
 export const buildProductJsonLd = (product: SimpleProduct): JsonLdObject => {
   const canonicalUrl = getPublicSitePathUrl(
-    detailPath("/shop/products", product.handle)
+    productDetailPath(product.handle)
   );
   const jsonLd: JsonLdObject = {
     "@context": "https://schema.org",
@@ -409,6 +425,77 @@ export const buildProductJsonLd = (product: SimpleProduct): JsonLdObject => {
 
   return jsonLd;
 };
+
+type PublicBreadcrumbItem = {
+  name: string;
+  path: string;
+};
+
+export const buildBreadcrumbListJsonLd = (
+  items: PublicBreadcrumbItem[]
+): JsonLdObject => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: normalizeText(item.name),
+    item: getPublicSitePathUrl(item.path),
+  })),
+});
+
+export const buildArticleBreadcrumbJsonLd = (
+  article: PublicDetailContent
+): JsonLdObject =>
+  buildBreadcrumbListJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Biography", path: "/biography" },
+    { name: article.title, path: articleDetailPath(article.slug) },
+  ]);
+
+export const buildBlogBreadcrumbJsonLd = (
+  blog: PublicBlogDetailContent
+): JsonLdObject =>
+  buildBreadcrumbListJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: blog.title, path: blogDetailPath(blog.slug) },
+  ]);
+
+export const buildArtworkBreadcrumbJsonLd = (
+  artwork: ArtworkFrontend
+): JsonLdObject =>
+  buildBreadcrumbListJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Artwork", path: "/artwork" },
+    { name: artwork.title, path: artworkDetailPath(artwork._id) },
+  ]);
+
+export const buildCollectionArtworkBreadcrumbJsonLd = (
+  collection: CollectionFrontendPopulated
+): JsonLdObject => {
+  const artwork = collection.artworks[0];
+
+  return buildBreadcrumbListJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Collections", path: "/collections" },
+    { name: collection.title, path: collectionDetailPath(collection.slug) },
+    {
+      name: artwork.title,
+      path: collectionArtworkPath(collection.slug, artwork._id),
+    },
+  ]);
+};
+
+export const buildProductBreadcrumbJsonLd = (
+  product: SimpleProduct
+): JsonLdObject =>
+  buildBreadcrumbListJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/shop" },
+    { name: "Products", path: "/shop/products" },
+    { name: product.title, path: productDetailPath(product.handle) },
+  ]);
 
 export const serializeJsonLd = (jsonLd: JsonLdObject) =>
   JSON.stringify(jsonLd).replace(/</g, "\\u003c");

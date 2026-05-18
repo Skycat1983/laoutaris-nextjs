@@ -83,6 +83,8 @@ Copy this template into the active task, incident note, or deployment handoff.
   - GET /blog/<smoke-blog-slug>:
   - GET /search?q=<smoke-query>:
   - GET /shop/products:
+  - GET /robots.txt:
+  - GET /sitemap.xml:
   - GET /shop/products/<smoke-product-handle>:
   - GET /shop/products/<known-missing-product-handle>:
   - GET /api/auth/signin:
@@ -118,6 +120,8 @@ record and note that substitution in the evidence.
 | Blog detail | `GET /blog/<smoke-blog-slug>` | `200` for an approved blog slug. |
 | Search | `GET /search?q=<smoke-query>` | `200`; empty results are acceptable only if the query is expected to be empty. |
 | Shop listing | `GET /shop/products` | `200`; Shopify failures are deployment-blocking unless confirmed as an external outage. |
+| Robots discovery | `GET /robots.txt` | `200`, includes an absolute `Sitemap:` directive for `/sitemap.xml`. |
+| Sitemap discovery | `GET /sitemap.xml` | `200`, XML-like sitemap output containing stable public archive URLs and no `/admin`, `/account`, or `/api` URL paths. |
 | Product detail | `GET /shop/products/<smoke-product-handle>` | `200` for an approved product handle. |
 | Product not found | `GET /shop/products/<known-missing-product-handle>` | `404`, not `500`. |
 | Sign-in shell | `GET /api/auth/signin` | `200`, no provider/config crash. |
@@ -151,6 +155,9 @@ The script checks:
 
 - Public list/status routes: home, artwork list, collections entry, blog list,
   search, and shop listing.
+- Discovery endpoints: `/robots.txt` and `/sitemap.xml`, including
+  conservative content checks for the sitemap directive, stable public sitemap
+  URLs, and absence of private/admin/account/API sitemap paths.
 - Optional detail routes when the smoke record variables are present.
 - Product not-found behavior with `SMOKE_MISSING_PRODUCT_HANDLE`, defaulting to
   `codex-smoke-missing-product`.
@@ -163,8 +170,12 @@ Script limitations:
 - It does not prove credentials sign-in, sign-out, non-admin denial after login,
   or admin dashboard access.
 - It does not inspect Vercel logs.
-- It checks HTTP status, redirect destination where relevant, and timing only;
-  it does not validate page content.
+- It checks HTTP status, redirect destination where relevant, discovery
+  endpoint content, and timing only; it does not validate ordinary page
+  content.
+- It does not require dynamic detail URLs to appear in `/sitemap.xml`; dynamic
+  detail sitemap coverage still depends on approved records and upstream
+  archive/Shopify availability.
 - A skipped optional detail route is not a pass. Complete production evidence
   still needs approved detail records.
 

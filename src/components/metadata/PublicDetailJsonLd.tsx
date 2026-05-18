@@ -4,10 +4,15 @@ import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAu
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import {
+  buildArticleBreadcrumbJsonLd,
   buildArticleJsonLd,
+  buildArtworkBreadcrumbJsonLd,
   buildArtworkJsonLd,
+  buildBlogBreadcrumbJsonLd,
   buildBlogJsonLd,
+  buildCollectionArtworkBreadcrumbJsonLd,
   buildCollectionArtworkJsonLd,
+  buildProductBreadcrumbJsonLd,
   buildProductJsonLd,
   serializeJsonLd,
   type JsonLdObject,
@@ -28,6 +33,23 @@ function PublicJsonLdScript({ id, jsonLd }: PublicJsonLdScriptProps) {
   );
 }
 
+type PublicStructuredDataScriptsProps = {
+  entity: PublicJsonLdScriptProps;
+  breadcrumb: PublicJsonLdScriptProps;
+};
+
+function PublicStructuredDataScripts({
+  entity,
+  breadcrumb,
+}: PublicStructuredDataScriptsProps) {
+  return (
+    <>
+      <PublicJsonLdScript {...entity} />
+      <PublicJsonLdScript {...breadcrumb} />
+    </>
+  );
+}
+
 export async function BiographyArticleJsonLd({ slug }: { slug: string }) {
   try {
     const article = await getArticleBySlugPopulated(slug);
@@ -40,6 +62,35 @@ export async function BiographyArticleJsonLd({ slug }: { slug: string }) {
       <PublicJsonLdScript
         id="biography-article-json-ld"
         jsonLd={buildArticleJsonLd(article)}
+      />
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function BiographyArticleStructuredData({
+  slug,
+}: {
+  slug: string;
+}) {
+  try {
+    const article = await getArticleBySlugPopulated(slug);
+
+    if (!article) {
+      return null;
+    }
+
+    return (
+      <PublicStructuredDataScripts
+        entity={{
+          id: "biography-article-json-ld",
+          jsonLd: buildArticleJsonLd(article),
+        }}
+        breadcrumb={{
+          id: "biography-breadcrumb-json-ld",
+          jsonLd: buildArticleBreadcrumbJsonLd(article),
+        }}
       />
     );
   } catch {
@@ -63,6 +114,31 @@ export async function BlogPostJsonLd({ slug }: { slug: string }) {
   }
 }
 
+export async function BlogPostStructuredData({ slug }: { slug: string }) {
+  try {
+    const blog = await getBlogBySlugWithAuthor(slug);
+
+    if (!blog) {
+      return null;
+    }
+
+    return (
+      <PublicStructuredDataScripts
+        entity={{
+          id: "blog-post-json-ld",
+          jsonLd: buildBlogJsonLd(blog),
+        }}
+        breadcrumb={{
+          id: "blog-breadcrumb-json-ld",
+          jsonLd: buildBlogBreadcrumbJsonLd(blog),
+        }}
+      />
+    );
+  } catch {
+    return null;
+  }
+}
+
 export async function ArtworkJsonLd({ artworkId }: { artworkId: string }) {
   try {
     const artwork = await getArtworkById(artworkId);
@@ -75,6 +151,35 @@ export async function ArtworkJsonLd({ artworkId }: { artworkId: string }) {
       <PublicJsonLdScript
         id="artwork-json-ld"
         jsonLd={buildArtworkJsonLd(artwork)}
+      />
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function ArtworkStructuredData({
+  artworkId,
+}: {
+  artworkId: string;
+}) {
+  try {
+    const artwork = await getArtworkById(artworkId);
+
+    if (!artwork) {
+      return null;
+    }
+
+    return (
+      <PublicStructuredDataScripts
+        entity={{
+          id: "artwork-json-ld",
+          jsonLd: buildArtworkJsonLd(artwork),
+        }}
+        breadcrumb={{
+          id: "artwork-breadcrumb-json-ld",
+          jsonLd: buildArtworkBreadcrumbJsonLd(artwork),
+        }}
       />
     );
   } catch {
@@ -107,6 +212,37 @@ export async function CollectionArtworkJsonLd({
   }
 }
 
+export async function CollectionArtworkStructuredData({
+  slug,
+  artworkId,
+}: {
+  slug: string;
+  artworkId: string;
+}) {
+  try {
+    const result = await getCollectionArtwork(slug, artworkId);
+
+    if (result.status !== "found") {
+      return null;
+    }
+
+    return (
+      <PublicStructuredDataScripts
+        entity={{
+          id: "collection-artwork-json-ld",
+          jsonLd: buildCollectionArtworkJsonLd(result.collection),
+        }}
+        breadcrumb={{
+          id: "collection-artwork-breadcrumb-json-ld",
+          jsonLd: buildCollectionArtworkBreadcrumbJsonLd(result.collection),
+        }}
+      />
+    );
+  } catch {
+    return null;
+  }
+}
+
 export async function ProductJsonLd({
   productHandle,
 }: {
@@ -123,6 +259,35 @@ export async function ProductJsonLd({
       <PublicJsonLdScript
         id="product-json-ld"
         jsonLd={buildProductJsonLd(product)}
+      />
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function ProductStructuredData({
+  productHandle,
+}: {
+  productHandle: string;
+}) {
+  try {
+    const product = await getProductByHandle(productHandle);
+
+    if (!product) {
+      return null;
+    }
+
+    return (
+      <PublicStructuredDataScripts
+        entity={{
+          id: "product-json-ld",
+          jsonLd: buildProductJsonLd(product),
+        }}
+        breadcrumb={{
+          id: "product-breadcrumb-json-ld",
+          jsonLd: buildProductBreadcrumbJsonLd(product),
+        }}
       />
     );
   } catch {

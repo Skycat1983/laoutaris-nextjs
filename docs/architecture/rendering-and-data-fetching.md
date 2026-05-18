@@ -20,6 +20,28 @@ when it improves reliability, SEO, shareability, or first load behavior. Client
 components should be used for interaction after initial render, such as filters,
 sort controls, forms, drawers, and account actions.
 
+## Public Route Rendering And Cache Policy
+
+T-102 removed the global root-layout and middleware auth blockers from public
+routes. Public rendering and cache ownership is now route-local. The policy is
+conservative: routes that depend on request query params, session-aware UI,
+MongoDB data freshness, or Shopify reads remain explicitly dynamic until a
+separate static/ISR task defines build-time data access, params, and freshness
+requirements.
+
+No public route uses `revalidate` in the current policy.
+`generateStaticParams()` is deferred for content and commerce detail routes
+until owner-approved data freshness, build-time MongoDB/Shopify availability,
+and detail-param coverage are defined.
+
+| Route group | Current route examples | Current cache policy | Owner/blocker |
+| --- | --- | --- | --- |
+| Stable static shell | `/biography`, `/collections`, `/project`, `/project/about`, `/project/aims`, `/project/film`, `/shop` | Leave without forced dynamic config, ISR config, or generated params. These routes can prerender when their current shell/redirect behavior allows it. | Keep root layout and middleware free of global DB/session work. Revisit if route-local loaders are added. |
+| Query-driven public browse/search | `/artwork`, `/blog`, `/search`, `/shop/products`, `/project/contact` | `dynamic = "force-dynamic"` is explicit. Query params select filters, sort, pagination, search terms, or product enquiry context and should not be silently treated as static. | A future ISR/static task must first define canonical query variants or split static shells from query results. |
+| DB-backed public detail/redirect | `/artwork/[artworkId]`, `/biography/[slug]`, `/blog/[slug]`, `/collections/[slug]`, `/collections/[slug]/[artworkId]` | `dynamic = "force-dynamic"` is explicit. These routes read owner-controlled MongoDB content at request time for detail content, redirect targets, metadata, JSON-LD, or saved-item state. | Static params and ISR are deferred until content freshness, not-found behavior, and build-time DB access are approved. |
+| Shopify-backed public commerce | `/shop/products`, `/shop/products/[productHandle]` | `dynamic = "force-dynamic"` is explicit. Shopify product availability, metadata, and linked artwork reads remain request-time behavior. | Future commerce cache policy must define Shopify freshness, product-handle coverage, and fallback behavior. |
+| Session-aware public UI | `/`, `/artwork/[artworkId]` | `dynamic = "force-dynamic"` is explicit. The home page includes subscription session state, and artwork detail reads session user context for saved-item ownership. | Split session-only islands or define a separate personalized-data strategy before static rendering. |
+
 ## Accepted Server Data Pattern
 
 [ADR 0004](../decisions/0004-server-data-access-ownership.md) accepts direct

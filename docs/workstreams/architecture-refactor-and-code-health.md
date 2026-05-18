@@ -133,8 +133,8 @@ or inconsistent code forward.
 - A-010 found the next rendering architecture gap: despite completed self-HTTP
   cleanup, public routes still build as dynamic because root layout performs
   request-time DB/session work and middleware parses tokens before protected
-  route checks. It also found artwork-to-shop discovery remains client-fetch
-  dependent on artwork detail pages.
+  route checks. T-111 closed the artwork-to-shop discovery client-fetch gap for
+  artwork detail pages.
 - T-088 removed direct DB helper logging and stale commented MongoDB
   connection/OAuth callback examples from `src/lib/db` while preserving the
   existing connection/retry/cache behavior and adapter-created user defaults.
@@ -438,12 +438,33 @@ Use targeted import/reference searches for pruning tasks.
   early for unprotected public paths before calling `getToken()`. Remaining
   dynamic public routes are now explicit route-local cache/data/session follow-
   ups instead of global shell blockers.
+- 2026-05-18: Prepared T-110 to codify route-local public rendering/cache
+  policy, document the public route matrix, and add conservative segment
+  configs or source invariants where current dynamic behavior is intentional.
+- 2026-05-18: Completed T-110 by making route-local public rendering/cache
+  ownership explicit in the rendering architecture doc, adding conservative
+  `force-dynamic` segment config to public pages already dynamic after T-102,
+  and adding source invariants that prevent accidental ISR/static-param claims.
+- 2026-05-18: Prepared T-111 to replace artwork-to-shop client fetches with a
+  server-side resolver feeding the artwork detail view path.
+- 2026-05-18: Completed T-111 by adding a server-only artwork-linked Shopify
+  product resolver and threading its grouped summaries through the artwork
+  detail loader/view path, removing `ArtworkShopSection` browser product
+  fetches.
+- 2026-05-18: Prepared T-115 as the narrow F-026 Shopify fetch cache policy
+  cleanup for the `cache`/`next.revalidate` conflict surfaced by sitemap
+  builds. Keep broader static/ISR migration and account/admin cache policy
+  separate.
 
 ## Next Agent Action
 
-Choose a route-local rendering follow-up from the T-102 build output, such as
-cache/ISR policy for dynamic public loaders or artwork-to-shop SSR discovery.
-Keep those separate from broader route-builder and source-pruning work.
+Assign T-115 for the narrow Shopify fetch cache policy cleanup:
+[T-115 Clean Up Shopify Fetch Cache Policy](../tasks/T-115-clean-up-shopify-fetch-cache-policy.md).
+
+After T-115, choose the next architecture slice from broad route-builder work,
+client/server import boundary cleanup, staged source-pruning work, or remaining
+route-local rendering follow-ups. Keep broad static/ISR migration separate
+until a dedicated cache-freshness and route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

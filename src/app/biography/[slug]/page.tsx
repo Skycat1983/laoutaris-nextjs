@@ -2,13 +2,15 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import ArticleViewSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
-import { BiographyArticleJsonLd } from "@/components/metadata/PublicDetailJsonLd";
+import { BiographyArticleStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import {
   buildArticleDetailMetadata,
   buildMissingPublicDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+
+export const dynamic = "force-dynamic";
 
 type BiographySlugPageProps = {
   params: { slug: string };
@@ -38,7 +40,7 @@ export default async function BiographySlugPage({
   return (
     <>
       <Suspense fallback={null}>
-        <BiographyArticleJsonLd slug={slug} />
+        <BiographyArticleStructuredData slug={slug} />
       </Suspense>
       <Suspense fallback={<ArticleViewSkeleton />}>
         <ArticleLoader slug={slug} section="biography" />

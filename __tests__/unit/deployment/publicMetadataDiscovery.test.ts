@@ -4,6 +4,12 @@ import robots from "@/app/robots";
 import sitemap, { stablePublicSitemapRoutes } from "@/app/sitemap";
 import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 
+jest.mock("server-only", () => ({}), { virtual: true });
+
+jest.mock("@/lib/metadata/publicDynamicSitemap", () => ({
+  getDynamicPublicSitemapEntries: jest.fn().mockResolvedValue([]),
+}));
+
 const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
@@ -50,8 +56,8 @@ describe("public metadata and discovery files", () => {
     });
   });
 
-  it("lists only stable public sitemap routes without live data coupling", () => {
-    const entries = sitemap();
+  it("keeps stable public sitemap routes in discovery output", async () => {
+    const entries = await sitemap();
     const urls = entries.map(({ url }) => url);
 
     expect(urls).toEqual(

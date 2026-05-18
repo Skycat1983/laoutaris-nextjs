@@ -4,6 +4,8 @@ import ContactForm from "@/components/modules/forms/user/ContactForm";
 import { normalizeProductHandle } from "@/lib/data/schemas/enquirySchema";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 interface ContactPageProps {
   searchParams?: {
     product?: string | string[];

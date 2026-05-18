@@ -3,6 +3,18 @@
 const DEFAULT_TIMEOUT_MS = 15000;
 const DEFAULT_SEARCH_QUERY = "art";
 const DEFAULT_MISSING_PRODUCT_HANDLE = "codex-smoke-missing-product";
+const REQUIRED_SITEMAP_PATHS = [
+  "/",
+  "/artwork",
+  "/collections",
+  "/biography",
+  "/blog",
+  "/project/about",
+  "/project/contact",
+  "/shop/products",
+  "/search",
+];
+const PRIVATE_SITEMAP_PREFIXES = ["/admin", "/account", "/api"];
 
 const optionNames = new Set([
   "base-url",
@@ -34,8 +46,9 @@ Environment alternatives:
   SMOKE_MISSING_PRODUCT_HANDLE
 
 This checks unauthenticated public route statuses and the unauthenticated admin
-redirect. It does not perform credentials sign-in, admin dashboard access, or
-Vercel log inspection.`);
+redirect. It also checks /robots.txt and /sitemap.xml status plus conservative
+discovery content. It does not perform credentials sign-in, admin dashboard
+access, or Vercel log inspection.`);
 };
 
 const toCamelCase = (name) =>
@@ -120,6 +133,96 @@ const pathWithSearch = (path, params) => {
   return `${path}?${searchParams.toString()}`;
 };
 
+const normalizePathname = (pathname) => {
+  const normalized = pathname.replace(/\/+$/, "");
+  return normalized || "/";
+};
+
+const decodeXmlText = (value) =>
+  value
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'");
+
+const validateRobotsTxt = (body) => {
+  const sitemapLine = body.match(/^\s*Sitemap:\s*(\S+)\s*$/im);
+
+  if (!sitemapLine) {
+    return "expected a Sitemap: directive";
+  }
+
+  try {
+    const sitemapUrl = new URL(sitemapLine[1]);
+
+    if (!["http:", "https:"].includes(sitemapUrl.protocol)) {
+      return "expected the Sitemap: directive to use an HTTP(S) URL";
+    }
+
+    if (normalizePathname(sitemapUrl.pathname) !== "/sitemap.xml") {
+      return "expected the Sitemap: directive to reference /sitemap.xml";
+    }
+  } catch {
+    return "expected the Sitemap: directive to contain an absolute URL";
+  }
+
+  return null;
+};
+
+const extractSitemapPaths = (body) => {
+  const locValues = [...body.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map(
+    (match) => decodeXmlText(match[1].trim())
+  );
+
+  return locValues.map((locValue) => {
+    try {
+      return normalizePathname(new URL(locValue).pathname);
+    } catch {
+      return null;
+    }
+  });
+};
+
+const validateSitemapXml = (body) => {
+  const trimmedBody = body.trim();
+
+  if (!trimmedBody.startsWith("<?xml") && !trimmedBody.startsWith("<urlset")) {
+    return "expected XML-like sitemap output";
+  }
+
+  if (!/<urlset\b/i.test(body)) {
+    return "expected a <urlset> root";
+  }
+
+  const sitemapPaths = extractSitemapPaths(body);
+  const validPaths = sitemapPaths.filter(Boolean);
+
+  if (validPaths.length === 0) {
+    return "expected at least one absolute <loc> URL";
+  }
+
+  const missingPaths = REQUIRED_SITEMAP_PATHS.filter(
+    (requiredPath) => !validPaths.includes(requiredPath)
+  );
+
+  if (missingPaths.length > 0) {
+    return `missing stable public sitemap paths: ${missingPaths.join(", ")}`;
+  }
+
+  const privatePaths = validPaths.filter((path) =>
+    PRIVATE_SITEMAP_PREFIXES.some(
+      (prefix) => path === prefix || path.startsWith(`${prefix}/`)
+    )
+  );
+
+  if (privatePaths.length > 0) {
+    return `sitemap includes private paths: ${privatePaths.join(", ")}`;
+  }
+
+  return null;
+};
+
 const makeChecks = (options) => {
   const searchQuery = readOption(
     options,
@@ -165,6 +268,18 @@ const makeChecks = (options) => {
       name: "Shop listing",
       path: "/shop/products",
       expectedStatuses: [200],
+    },
+    {
+      name: "Robots discovery",
+      path: "/robots.txt",
+      expectedStatuses: [200],
+      validateBody: validateRobotsTxt,
+    },
+    {
+      name: "Sitemap discovery",
+      path: "/sitemap.xml",
+      expectedStatuses: [200],
+      validateBody: validateSitemapXml,
     },
     {
       name: "Product not found",
@@ -295,11 +410,18 @@ const requestCheck = async (baseUrl, check, timeoutMs) => {
     const locationMatches = check.expectedLocationIncludes
       ? location?.includes(check.expectedLocationIncludes) ?? false
       : true;
+    const bodyCheckError =
+      statusMatches && locationMatches && check.validateBody
+        ? check.validateBody(await response.text(), { baseUrl, check })
+        : null;
 
     return {
       name: check.name,
       path: check.path,
-      status: statusMatches && locationMatches ? "passed" : "failed",
+      status:
+        statusMatches && locationMatches && !bodyCheckError
+          ? "passed"
+          : "failed",
       httpStatus: response.status,
       expectedStatuses: check.expectedStatuses,
       location,
@@ -307,6 +429,7 @@ const requestCheck = async (baseUrl, check, timeoutMs) => {
       redirected: response.redirected,
       finalUrl: response.url,
       durationMs,
+      bodyCheckError,
       note: check.note,
     };
   } catch (error) {
@@ -335,6 +458,8 @@ const formatResult = (result) => {
   const expected = result.expectedStatuses?.join(", ") ?? "n/a";
   const detail = result.error
     ? result.error
+    : result.bodyCheckError
+      ? `body check failed: ${result.bodyCheckError}`
     : `received ${result.httpStatus}, expected ${expected}`;
   const locationDetail = result.expectedLocationIncludes
     ? `, location ${result.location ?? "missing"}`
