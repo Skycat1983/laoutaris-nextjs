@@ -1,11 +1,15 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET } from "@/app/api/v2/public/shop/products/[productId]/route";
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
 import { SimpleProduct } from "@/lib/data/types/shopify";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -19,7 +23,11 @@ const mockGetProductById = getProductById as jest.MockedFunction<
   typeof getProductById
 >;
 
-const request = {} as never;
+const requestId = "req-shop-product-detail";
+const request = {
+  method: "GET",
+  headers: new Headers({ "x-request-id": requestId }),
+} as never;
 
 const createParams = (productId: string) => ({
   params: { productId },
@@ -108,14 +116,26 @@ describe("GET /api/v2/public/shop/products/[productId]", () => {
 
     const response = await GET(request, createParams("123456"));
     const body = await response.json();
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
     expect(response.status).toBe(502);
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
     expect(mockGetProductById).toHaveBeenCalledWith(
       "gid://shopify/Product/123456"
     );
     expect(body).toEqual({
       success: false,
       error: "Failed to fetch product",
+      requestId,
     });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId,
+        route: "/api/v2/public/shop/products/[productId]",
+        method: "GET",
+        errorLabel: "shop_product_detail_read_failed",
+      })
+    );
+    expect(JSON.stringify(body)).not.toContain("private upstream detail");
   });
 });

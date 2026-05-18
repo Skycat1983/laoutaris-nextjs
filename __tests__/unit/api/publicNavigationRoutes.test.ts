@@ -9,12 +9,14 @@ import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigati
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import dbConnect from "@/lib/db/mongodb";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { transformCollectionPopulated } from "@/lib/transforms";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -73,7 +75,11 @@ const mockTransformCollectionPopulated =
     typeof transformCollectionPopulated
   >;
 
-const request = {} as never;
+const requestId = "req-public-navigation";
+const request = {
+  method: "GET",
+  headers: new Headers({ "x-request-id": requestId }),
+} as never;
 
 const createArticleParams = (section = "biography") => ({
   params: { section },
@@ -187,13 +193,24 @@ describe("public navigation routes", () => {
         createArticleParams("biography") as never
       );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch article navigation",
         error: "Failed to fetch article navigation",
+        requestId,
       });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/public/navigation/articles/[section]",
+          method: "GET",
+          errorLabel: "article_navigation_read_failed",
+        })
+      );
       expect(JSON.stringify(body)).not.toContain("private article nav");
     });
   });
@@ -267,11 +284,12 @@ describe("public navigation routes", () => {
       const body = await response.json();
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection navigation",
         error: "Failed to fetch collection navigation",
-        requestId: expect.any(String),
+        requestId,
       });
       expect(JSON.stringify(body)).not.toContain("private collection nav");
     });
@@ -329,13 +347,24 @@ describe("public navigation routes", () => {
         createCollectionParams("paintings")
       );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection navigation",
         error: "Failed to fetch collection navigation",
+        requestId,
       });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/public/navigation/collections/[slug]",
+          method: "GET",
+          errorLabel: "collection_navigation_detail_read_failed",
+        })
+      );
       expect(JSON.stringify(body)).not.toContain(
         "private collection detail nav"
       );
@@ -408,13 +437,24 @@ describe("public navigation routes", () => {
         createCollectionParams("paintings")
       );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to fetch collection artworks navigation",
         error: "Failed to fetch collection artworks navigation",
+        requestId,
       });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/public/navigation/collections/[slug]/artworks",
+          method: "GET",
+          errorLabel: "collection_artworks_navigation_read_failed",
+        })
+      );
       expect(JSON.stringify(body)).not.toContain(
         "private collection artwork nav"
       );

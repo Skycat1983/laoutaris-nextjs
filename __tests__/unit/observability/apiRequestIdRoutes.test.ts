@@ -233,4 +233,24 @@ describe("API request IDs on migrated route failures", () => {
       expect(routeSource).not.toContain("console.error(");
     }
   });
+
+  it("keeps migrated public discovery and shop route files free of route-level console.error calls", () => {
+    const migratedRouteFiles = [
+      "src/app/api/v2/public/search/route.ts",
+      "src/app/api/v2/public/navigation/articles/[section]/route.ts",
+      "src/app/api/v2/public/navigation/collections/[slug]/route.ts",
+      "src/app/api/v2/public/navigation/collections/[slug]/artworks/route.ts",
+      "src/app/api/v2/public/shop/products/route.ts",
+      "src/app/api/v2/public/shop/products/[productId]/route.ts",
+    ];
+
+    for (const routeFile of migratedRouteFiles) {
+      const routeSource = fs.readFileSync(
+        path.join(process.cwd(), routeFile),
+        "utf8"
+      );
+
+      expect(routeSource).not.toContain("console.error(");
+    }
+  });
 });

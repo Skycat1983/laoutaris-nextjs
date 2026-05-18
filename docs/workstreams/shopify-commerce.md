@@ -342,12 +342,24 @@ Add targeted tests as shop behavior is hardened.
   `cache` and `next.revalidate`, focused request-option coverage was added for
   development and production modes, and build passed without the prior
   `/sitemap.xml` Shopify fetch warning.
+- 2026-05-18: Prepared T-118 to migrate public shop product API route failure
+  logging onto request IDs and structured redacted logging alongside the
+  remaining public search/navigation route slice. Checkout, product detail UI,
+  pagination, sorting, and Shopify validation behavior remain separate.
+- 2026-05-18: Completed the T-118 Shopify route slice: public shop product list
+  `500` failures and single-product upstream `502` failures now use
+  request-context structured logging and return public request IDs plus
+  `X-Request-Id`, while success, validation `400`, missing-resource `404`,
+  Shopify ID normalization, fetch behavior, client fetcher contracts, checkout,
+  product detail UI, pagination, sorting, and Shopify validation behavior were
+  preserved.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff, commerce assurance
-copy alignment, remaining product-detail contract coverage, product pagination,
-or server-side sorting. Keep those separate unless explicitly assigned.
+Choose the next Shopify backlog slice from checkout handoff,
+commerce assurance copy alignment, remaining product-detail contract coverage,
+product pagination, or server-side sorting. Keep those separate unless
+explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

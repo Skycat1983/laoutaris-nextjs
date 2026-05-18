@@ -1233,14 +1233,26 @@ npm run lint
   redaction from public bodies, and source hygiene across the migrated public
   content route files. Focused Jest, lint, build, scoped `console.error()`
   source search, and `git diff --check` passed.
+- 2026-05-18: Prepared T-118 with focused coverage expectations for public
+  search, navigation, shop list, and shop detail internal/upstream failure
+  paths, including propagated/generated request IDs, `X-Request-Id`, and source
+  hygiene against direct route-level `console.error()`.
+- 2026-05-18: Completed T-118 by extending focused public search, navigation,
+  shop list, shop detail, and observability route tests for representative
+  failure paths, propagated and generated request IDs, response
+  `X-Request-Id`, structured log context, private-message redaction from public
+  bodies, and source hygiene across the migrated public search/navigation/shop
+  route files. Focused Jest, lint, build, scoped `console.error()` source
+  search, and `git diff --check` passed.
 
 ## Next Agent Action
 
-Choose the next testing slice from CI/scheduled smoke ownership, the next
-route-level logging migration coverage, or other active quality backlog items.
-Keep broader static/ISR migration separate from the completed T-115 Shopify
-fetch-option cleanup, the docs-only T-116 runbook work, and the completed
-T-117 public content logging migration.
+Choose the next testing slice from CI/scheduled smoke ownership,
+protected/admin route-level logging migration coverage, or other active quality
+backlog items. Keep broader static/ISR migration separate from the completed
+T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work, and the
+completed T-117 public content logging migration and T-118 public
+discovery/shop logging migration.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

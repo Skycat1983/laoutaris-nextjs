@@ -778,6 +778,15 @@ Add API route tests where behavior is changed.
   structured redacted logging, real `500` responses include `requestId` and
   `X-Request-Id`, and success, validation, `404`, and legacy list pseudo-500
   bodies were preserved.
+- 2026-05-18: Prepared T-118 as the next request ID/logging migration slice for
+  public search, navigation, and shop product API internal/upstream failure
+  paths that still use direct route-level `console.error()`.
+- 2026-05-18: Completed T-118 for public search, navigation, and shop product
+  API routes. Internal/upstream failures now use request context plus
+  structured redacted logging, real `500` responses and the Shopify upstream
+  `502` response include `requestId` and `X-Request-Id`, and success,
+  validation `400`, missing-resource `404`, query parsing, Shopify ID
+  normalization, and client fetcher contracts were preserved.
 
 ## Next Agent Action
 

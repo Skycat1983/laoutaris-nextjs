@@ -5,13 +5,20 @@ import { RouteResponse } from "@/lib/data/types";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { NextRequest } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const dynamic = "force-dynamic";
 
 export const GET = async (
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { section: ArticleSection } }
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/navigation/articles/[section]"
+  );
+  const logger = createApiLogger(requestContext);
   const { section } = params;
 
   try {
@@ -30,10 +37,14 @@ export const GET = async (
       throw error;
     }
 
-    console.error("Error fetching article navigation:", error);
+    logger.error("api.public.article_navigation.failed", {
+      error,
+      errorLabel: "article_navigation_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch article navigation",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 };

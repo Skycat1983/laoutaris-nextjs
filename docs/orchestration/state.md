@@ -4,11 +4,16 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-117 is prepared as the next implementation slice from F-081/R-019:
-[Migrate public content API structured logging](../tasks/T-117-migrate-public-content-api-structured-logging.md).
-It should move a bounded public content API route slice from direct route-level
-`console.error()` internal-failure logging to the T-099 request-context and
-structured redacted logger pattern, preserving existing public contracts.
+T-118 is complete:
+[Migrate public discovery and shop API structured logging](../tasks/T-118-migrate-public-discovery-shop-api-structured-logging.md).
+It moved public search, navigation, and shop product API internal/upstream
+failure logging from direct route-level `console.error()` to the T-099
+request-context and structured redacted logger pattern, preserving existing
+public and Shopify status contracts.
+
+T-117 is complete. It migrated public article, blog, artwork, and collection
+API internal-failure paths to request-context structured logging with public
+request IDs and `X-Request-Id` where applicable.
 
 T-116 is complete. It added the durable incident-response runbook with severity
 levels, first triage steps, service checks, rollback/defer/mitigate rules,
@@ -243,8 +248,8 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-117 public content API structured logging migration task is prepared and
-ready to assign.
+T-118 public discovery/shop API structured logging migration task is complete.
+T-117 public content API structured logging migration task is complete.
 T-116 incident-response runbook task is complete.
 T-115 Shopify fetch cache policy cleanup task is complete.
 T-114 discovery endpoint smoke assertion task is complete.
@@ -308,9 +313,12 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-117 is prepared and ready to assign: migrate a bounded public content API
-  route slice from direct route-level `console.error()` to request IDs and
-  structured redacted logging.
+- T-118 is complete: public search, navigation, and shop product API failure
+  paths now use request IDs and structured redacted logging instead of direct
+  route-level `console.error()`.
+- T-117 is complete: public article, blog, artwork, and collection API
+  internal-failure paths now use request-context structured logging and public
+  request IDs where applicable.
 - T-116 is complete: the incident-response runbook now covers severity, triage,
   escalation placeholders, evidence, rollback/defer/mitigate rules, and
   post-incident follow-up.
@@ -932,17 +940,10 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign the next implementation task:
-
-```text
-/task effort: high details: docs/tasks/T-117-migrate-public-content-api-structured-logging.md
-```
-
-After T-117 is assigned or completed, choose monitoring provider selection from
-A-021, CI/scheduled smoke, the next request-ID/logging route slice,
-A-011 admin content operations, A-017 search/navigation discovery, the next
-Cloudinary follow-up from T-101, or another owner-independent implementation
-slice from reconciled findings.
+Choose monitoring provider selection from A-021, CI/scheduled smoke, the next
+protected/admin request-ID/logging route slice, A-011 admin content operations,
+A-017 search/navigation discovery, the next Cloudinary follow-up from T-101, or
+another owner-independent implementation slice from reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -951,8 +952,8 @@ them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
-T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, and T-116 are
-complete and should not be reassigned unless a regression is opened.
+T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, and
+T-117 are complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

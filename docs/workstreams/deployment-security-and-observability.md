@@ -706,13 +706,25 @@ npm run lint
   remain unchanged while adding request ID headers. Monitoring provider
   selection, instrumentation, alert automation, scheduled smoke, incident
   owner-matrix completion, and broader route migration remain separate.
+- 2026-05-18: Prepared T-118 as the next F-081/R-019 public route logging
+  migration slice for search, navigation, and shop product routes that still
+  use direct route-level `console.error()`.
+- 2026-05-18: Completed T-118 by migrating public search, navigation, and shop
+  product API internal/upstream failure paths to request-context structured
+  logging. Real `500` responses and the Shopify upstream `502` response now
+  return public request IDs plus `X-Request-Id`; success, validation, `404`,
+  and Shopify status semantics were preserved. Monitoring provider selection,
+  instrumentation, alert automation, scheduled smoke, incident owner-matrix
+  completion, protected/admin route migration, and broader route migration
+  remain separate.
 
 ## Next Agent Action
 
-Choose a separate deployment/security slice from monitoring provider selection,
-CI/scheduled smoke, the next route-level logging migration, or owner-approved
-completion of the incident-response `TBD` owner matrix. Keep owner/legal A-020
-policy work and broad static/ISR migration separate.
+Choose a separate deployment/security slice from monitoring
+provider selection, CI/scheduled smoke, protected/admin route-level logging
+migration, or owner-approved completion of the incident-response `TBD` owner
+matrix. Keep owner/legal A-020 policy work and broad static/ISR migration
+separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

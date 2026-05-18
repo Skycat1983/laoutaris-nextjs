@@ -1,10 +1,14 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET } from "@/app/api/v2/public/search/route";
 import { getPublicSearchResults } from "@/lib/data/services/getPublicSearchResults";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -18,9 +22,17 @@ const mockGetPublicSearchResults = getPublicSearchResults as jest.MockedFunction
   typeof getPublicSearchResults
 >;
 
-const createRequest = (url: string) =>
+const requestId = "req-public-search";
+
+const createRequest = (url: string, suppliedRequestId: string | null = requestId) =>
   ({
+    method: "GET",
+    headers:
+      suppliedRequestId === null
+        ? new Headers()
+        : new Headers({ "x-request-id": suppliedRequestId }),
     nextUrl: new URL(url),
+    url,
   } as never);
 
 const successResult = {
@@ -140,11 +152,45 @@ describe("GET /api/v2/public/search", () => {
       createRequest("https://example.test/api/v2/public/search?q=studio")
     );
     const body = await response.json();
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
+    expect(body).toEqual({
+      success: false,
+      error: "Failed to perform search",
+      requestId,
+    });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId,
+        route: "/api/v2/public/search",
+        method: "GET",
+        errorLabel: "public_search_failed",
+      })
+    );
+    expect(JSON.stringify(body)).not.toContain("private database detail");
+  });
+
+  it("generates a request ID for public-safe 500s when none is supplied", async () => {
+    mockGetPublicSearchResults.mockRejectedValue(
+      new Error("private generated id detail")
+    );
+
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/search?q=studio",
+        null
+      )
+    );
+    const body = await response.json();
 
     expect(response.status).toBe(500);
     expect(body).toEqual({
       success: false,
       error: "Failed to perform search",
+      requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
     });
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(body.requestId);
   });
 });

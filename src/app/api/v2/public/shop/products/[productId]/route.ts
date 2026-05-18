@@ -6,14 +6,28 @@ import {
 } from "@/lib/api/shopify/productIds";
 import { ApiErrorResponse, SingleResult } from "@/lib/data/types/apiTypes";
 import { SimpleProduct } from "@/lib/data/types/shopify";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
-const errorResponse = (error: string, status: number) =>
+const errorResponse = (
+  error: string,
+  status: number,
+  requestContext?: ReturnType<typeof createRequestContext>
+) =>
   NextResponse.json<ApiErrorResponse>(
     {
       success: false,
       error,
+      ...(requestContext === undefined
+        ? {}
+        : { requestId: requestContext.requestId }),
     },
-    { status }
+    {
+      status,
+      ...(requestContext === undefined
+        ? {}
+        : { headers: requestContext.responseHeaders }),
+    }
   );
 
 /**
@@ -24,6 +38,12 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { productId: string } }
 ) {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/shop/products/[productId]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     const { productId } = params;
     const normalizedProductId = normalizeShopifyProductIdParam(productId);
@@ -55,10 +75,10 @@ export async function GET(
       data: product,
     });
   } catch (error) {
-    console.error(
-      "Error in GET /api/v2/public/shop/products/[productId]: ",
-      error
-    );
-    return errorResponse("Failed to fetch product", 502);
+    logger.error("api.public.shop_product_detail.failed", {
+      error,
+      errorLabel: "shop_product_detail_read_failed",
+    });
+    return errorResponse("Failed to fetch product", 502, requestContext);
   }
 }

@@ -4,11 +4,18 @@ import { RouteResponse } from "@/lib/data/types";
 import { ApiCollectionNavItemResult } from "@/lib/api/public/navigation/fetchers";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const GET = async (
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { slug: string } }
 ): Promise<RouteResponse<ApiCollectionNavItemResult>> => {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/navigation/collections/[slug]"
+  );
+  const logger = createApiLogger(requestContext);
   const { slug } = params;
 
   try {
@@ -29,10 +36,14 @@ export const GET = async (
       throw error;
     }
 
-    console.error("Error fetching collection navigation:", error);
+    logger.error("api.public.collection_navigation_detail.failed", {
+      error,
+      errorLabel: "collection_navigation_detail_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch collection navigation",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 };
