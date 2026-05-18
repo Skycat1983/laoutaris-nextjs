@@ -787,8 +787,24 @@ Add API route tests where behavior is changed.
   `502` response include `requestId` and `X-Request-Id`, and success,
   validation `400`, missing-resource `404`, query parsing, Shopify ID
   normalization, and client fetcher contracts were preserved.
+- 2026-05-18: Prepared T-119 as the next request ID/logging migration slice for
+  protected user favourite, watchlist, and comment API internal-failure paths
+  that still use direct route-level `console.error()`.
+- 2026-05-18: Completed T-119 for protected user favourite, watchlist, and
+  comment API routes. Internal failures now use request context plus structured
+  redacted logging, scoped `500` responses include `requestId` and
+  `X-Request-Id`, and auth, validation `400`, missing-resource `404`,
+  forbidden `403`, ownership, transaction, success DTO, and existing
+  action/loader contracts were preserved.
+- 2026-05-18: Prepared T-120 as the next request ID/logging migration slice for
+  admin read list/detail API internal-failure paths that still use direct
+  route-level `console.error()`. Admin write/delete route migration remains
+  separate.
 
 ## Next Agent Action
+
+Assign T-120:
+`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
 
 Keep broader response helper cleanup, route-local DB ownership gaps,
 field-contract matrices, server-side shop pagination/sorting contracts, and

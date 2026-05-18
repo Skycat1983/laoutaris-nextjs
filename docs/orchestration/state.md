@@ -4,6 +4,18 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
+T-120 is prepared as the next implementation slice from F-081/R-019:
+[Migrate admin read API structured logging](../tasks/T-120-migrate-admin-read-api-structured-logging.md).
+It should move admin read route internal-failure logging from direct
+route-level `console.error()` to the T-099 request-context and structured
+redacted logger pattern while preserving shared admin guards, invalid-ID
+handling, empty-list/not-found semantics, pagination, transforms, and success
+contracts.
+
+T-119 is complete. It moved protected user favourite, watchlist, and comment
+API internal-failure paths to request-context structured logging while
+preserving shared guard, ownership, validation, and transaction contracts.
+
 T-118 is complete:
 [Migrate public discovery and shop API structured logging](../tasks/T-118-migrate-public-discovery-shop-api-structured-logging.md).
 It moved public search, navigation, and shop product API internal/upstream
@@ -248,6 +260,9 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
+T-120 admin read API structured logging migration task is prepared and ready to
+assign.
+T-119 protected user API structured logging migration task is complete.
 T-118 public discovery/shop API structured logging migration task is complete.
 T-117 public content API structured logging migration task is complete.
 T-116 incident-response runbook task is complete.
@@ -313,6 +328,11 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
+- T-120 is prepared and ready to assign: migrate admin read route failure paths
+  from direct route-level `console.error()` to request IDs and structured
+  redacted logging.
+- T-119 is complete: protected user favourite, watchlist, and comment API
+  failure paths now use request IDs and structured redacted logging.
 - T-118 is complete: public search, navigation, and shop product API failure
   paths now use request IDs and structured redacted logging instead of direct
   route-level `console.error()`.
@@ -940,10 +960,17 @@ completed:
 
 ## Next Orchestrator Action
 
-Choose monitoring provider selection from A-021, CI/scheduled smoke, the next
-protected/admin request-ID/logging route slice, A-011 admin content operations,
-A-017 search/navigation discovery, the next Cloudinary follow-up from T-101, or
-another owner-independent implementation slice from reconciled findings.
+Assign the next implementation task:
+
+```text
+/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md
+```
+
+After T-120 is assigned or completed, choose admin write/delete request-ID/
+logging route migration, monitoring provider selection from A-021,
+CI/scheduled smoke, A-011 admin content operations, A-017 search/navigation
+discovery, the next Cloudinary follow-up from T-101, or another
+owner-independent implementation slice from reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -952,8 +979,9 @@ them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
-T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, and
-T-117 are complete and should not be reassigned unless a regression is opened.
+T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
+T-118, and T-119 are complete and should not be reassigned unless a regression
+is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

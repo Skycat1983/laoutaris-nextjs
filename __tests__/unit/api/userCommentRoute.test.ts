@@ -8,12 +8,14 @@ import {
 import dbConnect from "@/lib/db/mongodb";
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
 import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { transformCommentPopulated } from "@/lib/transforms";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -74,6 +76,10 @@ jest.mock("@/lib/data/services/getOwnUserComments", () => ({
 
 type MockRequest = {
   json: jest.Mock;
+  headers: Headers;
+  method: string;
+  nextUrl: URL;
+  url: string;
 };
 
 const userId = "507f1f77bcf86cd799439011";
@@ -81,13 +87,33 @@ const otherUserId = "507f1f77bcf86cd799439012";
 const blogId = "507f1f77bcf86cd799439013";
 const commentId = "507f1f77bcf86cd799439014";
 const blogSlug = "studio-notes";
+const requestId = "req-user-comment-1234";
 
-const createRequest = (body: unknown): MockRequest => ({
+const createRequest = (
+  body: unknown,
+  options: { requestId?: string; method?: string; url?: string } = {}
+): MockRequest => ({
   json: jest.fn().mockResolvedValue(body),
+  headers:
+    options.requestId === undefined
+      ? new Headers()
+      : new Headers({ "x-request-id": options.requestId }),
+  method: options.method ?? "GET",
+  nextUrl: new URL(options.url ?? "http://localhost/api/v2/user/comment"),
+  url: options.url ?? "http://localhost/api/v2/user/comment",
 });
 
-const createInvalidJsonRequest = (): MockRequest => ({
+const createInvalidJsonRequest = (
+  options: { requestId?: string; method?: string; url?: string } = {}
+): MockRequest => ({
   json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+  headers:
+    options.requestId === undefined
+      ? new Headers()
+      : new Headers({ "x-request-id": options.requestId }),
+  method: options.method ?? "GET",
+  nextUrl: new URL(options.url ?? "http://localhost/api/v2/user/comment"),
+  url: options.url ?? "http://localhost/api/v2/user/comment",
 });
 
 const createMongoSession = () => ({
@@ -264,21 +290,31 @@ describe("GET /api/v2/user/comment", () => {
     mockGetOwnUserComments.mockRejectedValue(new Error("private DB detail"));
 
     try {
-      const response = await GET(createRequest({}) as never);
+      const response = await GET(
+        createRequest({}, { requestId, method: "GET" }) as never
+      );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         error: "Failed to fetch user comments",
+        requestId,
       });
       expect(mockGetOwnUserComments).toHaveBeenCalledWith(userId);
       expect(mockDbConnect).not.toHaveBeenCalled();
       expect(mockUserFindById).not.toHaveBeenCalled();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error fetching user comments:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/user/comment",
+          method: "GET",
+          errorLabel: "user_comment_list_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private DB detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }
@@ -444,28 +480,40 @@ describe("POST /api/v2/user/comment", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
     mockUserFindByIdAndUpdate.mockRejectedValue(new Error("private DB detail"));
-    const request = createRequest({
-      text: "Valid comment",
-      blogSlug,
-    });
+    const request = createRequest(
+      {
+        text: "Valid comment",
+        blogSlug,
+      },
+      { method: "POST" }
+    );
 
     try {
       const response = await POST(request as never);
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+      const generatedRequestId = body.requestId;
 
       expect(response.status).toBe(500);
       expect(body).toEqual({
         success: false,
         error: "Failed to create comment",
+        requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
       });
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(generatedRequestId);
       expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
       expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
       expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
       expect(mockTransformCommentPopulated).not.toHaveBeenCalled();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error creating comment:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId: generatedRequestId,
+          route: "/api/v2/user/comment",
+          method: "POST",
+          errorLabel: "user_comment_create_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private DB detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }
@@ -632,26 +680,34 @@ describe("DELETE /api/v2/user/comment/[commentId]", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
     mockBlogFindByIdAndUpdate.mockRejectedValue(new Error("private DB detail"));
-    const request = createRequest({});
+    const request = createRequest({}, { requestId, method: "DELETE" });
 
     try {
       const response = await DELETE(request as never, {
         params: { commentId },
       });
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         error: "Failed to delete comment",
+        requestId,
       });
       expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
       expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
       expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error deleting comment:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/user/comment/[commentId]",
+          method: "DELETE",
+          errorLabel: "user_comment_delete_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private DB detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }
@@ -820,5 +876,45 @@ describe("PATCH /api/v2/user/comment/[commentId]", () => {
       success: true,
       data: frontendComment,
     });
+  });
+
+  it("returns a public-safe 500 with request context when the update fails", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockCommentFindByIdAndUpdate.mockImplementation(() => {
+      throw new Error("private update detail");
+    });
+    const request = createRequest(
+      { text: "Updated comment" },
+      { requestId, method: "PATCH" }
+    );
+
+    try {
+      const response = await PATCH(request as never, {
+        params: { commentId },
+      });
+      const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+
+      expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
+      expect(body).toEqual({
+        success: false,
+        error: "Failed to update comment",
+        requestId,
+      });
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId,
+          route: "/api/v2/user/comment/[commentId]",
+          method: "PATCH",
+          errorLabel: "user_comment_update_failed",
+        })
+      );
+      expect(JSON.stringify(body)).not.toContain("private update detail");
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
   });
 });

@@ -1244,15 +1244,32 @@ npm run lint
   bodies, and source hygiene across the migrated public search/navigation/shop
   route files. Focused Jest, lint, build, scoped `console.error()` source
   search, and `git diff --check` passed.
+- 2026-05-18: Prepared T-119 with focused coverage expectations for protected
+  user saved-item and comment internal-failure paths, propagated/generated
+  request IDs, `X-Request-Id`, preserved guard/ownership behavior, and source
+  hygiene against direct route-level `console.error()`.
+- 2026-05-18: Completed T-119 by extending focused saved-item, comment, and
+  observability route tests for protected user internal-failure paths,
+  propagated and generated request IDs, response `X-Request-Id`, structured log
+  context, private-message redaction from public bodies, and source hygiene
+  across migrated protected user route files. Focused Jest, lint, build, scoped
+  `console.error()` source search, and `git diff --check` passed.
+- 2026-05-18: Prepared T-120 with focused coverage expectations for admin read
+  list/detail internal-failure paths, propagated/generated request IDs,
+  `X-Request-Id`, preserved admin guard behavior, and source hygiene against
+  direct route-level `console.error()`.
 
 ## Next Agent Action
 
-Choose the next testing slice from CI/scheduled smoke ownership,
-protected/admin route-level logging migration coverage, or other active quality
-backlog items. Keep broader static/ISR migration separate from the completed
-T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work, and the
-completed T-117 public content logging migration and T-118 public
-discovery/shop logging migration.
+Assign T-120:
+`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
+
+After T-120, choose the next testing slice from CI/scheduled smoke ownership,
+admin write/delete route-level logging migration coverage, or other active
+quality backlog items. Keep broader static/ISR migration separate from the
+completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
+the completed T-117 public content logging migration, T-118 public
+discovery/shop logging migration, and T-119 protected user logging migration.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

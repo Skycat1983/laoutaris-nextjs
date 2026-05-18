@@ -717,14 +717,31 @@ npm run lint
   instrumentation, alert automation, scheduled smoke, incident owner-matrix
   completion, protected/admin route migration, and broader route migration
   remain separate.
+- 2026-05-18: Prepared T-119 as the next F-081/R-019 protected user route
+  logging migration slice for favourite, watchlist, and comment routes that
+  still use direct route-level `console.error()`.
+- 2026-05-18: Completed T-119 by migrating protected user favourite,
+  watchlist, and comment API internal-failure paths to request-context
+  structured logging. Scoped real `500` responses now return public request IDs
+  plus `X-Request-Id`; auth, validation, not-found, forbidden, ownership,
+  transaction, success, and action/loader contracts were preserved. Monitoring
+  provider selection, instrumentation, alert automation, scheduled smoke,
+  incident owner-matrix completion, admin route migration, and broader route
+  migration remain separate.
+- 2026-05-18: Prepared T-120 as the next F-081/R-019 admin route logging
+  migration slice for admin read list/detail routes that still use direct
+  route-level `console.error()`. Admin write/delete migration remains separate.
 
 ## Next Agent Action
 
-Choose a separate deployment/security slice from monitoring
-provider selection, CI/scheduled smoke, protected/admin route-level logging
-migration, or owner-approved completion of the incident-response `TBD` owner
-matrix. Keep owner/legal A-020 policy work and broad static/ISR migration
-separate.
+Assign T-120:
+`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
+
+After T-120, choose a separate deployment/security slice from admin
+write/delete route logging migration, monitoring provider selection,
+CI/scheduled smoke, or owner-approved completion of the incident-response
+`TBD` owner matrix. Keep owner/legal A-020 policy work and broad static/ISR
+migration separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

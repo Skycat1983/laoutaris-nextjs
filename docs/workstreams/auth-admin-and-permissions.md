@@ -434,14 +434,29 @@ Add targeted tests for `routeUtils` and session helpers when changed.
 - 2026-05-18: Reconciled A-020 account privacy findings into F-074. Account
   privacy actions should wait for owner/legal-approved requirements and remain
   separate from admin bootstrap/recovery.
+- 2026-05-18: Prepared T-119 as the protected user API structured logging
+  migration slice for favourite, watchlist, and comment routes. It should keep
+  `requireApiUser()` guard ordering, ownership checks, validation statuses, and
+  transaction behavior unchanged while replacing direct route-level
+  `console.error()` internal-failure logging.
+- 2026-05-18: Completed T-119 for protected user favourite, watchlist, and
+  comment API routes. The routes still use `requireApiUser()` before protected
+  service/body/DB work and preserve validation, not-found, forbidden,
+  ownership, transaction, and success behavior while internal failures now use
+  request-context structured logging and public request IDs.
+- 2026-05-18: Prepared T-120 as the admin read API structured logging migration
+  slice for read list/detail routes. It should preserve `requireApiAdmin()`
+  guard ordering, invalid-ID `400`s, empty-list/missing-resource `404`s,
+  pagination, success DTOs, and transform behavior while replacing direct
+  route-level `console.error()` internal-failure logging.
 
 ## Next Agent Action
 
-Pick the next scoped auth/source hygiene task from the remaining open findings
-and risks.
+Assign T-120:
+`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
 
 Do not reassign T-081, T-082, T-083, T-084, or T-088 unless a regression is
-opened. Do not reassign T-094 or T-095 unless a regression is opened.
+opened. Do not reassign T-094, T-095, or T-119 unless a regression is opened.
 
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, favourite/watchlist server actions, account

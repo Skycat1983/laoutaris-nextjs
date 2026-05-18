@@ -128,6 +128,8 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-116 Create incident response runbook](T-116-create-incident-response-runbook.md) | Completed | Defined severity, triage, escalation, evidence, rollback, and post-incident process. |
 | [T-117 Migrate public content API structured logging](T-117-migrate-public-content-api-structured-logging.md) | Completed | Migrated public content API internal-failure paths onto request IDs and structured redacted logging. |
 | [T-118 Migrate public discovery and shop API structured logging](T-118-migrate-public-discovery-shop-api-structured-logging.md) | Completed | Migrated public search, navigation, and shop API failure paths onto request IDs and structured redacted logging. |
+| [T-119 Migrate protected user API structured logging](T-119-migrate-protected-user-api-structured-logging.md) | Completed | Migrated protected user favourite, watchlist, and comment API failure paths onto request IDs and structured redacted logging. |
+| [T-120 Migrate admin read API structured logging](T-120-migrate-admin-read-api-structured-logging.md) | Planned | Move admin read API failure paths onto request IDs and structured redacted logging. |
 
 ## Rules
 

@@ -12,13 +12,18 @@ import { requireApiUser } from "@/lib/api/requireApiUser";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { transformCommentPopulated } from "@/lib/transforms";
-import { isDynamicServerError } from "next/dist/client/components/hooks-server-context";
 import dbConnect from "@/lib/db/mongodb";
 import {
   createCommentRouteSchema,
   type CreateCommentRouteInput,
 } from "@/lib/data/schemas/commentSchema";
 import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";
+import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import {
+  createRequestContext,
+  type RequestContext,
+} from "@/lib/observability/requestContext";
 export const dynamic = "force-dynamic";
 
 type CommentFieldErrors = Partial<
@@ -44,13 +49,25 @@ const validationErrorResponse = (
     { status: 400 }
   );
 
-const errorResponse = (error: string, status: number) =>
+const errorResponse = (
+  error: string,
+  status: number,
+  requestContext?: RequestContext
+) =>
   NextResponse.json<ApiErrorResponse>(
     {
       success: false,
       error,
+      ...(requestContext === undefined
+        ? {}
+        : { requestId: requestContext.requestId }),
     },
-    { status }
+    {
+      status,
+      ...(requestContext === undefined
+        ? {}
+        : { headers: requestContext.responseHeaders }),
+    }
   );
 
 const findPopulatedCommentById = (
@@ -68,6 +85,8 @@ const findPopulatedCommentById = (
 export async function GET(
   req: NextRequest
 ): Promise<RouteResponse<ApiUserCommentsGetResult>> {
+  const requestContext = createRequestContext(req, "/api/v2/user/comment");
+  const logger = createApiLogger(requestContext);
   const userGuard = await requireApiUser();
   if (!userGuard.ok) {
     return userGuard.response;
@@ -86,15 +105,21 @@ export async function GET(
       metadata: userComments.metadata,
     } satisfies ApiUserCommentsGetResult);
   } catch (error) {
-    if (isDynamicServerError(error)) {
+    if (isNextError(error)) {
       throw error;
     }
-    console.error("Error fetching user comments:", error);
-    return errorResponse("Failed to fetch user comments", 500);
+    logger.error("api.user.comment_list.failed", {
+      operation: "user_comment_list",
+      error,
+      errorLabel: "user_comment_list_failed",
+    });
+    return errorResponse("Failed to fetch user comments", 500, requestContext);
   }
 }
 
 export async function POST(req: NextRequest) {
+  const requestContext = createRequestContext(req, "/api/v2/user/comment");
+  const logger = createApiLogger(requestContext);
   const userGuard = await requireApiUser();
 
   if (!userGuard.ok) {
@@ -180,10 +205,14 @@ export async function POST(req: NextRequest) {
       mongoSession.endSession();
     }
   } catch (error) {
-    if (isDynamicServerError(error)) {
+    if (isNextError(error)) {
       throw error;
     }
-    console.error("Error creating comment:", error);
-    return errorResponse("Failed to create comment", 500);
+    logger.error("api.user.comment_create.failed", {
+      operation: "user_comment_create",
+      error,
+      errorLabel: "user_comment_create_failed",
+    });
+    return errorResponse("Failed to create comment", 500, requestContext);
   }
 }

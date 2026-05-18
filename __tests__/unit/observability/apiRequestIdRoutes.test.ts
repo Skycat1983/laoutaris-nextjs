@@ -253,4 +253,24 @@ describe("API request IDs on migrated route failures", () => {
       expect(routeSource).not.toContain("console.error(");
     }
   });
+
+  it("keeps migrated protected user saved-item and comment route files free of route-level console.error calls", () => {
+    const migratedRouteFiles = [
+      "src/app/api/v2/user/favourite/route.ts",
+      "src/app/api/v2/user/favourite/[artworkId]/route.ts",
+      "src/app/api/v2/user/watchlist/route.ts",
+      "src/app/api/v2/user/watchlist/[artworkId]/route.ts",
+      "src/app/api/v2/user/comment/route.ts",
+      "src/app/api/v2/user/comment/[commentId]/route.ts",
+    ];
+
+    for (const routeFile of migratedRouteFiles) {
+      const routeSource = fs.readFileSync(
+        path.join(process.cwd(), routeFile),
+        "utf8"
+      );
+
+      expect(routeSource).not.toContain("console.error(");
+    }
+  });
 });

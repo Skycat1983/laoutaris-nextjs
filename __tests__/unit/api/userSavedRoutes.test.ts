@@ -9,13 +9,15 @@ import {
   getOwnWatchlistArtwork,
   getOwnWatchlistArtworkList,
 } from "@/lib/data/services/getOwnSavedArtwork";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { getOwnUserNavigation } from "@/lib/data/services/getOwnUserNavigation";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -42,6 +44,7 @@ jest.mock("@/lib/data/services/getOwnSavedArtwork", () => ({
 
 type JsonResponse = {
   status: number;
+  headers: Headers;
   json: () => Promise<unknown>;
 };
 
@@ -75,6 +78,17 @@ const errorBody = (message: string) => ({
   success: false,
   message,
   error: message,
+});
+const requestId = "req-user-saved-1234";
+
+const createRequest = (suppliedRequestId?: string) => ({
+  method: "GET",
+  headers:
+    suppliedRequestId === undefined
+      ? new Headers()
+      : new Headers({ "x-request-id": suppliedRequestId }),
+  nextUrl: new URL("http://localhost/api/v2/user/saved"),
+  url: "http://localhost/api/v2/user/saved",
 });
 
 const setAuthenticatedSession = () => {
@@ -362,50 +376,82 @@ describe("user saved route adapters", () => {
 
   it.each([
     [
-      "navigation",
-      mockGetOwnUserNavigation,
-      () => getUserNavigation({} as never),
-      "Failed to fetch user navigation",
-    ],
-    [
       "favourites list",
       mockGetOwnFavouriteArtworkList,
-      () => getUserFavourite({} as never),
+      () => getUserFavourite(createRequest(requestId) as never),
       "Failed to fetch user favourites",
+      "/api/v2/user/favourite",
+      "user_favourite_list_failed",
+      requestId,
     ],
     [
       "watchlist list",
       mockGetOwnWatchlistArtworkList,
-      () => getUserWatchlist({} as never),
+      () => getUserWatchlist(createRequest() as never),
       "Failed to fetch user watchlist",
+      "/api/v2/user/watchlist",
+      "user_watchlist_list_failed",
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
     ],
     [
       "favourite detail",
       mockGetOwnFavouriteArtwork,
       () =>
-        getUserFavouriteItem({} as never, {
+        getUserFavouriteItem(createRequest() as never, {
           params: { artworkId },
         }),
       "Failed to fetch favourite artwork",
+      "/api/v2/user/favourite/[artworkId]",
+      "user_favourite_detail_failed",
+      expect.stringMatching(/^[0-9a-f-]{36}$/),
     ],
     [
       "watchlist detail",
       mockGetOwnWatchlistArtwork,
       () =>
-        getUserWatchlistItem({} as never, {
+        getUserWatchlistItem(createRequest(requestId) as never, {
           params: { artworkId },
         }),
       "Failed to fetch watchlist artwork",
+      "/api/v2/user/watchlist/[artworkId]",
+      "user_watchlist_detail_failed",
+      requestId,
     ],
   ])(
-    "returns a public-safe 500 when %s service work fails",
-    async (_, service, call, message) => {
+    "returns a public-safe 500 with request context when %s service work fails",
+    async (
+      _,
+      service,
+      call,
+      message,
+      route,
+      errorLabel,
+      expectedRequestId
+    ) => {
       setAuthenticatedSession();
       service.mockRejectedValue(new Error("private saved artwork failure"));
 
       const response = (await call()) as JsonResponse;
+      const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
-      await expectErrorResponse(response, 500, message);
+      expect(response.status).toBe(500);
+      expect(body).toEqual({
+        ...errorBody(message),
+        requestId: expectedRequestId,
+      });
+      expect(response.headers.get(REQUEST_ID_HEADER)).toEqual(
+        expectedRequestId
+      );
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          requestId: expectedRequestId,
+          route,
+          method: "GET",
+          errorLabel,
+        })
+      );
+      expect(JSON.stringify(body)).not.toContain("private saved artwork failure");
     }
   );
 });

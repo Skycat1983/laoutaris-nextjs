@@ -6,11 +6,18 @@ import { RouteResponse } from "@/lib/data/types";
 import { ApiFavoritesItemResult } from "@/lib/api/user/favorites/fetchers";
 import { getOwnFavouriteArtwork } from "@/lib/data/services/getOwnSavedArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { artworkId: string } }
 ): Promise<RouteResponse<ApiFavoritesItemResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/user/favourite/[artworkId]"
+  );
+  const logger = createApiLogger(requestContext);
   const userGuard = await requireApiUser();
   if (!userGuard.ok) {
     return userGuard.response;
@@ -39,10 +46,16 @@ export async function GET(
     if (isNextError(error)) {
       throw error;
     }
-    console.error("Error in GET /user/favourites/:artworkId:", error);
+    logger.error("api.user.favourite_detail.failed", {
+      operation: "user_favourite_detail",
+      artworkId: params.artworkId,
+      error,
+      errorLabel: "user_favourite_detail_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch favourite artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

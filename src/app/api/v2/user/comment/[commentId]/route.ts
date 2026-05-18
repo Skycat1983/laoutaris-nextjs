@@ -17,6 +17,12 @@ import {
   type UpdateCommentRouteBody,
   type UpdateCommentRouteParams,
 } from "@/lib/data/schemas/commentSchema";
+import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import {
+  createRequestContext,
+  type RequestContext,
+} from "@/lib/observability/requestContext";
 
 type CommentUpdateFieldErrors = Partial<
   Record<
@@ -44,19 +50,36 @@ const validationErrorResponse = (
     { status: 400 }
   );
 
-const errorResponse = (error: string, status: number) =>
+const errorResponse = (
+  error: string,
+  status: number,
+  requestContext?: RequestContext
+) =>
   NextResponse.json<ApiErrorResponse>(
     {
       success: false,
       error,
+      ...(requestContext === undefined
+        ? {}
+        : { requestId: requestContext.requestId }),
     },
-    { status }
+    {
+      status,
+      ...(requestContext === undefined
+        ? {}
+        : { headers: requestContext.responseHeaders }),
+    }
   );
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { commentId: string } }
 ) {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/user/comment/[commentId]"
+  );
+  const logger = createApiLogger(requestContext);
   const userGuard = await requireApiUser();
 
   if (!userGuard.ok) {
@@ -120,15 +143,29 @@ export async function PATCH(
       data: transformCommentPopulated(updatedComment, userGuard.userId),
     } satisfies ApiUserCommentUpdateResult);
   } catch (error) {
-    console.error("Error updating comment:", error);
-    return errorResponse("Failed to update comment", 500);
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    logger.error("api.user.comment_update.failed", {
+      operation: "user_comment_update",
+      commentId: parsedParams.data.commentId,
+      error,
+      errorLabel: "user_comment_update_failed",
+    });
+    return errorResponse("Failed to update comment", 500, requestContext);
   }
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { commentId: string } }
 ) {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/user/comment/[commentId]"
+  );
+  const logger = createApiLogger(requestContext);
   const user = await requireApiUser();
 
   if (!user.ok) {
@@ -196,7 +233,16 @@ export async function DELETE(
       mongoSession.endSession();
     }
   } catch (error) {
-    console.error("Error deleting comment:", error);
-    return errorResponse("Failed to delete comment", 500);
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    logger.error("api.user.comment_delete.failed", {
+      operation: "user_comment_delete",
+      commentId: parsedParams.data.commentId,
+      error,
+      errorLabel: "user_comment_delete_failed",
+    });
+    return errorResponse("Failed to delete comment", 500, requestContext);
   }
 }
