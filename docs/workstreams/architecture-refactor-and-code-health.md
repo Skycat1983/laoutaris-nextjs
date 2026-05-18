@@ -459,13 +459,17 @@ Use targeted import/reference searches for pruning tasks.
   environment-specific Storefront fetch policy without combining `cache` and
   `next.revalidate`. Broader static/ISR migration and account/admin cache
   policy remain separate.
+- 2026-05-18: Prepared T-125 to document the non-route logging/redaction policy
+  and migration inventory before changing service, loader, action, client,
+  utility, or provider-client console behavior.
 
 ## Next Agent Action
 
-Choose the next architecture slice from broad route-builder work, client/server
-import boundary cleanup, staged source-pruning work, or remaining route-local
-rendering follow-ups. Keep broad static/ISR migration separate until a
-dedicated cache-freshness and route-param task is assigned.
+Assign T-125 if the next architecture contribution remains logging/redaction
+policy. Otherwise choose the next architecture slice from broad route-builder
+work, client/server import boundary cleanup, staged source-pruning work, or
+remaining route-local rendering follow-ups. Keep broad static/ISR migration
+separate until a dedicated cache-freshness and route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

@@ -1,0 +1,102 @@
+name: Public Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Public base URL to smoke, such as a production or preview URL.
+        required: true
+        type: string
+  schedule:
+    - cron: "17 7 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-smoke
+  cancel-in-progress: false
+
+jobs:
+  public-smoke:
+    name: Run unauthenticated public smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      DISPATCH_BASE_URL: ${{ github.event.inputs.base_url }}
+      SCHEDULE_BASE_URL: ${{ vars.SMOKE_BASE_URL }}
+
+    steps:
+      - name: Resolve smoke target
+        id: target
+        shell: bash
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            public_smoke_base_url="${DISPATCH_BASE_URL}"
+          else
+            public_smoke_base_url="${SCHEDULE_BASE_URL}"
+          fi
+
+          if [ -z "${public_smoke_base_url}" ]; then
+            echo "enabled=false" >> "${GITHUB_OUTPUT}"
+            echo "::notice::SMOKE_BASE_URL repository variable is not configured; scheduled public smoke skipped."
+            exit 0
+          fi
+
+          if [[ "${public_smoke_base_url}" == *$'\n'* || "${public_smoke_base_url}" == *$'\r'* ]]; then
+            echo "::error::Public smoke base URL must be a single line."
+            exit 1
+          fi
+
+          echo "enabled=true" >> "${GITHUB_OUTPUT}"
+          echo "base_url=${public_smoke_base_url}" >> "${GITHUB_OUTPUT}"
+
+      - name: Check out repository
+        if: steps.target.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        if: steps.target.outputs.enabled == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.14.0"
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.target.outputs.enabled == 'true'
+        run: npm ci
+
+      - name: Run public smoke
+        if: steps.target.outputs.enabled == 'true'
+        env:
+          PUBLIC_SMOKE_BASE_URL: ${{ steps.target.outputs.base_url }}
+          SMOKE_TIMEOUT_MS_VALUE: ${{ vars.SMOKE_TIMEOUT_MS }}
+          SMOKE_SEARCH_QUERY_VALUE: ${{ vars.SMOKE_SEARCH_QUERY }}
+          SMOKE_ARTWORK_ID_VALUE: ${{ vars.SMOKE_ARTWORK_ID }}
+          SMOKE_COLLECTION_SLUG_VALUE: ${{ vars.SMOKE_COLLECTION_SLUG }}
+          SMOKE_COLLECTION_ARTWORK_ID_VALUE: ${{ vars.SMOKE_COLLECTION_ARTWORK_ID }}
+          SMOKE_BLOG_SLUG_VALUE: ${{ vars.SMOKE_BLOG_SLUG }}
+          SMOKE_PRODUCT_HANDLE_VALUE: ${{ vars.SMOKE_PRODUCT_HANDLE }}
+          SMOKE_MISSING_PRODUCT_HANDLE_VALUE: ${{ vars.SMOKE_MISSING_PRODUCT_HANDLE }}
+        shell: bash
+        run: |
+          pass_if_set() {
+            local name="$1"
+            local value="$2"
+
+            if [ -n "${value}" ]; then
+              export "${name}=${value}"
+            fi
+          }
+
+          pass_if_set SMOKE_TIMEOUT_MS "${SMOKE_TIMEOUT_MS_VALUE}"
+          pass_if_set SMOKE_SEARCH_QUERY "${SMOKE_SEARCH_QUERY_VALUE}"
+          pass_if_set SMOKE_ARTWORK_ID "${SMOKE_ARTWORK_ID_VALUE}"
+          pass_if_set SMOKE_COLLECTION_SLUG "${SMOKE_COLLECTION_SLUG_VALUE}"
+          pass_if_set SMOKE_COLLECTION_ARTWORK_ID "${SMOKE_COLLECTION_ARTWORK_ID_VALUE}"
+          pass_if_set SMOKE_BLOG_SLUG "${SMOKE_BLOG_SLUG_VALUE}"
+          pass_if_set SMOKE_PRODUCT_HANDLE "${SMOKE_PRODUCT_HANDLE_VALUE}"
+          pass_if_set SMOKE_MISSING_PRODUCT_HANDLE "${SMOKE_MISSING_PRODUCT_HANDLE_VALUE}"
+
+          npm run smoke:public -- --base-url="${PUBLIC_SMOKE_BASE_URL}"

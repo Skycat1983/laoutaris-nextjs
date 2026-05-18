@@ -131,6 +131,16 @@ security headers, environment documentation, and actionable operational signals.
   request ID and structured logging foundation for a representative route
   slice, and T-116 later added the incident-response runbook with `TBD` owner
   matrix placeholders.
+- T-123 added the provider-neutral
+  [monitoring and error-reporting architecture plan](../architecture/monitoring-and-error-reporting.md).
+  The app still has no monitoring SDK, no `instrumentation.ts`, no alert
+  automation, no approved provider environment contract, and no completed
+  incident-response owner matrix.
+- T-124 added `.github/workflows/public-smoke.yml` so `npm run smoke:public`
+  can run from GitHub Actions manually with a supplied `base_url` and on a
+  schedule after repository variable `SMOKE_BASE_URL` is configured. This
+  remains unauthenticated and does not cover credential/admin smoke, Vercel log
+  inspection, rollback automation, or provider alerts.
 - A-010 completed the performance, SEO, and accessibility audit. It found all
   public routes still build as dynamic because of global root layout and
   middleware request-time work, production metadata/discovery files are missing,
@@ -276,16 +286,18 @@ security headers, environment documentation, and actionable operational signals.
 - Route A-020 privacy/compliance findings through owner/legal review before
   implementing policy, consent, unsubscribe, account privacy, comment notice,
   third-party disclosure, or commerce policy pages.
-- Add request/correlation IDs and a structured redacted logger before broad
-  route-level logging cleanup or monitoring-provider integration.
-- Choose and document an error-reporting/monitoring provider, or explicitly
-  record a no-provider decision for launch.
+- Preserve the T-099 request ID and structured redacted logging contract when a
+  monitoring provider is integrated.
+- Use the monitoring architecture plan to choose and document an
+  error-reporting/monitoring provider, or explicitly record a no-provider
+  decision for launch.
 - Fill in the incident-response runbook's `TBD` owner/escalation matrix entries
   for Vercel, repository release authority, MongoDB, Shopify, Cloudinary,
   auth/OAuth, DNS/domain, and privacy/legal communication.
-- Decide CI/scheduled/manual ownership for `npm run smoke:public`; keep
-  credentialed, admin, and Vercel-log smoke evidence owner-run until safe
-  synthetic accounts and access are approved.
+- Keep the GitHub Actions public smoke workflow current as route contracts and
+  owner-approved non-secret smoke records change; keep credentialed, admin, and
+  Vercel-log smoke evidence owner-run until safe synthetic accounts and access
+  are approved.
 - Define the deployment/cache implications of separating public route rendering
   from authenticated/session-only UI after A-010, including how build output
   should prove static or ISR behavior for public archive/shop routes.
@@ -767,15 +779,41 @@ npm run lint
   It should create a decision-ready monitoring/error-reporting architecture plan
   and environment contract before provider-specific SDK installation,
   `instrumentation.ts`, alert automation, or Vercel project changes.
+- 2026-05-18: Completed T-123 by adding the provider-neutral monitoring and
+  error-reporting architecture plan, linking it from the architecture index,
+  and recording capture surfaces, T-099 request ID/logging integration,
+  provider decision questions, environment-variable classification rules, and
+  the post-approval implementation contract. Provider-specific SDK
+  installation, `instrumentation.ts`, alert automation, CI/scheduled smoke,
+  owner-approved incident matrix completion, and lower-level service/client
+  logging policy remain separate.
+- 2026-05-18: Prepared T-124 as the next F-083/R-028 smoke automation slice.
+  It should add a GitHub Actions workflow for unauthenticated public smoke that
+  can run manually with a supplied base URL and on a schedule after the owner
+  configures non-secret repository variables.
+- 2026-05-18: Completed T-124 by adding `.github/workflows/public-smoke.yml`
+  for unauthenticated public smoke in GitHub Actions. Manual runs require a
+  `base_url`; scheduled runs use non-secret repository variable
+  `SMOKE_BASE_URL` and skip with a notice until configured. The workflow uses
+  Node `22.14.0`, `npm ci`, and passes through optional non-secret `SMOKE_*`
+  route variables while keeping credential/admin smoke, Vercel logs, rollback
+  automation, and provider alerting separate.
+- 2026-05-18: Prepared T-125 as the next R-019 logging policy slice. It should
+  inventory non-route direct `console.error()`/`console.warn()` calls and define
+  the service, loader, action, client, utility, and provider-client logging and
+  redaction policy before broad implementation cleanup.
 
 ## Next Agent Action
 
-Assign T-123 to define the monitoring provider decision and instrumentation
-plan. Keep provider-specific SDK work, CI/scheduled smoke ownership,
-owner-approved completion of the incident-response `TBD` owner matrix,
-lower-level service/client logging policy, and broader direct
-`console.error()`/`console.warn()` policy separate. T-122 is complete and should
-not be reassigned unless the API-v2 route source-hygiene guard regresses.
+Assign T-125 to define the lower-level service/client logging policy and
+inventory. Use the T-123 monitoring architecture plan to obtain an
+owner/platform provider decision or explicit no-provider interim policy before
+installing any SDK, adding `instrumentation.ts`, or wiring provider alerts.
+Keep credential/admin smoke, Vercel log inspection, rollback automation,
+owner-approved completion of the incident-response `TBD` owner matrix, and
+broad implementation cleanup separate. T-122, T-123, and T-124 are complete and
+should not be reassigned unless their source-hygiene, documentation, or
+workflow contracts regress.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

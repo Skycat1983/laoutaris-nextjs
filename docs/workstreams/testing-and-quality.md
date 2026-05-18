@@ -99,6 +99,10 @@ refactoring without turning every change into a manual QA pass.
 - T-025 made deployment smoke evidence, auth smoke handling, targeted log
   checks, and rollback decisions repeatable in the deployment runbook, and added
   `npm run smoke:public` for unauthenticated public-route status checks.
+- T-124 added a GitHub Actions `Public Smoke` workflow for the existing
+  unauthenticated public-route smoke script. Manual runs require a `base_url`;
+  scheduled runs require repository variable `SMOKE_BASE_URL` and skip until it
+  is configured.
 - T-026 added focused shared route-guard tests and representative admin/user API
   auth-status tests.
 - T-027 added focused saved-route tests for user navigation, favourites, and
@@ -314,9 +318,9 @@ refactoring without turning every change into a manual QA pass.
 - Keep deployment smoke checks current through the evidence-based manual
   checklist and the `npm run smoke:public` unauthenticated status helper added
   by T-025.
-- Decide whether `npm run smoke:public` should remain manual, become CI-gated,
-  or run on a schedule; A-021 confirmed it is not continuous monitoring and
-  does not cover credentialed/admin/log evidence.
+- Keep the GitHub Actions `Public Smoke` workflow and `npm run smoke:public`
+  route inputs current as route contracts and approved smoke records change;
+  it remains unauthenticated and does not cover credentialed/admin/log evidence.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -794,6 +798,12 @@ npm run lint
   and 512 tests, lint, and build passed. Existing date utility console output,
   Browserslist notice, Google Fonts retries, MongoDB/static-generation logs,
   branch-verification logs, and fetcher debug logs remained expected noise.
+- 2026-05-18: T-124 added `.github/workflows/public-smoke.yml` for
+  unauthenticated public smoke in GitHub Actions using Node `22.14.0`,
+  `npm ci`, manual `base_url`, scheduled `SMOKE_BASE_URL`, and optional
+  non-secret `SMOKE_*` route variables. Verification used smoke-script help,
+  workflow inspection, and `git diff --check`; no live GitHub Actions run was
+  required without an owner-provided public base URL.
 - 2026-05-16: Prepared T-065 as a documentation-only environment inventory
   slice. Verification should use targeted env-reference search, `npm run
   env:guard`, and `git diff --check`; no full runtime suite is required unless
@@ -1290,15 +1300,35 @@ npm run lint
   verification should stay to source/config/env evidence searches and
   `git diff --check`; provider-specific SDK tests and smoke coverage belong to
   later tasks after owner/platform approval.
+- 2026-05-18: Completed T-123 as a docs-only monitoring plan task. The new
+  architecture plan defines provider-neutral capture surfaces, request ID and
+  structured-log integration expectations, environment-variable classification
+  rules, and the post-approval implementation contract. Provider-specific SDK
+  tests, smoke coverage, alert checks, and client/server instrumentation tests
+  remain future work after owner/platform approval.
+- 2026-05-18: Prepared T-124 to make `npm run smoke:public` available through
+  GitHub Actions without credentials or provider alerting. Verification should
+  cover smoke help output, workflow source review, and `git diff --check`; a
+  live GitHub Actions run requires an owner-provided public base URL.
+- 2026-05-18: Completed T-124 by adding the GitHub Actions `Public Smoke`
+  workflow for manual and scheduled unauthenticated public smoke checks. The
+  workflow uses Node `22.14.0`, `npm ci`, a required manual `base_url`, and
+  scheduled non-secret repository variable `SMOKE_BASE_URL`; optional detail
+  route inputs stay non-secret repository variables.
+- 2026-05-18: Prepared T-125 as a policy/inventory task for remaining
+  non-route direct `console.error()`/`console.warn()` calls. Verification should
+  stay to targeted source inventory and `git diff --check`; source-hygiene
+  enforcement belongs to later implementation slices once categories are set.
 
 ## Next Agent Action
 
-Assign T-123 if the next quality contribution is the monitoring decision plan.
-After that, choose from CI/scheduled smoke ownership, monitoring provider smoke
-coverage, or other active quality backlog items. Keep broader static/ISR
-migration separate from the completed T-115 Shopify fetch-option cleanup, the
-docs-only T-116 runbook work, and the completed T-117 through T-122 logging and
-source-hygiene tasks.
+Assign T-125 if the next quality contribution remains observability policy and
+inventory. After that, choose from monitoring provider smoke coverage or other
+active quality backlog items once the owner/platform provider decision is
+available. Keep broader static/ISR migration separate from the completed T-115
+Shopify fetch-option cleanup, the docs-only T-116 runbook work, and the
+completed T-117 through T-124 observability documentation, logging,
+source-hygiene, and public-smoke workflow tasks.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
@@ -1306,8 +1336,8 @@ T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
 Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094,
 T-095, T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105,
 T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116,
-T-117, T-118, T-119, T-120, T-121, and T-122 are complete; do not reassign
-them unless a regression is opened.
+T-117, T-118, T-119, T-120, T-121, T-122, T-123, and T-124 are complete; do
+not reassign them unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

@@ -4,11 +4,37 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-123 is prepared as the next owner-independent observability slice:
+T-125 is prepared as the next owner-independent observability slice:
+[Define service client logging policy](../tasks/T-125-define-service-client-logging-policy.md).
+It should inventory non-route direct `console.error()`/`console.warn()` calls
+and define the production logging/redaction policy for services, loaders,
+server actions, client components, utilities, and provider clients before broad
+implementation cleanup is assigned.
+
+T-124 is complete:
+[Add public smoke GitHub Actions workflow](../tasks/T-124-add-public-smoke-github-actions-workflow.md).
+It added `.github/workflows/public-smoke.yml` so `npm run smoke:public` can run
+from GitHub Actions manually with a required `base_url` input and on a schedule
+after non-secret repository variable `SMOKE_BASE_URL` is configured. The
+workflow uses Node `22.14.0`, `npm ci`, and optional non-secret `SMOKE_*` route
+input variables without adding credentials, provider alerting, Vercel log
+access, or committed production URLs.
+
+The next observability blocker remains owner/platform approval of a monitoring
+provider or explicit no-provider interim policy before any SDK,
+`instrumentation.ts`, alert automation, or provider environment variables are
+added.
+
+T-123 is complete:
 [Define monitoring provider plan](../tasks/T-123-define-monitoring-provider-plan.md).
-It should create a decision-ready monitoring/error-reporting architecture plan
-and environment contract before any provider-specific SDK, `instrumentation.ts`,
-or alert automation is added.
+It added the provider-neutral
+[monitoring and error-reporting architecture plan](../architecture/monitoring-and-error-reporting.md)
+with required capture surfaces, T-099 request ID/logging integration points,
+provider decision questions, environment-variable classification rules, and the
+post-approval implementation contract. The next observability blocker is owner
+or platform approval of a provider or explicit no-provider interim policy
+before any SDK, `instrumentation.ts`, alert automation, or provider environment
+variables are added.
 
 T-122 is complete. It added a recursive static guard for current and future
 `src/app/api/v2` route handler files so direct route-level `console.error()`
@@ -274,7 +300,9 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-123 monitoring provider plan task is prepared and ready to assign.
+T-125 service/client logging policy task is prepared and ready to assign.
+T-124 public smoke GitHub Actions workflow task is complete.
+T-123 monitoring provider plan task is complete.
 T-122 API route logging source-hygiene task is complete.
 T-121 admin write/delete API structured logging migration task is complete.
 T-120 admin read API structured logging migration task is complete.
@@ -344,8 +372,13 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-123 is prepared and ready to assign: create the monitoring/error-reporting
-  architecture plan and environment contract before provider-specific SDK work.
+- T-125 is prepared and ready to assign: define the non-route production
+  logging/redaction policy and migration inventory.
+- T-124 is complete: GitHub Actions can run manual and scheduled
+  unauthenticated public smoke checks once repository variables are configured.
+- T-123 is complete: the monitoring/error-reporting architecture plan and
+  environment-variable classification rules are documented before
+  provider-specific SDK work.
 - T-122 is complete: recursive API-v2 route source hygiene now guards against
   direct route-level `console.error()` and `console.warn()` calls after the
   logging migrations.
@@ -986,15 +1019,15 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-123-define-monitoring-provider-plan.md
+/task effort: high details: docs/tasks/T-125-define-service-client-logging-policy.md
 ```
 
-After T-123 is completed, choose provider-specific SDK/instrumentation only if
-owner/platform approval exists. Otherwise choose CI/scheduled smoke, incident
-owner-matrix completion, lower-level service/client logging policy, A-011 admin
-content operations, A-017 search/navigation discovery, the next Cloudinary
-follow-up from T-101, or another owner-independent implementation slice from
-reconciled findings.
+After T-125 is completed, choose provider-specific SDK/instrumentation only if
+owner/platform approval exists for the T-123 provider decision and environment
+contract. Otherwise choose the first logging implementation slice from T-125,
+incident owner-matrix completion, A-011 admin content operations, A-017
+search/navigation discovery, the next Cloudinary follow-up from T-101, or
+another owner-independent implementation slice from reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,

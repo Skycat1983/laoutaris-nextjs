@@ -16,6 +16,25 @@ for clean installs and `npm ci --dry-run --ignore-scripts` when verifying that
 the lockfile install path is still reproducible without running lifecycle
 scripts.
 
+## Public Smoke In CI
+
+`.github/workflows/public-smoke.yml` runs `npm run smoke:public` in GitHub
+Actions with Node `22.14.0` and `npm ci`.
+
+- Manual runs require the `workflow_dispatch` `base_url` input.
+- Scheduled runs use repository variable `SMOKE_BASE_URL` and skip until that
+  non-secret variable is configured.
+- Optional non-secret repository variables can broaden coverage:
+  `SMOKE_TIMEOUT_MS`, `SMOKE_SEARCH_QUERY`, `SMOKE_ARTWORK_ID`,
+  `SMOKE_COLLECTION_SLUG`, `SMOKE_COLLECTION_ARTWORK_ID`, `SMOKE_BLOG_SLUG`,
+  `SMOKE_PRODUCT_HANDLE`, and `SMOKE_MISSING_PRODUCT_HANDLE`.
+- Skipped optional detail checks mean the workflow did not prove that detail
+  route. They should be treated as missing production evidence, not as passing
+  detail coverage.
+
+The workflow is unauthenticated. It does not cover credential sign-in, admin
+access, Vercel log inspection, provider alerting, or rollback automation.
+
 ## Browser And Playwright Discipline
 
 Browser-style checks can be useful for layout, routing, accessibility, and smoke

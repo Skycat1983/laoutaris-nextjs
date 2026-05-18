@@ -183,6 +183,38 @@ Script limitations:
 - A skipped optional detail route is not a pass. Complete production evidence
   still needs approved detail records.
 
+### GitHub Actions Public Smoke
+
+The repo-owned workflow `.github/workflows/public-smoke.yml` runs the same
+unauthenticated public smoke script from GitHub Actions.
+
+Manual run:
+
+1. Open GitHub Actions and select `Public Smoke`.
+2. Start `workflow_dispatch` with `base_url` set to the public production or
+   preview URL to smoke.
+3. Review the job log for failed and skipped checks.
+
+Scheduled run setup:
+
+1. In repository settings, open `Secrets and variables` then `Actions`.
+2. Add non-secret repository variable `SMOKE_BASE_URL` with the public base URL.
+3. Optionally add non-secret route input variables:
+   `SMOKE_TIMEOUT_MS`, `SMOKE_SEARCH_QUERY`, `SMOKE_ARTWORK_ID`,
+   `SMOKE_COLLECTION_SLUG`, `SMOKE_COLLECTION_ARTWORK_ID`, `SMOKE_BLOG_SLUG`,
+   `SMOKE_PRODUCT_HANDLE`, and `SMOKE_MISSING_PRODUCT_HANDLE`.
+4. Leave credentials, tokens, cookies, Vercel API keys, and private account
+   identifiers out of repository variables.
+
+The scheduled workflow skips with a notice until `SMOKE_BASE_URL` is configured.
+Optional detail checks still skip unless their matching non-secret route
+variables are configured. A green workflow with skipped detail checks proves
+only the default unauthenticated public route set; it is not complete production
+smoke evidence.
+
+This workflow does not replace the credentialed smoke, admin access checks, or
+targeted Vercel log review in this runbook.
+
 ### Credentials Smoke Handling
 
 Use a production smoke account only if the owner has approved the account and

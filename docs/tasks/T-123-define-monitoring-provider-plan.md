@@ -1,6 +1,6 @@
 # T-123 Define Monitoring Provider Plan
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment Security And Observability](../workstreams/deployment-security-and-observability.md),
@@ -93,3 +93,13 @@ git diff --check
   source-hygiene invariant.
 - Keep this task docs-only and decision-ready; runtime monitoring integration
   should be a later task after owner/platform approval.
+- Completed on 2026-05-18 with
+  [Monitoring And Error Reporting](../architecture/monitoring-and-error-reporting.md).
+  The plan records the current no-provider state, required server, client, and
+  provider failure capture surfaces, the T-099 request ID and structured-log
+  integration contract, provider owner questions, environment-variable
+  classification rules, and the post-approval implementation contract.
+- Remaining work: owner/platform provider decision or explicit no-provider
+  interim policy, SDK installation, `instrumentation.ts` if required by the
+  chosen provider, alert automation, CI/scheduled smoke ownership, incident
+  owner matrix completion, and lower-level service/client logging policy.

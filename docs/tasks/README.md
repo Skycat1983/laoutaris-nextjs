@@ -132,7 +132,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-120 Migrate admin read API structured logging](T-120-migrate-admin-read-api-structured-logging.md) | Completed | Migrated admin read API failure paths onto request IDs and structured redacted logging. |
 | [T-121 Migrate admin write delete API structured logging](T-121-migrate-admin-write-delete-api-structured-logging.md) | Completed | Migrated admin create, update, and delete API failure paths onto request IDs and structured redacted logging. |
 | [T-122 Lock API route logging source hygiene](T-122-lock-api-route-logging-source-hygiene.md) | Completed | Added a recursive API-v2 route source guard preventing direct route-level `console.error()`/`console.warn()` from returning after the logging migrations. |
-| [T-123 Define monitoring provider plan](T-123-define-monitoring-provider-plan.md) | Planned | Create a decision-ready monitoring/error-reporting architecture plan and environment contract before any SDK is installed. |
+| [T-123 Define monitoring provider plan](T-123-define-monitoring-provider-plan.md) | Completed | Created a decision-ready monitoring/error-reporting architecture plan and environment contract before any SDK is installed. |
+| [T-124 Add public smoke GitHub Actions workflow](T-124-add-public-smoke-github-actions-workflow.md) | Completed | Added a repo-owned workflow for manual and scheduled unauthenticated public smoke checks without credentials or provider alerting. |
+| [T-125 Define service client logging policy](T-125-define-service-client-logging-policy.md) | Planned | Define the non-route production logging/redaction policy and migration inventory for service, loader, action, client, utility, and provider console calls. |
 
 ## Rules
 
