@@ -107,7 +107,14 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-095 Remove commented debug log leftovers](T-095-remove-commented-debug-log-leftovers.md) | Completed | Removed stale commented-out `console.log()` snippets so the full source search is clean without changing behavior. |
 | [T-096 Harden baseline security headers and API CORS](T-096-harden-baseline-security-headers-cors.md) | Completed | Removed the invalid global API CORS headers and added low-risk baseline security headers/CSP directives. |
 | [T-097 Add admin Shopify product-link workflow](T-097-add-admin-shopify-product-link-workflow.md) | Completed | Added the visible admin artwork form workflow for creating, editing, removing, and clearing canonical Shopify product links. |
-| [T-098 Add admin Shopify product-link verification](T-098-add-admin-shopify-product-link-verification.md) | Planned | Add explicit admin verification controls so operators can confirm linked Shopify product IDs exist before saving. |
+| [T-098 Add admin Shopify product-link verification](T-098-add-admin-shopify-product-link-verification.md) | Completed | Added explicit admin verification controls so operators can confirm linked Shopify product IDs exist before saving. |
+| [T-099 Add request IDs and structured logging](T-099-add-request-id-structured-logging.md) | Completed | Added a provider-neutral request/correlation ID and structured redacted logging foundation for representative API failures. |
+| [T-100 Preserve product context in enquiries](T-100-preserve-product-context-in-enquiries.md) | Completed | Persisted Shopify product context from product-detail enquiry links while checkout remains enquiry-based. |
+| [T-101 Define Cloudinary asset lifecycle policy](T-101-define-cloudinary-asset-lifecycle-policy.md) | Completed | Documented the conservative Cloudinary lifecycle, upload ownership, backup/restore, and cleanup policy before runtime asset deletion work. |
+| [T-102 Split public shell from auth work](T-102-split-public-shell-auth-work.md) | Completed | Removed global root-layout DB/session work and middleware token parsing for unprotected public routes; build now shows route-local dynamic blockers. |
+| [T-103 Add public metadata and discovery files](T-103-add-public-metadata-discovery.md) | Completed | Replaced scaffolded root metadata and added baseline robots/sitemap discovery files for stable public routes. |
+| [T-104 Fix public search and navigation accessibility](T-104-fix-public-search-navigation-accessibility.md) | Completed | Converted public search, drawer, mobile navigation, and unauthenticated artwork intent controls to semantic labelled controls. |
+| [T-105 Fix public comment action accessibility](T-105-fix-public-comment-action-accessibility.md) | Planned | Convert comment edit/save/cancel/delete icon actions to labelled semantic controls without changing comment mutation behavior. |
 
 ## Rules
 

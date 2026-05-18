@@ -14,29 +14,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (!isProtectedRoute(path)) {
+    return NextResponse.next();
+  }
+
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (isProtectedRoute(path)) {
-    if (!token) {
-      if (isApiRoute(path)) {
-        return apiAuthError("Unauthorized", 401);
-      }
-
-      return NextResponse.redirect(new URL("/api/auth/signin", request.url));
+  if (!token) {
+    if (isApiRoute(path)) {
+      return apiAuthError("Unauthorized", 401);
     }
 
-    if (isAdminRoute(path)) {
-      const role = token?.role;
+    return NextResponse.redirect(new URL("/api/auth/signin", request.url));
+  }
 
-      if (role !== "admin") {
-        if (isApiRoute(path)) {
-          return apiAuthError("Forbidden", 403);
-        }
-        return NextResponse.redirect(new URL("/", request.url));
+  if (isAdminRoute(path)) {
+    const role = token?.role;
+
+    if (role !== "admin") {
+      if (isApiRoute(path)) {
+        return apiAuthError("Forbidden", 403);
       }
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 

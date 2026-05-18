@@ -71,6 +71,22 @@ content operations repeatable and safe.
   Shopify product links.
 - T-098 added explicit Shopify product-existence verification controls for
   those admin product links.
+- A-009 completed the Cloudinary/assets audit. It confirmed current signing is
+  admin-guarded and param-limited, but asset deletion/orphan cleanup,
+  backup/restore/rollback, preset/cloud/folder ownership, upload metadata
+  parsing, generic blog/collection image URL policy, and delivery
+  transformation conventions remain unresolved.
+- T-101 documented the interim Cloudinary policy: preserve assets on MongoDB
+  content deletion, keep automatic destructive Cloudinary cleanup disabled
+  until backup/restore and owner approval are in place, use manual orphan
+  review evidence before deletion, keep `laoutaris_art` as the current hard-
+  coded upload preset, reject signed folders until owner policy is approved,
+  and prefer Cloudinary-managed blog/collection images or explicitly allowed
+  external hosts.
+- A-010 found public image performance follow-ups for the asset workstream:
+  home hero carousel images are over-prioritized at quality 100, product/shop
+  `fill` images lack explicit `sizes`, and artwork magnifier preloads a second
+  high-resolution image on mount before user intent.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -96,16 +112,31 @@ content operations repeatable and safe.
 ## Backlog
 
 - Document admin content workflows for each content type.
-- Define backup and restore expectations for MongoDB and Cloudinary assets.
-- Define Cloudinary folder rules, upload preset ownership, and asset lifecycle
-  expectations for `sign-cloudinary-params`.
+- Implement owner-approved Cloudinary asset deletion/orphan cleanup only after
+  the T-101 backup, restore, rollback, and deletion-evidence policy is
+  satisfied.
+- Decide whether signed Cloudinary folder parameters are needed, and if so
+  define exact folder names or patterns before adding them to
+  `sign-cloudinary-params`.
+- Align Cloudinary upload preset/cloud/folder source of truth across
+  `UploadButton`, `sign-cloudinary-params`, environment docs, and
+  `next.config.mjs` if the owner decides to move beyond the T-101 interim
+  policy.
+- Harden artwork upload-result parsing and decide failed-create cleanup or
+  operator recovery for orphaned uploads.
+- Decide whether blog and collection image URLs must be Cloudinary-managed
+  assets or explicitly allowed external hosts.
+- Centralize Cloudinary delivery transformations for cards, lists, detail
+  views, and admin previews.
+- Tune public image delivery for the home hero, shop banner/detail images, and
+  artwork magnifier after the Cloudinary/Next sizing policy is chosen.
 - Migrate admin content create/update routes toward allowlisted validation
   schemas, ObjectId validation, and structured 400 field-error responses.
 - Keep Cloudinary variables current in the environment runbook. T-065 documents
   current variable ownership/status and confirms upload preset ownership remains
   an open policy decision.
-- Define upload preset/folder rules and asset lifecycle expectations in the
-  Cloudinary runbook.
+- Implement blog, article, and collection image URL validation from the T-101
+  Cloudinary-managed/explicitly-allowed-host decision table.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
   if not, wire image sanitization into artwork transforms and tests.
 - Confirm delete behavior for content with related records.
@@ -254,13 +285,31 @@ Use manual admin checks when changing dashboard behavior.
   verify action, show unchecked/checking/verified/invalid/not-found/upstream
   states, display returned Shopify product context on success, and keep save
   behavior advisory rather than persistence-blocking.
+- 2026-05-18: Reconciled A-009 into F-067 through F-071 and R-008. The first
+  Cloudinary follow-up should be a policy/runbook slice for asset lifecycle and
+  upload preset/cloud/folder ownership before any destructive asset cleanup is
+  implemented.
+- 2026-05-18: Prepared T-101 to document the conservative Cloudinary asset
+  lifecycle, backup/restore, orphan cleanup, and upload preset/cloud/folder
+  ownership policy before runtime cleanup work.
+- 2026-05-18: Completed T-101 by updating the Cloudinary runbook with the
+  interim no-destructive-cleanup policy, manual orphan review process, backup/
+  restore/rollback expectations, upload preset/cloud/folder ownership, delivery
+  allowlist alignment, and blog/collection image URL decision table.
+- 2026-05-18: Reconciled A-010 image findings into F-086 and F-087. Public
+  image preload/sizing and magnifier behavior should be tuned through the
+  Cloudinary/Next delivery policy rather than ad hoc per-component changes.
 
 ## Next Agent Action
 
-Choose the next admin/content operations slice from the backlog.
+Choose the next Cloudinary implementation slice from T-101 follow-ups: upload
+metadata parsing and failed-persistence recovery, image URL validation for
+blog/article/collection records, delivery transformation centralization,
+public image preload/sizing tuning, or an owner-approved cleanup workflow after
+backup/restore evidence exists.
 
-For Cloudinary, keep upload preset ownership, folder policy, asset lifecycle,
-deletion/backup/rollback, and visible pinned/tag admin controls separate unless
-explicitly assigned. Keep persistence-time Shopify API validation,
-checkout/cart ownership, product-link data migration, route-level API logging,
-and global logging policy separate.
+For Cloudinary, keep runtime deletion, signed folder params, image-field
+migrations, delivery-transform helper extraction, and Cloudinary account
+changes separate unless explicitly assigned. Keep persistence-time Shopify API
+validation, checkout/cart ownership, product-link data migration, route-level
+API logging, and global logging policy separate.

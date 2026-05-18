@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { useSelectedLayoutSegments, useSearchParams } from "next/navigation";
 
 // Base props that both nav types share
@@ -11,7 +12,23 @@ type BaseNavItemProps = {
   link_to?: string | null;
 };
 
-const NavItem = ({
+const NavItemFallback = ({
+  label,
+  className,
+  disabled = false,
+}: Pick<BaseNavItemProps, "label" | "className" | "disabled">) => {
+  const finalClassName = disabled
+    ? `${className} cursor-not-allowed opacity-50`
+    : className;
+
+  return (
+    <div className={finalClassName} aria-disabled={disabled}>
+      <h2>{label}</h2>
+    </div>
+  );
+};
+
+const NavItemContent = ({
   label,
   slug,
   activeClassName,
@@ -50,6 +67,22 @@ const NavItem = ({
     >
       <h2>{label}</h2>
     </div>
+  );
+};
+
+const NavItem = (props: BaseNavItemProps) => {
+  return (
+    <Suspense
+      fallback={
+        <NavItemFallback
+          label={props.label}
+          className={props.className}
+          disabled={props.disabled}
+        />
+      }
+    >
+      <NavItemContent {...props} />
+    </Suspense>
   );
 };
 

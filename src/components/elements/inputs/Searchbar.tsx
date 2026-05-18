@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/shadcn/input";
-import { Button } from "@/components/shadcn/button";
 import { useRouter } from "next/navigation";
 
 const Searchbar = () => {
@@ -37,12 +36,13 @@ const Searchbar = () => {
             style={{ outline: "none", boxShadow: "none" }}
           />
         </div>
-        <div
+        <button
+          type="submit"
+          aria-label="Submit search"
           className="flex flex-row items-center justify-center p-4 cursor-pointer"
-          onClick={handleSearch}
         >
-          <Search className="text-slate-600" />
-        </div>
+          <Search className="text-slate-600" aria-hidden="true" />
+        </button>
       </div>
     </form>
   );

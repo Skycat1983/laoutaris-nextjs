@@ -7,7 +7,7 @@ import { SessionProvider } from "next-auth/react";
 
 interface ClientContextBoundaryProps {
   children: React.ReactNode;
-  session: Session | null;
+  session?: Session | null;
 }
 
 export default function ClientContextBoundary({

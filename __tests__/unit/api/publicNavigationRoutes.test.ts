@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET as GET_ARTICLE_NAVIGATION } from "@/app/api/v2/public/navigation/articles/[section]/route";
 import { GET as GET_COLLECTION_NAVIGATION_LIST } from "@/app/api/v2/public/navigation/collections/route";
 import { GET as GET_COLLECTION_NAVIGATION_DETAIL } from "@/app/api/v2/public/navigation/collections/[slug]/route";
@@ -269,6 +271,7 @@ describe("public navigation routes", () => {
         success: false,
         message: "Failed to fetch collection navigation",
         error: "Failed to fetch collection navigation",
+        requestId: expect.any(String),
       });
       expect(JSON.stringify(body)).not.toContain("private collection nav");
     });

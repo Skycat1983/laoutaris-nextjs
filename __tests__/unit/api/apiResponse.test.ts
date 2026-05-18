@@ -7,8 +7,9 @@ import { apiAuthError } from "@/lib/api/apiAuthError";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -46,6 +47,24 @@ describe("api response helpers", () => {
       error: "Internal Server Error",
     });
     expect(response.status).toBe(500);
+  });
+
+  it("includes optional public request IDs on error envelopes and headers", async () => {
+    const response = apiErrorResponse({
+      message: "Unable to process request",
+      error: "Internal Server Error",
+      status: 500,
+      requestId: "req-1234567890",
+    });
+
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      message: "Unable to process request",
+      error: "Internal Server Error",
+      requestId: "req-1234567890",
+    });
+    expect(response.status).toBe(500);
+    expect(response.headers.get("X-Request-Id")).toBe("req-1234567890");
   });
 
   it("returns single-result success envelopes", async () => {

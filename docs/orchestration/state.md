@@ -1,19 +1,71 @@
 # Current Orchestration State
 
-Last updated: 2026-05-17
+Last updated: 2026-05-18
 
 ## Current Priority
 
-T-098 is prepared as the next larger Shopify/admin hardening slice: add explicit
-product-link verification controls so operators can confirm linked Shopify
-product IDs exist before saving. Keep this as verification UX/fetcher work, not
-persistence-time Shopify validation or data migration.
+T-105 is prepared as the next implementation slice from F-062:
+[Fix public comment action accessibility](../tasks/T-105-fix-public-comment-action-accessibility.md).
+It should convert owner-only comment edit/delete and edit-mode cancel/save icon
+actions into labelled semantic controls without changing comment mutation
+behavior.
+
+T-104 is complete. It converted public search submit, mobile search drawer
+trigger/close, mobile navigation drawer trigger/close, and unauthenticated
+favourite/watchlist controls to labelled semantic buttons. F-088 and R-031 are
+resolved; only the comment action slice of F-062 remains open.
+
+T-103 is complete. It replaced scaffolded root metadata with production-safe
+Joseph Laoutaris archive metadata and added baseline `robots.ts`/`sitemap.ts`
+discovery files for stable public routes. Route-specific detail metadata,
+JSON-LD, and richer structured data remain separate.
+
+T-102 is complete. It removed global root-layout DB/session work, avoided
+middleware token parsing for unprotected public routes, and recorded remaining
+route-local dynamic blockers from build output. Build now prerenders shell-only
+public routes including `/biography`, `/collections`, `/project`,
+`/project/about`, `/project/aims`, `/project/film`, and `/shop`.
+
+A-010 is complete and reconciled into F-084 through F-090, R-012/R-014/R-030/
+R-031, relevant workstreams, T-102, T-103, and T-104. Remaining
+owner-independent follow-ups include route-specific metadata/structured data,
+image tuning, landmark/heading cleanup, route-local cache/ISR policy, and
+artwork-to-shop SSR discovery.
+
+T-101 is complete. It documented the interim Cloudinary asset lifecycle,
+backup/restore, orphan cleanup, upload preset/cloud/folder ownership, delivery
+allowlist alignment, and image-host policy before any destructive Cloudinary
+runtime work is assigned.
+
+T-099 and T-100 are complete:
+
+- T-099 added a provider-neutral request/correlation ID and structured redacted
+  logging foundation for representative API failures.
+- T-100 preserved Shopify product context from product-detail enquiry links in
+  public enquiry submissions while checkout remains enquiry-based.
+- Orchestrator takeover verification on 2026-05-18 reran the combined focused
+  T-099/T-100 Jest slice, lint, `git diff --check`, and build; all passed.
+  `docs/workstreams/testing-and-quality.md` was corrected to record that the
+  earlier T-100 build blocker was transient concurrent T-099 work and passed
+  after T-099 completed.
+
+A-009, A-020, and A-021 are complete and reconciled into findings F-067 through
+F-083, R-008/R-014/R-018/R-019/R-028, relevant workstreams, and the Cloudinary
+runbook. Owner/legal or owner/platform decisions remain required for policy
+pages, newsletter consent/unsubscribe, account privacy actions, comment
+publication policy, commerce assurance copy, Cloudinary runtime cleanup,
+upload-result metadata hardening, image-field validation, monitoring-provider
+selection, incident-response ownership, and smoke automation cadence.
+T-098 is complete: admin artwork product-link rows now verify Shopify product
+IDs through the existing public single-product route on operator action, display
+returned product context on success, show invalid/not-found/upstream states on
+failure, clear stale verification when rows change, and keep artwork save
+governed by local and route validation.
 T-097 is complete: admin artwork create/update forms now manage canonical
 Shopify product links with add/remove controls, numeric ID/type validation,
 duplicate prevention, existing-link initialization, empty-array submission for
 clearing links, focused form tests, and operator docs. F-010/R-021's visible
-admin workflow gap is closed; Shopify product existence checks remain separate
-and are queued as T-098.
+admin workflow gap is closed.
 T-096 is complete: `next.config.mjs` no longer defines global API CORS
 headers, removing the invalid wildcard-origin plus credentialed CORS pairing
 and wildcard allowed headers. Baseline `X-Content-Type-Options`,
@@ -141,7 +193,18 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-098 admin Shopify product-link verification is ready to assign.
+T-105 public comment action accessibility task is prepared and ready to assign.
+T-104 public search/navigation accessibility task is complete.
+T-103 public metadata/discovery task is complete.
+T-102 public shell/auth boundary task is complete.
+A-010 performance/SEO/accessibility audit is complete and reconciled.
+T-101 Cloudinary asset lifecycle policy is complete.
+T-100 product enquiry context persistence is complete.
+T-099 request ID and structured logging foundation is complete.
+A-009 Cloudinary/assets audit is complete and reconciled.
+A-020 privacy/consent/commerce compliance audit is complete and reconciled.
+A-021 observability/incident response audit is complete and reconciled.
+T-098 admin Shopify product-link verification is complete.
 T-097 admin Shopify product-link workflow is complete.
 T-096 baseline security headers/API CORS hardening is complete.
 T-095 commented debug-log leftovers cleanup is complete.
@@ -182,10 +245,39 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-098 is prepared as the next larger Shopify/admin slice: add explicit
-  verification controls to the T-097 admin product-link workflow so operators
-  can check whether linked Shopify product IDs exist before saving, using the
-  existing public product-by-ID route or a small wrapper only if needed.
+- T-105 is prepared and ready to assign: convert owner-only comment edit/delete
+  and edit-mode cancel/save icon actions to labelled semantic controls without
+  changing comment mutation behavior.
+- T-104 is complete: public search submit, search drawer trigger/close, mobile
+  nav drawer trigger/close, and unauthenticated artwork intent controls now use
+  semantic labelled buttons; F-088 and R-031 are resolved.
+- T-103 is complete: root metadata now describes the Joseph Laoutaris archive,
+  robots and sitemap files exist for stable public routes, focused tests
+  passed, and build emits static `/robots.txt` and `/sitemap.xml`.
+- T-102 is complete: root layout no longer performs global DB/session work,
+  public middleware paths bypass token parsing, focused boundary tests passed,
+  and build output now shows route-local dynamic blockers explicitly.
+- A-010 is complete and reconciled: F-084 through F-090 now route public route
+  cacheability, metadata/discovery, image performance, accessibility controls,
+  landmark/heading cleanup, and artwork-to-shop SSR discovery.
+- T-101 is complete: the Cloudinary runbook now documents the conservative
+  asset lifecycle, backup/restore, orphan cleanup, upload preset/cloud/folder
+  ownership, delivery allowlist alignment, and image-host policy before runtime
+  Cloudinary cleanup work.
+- T-099 is complete: request/correlation IDs and structured redacted logging
+  were added across a representative public/user/admin API route slice without
+  choosing a monitoring provider or migrating every route.
+- T-100 is complete: Shopify product context is preserved in enquiry
+  submissions and the stale Shopify credential TODO was removed while policy
+  pages and checkout/cart remain separate.
+- A-009, A-020, and A-021 are complete and reconciled. Findings F-067 through
+  F-083 route Cloudinary lifecycle/ownership, compliance, and observability
+  follow-ups.
+- T-098 is complete: admin product-link rows now verify Shopify product IDs
+  through the existing public single-product route on operator action, display
+  returned product context on success, show invalid/not-found/upstream states on
+  failure, clear stale verification when rows change, and keep save behavior
+  advisory rather than persistence-blocking.
 - T-097 is complete: admin artwork create/update forms can add, edit, remove,
   and clear canonical `shopifyProducts` links, shared form schema validation
   covers trimming/numeric IDs/types/duplicates, T-082 route validation remains
@@ -679,12 +771,13 @@ Use this section as the first operational handoff for a new orchestrator.
   credentials/OAuth behavior while preserving credentials password requirements,
   hashed-user role propagation, and public/own password sanitization.
 - The highest current blockers are residual Next/PostCSS production advisories,
-  owner confirmation of whether the removed Shopify value requires rotation,
-  Vercel project-setting and rollback ownership, broader root-layout
-  DB/session/cache ownership, staged ADR 0004
-  server data-access migrations, CI/dependency-update automation, Cloudinary
-  upload policy, admin bootstrap/recovery, and the broader CORS/CSP
-  and logging policy decisions.
+  owner/legal privacy and commerce policy requirements, owner confirmation of
+  whether the removed Shopify value requires rotation, Vercel project-setting
+  and rollback ownership, monitoring/incident-response ownership, broader
+  root-layout DB/session/cache ownership, staged ADR 0004 server data-access
+  migrations, CI/dependency-update automation, Cloudinary lifecycle/preset
+  policy, admin bootstrap/recovery, and the broader CORS/CSP and logging policy
+  decisions.
 
 ## Active Audits
 
@@ -705,15 +798,19 @@ Completed and reconciled:
 - [A-008 Security headers, CORS, and logging](../audits/results/A-008-security-headers-cors-logging.md)
 - [A-016 Forms, validation, and user input](../audits/results/A-016-forms-validation-inputs.md)
 - [A-019 Dependencies and supply chain](../audits/results/A-019-dependencies-supply-chain.md)
+- [A-009 Cloudinary and asset operations](../audits/results/A-009-cloudinary-assets.md)
+- [A-010 Performance, SEO, and accessibility](../audits/results/A-010-performance-seo-accessibility.md)
+- [A-020 Privacy, consent, and commerce compliance](../audits/results/A-020-privacy-consent-commerce-compliance.md)
+- [A-021 Observability and incident response](../audits/results/A-021-observability-incident-response.md)
 
 ## Recommended Next Audits
 
 Good follow-up audits after the next implementation batch is assigned or
 completed:
 
-1. [A-009 Cloudinary and asset operations](../audits/goals.md#a-009-cloudinary-and-asset-operations)
-2. [A-020 Privacy, consent, and commerce compliance](../audits/goals.md#a-020-privacy-consent-and-commerce-compliance)
-3. [A-021 Observability and incident response](../audits/goals.md#a-021-observability-and-incident-response)
+1. [A-011 Admin content operations](../audits/goals.md#a-011-admin-content-operations)
+2. [A-017 Search, navigation, and content discovery](../audits/goals.md#a-017-search-navigation-and-content-discovery)
+3. [A-018 Translations, copy, and content taxonomy](../audits/goals.md#a-018-translations-copy-and-content-taxonomy)
 
 ## Open Coordination Tasks
 
@@ -727,22 +824,33 @@ completed:
   future completed audit results.
 - Convert future completed audit findings into workstream backlog items before
   assigning implementation work.
-- Keep A-002, A-003, A-004, A-007, A-008, A-016, and A-019 reconciled findings
-  linked when assigning implementation work.
+- Keep A-002, A-003, A-004, A-007, A-008, A-009, A-010, A-016, A-019, A-020,
+  and A-021 reconciled findings linked when assigning implementation work.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
 - Resolve or escalate owner decisions captured in the findings register:
   checkout scope, admin Shopify linking, i18n scope, auth/session pruning,
   Shopify credential verification/rotation, residual Next/PostCSS dependency
-  risk, and public enquiry/commercial contact ownership.
+  risk, public enquiry/commercial contact ownership, privacy/compliance policy
+  requirements, Cloudinary runtime cleanup and image-field implementation
+  ownership, monitoring provider choice, and incident-response ownership.
 - Resolve or escalate the remaining A-002/A-007 decisions: admin API route
   convention, cleanup of unused legacy/public environment candidates, Vercel
   rollback owner, and Cloudinary upload preset ownership.
 
 ## Next Orchestrator Action
 
-Assign T-098 to add admin Shopify product-link verification:
-`docs/tasks/T-098-add-admin-shopify-product-link-verification.md`.
+Assign the next implementation task:
+
+```text
+/task effort: high details: docs/tasks/T-105-fix-public-comment-action-accessibility.md
+```
+
+After T-105 is assigned or completed, choose route-specific metadata/JSON-LD
+from F-085, route-local cache/ISR policy from the T-102 build output, A-011
+admin content operations, A-017 search/navigation discovery, the next
+Cloudinary follow-up from T-101, or another owner-independent implementation
+slice from reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -750,13 +858,14 @@ T-087, T-088, T-089, T-090, T-091, and T-092 are complete; do not reassign
 them unless a regression or explicit follow-up is opened. T-093 is also
 complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
-T-096, and T-097 are complete and should not be reassigned unless a regression
-is opened.
+T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, and T-104 are complete and
+should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
-checkout/cart ownership, remaining Cloudinary upload policy/runbook work, full
-strict CSP allowlist design, dynamic per-origin CORS, HSTS rollout, global
-production logging/redaction policy, visible blog pinned/tag admin workflow,
+checkout/cart ownership, Cloudinary runtime deletion, signed folder params,
+image-field migrations, delivery-transform helper extraction, full strict CSP
+allowlist design, dynamic per-origin CORS, HSTS rollout, global production
+logging/redaction policy, visible blog pinned/tag admin workflow,
 CI/dependency-update automation, Vercel project-setting ownership, credential
 rotation, and the residual Next/PostCSS owner decision separate unless priority
 changes.

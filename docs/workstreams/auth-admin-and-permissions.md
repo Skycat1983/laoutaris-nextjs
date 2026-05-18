@@ -149,6 +149,10 @@ features before production launch.
   credentials auth source without changing auth runtime behavior. Full-source
   source-hygiene coverage now keeps `src` free of direct or commented
   `console.log()` calls.
+- A-020 found account privacy gaps: credentials signup and OAuth entry do not
+  capture terms/privacy acknowledgement, account privacy self-service is not
+  implemented, and the visible delete-account button is inert while deletion is
+  admin-only.
 
 ## Backlog
 
@@ -174,6 +178,9 @@ features before production launch.
   and ownership helpers are introduced.
 - Document admin account bootstrap and recovery workflow, including promotion,
   audit ownership, and recovery if all admins are unavailable.
+- Define account privacy acceptance, self-service delete/export request
+  handling, OAuth data handling, and retention behavior after owner/legal
+  requirements are accepted.
 
 ## Acceptance Criteria
 
@@ -424,6 +431,9 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   snippets from auth callback and credentials auth source without changing auth
   runtime behavior. Full-source source-hygiene coverage now keeps `src` free of
   direct or commented `console.log()` calls.
+- 2026-05-18: Reconciled A-020 account privacy findings into F-074. Account
+  privacy actions should wait for owner/legal-approved requirements and remain
+  separate from admin bootstrap/recovery.
 
 ## Next Agent Action
 

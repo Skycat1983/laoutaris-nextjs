@@ -129,6 +129,20 @@ describe("middleware", () => {
     expect(mockGetToken).not.toHaveBeenCalled();
   });
 
+  it.each(["/artwork", "/api/v2/public/artwork"])(
+    "allows public route %s through without parsing auth tokens",
+    async (path) => {
+      const response = await middleware(createRequest(path));
+
+      expect(response).toEqual({
+        type: "next",
+        status: 200,
+      });
+      expect(mockNext).toHaveBeenCalledTimes(1);
+      expect(mockGetToken).not.toHaveBeenCalled();
+    }
+  );
+
   it("allows authenticated protected requests through", async () => {
     mockGetToken.mockResolvedValue({ id: "admin-user-id", role: "admin" });
 

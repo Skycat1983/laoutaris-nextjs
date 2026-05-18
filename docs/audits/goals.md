@@ -147,7 +147,7 @@ Expected output: [results/A-008-security-headers-cors-logging.md](results/A-008-
 
 ## A-009 Cloudinary And Asset Operations
 
-Status: Not started
+Status: Completed
 
 Goal: audit Cloudinary upload signing, image metadata, delivery configuration,
 asset deletion behavior, and backup expectations.
@@ -161,7 +161,7 @@ Expected output: [results/A-009-cloudinary-assets.md](results/A-009-cloudinary-a
 
 ## A-010 Performance, SEO, And Accessibility
 
-Status: Not started
+Status: Completed
 
 Goal: audit public route performance risks, image behavior, metadata, semantic
 HTML, keyboard accessibility, and shop/artwork discovery signals.
@@ -309,7 +309,7 @@ Expected output: [results/A-019-dependencies-supply-chain.md](results/A-019-depe
 
 ## A-020 Privacy, Consent, And Commerce Compliance
 
-Status: Not started
+Status: Completed
 
 Goal: audit personal-data collection points, account data, contact/subscription
 flows, comments, cookies/session behavior, policy-page gaps, and Shopify commerce
@@ -326,7 +326,7 @@ Expected output: [results/A-020-privacy-consent-commerce-compliance.md](results/
 
 ## A-021 Observability And Incident Response
 
-Status: Not started
+Status: Completed
 
 Goal: audit logging, error reporting, monitoring, alert ownership, incident
 triage, rollback readiness, and what information operators need when production

@@ -65,6 +65,12 @@ Next.js server/client component boundaries.
   behavior: colour/dimension filters and hard-coded pagination.
 - T-061 replaced public shop default type sorting that read product titles with
   metadata-based sorting from Shopify `productType`.
+- A-020 found missing policy links/notices on public data-collection and
+  commerce surfaces, including newsletter, comments, contact, signup/OAuth
+  entry, third-party embeds, and commerce assurance copy.
+- A-009 found blog and collection image URLs can accept hosts that are not
+  backed by the current Next image allowlist, and Cloudinary delivery
+  transformations are duplicated across frontend components.
 - T-067 removed direct debug logging, polling, and widget DOM/iframe inspection
   from the admin Cloudinary upload button without changing upload widget
   behavior.
@@ -142,6 +148,27 @@ Next.js server/client component boundaries.
   provider, collection section, main navigation, and admin content layout while
   preserving rendering behavior. Full-source source-hygiene coverage now keeps
   `src` free of direct or commented `console.log()` calls.
+- T-100 wires `/project/contact?product=...` into `ContactForm` with normalized
+  product context, editable prefilled subject/message text, and preserved
+  ordinary contact form behavior when no valid product query is present.
+- A-010 found public route performance/SEO/accessibility gaps: global
+  root-layout DB/session work and middleware token parsing keep public routes
+  dynamic, root metadata is still scaffold copy, sitemap/robots/structured data
+  are missing, hero/detail images need sizing and preload tuning, public search
+  and drawer controls need real labelled button semantics, several pages expose
+  nested main landmarks/noisy h1 usage, and artwork-to-shop links depend on
+  client-side product fetches.
+- T-103 replaced scaffolded root metadata with production-safe Joseph
+  Laoutaris archive metadata and added baseline `robots.ts`/`sitemap.ts` for
+  stable public routes. Route-specific detail metadata and JSON-LD remain
+  separate.
+- T-104 replaced scoped public search, mobile search drawer, mobile navigation
+  drawer, and unauthenticated favourite/watchlist clickable icon or wrapper
+  targets with labelled semantic buttons while preserving search URLs, drawer
+  behavior, navigation links, authenticated saved-item forms, and tooltips.
+- T-105 is prepared to complete the remaining F-062 comment action accessibility
+  slice by adding labelled semantic controls for owner-only comment edit,
+  delete, cancel, and save actions.
 
 ## Backlog
 
@@ -159,8 +186,29 @@ Next.js server/client component boundaries.
   route contracts once A-002 empty-list and search metadata semantics are chosen.
 - Align any future shop pagination or server-side sorting UI with backed API
   behavior before exposing new controls.
-- Replace clickable search icons, unlabeled drawer triggers, and icon-only
-  comment actions with accessible controls when each flow is refactored.
+- Replace remaining icon-only comment actions with accessible controls when
+  that flow is refactored.
+- Define a public route rendering/cache plan that separates public layout work
+  from session-only UI and moves middleware token parsing behind protected-route
+  checks.
+- Add route-specific metadata, canonical/social previews, and structured data
+  for public archive, blog, artwork, and shop detail pages beyond the T-103
+  root metadata and baseline discovery files.
+- Audit and tune Next/Cloudinary image sizing for the home hero, shop listing
+  banner, product detail, artwork detail, and magnifier payloads.
+- Normalize public landmarks and heading hierarchy after route layout ownership
+  is chosen.
+- Render artwork-to-shop product relationships in initial server HTML instead
+  of relying only on client-side product fetches.
+- Add owner/legal-approved policy links and notices to newsletter, comments,
+  contact, signup/OAuth entry, third-party embeds, and commerce surfaces after
+  A-020 requirements are accepted.
+- Align commerce assurance copy with implemented checkout/cart and approved
+  sale/refund/shipping/payment policies.
+- Align blog/collection image UI with the chosen Cloudinary-managed or
+  allowed-host image policy.
+- Centralize Cloudinary delivery transformations once the asset delivery policy
+  is chosen.
 - Decide the i18n/frontend language direction before pruning unused translation
   UI.
 - Add smoke-level tests for high-value public pages.
@@ -402,11 +450,59 @@ Use browser checks for layout-sensitive changes.
   admin content layout paths while preserving rendering behavior. Full-source
   source-hygiene coverage now keeps `src` free of direct or commented
   `console.log()` calls.
+- 2026-05-18: Reconciled A-020 frontend-facing compliance findings into
+  F-072, F-075, F-077, and F-078; visible policy links/notices and commerce
+  assurance copy changes should wait for owner/legal-approved requirements.
+- 2026-05-18: Reconciled A-009 frontend-facing asset findings into F-070 and
+  F-071; blog/collection image handling and delivery transformation cleanup
+  should follow the Cloudinary policy decision.
+- 2026-05-18: Prepared T-100 for contact-page/contact-form product query
+  wiring while keeping privacy notices and policy pages separate.
+- 2026-05-18: Completed T-100; the contact page now passes valid normalized
+  product query context into `ContactForm`, invalid query context is ignored
+  before rendering, and focused component/page tests cover the handoff and
+  submitted payload.
+- 2026-05-18: Reconciled A-010 into F-084 through F-090. Highest priority
+  frontend follow-ups are public/auth layout and cache ownership, production
+  metadata/discovery files, accessible search/navigation controls, image sizing
+  and preload tuning, landmark/heading cleanup, and server-rendered
+  artwork-to-shop links.
+- 2026-05-18: Prepared T-102 as the first A-010 implementation slice. It
+  should remove global root-layout DB/session work and avoid middleware token
+  parsing for unprotected public routes while recording any remaining
+  route-local dynamic blockers.
+- 2026-05-18: Completed T-102; root layout no longer performs global
+  DB/session work, middleware skips token parsing for unprotected public paths,
+  and shared navigation `useSearchParams()` callers are wrapped in narrow
+  Suspense boundaries so the public shell can prerender where route-local data
+  allows it. Build output now shows several public entry routes as static, with
+  remaining dynamic public routes tied to route-local search params,
+  MongoDB/Shopify loaders, or optional session-aware UI.
+- 2026-05-18: Prepared T-103 as the next A-010/F-085 slice for production-safe
+  root metadata plus baseline `robots.ts` and `sitemap.ts`. Route-specific
+  detail metadata and JSON-LD remain separate.
+- 2026-05-18: Completed T-103; root metadata now describes the Joseph
+  Laoutaris public archive without checkout or policy claims, and baseline
+  `robots.ts`/`sitemap.ts` list stable public routes only.
+- 2026-05-18: Prepared T-104 as the next A-010/F-088 accessibility slice for
+  public search submit, search drawer trigger/close, mobile nav drawer
+  trigger/close, and unauthenticated favourite/watchlist controls.
+- 2026-05-18: Completed T-104; public search submit, mobile search drawer
+  trigger/close, mobile navigation drawer trigger/close, and unauthenticated
+  favourite/watchlist controls now use labelled semantic buttons without
+  changing search URL construction, drawer behavior, navigation targets,
+  authenticated saved-item forms, or tooltips.
+- 2026-05-18: Prepared T-105 for the remaining F-062 comment action
+  accessibility slice covering owner-only comment edit/delete and edit-mode
+  cancel/save icon controls.
 
 ## Next Agent Action
 
-Pick the next scoped frontend/source cleanup from the remaining open findings
-and risks.
+Assign T-105 for the remaining comment action accessibility slice. After T-105,
+choose the next A-010 frontend slice: route-specific detail metadata/JSON-LD,
+image tuning, landmark cleanup, route-local cache/ISR policy, or
+artwork-to-shop SSR discovery. Keep these separate unless explicitly assigned
+together.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
@@ -415,6 +511,5 @@ opened.
 Keep favourite/watchlist server actions, broader account navigation, user
 comment mutations, profile editing, real pagination, checkout/cart, remaining
 Shopify product transform fields, visible admin product-linking UI, client
-fetcher behavior beyond the scoped public artwork fetcher, test-session
-override logs, root-layout DB/session ownership, and broad route-builder
-centralization separate.
+fetcher behavior beyond scoped discovery work, test-session override logs, and
+broad route-builder centralization separate.

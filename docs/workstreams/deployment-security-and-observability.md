@@ -118,6 +118,24 @@ security headers, environment documentation, and actionable operational signals.
 - T-047 completed the next route-local public-safe API response slice, scoped
   to public navigation route failure bodies and removal of touched navigation
   debug logging. Broader logging/redaction policy remains separate.
+- A-020 completed the privacy, consent, and commerce compliance audit. It found
+  missing public policy pages, newsletter consent/source and unsubscribe gaps,
+  account privacy/self-service gaps, comment posting/moderation notice gaps,
+  contact/enquiry notice and product-context gaps, third-party disclosure gaps,
+  and commerce assurance copy that is ahead of checkout and policy pages.
+- A-021 completed the observability and incident-response audit. It confirmed
+  T-025 is a useful deployment-smoke baseline, but found no monitoring
+  provider/instrumentation, no request/correlation ID policy, no structured
+  redacted logger, no incident-response runbook or alert owner matrix, and no
+  continuous smoke/monitoring setup.
+- A-010 completed the performance, SEO, and accessibility audit. It found all
+  public routes still build as dynamic because of global root layout and
+  middleware request-time work, production metadata/discovery files are missing,
+  and public accessibility gaps are not covered by lint.
+- T-103 added production-safe root archive metadata plus baseline
+  `robots.ts`/`sitemap.ts` discovery files using a fixed public site URL
+  helper. Route-specific metadata, JSON-LD, and deployment smoke assertions for
+  discovery endpoints remain separate.
 - T-048 completed the next route-local public-safe API response slice, scoped
   to admin read route failure bodies. Broader logging/redaction policy remains
   separate.
@@ -140,6 +158,11 @@ security headers, environment documentation, and actionable operational signals.
   availability polling, and DOM/iframe inspection while preserving current
   upload widget behavior. It intentionally leaves the global logging/redaction
   and monitoring policy separate.
+- T-101 documented the Cloudinary lifecycle and upload ownership policy without
+  runtime config changes: automatic destructive Cloudinary cleanup remains
+  disabled, `laoutaris_art` is the current hard-coded upload preset, signed
+  folders remain rejected, and the configured upload cloud must stay aligned
+  with the `next.config.mjs` Cloudinary delivery allowlist.
 - T-068 removed always-on public shop products route, gallery, and loader
   `console.log` debug output, and replaced the loader's console-directed public
   error hint. Broader production logging/redaction and monitoring policy
@@ -237,9 +260,24 @@ security headers, environment documentation, and actionable operational signals.
   and Node runtime pinning slice completed in T-064.
 - Keep native-package deployment smoke checks for `GET /` and credentials
   sign-in after bcrypt, Next, runtime, or auth import-boundary changes.
-- Audit privacy, consent, and commerce compliance gaps for owner/legal review.
-- Define observability, alerting, incident response, and rollback ownership.
-- Add monitoring or error reporting decision if needed.
+- Route A-020 privacy/compliance findings through owner/legal review before
+  implementing policy, consent, unsubscribe, account privacy, comment notice,
+  third-party disclosure, or commerce policy pages.
+- Add request/correlation IDs and a structured redacted logger before broad
+  route-level logging cleanup or monitoring-provider integration.
+- Choose and document an error-reporting/monitoring provider, or explicitly
+  record a no-provider decision for launch.
+- Create an incident-response runbook with severity levels, triage,
+  escalation, communication, rollback authority, service owner matrix, evidence
+  retention, and post-incident follow-up rules.
+- Decide CI/scheduled/manual ownership for `npm run smoke:public`; keep
+  credentialed, admin, and Vercel-log smoke evidence owner-run until safe
+  synthetic accounts and access are approved.
+- Define the deployment/cache implications of separating public route rendering
+  from authenticated/session-only UI after A-010, including how build output
+  should prove static or ISR behavior for public archive/shop routes.
+- Add deployment smoke or build-output checks for the T-103 discovery endpoints
+  and future route-specific metadata once those route contracts are assigned.
 
 ## Acceptance Criteria
 
@@ -539,14 +577,59 @@ npm run lint
   adding focused static Next config coverage. Full strict CSP allowlisting,
   HSTS, route-level dynamic CORS, CSP reporting, and monitoring remain
   separate.
+- 2026-05-18: Reconciled A-020 into F-072 through F-079 and R-018. Owner/legal
+  review is required before policy-page copy, consent records, unsubscribe,
+  account privacy actions, third-party disclosure, or commerce assurance copy is
+  finalized.
+- 2026-05-18: Reconciled A-021 into F-080 through F-083, R-019, and R-028. The
+  first owner-independent implementation slice should add request/correlation
+  IDs and structured redacted logging, while provider selection and incident
+  response ownership remain separate.
+- 2026-05-18: Prepared T-099 for a provider-neutral request/correlation ID and
+  structured redacted logging foundation across a representative API route
+  slice.
+- 2026-05-18: Completed T-099 by adding provider-neutral request ID propagation
+  and generation, structured redacted API logging, optional public
+  `requestId`/`X-Request-Id` helper support, and a representative public/user/
+  admin failure-path migration. Monitoring provider selection,
+  `instrumentation.ts`, alerting, incident response, and broad route migration
+  remain separate.
+- 2026-05-18: Prepared T-101 as the Cloudinary policy/runbook slice for asset
+  lifecycle, backup/restore, orphan cleanup, and upload preset/cloud/folder
+  ownership before runtime cleanup or signed-folder changes.
+- 2026-05-18: Completed T-101 by documenting the no-destructive-cleanup
+  Cloudinary policy, manual deletion evidence requirements, backup/restore/
+  rollback expectations, current preset/cloud/folder ownership, and delivery
+  allowlist alignment without changing runtime configuration.
+- 2026-05-18: Reconciled A-010 into F-084/F-085 and R-012/R-030 from the
+  deployment side. Public route cacheability and metadata/discovery output now
+  need explicit verification in future build/deployment checks.
+- 2026-05-18: Prepared T-102 as the first public route cacheability slice. It
+  should remove global root-layout DB/session work and avoid middleware token
+  parsing for public routes, then record build output and any route-local
+  dynamic blockers.
+- 2026-05-18: Completed T-102; public middleware paths now bypass token parsing,
+  root layout no longer imports or calls global DB/session helpers, and
+  `npm run build` passes. Build output still marks route-local data/session
+  public pages as dynamic, so deployment cacheability work should now focus on
+  explicit route policy rather than global shell auth work.
+- 2026-05-18: Prepared T-103 for production-safe root metadata plus baseline
+  robots/sitemap discovery files. Keep metadata deployment checks separate from
+  policy-page copy and commerce claims.
+- 2026-05-18: Completed T-103 with a non-secret fixed public site URL helper,
+  root archive metadata, baseline crawler rules, and a stable public route
+  sitemap. Deployment smoke automation for discovery endpoints remains a
+  future deployment slice.
 
 ## Next Agent Action
 
-Choose the next deployment/security slice from the remaining backlog after
-orchestrator review.
+Choose the next deployment/security slice from explicit route cache policy,
+discovery endpoint smoke checks, provider selection, incident-response runbook
+ownership, CI/scheduled smoke, or broader route-level logging migration. Keep
+owner/legal A-020 policy work separate.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
-production logging/redaction policy, Cloudinary preset/folder/lifecycle policy,
-credential rotation, OAuth callback configuration, full strict CSP allowlist
-design, dynamic per-origin CORS, HSTS rollout, build-time live MongoDB
-coupling, and the Next/PostCSS owner choice separate.
+production logging/redaction policy, runtime Cloudinary cleanup or signed
+folder changes, credential rotation, OAuth callback configuration, full strict
+CSP allowlist design, dynamic per-origin CORS, HSTS rollout, build-time live
+MongoDB coupling, and the Next/PostCSS owner choice separate.

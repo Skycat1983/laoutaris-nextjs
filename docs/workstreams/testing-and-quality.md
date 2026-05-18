@@ -300,6 +300,9 @@ refactoring without turning every change into a manual QA pass.
 - Keep deployment smoke checks current through the evidence-based manual
   checklist and the `npm run smoke:public` unauthenticated status helper added
   by T-025.
+- Decide whether `npm run smoke:public` should remain manual, become CI-gated,
+  or run on a schedule; A-021 confirmed it is not continuous monitoring and
+  does not cover credentialed/admin/log evidence.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -1070,11 +1073,60 @@ npm run lint
   T-098/T-097/T-082 Jest set, `npm run lint`, `npm run build`, the scoped
   verification reference search, and `git diff --check` passed; build retained
   the existing Browserslist caniuse-lite notice.
+- 2026-05-18: Reconciled A-021 smoke findings into F-083 and R-028. Future
+  smoke automation work should keep credentialed/admin/Vercel-log checks
+  separate until safe owner-approved accounts and access are available.
+- 2026-05-18: Prepared T-099 and T-100 with focused test expectations for
+  request ID/logger behavior and product enquiry context persistence.
+- 2026-05-18: Completed T-100 by extending
+  `__tests__/unit/api/publicEnquiryRoute.test.ts` for product-handle
+  normalization/rejection and adding
+  `__tests__/unit/forms/contactFormProductContext.test.tsx` for contact
+  page/form product-context wiring and payload preservation. Focused Jest,
+  product-detail regression Jest, lint, stale-TODO search, and
+  `git diff --check` passed; `npm run build` initially hit concurrent T-099
+  observability logger work, then passed after T-099 was completed.
+- 2026-05-18: Completed T-099 by adding focused observability coverage for
+  request ID generation/propagation, unsafe header rejection, helper
+  `requestId`/`X-Request-Id` behavior, logger redaction, and migrated public/
+  user/admin route `500` paths. Focused Jest, lint, build, request-ID source
+  search, and `git diff --check` passed.
+- 2026-05-18: Reconciled A-010 testing implications into F-088/R-031 and
+  prepared T-102 with focused middleware/root-layout source-check expectations.
+  Public accessibility controls need targeted component tests when that slice
+  is assigned.
+- 2026-05-18: Completed T-102 with focused middleware coverage proving public
+  routes do not call `getToken()`, a static root-layout source check proving
+  global DB/session helpers are absent, and existing render source-hygiene
+  coverage. Focused Jest, lint, build, the required root-layout source search,
+  and `git diff --check` passed.
+- 2026-05-18: Prepared T-103 with focused metadata/discovery test
+  expectations for root metadata, robots output, sitemap routes, and removal of
+  scaffold metadata text.
+- 2026-05-18: Completed T-103 by adding
+  `__tests__/unit/deployment/publicMetadataDiscovery.test.ts` for root metadata
+  source text, scaffold metadata absence, crawler rules, stable public sitemap
+  routes, and discovery URL output.
+- 2026-05-18: Prepared T-104 with focused accessibility/control coverage
+  expectations for public search, mobile drawers, and unauthenticated artwork
+  favourite/watchlist intent controls.
+- 2026-05-18: Completed T-104 by adding
+  `__tests__/unit/publicSearchNavigationAccessibility.test.tsx` for desktop
+  search submit accessibility and URL behavior, unauthenticated saved-item
+  modal buttons, labelled drawer trigger/close source invariants, and retired
+  clickable-wrapper source hygiene. Focused Jest, lint, build, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-105 with focused accessibility/control coverage
+  expectations for owner-only comment edit/delete and edit-mode cancel/save
+  icon controls.
 
 ## Next Agent Action
 
-Choose the next testing slice from the backlog, keeping route/fetcher parity
-current when API fetchers change.
+Add focused comment action accessibility coverage with T-105. After T-105,
+choose the next testing slice from the backlog with targeted coverage for
+route-local cache policy, discovery endpoint smoke checks, route-specific
+metadata, image tuning, landmark cleanup, or artwork-to-shop SSR discovery when
+those implementation slices are assigned.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,

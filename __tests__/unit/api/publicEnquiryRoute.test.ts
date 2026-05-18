@@ -137,6 +137,55 @@ describe("POST /api/v2/public/enquiry", () => {
     });
   });
 
+  it("persists a normalized product handle when supplied", async () => {
+    const response = await POST(
+      createRequest({
+        ...validPayload,
+        productHandle: "  Limited-Print-01  ",
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockCreate).toHaveBeenCalledWith({
+      ...validPayload,
+      productHandle: "limited-print-01",
+    });
+    expect(body).toEqual({
+      success: true,
+      message: "Enquiry received",
+      data: {
+        success: true,
+        message: "Enquiry received",
+      },
+    });
+  });
+
+  it("returns 400 for invalid product context and does not write to MongoDB", async () => {
+    const response = await POST(
+      createRequest({
+        ...validPayload,
+        productHandle: "limited_print_01",
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid enquiry input",
+      fieldErrors: {
+        productHandle: [
+          "Product handle must contain only lowercase letters, numbers, and hyphens.",
+        ],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).not.toHaveBeenCalled();
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
   it("returns a public-safe 500 when persistence fails", async () => {
     mockCreate.mockRejectedValue(new Error("private database detail"));
 

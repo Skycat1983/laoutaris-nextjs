@@ -223,6 +223,15 @@ consistent enough for production refactoring and Shopify integration.
   DB connection setup, artwork Shopify-link filtering, product-type filtering,
   numeric product ID normalization/skipping, deduplication, Shopify fan-out,
   and metadata construction after route query parsing succeeds.
+- A-020 found data/API follow-ups for newsletter consent/source fields and
+  unsubscribe workflow, product enquiry context persistence, comment
+  retention/deletion expectations, and account privacy actions.
+- A-021 found API observability follow-ups for request/correlation IDs,
+  structured redacted logging, and public incident/request identifiers on
+  internal failure responses.
+- T-100 added optional `productHandle` support to the public enquiry DTO and
+  Mongoose model. The public enquiry route persists normalized valid handles
+  and rejects malformed product context with a validation `400`.
 
 ## Backlog
 
@@ -249,6 +258,10 @@ consistent enough for production refactoring and Shopify integration.
   validation, real 400 validation responses, and route tests by content type.
 - Replace raw exception responses with stable public-safe errors across public,
   user, and admin routes.
+- Add request/correlation ID propagation to public-safe internal failure
+  responses after the logging policy task is scoped.
+- Add newsletter consent/source metadata and unsubscribe route behavior after
+  owner/legal requirements are accepted.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
@@ -743,13 +756,27 @@ Add API route tests where behavior is changed.
   deduplication, Shopify fan-out, per-product fetch failure skipping, and
   metadata construction. The public shop products route preserves its query
   validation, success envelope, validation `400`s, and public-safe `500`.
+- 2026-05-18: Reconciled A-020 and A-021 into data/API follow-ups for
+  consent/unsubscribe fields, product enquiry context, account/comment privacy
+  actions, request IDs, and structured logging.
+- 2026-05-18: Prepared T-099 for request IDs and structured logging, and T-100
+  for product enquiry context persistence.
+- 2026-05-18: Completed T-100 for public enquiry product context persistence.
+  Ordinary enquiry payloads still work without product context, valid handles
+  are normalized before persistence, and invalid product context is rejected
+  before `dbConnect()` or `EnquiryModel.create()`.
+- 2026-05-18: Completed T-099 for the first API request ID/logging slice.
+  `apiErrorResponse()` can now include public request IDs and
+  `X-Request-Id`, and representative public navigation, protected user
+  profile, and admin collection read failure paths use request context plus
+  structured redacted logging without changing success contracts.
 
 ## Next Agent Action
 
-Prepare the next data/API task from the remaining backlog: broader response
-helper cleanup, route-local DB ownership gaps, field-contract matrices,
-server-side shop pagination/sorting contracts, or admin Shopify-link UI/API
-workflow. Keep each separate from the completed T-085 product-list read path.
+Choose the next reconciled data/API task. Keep broader response helper
+cleanup, route-local DB
+ownership gaps, field-contract matrices, server-side shop pagination/sorting
+contracts, and admin Shopify-link work separate.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

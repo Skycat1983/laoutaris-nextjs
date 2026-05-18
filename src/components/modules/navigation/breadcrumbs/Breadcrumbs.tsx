@@ -10,10 +10,26 @@ import {
 import { useSelectedLayoutSegments, useSearchParams } from "next/navigation";
 import { HouseIcon } from "lucide-react";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
 
-const Breadcrumbs = () => {
+const BreadcrumbsFallback = () => {
+  return (
+    <div className="pl-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">
+              <HouseIcon className="bg-whitish h-5 md:h-6 lg:h-8" />
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
+  );
+};
+
+const BreadcrumbsContent = () => {
   const segments = useSelectedLayoutSegments();
   const searchParams = useSearchParams();
 
@@ -71,6 +87,14 @@ const Breadcrumbs = () => {
         <ScrollBar orientation="horizontal" className="p-12" />
       </ScrollArea>
     </div>
+  );
+};
+
+const Breadcrumbs = () => {
+  return (
+    <Suspense fallback={<BreadcrumbsFallback />}>
+      <BreadcrumbsContent />
+    </Suspense>
   );
 };
 

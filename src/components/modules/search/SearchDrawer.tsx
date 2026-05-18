@@ -37,7 +37,13 @@ export function SearchDrawer() {
       onOpenChange={setOpen}
     >
       <DrawerTrigger asChild>
-        <Search className="h-6 w-6 cursor-pointer" />
+        <button
+          type="button"
+          aria-label="Open search"
+          className="inline-flex cursor-pointer items-center justify-center"
+        >
+          <Search className="h-6 w-6" aria-hidden="true" />
+        </button>
       </DrawerTrigger>
       <DrawerContent className="fixed top-0 bg-transparent">
         <div className="mx-auto w-full max-w-full px-4">
@@ -58,13 +64,14 @@ export function SearchDrawer() {
             <DrawerClose asChild>
               <button
                 type="button"
+                aria-label="Close search"
                 className="ml-4"
                 onClick={() => {
                   setQuery("");
                   setOpen(false);
                 }}
               >
-                <X className="h-5 w-5 text-gray-500" />
+                <X className="h-5 w-5 text-gray-500" aria-hidden="true" />
               </button>
             </DrawerClose>
           </form>

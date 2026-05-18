@@ -5,6 +5,7 @@ export const ENQUIRY_FIELD_LIMITS = {
   email: 254,
   subject: 200,
   message: 4000,
+  productHandle: 120,
 } as const;
 
 const requiredTrimmedString = (fieldName: string) =>
@@ -14,6 +15,43 @@ const requiredTrimmedString = (fieldName: string) =>
       invalid_type_error: `${fieldName} must be a string`,
     })
     .trim();
+
+export const productHandleSchema = z.preprocess(
+  (value) => {
+    if (value === undefined || value === null) {
+      return undefined;
+    }
+
+    if (typeof value !== "string") {
+      return value;
+    }
+
+    const normalizedValue = value.trim().toLowerCase();
+
+    return normalizedValue.length > 0 ? normalizedValue : undefined;
+  },
+  z
+    .string({
+      invalid_type_error: "Product handle must be a string",
+    })
+    .max(
+      ENQUIRY_FIELD_LIMITS.productHandle,
+      `Product handle must be ${ENQUIRY_FIELD_LIMITS.productHandle} characters or fewer.`
+    )
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Product handle must contain only lowercase letters, numbers, and hyphens."
+    )
+    .optional()
+);
+
+export const normalizeProductHandle = (
+  productHandle: unknown
+): string | undefined => {
+  const parsedProductHandle = productHandleSchema.safeParse(productHandle);
+
+  return parsedProductHandle.success ? parsedProductHandle.data : undefined;
+};
 
 export const enquirySchema = z.object({
   name: requiredTrimmedString("Name")
@@ -46,6 +84,7 @@ export const enquirySchema = z.object({
       ENQUIRY_FIELD_LIMITS.message,
       `Message must be ${ENQUIRY_FIELD_LIMITS.message} characters or fewer.`
     ),
+  productHandle: productHandleSchema,
 });
 
 export type EnquiryInput = z.infer<typeof enquirySchema>;

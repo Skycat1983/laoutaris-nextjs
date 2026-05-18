@@ -12,11 +12,19 @@ import {
 import { transformCollectionPopulated } from "@/lib/transforms";
 import { CollectionFrontendPopulated } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 // TODO: remove the 'return one item' logic
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadCollectionListResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/collection/read"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -63,10 +71,14 @@ export async function GET(
       throw error;
     }
 
-    console.error("[ARTICLE_READ]", error);
+    logger.error("api.admin.collection_read.failed", {
+      error,
+      errorLabel: "admin_collection_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch article(s)",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

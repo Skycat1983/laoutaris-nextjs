@@ -12,6 +12,7 @@ import {
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { SubmitButton } from "./SubmitButton";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import { Button } from "@/components/shadcn/button";
 
 type WatchlistButtonProps = {
   isLoggedIn: boolean;
@@ -72,15 +73,17 @@ const WatchlistButton = ({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div
+            <Button
+              type="button"
+              shape="rounded"
+              size="full"
               className="w-full"
               onClick={() => {
                 handleUnauthenticatedAction();
               }}
             >
-              <input type="hidden" name="artworkId" value={artworkId} />
-              <SubmitButton label={label} size={"full"} />
-            </div>
+              {label}
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>

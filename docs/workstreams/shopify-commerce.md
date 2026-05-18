@@ -111,11 +111,25 @@ production while preserving MongoDB as the archive source of truth.
   T-082 server-side validation.
 - T-098 added explicit product-existence verification controls to the admin
   linking UI without making Shopify availability a persistence dependency.
+- A-020 found commerce compliance and handoff gaps: product enquiry links pass
+  a product handle in the URL but the contact form does not persist that
+  context, and current payment/shipping/buyer-protection copy is ahead of the
+  implemented enquiry-only checkout state and public policy pages.
+- T-100 preserves available product enquiry context by passing normalized
+  Shopify handles from `/project/contact?product=...` into contact submissions.
+  The stale Shopify credential TODO in `src/app/shop/products/page.tsx` is
+  removed.
+- A-010 found artwork-to-shop product discovery is still client-side on artwork
+  detail pages: `ArtworkShopSection` fetches linked products in `useEffect`, so
+  product links and prices are not present in initial server HTML.
 
 ## Backlog
 
 - Decide the full checkout handoff: Shopify-hosted product/checkout link or
   Shopify cart/checkout with variant selection.
+- Align commerce assurance copy with implemented checkout/cart behavior and
+  owner/legal-approved sale, payment, shipping, refund, and buyer-protection
+  policies.
 - Verify whether the removed Shopify credential-like source comment represented
   a real value and rotate it if needed.
 - Standardize remaining shop product API envelopes, define checkout line-item
@@ -125,6 +139,9 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Define any future server-side shop sorting contract before moving current
   client-side sorting into the API.
+- Render linked Shopify product summaries server-side on artwork detail pages
+  so archive-to-commerce relationships are discoverable without client fetch
+  waterfalls.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -280,10 +297,26 @@ Add targeted tests as shop behavior is hardened.
   action, display returned product context on success, show invalid/not-found/
   upstream states on failure, clear stale verification when rows change, and
   keep artwork save governed by local and route validation.
+- 2026-05-18: Reconciled A-020 Shopify findings into F-076, F-078, and F-079.
+  Product enquiry context persistence and stale credential TODO cleanup were
+  assigned to T-100; commerce assurance copy alignment remains separate.
+- 2026-05-18: Prepared T-100 to preserve Shopify product context in enquiry
+  submissions and remove the stale Shopify credential TODO without changing
+  checkout/cart or policy-page scope.
+- 2026-05-18: Completed T-100; valid product enquiry links now preserve a
+  normalized Shopify handle through `/project/contact` and the public enquiry
+  payload, invalid product context is not persisted silently, and the stale shop
+  credential TODO was removed. The orchestrator reran `npm run build` after
+  T-099 completed and build passed.
+- 2026-05-18: Reconciled A-010 Shopify-facing discovery finding into F-090.
+  Artwork detail pages should eventually render linked product summaries in
+  initial server HTML; keep that separate from checkout/cart and product
+  pagination/sorting work.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff, remaining
+Choose the next Shopify backlog slice from checkout handoff, commerce assurance
+copy alignment, server-rendered artwork-to-shop discovery, remaining
 product-detail contract coverage, product pagination, or server-side sorting.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,

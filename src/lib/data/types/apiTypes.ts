@@ -10,6 +10,7 @@ export type ApiErrorResponse = BaseApiResponse & {
   success: false;
   error: string;
   errorCode?: number;
+  requestId?: string;
 };
 
 export interface PaginationMetadata {

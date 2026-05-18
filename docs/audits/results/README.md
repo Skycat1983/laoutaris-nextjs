@@ -17,8 +17,8 @@ file instead of creating scattered notes.
 | A-006 | [Testing and quality baseline](A-006-testing-quality-baseline.md) | Completed |
 | A-007 | [Deployment and environment](A-007-deployment-environment.md) | Completed |
 | A-008 | [Security headers, CORS, and logging](A-008-security-headers-cors-logging.md) | Completed |
-| A-009 | [Cloudinary and assets](A-009-cloudinary-assets.md) | Not started |
-| A-010 | [Performance, SEO, and accessibility](A-010-performance-seo-accessibility.md) | Not started |
+| A-009 | [Cloudinary and assets](A-009-cloudinary-assets.md) | Completed |
+| A-010 | [Performance, SEO, and accessibility](A-010-performance-seo-accessibility.md) | Completed |
 | A-011 | [Admin content operations](A-011-admin-content-operations.md) | Not started |
 | A-012 | [Documentation and handoff quality](A-012-documentation-knowledge-base.md) | Completed |
 | A-013 | [Architecture refactor scope](A-013-architecture-refactor-scope.md) | Completed |
@@ -28,8 +28,8 @@ file instead of creating scattered notes.
 | A-017 | [Search, navigation, and content discovery](A-017-search-navigation-discovery.md) | Not started |
 | A-018 | [Translations, copy, and content taxonomy](A-018-translations-content-taxonomy.md) | Not started |
 | A-019 | [Dependencies and supply chain](A-019-dependencies-supply-chain.md) | Completed |
-| A-020 | [Privacy, consent, and commerce compliance](A-020-privacy-consent-commerce-compliance.md) | Not started |
-| A-021 | [Observability and incident response](A-021-observability-incident-response.md) | Not started |
+| A-020 | [Privacy, consent, and commerce compliance](A-020-privacy-consent-commerce-compliance.md) | Completed |
+| A-021 | [Observability and incident response](A-021-observability-incident-response.md) | Completed |
 
 ## Result Format
 

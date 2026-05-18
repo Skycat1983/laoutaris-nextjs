@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET as GET_ARTICLE_LIST } from "@/app/api/v2/admin/article/read/route";
 import { GET as GET_ARTICLE_DETAIL } from "@/app/api/v2/admin/article/read/[id]/route";
 import { GET as GET_ARTWORK_LIST } from "@/app/api/v2/admin/artwork/read/route";

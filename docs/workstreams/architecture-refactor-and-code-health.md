@@ -130,6 +130,11 @@ or inconsistent code forward.
   now keeps only the current `/account/settings` redirect, active source no
   longer imports the retired wrappers, and `src/lib/api` no longer owns
   runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base URL construction.
+- A-010 found the next rendering architecture gap: despite completed self-HTTP
+  cleanup, public routes still build as dynamic because root layout performs
+  request-time DB/session work and middleware parses tokens before protected
+  route checks. It also found artwork-to-shop discovery remains client-fetch
+  dependent on artwork detail pages.
 - T-088 removed direct DB helper logging and stale commented MongoDB
   connection/OAuth callback examples from `src/lib/db` while preserving the
   existing connection/retry/cache behavior and adapter-created user defaults.
@@ -420,11 +425,25 @@ Use targeted import/reference searches for pruning tasks.
   snippets from the scoped auth, session provider, public collection, main
   navigation, and admin layout source. Full-source source-hygiene coverage now
   keeps `src` free of direct or commented `console.log()` calls.
+- 2026-05-18: Reconciled A-010 architecture findings into F-084 and F-090.
+  Next architecture work should separate public/auth layout and middleware
+  ownership before promising static/ISR behavior, and treat server-rendered
+  artwork-to-shop discovery as a focused service/loader follow-up.
+- 2026-05-18: Prepared T-102 for the public/auth layout and middleware
+  boundary. It removes the global root-layout DB/session blocker first and
+  records any remaining route-local dynamic blockers rather than attempting a
+  full static/ISR migration.
+- 2026-05-18: Completed T-102 by moving DB/session ownership out of the root
+  layout and behind route-local loaders/pages, and by making middleware return
+  early for unprotected public paths before calling `getToken()`. Remaining
+  dynamic public routes are now explicit route-local cache/data/session follow-
+  ups instead of global shell blockers.
 
 ## Next Agent Action
 
-Pick the next scoped architecture/source-health task from the remaining open
-findings and risks.
+Choose a route-local rendering follow-up from the T-102 build output, such as
+cache/ISR policy for dynamic public loaders or artwork-to-shop SSR discovery.
+Keep those separate from broader route-builder and source-pruning work.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
@@ -434,8 +453,8 @@ Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
 `serverApi` option, DB connection semantics, broad route-builder centralization,
 favourite/watchlist server actions, account navigation, cache policy,
 root-layout session ownership, middleware/global auth policy, test-session
-override logs, and global logging/redaction policy separate unless explicitly
-scoped.
+override logs, artwork-to-shop SSR discovery, and global logging/redaction
+policy separate unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
 T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for

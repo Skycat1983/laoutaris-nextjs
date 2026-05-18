@@ -6,6 +6,7 @@ import { useFormState } from "react-dom";
 import { updateUserFavourites } from "@/lib/actions/updateUserFavourites";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { SubmitButton } from "./SubmitButton";
+import { Button } from "@/components/shadcn/button";
 import {
   Tooltip,
   TooltipContent,
@@ -69,15 +70,18 @@ const FavouritesButton = ({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div
+            <Button
+              type="button"
+              shape="rounded"
+              variant="outline"
+              size="full"
               className="w-full bg-whitish"
               onClick={() => {
                 handleUnauthenticatedAction();
               }}
             >
-              <input type="hidden" name="artworkId" value={artworkId} />
-              <SubmitButton label={label} variant={"outline"} size={"full"} />
-            </div>
+              {label}
+            </Button>
           </TooltipTrigger>
           <TooltipContent>
             <p>Add this item to your favourites list</p>

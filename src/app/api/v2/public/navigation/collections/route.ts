@@ -4,12 +4,20 @@ import { RouteResponse } from "@/lib/data/types";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
 import { NextRequest } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export const dynamic = "force-dynamic";
 
 export const GET = async (
-  _request: NextRequest
+  request: NextRequest
 ): Promise<RouteResponse<ApiCollectionNavListResult>> => {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/public/navigation/collections"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     const result = await getCollectionNavigationList();
 
@@ -26,10 +34,14 @@ export const GET = async (
       throw error;
     }
 
-    console.error("Error fetching collection navigation:", error);
+    logger.error("api.public.collection_navigation.failed", {
+      error,
+      errorLabel: "collection_navigation_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch collection navigation",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 };

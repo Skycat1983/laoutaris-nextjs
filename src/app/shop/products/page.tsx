@@ -2,9 +2,6 @@ import { ShopProductsLoader } from "@/components/loaders/viewLoaders/ShopProduct
 import { ShopFiltersState, ShopSearchParams } from "@/lib/data/types/shopTypes";
 import Image from "next/image";
 
-// TODO: Move Shopify credentials to .env.local before pushing to GitHub
-// Credentials are in: src/lib/config/shopifyConfig.ts
-
 export default async function ProductsPage({
   searchParams,
 }: {

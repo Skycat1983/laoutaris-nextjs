@@ -50,7 +50,13 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
   return (
     <Drawer direction="right">
       <DrawerTrigger asChild>
-        <Menu />
+        <button
+          type="button"
+          aria-label="Open navigation menu"
+          className="inline-flex cursor-pointer items-center justify-center"
+        >
+          <Menu aria-hidden="true" />
+        </button>
       </DrawerTrigger>
 
       <DrawerContent className="max-w-full">
@@ -60,7 +66,13 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
               <Logo />
             </DrawerTitle>
             <DrawerClose asChild>
-              <X />
+              <button
+                type="button"
+                aria-label="Close navigation menu"
+                className="inline-flex cursor-pointer items-center justify-center"
+              >
+                <X aria-hidden="true" />
+              </button>
             </DrawerClose>
           </DrawerFooter>
           <DrawerHeader>

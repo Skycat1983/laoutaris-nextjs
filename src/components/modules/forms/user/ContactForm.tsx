@@ -26,18 +26,31 @@ import {
 
 // TODO: redo this form with shadcn/ui
 
-const ContactForm = () => {
+interface ContactFormProps {
+  productHandle?: string;
+}
+
+const getDefaultValues = (productHandle?: string): EnquiryInput => ({
+  name: "",
+  email: "",
+  subject: productHandle ? `Product enquiry: ${productHandle}` : "",
+  message: productHandle
+    ? `I am interested in product ${productHandle}. Please send purchase details.`
+    : "",
+  ...(productHandle ? { productHandle } : {}),
+});
+
+const ContactForm = ({ productHandle }: ContactFormProps) => {
   const { openModal } = useGlobalFeatures();
+  const defaultValues = React.useMemo(
+    () => getDefaultValues(productHandle),
+    [productHandle]
+  );
 
   // Initialize the form with React Hook Form and Zod resolver
   const form = useForm<EnquiryInput>({
     resolver: zodResolver(enquirySchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
+    defaultValues,
   });
 
   // Handle form submission
@@ -47,6 +60,7 @@ const ContactForm = () => {
       email: values.email,
       subject: values.subject,
       message: values.message,
+      ...(productHandle ? { productHandle } : {}),
     };
 
     try {
@@ -64,7 +78,7 @@ const ContactForm = () => {
         );
       }
 
-      form.reset();
+      form.reset(defaultValues);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";

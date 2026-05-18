@@ -5,6 +5,7 @@ export interface EnquiryBase {
   email: string;
   subject: string;
   message: string;
+  productHandle?: string;
 }
 
 export interface EnquiryDB extends Document, EnquiryBase {
@@ -18,6 +19,7 @@ const enquiryContentSchema = new mongoose.Schema<EnquiryDB>(
     email: { type: String, required: true },
     subject: { type: String, required: true },
     message: { type: String, required: true },
+    productHandle: { type: String },
     // artwork: { type: mongoose.Schema.Types.ObjectId, ref: "Artwork" },
   },
   {

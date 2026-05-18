@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { GET } from "@/app/api/v2/user/profile/route";
 import { getOwnUserProfile } from "@/lib/data/services/getOwnUserProfile";
 import { getServerSession } from "next-auth";
@@ -126,6 +128,7 @@ describe("GET /api/v2/user/profile", () => {
       success: false,
       message: "Failed to fetch user profile",
       error: "Failed to fetch user profile",
+      requestId: expect.any(String),
     });
   });
 });

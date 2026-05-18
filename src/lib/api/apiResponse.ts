@@ -10,6 +10,8 @@ type ApiErrorResponseOptions = {
   message: string;
   status: number;
   error?: string;
+  requestId?: string;
+  headers?: HeadersInit;
 };
 
 type ApiSuccessResponseOptions = ResponseInit & {
@@ -20,14 +22,29 @@ export const apiErrorResponse = ({
   message,
   status,
   error = message,
+  requestId,
+  headers,
 }: ApiErrorResponseOptions): NextResponse<ApiErrorResponse> =>
   NextResponse.json(
     {
       success: false,
       message,
       error,
+      ...(requestId === undefined ? {} : { requestId }),
     } satisfies ApiErrorResponse,
-    { status }
+    {
+      status,
+      ...(requestId === undefined && headers === undefined
+        ? {}
+        : {
+            headers: {
+              ...(headers === undefined
+                ? {}
+                : Object.fromEntries(new Headers(headers).entries())),
+              ...(requestId === undefined ? {} : { "X-Request-Id": requestId }),
+            },
+          }),
+    }
   );
 
 export const apiSuccessResponse = <T>(
