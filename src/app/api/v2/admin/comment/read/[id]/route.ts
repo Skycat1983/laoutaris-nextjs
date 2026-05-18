@@ -15,11 +15,19 @@ import type {
 } from "@/lib/data/types";
 import { transformCommentPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadCommentResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/comment/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -53,10 +61,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading comment:", error);
+    logger.error("api.admin.comment_read.failed", {
+      operation: "admin.comment.read.detail",
+      error,
+      errorLabel: "admin_comment_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read comment",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

@@ -1,6 +1,6 @@
 # T-120 Migrate Admin Read API Structured Logging
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment Security And Observability](../workstreams/deployment-security-and-observability.md),
@@ -114,4 +114,30 @@ git diff --check
 
 ## Completion Notes
 
-- Pending.
+- Completed 2026-05-18.
+- Migrated scoped admin read list/detail internal-failure paths from direct
+  route-level `console.error()` to request-context structured logging with
+  operation and error context.
+- Server-error responses for the migrated admin read routes now include
+  public `requestId` values and `X-Request-Id` while preserving guard,
+  invalid-ID, empty-list/not-found, pagination, success DTO, transform, and
+  DB/model ordering behavior.
+- Extended focused coverage for representative admin read list/detail failures,
+  propagated/generated request IDs, response headers, private-message redaction
+  from response bodies, structured log context, and source hygiene across the
+  migrated route files.
+- Admin create/update/delete route logging migration remains a separate slice.
+
+Verification:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/observability/apiRequestIdRoutes.test.ts __tests__/unit/api/adminReadRouteGuard.test.ts __tests__/unit/api/adminUserCommentReadRoute.test.ts
+rg -n "console\\.error\\(" src/app/api/v2/admin/article/read src/app/api/v2/admin/artwork/read src/app/api/v2/admin/blog/read src/app/api/v2/admin/collection/read src/app/api/v2/admin/comment/read src/app/api/v2/admin/user/read
+npm run lint
+npm run build
+git diff --check
+```
+
+Result: targeted Jest passed with 3 suites and 48 tests; the scoped
+`console.error()` search returned no matches; lint, build, and diff check
+passed.

@@ -72,6 +72,7 @@ export async function GET(
     }
 
     logger.error("api.admin.collection_read.failed", {
+      operation: "admin.collection.read.list",
       error,
       errorLabel: "admin_collection_read_failed",
     });

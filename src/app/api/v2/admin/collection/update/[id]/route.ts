@@ -12,6 +12,8 @@ import {
   type UpdateCollectionRouteParams,
 } from "@/lib/data/schemas/collectionSchema";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type CollectionUpdateFieldErrors = Partial<
   Record<
@@ -103,6 +105,12 @@ export async function PATCH(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/collection/update/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -123,10 +131,15 @@ export async function PATCH(
       throw error;
     }
 
-    console.error("Error updating collection:", error);
+    logger.error("api.admin.collection_update.failed", {
+      operation: "admin.collection.update",
+      error,
+      errorLabel: "admin_collection_update_failed",
+    });
     return apiErrorResponse({
       message: "Failed to update collection",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

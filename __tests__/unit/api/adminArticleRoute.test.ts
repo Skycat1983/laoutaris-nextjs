@@ -1,13 +1,17 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { POST } from "@/app/api/v2/admin/article/create/route";
 import { PATCH } from "@/app/api/v2/admin/article/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
 import { ArticleModel, UserModel } from "@/lib/data/models";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -38,19 +42,48 @@ jest.mock("next-auth", () => ({
 
 type MockRequest = {
   json: jest.Mock;
+  headers: Headers;
+  method: string;
+  url: string;
+};
+
+type MockRequestOptions = {
+  method?: string;
+  requestId?: string | null;
+  url?: string;
 };
 
 const adminUserId = "507f1f77bcf86cd799439011";
 const articleId = "507f1f77bcf86cd799439012";
 const artworkId = "507f1f77bcf86cd799439013";
 const newArtworkId = "507f1f77bcf86cd799439014";
+const requestId = "req-admin-article";
 
-const createRequest = (body: unknown): MockRequest => ({
+const createRequest = (
+  body: unknown,
+  options: MockRequestOptions = {}
+): MockRequest => ({
   json: jest.fn().mockResolvedValue(body),
+  headers: new Headers(
+    options.requestId === null
+      ? {}
+      : { "x-request-id": options.requestId ?? requestId }
+  ),
+  method: options.method ?? "POST",
+  url: options.url ?? "http://localhost/api/v2/admin/article/create",
 });
 
-const createInvalidJsonRequest = (): MockRequest => ({
+const createInvalidJsonRequest = (
+  options: MockRequestOptions = {}
+): MockRequest => ({
   json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+  headers: new Headers(
+    options.requestId === null
+      ? {}
+      : { "x-request-id": options.requestId ?? requestId }
+  ),
+  method: options.method ?? "POST",
+  url: options.url ?? "http://localhost/api/v2/admin/article/create",
 });
 
 const validCreatePayload = {
@@ -272,16 +305,25 @@ describe("POST /api/v2/admin/article/create", () => {
   });
 
   it("returns a public-safe 500 when article creation fails", async () => {
+    const createRequestId = "req-admin-article-create";
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    mockArticleCreate.mockRejectedValue(new Error("private database detail"));
+    mockArticleCreate.mockRejectedValue(
+      new Error("private admin@example.com database detail")
+    );
 
     try {
-      const response = await POST(createRequest(validCreatePayload) as never);
+      const response = await POST(
+        createRequest(validCreatePayload, {
+          requestId: createRequestId,
+        }) as never
+      );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(createRequestId);
       expect(mockDbConnect).toHaveBeenCalledTimes(2);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expect(mockArticleCreate).toHaveBeenCalledWith({
@@ -293,11 +335,23 @@ describe("POST /api/v2/admin/article/create", () => {
         success: false,
         message: "Failed to create article",
         error: "Failed to create article",
+        requestId: createRequestId,
       });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error creating article:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.article_create.failed",
+          level: "error",
+          requestId: createRequestId,
+          route: "/api/v2/admin/article/create",
+          method: "POST",
+          operation: "admin.article.create",
+          errorLabel: "admin_article_create_failed",
+        })
       );
+      expect(logPayload.error.message).toBe(
+        "private [redacted] database detail"
+      );
+      expect(JSON.stringify(body)).not.toContain("private");
     } finally {
       consoleErrorSpy.mockRestore();
     }
@@ -524,14 +578,27 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
 
     try {
       const response = await PATCH(
-        createRequest({ title: "Updated Studio Notes" }) as never,
+        createRequest(
+          { title: "Updated Studio Notes" },
+          {
+            method: "PATCH",
+            requestId: null,
+            url: `http://localhost/api/v2/admin/article/update/${articleId}`,
+          }
+        ) as never,
         {
           params: { id: articleId },
         }
       );
       const body = await response.json();
+      const generatedRequestId = body.requestId;
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(generatedRequestId).toEqual(
+        expect.stringMatching(/^[0-9a-f-]{36}$/)
+      );
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(generatedRequestId);
       expect(mockDbConnect).toHaveBeenCalledTimes(2);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expect(mockArticleFindByIdAndUpdate).toHaveBeenCalledWith(
@@ -548,11 +615,20 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
         success: false,
         message: "Failed to update article",
         error: "Failed to update article",
+        requestId: generatedRequestId,
       });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error updating article:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.article_update.failed",
+          level: "error",
+          requestId: generatedRequestId,
+          route: "/api/v2/admin/article/update/[id]",
+          method: "PATCH",
+          operation: "admin.article.update",
+          errorLabel: "admin_article_update_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }

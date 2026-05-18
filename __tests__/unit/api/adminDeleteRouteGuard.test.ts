@@ -1,3 +1,5 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { DELETE as DELETE_ARTICLE } from "@/app/api/v2/admin/article/delete/[id]/route";
@@ -15,11 +17,13 @@ import {
   CommentModel,
   UserModel,
 } from "@/lib/data/models";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -84,6 +88,7 @@ jest.mock("@/lib/data/models", () => ({
 
 type MockResponse = {
   status: number;
+  headers: Headers;
   json: () => Promise<unknown>;
 };
 
@@ -109,8 +114,15 @@ const collectionId = "507f1f77bcf86cd799439016";
 const commentId = "507f1f77bcf86cd799439017";
 const deletedUserId = "507f1f77bcf86cd799439018";
 const favouriteArtworkId = "507f1f77bcf86cd799439019";
+const requestId = "req-admin-delete";
 
-const createRequest = () => ({});
+const createRequest = (suppliedRequestId: string | null = requestId) => ({
+  method: "DELETE",
+  headers: new Headers(
+    suppliedRequestId === null ? {} : { "x-request-id": suppliedRequestId }
+  ),
+  url: "http://localhost/api/v2/admin/delete/example",
+});
 
 const createRouteContext = (id: string) => ({
   params: {
@@ -582,6 +594,7 @@ describe("admin delete route shared guard migration", () => {
   });
 
   it("aborts a transaction and returns a public-safe 500 on cascade failure", async () => {
+    const deleteRequestId = "req-admin-blog-delete";
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
@@ -594,18 +607,35 @@ describe("admin delete route shared guard migration", () => {
     mockUserUpdateMany.mockRejectedValue(new Error("private database detail"));
 
     try {
-      const response = await DELETE_BLOG(createRequest() as never, {
-        params: { id: blogId },
-      });
+      const response = await DELETE_BLOG(
+        createRequest(deleteRequestId) as never,
+        {
+          params: { id: blogId },
+        }
+      );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(deleteRequestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to delete blog and associated data",
         error: "Failed to delete blog and associated data",
+        requestId: deleteRequestId,
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.blog_delete.failed",
+          level: "error",
+          requestId: deleteRequestId,
+          route: "/api/v2/admin/blog/delete/[id]",
+          method: "DELETE",
+          operation: "admin.blog.delete",
+          errorLabel: "admin_blog_delete_failed",
+        })
+      );
       expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
       expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
       expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
@@ -627,14 +657,28 @@ describe("admin delete route shared guard migration", () => {
         params: { id: articleId },
       });
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(body).toEqual({
         success: false,
         message: "Failed to delete article",
         error: "Failed to delete article",
+        requestId,
       });
       expect(JSON.stringify(body)).not.toContain("private article detail");
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.article_delete.failed",
+          level: "error",
+          requestId,
+          route: "/api/v2/admin/article/delete/[id]",
+          method: "DELETE",
+          operation: "admin.article.delete",
+          errorLabel: "admin_article_delete_failed",
+        })
+      );
       expect(mockStartSession).not.toHaveBeenCalled();
     } finally {
       consoleErrorSpy.mockRestore();

@@ -10,9 +10,11 @@ import {
 } from "@/lib/api/admin/delete/routeValidation";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
   const admin = await requireApiAdmin();
@@ -24,6 +26,12 @@ export async function DELETE(
   if (!isValidObjectIdParam(id)) {
     return adminDeleteInvalidIdResponse("artwork", "Invalid artwork ID");
   }
+
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/artwork/delete/[id]"
+  );
+  const logger = createApiLogger(requestContext);
 
   let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
 
@@ -74,10 +82,15 @@ export async function DELETE(
     }
 
     await session?.abortTransaction();
-    console.error("Error in cascade delete:", error);
+    logger.error("api.admin.artwork_delete.failed", {
+      operation: "admin.artwork.delete",
+      error,
+      errorLabel: "admin_artwork_delete_failed",
+    });
     return apiErrorResponse({
       message: "Failed to delete artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   } finally {
     session?.endSession();

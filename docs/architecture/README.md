@@ -11,6 +11,8 @@ reality changes.
 - [Data field contracts](data-field-contracts.md)
 - [Shopify commerce](shopify-commerce.md)
 - [Rendering and data fetching](rendering-and-data-fetching.md)
+- Monitoring and error reporting: planned by
+  [T-123](../tasks/T-123-define-monitoring-provider-plan.md).
 
 ## Update Rules
 

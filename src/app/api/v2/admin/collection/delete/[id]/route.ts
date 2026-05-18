@@ -10,9 +10,11 @@ import {
 } from "@/lib/api/admin/delete/routeValidation";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
   const admin = await requireApiAdmin();
@@ -24,6 +26,12 @@ export async function DELETE(
   if (!isValidObjectIdParam(id)) {
     return adminDeleteInvalidIdResponse("collection", "Invalid collection ID");
   }
+
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/collection/delete/[id]"
+  );
+  const logger = createApiLogger(requestContext);
 
   try {
     await dbConnect();
@@ -45,10 +53,15 @@ export async function DELETE(
       throw error;
     }
 
-    console.error("Error deleting collection:", error);
+    logger.error("api.admin.collection_delete.failed", {
+      operation: "admin.collection.delete",
+      error,
+      errorLabel: "admin_collection_delete_failed",
+    });
     return apiErrorResponse({
       message: "Failed to delete collection",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

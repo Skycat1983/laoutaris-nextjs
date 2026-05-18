@@ -3,6 +3,7 @@ jest.mock("server-only", () => ({}), { virtual: true });
 import fs from "fs";
 import path from "path";
 import { GET as GET_ADMIN_COLLECTION_READ } from "@/app/api/v2/admin/collection/read/route";
+import { GET as GET_ADMIN_COLLECTION_DETAIL } from "@/app/api/v2/admin/collection/read/[id]/route";
 import { GET as GET_PUBLIC_COLLECTION_NAVIGATION } from "@/app/api/v2/public/navigation/collections/route";
 import { GET as GET_USER_PROFILE } from "@/app/api/v2/user/profile/route";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
@@ -39,6 +40,7 @@ jest.mock("@/lib/data/models", () => ({
   CollectionModel: {
     countDocuments: jest.fn(),
     find: jest.fn(),
+    findById: jest.fn(),
   },
   UserModel: {
     findById: jest.fn(),
@@ -70,19 +72,53 @@ const mockGetServerSession = getServerSession as jest.MockedFunction<
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockCollectionCountDocuments =
   CollectionModel.countDocuments as jest.Mock;
+const mockCollectionFindById = CollectionModel.findById as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 
 const requestId = "req-1234567890";
 const userId = "507f1f77bcf86cd799439011";
+const collectionId = "507f1f77bcf86cd799439016";
 
 const createRequest = (
   url = "http://localhost/api/v2/example",
-  method = "GET"
+  method = "GET",
+  suppliedRequestId: string | null = requestId
 ) => ({
   method,
-  headers: new Headers({ "x-request-id": requestId }),
+  headers: new Headers(
+    suppliedRequestId === null ? {} : { "x-request-id": suppliedRequestId }
+  ),
   nextUrl: new URL(url),
   url,
+});
+
+const createRouteContext = (id: string) => ({
+  params: {
+    id,
+  },
+});
+
+const apiV2RouteRoot = path.join(process.cwd(), "src/app/api/v2");
+const routeHandlerFilePattern = /[/\\]route\.(ts|tsx|js|jsx)$/;
+const disallowedRouteConsolePattern = /console\.(error|warn)\s*\(/g;
+
+const collectApiV2RouteHandlerFiles = (dir: string): string[] => {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  return entries.flatMap((entry) => {
+    const entryPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      return collectApiV2RouteHandlerFiles(entryPath);
+    }
+
+    return routeHandlerFilePattern.test(entryPath) ? [entryPath] : [];
+  });
+};
+
+const createRejectedPopulatedLeanQuery = (error: unknown) => ({
+  populate: jest.fn().mockReturnThis(),
+  lean: jest.fn().mockRejectedValue(error),
 });
 
 const setAuthenticatedSession = (role: "user" | "admin" = "user") => {
@@ -203,74 +239,67 @@ describe("API request IDs on migrated route failures", () => {
         requestId,
         route: "/api/v2/admin/collection/read",
         method: "GET",
+        operation: "admin.collection.read.list",
         errorLabel: "admin_collection_read_failed",
       })
     );
     expect(JSON.stringify(body)).not.toContain("private admin failure");
   });
 
-  it("keeps migrated public content route files free of route-level console.error calls", () => {
-    const migratedRouteFiles = [
-      "src/app/api/v2/public/article/route.ts",
-      "src/app/api/v2/public/article/[slug]/route.ts",
-      "src/app/api/v2/public/blog/route.ts",
-      "src/app/api/v2/public/blog/[slug]/route.ts",
-      "src/app/api/v2/public/blog/[slug]/comments/route.ts",
-      "src/app/api/v2/public/artwork/route.ts",
-      "src/app/api/v2/public/artwork/[id]/route.ts",
-      "src/app/api/v2/public/collection/route.ts",
-      "src/app/api/v2/public/collection/[slug]/route.ts",
-      "src/app/api/v2/public/collection/[slug]/artwork/route.ts",
-      "src/app/api/v2/public/collection/[slug]/artwork/[id]/route.ts",
-    ];
+  it("adds generated request IDs to a representative admin detail route 500", async () => {
+    setAuthenticatedSession("admin");
+    mockCollectionFindById.mockReturnValue(
+      createRejectedPopulatedLeanQuery(
+        new Error("private admin detail failure")
+      )
+    );
 
-    for (const routeFile of migratedRouteFiles) {
-      const routeSource = fs.readFileSync(
-        path.join(process.cwd(), routeFile),
-        "utf8"
-      );
+    const response = await GET_ADMIN_COLLECTION_DETAIL(
+      createRequest(
+        "http://localhost/api/v2/admin/collection/read/507f1f77bcf86cd799439016",
+        "GET",
+        null
+      ) as never,
+      createRouteContext(collectionId)
+    );
+    const body = await response.json();
+    const generatedRequestId = body.requestId;
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
-      expect(routeSource).not.toContain("console.error(");
-    }
+    expect(response.status).toBe(500);
+    expect(generatedRequestId).toEqual(
+      expect.stringMatching(/^[0-9a-f-]{36}$/)
+    );
+    expect(response.headers.get(REQUEST_ID_HEADER)).toBe(generatedRequestId);
+    expect(body).toEqual({
+      success: false,
+      message: "Failed to read collection",
+      error: "Failed to read collection",
+      requestId: generatedRequestId,
+    });
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        requestId: generatedRequestId,
+        route: "/api/v2/admin/collection/read/[id]",
+        method: "GET",
+        operation: "admin.collection.read.detail",
+        errorLabel: "admin_collection_read_failed",
+      })
+    );
+    expect(JSON.stringify(body)).not.toContain("private admin detail failure");
   });
 
-  it("keeps migrated public discovery and shop route files free of route-level console.error calls", () => {
-    const migratedRouteFiles = [
-      "src/app/api/v2/public/search/route.ts",
-      "src/app/api/v2/public/navigation/articles/[section]/route.ts",
-      "src/app/api/v2/public/navigation/collections/[slug]/route.ts",
-      "src/app/api/v2/public/navigation/collections/[slug]/artworks/route.ts",
-      "src/app/api/v2/public/shop/products/route.ts",
-      "src/app/api/v2/public/shop/products/[productId]/route.ts",
-    ];
+  it("keeps API v2 route handlers free of direct route-level console.error and console.warn calls", () => {
+    const routeFiles = collectApiV2RouteHandlerFiles(apiV2RouteRoot);
+    const offenders = routeFiles.flatMap((routeFile) => {
+      const routeSource = fs.readFileSync(routeFile, "utf8");
+      const matches = routeSource.match(disallowedRouteConsolePattern) ?? [];
+      const relativeRouteFile = path.relative(process.cwd(), routeFile);
 
-    for (const routeFile of migratedRouteFiles) {
-      const routeSource = fs.readFileSync(
-        path.join(process.cwd(), routeFile),
-        "utf8"
-      );
+      return matches.map((match) => `${relativeRouteFile}: ${match}`);
+    });
 
-      expect(routeSource).not.toContain("console.error(");
-    }
-  });
-
-  it("keeps migrated protected user saved-item and comment route files free of route-level console.error calls", () => {
-    const migratedRouteFiles = [
-      "src/app/api/v2/user/favourite/route.ts",
-      "src/app/api/v2/user/favourite/[artworkId]/route.ts",
-      "src/app/api/v2/user/watchlist/route.ts",
-      "src/app/api/v2/user/watchlist/[artworkId]/route.ts",
-      "src/app/api/v2/user/comment/route.ts",
-      "src/app/api/v2/user/comment/[commentId]/route.ts",
-    ];
-
-    for (const routeFile of migratedRouteFiles) {
-      const routeSource = fs.readFileSync(
-        path.join(process.cwd(), routeFile),
-        "utf8"
-      );
-
-      expect(routeSource).not.toContain("console.error(");
-    }
+    expect(routeFiles.length).toBeGreaterThan(0);
+    expect(offenders).toEqual([]);
   });
 });

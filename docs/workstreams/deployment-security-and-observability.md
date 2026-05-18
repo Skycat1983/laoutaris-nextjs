@@ -731,17 +731,51 @@ npm run lint
 - 2026-05-18: Prepared T-120 as the next F-081/R-019 admin route logging
   migration slice for admin read list/detail routes that still use direct
   route-level `console.error()`. Admin write/delete migration remains separate.
+- 2026-05-18: Completed T-120 by migrating scoped admin read list/detail API
+  internal-failure paths to request-context structured logging. Scoped
+  server-error responses now include public request IDs plus `X-Request-Id`;
+  shared admin guard behavior, invalid-ID `400`s, empty-list/missing-resource
+  `404`s, pagination, success DTOs, transform behavior, and DB/model ordering
+  were preserved. Admin write/delete logging migration, monitoring provider
+  selection, instrumentation, alert automation, scheduled smoke, and incident
+  owner-matrix completion remain separate.
+- 2026-05-18: Prepared T-121 as the final route-level admin logging migration
+  slice for admin create, update, and delete routes that still use direct
+  route-level `console.error()`.
+- 2026-05-18: Completed T-121 by migrating scoped admin create, update, and
+  delete API internal-failure paths to request-context structured logging.
+  Scoped server-error responses now include public request IDs plus
+  `X-Request-Id`; shared admin guard behavior, validation and invalid-ID
+  `400`s, missing-resource `404`s, conflict `409`s, cascade/transaction
+  semantics, and mutation success contracts were preserved. Monitoring
+  provider selection, instrumentation, alert automation, scheduled smoke,
+  incident owner-matrix completion, lower-level service/client logging policy,
+  and direct `console.error()`/`console.warn()` policy remain separate.
+- 2026-05-18: Prepared T-122 as the post-migration API route logging
+  invariant. It should add recursive source-hygiene coverage for current and
+  future `src/app/api/v2` route handlers so direct route-level
+  `console.error()`/`console.warn()` calls cannot return while leaving
+  monitoring provider selection, alert automation, incident owner-matrix
+  completion, and lower-level service/client logging policy separate.
+- 2026-05-18: Completed T-122 by replacing the scoped migrated-route source
+  lists with a recursive API-v2 route handler source-hygiene guard covering
+  direct `console.error()` and `console.warn()` calls. The source search under
+  `src/app/api/v2` remains clean. Monitoring provider selection,
+  instrumentation, alert automation, scheduled smoke, incident owner-matrix
+  completion, and lower-level service/client logging policy remain separate.
+- 2026-05-18: Prepared T-123 as the next owner-independent monitoring slice.
+  It should create a decision-ready monitoring/error-reporting architecture plan
+  and environment contract before provider-specific SDK installation,
+  `instrumentation.ts`, alert automation, or Vercel project changes.
 
 ## Next Agent Action
 
-Assign T-120:
-`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
-
-After T-120, choose a separate deployment/security slice from admin
-write/delete route logging migration, monitoring provider selection,
-CI/scheduled smoke, or owner-approved completion of the incident-response
-`TBD` owner matrix. Keep owner/legal A-020 policy work and broad static/ISR
-migration separate.
+Assign T-123 to define the monitoring provider decision and instrumentation
+plan. Keep provider-specific SDK work, CI/scheduled smoke ownership,
+owner-approved completion of the incident-response `TBD` owner matrix,
+lower-level service/client logging policy, and broader direct
+`console.error()`/`console.warn()` policy separate. T-122 is complete and should
+not be reassigned unless the API-v2 route source-hygiene guard regresses.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation, broader
 production logging/redaction policy, runtime Cloudinary cleanup or signed

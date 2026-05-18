@@ -17,11 +17,19 @@ import {
 } from "@/lib/data/types";
 import { transformBlogPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadBlogResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/blog/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -57,10 +65,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading blog:", error);
+    logger.error("api.admin.blog_read.failed", {
+      operation: "admin.blog.read.detail",
+      error,
+      errorLabel: "admin_blog_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read blog",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

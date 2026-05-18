@@ -4,13 +4,27 @@ Last updated: 2026-05-18
 
 ## Current Priority
 
-T-120 is prepared as the next implementation slice from F-081/R-019:
-[Migrate admin read API structured logging](../tasks/T-120-migrate-admin-read-api-structured-logging.md).
-It should move admin read route internal-failure logging from direct
-route-level `console.error()` to the T-099 request-context and structured
-redacted logger pattern while preserving shared admin guards, invalid-ID
-handling, empty-list/not-found semantics, pagination, transforms, and success
+T-123 is prepared as the next owner-independent observability slice:
+[Define monitoring provider plan](../tasks/T-123-define-monitoring-provider-plan.md).
+It should create a decision-ready monitoring/error-reporting architecture plan
+and environment contract before any provider-specific SDK, `instrumentation.ts`,
+or alert automation is added.
+
+T-122 is complete. It added a recursive static guard for current and future
+`src/app/api/v2` route handler files so direct route-level `console.error()`
+and `console.warn()` calls cannot return after the T-117 through T-121 request
+ID and structured logging migrations.
+
+T-121 is complete. It moved admin create, update, and delete route
+internal-failure logging from direct route-level `console.error()` to the
+T-099 request-context and structured redacted logger pattern while preserving
+shared admin guards, validation, write allowlists, cascade, and transaction
 contracts.
+
+T-120 is complete. It moved admin read route internal-failure paths to
+request-context structured logging while preserving shared admin guards,
+invalid-ID handling, empty-list/not-found semantics, pagination, transforms,
+and success contracts.
 
 T-119 is complete. It moved protected user favourite, watchlist, and comment
 API internal-failure paths to request-context structured logging while
@@ -260,8 +274,10 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-120 admin read API structured logging migration task is prepared and ready to
-assign.
+T-123 monitoring provider plan task is prepared and ready to assign.
+T-122 API route logging source-hygiene task is complete.
+T-121 admin write/delete API structured logging migration task is complete.
+T-120 admin read API structured logging migration task is complete.
 T-119 protected user API structured logging migration task is complete.
 T-118 public discovery/shop API structured logging migration task is complete.
 T-117 public content API structured logging migration task is complete.
@@ -328,9 +344,16 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-120 is prepared and ready to assign: migrate admin read route failure paths
-  from direct route-level `console.error()` to request IDs and structured
-  redacted logging.
+- T-123 is prepared and ready to assign: create the monitoring/error-reporting
+  architecture plan and environment contract before provider-specific SDK work.
+- T-122 is complete: recursive API-v2 route source hygiene now guards against
+  direct route-level `console.error()` and `console.warn()` calls after the
+  logging migrations.
+- T-121 is complete: admin create, update, and delete route failure paths now
+  use request IDs and structured redacted logging instead of direct
+  route-level `console.error()`.
+- T-120 is complete: admin read route failure paths now use request IDs and
+  structured redacted logging.
 - T-119 is complete: protected user favourite, watchlist, and comment API
   failure paths now use request IDs and structured redacted logging.
 - T-118 is complete: public search, navigation, and shop product API failure
@@ -963,14 +986,15 @@ completed:
 Assign the next implementation task:
 
 ```text
-/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md
+/task effort: high details: docs/tasks/T-123-define-monitoring-provider-plan.md
 ```
 
-After T-120 is assigned or completed, choose admin write/delete request-ID/
-logging route migration, monitoring provider selection from A-021,
-CI/scheduled smoke, A-011 admin content operations, A-017 search/navigation
-discovery, the next Cloudinary follow-up from T-101, or another
-owner-independent implementation slice from reconciled findings.
+After T-123 is completed, choose provider-specific SDK/instrumentation only if
+owner/platform approval exists. Otherwise choose CI/scheduled smoke, incident
+owner-matrix completion, lower-level service/client logging policy, A-011 admin
+content operations, A-017 search/navigation discovery, the next Cloudinary
+follow-up from T-101, or another owner-independent implementation slice from
+reconciled findings.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -980,8 +1004,8 @@ complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
-T-118, and T-119 are complete and should not be reassigned unless a regression
-is opened.
+T-118, T-119, T-120, T-121, and T-122 are complete and should not be reassigned
+unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

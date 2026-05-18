@@ -449,14 +449,35 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   guard ordering, invalid-ID `400`s, empty-list/missing-resource `404`s,
   pagination, success DTOs, and transform behavior while replacing direct
   route-level `console.error()` internal-failure logging.
+- 2026-05-18: Completed T-120 for admin read list/detail API routes. The
+  routes still use `requireApiAdmin()` before protected read work and preserve
+  invalid-ID `400`s, empty-list/missing-resource `404`s, pagination, success
+  DTOs, and transform behavior while internal failures now use request-context
+  structured logging and public request IDs.
+- 2026-05-18: Prepared T-121 as the admin create/update/delete API structured
+  logging migration slice. It should preserve `requireApiAdmin()` guard
+  ordering, validation statuses, invalid-ID handling, conflict behavior,
+  cascade/transaction behavior, and mutation success contracts while replacing
+  direct route-level `console.error()` internal-failure logging.
+- 2026-05-18: Completed T-121 for admin create/update/delete API routes. The
+  routes still use `requireApiAdmin()` before protected mutation work and
+  preserve validation statuses, invalid-ID handling, conflict behavior,
+  cascade/transaction behavior, and mutation success contracts while internal
+  failures now use request-context structured logging and public request IDs.
+- 2026-05-18: Prepared T-122 to lock the completed route-level API logging
+  invariant with recursive source-hygiene coverage under `src/app/api/v2`.
+  This is a guardrail task only and should not change admin guard behavior.
+- 2026-05-18: Completed T-122 as a guardrail-only task. Recursive API-v2 route
+  handler source-hygiene coverage now rejects direct route-level
+  `console.error()` and `console.warn()` calls without changing admin guard
+  behavior or protected route contracts.
 
 ## Next Agent Action
 
-Assign T-120:
-`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
-
 Do not reassign T-081, T-082, T-083, T-084, or T-088 unless a regression is
-opened. Do not reassign T-094, T-095, or T-119 unless a regression is opened.
+opened. Do not reassign T-094, T-095, T-119, T-120, or T-121 unless a
+regression is opened. Do not reassign T-122 unless the API-v2 route
+source-hygiene guard regresses.
 
 Keep admin bootstrap/recovery documentation, broader production logging policy,
 root-layout session redesign, favourite/watchlist server actions, account

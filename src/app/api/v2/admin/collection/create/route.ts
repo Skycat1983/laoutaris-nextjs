@@ -11,6 +11,8 @@ import {
   type CreateCollectionRouteInput,
 } from "@/lib/data/schemas/collectionSchema";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type CollectionCreateFieldErrors = Partial<
   Record<keyof CreateCollectionRouteInput, string[] | undefined>
@@ -58,6 +60,12 @@ export async function POST(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/collection/create"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -82,10 +90,15 @@ export async function POST(
       throw error;
     }
 
-    console.error("Error creating collection:", error);
+    logger.error("api.admin.collection_create.failed", {
+      operation: "admin.collection.create",
+      error,
+      errorLabel: "admin_collection_create_failed",
+    });
     return apiErrorResponse({
       message: "Failed to create collection",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

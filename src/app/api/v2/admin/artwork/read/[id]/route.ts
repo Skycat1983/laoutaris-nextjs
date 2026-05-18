@@ -13,11 +13,19 @@ import { AdminArtworkTransformations } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms";
 import { ArtworkFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadArtworkResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/artwork/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -51,10 +59,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading artwork:", error);
+    logger.error("api.admin.artwork_read.failed", {
+      operation: "admin.artwork.read.detail",
+      error,
+      errorLabel: "admin_artwork_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

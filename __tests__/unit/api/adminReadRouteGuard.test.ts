@@ -31,8 +31,9 @@ import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -121,6 +122,8 @@ const createRequest = (
 ) => {
   const nextUrl = new URL(url);
   return {
+    method: "GET",
+    headers: new Headers(),
     url: nextUrl.toString(),
     nextUrl,
   };
@@ -573,6 +576,7 @@ describe("admin read route shared guard migration", () => {
         success: false,
         message: "Failed to read blog",
         error: "Failed to read blog",
+        requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {

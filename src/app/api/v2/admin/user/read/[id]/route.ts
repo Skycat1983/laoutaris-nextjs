@@ -12,11 +12,19 @@ import type { ReadUserResult } from "@/lib/api/admin/read/fetchers";
 import type { UserLean, UserFrontend } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadUserResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/user/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -47,10 +55,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading user:", error);
+    logger.error("api.admin.user_read.failed", {
+      operation: "admin.user.read.detail",
+      error,
+      errorLabel: "admin_user_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read user",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

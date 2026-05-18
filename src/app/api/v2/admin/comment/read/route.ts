@@ -8,10 +8,18 @@ import dbConnect from "@/lib/db/mongodb";
 import { CommentLeanPopulated } from "@/lib/data/types";
 import { transformCommentPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadCommentListResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/comment/read"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -55,10 +63,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("[COMMENT_READ]", error);
+    logger.error("api.admin.comment_read.failed", {
+      operation: "admin.comment.read.list",
+      error,
+      errorLabel: "admin_comment_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch comment(s)",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

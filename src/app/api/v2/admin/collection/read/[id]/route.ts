@@ -15,11 +15,19 @@ import {
 } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadCollectionResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/collection/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -55,10 +63,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading collection:", error);
+    logger.error("api.admin.collection_read.failed", {
+      operation: "admin.collection.read.detail",
+      error,
+      errorLabel: "admin_collection_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read collection",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

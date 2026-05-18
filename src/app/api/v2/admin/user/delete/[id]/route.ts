@@ -16,9 +16,11 @@ import {
 } from "@/lib/api/admin/delete/routeValidation";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
   const admin = await requireApiAdmin();
@@ -30,6 +32,12 @@ export async function DELETE(
   if (!isValidObjectIdParam(id)) {
     return adminDeleteInvalidIdResponse("user", "Invalid user ID");
   }
+
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/user/delete/[id]"
+  );
+  const logger = createApiLogger(requestContext);
 
   let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
 
@@ -108,10 +116,15 @@ export async function DELETE(
 
     // If anything fails, abort the transaction
     await session?.abortTransaction();
-    console.error("Error in user deletion transaction:", error);
+    logger.error("api.admin.user_delete.failed", {
+      operation: "admin.user.delete",
+      error,
+      errorLabel: "admin_user_delete_failed",
+    });
     return apiErrorResponse({
       message: "Failed to delete user and associated data",
       status: 500,
+      requestId: requestContext.requestId,
     });
   } finally {
     // Always end the session

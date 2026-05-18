@@ -129,7 +129,10 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-117 Migrate public content API structured logging](T-117-migrate-public-content-api-structured-logging.md) | Completed | Migrated public content API internal-failure paths onto request IDs and structured redacted logging. |
 | [T-118 Migrate public discovery and shop API structured logging](T-118-migrate-public-discovery-shop-api-structured-logging.md) | Completed | Migrated public search, navigation, and shop API failure paths onto request IDs and structured redacted logging. |
 | [T-119 Migrate protected user API structured logging](T-119-migrate-protected-user-api-structured-logging.md) | Completed | Migrated protected user favourite, watchlist, and comment API failure paths onto request IDs and structured redacted logging. |
-| [T-120 Migrate admin read API structured logging](T-120-migrate-admin-read-api-structured-logging.md) | Planned | Move admin read API failure paths onto request IDs and structured redacted logging. |
+| [T-120 Migrate admin read API structured logging](T-120-migrate-admin-read-api-structured-logging.md) | Completed | Migrated admin read API failure paths onto request IDs and structured redacted logging. |
+| [T-121 Migrate admin write delete API structured logging](T-121-migrate-admin-write-delete-api-structured-logging.md) | Completed | Migrated admin create, update, and delete API failure paths onto request IDs and structured redacted logging. |
+| [T-122 Lock API route logging source hygiene](T-122-lock-api-route-logging-source-hygiene.md) | Completed | Added a recursive API-v2 route source guard preventing direct route-level `console.error()`/`console.warn()` from returning after the logging migrations. |
+| [T-123 Define monitoring provider plan](T-123-define-monitoring-provider-plan.md) | Planned | Create a decision-ready monitoring/error-reporting architecture plan and environment contract before any SDK is installed. |
 
 ## Rules
 

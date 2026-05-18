@@ -8,11 +8,19 @@ import dbConnect from "@/lib/db/mongodb";
 import { UserLeanPopulated } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadUserListResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/user/read"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -54,10 +62,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("[USER_READ]", error);
+    logger.error("api.admin.user_read.failed", {
+      operation: "admin.user.read.list",
+      error,
+      errorLabel: "admin_user_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch user(s)",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

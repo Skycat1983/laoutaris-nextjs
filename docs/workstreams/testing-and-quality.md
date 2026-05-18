@@ -1258,25 +1258,56 @@ npm run lint
   list/detail internal-failure paths, propagated/generated request IDs,
   `X-Request-Id`, preserved admin guard behavior, and source hygiene against
   direct route-level `console.error()`.
+- 2026-05-18: Completed T-120 by extending focused admin read and
+  observability route tests for representative list/detail failure paths,
+  propagated and generated request IDs, response `X-Request-Id`, structured log
+  context, private-message redaction from public bodies, preserved admin guard
+  behavior, and source hygiene across migrated admin read route files. Focused
+  Jest, lint, build, scoped `console.error()` source search, and
+  `git diff --check` passed.
+- 2026-05-18: Prepared T-121 with focused coverage expectations for
+  representative admin create, update, and delete internal-failure paths,
+  propagated/generated request IDs, `X-Request-Id`, preserved guard/validation/
+  transaction behavior, and source hygiene against direct route-level
+  `console.error()`.
+- 2026-05-18: Completed T-121 by extending focused admin article, artwork,
+  blog, collection, delete-route, and observability tests for representative
+  create/update/delete failure paths, propagated and generated request IDs,
+  response `X-Request-Id`, structured log context, private-message redaction
+  from public bodies, preserved guard/validation/transaction behavior, and
+  source hygiene across migrated admin mutation route files. Focused Jest,
+  lint, build, scoped `console.error()` source search, and `git diff --check`
+  passed.
+- 2026-05-18: Prepared T-122 to consolidate route-level logging source hygiene
+  with recursive API-v2 route handler coverage for direct `console.error()` and
+  `console.warn()` calls, instead of maintaining only per-slice route lists.
+- 2026-05-18: Completed T-122 by replacing per-slice API route source-hygiene
+  lists with one recursive `src/app/api/v2/**/route.*` guard in the
+  observability route test. Focused Jest passed and the confirming source
+  search found no direct `console.error()`/`console.warn()` calls under
+  `src/app/api/v2`.
+- 2026-05-18: Prepared T-123 as a docs-only monitoring plan task. Its
+  verification should stay to source/config/env evidence searches and
+  `git diff --check`; provider-specific SDK tests and smoke coverage belong to
+  later tasks after owner/platform approval.
 
 ## Next Agent Action
 
-Assign T-120:
-`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
-
-After T-120, choose the next testing slice from CI/scheduled smoke ownership,
-admin write/delete route-level logging migration coverage, or other active
-quality backlog items. Keep broader static/ISR migration separate from the
-completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
-the completed T-117 public content logging migration, T-118 public
-discovery/shop logging migration, and T-119 protected user logging migration.
+Assign T-123 if the next quality contribution is the monitoring decision plan.
+After that, choose from CI/scheduled smoke ownership, monitoring provider smoke
+coverage, or other active quality backlog items. Keep broader static/ISR
+migration separate from the completed T-115 Shopify fetch-option cleanup, the
+docs-only T-116 runbook work, and the completed T-117 through T-122 logging and
+source-hygiene tasks.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
 T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
 Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094,
-T-095, T-096, T-097, and T-098 are complete; do not reassign them unless a
-regression is opened.
+T-095, T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105,
+T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116,
+T-117, T-118, T-119, T-120, T-121, and T-122 are complete; do not reassign
+them unless a regression is opened.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

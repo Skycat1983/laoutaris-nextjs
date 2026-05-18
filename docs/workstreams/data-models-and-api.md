@@ -800,15 +800,37 @@ Add API route tests where behavior is changed.
   admin read list/detail API internal-failure paths that still use direct
   route-level `console.error()`. Admin write/delete route migration remains
   separate.
+- 2026-05-18: Completed T-120 for scoped admin read list/detail API routes.
+  Internal failures now use request context plus structured redacted logging,
+  scoped `500` responses include `requestId` and `X-Request-Id`, and
+  `requireApiAdmin()` guard behavior, invalid-ID `400`s,
+  empty-list/missing-resource `404`s, pagination metadata, success DTOs,
+  transforms, and DB-before-model ordering were preserved.
+- 2026-05-18: Prepared T-121 as the next request ID/logging migration slice for
+  admin create, update, and delete API internal-failure paths that still use
+  direct route-level `console.error()`.
+- 2026-05-18: Completed T-121 for scoped admin create, update, and delete API
+  routes. Internal failures now use request context plus structured redacted
+  logging, scoped `500` responses include `requestId` and `X-Request-Id`, and
+  shared admin guards, validation `400`s, invalid-ID handling, missing-resource
+  `404`s, conflict `409`s, mutation success contracts, allowlisted
+  persistence, cascade behavior, and transaction cleanup were preserved.
+- 2026-05-18: Prepared T-122 to protect the completed API route logging
+  migration with recursive source-hygiene coverage across `src/app/api/v2`
+  route handler files. The task should not alter route contracts or lower-level
+  service/client logging behavior.
+- 2026-05-18: Completed T-122 by adding recursive API-v2 route handler
+  source-hygiene coverage for direct `console.error()` and `console.warn()`
+  calls. The guard changes test coverage only; route contracts and lower-level
+  service/client logging behavior were not changed.
 
 ## Next Agent Action
 
-Assign T-120:
-`/task effort: high details: docs/tasks/T-120-migrate-admin-read-api-structured-logging.md`
-
-Keep broader response helper cleanup, route-local DB ownership gaps,
-field-contract matrices, server-side shop pagination/sorting contracts, and
-admin Shopify-link work separate.
+Choose the next data/API slice from another active backlog item. Keep broader
+response helper cleanup, route-local DB ownership gaps, field-contract
+matrices, server-side shop pagination/sorting contracts, lower-level logging
+policy, and admin Shopify-link work separate. T-122 is complete and should not
+be reassigned unless the API-v2 route source-hygiene guard regresses.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

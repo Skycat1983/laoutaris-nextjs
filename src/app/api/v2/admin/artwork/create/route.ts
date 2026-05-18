@@ -11,6 +11,8 @@ import {
 } from "@/lib/data/schemas/artworkSchema";
 import type { AdminArtwork } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type ArtworkCreateFieldErrors = Partial<
   Record<keyof CreateArtworkRouteInput, string[] | undefined>
@@ -106,6 +108,12 @@ export async function POST(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/artwork/create"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -138,10 +146,15 @@ export async function POST(
       throw error;
     }
 
-    console.error("Error creating artwork:", error);
+    logger.error("api.admin.artwork_create.failed", {
+      operation: "admin.artwork.create",
+      error,
+      errorLabel: "admin_artwork_create_failed",
+    });
     return apiErrorResponse({
       message: "Failed to create artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

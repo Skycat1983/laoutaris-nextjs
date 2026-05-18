@@ -17,11 +17,19 @@ import {
 } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<ReadArticleResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/article/read/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -58,10 +66,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("Error reading article:", error);
+    logger.error("api.admin.article_read.failed", {
+      operation: "admin.article.read.detail",
+      error,
+      errorLabel: "admin_article_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to read article",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

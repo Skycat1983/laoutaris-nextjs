@@ -12,6 +12,8 @@ import {
 } from "@/lib/data/schemas/blogSchema";
 import type { AdminBlog } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type BlogCreateFieldErrors = Partial<
   Record<keyof CreateBlogRouteInput, string[] | undefined>
@@ -104,6 +106,12 @@ export async function POST(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/blog/create"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -140,10 +148,15 @@ export async function POST(
       throw error;
     }
 
-    console.error("Error creating blog:", error);
+    logger.error("api.admin.blog_create.failed", {
+      operation: "admin.blog.create",
+      error,
+      errorLabel: "admin_blog_create_failed",
+    });
     return apiErrorResponse({
       message: "Failed to create blog",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

@@ -13,10 +13,18 @@ import {
 } from "@/lib/data/types";
 import { transformBlogPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function GET(
   request: NextRequest
 ): Promise<RouteResponse<ReadBlogListResult>> {
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/blog/read"
+  );
+  const logger = createApiLogger(requestContext);
+
   const admin = await requireApiAdmin();
   if (!admin.ok) {
     return admin.response;
@@ -63,10 +71,15 @@ export async function GET(
       throw error;
     }
 
-    console.error("[BLOG_READ]", error);
+    logger.error("api.admin.blog_read.failed", {
+      operation: "admin.blog.read.list",
+      error,
+      errorLabel: "admin_blog_read_failed",
+    });
     return apiErrorResponse({
       message: "Failed to fetch blogs",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

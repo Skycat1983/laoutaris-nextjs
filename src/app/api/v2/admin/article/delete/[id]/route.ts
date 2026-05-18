@@ -10,9 +10,11 @@ import {
 } from "@/lib/api/admin/delete/routeValidation";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<RouteResponse<DeleteDocumentResult>> {
   const admin = await requireApiAdmin();
@@ -24,6 +26,12 @@ export async function DELETE(
   if (!isValidObjectIdParam(id)) {
     return adminDeleteInvalidIdResponse("article", "Invalid article ID");
   }
+
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/article/delete/[id]"
+  );
+  const logger = createApiLogger(requestContext);
 
   try {
     await dbConnect();
@@ -45,10 +53,15 @@ export async function DELETE(
       throw error;
     }
 
-    console.error("Error deleting article:", error);
+    logger.error("api.admin.article_delete.failed", {
+      operation: "admin.article.delete",
+      error,
+      errorLabel: "admin_article_delete_failed",
+    });
     return apiErrorResponse({
       message: "Failed to delete article",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

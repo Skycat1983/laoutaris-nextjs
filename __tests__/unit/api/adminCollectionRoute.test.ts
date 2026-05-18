@@ -1,13 +1,17 @@
+jest.mock("server-only", () => ({}), { virtual: true });
+
 import { POST } from "@/app/api/v2/admin/collection/create/route";
 import { PATCH } from "@/app/api/v2/admin/collection/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
 import { CollectionModel, UserModel } from "@/lib/data/models";
+import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -38,6 +42,15 @@ jest.mock("next-auth", () => ({
 
 type MockRequest = {
   json: jest.Mock;
+  headers: Headers;
+  method: string;
+  url: string;
+};
+
+type MockRequestOptions = {
+  method?: string;
+  requestId?: string | null;
+  url?: string;
 };
 
 const adminUserId = "507f1f77bcf86cd799439011";
@@ -45,13 +58,33 @@ const collectionId = "507f1f77bcf86cd799439012";
 const artworkToAddId = "507f1f77bcf86cd799439013";
 const artworkToRemoveId = "507f1f77bcf86cd799439014";
 const existingArtworkId = "507f1f77bcf86cd799439015";
+const requestId = "req-admin-collection";
 
-const createRequest = (body: unknown): MockRequest => ({
+const createRequest = (
+  body: unknown,
+  options: MockRequestOptions = {}
+): MockRequest => ({
   json: jest.fn().mockResolvedValue(body),
+  headers: new Headers(
+    options.requestId === null
+      ? {}
+      : { "x-request-id": options.requestId ?? requestId }
+  ),
+  method: options.method ?? "POST",
+  url: options.url ?? "http://localhost/api/v2/admin/collection/create",
 });
 
-const createInvalidJsonRequest = (): MockRequest => ({
+const createInvalidJsonRequest = (
+  options: MockRequestOptions = {}
+): MockRequest => ({
   json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+  headers: new Headers(
+    options.requestId === null
+      ? {}
+      : { "x-request-id": options.requestId ?? requestId }
+  ),
+  method: options.method ?? "POST",
+  url: options.url ?? "http://localhost/api/v2/admin/collection/create",
 });
 
 const validCreatePayload = {
@@ -271,16 +304,23 @@ describe("POST /api/v2/admin/collection/create", () => {
   });
 
   it("returns a public-safe 500 when collection creation fails", async () => {
+    const createRequestId = "req-admin-collection-create";
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
     mockCreate.mockRejectedValue(new Error("private database detail"));
 
     try {
-      const response = await POST(createRequest(validCreatePayload) as never);
+      const response = await POST(
+        createRequest(validCreatePayload, {
+          requestId: createRequestId,
+        }) as never
+      );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(createRequestId);
       expect(mockDbConnect).toHaveBeenCalledTimes(2);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expect(mockCreate).toHaveBeenCalledWith({
@@ -293,11 +333,20 @@ describe("POST /api/v2/admin/collection/create", () => {
         success: false,
         message: "Failed to create collection",
         error: "Failed to create collection",
+        requestId: createRequestId,
       });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error creating collection:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.collection_create.failed",
+          level: "error",
+          requestId: createRequestId,
+          route: "/api/v2/admin/collection/create",
+          method: "POST",
+          operation: "admin.collection.create",
+          errorLabel: "admin_collection_create_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }
@@ -518,14 +567,22 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
 
     try {
       const response = await PATCH(
-        createRequest({ title: "Updated Series" }) as never,
+        createRequest(
+          { title: "Updated Series" },
+          {
+            method: "PATCH",
+            url: `http://localhost/api/v2/admin/collection/update/${collectionId}`,
+          }
+        ) as never,
         {
           params: { id: collectionId },
         }
       );
       const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
 
       expect(response.status).toBe(500);
+      expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
       expect(mockDbConnect).toHaveBeenCalledTimes(2);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
@@ -533,11 +590,20 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
         success: false,
         message: "Failed to update collection",
         error: "Failed to update collection",
+        requestId,
       });
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        "Error updating collection:",
-        expect.any(Error)
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.collection_update.failed",
+          level: "error",
+          requestId,
+          route: "/api/v2/admin/collection/update/[id]",
+          method: "PATCH",
+          operation: "admin.collection.update",
+          errorLabel: "admin_collection_update_failed",
+        })
       );
+      expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {
       consoleErrorSpy.mockRestore();
     }

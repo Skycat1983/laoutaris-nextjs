@@ -14,6 +14,8 @@ import {
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type ArticleUpdateFieldErrors = Partial<
   Record<
@@ -120,6 +122,12 @@ export async function PATCH(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/article/update/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -150,10 +158,15 @@ export async function PATCH(
       throw error;
     }
 
-    console.error("Error updating article:", error);
+    logger.error("api.admin.article_update.failed", {
+      operation: "admin.article.update",
+      error,
+      errorLabel: "admin_article_update_failed",
+    });
     return apiErrorResponse({
       message: "Failed to update article",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

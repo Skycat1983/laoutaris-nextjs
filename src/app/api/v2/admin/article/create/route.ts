@@ -12,6 +12,8 @@ import {
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type ArticleCreateFieldErrors = Partial<
   Record<keyof CreateArticleRouteInput, string[] | undefined>
@@ -107,6 +109,12 @@ export async function POST(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/article/create"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -141,10 +149,15 @@ export async function POST(
       throw error;
     }
 
-    console.error("Error creating article:", error);
+    logger.error("api.admin.article_create.failed", {
+      operation: "admin.article.create",
+      error,
+      errorLabel: "admin_article_create_failed",
+    });
     return apiErrorResponse({
       message: "Failed to create article",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

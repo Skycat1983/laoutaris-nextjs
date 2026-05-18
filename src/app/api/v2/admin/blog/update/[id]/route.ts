@@ -14,6 +14,8 @@ import {
 } from "@/lib/data/schemas/blogSchema";
 import type { AdminBlog } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type BlogUpdateFieldErrors = Partial<
   Record<keyof (UpdateBlogRouteBody & UpdateBlogRouteParams), string[]>
@@ -116,6 +118,12 @@ export async function PATCH(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/blog/update/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -174,10 +182,15 @@ export async function PATCH(
       throw error;
     }
 
-    console.error("Error updating blog:", error);
+    logger.error("api.admin.blog_update.failed", {
+      operation: "admin.blog.update",
+      error,
+      errorLabel: "admin_blog_update_failed",
+    });
     return apiErrorResponse({
       message: "Failed to update blog",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

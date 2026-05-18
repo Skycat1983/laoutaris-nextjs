@@ -13,6 +13,8 @@ import {
 } from "@/lib/data/schemas/artworkSchema";
 import type { AdminArtwork } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createApiLogger } from "@/lib/observability/logger";
+import { createRequestContext } from "@/lib/observability/requestContext";
 
 type ArtworkUpdateFieldErrors = Partial<
   Record<
@@ -119,6 +121,12 @@ export async function PATCH(
     return validationErrorResponse(fieldErrors, formErrors);
   }
 
+  const requestContext = createRequestContext(
+    request,
+    "/api/v2/admin/artwork/update/[id]"
+  );
+  const logger = createApiLogger(requestContext);
+
   try {
     await dbConnect();
 
@@ -141,10 +149,15 @@ export async function PATCH(
       throw error;
     }
 
-    console.error("Error updating artwork:", error);
+    logger.error("api.admin.artwork_update.failed", {
+      operation: "admin.artwork.update",
+      error,
+      errorLabel: "admin_artwork_update_failed",
+    });
     return apiErrorResponse({
       message: "Failed to update artwork",
       status: 500,
+      requestId: requestContext.requestId,
     });
   }
 }

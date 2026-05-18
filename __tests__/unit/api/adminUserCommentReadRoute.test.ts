@@ -7,8 +7,9 @@ import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((body, init?: { status?: number }) => ({
+    json: jest.fn((body, init?: ResponseInit) => ({
       status: init?.status ?? 200,
+      headers: new Headers(init?.headers),
       json: async () => body,
     })),
   },
@@ -304,6 +305,7 @@ describe("admin user/comment detail read routes", () => {
         success: false,
         message: "Failed to read user",
         error: "Failed to read user",
+        requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {
@@ -375,6 +377,7 @@ describe("admin user/comment detail read routes", () => {
         success: false,
         message: "Failed to read comment",
         error: "Failed to read comment",
+        requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
       });
       expect(JSON.stringify(body)).not.toContain("private database detail");
     } finally {
