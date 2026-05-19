@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopSortOption } from "@/lib/data/types/shopTypes";
@@ -11,7 +11,15 @@ jest.mock("@/components/modules/cards/ProductCard", () => ({
 
 jest.mock("@/components/modules/filters/ShopFilters", () => ({
   __esModule: true,
-  default: () => <div data-testid="shop-filters" />,
+  default: ({
+    onFilterChange,
+  }: {
+    onFilterChange: (filters: { showPrints: boolean }) => void;
+  }) => (
+    <button type="button" onClick={() => onFilterChange({ showPrints: false })}>
+      filter prints
+    </button>
+  ),
 }));
 
 jest.mock("@/components/modules/filters/ShopResultsBar", () => ({
@@ -71,13 +79,20 @@ const renderedProductTitles = () =>
 
 describe("ShopProductGallery sorting", () => {
   let consoleLogSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    (global.fetch as jest.Mock).mockReset();
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
   });
 
   afterEach(() => {
     expect(consoleLogSpy).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
     consoleLogSpy.mockRestore();
   });
 
@@ -136,6 +151,31 @@ describe("ShopProductGallery sorting", () => {
       "Bookish Unknown",
       "B Title Book",
       "A Title Print",
+    ]);
+  });
+
+  it("preserves the current products and clears loading after filter fetch failures", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+    });
+
+    render(<ShopProductGallery initialProducts={products} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "filter prints" }));
+
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/v2/public/shop/products?showOriginals=true&showPrints=false&showBooks=true"
+    );
+
+    await waitFor(() =>
+      expect(screen.queryByText("Loading...")).not.toBeInTheDocument()
+    );
+    expect(renderedProductTitles()).toEqual([
+      "B Title Book",
+      "C Title Original",
+      "A Title Print",
+      "Bookish Unknown",
     ]);
   });
 });

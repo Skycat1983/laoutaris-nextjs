@@ -1,15 +1,15 @@
 import { ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   updateArtworkRouteBodySchema,
   updateArtworkRouteParamsSchema,
-  type UpdateArtworkRouteBody,
-  type UpdateArtworkRouteParams,
+  UpdateArtworkRouteBody,
+  UpdateArtworkRouteParams,
 } from "@/lib/data/schemas/artworkSchema";
 import type { AdminArtwork } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";

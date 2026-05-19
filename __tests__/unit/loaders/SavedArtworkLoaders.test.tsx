@@ -179,6 +179,7 @@ describe("saved artwork account loaders", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     expect(children[0].type).toBe(ArtworkView);
     expect(children[0].props).toEqual(artwork);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it("renders one watchlisted artwork through the server service without same-app fetches", async () => {
@@ -221,6 +222,22 @@ describe("saved artwork account loaders", () => {
       type: "div",
       props: { children: "Error fetching artwork" },
     });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.account.favourite_artwork.failed",
+        component: "FavouritedArtworkLoader",
+        operation: "account.favourite_artwork.loader",
+        surface: "server_loader",
+        statusCategory: "missing_session",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "Account favourite artwork loader failed",
+        },
+      })
+    );
+    expect(consoleErrorSpy.mock.calls[0][0]).not.toContain(userId);
+    expect(consoleErrorSpy.mock.calls[0][0]).not.toContain(artworkId);
 
     mockGetUserIdFromSession.mockResolvedValue(userId);
     mockGetOwnFavouriteArtwork.mockResolvedValue({
@@ -233,7 +250,81 @@ describe("saved artwork account loaders", () => {
       type: "div",
       props: { children: "Error fetching artwork" },
     });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[1][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.account.favourite_artwork.failed",
+        component: "FavouritedArtworkLoader",
+        operation: "account.favourite_artwork.loader",
+        surface: "server_loader",
+        statusCategory: "not_in_favourites",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "Account favourite artwork loader failed",
+        },
+      })
+    );
+    expect(consoleErrorSpy.mock.calls[1][0]).not.toContain(userId);
+    expect(consoleErrorSpy.mock.calls[1][0]).not.toContain(artworkId);
+
+    mockGetOwnFavouriteArtwork.mockResolvedValue({
+      status: "artwork-not-found",
+    });
+
+    await expect(
+      FavouritedArtworkLoader({ artworkId })
+    ).resolves.toMatchObject({
+      type: "div",
+      props: { children: "Error fetching artwork" },
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[2][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.account.favourite_artwork.failed",
+        component: "FavouritedArtworkLoader",
+        operation: "account.favourite_artwork.loader",
+        surface: "server_loader",
+        statusCategory: "artwork_not_found",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "Account favourite artwork loader failed",
+        },
+      })
+    );
+    expect(consoleErrorSpy.mock.calls[2][0]).not.toContain(userId);
+    expect(consoleErrorSpy.mock.calls[2][0]).not.toContain(artworkId);
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("keeps favourited artwork loader failure logs generic for service errors", async () => {
+    const error = new Error(`private saved artwork failure for ${userId}`);
+    mockGetOwnFavouriteArtwork.mockRejectedValue(error);
+
+    await expect(
+      FavouritedArtworkLoader({ artworkId })
+    ).resolves.toMatchObject({
+      type: "div",
+      props: { children: "Error fetching artwork" },
+    });
+
+    expect(mockIsNextError).toHaveBeenCalledWith(error);
+    expect(global.fetch).not.toHaveBeenCalled();
+
+    const payload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+    expect(payload).toEqual(
+      expect.objectContaining({
+        event: "loader.account.favourite_artwork.failed",
+        statusCategory: "unexpected_error",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "Account favourite artwork loader failed",
+        },
+      })
+    );
+    expect(JSON.stringify(payload)).not.toContain("private saved artwork failure");
+    expect(JSON.stringify(payload)).not.toContain(userId);
+    expect(JSON.stringify(payload)).not.toContain(artworkId);
   });
 
   it("keeps watchlisted artwork loader throwing route-style saved-artwork errors", async () => {
@@ -268,6 +359,17 @@ describe("saved artwork account loaders", () => {
       error
     );
 
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("rethrows Next control-flow errors from the favourited artwork detail service without logging", async () => {
+    const error = new Error("NEXT_REDIRECT");
+    mockGetOwnFavouriteArtwork.mockRejectedValue(error);
+    mockIsNextError.mockReturnValue(true);
+
+    await expect(FavouritedArtworkLoader({ artworkId })).rejects.toThrow(error);
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

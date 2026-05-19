@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import {
   parseArtworkListQuery,
   searchParamsToArtworkListQueryInput,

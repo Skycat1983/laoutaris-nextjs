@@ -24,12 +24,12 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   artworkFormSchema,
-  type ArtworkFormValues,
-  type CreateArtworkFormValues,
+  ArtworkFormValues,
+  CreateArtworkFormValues,
 } from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
 import Image from "next/image";
-import { CloudinaryImageDB } from "@/lib/data/types";
+import type { CloudinaryImageDB } from "@/lib/data/types";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
 
@@ -69,14 +69,12 @@ export function CreateArtworkForm({
       const response = await clientApi.admin.create.artwork(artworkData);
       if (response.success) {
         onSuccess();
-      } else {
-        console.error("Failed to create artwork:", response.error);
       }
 
       // Revalidate the admin artwork page
       // revalidatePath("/admin/artwork");
-    } catch (error) {
-      console.error("Form submission failed:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }

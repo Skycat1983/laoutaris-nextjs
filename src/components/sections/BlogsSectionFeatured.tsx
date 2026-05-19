@@ -6,7 +6,8 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Skeleton } from "../shadcn/skeleton";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -28,9 +29,9 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
             <Link href={`/blog/${featured.slug}`} className="group block">
               <article className="relative h-[630px] rounded-2xl overflow-hidden">
                 <Image
-                  src={featured.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_1600,q_auto/"
+                  src={getCloudinaryDeliveryUrl(
+                    featured.imageUrl,
+                    "blogFeatureHero"
                   )}
                   alt={featured.title}
                   fill
@@ -65,9 +66,9 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
               <article className="space-y-4">
                 <div className="aspect-[5/3] relative rounded-xl overflow-hidden">
                   <Image
-                    src={blog.imageUrl.replace(
-                      "/upload/",
-                      "/upload/w_600,q_auto/"
+                    src={getCloudinaryDeliveryUrl(
+                      blog.imageUrl,
+                      "blogFeatureCard"
                     )}
                     alt={blog.title}
                     fill

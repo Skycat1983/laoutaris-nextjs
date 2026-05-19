@@ -130,13 +130,46 @@ Cloudinary delivery path allowed by `next.config.mjs`; otherwise newly uploaded
 assets can succeed in the widget but fail when rendered through Next image
 optimization.
 
-Blog and collection image URL policy:
+Blog, article, and collection image URL policy:
 
 | Image source | Interim decision | Next implementation route |
 | --- | --- | --- |
-| Cloudinary-managed assets in the configured project cloud | Preferred for archive-owned blog, article, and collection imagery. | Add validation that accepts the configured Cloudinary host/path and preserves enough metadata for owner review. |
-| Explicitly allowed external hosts, currently Flaticon icons and Shopify CDN product media | Allowed only when the asset is intentionally third-party or commerce-owned. | Document the content reason and keep the host in `next.config.mjs`; add route/form validation before expanding the host list. |
+| Cloudinary-managed assets in the configured project cloud | Preferred for archive-owned blog, article, and collection imagery. | Runtime validation accepts only `https://res.cloudinary.com/dzncmfirr/**` for Cloudinary-managed content images. |
+| Explicitly allowed external hosts, currently Flaticon icons and Shopify CDN product media | Allowed only when the asset is intentionally third-party or commerce-owned. | Runtime validation accepts `https://cdn-icons-png.flaticon.com/**` and `https://cdn.shopify.com/**`; document the content reason and keep the host in `next.config.mjs` before expanding the host list. |
 | Other arbitrary URLs | Not production-approved. | Reject or migrate through a future image-field policy task; do not solve by adding broad image hosts. |
+
+T-135 implements this policy in `src/lib/validation/contentImageUrl.ts` and the
+admin article, blog, and collection create/update schemas. The validator rejects
+unsupported protocols, arbitrary hosts, mismatched Cloudinary cloud paths,
+non-default ports, credentials, and malformed URLs before persistence.
+
+## Delivery Transformations
+
+`src/lib/images/cloudinaryDelivery.ts` is the source of truth for app-authored
+Cloudinary delivery URL transformations. Components should call
+`getCloudinaryDeliveryUrl(src, variant)` instead of rewriting `/upload/`
+strings inline.
+
+The helper only transforms HTTPS URLs in the configured Cloudinary delivery
+path, `https://res.cloudinary.com/dzncmfirr/image/upload/`. Non-Cloudinary
+URLs, mismatched Cloudinary clouds, credentials, non-default ports, malformed
+URLs, and the `original` variant are returned unchanged so Shopify, Flaticon,
+or unapproved external URLs are not routed through Cloudinary-specific
+transformations.
+
+Current variants:
+
+| Variant | Transform | Current use |
+| --- | --- | --- |
+| `original` | none | Detail views or callers that need the stored URL. |
+| `card` | `w_300,q_auto` | Standard public/admin feed cards. |
+| `galleryList` | `w_600,q_auto` | Masonry artwork list images. |
+| `adminPreview` | `w_200,h_200,c_fill` | Admin article, artwork, and blog read-list previews. |
+| `blogHero` | `w_1200,q_auto` | Featured blog section hero images. |
+| `blogFeatureHero` | `w_1600,q_auto` | Full-width featured blog section hero images. |
+| `blogFeatureCard` | `w_600,q_auto` | Secondary featured blog cards. |
+| `blogGridCard` | `w_800,q_auto` | Blog tile and continuous-grid cards. |
+| `blogListThumbnail` | `w_200,q_auto` | Compact split-screen blog list thumbnails. |
 
 ## Signing Parameter Allowlist
 
@@ -163,9 +196,7 @@ currently signed because folder rules are still an owner policy decision.
   preset remains intentional.
 - Decide whether signed folder parameters are needed, and if so define exact
   folder names or patterns before adding them to the allowlist.
-- Add validation for blog, article, and collection image URLs using the
-  Cloudinary-managed or explicitly allowed external-host decision table.
+- Review existing blog, article, and collection image URLs against the T-135
+  validation policy before any future migration or cleanup work.
 - Harden artwork upload-result metadata parsing and decide how operators
   recover from failed persistence after successful upload.
-- Centralize delivery transformations instead of using repeated string
-  replacements across cards, lists, detail views, and admin previews.

@@ -1,12 +1,12 @@
-import { Fetcher } from "../../core/createFetcher";
+import type { Fetcher } from "../../core/createFetcher";
 import {
   CreateArticleFormValues,
   CreateArtworkFormValues,
   CreateBlogFormValues,
 } from "@/lib/data/schemas";
 import { CreateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
-import { SingleResult } from "@/lib/data/types/apiTypes";
-import {
+import type { SingleResult } from "@/lib/data/types/apiTypes";
+import type {
   AdminArticle,
   AdminCollection,
   AdminArtwork,

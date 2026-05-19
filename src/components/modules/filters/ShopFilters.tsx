@@ -10,7 +10,7 @@ import {
 } from "@/components/shadcn/select";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { Label } from "@/components/shadcn/label";
-import { ShopFiltersState } from "@/lib/data/types/shopTypes";
+import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 
 type ShopFiltersProps = {
   filters: ShopFiltersState;

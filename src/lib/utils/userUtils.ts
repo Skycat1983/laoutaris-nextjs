@@ -1,5 +1,5 @@
 import type { ObjectId } from "mongoose";
-import { UserFrontend } from "../data/types";
+import type { UserFrontend } from "../data/types";
 
 type IsUserInArrayInput = {
   array: (string | ObjectId)[];

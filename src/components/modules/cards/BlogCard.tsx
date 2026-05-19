@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/shadcn/skeleton";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogCardProps {
   blog: BlogEntryFrontend;
@@ -13,7 +14,7 @@ export const BlogCard = ({ blog }: BlogCardProps) => {
       <div className="relative group w-full">
         <div className="relative">
           <Image
-            src={blog.imageUrl.replace("/upload/", "/upload/w_300,q_auto/")}
+            src={getCloudinaryDeliveryUrl(blog.imageUrl, "card")}
             alt={blog.title}
             width={200}
             height={200}

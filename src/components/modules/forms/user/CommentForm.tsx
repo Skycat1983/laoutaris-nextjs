@@ -35,8 +35,8 @@ const CommentForm = ({ blogSlug, onCommentSubmit }: CommentFormProps) => {
     try {
       await onCommentSubmit(values);
       form.reset(); // Clear form after successful submission
-    } catch (error) {
-      console.error("Error submitting comment:", error);
+    } catch {
+      // Keep the draft available for retry when the caller rejects.
     }
   };
 

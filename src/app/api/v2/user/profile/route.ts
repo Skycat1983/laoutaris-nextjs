@@ -1,7 +1,7 @@
-import { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
+import type { ApiProfileResult } from "@/lib/api/user/profile/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { getOwnUserProfile } from "@/lib/data/services/getOwnUserProfile";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

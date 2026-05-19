@@ -3,8 +3,9 @@ jest.mock("server-only", () => ({}), { virtual: true });
 import { POST } from "@/app/api/v2/admin/collection/create/route";
 import { PATCH } from "@/app/api/v2/admin/collection/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
-import { CollectionModel, UserModel } from "@/lib/data/models";
+import { ArtworkModel, CollectionModel, UserModel } from "@/lib/data/models";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
+import { CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR } from "@/lib/validation/contentImageUrl";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
@@ -23,6 +24,9 @@ jest.mock("@/lib/db/mongodb", () => ({
 }));
 
 jest.mock("@/lib/data/models", () => ({
+  ArtworkModel: {
+    countDocuments: jest.fn(),
+  },
   CollectionModel: {
     create: jest.fn(),
     findById: jest.fn(),
@@ -59,6 +63,12 @@ const artworkToAddId = "507f1f77bcf86cd799439013";
 const artworkToRemoveId = "507f1f77bcf86cd799439014";
 const existingArtworkId = "507f1f77bcf86cd799439015";
 const requestId = "req-admin-collection";
+const cloudinaryCollectionImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000000/collection.jpg";
+const cloudinaryUpdatedCollectionImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000001/updated-collection.jpg";
+const flaticonCollectionImageUrl =
+  "https://cdn-icons-png.flaticon.com/512/1000/1000000.png";
 
 const createRequest = (
   body: unknown,
@@ -92,7 +102,7 @@ const validCreatePayload = {
   subtitle: "Archive grouping",
   summary: "A concise collection summary.",
   text: "Longer collection text for the archive.",
-  imageUrl: "https://example.com/collection.jpg",
+  imageUrl: cloudinaryCollectionImageUrl,
 };
 
 const validUpdatePayload = {
@@ -100,7 +110,7 @@ const validUpdatePayload = {
   subtitle: "Updated grouping",
   summary: "Updated collection summary.",
   text: "Updated collection text for the archive.",
-  imageUrl: "https://example.com/updated-collection.jpg",
+  imageUrl: cloudinaryUpdatedCollectionImageUrl,
   section: "project",
   artworksToAdd: [artworkToAddId],
   artworksToRemove: [artworkToRemoveId],
@@ -120,7 +130,7 @@ const createCollectionDocument = () => ({
   subtitle: "Archive grouping",
   summary: "A concise collection summary.",
   text: "Longer collection text for the archive.",
-  imageUrl: "https://example.com/collection.jpg",
+  imageUrl: cloudinaryCollectionImageUrl,
   section: "collections",
   artworks: [
     {
@@ -135,6 +145,7 @@ const createCollectionDocument = () => ({
 
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockCreate = CollectionModel.create as jest.Mock;
+const mockArtworkCountDocuments = ArtworkModel.countDocuments as jest.Mock;
 const mockCollectionFindById = CollectionModel.findById as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockGetServerSession = getServerSession as jest.MockedFunction<
@@ -255,6 +266,29 @@ describe("POST /api/v2/admin/collection/create", () => {
     expect(mockCreate).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary create image hosts before persistence", async () => {
+    const request = createRequest({
+      ...validCreatePayload,
+      imageUrl: "https://example.com/collection.jpg",
+    });
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid collection input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
   it("rejects unknown create fields before persistence", async () => {
     const request = createRequest({
       ...validCreatePayload,
@@ -282,7 +316,7 @@ describe("POST /api/v2/admin/collection/create", () => {
       subtitle: "  Archive grouping  ",
       summary: "  A concise collection summary.  ",
       text: "  Longer collection text for the archive.  ",
-      imageUrl: "  https://example.com/collection.jpg  ",
+      imageUrl: `  ${cloudinaryCollectionImageUrl}  `,
     });
 
     const response = await POST(request as never);
@@ -300,6 +334,37 @@ describe("POST /api/v2/admin/collection/create", () => {
     expect(body).toEqual({
       success: true,
       data: createdCollection,
+    });
+  });
+
+  it("accepts explicitly allowed external image hosts on create", async () => {
+    const externalCollection = {
+      ...createdCollection,
+      imageUrl: flaticonCollectionImageUrl,
+    };
+    mockCreate.mockResolvedValue(externalCollection);
+
+    const response = await POST(
+      createRequest({
+        ...validCreatePayload,
+        imageUrl: `  ${flaticonCollectionImageUrl}  `,
+      }) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCreate).toHaveBeenCalledWith({
+      ...validCreatePayload,
+      imageUrl: flaticonCollectionImageUrl,
+      section: "collections",
+      slug: "painting-series",
+      author: adminUserId,
+    });
+    expect(body).toEqual({
+      success: true,
+      data: externalCollection,
     });
   });
 
@@ -358,6 +423,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     jest.clearAllMocks();
     setAdminSession();
     mockDbConnect.mockResolvedValue(undefined);
+    mockArtworkCountDocuments.mockResolvedValue(1);
     mockCollectionFindById.mockResolvedValue(createCollectionDocument());
   });
 
@@ -472,6 +538,30 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     expect(mockCollectionFindById).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary update image hosts before collection reads", async () => {
+    const request = createRequest({
+      imageUrl: "https://example.com/updated-collection.jpg",
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: collectionId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid collection input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
+  });
+
   it("rejects unknown update fields before persistence", async () => {
     const request = createRequest({
       title: "Updated Series",
@@ -493,6 +583,62 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
     expect(mockCollectionFindById).not.toHaveBeenCalled();
+  });
+
+  it("rejects valid-looking artworksToAdd IDs when a referenced artwork is missing", async () => {
+    mockArtworkCountDocuments.mockResolvedValue(0);
+    const request = createRequest({
+      artworksToAdd: [artworkToAddId],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: collectionId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid collection input",
+      fieldErrors: {
+        artworksToAdd: ["One or more artworks were not found"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith({
+      _id: { $in: [artworkToAddId] },
+    });
+    expect(mockCollectionFindById).not.toHaveBeenCalled();
+  });
+
+  it("does not require removed artwork IDs to exist on update", async () => {
+    const collection = createCollectionDocument();
+    mockCollectionFindById.mockResolvedValue(collection);
+    const missingArtworkToRemoveId = "507f1f77bcf86cd799439099";
+    const request = createRequest({
+      artworksToRemove: [missingArtworkToRemoveId],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: collectionId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
+    expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
+    expect(collection.artworks.map(String)).toEqual([
+      artworkToRemoveId,
+      existingArtworkId,
+    ]);
+    expect(collection.save).toHaveBeenCalledTimes(1);
+    expect(body).toEqual({
+      success: true,
+      data: collection,
+    });
   });
 
   it("returns 404 when the collection is not found", async () => {
@@ -523,7 +669,7 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
       subtitle: "  Updated grouping  ",
       summary: "  Updated collection summary.  ",
       text: "  Updated collection text for the archive.  ",
-      imageUrl: "  https://example.com/updated-collection.jpg  ",
+      imageUrl: `  ${cloudinaryUpdatedCollectionImageUrl}  `,
       section: "project",
       artworksToAdd: [artworkToAddId],
       artworksToRemove: [artworkToRemoveId],
@@ -537,14 +683,15 @@ describe("PATCH /api/v2/admin/collection/update/[id]", () => {
     expect(response.status).toBe(200);
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith({
+      _id: { $in: [artworkToAddId] },
+    });
     expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
     expect(collection.title).toBe("Updated Series");
     expect(collection.subtitle).toBe("Updated grouping");
     expect(collection.summary).toBe("Updated collection summary.");
     expect(collection.text).toBe("Updated collection text for the archive.");
-    expect(collection.imageUrl).toBe(
-      "https://example.com/updated-collection.jpg"
-    );
+    expect(collection.imageUrl).toBe(cloudinaryUpdatedCollectionImageUrl);
     expect(collection.section).toBe("project");
     expect(collection.artworks.map(String)).toEqual([
       existingArtworkId,

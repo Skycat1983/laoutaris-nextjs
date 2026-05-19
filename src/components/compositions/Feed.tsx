@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { SkeletonFactory } from "./SkeletonFactory";
 import { Skeleton } from "../shadcn/skeleton";
-import { ApiResponse } from "@/lib/data/types";
+import type { ApiResponse } from "@/lib/data/types";
 
 // type for the fetch function that returns data
 type FetchFn<T> = (params: {

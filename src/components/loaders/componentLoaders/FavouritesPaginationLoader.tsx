@@ -1,7 +1,7 @@
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { getOwnFavouriteArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 

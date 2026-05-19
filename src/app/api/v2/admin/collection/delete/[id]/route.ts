@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { CollectionModel } from "@/lib/data/models";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import dbConnect from "@/lib/db/mongodb";
 import {

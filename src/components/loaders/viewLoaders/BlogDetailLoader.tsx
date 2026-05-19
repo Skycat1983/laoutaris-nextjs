@@ -1,6 +1,6 @@
 import { BlogDetail } from "@/components/views/BlogDetail";
-import { ApiResponse } from "@/lib/data/types/apiTypes";
-import {
+import type { ApiResponse } from "@/lib/data/types/apiTypes";
+import type {
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";

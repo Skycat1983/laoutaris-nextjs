@@ -6,8 +6,8 @@ function copy_id() {
   const handleCopyId = async (item: HasId) => {
     try {
       await navigator.clipboard.writeText(item._id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      // Preserve the existing silent clipboard failure behavior.
     }
   };
 

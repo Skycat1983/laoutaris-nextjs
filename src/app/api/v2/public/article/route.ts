@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
 import { getArticleList } from "@/lib/data/services/getArticleList";
 import { createApiLogger } from "@/lib/observability/logger";

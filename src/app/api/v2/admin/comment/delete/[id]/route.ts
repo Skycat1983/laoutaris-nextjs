@@ -1,9 +1,9 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
+import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import mongoose from "mongoose";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,

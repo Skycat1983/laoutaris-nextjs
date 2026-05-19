@@ -23,7 +23,7 @@ const logger = createServerLogger({
 });
 
 const getErrorForLog = (error: unknown) => {
-  const logError = new Error("Development test user lookup failed");
+  const logError = new Error("Development test user lookup error");
   logError.name = error instanceof Error ? error.name : "UnknownError";
 
   return logError;

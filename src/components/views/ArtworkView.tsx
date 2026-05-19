@@ -3,7 +3,7 @@ import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
 import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
 import ArtworkShopSection from "../modules/cards/ArtworkShopSection";
 import { MagnifierImage } from "../modules/MagnifierImage";
-import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { ArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 
 type ArtworkViewProps = ArtworkFrontend & {

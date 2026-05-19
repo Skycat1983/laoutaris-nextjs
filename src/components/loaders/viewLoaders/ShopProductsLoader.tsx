@@ -1,5 +1,5 @@
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
-import { ShopFiltersState } from "@/lib/data/types/shopTypes";
+import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import {
   parseShopProductListQuery,

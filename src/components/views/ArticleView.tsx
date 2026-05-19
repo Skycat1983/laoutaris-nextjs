@@ -1,7 +1,7 @@
 import React from "react";
 import { MobileArticleView } from "./MobileArticleView";
 import { DesktopArticleView } from "./DesktopArticleView";
-import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 
 interface ArticleViewProps {
   article: ArticleFrontendPopulated;

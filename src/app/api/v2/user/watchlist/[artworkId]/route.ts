@@ -2,7 +2,7 @@ import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { NextRequest } from "next/server";
 
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { ApiWatchlistItemResult } from "@/lib/api/user/watchlist/fetchers";
 import { getOwnWatchlistArtwork } from "@/lib/data/services/getOwnSavedArtwork";
 import { isNextError } from "@/lib/helpers/isNextError";

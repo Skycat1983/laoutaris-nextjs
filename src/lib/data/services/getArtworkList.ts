@@ -1,14 +1,8 @@
 import "server-only";
 
 import type { FilterQuery } from "mongoose";
-import { ArtworkModel, type ArtworkDB } from "@/lib/data/models/artworkModel";
-import type {
-  ArtworkFrontend,
-  ArtworkLean,
-  ArtworkQueryParams,
-  ColourInfo,
-  ListResult,
-} from "@/lib/data/types";
+import { ArtworkModel, ArtworkDB } from "@/lib/data/models/artworkModel";
+import type { ArtworkFrontend, ArtworkLean, ArtworkQueryParams, ColourInfo, ListResult } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 import { findSimilarColors } from "@/lib/utils/colourUtils";

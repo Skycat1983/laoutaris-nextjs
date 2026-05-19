@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { CloudinaryUploadWidgetResults } from "next-cloudinary";
-import { UploadButton } from "@/components/elements/buttons";
+import { UploadButton } from "@/components/elements/buttons/UploadButton";
 import { CreateArtworkForm } from "./CreateArtworkForm";
-import {
-  CloudinaryImageDB,
-  CloudinaryUploadInfo,
-} from "@/lib/data/types/cloudinaryTypes";
+import type { CloudinaryImageDB, CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
 
 export function CreateArtworkWithUpload() {
@@ -27,8 +24,8 @@ export function CreateArtworkWithUpload() {
         result.info as CloudinaryUploadInfo
       );
       setUploadInfo(transformedInfo);
-    } catch (error) {
-      console.error("Failed to process upload result:", error);
+    } catch {
+      return;
     }
   };
 

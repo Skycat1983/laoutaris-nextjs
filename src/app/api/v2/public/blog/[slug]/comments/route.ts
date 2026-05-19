@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types";
+import type { NextRequest } from "next/server";
+import type { RouteResponse } from "@/lib/data/types";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { ApiBlogPopulatedResult } from "@/lib/api/public/blog/fetchers";
 import { isNextError } from "@/lib/helpers/isNextError";

@@ -4,9 +4,9 @@ import { ArtworkFeedCard } from "@/components/modules/cards/ArtworkFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
-import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
+import { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 
 export function ArtworkFeed() {
   const [artworks, setArtworks] = useState<ArtworkFrontend[]>([]);
@@ -37,8 +37,8 @@ export function ArtworkFeed() {
           });
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch artworks:", error);
+    } catch {
+      return;
     } finally {
       setIsLoading(false);
     }

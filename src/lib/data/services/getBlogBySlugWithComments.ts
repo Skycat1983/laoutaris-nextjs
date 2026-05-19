@@ -1,10 +1,7 @@
 import "server-only";
 
 import { BlogModel } from "@/lib/data/models/blogModel";
-import type {
-  BlogEntryPopulatedCommentsPopulatedFrontend,
-  BlogEntryPopulatedCommentsPopulatedLean,
-} from "@/lib/data/types/blogTypes";
+import type { BlogEntryPopulatedCommentsPopulatedFrontend, BlogEntryPopulatedCommentsPopulatedLean } from "@/lib/data/types/blogTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { transformBlogPopulatedWithCommentsPopulated } from "@/lib/transforms/blog/transformBlog";
 

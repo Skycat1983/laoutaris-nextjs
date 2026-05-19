@@ -1,6 +1,6 @@
 import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
-import { ArtworkSortConfig } from "@/lib/data/types";
-import { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
+import type { ArtworkSortConfig } from "@/lib/data/types";
+import type { ArtworkFilterParams } from "@/lib/data/types/artworkTypes";
 import { getArtworkList } from "@/lib/data/services/getArtworkList";
 
 interface ArtworkListLoaderProps {

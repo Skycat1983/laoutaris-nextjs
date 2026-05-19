@@ -4,12 +4,7 @@ import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNa
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
-
-export interface NavBarLink {
-  label: string;
-  path: string;
-  disabled?: boolean;
-}
+import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 
 const logger = createServerLogger({
   component: "MainNavLoader",

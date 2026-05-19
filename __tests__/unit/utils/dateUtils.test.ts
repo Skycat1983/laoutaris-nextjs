@@ -34,15 +34,29 @@ describe("formatDate", () => {
   });
 
   test("handles invalid date input", () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
     expect(formatDate("not a date")).toBe("Invalid Date");
     expect(formatDate("2024-13-45")).toBe("Invalid Date"); // Invalid month and day
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 
   test("handles null or undefined input", () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
     // @ts-expect-error Testing invalid input
     expect(formatDate(null)).toBe("Invalid Date");
     // @ts-expect-error Testing invalid input
     expect(formatDate(undefined)).toBe("Invalid Date");
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 });
 

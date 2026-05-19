@@ -1,7 +1,7 @@
 "use client";
 
 import TransitionGroup from "@/components/animations/TransitionGroup";
-import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

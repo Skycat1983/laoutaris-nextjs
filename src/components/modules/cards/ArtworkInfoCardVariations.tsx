@@ -8,7 +8,7 @@ import {
 } from "@/components/elements/buttons";
 import { Bookmark, Heart } from "lucide-react";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
 // Classic Museum Card
 export const ClassicMuseumCard = ({

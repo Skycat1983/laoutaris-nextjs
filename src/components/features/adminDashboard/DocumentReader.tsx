@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import { ApiResponse } from "@/lib/data/types";
+import type { ApiResponse } from "@/lib/data/types";
 
 const readSchema = z.object({
   objectId: z.string().min(1, "Object ID is required"),
@@ -55,8 +55,7 @@ export function DocumentReader<T>({
           message: `${documentType} not found`,
         });
       }
-    } catch (error) {
-      console.error(`Error reading ${documentType}:`, error);
+    } catch {
       form.setError("objectId", {
         message: `${documentType} not found`,
       });

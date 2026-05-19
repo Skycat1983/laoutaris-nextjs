@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import type { ChevronRight } from "lucide-react";
 import { useCallback, useState } from "react";
 import { clientApi } from "@/lib/api/clientApi";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 interface BlogLayoutProps {
   initialBlogEntries: BlogEntryFrontend[];
   initialPage?: number;
@@ -21,26 +22,21 @@ export const BlogSectionContinuous = ({
   const [hasMore, setHasMore] = useState(true);
 
   const handleLoadMore = useCallback(async () => {
-    try {
-      const nextPage = page + 1;
-      const response = await clientApi.public.blog.multiple({
-        page: nextPage,
-        limit: 10,
-      });
+    const nextPage = page + 1;
+    const response = await clientApi.public.blog.multiple({
+      page: nextPage,
+      limit: 10,
+    });
 
-      if (!response.success) {
-        throw new Error("Failed to fetch blogs");
-      }
+    if (!response.success) {
+      throw new Error("Failed to fetch blogs");
+    }
 
-      if (response.data.length === 0) {
-        setHasMore(false);
-      } else {
-        setBlogEntries((prev) => [...prev, ...response.data]);
-        setPage(nextPage);
-      }
-    } catch (error) {
-      console.error("Error loading more blogs:", error);
-      throw error;
+    if (response.data.length === 0) {
+      setHasMore(false);
+    } else {
+      setBlogEntries((prev) => [...prev, ...response.data]);
+      setPage(nextPage);
     }
   }, [page]);
 
@@ -49,10 +45,6 @@ export const BlogSectionContinuous = ({
     hasMore,
   });
 
-  if (error) {
-    console.error("Error in BlogSectionContinuous:", error);
-  }
-
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 lg:grid-cols-34 gap-12">
@@ -60,9 +52,9 @@ export const BlogSectionContinuous = ({
           <Link href={`/blog/${blogEntries[0]?.slug}`} className="group block">
             <article className="relative rounded-3xl overflow-hidden">
               <Image
-                src={blogEntries[0]?.imageUrl.replace(
-                  "/upload/",
-                  "/upload/w_1200,q_auto/"
+                src={getCloudinaryDeliveryUrl(
+                  blogEntries[0]?.imageUrl,
+                  "blogHero"
                 )}
                 alt={blogEntries[0]?.title || ""}
                 width={1200}
@@ -91,9 +83,9 @@ export const BlogSectionContinuous = ({
             <article className="flex flex-col gap-4">
               <div className="aspect-[16/10] relative rounded-2xl overflow-hidden">
                 <Image
-                  src={blog.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_800,q_auto/"
+                  src={getCloudinaryDeliveryUrl(
+                    blog.imageUrl,
+                    "blogGridCard"
                   )}
                   alt={blog.title}
                   fill
@@ -137,10 +129,7 @@ export const BlogSectionContinuous = ({
 //       >
 //         <article className="relative rounded-3xl overflow-hidden">
 //           <Image
-//             src={blogEntries[0]?.imageUrl.replace(
-//               "/upload/",
-//               "/upload/w_1200,q_auto/"
-//             )}
+//             src={getCloudinaryDeliveryUrl(blogEntries[0]?.imageUrl, "blogHero")}
 //             alt={blogEntries[0]?.title || ""}
 //             width={1200}
 //             height={600}
@@ -167,10 +156,7 @@ export const BlogSectionContinuous = ({
 //               <article className="flex flex-col gap-4">
 //                 <div className="aspect-[16/10] relative rounded-2xl overflow-hidden">
 //                   <Image
-//                     src={blog.imageUrl.replace(
-//                       "/upload/",
-//                       "/upload/w_800,q_auto/"
-//                     )}
+//                     src={getCloudinaryDeliveryUrl(blog.imageUrl, "blogGridCard")}
 //                     alt={blog.title}
 //                     fill
 //                     className="object-cover transition-transform duration-300 group-hover:scale-105"

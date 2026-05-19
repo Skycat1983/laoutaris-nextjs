@@ -3,7 +3,7 @@
 import { Loader2, Plus, SearchCheck, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useWatch } from "react-hook-form";
-import type {
+import {
   Control,
   FieldErrors,
   UseFormRegister,
@@ -19,7 +19,7 @@ import {
 import { clientPublicApi } from "@/lib/api/public/clientPublicApi";
 import {
   SHOPIFY_PRODUCT_TYPE_OPTIONS,
-  type ArtworkFormValues,
+  ArtworkFormValues,
 } from "@/lib/data/schemas/artworkSchema";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";

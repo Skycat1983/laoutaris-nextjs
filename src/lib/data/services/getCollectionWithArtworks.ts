@@ -1,10 +1,7 @@
 import "server-only";
 
 import { CollectionModel } from "@/lib/data/models/collectionModel";
-import type {
-  CollectionFrontendPopulated,
-  CollectionLeanPopulated,
-} from "@/lib/data/types";
+import type { CollectionFrontendPopulated, CollectionLeanPopulated } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformCollectionPopulated } from "@/lib/transforms";
 

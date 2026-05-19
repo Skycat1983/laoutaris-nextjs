@@ -153,6 +153,8 @@ features before production launch.
   capture terms/privacy acknowledgement, account privacy self-service is not
   implemented, and the visible delete-account button is inert while deletion is
   admin-only.
+- T-138 documented the admin bootstrap, promotion, lockout recovery,
+  verification, rollback, and secret-handling workflow in the auth runbook.
 
 ## Backlog
 
@@ -176,8 +178,6 @@ features before production launch.
   admin decisions, shared route guards, and representative user/admin APIs.
 - Add tests for remaining representative user/admin APIs as shared route guards
   and ownership helpers are introduced.
-- Document admin account bootstrap and recovery workflow, including promotion,
-  audit ownership, and recovery if all admins are unavailable.
 - Define account privacy acceptance, self-service delete/export request
   handling, OAuth data handling, and retention behavior after owner/legal
   requirements are accepted.
@@ -188,7 +188,7 @@ features before production launch.
 - User routes enforce ownership where applicable.
 - Auth-related environment variables are documented.
 - Middleware has production-safe logging behavior.
-- Admin bootstrap process is documented and repeatable.
+- Admin bootstrap and recovery process is documented and repeatable.
 
 ## Verification
 
@@ -471,6 +471,17 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   handler source-hygiene coverage now rejects direct route-level
   `console.error()` and `console.warn()` calls without changing admin guard
   behavior or protected route contracts.
+- 2026-05-19: Completed T-138 by documenting admin bootstrap, promotion,
+  lockout recovery, rollback, verification, MongoDB role-change evidence, and
+  credential/OAuth smoke handling in the auth runbook. Runtime current-admin
+  and last-admin deletion protections remain separate implementation work.
+- 2026-05-19: T-140 reconciled A-011's runtime admin deletion finding as
+  F-091 and prepared T-141. Admin bootstrap/recovery documentation remains
+  complete under T-138; runtime current-admin and last-admin deletion guards are
+  the next auth/admin implementation gap.
+- 2026-05-19: Completed T-141 by adding current-admin self-delete and
+  last-admin deletion protections to the admin user delete route with focused
+  guard-order and cascade-preservation coverage.
 
 ## Next Agent Action
 
@@ -479,9 +490,13 @@ opened. Do not reassign T-094, T-095, T-119, T-120, or T-121 unless a
 regression is opened. Do not reassign T-122 unless the API-v2 route
 source-hygiene guard regresses.
 
-Keep admin bootstrap/recovery documentation, broader production logging policy,
-root-layout session redesign, favourite/watchlist server actions, account
-navigation, comment mutations, profile editing, middleware, OAuth provider
-configuration, and future protected-route migrations separate. Preserve the
-T-043 shared guard invariant and add focused route coverage before changing
-protected user/admin route behavior.
+Keep broader production logging policy, root-layout session redesign,
+favourite/watchlist server actions, account navigation, comment mutations,
+profile editing, middleware, OAuth provider configuration, and future
+protected-route migrations separate. Preserve the T-043 shared guard invariant
+and add focused route coverage before changing protected user/admin route
+behavior.
+
+T-141 is complete; do not reassign it unless current-admin or last-admin
+deletion protection regresses. Keep account privacy self-service, owner/legal
+retention decisions, and broader destructive admin cascade previews separate.

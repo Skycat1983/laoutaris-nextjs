@@ -1,6 +1,6 @@
-import { SingleResult } from "@/lib/data/types";
-import { Fetcher } from "../../core/createFetcher";
-import { SearchParams, SearchResponse } from "@/lib/data/types/searchTypes";
+import type { SingleResult } from "@/lib/data/types";
+import type { Fetcher } from "../../core/createFetcher";
+import type { SearchParams, SearchResponse } from "@/lib/data/types/searchTypes";
 
 export type ApiSearchResult = SingleResult<SearchResponse>;
 

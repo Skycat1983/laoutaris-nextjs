@@ -1,7 +1,8 @@
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface ArtworkLayoutProps {
   artworks: ArtworkFrontend[];
@@ -40,9 +41,9 @@ export const MasonryLayout = ({
           >
             <div className="relative rounded-xl overflow-hidden">
               <Image
-                src={artwork.image.secure_url.replace(
-                  "/upload/",
-                  "/upload/w_600,q_auto/"
+                src={getCloudinaryDeliveryUrl(
+                  artwork.image.secure_url,
+                  "galleryList"
                 )}
                 alt={artwork.title}
                 width={600}

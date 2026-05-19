@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import {
   createArticleSchema,
   CreateArticleFormValues,
@@ -61,8 +61,8 @@ export const CreateArticleForm = ({
     try {
       await clientAdminApi.create.article(data);
       onSuccess();
-    } catch (error) {
-      console.error("Error in CreateArticleForm:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }

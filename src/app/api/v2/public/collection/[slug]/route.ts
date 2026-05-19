@@ -2,7 +2,7 @@ import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
 import { ApiCollectionResult } from "@/lib/api/public/collection/fetchers";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

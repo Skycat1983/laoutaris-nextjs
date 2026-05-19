@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server";
-import type {
-  ApiErrorResponse,
-  ListResult,
-  PaginationMetadata,
-  SingleResult,
-} from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse, ListResult, PaginationMetadata, SingleResult } from "@/lib/data/types/apiTypes";
 
 type ApiErrorResponseOptions = {
   message: string;

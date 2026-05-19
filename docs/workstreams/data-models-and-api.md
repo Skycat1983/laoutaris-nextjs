@@ -182,6 +182,9 @@ consistent enough for production refactoring and Shopify integration.
   persisted blogs now require `imageUrl` and default `tags` to `[]`; admin blog
   route schemas accept/default `pinned` and `tags`, reject invalid tags before
   blog reads/writes, and persist only parsed allowlisted fields.
+- T-135 applies the shared content image URL allowlist to admin article, blog,
+  and collection create/update schemas so unsupported image hosts fail with
+  structured validation errors before model reads or writes.
 - T-056 completed the remaining scoped F-039 user `password` runtime alignment
   slice: persisted user types allow missing passwords for OAuth-created users,
   credentials auth rejects users without stored hashes before bcrypt
@@ -265,6 +268,13 @@ consistent enough for production refactoring and Shopify integration.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
+- Decide whether public search is site-wide; if yes, extend search schema,
+  service, DTOs, and result metadata for artworks and shop products, and if no,
+  make the narrower scope explicit in route/UI contracts.
+- Align page and API query parsing for public browse routes, starting with
+  `/artwork`.
+- Add route-local runtime validation for public article/collection section
+  parameters after the collection section taxonomy policy is decided.
 - Document whether admin action-segment API paths are canonical, or open an ADR
   for a resource-oriented migration plan.
 - Audit form/input validation from UI through API persistence.
@@ -823,14 +833,28 @@ Add API route tests where behavior is changed.
   source-hygiene coverage for direct `console.error()` and `console.warn()`
   calls. The guard changes test coverage only; route contracts and lower-level
   service/client logging behavior were not changed.
+- 2026-05-19: Completed T-135 by hardening admin article, blog, and collection
+  image URL schemas with the T-101 Cloudinary/external-host policy while
+  preserving DTO shapes, field names, auth behavior, and successful persistence
+  for already-allowed URLs.
+- 2026-05-19: T-140 reconciled A-011, A-017, and A-018 data/API findings into
+  F-093, F-098, F-099, F-103, and updated F-049/R-006. T-142 is prepared for
+  admin artwork relationship existence checks; public search scope, search
+  metadata, `/artwork` page/API query parity, and section runtime validation
+  remain separate follow-ups.
+- 2026-05-19: Completed T-142 by adding route-local artwork existence checks to
+  admin article create/update and collection `artworksToAdd` writes, with
+  focused admin article/collection route coverage.
 
 ## Next Agent Action
 
-Choose the next data/API slice from another active backlog item. Keep broader
-response helper cleanup, route-local DB ownership gaps, field-contract
+Choose the next data/API slice from public search scope/metadata, page/API
+query parity, section runtime validation after taxonomy policy, broader
+response-helper cleanup, route-local DB ownership gaps, field-contract
 matrices, server-side shop pagination/sorting contracts, lower-level logging
-policy, and admin Shopify-link work separate. T-122 is complete and should not
-be reassigned unless the API-v2 route source-hygiene guard regresses.
+policy, admin Shopify-link work, or existing content image data migration.
+T-122, T-135, and T-142 are complete and should not be reassigned unless their
+guards or validation behavior regresses.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

@@ -3,7 +3,7 @@
 import { MobileNavLayout } from "@/components/modules/navigation/mainNav/MobileNavLayout";
 import { TabletNavLayout } from "@/components/modules/navigation/mainNav/TabletNavLayout";
 import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/DesktopNavLayout";
-import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 
 export async function MainNav({ navLinks }: { navLinks: NavBarLink[] }) {
   return (

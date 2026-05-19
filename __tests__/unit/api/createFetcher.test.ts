@@ -123,10 +123,7 @@ describe("createFetcher", () => {
       success: false,
       error: "network down",
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Fetch error for /network-failure:",
-      expect.any(Error)
-    );
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
   });

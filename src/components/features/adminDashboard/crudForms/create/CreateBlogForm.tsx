@@ -61,8 +61,8 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
         router.refresh();
         onSuccess?.();
       }
-    } catch (error) {
-      console.error("Error in form submission:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -79,14 +79,9 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(
-              (data) => {
-                onSubmit(data);
-              },
-              (errors) => {
-                console.error("Validation errors:", errors);
-              }
-            )}
+            onSubmit={form.handleSubmit((data) => {
+              onSubmit(data);
+            })}
             className="space-y-8"
           >
             <FormField

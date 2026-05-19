@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db/mongodb";
-import { ApiErrorResponse } from "@/lib/data/types";
+import type { ApiErrorResponse } from "@/lib/data/types";
 import { ApiEnquiryResult } from "@/lib/api/public/enquiry/fetchers";
 import { EnquiryModel } from "@/lib/data/models/enquiryModel";
 import {

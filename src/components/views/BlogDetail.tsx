@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import CommentForm from "@/components/modules/forms/user/CommentForm";
-import { BlogCommentsList } from "@/components/sections";
+import { BlogCommentsList } from "@/components/sections/BlogCommentsList";
 import HorizontalDivider from "../elements/misc/HorizontalDivider";
 import { useState } from "react";
 import { clientApi } from "@/lib/api/clientApi";
-import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
+import { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import { Skeleton } from "../shadcn/skeleton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { CommentFrontendPopulated } from "@/lib/data/types/commentTypes";
-import {
+import type { CommentFrontendPopulated } from "@/lib/data/types/commentTypes";
+import type {
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
@@ -48,8 +48,7 @@ const BlogDetail = ({ blog, showComments = false }: BlogDetailProps) => {
         setPopulatedComments(comments);
         setHasLoadedComments(true);
       }
-    } catch (error) {
-      console.error("Failed to load comments:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to load comments" type="error" />
       );
@@ -71,8 +70,7 @@ const BlogDetail = ({ blog, showComments = false }: BlogDetailProps) => {
           <ModalMessage message="Failed to post comment" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error posting comment:", error);
+    } catch {
       openModal(<ModalMessage message="Failed to post comment" type="error" />);
     }
   };

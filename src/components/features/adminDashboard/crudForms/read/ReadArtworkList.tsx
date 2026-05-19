@@ -7,7 +7,8 @@ import { Button } from "@/components/shadcn/button";
 import { ArtworkFilterDropdowns } from "../../inputs/ArtworkFilterDropdowns";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { clientApi } from "@/lib/api/clientApi";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 type ArtworkFilterKey = "decade" | "artstyle" | "medium" | "surface";
 
@@ -46,8 +47,8 @@ export function ReadArtworkList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 
@@ -74,9 +75,9 @@ export function ReadArtworkList() {
             >
               <div className="aspect-square relative">
                 <Image
-                  src={artwork.image.secure_url.replace(
-                    "/upload/",
-                    "/upload/w_200,h_200,c_fill/"
+                  src={getCloudinaryDeliveryUrl(
+                    artwork.image.secure_url,
+                    "adminPreview"
                   )}
                   alt={artwork.title}
                   fill

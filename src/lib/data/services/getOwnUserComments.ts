@@ -1,11 +1,7 @@
 import "server-only";
 
 import { UserModel } from "@/lib/data/models/userModel";
-import type {
-  CommentFrontendPopulated,
-  CommentLeanPopulated,
-  PaginationMetadata,
-} from "@/lib/data/types";
+import type { CommentFrontendPopulated, CommentLeanPopulated, PaginationMetadata } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformCommentPopulated } from "@/lib/transforms";
 

@@ -11,11 +11,8 @@ import {
 } from "@/components/shadcn/drawer";
 import { useState } from "react";
 import { FilterIcon } from "lucide-react";
-import {
-  ArtworkFilterParams,
-  ArtworkSortConfig,
-} from "@/lib/data/types/artworkTypes";
-import { FilterMode } from "@/lib/constants";
+import type { ArtworkFilterParams, ArtworkSortConfig } from "@/lib/data/types/artworkTypes";
+import type { FilterMode } from "@/lib/constants/artworkConstants";
 
 interface FilterProps {
   onApply?: () => void;

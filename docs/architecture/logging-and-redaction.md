@@ -17,29 +17,32 @@ same redaction rules without reintroducing broad direct console output.
   SDK setup, `instrumentation.ts`, alert automation, and provider environment
   variables remain governed by
   [monitoring and error reporting](monitoring-and-error-reporting.md).
-- A source inventory on 2026-05-18 after T-126 and T-127 found 65 non-route
-  direct `console.error()`/`console.warn()` calls across 51 files after
+- A source inventory on 2026-05-19 after T-133 found 0 non-route direct
+  `console.error()`/`console.warn()` calls after
   excluding `src/app/api/v2/**` and `src/lib/observability/logger.ts`.
 
 Inventory command:
 
 ```bash
-rg -n "console\.(error|warn)\(" src --glob '!app/api/v2/**' --glob '!src/lib/observability/logger.ts'
+rg -n "console\.(error|warn)\(" src --glob '!src/app/api/v2/**' --glob '!src/lib/observability/logger.ts'
 ```
 
 Inventory by migration surface:
 
 | Surface | Current inventory | Examples | Migration direction |
 | --- | ---: | --- | --- |
-| Admin dashboard clients | 37 calls across 28 files | CRUD forms, read-list copy failures, operation tabs, admin feeds, document reader | Replace with user-visible admin state, form errors, and later provider client capture. Do not log submitted field values or validation payloads. |
-| Browser components and hooks | 18 calls across 17 files | artwork gallery fetches, blog comments, contact/comment forms, logout, error boundary, infinite scroll | Replace with local UI state or a future client reporting wrapper. Browser console output should not be the production reporting path. |
-| Server loaders | 1 call across 1 file | account saved-artwork loader | Route through a server logging helper that accepts optional request context and emits redacted event names. |
+| Admin dashboard clients | 0 calls across 0 files | CRUD forms, read-list copy failures, operation tabs, admin feeds, document reader | T-133 removed the remaining direct admin client console output while preserving existing form errors, loading resets, modal failure UI, silent copy attempts, success/fallback state, and upload/document-reader behavior. Future admin client reporting still requires an approved provider/helper and must not log submitted field values or validation payloads. |
+| Account/user form and navigation clients | 0 calls across 0 files in the scoped T-131 slice | contact form, comment form, logout form, account-nav dropdown | T-131 removed browser console failures while preserving contact failure modal/reset behavior, comment retry state, logout modal/loading/redirect behavior, and account-nav session-aware sign-in/sign-out behavior. |
+| Comment card owner actions | 0 calls across 0 files in the scoped T-131 slice | owner edit/delete comment failures | T-131 removed owner-action browser console failures while preserving edit retry state, delete failure modals, callbacks, and loading reset behavior. |
+| Client error boundary | 0 calls across 0 files in the scoped T-131 slice | `ErrorBoundary` recovery path | T-131 removed browser console output while preserving the current fallback behavior for `window` error events. |
+| Server loaders | 0 calls across 0 files in the scoped account saved-artwork loader slice | account saved-artwork loader | T-129 migrated the remaining account saved-artwork server loader to summarized structured events and normalized generic errors. Future server loader discoveries should use the same requestless logger pattern. |
 | Provider and data services | 0 calls across 0 files in the scoped Shopify slice | Shopify client, shop product list service, artwork-linked Shopify resolver | T-127 migrated the scoped Shopify provider/data service files to summarized structured events and safe provider metadata. Future provider/data service discoveries should follow that pattern. |
 | App Router pages | 0 calls across 0 files in the scoped public page slice | biography/collections redirects, Shopify product page linked-artwork fetches | T-126 migrated the scoped recoverable App Router page paths to server logging. Future page discoveries should use server logging when the page can recover, or rely on route segment error handling when it cannot. |
-| Utilities and helpers | 4 calls across 3 files | copy helper, date formatting, translation lookup | Remove or gate low-value noise; return fallback values without logging unless there is an actionable production signal. |
-| Server actions | 3 calls across 3 files | subscription, favourites, watchlist | Use structured server logging with optional request/action context; keep public action return values generic. |
-| Shared fetcher | 1 call across 1 file | `createFetcher()` failure path | Convert to structured logging at the caller-owned boundary or remove if callers already surface the error. |
-| Session helper | 1 call across 1 file | development test-header lookup fallback | Keep development/test-only behavior scoped; do not emit user identifiers or raw lookup errors in production. |
+| Public browsing clients | 0 calls across 0 files in the scoped T-130 slice | artwork gallery, blog continuous loading, blog detail comments, infinite scroll, shop product gallery | T-130 removed browser console failures while preserving existing loading, empty/current-result fallback, infinite-scroll error, comment modal, and shop sorting/filter behavior. |
+| Utilities and helpers | 0 calls across 0 files in the scoped T-132 slice | copy helper/card, date formatting, translation lookup, color/sidebar warnings | T-132 removed low-value utility/helper console output while preserving fallback values, copy attempts, no-element color rendering, and blog sidebar state. Future utility discoveries should return fallback values without logging unless there is an actionable production signal. |
+| Server actions | 0 calls across 0 files in the scoped action slice | subscription, favourites, watchlist | T-128 migrated scoped subscription and saved-item action failures to structured server logging. Future server action discoveries should keep public action return values generic. |
+| Shared fetcher | 0 calls across 0 files in the scoped T-132 slice | `createFetcher()` failure path | T-132 removed shared fetcher console output while preserving success envelopes, API error envelopes, header merging, JSON parsing, and Next control-flow rethrows. Future client reporting remains a separate provider/client-reporting decision. |
+| Session helper | 0 calls across 0 files in the scoped helper slice | development test-header lookup fallback | T-128 migrated the development test-header lookup fallback to structured server logging without user identifiers or raw lookup errors. |
 
 ## Allowed Console Use
 
@@ -147,17 +150,21 @@ slices:
    T-127. Future provider/data service discoveries should summarize provider
    failures with safe handles/IDs and status categories instead of raw provider
    errors.
-3. Server actions and session helpers: migrate subscription, saved-item, and
-   test-header lookup failures to structured server logging while preserving
-   generic public return values.
-4. Public/account client components and shared fetcher: replace browser console
-   output with UI state or a provider-neutral client reporting wrapper after
-   the client reporting decision is made.
-5. Admin dashboard clients: replace admin form/feed/read-list console output
-   with operator-visible states and, later, approved client reporting. This is a
-   larger UI slice because many files are touched.
-6. Low-value utilities and helper warnings: remove or gate translation, color,
-   date, and copy-helper noise once callers own user-visible fallback behavior.
+3. Server actions and session helpers: completed for scoped subscription,
+   saved-item, and development test-header lookup failures in T-128. Future
+   action/helper discoveries should preserve generic public return values and
+   avoid raw user/session/request data.
+4. Public/account client components and shared fetcher: completed for the
+   scoped public browsing client slice in T-130, the scoped account/user form,
+   navigation, comment-card, and error-boundary slice in T-131, and the shared
+   fetcher failure path in T-132. Future client reporting remains a separate
+   provider/client-reporting decision.
+5. Admin dashboard clients: completed for CRUD forms, read lists, operation
+   tabs, feeds, upload handling, and the document reader in T-133. Future admin
+   client reporting still requires an approved provider/client-reporting helper.
+6. Low-value utilities and helper warnings: completed for the scoped T-132
+   translation, color, date, blog-sidebar, artwork-card copy, and copy-helper
+   files while preserving fallback behavior.
 
 Each implementation slice should add targeted source-hygiene coverage for the
 files it touches. A recursive full-source guard for all non-route

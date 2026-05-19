@@ -16,8 +16,8 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { CollectionFrontendPopulated } from "@/lib/data/types";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { CollectionFrontendPopulated } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import {
   Tabs,
   TabsContent,
@@ -92,11 +92,9 @@ export const UpdateCollectionForm = ({
         );
         setArtworkToAdd(null);
         if (artworkIdRef.current) artworkIdRef.current.value = "";
-      } else {
-        console.error("Error fetching artwork:", result.error);
       }
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
+    } catch {
+      return;
     } finally {
       setIsLoadingArtwork(false);
     }
@@ -116,8 +114,8 @@ export const UpdateCollectionForm = ({
       );
 
       onSuccess();
-    } catch (error) {
-      console.error("Error in UpdateCollectionForm:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }

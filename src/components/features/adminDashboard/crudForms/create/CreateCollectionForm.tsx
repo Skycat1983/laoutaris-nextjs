@@ -20,11 +20,7 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useRouter } from "next/navigation";
 
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  CollectionFrontend,
-} from "@/lib/data/types";
+import type { ApiErrorResponse, ApiResponse, CollectionFrontend } from "@/lib/data/types";
 import {
   CreateCollectionFormValues,
   createCollectionSchema,
@@ -69,8 +65,8 @@ export const CreateCollectionForm = ({
 
       form.reset();
       router.refresh();
-    } catch (error) {
-      console.error("Error creating collection:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }

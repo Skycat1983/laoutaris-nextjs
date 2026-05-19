@@ -3,6 +3,7 @@ import {
   ARTICLE_OVERLAY_COLOUR_OPTIONS,
   ARTICLE_SECTION_OPTIONS,
 } from "@/lib/constants/articleConstants";
+import { buildContentImageUrlSchema } from "@/lib/validation/contentImageUrl";
 
 const ARTICLE_FIELD_LIMITS = {
   title: 200,
@@ -54,17 +55,13 @@ const articleBaseFields = {
       ARTICLE_FIELD_LIMITS.text,
       `Article text must be ${ARTICLE_FIELD_LIMITS.text} characters or fewer`
     ),
-  imageUrl: z
-    .string({
-      required_error: "Image URL is required",
-      invalid_type_error: "Image URL must be a string",
-    })
-    .trim()
-    .url("Invalid URL")
-    .max(
-      ARTICLE_FIELD_LIMITS.imageUrl,
-      `Image URL must be ${ARTICLE_FIELD_LIMITS.imageUrl} characters or fewer`
-    ),
+  imageUrl: buildContentImageUrlSchema({
+    requiredError: "Image URL is required",
+    invalidTypeError: "Image URL must be a string",
+    invalidUrlError: "Invalid URL",
+    maxLength: ARTICLE_FIELD_LIMITS.imageUrl,
+    maxLengthError: `Image URL must be ${ARTICLE_FIELD_LIMITS.imageUrl} characters or fewer`,
+  }),
   section: z.enum(ARTICLE_SECTION_OPTIONS),
   overlayColour: z.enum(ARTICLE_OVERLAY_COLOUR_OPTIONS),
   artwork: objectIdStringSchema("Invalid artwork ID"),

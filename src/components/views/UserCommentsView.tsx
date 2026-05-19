@@ -5,7 +5,7 @@ import { CommentCard } from "../modules/cards/CommentCard";
 import Link from "next/link";
 import { formatDateImproved } from "@/lib/utils/dateUtils";
 import Image from "next/image";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 
 type Props = {
   comments: CommentFrontendPopulated[];

@@ -125,6 +125,10 @@ Next.js server/client component boundaries.
 - T-087 removed the stale account favourites `serverApi` import and commented
   old self-fetch block while preserving the current redirect to
   `/account/settings`.
+- T-137 added a recursive client runtime import graph guard, split the
+  client-safe `NavBarLink` type out of `MainNavLoader`, replaced scoped
+  mixed-barrel client imports with direct imports, and requires no allowlist for
+  current client entries.
 - T-089 removed direct render `console.log()` output from root layout,
   `Subnav`, `ArticleView`, `DesktopArticleView`, and `UserCommentsView` while
   preserving layout, navigation, article, and account comments behavior.
@@ -194,6 +198,31 @@ Next.js server/client component boundaries.
   standalone artwork, collection-scoped artwork, and Shopify product detail
   pages without visible breadcrumb UI, navigation, metadata, enquiry, or route
   cache policy changes.
+- T-130 removed direct `console.error()` calls from scoped public browsing
+  clients while preserving artwork filter/loading state, infinite-scroll error
+  state, blog continuous loading propagation, blog comment failure modals, and
+  shop filter/sort/loading fallback behavior.
+- T-131 removed direct `console.error()` calls from scoped account/user clients
+  while preserving contact/comment form state, logout and account-nav modal and
+  loading behavior, `CommentCard` owner edit/delete behavior, and
+  `ErrorBoundary` fallback behavior.
+- T-132 completed the shared fetcher and low-value utility/helper cleanup slice.
+  `ArtworkFeedCard`, `TailwindColorIcon`, and `BlogSidebar` no longer emit
+  direct `console.error()`/`console.warn()` output, and visible component
+  behavior is unchanged.
+- T-133 removed the remaining admin dashboard client direct console output
+  across forms, feeds, read lists, operation tabs, upload handling, and the
+  document reader while preserving existing visible dashboard behavior.
+- A-017 completed the public discovery audit. It confirmed `/search` does not
+  include artworks or shop products, search no-results/pagination UI remains
+  incomplete, `/artwork` page query parsing drifts from the API schema, sorted
+  blog follow-up loading drops active sort, main navigation fails closed when
+  dynamic nav data is unavailable, visible breadcrumbs are not content-aware,
+  and shop sorting is still client-only.
+- A-018 completed the translation/taxonomy audit. It confirmed visible
+  language UI is not wired to rendered copy, public/admin taxonomy controls
+  drift from canonical constants, blog pinned/tag controls remain hidden, and
+  footer/legal copy cleanup must coordinate with A-020 owner/legal decisions.
 
 ## Backlog
 
@@ -226,13 +255,29 @@ Next.js server/client component boundaries.
   A-020 requirements are accepted.
 - Align commerce assurance copy with implemented checkout/cart and approved
   sale/refund/shipping/payment policies.
-- Align blog/collection image UI with the chosen Cloudinary-managed or
-  allowed-host image policy.
-- Centralize Cloudinary delivery transformations once the asset delivery policy
-  is chosen.
+- Keep admin content image UI aligned with the T-135 Cloudinary-managed or
+  allowed-host image URL policy.
+- Maintain the T-136 Cloudinary delivery helper when adding app-authored
+  Cloudinary image variants.
 - Decide the i18n/frontend language direction before pruning unused translation
   UI.
 - Add smoke-level tests for high-value public pages.
+- Decide whether `/search` is site-wide; if yes, include artworks and shop
+  products, and if not, relabel/copy the UI so scope is explicit.
+- Add visible no-results behavior and a pagination/metadata policy for public
+  search.
+- Align `/artwork` page query parsing/defaults with the public artwork API
+  schema.
+- Preserve sorted blog state through pagination or continuous loading.
+- Render stable main navigation fallbacks when dynamic biography or collection
+  navigation data is unavailable.
+- Make visible breadcrumbs content-aware for article, blog, artwork,
+  collection-artwork, and product details.
+- Decide the i18n/frontend language direction before visible language controls
+  or taxonomy labels depend on translated copy.
+- Centralize taxonomy value+label options for public filters and admin forms.
+- Coordinate footer placeholder social links, current-year/copyright text, and
+  assurance copy with A-020 owner/legal-approved requirements.
 
 ## Acceptance Criteria
 
@@ -499,6 +544,13 @@ Use browser checks for layout-sensitive changes.
   allows it. Build output now shows several public entry routes as static, with
   remaining dynamic public routes tied to route-local search params,
   MongoDB/Shopify loaders, or optional session-aware UI.
+- 2026-05-19: T-140 reconciled A-017 and A-018 frontend findings into
+  F-098 through F-104 plus existing F-013, F-023, F-033, and F-049 updates.
+  T-143 is prepared for the public search scope decision. Search no-results/
+  pagination, `/artwork` page/API query parity, sorted blog loading, nav
+  fallbacks, visible breadcrumbs, language UI, taxonomy option parity, blog
+  controls, collection section policy, and footer/legal copy remain separate
+  implementation or decision slices.
 - 2026-05-18: Prepared T-103 as the next A-010/F-085 slice for production-safe
   root metadata plus baseline `robots.ts` and `sitemap.ts`. Route-specific
   detail metadata and JSON-LD remain separate.
@@ -587,17 +639,59 @@ Use browser checks for layout-sensitive changes.
   metadata helpers, structured data, or route cache policy. The public smoke
   script now validates deployed robots and sitemap discovery content while
   keeping dynamic detail URL presence tied to approved records/upstream data.
+- 2026-05-18: Completed T-130 as a scoped public browsing client cleanup:
+  `ArtworkGallery`, `BlogSectionContinuous`, `BlogDetail`,
+  `ShopProductGallery`, and `useInfiniteScroll` no longer emit direct
+  `console.error()` output, and focused tests preserve existing loading,
+  fallback, modal, and infinite-scroll error behavior.
+- 2026-05-18: Prepared T-131 for the remaining account/user client
+  console-error cleanup slice.
+- 2026-05-18: Completed T-131 as a scoped account/user client cleanup:
+  `ContactForm`, `CommentForm`, `LogoutForm`, `AccountNavDropdown`,
+  `CommentCard`, and `ErrorBoundary` no longer emit direct `console.error()`
+  output, and focused tests preserve existing failure UI, retry, loading,
+  callback, navigation, and fallback behavior.
+- 2026-05-18: Completed T-132 for the scoped shared frontend-adjacent files:
+  `ArtworkFeedCard`, `TailwindColorIcon`, and `BlogSidebar` no longer emit
+  direct `console.error()`/`console.warn()` output while preserving copy
+  attempts, unknown-color empty rendering, and sidebar state/rendering behavior.
+- 2026-05-19: Completed T-133 for admin dashboard clients: CRUD forms, read
+  lists, operation tabs, feeds, upload handling, and the document reader no
+  longer emit direct `console.error()`/`console.warn()` output while preserving
+  form state, loading resets, modal failure UI, silent copy attempts, and
+  existing success/fallback behavior.
+- 2026-05-19: Completed T-135 without redesigning admin image fields. The
+  shared article, blog, and collection schemas now reject unsupported content
+  image hosts before persistence while preserving existing field names and
+  public read DTO shapes for already-allowed URLs.
+- 2026-05-19: Completed T-137 by adding the client/server import boundary
+  guard and replacing scoped client mixed-barrel imports with direct or
+  type-only imports.
+- 2026-05-19: Completed T-136 by replacing scoped direct Cloudinary upload-path
+  string rewrites in cards, blog sections, masonry artwork lists, and admin
+  previews with the shared delivery helper.
 
 ## Next Agent Action
 
 Choose the next separate frontend discovery or production-readiness slice:
-Cloudinary delivery transform centralization, owner/legal-approved policy
-links/notices, or another reconciled public UX risk. Keep broad static/ISR
-migration and checkout/cart work separate unless explicitly assigned.
+[T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md),
+search no-results/pagination, `/artwork` page/API query parity, sorted blog
+loading, navigation fallbacks, visible breadcrumbs, taxonomy option parity, or
+owner/legal-approved policy links/notices. Keep broad static/ISR migration and
+checkout/cart work separate unless explicitly assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
-opened.
+opened. Do not reassign T-130 unless the scoped public browsing client
+source-hygiene or existing failure-state behavior regresses. Do not reassign
+T-131 unless scoped account/user client source-hygiene or existing
+failure-state behavior regresses. Do not reassign T-132 unless scoped shared
+frontend-adjacent source hygiene or fallback behavior regresses. Do not
+reassign T-133 unless admin dashboard source hygiene or existing dashboard
+failure behavior regresses. Do not reassign T-135 unless content image URL
+validation regresses. Do not reassign T-137 unless the client import-boundary
+guard or scoped direct-import cleanup regresses. Do not reassign T-136 unless
+the Cloudinary delivery helper or its source-hygiene guard regresses.
 
 Keep favourite/watchlist server actions, broader account navigation, user
 comment mutations, profile editing, real pagination, checkout/cart, remaining

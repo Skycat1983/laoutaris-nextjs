@@ -2,11 +2,7 @@ import "server-only";
 
 import type { ArticleSection } from "@/lib/constants";
 import { ArticleModel } from "@/lib/data/models/articleModel";
-import type {
-  ArticleNavDataFrontend,
-  ArticleSelectFieldsLean,
-  ListResult,
-} from "@/lib/data/types";
+import type { ArticleNavDataFrontend, ArticleSelectFieldsLean, ListResult } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformBiographyNav } from "@/lib/transforms/navigation/transformNavData";
 

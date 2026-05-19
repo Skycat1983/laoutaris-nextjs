@@ -6,7 +6,7 @@ Clear separation between client and server code
 Reusable fetching logic
 */
 
-import { ApiErrorResponse } from "@/lib/data/types";
+import type { ApiErrorResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 // Fetcher types
 export type Fetcher = <T>(
@@ -58,7 +58,6 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
       if (isNextError(error)) {
         throw error;
       }
-      console.error(`Fetch error for ${endpoint}:`, error);
       return {
         success: false,
         error: error instanceof Error ? error.message : "Failed to fetch data",

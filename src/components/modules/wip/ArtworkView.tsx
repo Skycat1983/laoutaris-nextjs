@@ -1,10 +1,10 @@
 // "use client";
-// import { useCallback, useState } from "react";
+// import type { useCallback, useState } from "react";
 
 import { ArtworkInfoCard } from "@/components/modules/cards/ArtworkInfoCard";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import Image from "next/image";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 // TODO: refactor the image zooming logic
 // ! NOTE: the page will load faster if we fetch one at a time.
 

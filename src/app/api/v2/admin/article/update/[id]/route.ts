@@ -1,16 +1,16 @@
-import { ArticleModel } from "@/lib/data/models";
+import { ArticleModel, ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   updateArticleRouteBodySchema,
   updateArticleRouteParamsSchema,
-  type UpdateArticleRouteBody,
-  type UpdateArticleRouteParams,
+  UpdateArticleRouteBody,
+  UpdateArticleRouteParams,
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
@@ -49,6 +49,12 @@ const validationErrorResponse = (
     },
     { status: 400 }
   );
+
+const verifyArtworkExists = async (artworkId: string) => {
+  const artworkExists = await ArtworkModel.exists({ _id: artworkId });
+
+  return Boolean(artworkExists);
+};
 
 const normalizeArticleResponse = (value: unknown): unknown => {
   if (Array.isArray(value)) {
@@ -134,6 +140,15 @@ export async function PATCH(
     const updateData: UpdateArticleRouteBody & { slug?: string } = {
       ...parsedBody.data,
     };
+
+    if (parsedBody.data.artwork !== undefined) {
+      const artworkExists = await verifyArtworkExists(parsedBody.data.artwork);
+      if (!artworkExists) {
+        return validationErrorResponse({
+          artwork: ["Artwork not found"],
+        });
+      }
+    }
 
     if (parsedBody.data.title !== undefined) {
       updateData.slug = slugify(parsedBody.data.title, { lower: true });

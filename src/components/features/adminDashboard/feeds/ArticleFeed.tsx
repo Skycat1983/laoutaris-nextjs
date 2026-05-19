@@ -3,7 +3,7 @@
 import { ArticleFeedCard } from "@/components/modules/cards/ArticleFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import { ArticleFrontendPopulated } from "@/lib/data/types";
+import type { ArticleFrontendPopulated } from "@/lib/data/types";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
@@ -36,8 +36,8 @@ export function ArticleFeed() {
           });
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch articles:", error);
+    } catch {
+      return;
     } finally {
       setIsLoading(false);
     }

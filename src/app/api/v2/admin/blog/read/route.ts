@@ -1,16 +1,11 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
-import { ReadBlogListResult } from "@/lib/api/admin/read/fetchers";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ReadBlogListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
-import {
-  AdminBlogTransformationsPopulated,
-  AdminCommentTransformations,
-  AdminUserTransformations,
-  BlogEntryFrontend,
-} from "@/lib/data/types";
+import type { AdminBlogTransformationsPopulated, AdminCommentTransformations, AdminUserTransformations, BlogEntryFrontend } from "@/lib/data/types";
 import { transformBlogPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

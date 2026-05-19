@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import {
   parseShopProductListQuery,
   searchParamsToShopProductListQueryInput,

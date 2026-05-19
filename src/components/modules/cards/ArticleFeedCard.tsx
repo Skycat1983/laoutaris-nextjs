@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import { copy_id } from "@/lib/helpers/copy_id";
-import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface ArticleFeedCardProps {
   item: ArticleFrontendPopulated;
@@ -16,10 +17,7 @@ export function ArticleFeedCard({ item }: ArticleFeedCardProps) {
     <div className="relative group w-full p-12">
       <div className="relative">
         <Image
-          src={item.artwork.image.secure_url.replace(
-            "/upload/",
-            "/upload/w_300,q_auto/"
-          )}
+          src={getCloudinaryDeliveryUrl(item.artwork.image.secure_url, "card")}
           alt={item.title}
           width={200}
           height={200}

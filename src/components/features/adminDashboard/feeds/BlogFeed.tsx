@@ -2,7 +2,7 @@
 
 import { BlogFeedCard } from "@/components/modules/cards/BlogFeedCard";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import { BlogEntryFrontend } from "@/lib/data/types";
+import type { BlogEntryFrontend } from "@/lib/data/types";
 import { useEffect, useState } from "react";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
@@ -37,8 +37,8 @@ export function BlogFeed() {
           });
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch blogs:", error);
+    } catch {
+      return;
     } finally {
       setIsLoading(false);
     }

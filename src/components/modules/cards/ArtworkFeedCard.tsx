@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface ArtworkFeedCardProps {
   item: ArtworkFrontend;
@@ -12,15 +13,15 @@ export function ArtworkFeedCard({ item }: ArtworkFeedCardProps) {
   const handleCopyClick = async () => {
     try {
       await navigator.clipboard.writeText(item._id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      // Preserve the existing silent clipboard failure behavior.
     }
   };
 
   return (
     <div className="relative group w-full p-12">
       <Image
-        src={item.image.secure_url.replace("/upload/", "/upload/w_300,q_auto/")}
+        src={getCloudinaryDeliveryUrl(item.image.secure_url, "card")}
         alt={item.title}
         width={200}
         height={200}

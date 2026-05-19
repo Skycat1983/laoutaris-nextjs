@@ -28,8 +28,7 @@ export function formatDate(
     }
 
     return date.toLocaleDateString(undefined, options);
-  } catch (error) {
-    console.error("Error formatting date:", error);
+  } catch {
     return "Invalid Date";
   }
 }

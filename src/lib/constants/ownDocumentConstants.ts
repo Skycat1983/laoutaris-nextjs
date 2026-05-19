@@ -1,6 +1,6 @@
 //! OWN USER
 
-import { UserDB } from "@/lib/data/models";
+import type { UserDB } from "@/lib/data/models";
 import { extendOwnUserFields } from "../transforms/transformHelpers";
 
 //! OWNUSER

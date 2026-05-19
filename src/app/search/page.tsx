@@ -1,14 +1,11 @@
 import SearchResultsSection from "@/components/modules/search/SearchResultsSection";
 import {
   parsePublicSearchQuery,
-  type PublicSearchQueryFieldErrors,
-  type SearchQueryInput,
+  PublicSearchQueryFieldErrors,
+  SearchQueryInput,
 } from "@/lib/data/schemas/searchSchema";
 import { getPublicSearchResults } from "@/lib/data/services/getPublicSearchResults";
-import type {
-  SearchableContentType,
-  SearchResponse,
-} from "@/lib/data/types/searchTypes";
+import type { SearchableContentType, SearchResponse } from "@/lib/data/types/searchTypes";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 export const dynamic = "force-dynamic";

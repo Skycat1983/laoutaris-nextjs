@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
 import { copy_id } from "@/lib/helpers/copy_id";
-import { BlogEntryFrontend } from "@/lib/data/types";
+import type { BlogEntryFrontend } from "@/lib/data/types";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogFeedCardProps {
   item: BlogEntryFrontend;
@@ -16,7 +17,7 @@ export function BlogFeedCard({ item }: BlogFeedCardProps) {
     <div className="relative group w-full p-12">
       <div className="relative">
         <Image
-          src={item.imageUrl.replace("/upload/", "/upload/w_300,q_auto/")}
+          src={getCloudinaryDeliveryUrl(item.imageUrl, "card")}
           alt={item.title}
           width={200}
           height={200}

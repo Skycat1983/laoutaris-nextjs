@@ -3,7 +3,7 @@
 import { CollectionFeedCard } from "@/components/modules/cards/CollectionFeedCard";
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import { CollectionFrontendPopulated } from "@/lib/data/types";
+import type { CollectionFrontendPopulated } from "@/lib/data/types";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
@@ -38,8 +38,8 @@ export function CollectionFeed() {
           });
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch collections:", error);
+    } catch {
+      return;
     } finally {
       setIsLoading(false);
     }

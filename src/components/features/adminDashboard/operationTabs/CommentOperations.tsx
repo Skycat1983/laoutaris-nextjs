@@ -6,7 +6,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
-import { AdminComment, CommentFrontendPopulated } from "@/lib/data/types";
+import type { AdminComment, CommentFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "read" | "delete";
 
@@ -45,8 +45,7 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
           <ModalMessage message="Failed to delete comment" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting comment:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to delete comment" type="error" />
       );

@@ -23,8 +23,7 @@ const LogoutForm = () => {
       // await signOut({ callbackUrl: "/" });
 
       openModal(<ModalMessage message="Logout successful." />, redirectToHome);
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch {
       openModal(<ModalMessage message="Logout failed." />);
     } finally {
       setIsLoading(false);

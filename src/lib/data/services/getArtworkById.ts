@@ -1,7 +1,7 @@
 import "server-only";
 
 import { ArtworkModel } from "@/lib/data/models/artworkModel";
-import { ArtworkFrontend, ArtworkLean } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend, ArtworkLean } from "@/lib/data/types/artworkTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 

@@ -8,8 +8,8 @@ import type {
   BlogFilterParams,
 } from "@/lib/data/types/blogTypes";
 import type { Fetcher } from "../../core/createFetcher";
-import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
-import {
+import type { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
+import type {
   ArtworkFrontend,
   CommentFrontendPopulated,
   UserFrontend,

@@ -8,11 +8,7 @@ import { DocumentReader } from "../DocumentReader";
 import { UpdateArticleForm } from "../crudForms/update/UpdateArticleForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
 import { CreateArticleForm } from "../crudForms/create";
-import {
-  AdminArticlePopulated,
-  ArtworkFrontend,
-  ArticleFrontendPopulated,
-} from "@/lib/data/types";
+import type { AdminArticlePopulated, ArtworkFrontend, ArticleFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -57,8 +53,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
           <ModalMessage message="Failed to delete article" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting article:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to delete article" type="error" />
       );

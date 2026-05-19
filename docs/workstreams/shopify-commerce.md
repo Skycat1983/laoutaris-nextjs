@@ -136,6 +136,12 @@ production while preserving MongoDB as the archive source of truth.
   structured redacted server events without changing Shopify product DTOs,
   Storefront cache policy, linked-product fallback behavior, product-list
   metadata, filters, checkout behavior, or product detail UI.
+- A-017 confirmed Shopify products are not included in global public search
+  and shop sorting remains client-only despite an accepted `sortBy` query
+  parameter.
+- A-018 confirmed public shop taxonomy filters drift from canonical artwork
+  constants, including missing selectable `paint`, `pastel`, and `2020s`
+  values that the API schema accepts.
 
 ## Backlog
 
@@ -153,6 +159,10 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Define any future server-side shop sorting contract before moving current
   client-side sorting into the API.
+- Decide whether global public search should include Shopify products; if yes,
+  extend the search service/result rendering without adding checkout claims.
+- Derive shop taxonomy filter options from canonical artwork constants instead
+  of hand-maintained option arrays.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -258,6 +268,11 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-16: Completed T-061; `SimpleProduct` now preserves Shopify
   `productType` and `tags` for list, handle, and ID reads, and the public shop
   default type sort uses normalized product metadata without title fallback.
+- 2026-05-19: T-140 reconciled A-017/A-018 Shopify-facing discovery and
+  taxonomy findings into updated F-013/F-023 and new F-098. Shop product
+  inclusion in public search, server/deep-linkable shop sorting, and canonical
+  taxonomy option parity remain separate from checkout/cart and product-link
+  validation work.
 - 2026-05-16: Prepared T-062 as the next focused F-014 transform slice. It
   carries queried Shopify variant metadata through product DTOs without
   implementing checkout/cart, product-detail CTA changes, or visible

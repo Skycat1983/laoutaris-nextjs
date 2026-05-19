@@ -2,11 +2,7 @@ import {
   SHOPIFY_GRAPHQL_URL,
   SHOPIFY_STOREFRONT_ACCESS_TOKEN,
 } from "@/lib/config/shopifyConfig";
-import {
-  ShopifyProductsResponse,
-  ShopifyProduct,
-  SimpleProduct,
-} from "@/lib/data/types/shopify";
+import type { ShopifyProductsResponse, ShopifyProduct, SimpleProduct } from "@/lib/data/types/shopify";
 import { createServerLogger } from "@/lib/observability/logger";
 import {
   GET_PRODUCTS_QUERY,

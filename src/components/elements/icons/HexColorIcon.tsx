@@ -1,4 +1,4 @@
-import { ColourInfo } from "@/lib/data/types";
+import type { ColourInfo } from "@/lib/data/types";
 
 const HexColorIcon = ({ hexColor }: { hexColor: ColourInfo }) => {
   return (

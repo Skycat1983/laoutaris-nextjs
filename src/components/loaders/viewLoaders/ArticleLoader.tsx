@@ -4,12 +4,7 @@ import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
-import {
-  ArticleFrontendPopulated,
-  ArticleNavDataFrontend,
-  ApiResponse,
-  ApiSuccessResponse,
-} from "@/lib/data/types";
+import type { ArticleFrontendPopulated, ArticleNavDataFrontend, ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
 import { ArticleSection } from "@/lib/constants";
 import { isNextError } from "@/lib/helpers/isNextError";
 

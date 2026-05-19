@@ -8,6 +8,7 @@ import Image from "next/image";
 import type { ArticleFrontendPopulated } from "@/lib/data/types";
 import { ArticleFilterDropdowns } from "../../inputs/ArticleFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 type FilterKey = "section" | "overlayColour" | null;
 
@@ -59,8 +60,8 @@ export function ReadArticleList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 
@@ -84,9 +85,9 @@ export function ReadArticleList() {
             >
               <div className="aspect-square relative">
                 <Image
-                  src={article.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_200,h_200,c_fill/"
+                  src={getCloudinaryDeliveryUrl(
+                    article.imageUrl,
+                    "adminPreview"
                   )}
                   alt={article.title}
                   fill

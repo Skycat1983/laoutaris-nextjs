@@ -1,16 +1,13 @@
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
 import { ReadCollectionListResult } from "@/lib/api/admin/read/fetchers";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
-import {
-  AdminArtworkTransformations,
-  AdminCollectionTransformationsPopulated,
-} from "@/lib/data/types";
+import type { AdminArtworkTransformations, AdminCollectionTransformationsPopulated } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
-import { CollectionFrontendPopulated } from "@/lib/data/types";
+import type { CollectionFrontendPopulated } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";

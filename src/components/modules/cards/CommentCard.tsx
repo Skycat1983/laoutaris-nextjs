@@ -20,11 +20,11 @@ import {
 } from "@/components/shadcn/form";
 import {
   updateCommentSchema,
-  type UpdateCommentFormValues,
+  UpdateCommentFormValues,
 } from "@/lib/data/schemas/commentSchema";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 import { isFrontendUser } from "@/lib/utils/userUtils";
 
 interface CommentCardProps {
@@ -75,8 +75,8 @@ export const CommentCard = ({
         setIsEditing(false);
         onCommentUpdated?.();
       }
-    } catch (error) {
-      console.error("Failed to update comment:", error);
+    } catch {
+      // Preserve edit mode so owners can retry without losing their draft.
     } finally {
       setIsLoading(false);
     }
@@ -94,8 +94,7 @@ export const CommentCard = ({
           <ModalMessage message="Failed to delete comment" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Failed to delete comment:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to delete comment" type="error" />
       );

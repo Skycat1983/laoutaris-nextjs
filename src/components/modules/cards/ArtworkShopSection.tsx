@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { ArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { ShoppingCart, BookOpen, Palette } from "lucide-react";
 

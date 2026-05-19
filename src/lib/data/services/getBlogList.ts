@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { FilterQuery } from "mongoose";
-import { BlogModel, type BlogEntryDB } from "@/lib/data/models/blogModel";
+import { BlogModel, BlogEntryDB } from "@/lib/data/models/blogModel";
 import type { ListResult } from "@/lib/data/types";
 import type {
   BlogEntryFrontend,

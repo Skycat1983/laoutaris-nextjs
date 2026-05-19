@@ -1,6 +1,6 @@
-import { Fetcher } from "../../core/createFetcher";
-import { ListResult, SingleResult } from "@/lib/data/types";
-import {
+import type { Fetcher } from "../../core/createFetcher";
+import type { ListResult, SingleResult } from "@/lib/data/types";
+import type {
   BlogEntryFrontend,
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,

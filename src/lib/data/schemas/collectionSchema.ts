@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { COLLECTION_SECTIONS } from "@/lib/constants/collectionConstants";
+import { buildContentImageUrlSchema } from "@/lib/validation/contentImageUrl";
 
 const COLLECTION_FIELD_LIMITS = {
   title: 200,
@@ -51,17 +52,13 @@ const collectionBaseFields = {
       COLLECTION_FIELD_LIMITS.text,
       `Text content must be ${COLLECTION_FIELD_LIMITS.text} characters or fewer`
     ),
-  imageUrl: z
-    .string({
-      required_error: "Image URL is required",
-      invalid_type_error: "Image URL must be a string",
-    })
-    .trim()
-    .url("Must be a valid URL")
-    .max(
-      COLLECTION_FIELD_LIMITS.imageUrl,
-      `Image URL must be ${COLLECTION_FIELD_LIMITS.imageUrl} characters or fewer`
-    ),
+  imageUrl: buildContentImageUrlSchema({
+    requiredError: "Image URL is required",
+    invalidTypeError: "Image URL must be a string",
+    invalidUrlError: "Must be a valid URL",
+    maxLength: COLLECTION_FIELD_LIMITS.imageUrl,
+    maxLengthError: `Image URL must be ${COLLECTION_FIELD_LIMITS.imageUrl} characters or fewer`,
+  }),
 };
 
 const collectionSectionSchema = z.enum(COLLECTION_SECTIONS);

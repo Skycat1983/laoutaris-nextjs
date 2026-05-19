@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FeedSkeleton } from "@/components/compositions/Feed";
-import { UserFrontend } from "@/lib/data/types/userTypes";
+import type { UserFrontend } from "@/lib/data/types/userTypes";
 import { FeedPagination } from "@/components/elements/pagination/FeedPagination";
 import type { PaginationMetadata } from "@/components/elements/pagination/FeedPagination";
 import { clientApi } from "@/lib/api/clientApi";
@@ -37,8 +37,8 @@ export function UserFeed() {
           });
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
+    } catch {
+      return;
     } finally {
       setIsLoading(false);
     }

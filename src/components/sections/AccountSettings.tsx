@@ -1,7 +1,7 @@
-import { formatDate } from "@/lib/utils/dateUtils";
+import type { formatDate } from "@/lib/utils/dateUtils";
 import React from "react";
 import LogoutForm from "../modules/forms/user/LogoutForm";
-import { OwnUserFrontend } from "@/lib/data/types";
+import type { OwnUserFrontend } from "@/lib/data/types";
 
 export const AccountSettings = async (props: OwnUserFrontend) => {
   // const { username, favourites, watchlist, createdAt } = props;

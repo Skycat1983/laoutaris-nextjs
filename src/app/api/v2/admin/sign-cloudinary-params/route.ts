@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { NextResponse } from "next/server";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 
 // this route is used to sign the cloudinary params
 // it is called by the UploadButton component

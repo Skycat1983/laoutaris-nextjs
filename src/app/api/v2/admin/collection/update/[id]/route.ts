@@ -1,6 +1,6 @@
-import { CollectionModel } from "@/lib/data/models";
+import { ArtworkModel, CollectionModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { UpdateCollectionResult } from "@/lib/api/admin/update/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
@@ -40,6 +40,19 @@ const validationErrorResponse = (
     },
     { status: 400 }
   );
+
+const verifyArtworksToAddExist = async (artworkIds: string[] | undefined) => {
+  if (!artworkIds?.length) {
+    return true;
+  }
+
+  const uniqueArtworkIds = [...new Set(artworkIds)];
+  const matchingArtworkCount = await ArtworkModel.countDocuments({
+    _id: { $in: uniqueArtworkIds },
+  });
+
+  return matchingArtworkCount === uniqueArtworkIds.length;
+};
 
 const applyCollectionFields = (
   collection: {
@@ -113,6 +126,15 @@ export async function PATCH(
 
   try {
     await dbConnect();
+
+    const artworksToAddExist = await verifyArtworksToAddExist(
+      parsedBody.data.artworksToAdd
+    );
+    if (!artworksToAddExist) {
+      return validationErrorResponse({
+        artworksToAdd: ["One or more artworks were not found"],
+      });
+    }
 
     const collection = await CollectionModel.findById(parsedParams.data.id);
     if (!collection) {

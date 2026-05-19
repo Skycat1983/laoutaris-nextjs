@@ -83,6 +83,10 @@ content operations repeatable and safe.
   coded upload preset, reject signed folders until owner policy is approved,
   and prefer Cloudinary-managed blog/collection images or explicitly allowed
   external hosts.
+- T-135 enforces the T-101 content image URL policy for admin-managed article,
+  blog, and collection `imageUrl` writes. The shared validator accepts only the
+  configured Cloudinary delivery path and the documented Flaticon/Shopify CDN
+  external hosts before persistence.
 - A-010 found public image performance follow-ups for the asset workstream:
   home hero carousel images are over-prioritized at quality 100, product/shop
   `fill` images lack explicit `sizes`, and artwork magnifier preloads a second
@@ -90,6 +94,11 @@ content operations repeatable and safe.
 - T-108 tuned current Next image priority/sizes and artwork magnifier
   intent-loading behavior without changing Cloudinary ownership,
   delivery-transform, or cleanup policy.
+- T-136 centralized current app-authored Cloudinary delivery transformations in
+  `src/lib/images/cloudinaryDelivery.ts`. Cards, blog sections, masonry
+  artwork lists, and admin read-list previews now use named variants instead
+  of direct `/upload/` string replacement; the helper leaves non-Cloudinary,
+  mismatched-cloud, malformed, and original URLs unchanged.
 - A-016 found admin content create/update routes do not have a consistent
   server-side validation policy and invalid admin input often becomes a 500.
 - T-020 completed the first admin collection create/update validation slice
@@ -111,6 +120,8 @@ content operations repeatable and safe.
 - T-040 migrated admin delete routes to the shared admin guard, added
   destructive ID validation before target/session work, and preserved existing
   artwork/blog/comment/user cascade behavior with focused tests.
+- T-138 documented the operator path for admin bootstrap, promotion, lockout
+  recovery, and verification in the [auth runbook](../runbooks/auth.md).
 
 ## Backlog
 
@@ -127,10 +138,8 @@ content operations repeatable and safe.
   policy.
 - Harden artwork upload-result parsing and decide failed-create cleanup or
   operator recovery for orphaned uploads.
-- Decide whether blog and collection image URLs must be Cloudinary-managed
-  assets or explicitly allowed external hosts.
-- Centralize Cloudinary delivery transformations for cards, lists, detail
-  views, and admin previews.
+- Keep the T-135 article/blog/collection image URL validator aligned with
+  `next.config.mjs` whenever approved image hosts change.
 - Tune public image delivery for the home hero, shop banner/detail images, and
   artwork magnifier after the Cloudinary/Next sizing policy is chosen.
 - Migrate admin content create/update routes toward allowlisted validation
@@ -138,18 +147,30 @@ content operations repeatable and safe.
 - Keep Cloudinary variables current in the environment runbook. T-065 documents
   current variable ownership/status and confirms upload preset ownership remains
   an open policy decision.
-- Implement blog, article, and collection image URL validation from the T-101
-  Cloudinary-managed/explicitly-allowed-host decision table.
+- Review existing blog, article, and collection image URLs against the T-135
+  policy before any future data migration or asset cleanup work.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
   if not, wire image sanitization into artwork transforms and tests.
 - Confirm delete behavior for content with related records.
+- Add cascade-preview, backup/review evidence, and redacted audit-event
+  requirements for destructive admin deletes by resource type.
+- Surface structured admin API field/form errors in dashboard create/update
+  forms, and fix collection create success handling.
+- Replace normal admin maintenance flows that rely on manual ObjectId
+  copy/paste with paginated/searchable entry points, keeping ObjectId lookup as
+  an escape hatch.
+- Decide and document whether blog `pinned` and `tags` are launch-scope
+  operator workflows; if accepted, add visible controls and tests.
+- Decide collection section taxonomy ownership for launch and document whether
+  non-`collections` sections remain supported.
 - Consolidate repeated admin entity operation patterns into typed descriptors
   where it reduces duplicated feed/read/update/delete behavior.
 - Audit translations, labels, content taxonomy, and public/admin copy
   consistency.
 - Decide whether the mostly unused translation pipeline is in launch scope; if
   not, route it to a pruning task.
-- Add operator runbooks for non-Shopify artwork and content operations.
+- Add an admin content operations runbook for artwork, article, blog,
+  collection, comment, and user maintenance steps.
 - Consolidate useful root Shopify historical notes before deleting or archiving
   the root files.
 
@@ -308,16 +329,40 @@ Use manual admin checks when changing dashboard behavior.
   magnifier loading behavior only; Cloudinary delivery-transform
   centralization, URL rewriting, upload ownership, and cleanup policy remain
   separate.
+- 2026-05-19: Completed T-135 by adding shared content image URL validation for
+  admin article, blog, and collection image fields. Configured Cloudinary,
+  Flaticon, and Shopify CDN URLs remain accepted; arbitrary or malformed URLs
+  are rejected before persistence.
+- 2026-05-19: Completed T-136 by adding the shared Cloudinary delivery helper,
+  replacing scoped card/list/blog/admin-preview direct upload-path string
+  rewrites with named variants, documenting current variants in the Cloudinary
+  runbook, and adding helper/source-hygiene tests.
+- 2026-05-19: T-138 documented admin access bootstrap and recovery operations
+  in the auth runbook. Admin user self-delete and last-admin deletion guards
+  remain separate runtime work for the admin operations backlog.
+- 2026-05-19: T-140 reconciled A-011 and A-018 content/admin findings into
+  F-091 through F-097, F-103, and existing F-023/F-033 updates. The next
+  runnable content/admin slice is T-141 for runtime current-admin and
+  last-admin deletion protection; destructive cascade previews, admin form
+  error surfacing, archive management tables, blog pinned/tag controls,
+  collection section policy, taxonomy option parity, and the admin content
+  operations runbook remain separate follow-ups.
+- 2026-05-19: Completed T-141 by preventing current-admin self-deletion and
+  last-admin deletion in the admin user delete route.
+- 2026-05-19: Completed T-142 by server-verifying article `artwork` and
+  collection `artworksToAdd` references before persistence.
 
 ## Next Agent Action
 
-Choose the next Cloudinary implementation slice from T-101 follow-ups: upload
-metadata parsing and failed-persistence recovery, image URL validation for
-blog/article/collection records, delivery transformation centralization, or an
-owner-approved cleanup workflow after backup/restore evidence exists.
+Choose the next content/admin slice from remaining reconciled gaps: structured
+admin form error surfacing, destructive cascade previews, admin content
+operations runbook, blog pinned/tag workflow decision, collection section
+policy, or taxonomy option parity. T-141 and T-142 are complete; do not
+reassign them unless their route protections regress.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
-migrations, delivery-transform helper extraction, and Cloudinary account
-changes separate unless explicitly assigned. Keep persistence-time Shopify API
+migrations, new delivery-transform retuning, and Cloudinary account changes
+separate unless explicitly assigned. Keep persistence-time Shopify API
 validation, checkout/cart ownership, product-link data migration, route-level
-API logging, and global logging policy separate.
+API logging, global logging policy, destructive cascade previews, and admin
+content runbook work separate.

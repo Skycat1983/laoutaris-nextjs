@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { SectionLayout } from "../layouts/public/SectionLayout";
 import { ScrollArea, ScrollBar } from "@/components/shadcn/scroll-area";
@@ -7,7 +7,7 @@ import {
   BiographyCardSkeleton,
 } from "@/components/modules/cards/BiographyCard";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
-import { ArticleFrontend } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
 interface BiographySectionProps {
   articles: ArticleFrontend[];
 }

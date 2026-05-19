@@ -1,4 +1,4 @@
-import { SingleResult } from "@/lib/data/types";
+import type { SingleResult } from "@/lib/data/types";
 import { Fetcher } from "../../core/createFetcher";
 import type { EnquiryInput } from "@/lib/data/schemas/enquirySchema";
 

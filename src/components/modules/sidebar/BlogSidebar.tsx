@@ -3,11 +3,10 @@
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon, MessageCircleIcon } from "lucide-react";
-import { useSelectedLayoutSegment } from "next/navigation";
 import React from "react";
 import SubscribeForm from "../forms/user/SubscribeForm";
 import Image from "next/image";
-import { SubnavButton } from "@/components/elements/buttons";
+import { SubnavButton } from "@/components/elements/buttons/SubnavButton";
 
 type SortRangeSidebarProps = {
   options: { label: string; queryValue: string }[];
@@ -16,8 +15,6 @@ type SortRangeSidebarProps = {
 
 const BlogSidebar = ({ options }: SortRangeSidebarProps) => {
   const [activeOption, setActiveOption] = React.useState(options[0].queryValue);
-  const segment = useSelectedLayoutSegment();
-  console.warn(segment);
 
   const handleClick = (option: string) => {
     setActiveOption(option);

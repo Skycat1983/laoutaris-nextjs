@@ -1,9 +1,10 @@
 "use client";
 
-import { CollectionFrontend } from "@/lib/data/types";
+import type { CollectionFrontend } from "@/lib/data/types";
 import { copy_id } from "@/lib/helpers/copy_id";
 import Image from "next/image";
 import { CopyIcon } from "@/components/elements/icons/CopyIcon";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface CollectionFeedCardProps {
   item: CollectionFrontend;
@@ -16,7 +17,7 @@ export function CollectionFeedCard({ item }: CollectionFeedCardProps) {
     <div className="relative group w-full p-12">
       <div className="relative">
         <Image
-          src={item.imageUrl.replace("/upload/", "/upload/w_300,q_auto/")}
+          src={getCloudinaryDeliveryUrl(item.imageUrl, "card")}
           alt={item.title}
           width={200}
           height={200}

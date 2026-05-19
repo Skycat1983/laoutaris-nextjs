@@ -1,8 +1,8 @@
-import { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
+import type { ApiOwnUserNavResult } from "@/lib/api/user/navigation/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { getOwnUserNavigation } from "@/lib/data/services/getOwnUserNavigation";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { NextRequest } from "next/server";
 

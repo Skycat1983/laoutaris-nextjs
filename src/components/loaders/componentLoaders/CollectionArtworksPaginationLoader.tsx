@@ -1,7 +1,7 @@
 import { buildUrl } from "@/lib/utils/urlUtils";
 
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";

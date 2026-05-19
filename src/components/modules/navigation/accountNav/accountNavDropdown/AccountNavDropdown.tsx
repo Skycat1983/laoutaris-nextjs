@@ -10,7 +10,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/shadcn/navigation-menu";
-import { CircleUserIcon, LogIn, Mail, User } from "lucide-react";
+import { CircleUserIcon, LogIn, Mail } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
@@ -29,7 +29,7 @@ export function AccountNavDropdown() {
   const pathname = usePathname();
   const { openModal } = useGlobalFeatures();
   const [isLoading, setIsLoading] = React.useState(false);
-  const { data, status, update } = useSession();
+  const { data } = useSession();
   const session: UserSession | null = data?.user ?? null;
 
   const handleLogout = async () => {
@@ -44,8 +44,7 @@ export function AccountNavDropdown() {
       } else {
         openModal(<ModalMessage message="Logout successful." />);
       }
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch {
       openModal(<ModalMessage message="Logout failed." />);
     } finally {
       setIsLoading(false);

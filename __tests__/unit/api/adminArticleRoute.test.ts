@@ -3,8 +3,9 @@ jest.mock("server-only", () => ({}), { virtual: true });
 import { POST } from "@/app/api/v2/admin/article/create/route";
 import { PATCH } from "@/app/api/v2/admin/article/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
-import { ArticleModel, UserModel } from "@/lib/data/models";
+import { ArticleModel, ArtworkModel, UserModel } from "@/lib/data/models";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
+import { CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR } from "@/lib/validation/contentImageUrl";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
@@ -26,6 +27,9 @@ jest.mock("@/lib/data/models", () => ({
   ArticleModel: {
     create: jest.fn(),
     findByIdAndUpdate: jest.fn(),
+  },
+  ArtworkModel: {
+    exists: jest.fn(),
   },
   UserModel: {
     findById: jest.fn(),
@@ -58,6 +62,12 @@ const articleId = "507f1f77bcf86cd799439012";
 const artworkId = "507f1f77bcf86cd799439013";
 const newArtworkId = "507f1f77bcf86cd799439014";
 const requestId = "req-admin-article";
+const cloudinaryArticleImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000000/article.jpg";
+const cloudinaryUpdatedArticleImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000001/updated-article.jpg";
+const shopifyArticleImageUrl =
+  "https://cdn.shopify.com/s/files/1/0000/0001/files/article.jpg";
 
 const createRequest = (
   body: unknown,
@@ -91,7 +101,7 @@ const validCreatePayload = {
   subtitle: "On colour and form",
   summary: "A focused article summary.",
   text: "This article text is long enough to satisfy the route validation boundary.",
-  imageUrl: "https://example.com/article.jpg",
+  imageUrl: cloudinaryArticleImageUrl,
   section: "artwork",
   overlayColour: "white",
   artwork: artworkId,
@@ -102,7 +112,7 @@ const validUpdatePayload = {
   subtitle: "Updated colour and form",
   summary: "An updated article summary.",
   text: "This updated article text is long enough to satisfy validation.",
-  imageUrl: "https://example.com/updated-article.jpg",
+  imageUrl: cloudinaryUpdatedArticleImageUrl,
   section: "project",
   overlayColour: "black",
   artwork: newArtworkId,
@@ -132,6 +142,7 @@ const createArticleDocument = (article: typeof createdArticle) => ({
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockArticleCreate = ArticleModel.create as jest.Mock;
 const mockArticleFindByIdAndUpdate = ArticleModel.findByIdAndUpdate as jest.Mock;
+const mockArtworkExists = ArtworkModel.exists as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
@@ -167,6 +178,7 @@ describe("POST /api/v2/admin/article/create", () => {
     jest.clearAllMocks();
     setAdminSession();
     mockDbConnect.mockResolvedValue(undefined);
+    mockArtworkExists.mockResolvedValue({ _id: artworkId });
     mockArticleCreate.mockResolvedValue(createArticleDocument(createdArticle));
   });
 
@@ -253,6 +265,29 @@ describe("POST /api/v2/admin/article/create", () => {
     expect(mockArticleCreate).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary create image hosts before persistence", async () => {
+    const request = createRequest({
+      ...validCreatePayload,
+      imageUrl: "https://example.com/article.jpg",
+    });
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid article input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArticleCreate).not.toHaveBeenCalled();
+  });
+
   it("rejects unknown create fields before persistence", async () => {
     const request = createRequest({
       ...validCreatePayload,
@@ -275,13 +310,35 @@ describe("POST /api/v2/admin/article/create", () => {
     expect(mockArticleCreate).not.toHaveBeenCalled();
   });
 
+  it("rejects a valid-looking create artwork ID when the artwork is missing", async () => {
+    mockArtworkExists.mockResolvedValue(null);
+    const request = createRequest(validCreatePayload);
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid article input",
+      fieldErrors: {
+        artwork: ["Artwork not found"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkExists).toHaveBeenCalledWith({ _id: artworkId });
+    expect(mockArticleCreate).not.toHaveBeenCalled();
+  });
+
   it("creates an article from parsed fields, generated slug, and session author", async () => {
     const request = createRequest({
       title: "  Studio Notes  ",
       subtitle: "  On colour and form  ",
       summary: "  A focused article summary.  ",
       text: "  This article text is long enough to satisfy the route validation boundary.  ",
-      imageUrl: "  https://example.com/article.jpg  ",
+      imageUrl: `  ${cloudinaryArticleImageUrl}  `,
       section: "artwork",
       overlayColour: "white",
       artwork: `  ${artworkId}  `,
@@ -293,6 +350,7 @@ describe("POST /api/v2/admin/article/create", () => {
     expect(response.status).toBe(201);
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkExists).toHaveBeenCalledWith({ _id: artworkId });
     expect(mockArticleCreate).toHaveBeenCalledWith({
       ...validCreatePayload,
       slug: "studio-notes",
@@ -301,6 +359,38 @@ describe("POST /api/v2/admin/article/create", () => {
     expect(body).toEqual({
       success: true,
       data: createdArticle,
+    });
+  });
+
+  it("accepts explicitly allowed external image hosts on create", async () => {
+    const externalCreatedArticle = {
+      ...createdArticle,
+      imageUrl: shopifyArticleImageUrl,
+    };
+    mockArticleCreate.mockResolvedValue(
+      createArticleDocument(externalCreatedArticle)
+    );
+
+    const response = await POST(
+      createRequest({
+        ...validCreatePayload,
+        imageUrl: `  ${shopifyArticleImageUrl}  `,
+      }) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArticleCreate).toHaveBeenCalledWith({
+      ...validCreatePayload,
+      imageUrl: shopifyArticleImageUrl,
+      slug: "studio-notes",
+      author: adminUserId,
+    });
+    expect(body).toEqual({
+      success: true,
+      data: externalCreatedArticle,
     });
   });
 
@@ -363,6 +453,7 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
     jest.clearAllMocks();
     setAdminSession();
     mockDbConnect.mockResolvedValue(undefined);
+    mockArtworkExists.mockResolvedValue({ _id: newArtworkId });
     mockArticleFindByIdAndUpdate.mockResolvedValue(
       createArticleDocument(updatedArticle)
     );
@@ -479,6 +570,30 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
     expect(mockArticleFindByIdAndUpdate).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary update image hosts before persistence", async () => {
+    const request = createRequest({
+      imageUrl: "https://example.com/updated-article.jpg",
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: articleId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid article input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArticleFindByIdAndUpdate).not.toHaveBeenCalled();
+  });
+
   it("rejects unknown update fields before persistence", async () => {
     const request = createRequest({
       title: "Updated Studio Notes",
@@ -500,6 +615,32 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(1);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArticleFindByIdAndUpdate).not.toHaveBeenCalled();
+  });
+
+  it("rejects a valid-looking update artwork ID when the artwork is missing", async () => {
+    mockArtworkExists.mockResolvedValue(null);
+    const request = createRequest({
+      artwork: newArtworkId,
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: articleId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid article input",
+      fieldErrors: {
+        artwork: ["Artwork not found"],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkExists).toHaveBeenCalledWith({ _id: newArtworkId });
     expect(mockArticleFindByIdAndUpdate).not.toHaveBeenCalled();
   });
 
@@ -538,7 +679,7 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
       subtitle: "  Updated colour and form  ",
       summary: "  An updated article summary.  ",
       text: "  This updated article text is long enough to satisfy validation.  ",
-      imageUrl: "  https://example.com/updated-article.jpg  ",
+      imageUrl: `  ${cloudinaryUpdatedArticleImageUrl}  `,
       section: "project",
       overlayColour: "black",
       artwork: `  ${newArtworkId}  `,
@@ -552,6 +693,7 @@ describe("PATCH /api/v2/admin/article/update/[id]", () => {
     expect(response.status).toBe(200);
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockArtworkExists).toHaveBeenCalledWith({ _id: newArtworkId });
     expect(mockArticleFindByIdAndUpdate).toHaveBeenCalledWith(
       articleId,
       {

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";

@@ -1,11 +1,11 @@
 import { UserModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
-import { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ReadUserListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
-import { UserLeanPopulated } from "@/lib/data/types";
+import type { UserLeanPopulated } from "@/lib/data/types";
 import { transformUser } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

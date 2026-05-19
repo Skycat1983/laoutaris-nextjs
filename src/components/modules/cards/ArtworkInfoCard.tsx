@@ -4,7 +4,7 @@ import { HexColorPalette } from "@/components/modules/disclosures/ColorPallette"
 import { FavouritesButton } from "@/components/elements/buttons";
 import { WatchlistButton } from "@/components/elements/buttons";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 
 export async function ArtworkInfoCard({ ...artwork }: ArtworkFrontend) {
   const session = await getServerSession(authOptions);

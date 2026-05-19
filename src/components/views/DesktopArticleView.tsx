@@ -3,7 +3,7 @@
 import TransitionGroup from "@/components/animations/TransitionGroup";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Button } from "@/components/shadcn/button";
-import { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
+import type { ArticleFrontendPopulated } from "@/lib/data/types/articleTypes";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

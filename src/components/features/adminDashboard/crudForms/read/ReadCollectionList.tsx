@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
-import { CollectionFrontendPopulated } from "@/lib/data/types";
+import type { CollectionFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 
 // TODO: when we click on a collection, we should fetch and render the artworks
@@ -41,8 +41,8 @@ export function ReadCollectionList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 

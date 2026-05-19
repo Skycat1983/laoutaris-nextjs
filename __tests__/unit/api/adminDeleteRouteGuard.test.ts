@@ -79,6 +79,7 @@ jest.mock("@/lib/data/models", () => ({
     findByIdAndDelete: jest.fn(),
   },
   UserModel: {
+    countDocuments: jest.fn(),
     findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     findByIdAndUpdate: jest.fn(),
@@ -107,6 +108,7 @@ type DeleteRouteCase = {
 
 const adminUserId = "507f1f77bcf86cd799439011";
 const regularUserId = "507f1f77bcf86cd799439012";
+const targetAdminId = "507f1f77bcf86cd79943901a";
 const articleId = "507f1f77bcf86cd799439013";
 const artworkId = "507f1f77bcf86cd799439014";
 const blogId = "507f1f77bcf86cd799439015";
@@ -166,6 +168,7 @@ const mockCommentFind = CommentModel.find as jest.Mock;
 const mockCommentFindById = CommentModel.findById as jest.Mock;
 const mockCommentFindByIdAndDelete =
   CommentModel.findByIdAndDelete as jest.Mock;
+const mockUserCountDocuments = UserModel.countDocuments as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockUserFindByIdAndDelete = UserModel.findByIdAndDelete as jest.Mock;
 const mockUserFindByIdAndUpdate = UserModel.findByIdAndUpdate as jest.Mock;
@@ -254,6 +257,7 @@ const expectNoDestructiveModelWork = () => {
   expect(mockCommentFind).not.toHaveBeenCalled();
   expect(mockCommentFindById).not.toHaveBeenCalled();
   expect(mockCommentFindByIdAndDelete).not.toHaveBeenCalled();
+  expect(mockUserCountDocuments).not.toHaveBeenCalled();
   expect(mockUserFindByIdAndDelete).not.toHaveBeenCalled();
   expect(mockUserFindByIdAndUpdate).not.toHaveBeenCalled();
   expect(mockUserUpdateMany).not.toHaveBeenCalled();
@@ -523,6 +527,103 @@ describe("admin delete route shared guard migration", () => {
       success: true,
       data: null,
       message: "Comment deleted successfully",
+    });
+  });
+
+  it("blocks current admin self-delete before transaction work", async () => {
+    const response = await DELETE_USER(createRequest() as never, {
+      params: { id: adminUserId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(body).toEqual({
+      success: false,
+      message: "Cannot delete the current admin account",
+      error: "Cannot delete the current admin account",
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockStartSession).not.toHaveBeenCalled();
+    expectNoDestructiveModelWork();
+  });
+
+  it("blocks deletion of the last remaining admin account", async () => {
+    const targetAdmin = {
+      _id: targetAdminId,
+      role: "admin",
+      comments: [],
+      watchlist: [],
+      favourites: [],
+    };
+    mockUserFindById.mockImplementation((id: string) => {
+      if (id === adminUserId) {
+        return Promise.resolve({ role: "admin" });
+      }
+
+      return createSessionQuery(targetAdmin);
+    });
+    mockUserCountDocuments.mockReturnValue(createSessionQuery(1));
+
+    const response = await DELETE_USER(createRequest() as never, {
+      params: { id: targetAdminId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(409);
+    expect(body).toEqual({
+      success: false,
+      message: "Cannot delete the last remaining admin account",
+      error: "Cannot delete the last remaining admin account",
+    });
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockUserFindById).toHaveBeenCalledWith(targetAdminId);
+    expect(mockUserCountDocuments).toHaveBeenCalledWith({ role: "admin" });
+    expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+    expect(mockUserFindByIdAndDelete).not.toHaveBeenCalled();
+  });
+
+  it("deletes a non-current admin when another admin remains", async () => {
+    const targetAdmin = {
+      _id: targetAdminId,
+      role: "admin",
+      comments: [],
+      watchlist: [],
+      favourites: [],
+    };
+    mockUserFindById.mockImplementation((id: string) => {
+      if (id === adminUserId) {
+        return Promise.resolve({ role: "admin" });
+      }
+
+      return createSessionQuery(targetAdmin);
+    });
+    mockUserCountDocuments.mockReturnValue(createSessionQuery(2));
+    mockUserFindByIdAndDelete.mockReturnValue(
+      createSessionQuery({ _id: targetAdminId })
+    );
+
+    const response = await DELETE_USER(createRequest() as never, {
+      params: { id: targetAdminId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockUserCountDocuments).toHaveBeenCalledWith({ role: "admin" });
+    expect(mockCommentFind).not.toHaveBeenCalled();
+    expect(mockBlogUpdateMany).not.toHaveBeenCalled();
+    expect(mockCommentDeleteMany).not.toHaveBeenCalled();
+    expect(mockArtworkUpdateMany).not.toHaveBeenCalled();
+    expect(mockUserFindByIdAndDelete).toHaveBeenCalledWith(targetAdminId);
+    expect(mongoSession.commitTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.abortTransaction).not.toHaveBeenCalled();
+    expect(body).toEqual({
+      success: true,
+      data: null,
+      message: "User and associated data deleted successfully",
     });
   });
 

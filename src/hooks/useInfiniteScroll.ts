@@ -36,7 +36,6 @@ export const useInfiniteScroll = ({
           setError(
             err instanceof Error ? err : new Error("Failed to load more items")
           );
-          console.error("Error in infinite scroll:", err);
         } finally {
           setIsLoading(false);
         }

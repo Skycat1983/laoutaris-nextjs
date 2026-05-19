@@ -2,15 +2,12 @@
 
 import { useState } from "react";
 import { MasonryLayout } from "../layouts/public/MasonryLayout";
-import {
-  ArtworkFilterParams,
-  ArtworkFrontend,
-} from "@/lib/data/types/artworkTypes";
+import type { ArtworkFilterParams, ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
-import { ArtworkSortConfig } from "@/lib/data/types";
+import type { ArtworkSortConfig } from "@/lib/data/types";
 import { useRouter } from "next/navigation";
-import { FilterMode } from "@/lib/constants";
+import type { FilterMode } from "@/lib/constants/artworkConstants";
 import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
 import { isValidValue } from "@/lib/helpers/validation";
 interface ArtworkGalleryProps {
@@ -88,8 +85,8 @@ export const ArtworkGallery = ({
       const { data: artworks, metadata } = response;
 
       setArtworks(artworks);
-    } catch (error) {
-      console.error("Error fetching filtered artworks:", error);
+    } catch {
+      // Keep the existing artwork list visible; loading is cleared in finally.
     } finally {
       setIsLoading(false);
     }
@@ -138,8 +135,8 @@ export const ArtworkGallery = ({
         });
         setPage(nextPage);
       }
-    } catch (error) {
-      console.error("Error loading more artworks:", error);
+    } catch {
+      // Keep the existing artwork list visible; loading is cleared in finally.
     } finally {
       setIsLoading(false);
     }

@@ -137,7 +137,22 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-125 Define service client logging policy](T-125-define-service-client-logging-policy.md) | Completed | Defined the non-route production logging/redaction policy and migration inventory for service, loader, action, client, utility, and provider console calls. |
 | [T-126 Migrate public loader page logging](T-126-migrate-public-loader-page-logging.md) | Completed | Migrated scoped public server loader and App Router page failures to server-only structured redacted logging with focused source hygiene. |
 | [T-127 Migrate Shopify provider service logging](T-127-migrate-shopify-provider-service-logging.md) | Completed | Migrated scoped Shopify provider/data service console failures to server-only structured redacted logging without changing product contracts. |
-| [T-128 Migrate server action session logging](T-128-migrate-server-action-session-logging.md) | Planned | Migrate scoped server action and session-helper console failures to server-only structured redacted logging without changing action or auth behavior. |
+| [T-128 Migrate server action session logging](T-128-migrate-server-action-session-logging.md) | Completed | Migrated scoped server action and session-helper console failures to server-only structured redacted logging without changing action or auth behavior. |
+| [T-129 Migrate account saved artwork loader logging](T-129-migrate-account-saved-artwork-loader-logging.md) | Completed | Migrated the remaining account saved-artwork server loader console failure to server-only structured redacted logging without changing fallback UI. |
+| [T-130 Remove public browsing client console errors](T-130-remove-public-browsing-client-console-errors.md) | Completed | Removed scoped public browsing client console errors while preserving existing UI state, modals, sorting, and loading behavior. |
+| [T-131 Remove account user client console errors](T-131-remove-account-user-client-console-errors.md) | Completed | Removed scoped account/user client console errors while preserving form, logout, navigation, comment-owner, and error-boundary UI behavior. |
+| [T-132 Remove shared fetcher utility console errors](T-132-remove-shared-fetcher-utility-console-errors.md) | Completed | Removed shared fetcher and low-value utility/helper console errors while preserving fallback and return contracts. |
+| [T-133 Remove admin dashboard client console errors](T-133-remove-admin-dashboard-client-console-errors.md) | Completed | Removed remaining admin dashboard client console errors while preserving dashboard form, feed, list, copy, upload, and operation behavior. |
+| [T-134 Complete incident owner matrix](T-134-complete-incident-owner-matrix.md) | Completed | Replaced raw incident owner placeholders with explicit blocked owner-decision rows, escalation paths, and authority boundaries without adding monitoring SDKs or secrets. |
+| [T-135 Harden content image URL validation](T-135-harden-content-image-url-validation.md) | Completed | Enforced the Cloudinary/allowed-host image URL policy for admin-managed article, blog, and collection image fields. |
+| [T-136 Centralize Cloudinary delivery transformations](T-136-centralize-cloudinary-delivery-transformations.md) | Completed | Centralized app-authored Cloudinary delivery transformations behind a shared helper with source-hygiene coverage. |
+| [T-137 Add client server import boundary guard](T-137-add-client-server-import-boundary-guard.md) | Completed | Added a recursive static guard and cleanup for client imports of server-only data, DB, model, and mixed-barrel modules. |
+| [T-138 Document admin bootstrap and recovery](T-138-document-admin-bootstrap-recovery.md) | Completed | Documented repeatable admin bootstrap, promotion, lockout recovery, evidence, rollback, and verification steps. |
+| [T-139 Record monitoring provider decision](T-139-record-monitoring-provider-decision.md) | Planned | Record the owner/platform monitoring provider or no-provider decision before any SDK or instrumentation task. |
+| [T-140 Reconcile admin discovery taxonomy findings](T-140-reconcile-admin-discovery-taxonomy-findings.md) | Completed | Reconciled remaining A-011, A-017, and A-018 candidate findings into shared trackers and prepared the next implementation briefs. |
+| [T-141 Protect admin user deletion](T-141-protect-admin-user-deletion.md) | Completed | Added current-admin and last-admin lockout protections to admin user deletion. |
+| [T-142 Verify admin artwork relationships](T-142-verify-admin-artwork-relationships.md) | Completed | Rejected admin article and collection relationship writes that reference missing artworks. |
+| [T-143 Decide public search scope](T-143-decide-public-search-scope.md) | Planned | Decide whether public search is site-wide or explicitly scoped to articles, blogs, and collections before implementation. |
 
 ## Rules
 
@@ -145,3 +160,9 @@ orchestrator needs a one-line `/task ... details:` assignment.
 - Link the findings, risks, and workstreams that justify the task.
 - Include verification commands before assigning the task.
 - Update status and outcome after completion.
+- When tasks run in parallel, the assignment or task brief must define write
+  ownership. Agents should avoid shared trackers such as
+  `docs/orchestration/state.md`, `docs/audits/findings-register.md`,
+  `docs/risks/production-readiness.md`, `docs/workstreams/*`, and index files
+  unless explicitly assigned; list candidate updates in the task handoff for
+  orchestrator reconciliation instead.

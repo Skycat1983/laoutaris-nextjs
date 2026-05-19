@@ -1,8 +1,5 @@
-import { v4 as uuidv4 } from "uuid"; // You'll need to install this package
-import {
-  CloudinaryImageDB,
-  CloudinaryUploadInfo,
-} from "@/lib/data/types/cloudinaryTypes";
+import type { v4 as uuidv4 } from "uuid"; // You'll need to install this package
+import type { CloudinaryImageDB, CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
 
 export function cloudinaryResponseToArtworkImageData(
   info: CloudinaryUploadInfo

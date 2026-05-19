@@ -175,7 +175,7 @@ Expected output: [results/A-010-performance-seo-accessibility.md](results/A-010-
 
 ## A-011 Admin Content Operations
 
-Status: Not started
+Status: Completed
 
 Goal: audit admin CRUD workflows, destructive actions, content dependencies,
 operator steps, and archive maintenance needs.
@@ -266,7 +266,7 @@ Expected output: [results/A-016-forms-validation-inputs.md](results/A-016-forms-
 
 ## A-017 Search, Navigation, And Content Discovery
 
-Status: Not started
+Status: Completed
 
 Goal: audit whether users can reliably find artworks, collections, blog content,
 biography pages, and shop products through search, navigation, breadcrumbs,
@@ -281,7 +281,7 @@ Expected output: [results/A-017-search-navigation-discovery.md](results/A-017-se
 
 ## A-018 Translations, Copy, And Content Taxonomy
 
-Status: Not started
+Status: Completed
 
 Goal: audit translation sources, copy constants, content labels, category fields,
 taxonomy consistency, and public/admin text conventions.

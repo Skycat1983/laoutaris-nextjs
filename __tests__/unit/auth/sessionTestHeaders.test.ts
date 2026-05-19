@@ -129,7 +129,7 @@ describe("getUserFromSession development test headers", () => {
         testHeaderType: "user",
         error: {
           name: "Error",
-          message: "Development test user lookup failed",
+          message: "Development test user lookup error",
         },
       })
     );

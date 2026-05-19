@@ -3,7 +3,7 @@ import React from "react";
 import { Logo } from "@/components/elements/icons";
 import { MobileNavDrawer } from "../mobileNavDrawer/MobileNavDrawer";
 import { SearchDrawer } from "@/components/modules/search/SearchDrawer";
-import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 import { AccountNav } from "../accountNav/AccountNav";
 import { Search } from "lucide-react";
 

@@ -1,17 +1,12 @@
 import type { Fetcher } from "../../core/createFetcher";
-import {
+import type {
   UpdateArticleFormValues,
   UpdateArtworkFormValues,
   UpdateBlogFormValues,
 } from "@/lib/data/schemas";
 import { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
-import {
-  AdminArticle,
-  AdminCollection,
-  AdminArtwork,
-  AdminBlog,
-} from "@/lib/data/types/adminTypes";
-import { SingleResult } from "@/lib/data/types/apiTypes";
+import type { AdminArticle, AdminCollection, AdminArtwork, AdminBlog } from "@/lib/data/types/adminTypes";
+import type { SingleResult } from "@/lib/data/types/apiTypes";
 
 export type UpdateArticleResult = SingleResult<AdminArticle>;
 export type UpdateCollectionResult = SingleResult<AdminCollection>;

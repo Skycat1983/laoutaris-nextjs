@@ -13,8 +13,8 @@ import {
   ARTSTYLE_OPTIONS,
   DECADE_OPTIONS,
   SURFACE_OPTIONS,
-} from "@/lib/constants";
-import { Decade, ArtStyle, Surface } from "@/lib/data/types";
+} from "@/lib/constants/artworkConstants";
+import type { Decade, ArtStyle, Surface } from "@/lib/data/types";
 
 const FilterSelects = ({
   filters,

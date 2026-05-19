@@ -4,8 +4,8 @@ import {
   normalizeShopifyProductIdParam,
   shopifyProductIdToGid,
 } from "@/lib/api/shopify/productIds";
-import { ApiErrorResponse, SingleResult } from "@/lib/data/types/apiTypes";
-import { SimpleProduct } from "@/lib/data/types/shopify";
+import type { ApiErrorResponse, SingleResult } from "@/lib/data/types/apiTypes";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
 

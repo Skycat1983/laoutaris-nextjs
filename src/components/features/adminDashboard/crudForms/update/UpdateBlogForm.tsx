@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import { BlogEntryFrontend } from "@/lib/data/types";
+import type { BlogEntryFrontend } from "@/lib/data/types";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { updateBlogFormSchema, UpdateBlogFormValues } from "@/lib/data/schemas";
 import { DatePicker } from "@/components/modules/datePicker/DatePicker";
@@ -66,8 +66,8 @@ export const UpdateBlogForm = ({
       if (response.success) {
         onSuccess?.();
       }
-    } catch (error) {
-      console.error("Error updating blog entry:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -78,14 +78,9 @@ export const UpdateBlogForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(
-              (data) => {
-                onSubmit(data);
-              },
-              (errors) => {
-                console.error("Validation errors:", errors);
-              }
-            )}
+            onSubmit={form.handleSubmit((data) => {
+              onSubmit(data);
+            })}
             className="space-y-8"
           >
             {/* Display Date Field with Year Dropdown */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserFrontend } from "@/lib/data/types";
+import type { UserFrontend } from "@/lib/data/types";
 
 interface UserFeedCardProps {
   item: UserFrontend;

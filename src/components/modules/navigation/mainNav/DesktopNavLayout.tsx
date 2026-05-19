@@ -3,7 +3,7 @@
 import { Logo } from "@/components/elements/icons";
 import Link from "next/link";
 
-import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 import { AccountNav } from "../accountNav/AccountNav";
 import { NavItem } from "@/components/elements/buttons";
 import { NAV_LINK_BORDER_COLOURS } from "@/lib/constants";

@@ -130,6 +130,9 @@ or inconsistent code forward.
   now keeps only the current `/account/settings` redirect, active source no
   longer imports the retired wrappers, and `src/lib/api` no longer owns
   runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base URL construction.
+- T-137 added a recursive static client runtime import-graph guard for current
+  and future `"use client"` entries, and the first inventory passes without an
+  allowlist.
 - A-010 found the next rendering architecture gap: despite completed self-HTTP
   cleanup, public routes still build as dynamic because root layout performs
   request-time DB/session work and middleware parses tokens before protected
@@ -163,10 +166,14 @@ or inconsistent code forward.
   for scoped Shopify client and product resolver failures without changing
   product DTOs, Storefront cache policy, linked-product fallback behavior, or
   public shop contracts.
-- T-128 is prepared as the next policy-aligned server-side logging slice for
-  scoped server actions and the development test-header session helper. It
-  should preserve action return contracts, saved-item mutation/revalidation
-  behavior, and normal/development session-helper behavior.
+- T-128 completed the next policy-aligned server-side logging slice for scoped
+  server actions and the development test-header session helper without
+  changing action return contracts, saved-item mutation/revalidation behavior,
+  or normal/development session-helper behavior.
+- T-129 completed the remaining account saved-artwork server-loader logging
+  slice without changing the favourite artwork detail fallback UI, success
+  rendering, saved-artwork service behavior, no same-app HTTP/fetch behavior, or
+  Next.js control-flow error handling.
 - T-022 completed the package-focused cleanup for confirmed-unused direct
   dependency candidates, keeping lockfile churn out of source-pruning tasks.
   A-014 source-file pruning remains a separate follow-up.
@@ -183,8 +190,8 @@ or inconsistent code forward.
 - Use the completed T-007, T-018, and T-021 proof routes as templates to migrate
   remaining route-critical loaders off same-app HTTP in small slices and retire
   `serverApi` usage from server loaders/actions.
-- Define client-safe and server-only import rules, including direct-import rules
-  for barrels that can pull server-only dependencies into client components.
+- Maintain the T-137 client/server import-boundary guard when new client
+  components, barrels, or data-service modules are added.
 - Ensure every MongoDB-backed API route and server action reaches the database
   only through a service or shared wrapper that calls `dbConnect()`.
 - Move route-neutral DB/session work out of the root layout so dynamic rendering
@@ -497,27 +504,54 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-18: Prepared T-128 as the next policy-aligned server-side logging
   slice for subscription, saved-item, and development test-header session
   helper failures.
+- 2026-05-18: Completed T-128 by routing scoped subscription, saved-item, and
+  development test-header session helper failure paths through requestless
+  structured server logging with focused source hygiene.
+- 2026-05-18: Prepared T-129 as the next policy-aligned server-loader logging
+  slice for `FavouritedArtworkLoader`.
+- 2026-05-18: Completed T-129 by routing `FavouritedArtworkLoader` recoverable
+  failure logs through requestless structured server logging with focused
+  source hygiene.
+- 2026-05-18: Prepared T-130 as the first public browsing client console-error
+  cleanup slice for artwork, blog, infinite-scroll, and shop browsing
+  components.
+- 2026-05-18: Completed T-130 and prepared T-131 as the next smaller
+  account/user client console-error cleanup slice before admin dashboard or
+  shared fetcher cleanup.
+- 2026-05-18: Completed T-131 and prepared T-132 as the next smaller shared
+  fetcher and low-value utility/helper console cleanup slice before the larger
+  admin dashboard client cleanup.
+- 2026-05-18: Completed T-132 by removing the scoped shared fetcher and
+  low-value utility/helper direct `console.error()`/`console.warn()` calls
+  without changing fetcher contracts, fallback strings, copy attempts, color
+  fallback rendering, or blog sidebar state.
+- 2026-05-19: Prepared T-133 as the remaining known non-route direct console
+  cleanup slice for admin dashboard clients.
+- 2026-05-19: Completed T-133 by removing the remaining known admin dashboard
+  client direct `console.error()`/`console.warn()` calls without changing CRUD
+  form, feed/list, copy, upload, operation-tab, or document-reader behavior.
+- 2026-05-19: Completed T-137 by adding a recursive client runtime import graph
+  guard, splitting `NavBarLink` into a client-safe type module, replacing
+  scoped mixed-barrel imports with direct imports, and converting DTO/data
+  imports to type-only imports where appropriate.
 
 ## Next Agent Action
 
-Choose the next architecture slice from broad route-builder work, client/server
-import boundary cleanup, staged source-pruning work, or remaining route-local
-rendering follow-ups. If continuing non-route logging, assign
-[T-128](../tasks/T-128-migrate-server-action-session-logging.md) before moving
-to client/admin reporting, shared fetcher/client reporting, or utility/helper
-warning cleanup. Keep broad static/ISR migration separate until a dedicated
-cache-freshness and route-param task is assigned.
+Choose the next architecture slice from broad route-builder work, staged
+source-pruning work, or remaining route-local rendering follow-ups.
+Keep broad static/ISR migration separate until a dedicated cache-freshness and
+route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
-T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
-opened.
+T-089, T-090, T-091, T-092, T-093, T-094, T-095, or T-137 unless a regression
+is opened.
 
 Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
 `serverApi` option, DB connection semantics, broad route-builder centralization,
 favourite/watchlist server actions, account navigation, cache policy,
-root-layout session ownership, middleware/global auth policy, test-session
-override logs, artwork-to-shop SSR discovery, and remaining logging
-implementation slices outside the completed T-126 and T-127 scopes separate
+root-layout session ownership, middleware/global auth policy, artwork-to-shop
+SSR discovery, and remaining logging implementation slices outside the
+completed T-126, T-127, T-128, and T-129 scopes separate
 unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed

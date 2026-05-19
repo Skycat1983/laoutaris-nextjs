@@ -1,5 +1,5 @@
-import { Fetcher } from "../../core/createFetcher";
-import { OwnUserNavDataFrontend, SingleResult } from "@/lib/data/types";
+import type { Fetcher } from "../../core/createFetcher";
+import type { OwnUserNavDataFrontend, SingleResult } from "@/lib/data/types";
 
 export type ApiOwnUserNavResult = SingleResult<OwnUserNavDataFrontend>;
 

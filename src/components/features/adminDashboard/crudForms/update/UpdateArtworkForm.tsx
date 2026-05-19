@@ -13,7 +13,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -73,8 +73,8 @@ UpdateArtworkFormProps) => {
       }
 
       onSuccess();
-    } catch (error) {
-      console.error("Error updating artwork entry:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }
@@ -85,14 +85,9 @@ UpdateArtworkFormProps) => {
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(
-              (data) => {
-                onSubmit(data);
-              },
-              (errors) => {
-                console.error("Validation errors:", errors);
-              }
-            )}
+            onSubmit={form.handleSubmit((data) => {
+              onSubmit(data);
+            })}
             className="space-y-8"
           >
             <FormField

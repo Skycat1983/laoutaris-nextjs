@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { BLOG_TAGS } from "@/lib/constants";
+import { BLOG_TAGS } from "@/lib/constants/blogConstants";
+import { buildContentImageUrlSchema } from "@/lib/validation/contentImageUrl";
 
 const BLOG_FIELD_LIMITS = {
   title: 200,
@@ -74,17 +75,13 @@ const blogBaseFields = {
       BLOG_FIELD_LIMITS.text,
       `Blog text must be ${BLOG_FIELD_LIMITS.text} characters or fewer`
     ),
-  imageUrl: z
-    .string({
-      required_error: "Image URL is required",
-      invalid_type_error: "Image URL must be a string",
-    })
-    .trim()
-    .url("Please enter a valid URL")
-    .max(
-      BLOG_FIELD_LIMITS.imageUrl,
-      `Image URL must be ${BLOG_FIELD_LIMITS.imageUrl} characters or fewer`
-    ),
+  imageUrl: buildContentImageUrlSchema({
+    requiredError: "Image URL is required",
+    invalidTypeError: "Image URL must be a string",
+    invalidUrlError: "Please enter a valid URL",
+    maxLength: BLOG_FIELD_LIMITS.imageUrl,
+    maxLengthError: `Image URL must be ${BLOG_FIELD_LIMITS.imageUrl} characters or fewer`,
+  }),
   featured: z.boolean().default(false),
   pinned: z.boolean().default(false),
   tags: z.array(blogTagSchema).default([]),

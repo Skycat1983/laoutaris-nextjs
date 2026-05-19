@@ -1,14 +1,14 @@
 import { BlogModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   createBlogRouteSchema,
-  type CreateBlogRouteInput,
+  CreateBlogRouteInput,
 } from "@/lib/data/schemas/blogSchema";
 import type { AdminBlog } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";

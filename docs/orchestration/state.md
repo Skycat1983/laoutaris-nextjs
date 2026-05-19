@@ -1,13 +1,114 @@
 # Current Orchestration State
 
-Last updated: 2026-05-18
+Last updated: 2026-05-19
 
 ## Current Priority
 
-T-128 is prepared as the next owner-independent observability implementation
-slice:
+The prepared implementation wave after A-011, A-017, and A-018 is complete:
+T-134, T-135, T-136, T-137, T-138, T-140, T-141, and T-142 are done.
+
+Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
+until the owner/platform decision is available, unless the assignment is only
+to record an explicit no-decision blocker.
+
+A-011, A-017, and A-018 result files are complete and reconciled. Their
+candidate findings are now visible in the findings register, production risks,
+workstream backlogs, and prepared implementation briefs T-141 through T-143.
+
+T-140 is complete:
+[Reconcile admin discovery taxonomy findings](../tasks/T-140-reconcile-admin-discovery-taxonomy-findings.md).
+It added F-091 through F-104, updated existing F-013/F-023/F-033/F-049, updated
+R-002/R-005/R-006/R-007/R-014/R-016/R-018, refreshed relevant workstreams, and
+prepared T-141, T-142, and T-143.
+
+T-141 is complete:
+[Protect admin user deletion](../tasks/T-141-protect-admin-user-deletion.md).
+It blocks current-admin self-deletion with `403`, blocks last-admin deletion
+with `409`, preserves guard and invalid-ID ordering, and keeps existing
+non-admin user cascade cleanup covered by focused tests.
+
+T-142 is complete:
+[Verify admin artwork relationships](../tasks/T-142-verify-admin-artwork-relationships.md).
+It adds route-local artwork existence checks for admin article create/update
+and collection `artworksToAdd` writes, while intentionally preserving
+`artworksToRemove` filter semantics.
+
+T-134 is complete:
+[Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
+No owner-approved named owners, team aliases, or permanent backups were
+available, so the incident-response runbook now records each required owner row
+as a blocked owner-decision handoff with interim owner/orchestrator escalation,
+next owner action, and authority boundaries. Rollback, release changes,
+provider checks, MongoDB restore, credential rotation, and privacy/legal
+communication remain blocked on owner-approved operators.
+
+T-135 is complete:
+[Harden content image URL validation](../tasks/T-135-harden-content-image-url-validation.md).
+It added a shared content image URL validator and wired admin article, blog,
+and collection image schemas so unsupported hosts, malformed URLs, credentials,
+non-default ports, unsupported protocols, and mismatched Cloudinary cloud paths
+are rejected before persistence.
+
+T-137 is complete:
+[Add client server import boundary guard](../tasks/T-137-add-client-server-import-boundary-guard.md).
+It added a recursive static client runtime import-graph guard, split the
+client-safe `NavBarLink` type out of the server loader, replaced scoped mixed
+barrel imports with direct imports, and currently requires no allowlist.
+
+T-136 is complete:
+[Centralize Cloudinary delivery transformations](../tasks/T-136-centralize-cloudinary-delivery-transformations.md).
+It added `src/lib/images/cloudinaryDelivery.ts` with named variants for current
+card, gallery-list, admin-preview, and blog section transforms. Scoped cards,
+blog sections, masonry artwork lists, and admin read-list previews now call the
+helper instead of direct `/upload/` string replacement.
+
+T-138 is complete:
+[Document admin bootstrap and recovery](../tasks/T-138-document-admin-bootstrap-recovery.md).
+It extended the auth runbook with first-admin bootstrap, routine promotion,
+lockout recovery, role-change evidence, sign-out/sign-in verification,
+rollback, and secret-handling rules. Runtime self-delete and last-admin
+deletion guards remain a separate implementation gap.
+
+T-133 is complete:
+[Remove admin dashboard client console errors](../tasks/T-133-remove-admin-dashboard-client-console-errors.md).
+It removed the remaining admin dashboard client `console.error()`/
+`console.warn()` calls while preserving CRUD form behavior, feed/list loading
+behavior, delete confirmations, document-reader behavior, upload handling, copy
+attempts, validation display, and operator-visible failure UI. The known
+non-route direct console error/warn inventory is clear except the approved
+structured logger sink.
+
+T-132 is complete:
+[Remove shared fetcher utility console errors](../tasks/T-132-remove-shared-fetcher-utility-console-errors.md).
+It removed scoped shared fetcher and low-value utility/helper direct
+`console.error()`/`console.warn()` calls while preserving fetcher return
+contracts, fallback values, copy behavior, color-icon rendering, and blog
+sidebar state.
+
+T-131 is complete:
+[Remove account user client console errors](../tasks/T-131-remove-account-user-client-console-errors.md).
+It removed scoped account/user client `console.error()` calls while preserving
+contact/comment form behavior, logout and account navigation behavior, owner
+comment action behavior, and client error-boundary fallback behavior without
+introducing a monitoring provider or client reporting SDK.
+
+T-130 is complete:
+[Remove public browsing client console errors](../tasks/T-130-remove-public-browsing-client-console-errors.md).
+It removed scoped public browsing client `console.error()` calls while
+preserving existing artwork/blog/shop UI state, modals, sorting, loading, and
+fallback behavior without introducing a monitoring provider or client reporting
+SDK.
+
+T-129 is complete:
+[Migrate account saved artwork loader logging](../tasks/T-129-migrate-account-saved-artwork-loader-logging.md).
+It migrated the remaining account saved-artwork server loader `console.error()`
+call to structured redacted server logging while preserving the current account
+favourite artwork detail fallback UI, saved-artwork service behavior, and
+Next.js control-flow error handling.
+
+T-128 is complete:
 [Migrate server action session logging](../tasks/T-128-migrate-server-action-session-logging.md).
-It should migrate scoped subscription, saved-item, and development test-header
+It migrated scoped subscription, saved-item, and development test-header
 session helper `console.error()` calls to structured redacted server events
 while preserving public action return values, saved-item mutation/revalidation
 behavior, and development-only test-header session semantics.
@@ -91,6 +192,7 @@ request IDs and `X-Request-Id` where applicable.
 T-116 is complete. It added the durable incident-response runbook with severity
 levels, first triage steps, service checks, rollback/defer/mitigate rules,
 evidence handling, owner matrix placeholders, and post-incident follow-up.
+T-134 later converted those placeholders into blocked owner-decision rows.
 
 T-115 is complete. It removed the Shopify Storefront fetch option conflict that
 made `/sitemap.xml` builds warn about specifying both `cache: default` and
@@ -321,7 +423,13 @@ owner decision separate unless priority changes.
 
 ## Active Phase
 
-T-128 server action/session helper logging migration task is prepared and ready to assign.
+T-134 incident owner-matrix handoff task is complete.
+T-133 admin dashboard client console-error cleanup task is complete.
+T-132 shared fetcher/utility console-error cleanup task is complete.
+T-131 account/user client console-error cleanup task is complete.
+T-130 public browsing client console-error cleanup task is complete.
+T-129 account saved-artwork loader logging migration task is complete.
+T-128 server action/session helper logging migration task is complete.
 T-127 Shopify provider service logging migration task is complete.
 T-126 public loader/page logging migration task is complete.
 T-125 service/client logging policy task is complete.
@@ -396,8 +504,14 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- T-128 is prepared and ready to assign: migrate scoped server action and
-  session-helper logging to structured redacted server events.
+- T-131 is complete: scoped account/user client console-error output is removed
+  while preserving existing UI behavior.
+- T-130 is complete: scoped public browsing client console-error output is
+  removed while preserving existing UI behavior.
+- T-129 is complete: the remaining account saved-artwork server loader logging
+  is migrated to structured redacted server events.
+- T-128 is complete: scoped server action and session-helper logging is
+  migrated to structured redacted server events.
 - T-127 is complete: scoped Shopify provider/data service logging is migrated
   to structured redacted server events.
 - T-126 is complete: the first public server loader/page console-error slice is
@@ -426,8 +540,8 @@ Use this section as the first operational handoff for a new orchestrator.
   internal-failure paths now use request-context structured logging and public
   request IDs where applicable.
 - T-116 is complete: the incident-response runbook now covers severity, triage,
-  escalation placeholders, evidence, rollback/defer/mitigate rules, and
-  post-incident follow-up.
+  blocked owner-decision escalation rows, evidence, rollback/defer/mitigate
+  rules, and post-incident follow-up after T-134's matrix update.
 - T-115 is complete: Shopify Storefront fetches no longer combine `cache` and
   `next.revalidate`, and build no longer warns during `/sitemap.xml`.
 - T-114 is complete: public smoke checks now assert deployed `/robots.txt` and
@@ -1008,15 +1122,20 @@ Completed and reconciled:
 - [A-010 Performance, SEO, and accessibility](../audits/results/A-010-performance-seo-accessibility.md)
 - [A-020 Privacy, consent, and commerce compliance](../audits/results/A-020-privacy-consent-commerce-compliance.md)
 - [A-021 Observability and incident response](../audits/results/A-021-observability-incident-response.md)
+- [A-011 Admin content operations](../audits/results/A-011-admin-content-operations.md)
+- [A-017 Search, navigation, and content discovery](../audits/results/A-017-search-navigation-discovery.md)
+- [A-018 Translations, copy, and content taxonomy](../audits/results/A-018-translations-content-taxonomy.md)
+
+Completed, pending reconciliation:
+
+- None.
 
 ## Recommended Next Audits
 
-Good follow-up audits after the next implementation batch is assigned or
+Good follow-up audit after the next implementation batch is assigned or
 completed:
 
-1. [A-011 Admin content operations](../audits/goals.md#a-011-admin-content-operations)
-2. [A-017 Search, navigation, and content discovery](../audits/goals.md#a-017-search-navigation-and-content-discovery)
-3. [A-018 Translations, copy, and content taxonomy](../audits/goals.md#a-018-translations-copy-and-content-taxonomy)
+1. [A-005 Frontend routes and component boundaries](../audits/goals.md#a-005-frontend-routes-and-component-boundaries)
 
 ## Open Coordination Tasks
 
@@ -1030,8 +1149,9 @@ completed:
   future completed audit results.
 - Convert future completed audit findings into workstream backlog items before
   assigning implementation work.
-- Keep A-002, A-003, A-004, A-007, A-008, A-009, A-010, A-016, A-019, A-020,
-  and A-021 reconciled findings linked when assigning implementation work.
+- Keep A-002, A-003, A-004, A-007, A-008, A-009, A-010, A-011, A-016, A-017,
+  A-018, A-019, A-020, and A-021 findings linked when assigning implementation
+  work after reconciliation.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
 - Resolve or escalate owner decisions captured in the findings register:
@@ -1046,18 +1166,17 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign the next implementation task:
+Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
+unless the owner/product answer is available. If unavailable, the next
+assignment should be another reconciled, decision-light implementation brief
+from F-094 through F-103, such as admin form error surfacing, `/artwork`
+page/API query parity, sorted blog loading, or resilient main-navigation
+fallbacks.
 
-```text
-/task effort: high details: docs/tasks/T-128-migrate-server-action-session-logging.md
-```
-
-After T-128 is completed, choose provider-specific SDK/instrumentation only if
-owner/platform approval exists for the T-123 provider decision and environment
-contract. Otherwise choose the next logging implementation slice from T-125,
-incident owner-matrix completion, A-011 admin content operations, A-017
-search/navigation discovery, the next Cloudinary follow-up from T-101, or
-another owner-independent implementation slice from reconciled findings.
+Assign T-139 only after owner/platform approval exists for a monitoring
+provider or explicit no-provider interim policy. Owner-approved incident roles
+and backups remain a separate owner/orchestrator decision after T-134's blocked
+handoff.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -1067,12 +1186,14 @@ complete and should not be reassigned unless a regression is opened. T-094 is
 complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
-T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, and T-127 are
-complete and should not be reassigned unless a regression is opened.
+T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
+T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
+T-141, and T-142 are complete and should not be reassigned unless a regression
+is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,
-image-field migrations, delivery-transform helper extraction, full strict CSP
+image-field migrations, full strict CSP
 allowlist design, dynamic per-origin CORS, HSTS rollout, global production
 logging/redaction policy, visible blog pinned/tag admin workflow,
 CI/dependency-update automation, Vercel project-setting ownership, credential

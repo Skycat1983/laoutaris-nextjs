@@ -2,8 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { getYearColor } from "@/lib/utils/colourUtils";
-import { BlogEntryFrontend } from "@/lib/data/types";
+import type { BlogEntryFrontend } from "@/lib/data/types";
 import { dateToYear } from "@/lib/utils/dateUtils";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogsViewCardProps {
   blog: BlogEntryFrontend;
@@ -15,7 +16,7 @@ export const BlogsViewCard = ({ blog }: BlogsViewCardProps) => {
       <div className="relative group w-full">
         <div className="relative">
           <Image
-            src={blog.imageUrl.replace("/upload/", "/upload/w_300,q_auto/")}
+            src={getCloudinaryDeliveryUrl(blog.imageUrl, "card")}
             alt={blog.title}
             width={200}
             height={200}

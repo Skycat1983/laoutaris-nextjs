@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CollectionFrontend } from "@/lib/data/types";
+import type { CollectionFrontend } from "@/lib/data/types";
 
 type CollectionCardProps = {
   collection: CollectionFrontend;

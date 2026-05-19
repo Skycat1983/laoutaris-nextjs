@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -21,9 +22,9 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
             >
               <article className="relative rounded-3xl overflow-hidden">
                 <Image
-                  src={blogEntries[0]?.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_1200,q_auto/"
+                  src={getCloudinaryDeliveryUrl(
+                    blogEntries[0]?.imageUrl,
+                    "blogHero"
                   )}
                   alt={blogEntries[0]?.title || ""}
                   width={1200}
@@ -52,9 +53,9 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
               <article className="flex flex-col gap-4">
                 <div className="aspect-[16/10] relative rounded-2xl overflow-hidden">
                   <Image
-                    src={blog.imageUrl.replace(
-                      "/upload/",
-                      "/upload/w_800,q_auto/"
+                    src={getCloudinaryDeliveryUrl(
+                      blog.imageUrl,
+                      "blogGridCard"
                     )}
                     alt={blog.title}
                     fill

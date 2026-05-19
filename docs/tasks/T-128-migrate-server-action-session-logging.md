@@ -1,6 +1,6 @@
 # T-128 Migrate Server Action Session Logging
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment Security And Observability](../workstreams/deployment-security-and-observability.md),
@@ -91,7 +91,7 @@ Out of scope:
 
 ```bash
 rg -n "console\.(error|warn)\(" src/lib/actions/submitSubscription.ts src/lib/actions/updateUserFavourites.ts src/lib/actions/updateUserWatchlist.ts src/lib/session/getUserFromSession.ts
-npm test -- --runTestsByPath __tests__/unit/observability/logger.test.ts __tests__/unit/actions/submitSubscription.test.ts __tests__/unit/actions/savedItemActions.test.ts __tests__/unit/auth/sessionTestHeaders.test.ts
+npm test -- --runTestsByPath __tests__/unit/observability/logger.test.ts __tests__/unit/observability/serverActionSessionLoggingSourceHygiene.test.ts __tests__/unit/actions/submitSubscription.test.ts __tests__/unit/actions/savedItemActions.test.ts __tests__/unit/auth/sessionTestHeaders.test.ts
 git diff --check
 ```
 
@@ -102,3 +102,13 @@ session behavior, action return values, or saved-item mutation ordering.
 
 - Planned on 2026-05-18 after T-127 completed the scoped Shopify
   provider/data service logging implementation slice.
+- Completed on 2026-05-18 by routing subscription persistence failures,
+  saved-item incomplete/unexpected mutation failures, and development
+  test-header lookup failures through `createServerLogger()`.
+- Public action return values, duplicate subscription behavior, saved-item
+  revalidation ordering, normal NextAuth lookup, and development-only
+  test-header semantics were preserved.
+- Focused source hygiene now covers the T-128 file list. Remaining non-route
+  logging cleanup covers public/account client components, admin dashboard
+  clients, the shared fetcher/client-reporting path, utility/helper warnings,
+  and the account saved-artwork server loader.

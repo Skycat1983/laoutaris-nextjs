@@ -1,14 +1,14 @@
-import { ArticleModel } from "@/lib/data/models";
+import { ArticleModel, ArtworkModel } from "@/lib/data/models";
 import { NextResponse } from "next/server";
 import slugify from "slugify";
-import { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
-import { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
+import type { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";
 import {
   createArticleRouteSchema,
-  type CreateArticleRouteInput,
+  CreateArticleRouteInput,
 } from "@/lib/data/schemas/articleSchema";
 import type { AdminArticle } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
@@ -44,6 +44,12 @@ const validationErrorResponse = (
     },
     { status: 400 }
   );
+
+const verifyArtworkExists = async (artworkId: string) => {
+  const artworkExists = await ArtworkModel.exists({ _id: artworkId });
+
+  return Boolean(artworkExists);
+};
 
 const normalizeArticleResponse = (value: unknown): unknown => {
   if (Array.isArray(value)) {
@@ -129,6 +135,13 @@ export async function POST(
       artwork,
     } = parsedBody.data;
     const slug = slugify(title, { lower: true });
+
+    const artworkExists = await verifyArtworkExists(artwork);
+    if (!artworkExists) {
+      return validationErrorResponse({
+        artwork: ["Artwork not found"],
+      });
+    }
 
     const article = await ArticleModel.create({
       title,

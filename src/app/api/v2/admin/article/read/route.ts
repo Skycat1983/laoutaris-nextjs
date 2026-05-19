@@ -1,14 +1,11 @@
 import { ArticleModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
-import { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ReadArticleListResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
-import {
-  AdminArticleTransformationsPopulated,
-  ArticleFrontendPopulated,
-} from "@/lib/data/types";
+import type { AdminArticleTransformationsPopulated, ArticleFrontendPopulated } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

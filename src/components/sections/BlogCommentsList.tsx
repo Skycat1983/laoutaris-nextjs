@@ -2,7 +2,7 @@
 
 import React from "react";
 import { CommentCard } from "../modules/cards/CommentCard";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 interface CommentsListProps {
   comments: CommentFrontendPopulated[];
   onCommentUpdated: () => void;

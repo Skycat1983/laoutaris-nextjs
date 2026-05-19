@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { NextRequest } from "next/server";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { ApiArtworkResult } from "@/lib/api/public/artwork/fetchers";

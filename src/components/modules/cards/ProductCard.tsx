@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SimpleProduct } from "@/lib/data/types/shopify";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 

@@ -1,10 +1,7 @@
 import "server-only";
 
 import { UserModel } from "@/lib/data/models/userModel";
-import type {
-  OwnUserNavDataFrontend,
-  OwnUserSelectFieldsLean,
-} from "@/lib/data/types";
+import type { OwnUserNavDataFrontend, OwnUserSelectFieldsLean } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformAccountNav } from "@/lib/transforms/navigation/transformNavData";
 

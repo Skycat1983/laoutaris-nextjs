@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { ShopSortOption } from "@/lib/data/types/shopTypes";
+import type { ShopSortOption } from "@/lib/data/types/shopTypes";
 
 type ShopResultsBarProps = {
   totalResults: number;

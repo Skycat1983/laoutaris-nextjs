@@ -1,8 +1,8 @@
-import { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
+import type { ApiArtworkListResult } from "@/lib/api/public/artwork/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { requireApiUser } from "@/lib/api/requireApiUser";
 import { getOwnWatchlistArtworkList } from "@/lib/data/services/getOwnSavedArtwork";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";

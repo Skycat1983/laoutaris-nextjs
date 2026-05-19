@@ -1,6 +1,6 @@
 import { CollectionModel } from "@/lib/data/models";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
-import { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { ReadCollectionResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
@@ -8,11 +8,7 @@ import {
   adminReadInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
-import {
-  AdminCollectionTransformationsPopulated,
-  AdminArtworkTransformations,
-  CollectionFrontendPopulated,
-} from "@/lib/data/types";
+import type { AdminCollectionTransformationsPopulated, AdminArtworkTransformations, CollectionFrontendPopulated } from "@/lib/data/types";
 import { transformCollectionPopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

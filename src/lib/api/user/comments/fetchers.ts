@@ -1,7 +1,7 @@
 import type { CreateCommentFormValues } from "@/lib/data/schemas/commentSchema";
 import type { Fetcher } from "../../core/createFetcher";
-import { ListResult, SingleResult } from "@/lib/data/types";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import type { ListResult, SingleResult } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 
 export type ApiUserCommentsGetResult = ListResult<CommentFrontendPopulated>;
 export type ApiUserCommentCreateResult = SingleResult<CommentFrontendPopulated>;

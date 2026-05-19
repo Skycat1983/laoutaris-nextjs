@@ -24,7 +24,6 @@ const TailwindColorIcon = ({ color }: ColorProps) => {
   const colorHex = colorMap[color];
 
   if (!colorHex) {
-    console.warn(`Unaccounted for color found: ${color}`);
     return;
   }
 

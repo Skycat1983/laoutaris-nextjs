@@ -1,8 +1,21 @@
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import path from "path";
 
 const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
+
+const listRepoSourceFiles = (relativeDir: string): string[] =>
+  readdirSync(path.join(process.cwd(), relativeDir), { withFileTypes: true })
+    .flatMap((entry) => {
+      const relativePath = path.posix.join(relativeDir, entry.name);
+
+      if (entry.isDirectory()) {
+        return listRepoSourceFiles(relativePath);
+      }
+
+      return /\.(ts|tsx)$/.test(entry.name) ? [relativePath] : [];
+    })
+    .sort();
 
 const renderSourceFiles = [
   "src/app/layout.tsx",
@@ -50,6 +63,20 @@ const sharedUiPublicFetcherDebugSourceFiles = [
   "src/components/elements/misc/YoutubeEmbedding.tsx",
   "src/lib/api/public/artwork/fetchers.ts",
 ];
+
+const sharedFetcherUtilityErrorWarnSourceFiles = [
+  "src/lib/api/core/createFetcher.ts",
+  "src/lib/utils/dateUtils.ts",
+  "src/lib/utils/translationUtils.ts",
+  "src/lib/helpers/copy_id.ts",
+  "src/components/modules/cards/ArtworkFeedCard.tsx",
+  "src/components/elements/icons/TailwindColorIcon.tsx",
+  "src/components/modules/sidebar/BlogSidebar.tsx",
+];
+
+const adminDashboardClientSourceFiles = listRepoSourceFiles(
+  "src/components/features/adminDashboard"
+);
 
 describe("render source hygiene", () => {
   it("keeps public and account render files free of direct console.log debugging", () => {
@@ -108,5 +135,31 @@ describe("render source hygiene", () => {
     expect(combinedSource).not.toMatch(
       /console\.log\("metadata"|console\.log\("clicked"|console\.log\("Refresh clicked"|Missing videoId in YoutubeEmbedding component|Fetching URL:/
     );
+  });
+
+  it("keeps scoped shared fetcher and utility files free of direct console error and warn calls", () => {
+    for (const sourceFile of sharedFetcherUtilityErrorWarnSourceFiles) {
+      expect(readRepoFile(sourceFile)).not.toMatch(
+        /console\.(error|warn)\s*\(/
+      );
+    }
+  });
+
+  it("keeps retired shared fetcher and utility warning strings out of scoped source files", () => {
+    const combinedSource = sharedFetcherUtilityErrorWarnSourceFiles
+      .map(readRepoFile)
+      .join("\n");
+
+    expect(combinedSource).not.toMatch(
+      /Fetch error for|Error formatting date|Translation key not found|Translation not available|Failed to copy:|Unaccounted for color found|console\.warn\(segment/
+    );
+  });
+
+  it("keeps admin dashboard client files free of direct console error and warn calls", () => {
+    for (const sourceFile of adminDashboardClientSourceFiles) {
+      expect(readRepoFile(sourceFile)).not.toMatch(
+        /console\.(error|warn)\s*\(/
+      );
+    }
   });
 });

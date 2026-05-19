@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { NextRequest } from "next/server";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ArticleModel } from "@/lib/data/models";
 import { ReadArticleResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
@@ -9,12 +9,7 @@ import {
   adminReadInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
-import {
-  AdminArticleTransformationsPopulated,
-  AdminArtworkTransformations,
-  AdminUserTransformations,
-  ArticleFrontendPopulated,
-} from "@/lib/data/types";
+import type { AdminArticleTransformationsPopulated, AdminArtworkTransformations, AdminUserTransformations, ArticleFrontendPopulated } from "@/lib/data/types";
 import { transformArticlePopulated } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";

@@ -7,11 +7,11 @@ import {
   AccordionTrigger,
 } from "@/components/shadcn/accordion";
 import { Checkbox } from "@/components/shadcn/checkbox";
-import { ArtStyle, Decade, Medium, Surface } from "@/lib/data/types";
+import type { ArtStyle, Decade, Medium, Surface } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useState } from "react";
 import { Switch } from "@/components/shadcn/switch";
-import { ArtworkFilterParams } from "@/lib/data/types";
+import type { ArtworkFilterParams } from "@/lib/data/types";
 import { RadioGroup, RadioGroupItem } from "@/components/shadcn/radio-group";
 import {
   Select,
@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { ArtworkSortConfig, SortOption } from "@/lib/data/types";
+import type { ArtworkSortConfig, SortOption } from "@/lib/data/types";
 import { ColourPicker } from "../../modules/colourPicker.ts/ColourPicker";
 type FilterMode = "ALL" | "ANY";
 

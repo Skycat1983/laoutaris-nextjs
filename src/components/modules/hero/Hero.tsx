@@ -12,7 +12,10 @@ import { LargeScaleWorks } from "./slides/LargeScaleWorks";
 import { Skeleton } from "@/components/shadcn/skeleton";
 
 import { FamilyFavourites } from "./slides/FamilyFavourites";
-import { COMING_SOON_SLIDE, FAMILY_FAVOURITES_SLIDE } from "@/lib/constants";
+import {
+  COMING_SOON_SLIDE,
+  FAMILY_FAVOURITES_SLIDE,
+} from "@/lib/constants/heroSlideData";
 import { ComingSoonSlide } from "./slides/ComingSoon";
 
 export function Hero() {

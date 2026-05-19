@@ -5,10 +5,10 @@ import {
   UserModel,
 } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
+import { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import mongoose from "mongoose";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
@@ -33,6 +33,13 @@ export async function DELETE(
     return adminDeleteInvalidIdResponse("user", "Invalid user ID");
   }
 
+  if (id === admin.userId) {
+    return apiErrorResponse({
+      message: "Cannot delete the current admin account",
+      status: 403,
+    });
+  }
+
   const requestContext = createRequestContext(
     request,
     "/api/v2/admin/user/delete/[id]"
@@ -54,6 +61,20 @@ export async function DELETE(
         message: "User not found",
         status: 404,
       });
+    }
+
+    if (user.role === "admin") {
+      const adminCount = await UserModel.countDocuments({
+        role: "admin",
+      }).session(session);
+
+      if (adminCount <= 1) {
+        await session.abortTransaction();
+        return apiErrorResponse({
+          message: "Cannot delete the last remaining admin account",
+          status: 409,
+        });
+      }
     }
 
     // 1. Handle user's comments

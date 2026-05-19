@@ -13,4 +13,4 @@ when commands, environment variables, or workflows change.
 - [Database](database.md)
 - [Shopify operations](shopify-operations.md)
 - [Cloudinary](cloudinary.md)
-- [Auth](auth.md)
+- [Auth and admin access](auth.md)

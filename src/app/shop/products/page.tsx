@@ -1,5 +1,5 @@
 import { ShopProductsLoader } from "@/components/loaders/viewLoaders/ShopProductsLoader";
-import { ShopFiltersState, ShopSearchParams } from "@/lib/data/types/shopTypes";
+import type { ShopFiltersState, ShopSearchParams } from "@/lib/data/types/shopTypes";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";

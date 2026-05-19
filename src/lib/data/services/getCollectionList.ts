@@ -4,13 +4,9 @@ import type { FilterQuery } from "mongoose";
 import type { CollectionSection } from "@/lib/constants";
 import {
   CollectionModel,
-  type CollectionDB,
+  CollectionDB,
 } from "@/lib/data/models/collectionModel";
-import type {
-  CollectionFrontend,
-  CollectionLean,
-  ListResult,
-} from "@/lib/data/types";
+import type { CollectionFrontend, CollectionLean, ListResult } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformCollection } from "@/lib/transforms/collection/transformCollection";
 

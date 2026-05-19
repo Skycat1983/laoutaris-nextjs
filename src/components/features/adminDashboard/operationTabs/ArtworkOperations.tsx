@@ -2,21 +2,18 @@
 
 import { useState } from "react";
 import { DocumentReader } from "../DocumentReader";
-import { UploadButton } from "@/components/elements/buttons";
+import { UploadButton } from "@/components/elements/buttons/UploadButton";
 import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
-import type {
-  CloudinaryImageDB,
-  CloudinaryUploadInfo,
-} from "@/lib/data/types/cloudinaryTypes";
-import { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import type { CloudinaryImageDB, CloudinaryUploadInfo } from "@/lib/data/types/cloudinaryTypes";
+import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { clientApi } from "@/lib/api/clientApi";
 import { CreateArtworkForm } from "../crudForms/create";
 import { UpdateArtworkForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -61,8 +58,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
         result.info as CloudinaryUploadInfo
       );
       setUploadInfo(transformedInfo);
-    } catch (error) {
-      console.error("Failed to process upload result:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to process upload" type="error" />
       );
@@ -82,8 +78,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
           <ModalMessage message="Failed to delete artwork" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting artwork:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to delete artwork" type="error" />
       );

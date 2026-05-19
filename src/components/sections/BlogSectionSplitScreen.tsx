@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Calendar, ChevronRight } from "lucide-react";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -32,9 +33,9 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
             >
               <div className="relative h-full rounded-2xl overflow-hidden bg-gray-100">
                 <Image
-                  src={featured.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_1200,q_auto/"
+                  src={getCloudinaryDeliveryUrl(
+                    featured.imageUrl,
+                    "blogHero"
                   )}
                   alt={featured.title}
                   fill
@@ -67,9 +68,9 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
                   <div className="flex gap-6">
                     <div className="w-32 h-32 relative flex-shrink-0 rounded-lg overflow-hidden">
                       <Image
-                        src={blog.imageUrl.replace(
-                          "/upload/",
-                          "/upload/w_200,q_auto/"
+                        src={getCloudinaryDeliveryUrl(
+                          blog.imageUrl,
+                          "blogListThumbnail"
                         )}
                         alt={blog.title}
                         fill

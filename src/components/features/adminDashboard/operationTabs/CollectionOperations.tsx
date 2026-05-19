@@ -9,7 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateCollectionForm } from "../crudForms/create";
 import { UpdateCollectionForm } from "../crudForms/update/UpdateCollectionForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
-import { CollectionFrontendPopulated } from "@/lib/data/types";
+import type { CollectionFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -56,8 +56,7 @@ export function CollectionOperations({
           <ModalMessage message="Failed to delete collection" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting collection:", error);
+    } catch {
       openModal(
         <ModalMessage message="Failed to delete collection" type="error" />
       );

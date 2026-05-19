@@ -14,7 +14,7 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 
 interface ScrollablePaginationProps {
   items: (ArtworkFrontend & { link: string })[];

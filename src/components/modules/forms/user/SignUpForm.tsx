@@ -1,6 +1,6 @@
 "use client";
 
-import { SubmitButton } from "@/components/elements/buttons";
+import { SubmitButton } from "@/components/elements/buttons/SubmitButton";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useFormState } from "react-dom";
 import SignInForm from "./SignInForm";

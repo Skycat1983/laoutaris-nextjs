@@ -7,7 +7,8 @@ import { CopyIcon } from "lucide-react";
 import Image from "next/image";
 import { BlogFilterDropdowns } from "../../inputs/BlogFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
-import { BlogEntryFrontend } from "@/lib/data/types";
+import type { BlogEntryFrontend } from "@/lib/data/types";
+import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 type FilterKey = "featured" | "year" | null;
 
@@ -68,8 +69,8 @@ export function ReadBlogList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 
@@ -93,9 +94,9 @@ export function ReadBlogList() {
             >
               <div className="aspect-square relative">
                 <Image
-                  src={blog.imageUrl.replace(
-                    "/upload/",
-                    "/upload/w_200,h_200,c_fill/"
+                  src={getCloudinaryDeliveryUrl(
+                    blog.imageUrl,
+                    "adminPreview"
                   )}
                   alt={blog.title}
                   fill

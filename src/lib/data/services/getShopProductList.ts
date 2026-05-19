@@ -8,7 +8,7 @@ import {
 import { getProductById } from "@/lib/api/shopify/shopifyClient";
 import {
   ArtworkModel,
-  type ArtworkDB,
+  ArtworkDB,
 } from "@/lib/data/models/artworkModel";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";

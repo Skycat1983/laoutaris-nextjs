@@ -5,7 +5,7 @@ import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
-import { ShopFiltersState, ShopSortOption } from "@/lib/data/types/shopTypes";
+import type { ShopFiltersState, ShopSortOption } from "@/lib/data/types/shopTypes";
 
 interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
@@ -125,11 +125,8 @@ export const ShopProductGallery = ({
       }
 
       setProducts(data.data);
-    } catch (error) {
-      console.error(
-        "ShopProductGallery - Error fetching products in ShopProductGallery.tsx: ",
-        error
-      );
+    } catch {
+      // Preserve the current product grid or empty state; loading is cleared in finally.
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,4 @@
-import { LeanDocument, Prettify } from "@/lib/data/types";
+import type { LeanDocument, Prettify } from "@/lib/data/types";
 import { ArticleDB, CollectionDB, UserDB } from "../models";
 import {
   transformAccountNav,

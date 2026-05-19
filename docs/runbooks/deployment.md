@@ -275,8 +275,11 @@ cookies, tokens, or user data.
 ## Rollback
 
 Use Vercel's project rollback controls to promote the last known good production
-deployment. The owner or orchestrator must identify who has Vercel rollback
-permission before production launch.
+deployment. The
+[incident owner matrix](incident-response.md#owner-and-escalation-matrix)
+currently records Vercel rollback ownership as blocked until the owner or
+orchestrator approves the operator and backup. Do not start rollback unless the
+owner/orchestrator has identified the Vercel-access operator for the incident.
 
 Start rollback or block promotion when any critical smoke path fails:
 

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import dbConnect from "@/lib/db/mongodb";
 import { UserModel } from "@/lib/data/models";
-import { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import type { ApiErrorResponse } from "@/lib/data/types/apiTypes";
 import { apiAuthError } from "./apiAuthError";
 
 type ApiAdminResult =

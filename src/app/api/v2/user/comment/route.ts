@@ -1,9 +1,5 @@
 import { BlogModel, CommentModel, UserModel } from "@/lib/data/models";
-import {
-  ApiErrorResponse,
-  CommentLeanPopulated,
-  RouteResponse,
-} from "@/lib/data/types";
+import type { ApiErrorResponse, CommentLeanPopulated, RouteResponse } from "@/lib/data/types";
 import {
   ApiUserCommentsGetResult,
   ApiUserCommentCreateResult,

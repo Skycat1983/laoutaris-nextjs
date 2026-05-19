@@ -1,7 +1,7 @@
-import { CollectionSection } from "@/lib/constants";
+import type { CollectionSection } from "@/lib/constants";
 import { Fetcher } from "../../core/createFetcher";
-import { ListResult, SingleResult } from "@/lib/data/types";
-import {
+import type { ListResult, SingleResult } from "@/lib/data/types";
+import type {
   CollectionFrontend,
   CollectionFrontendPopulated,
 } from "@/lib/data/types/collectionTypes";

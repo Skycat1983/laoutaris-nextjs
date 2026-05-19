@@ -3,7 +3,7 @@ import { SectionLayout } from "../layouts/public/SectionLayout";
 import { ReactNode } from "react";
 import { BlogCard, BlogCardSkeleton } from "../modules/cards/BlogCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 interface GridLayoutProps {
   children: ReactNode;
 }

@@ -2,11 +2,7 @@ import "server-only";
 
 import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import { UserModel } from "@/lib/data/models/userModel";
-import type {
-  ArtworkFrontend,
-  ArtworkLean,
-  PaginationMetadata,
-} from "@/lib/data/types";
+import type { ArtworkFrontend, ArtworkLean, PaginationMetadata } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 

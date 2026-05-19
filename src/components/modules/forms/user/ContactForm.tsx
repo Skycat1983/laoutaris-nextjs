@@ -79,11 +79,9 @@ const ContactForm = ({ productHandle }: ContactFormProps) => {
       }
 
       form.reset(defaultValues);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
-      console.error("Submission error:", errorMessage);
-      // Optionally, handle the error (e.g., show an error message to the user)
+    } catch {
+      // Existing behavior intentionally leaves the user's draft in place when
+      // the request fails before an API response is available.
     }
   }
 

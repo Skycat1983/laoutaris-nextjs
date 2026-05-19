@@ -35,8 +35,8 @@ export function ReadUserList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 

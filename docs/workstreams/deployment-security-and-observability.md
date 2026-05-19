@@ -129,13 +129,13 @@ security headers, environment documentation, and actionable operational signals.
   redacted logger, no incident-response runbook or alert owner matrix, and no
   continuous smoke/monitoring setup. T-099 later added a provider-neutral
   request ID and structured logging foundation for a representative route
-  slice, and T-116 later added the incident-response runbook with `TBD` owner
-  matrix placeholders.
+  slice, and T-116 later added the incident-response runbook with owner matrix
+  placeholders that T-134 converted into explicit blocked owner-decision rows.
 - T-123 added the provider-neutral
   [monitoring and error-reporting architecture plan](../architecture/monitoring-and-error-reporting.md).
   The app still has no monitoring SDK, no `instrumentation.ts`, no alert
-  automation, no approved provider environment contract, and no completed
-  incident-response owner matrix.
+  automation, no approved provider environment contract, and no owner-approved
+  incident-response role assignments.
 - T-124 added `.github/workflows/public-smoke.yml` so `npm run smoke:public`
   can run from GitHub Actions manually with a supplied `base_url` and on a
   schedule after repository variable `SMOKE_BASE_URL` is configured. This
@@ -157,8 +157,52 @@ security headers, environment documentation, and actionable operational signals.
   failures, malformed featured-artwork metafields, and linked-product fan-out
   failures now log safe provider operation metadata, coarse status categories,
   public handles/IDs, and normalized errors without raw provider payloads.
-  Server actions/session helpers, client components, admin dashboard clients,
-  shared fetcher/client reporting, and utility/helper warnings remain separate.
+- T-128 migrated scoped server action and development test-header session
+  helper failure paths to requestless structured server logging. Subscription
+  persistence failures, saved-item incomplete/unexpected mutation failures, and
+  development lookup failures now log safe operation/status metadata and
+  normalized generic errors without submitted payloads, emails, user IDs,
+  artwork IDs, raw headers, raw sessions, or raw caught errors.
+- T-129 migrated the remaining account saved-artwork server loader failure path
+  to requestless structured server logging. Missing-session, missing-artwork,
+  not-in-favourites, and unexpected non-Next failures now log safe loader
+  operation metadata, coarse status categories, `hasArtworkId`, and normalized
+  generic errors without user IDs, raw artwork IDs, session data, service
+  results, or raw caught errors. Client components and admin dashboard clients
+  remain separate.
+- T-130 removed direct `console.error()` calls from the scoped public browsing
+  client files. Artwork filtering/loading, blog continuous loading/comments,
+  infinite-scroll errors, and shop product filter failures now rely on existing
+  UI state, modals, loading reset, or fallback/current-result behavior instead
+  of browser console output.
+- T-131 removed direct `console.error()` calls from the scoped account/user
+  client files. Contact/comment forms, logout, account navigation,
+  `CommentCard` owner actions, and `ErrorBoundary` now rely on existing form
+  state, modals, loading reset, callbacks, navigation behavior, or fallback UI
+  instead of browser console output.
+- T-132 removed direct `console.error()`/`console.warn()` calls from the scoped
+  shared fetcher, date/translation utilities, copy helper/card, color icon, and
+  blog sidebar files. Fetcher envelopes, Next control-flow rethrows,
+  date/translation fallback strings, copy attempts, no-element color fallback,
+  and blog sidebar state are preserved with focused source-hygiene and behavior
+  coverage.
+- T-133 removed the remaining known non-route direct `console.error()`/
+  `console.warn()` calls from admin dashboard clients across CRUD forms, read
+  lists, operation tabs, feeds, upload handling, and the document reader.
+  Recursive admin dashboard source hygiene now guards that area, and the known
+  non-route direct console error/warn inventory is clear except the approved
+  structured logger sink.
+- T-134 completed the incident-response owner-matrix follow-up as an explicit
+  blocked owner-decision handoff. No owner-approved names, team aliases, or
+  permanent backups were available, so the runbook now states the missing
+  decision, interim owner/orchestrator escalation path, next owner action, and
+  authority boundary for incident command, Vercel rollback/logs, repository
+  release approval, MongoDB, Shopify, Cloudinary, auth/OAuth, DNS/domain/TLS,
+  and privacy/legal communication.
+- T-138 added the admin bootstrap and recovery workflow to the
+  [auth runbook](../runbooks/auth.md), including sanitized evidence rules,
+  sign-out/sign-in requirements after MongoDB role changes, credential/OAuth
+  verification, and lockout recovery boundaries.
 - A-010 completed the performance, SEO, and accessibility audit. It found all
   public routes still build as dynamic because of global root layout and
   middleware request-time work, production metadata/discovery files are missing,
@@ -275,8 +319,9 @@ security headers, environment documentation, and actionable operational signals.
   a real value and rotate it if needed.
 - Tighten the remaining broad CSP policy with production allowlists and decide
   whether any route-level dynamic CORS policy is needed.
-- Migrate remaining non-route direct `console.error()`/`console.warn()` calls
-  in policy-aligned slices, starting with public loader/page logging in T-126.
+- Keep non-route direct `console.error()`/`console.warn()` source hygiene
+  enforced after T-126 through T-133 cleared the known inventory outside the
+  approved structured logger sink.
 - Gate or remove debug logs that currently pollute tests, builds, SSR, and shop
   flows.
 - Standardize public-safe API exception responses with internal redacted
@@ -310,9 +355,11 @@ security headers, environment documentation, and actionable operational signals.
 - Use the monitoring architecture plan to choose and document an
   error-reporting/monitoring provider, or explicitly record a no-provider
   decision for launch.
-- Fill in the incident-response runbook's `TBD` owner/escalation matrix entries
-  for Vercel, repository release authority, MongoDB, Shopify, Cloudinary,
-  auth/OAuth, DNS/domain, and privacy/legal communication.
+- Resolve the T-134 blocked owner-decision rows by recording owner-approved
+  role labels, named owners, team aliases, backups, and authority boundaries
+  for incident command, Vercel rollback/logs, repository release authority,
+  MongoDB, Shopify, Cloudinary, auth/OAuth, DNS/domain, and privacy/legal
+  communication.
 - Keep the GitHub Actions public smoke workflow current as route contracts and
   owner-approved non-secret smoke records change; keep credentialed, admin, and
   Vercel-log smoke evidence owner-run until safe synthetic accounts and access
@@ -849,22 +896,84 @@ npm run lint
   `updateUserWatchlist`, and `getUserFromSession`. It should preserve action
   return contracts, saved-item mutation/revalidation behavior, and
   development-only test-header session semantics.
+- 2026-05-18: Completed T-128 by routing scoped server action/session-helper
+  failure paths through `createServerLogger()` and adding focused source
+  hygiene for the touched files. Public action returns, saved-item
+  revalidation ordering, normal session lookup, and development test-header
+  semantics were preserved.
+- 2026-05-18: Prepared T-129 as the next owner-independent server-loader
+  logging cleanup slice for `FavouritedArtworkLoader`. It should preserve the
+  current account favourite artwork detail fallback UI, saved-artwork service
+  behavior, and Next.js control-flow error handling.
+- 2026-05-18: Completed T-129 by routing `FavouritedArtworkLoader` recoverable
+  failure logging through `createServerLogger()` with coarse status categories
+  and a normalized generic error while preserving fallback UI, success
+  rendering, saved-artwork service behavior, no same-app HTTP/fetch behavior,
+  and Next.js control-flow rethrows.
+- 2026-05-18: Prepared T-130 as the first public browsing client console-error
+  cleanup slice for artwork filtering/loading, blog continuous loading/comments,
+  infinite scroll, and shop product filters. It should preserve existing UI
+  state, modals, sorting, loading, and fallback behavior without introducing a
+  monitoring provider or client reporting SDK.
+- 2026-05-18: Completed T-130 by removing scoped public browsing client
+  `console.error()` calls and adding focused source-hygiene plus behavior
+  coverage for infinite-scroll error state, blog comment failure modals, and
+  shop filter failure fallback. Browser client reporting/provider integration
+  remains separate.
+- 2026-05-18: Prepared T-131 as the next account/user client console-error
+  cleanup slice for contact/comment forms, logout, account navigation,
+  `CommentCard` owner actions, and the client error boundary.
+- 2026-05-18: Completed T-131 by removing scoped account/user client
+  `console.error()` calls and adding focused source-hygiene plus behavior
+  coverage for contact failure modals/reset, comment retry state, logout and
+  account-nav failure modals/loading reset, comment-card owner edit/delete
+  failure behavior, and error-boundary fallback behavior. Browser client
+  reporting/provider integration remains separate.
+- 2026-05-18: Prepared T-132 as the next shared fetcher and low-value
+  utility/helper console cleanup slice. It should preserve fetcher contracts,
+  fallback strings, copy behavior, color-icon rendering, and blog sidebar
+  state while keeping admin dashboard clients separate.
+- 2026-05-18: Completed T-132 by removing the scoped shared fetcher and
+  low-value utility/helper direct `console.error()`/`console.warn()` calls and
+  adding focused source-hygiene plus fallback behavior coverage. The remaining
+  non-route source inventory after excluding API-v2 route handlers and the
+  structured logger sink is 37 direct `console.error()`/`console.warn()` calls
+  across 28 admin dashboard client files.
+- 2026-05-19: Prepared T-133 as the admin dashboard client console cleanup
+  slice. It should preserve dashboard form, feed, list, copy, upload,
+  operation-tab, and document-reader behavior while removing direct browser
+  console error output.
+- 2026-05-19: Completed T-133 by removing the remaining known admin dashboard
+  client direct `console.error()`/`console.warn()` calls and extending recursive
+  admin dashboard source hygiene. The known non-route direct console error/warn
+  inventory is clear except the approved structured logger sink.
+- 2026-05-19: Completed T-134 as a docs-only blocked owner-decision handoff.
+  The incident-response owner matrix now replaces raw owner placeholders with
+  blocked rows for every required surface, plus explicit approval authority for
+  rollback, release changes, provider checks, MongoDB restore, credential
+  rotation, and privacy/legal communication while owner assignments remain
+  unavailable. The deployment runbook now links rollback permission to that
+  matrix. Verification used the task's owner-placeholder search, secret-pattern
+  search, and `git diff --check`.
+- 2026-05-19: Completed T-138 by documenting admin bootstrap, promotion,
+  lockout recovery, sanitized evidence handling, and credential/OAuth
+  verification in the auth runbook without creating users, changing MongoDB
+  data, inspecting environment values, or recording secrets.
 
 ## Next Agent Action
 
 Use the T-123 monitoring architecture plan to obtain an owner/platform provider
 decision or explicit no-provider interim policy before installing any SDK,
-adding `instrumentation.ts`, or wiring provider alerts. If continuing the
-non-route logging migration before provider selection, assign
-[T-128](../tasks/T-128-migrate-server-action-session-logging.md) next. Keep
-client reporting, admin dashboard logging, shared fetcher/client reporting, and
-utility/helper warning cleanup separate.
+adding `instrumentation.ts`, or wiring provider alerts.
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
-owner-approved completion of the incident-response `TBD` owner matrix, and
-broad remaining implementation cleanup separate. T-122, T-123, T-124, T-125,
-T-126, and T-127 are complete and should not be reassigned unless their
-source-hygiene, documentation, policy, workflow, or structured logging contracts
-regress.
+owner approval to replace the T-134 blocked incident owner rows, and broad
+remaining implementation cleanup separate. T-122, T-123, T-124, T-125,
+T-126, T-127, T-128, T-129, T-130, T-131, T-132, T-133, and T-134 are complete and should not be
+reassigned unless their source-hygiene, documentation, policy, workflow,
+structured logging, public browsing client state contracts, or account/user
+client/shared utility/admin dashboard fallback contracts, or incident authority
+handoff regress. T-138 is complete and should not be reassigned unless the
+admin bootstrap/recovery runbook regresses.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation,
 provider-specific monitoring, runtime Cloudinary cleanup or signed folder

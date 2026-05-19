@@ -1,11 +1,7 @@
 import React from "react";
 
 import { ArtworkListLoader } from "@/components/loaders/viewLoaders/ArtworkListLoader";
-import type {
-  ArtworkFilterParams,
-  ArtworkSearchParams,
-  ArtworkSortConfig,
-} from "@/lib/data/types";
+import type { ArtworkFilterParams, ArtworkSearchParams, ArtworkSortConfig } from "@/lib/data/types";
 import { SortOption, ART_COLOURS } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";

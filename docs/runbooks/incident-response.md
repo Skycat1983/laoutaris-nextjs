@@ -96,25 +96,61 @@ Use the smallest relevant slice.
 
 ## Owner And Escalation Matrix
 
-Replace `TBD` entries only after the owner/orchestrator records the real
-authority. Until then, do not assume access or approval.
+This matrix records the current approved operating state. The owner has not yet
+approved named owners, team aliases, or permanent backup roles for these
+surfaces. Until those decisions are recorded, treat every row below as blocked:
+operators may collect non-sensitive evidence, but delegated approval authority
+does not exist. Escalate to the owner/orchestrator to identify the approved
+operator for the affected surface before changing production configuration,
+rotating credentials, restoring data, publishing legal/privacy communication,
+or promoting/rolling back a deployment.
 
 | Area | Primary owner | Backup/escalation | Access source | Authority |
 | --- | --- | --- | --- | --- |
-| Incident commander | TBD owner/orchestrator | TBD backup | Repo/task docs | Classifies severity, coordinates updates, closes incident. |
-| Vercel deployment and rollback | TBD Vercel project owner | TBD release backup | Vercel dashboard | Can inspect deployment logs, promote rollback target, verify aliases. |
-| Repository release authority | TBD repository owner | TBD maintainer | GitHub repository | Can approve commit, branch, merge, revert, or release changes. |
-| MongoDB production data | TBD database owner | TBD backup | MongoDB provider dashboard | Can inspect production DB health, backups, restore options, and data scope. |
-| Shopify Storefront/API | TBD Shopify store owner | TBD commerce backup | Shopify admin/status | Can inspect Storefront API, product availability, and store configuration. |
-| Cloudinary media/upload | TBD Cloudinary owner | TBD media backup | Cloudinary console | Can inspect upload preset, cloud, delivery, and asset state. |
-| Auth/NextAuth credentials | TBD auth owner | TBD admin backup | Password manager, OAuth dashboards | Can approve smoke accounts, credentials rotation, OAuth provider checks. |
-| OAuth providers | TBD Google/GitHub OAuth owner | TBD auth backup | Provider consoles | Can inspect callback/client configuration and provider incidents. |
-| DNS/domain/TLS | TBD domain owner | TBD infra backup | Registrar/DNS/Vercel domain settings | Can inspect DNS, TLS, aliases, and production domain routing. |
-| Privacy/legal communication | TBD owner/legal reviewer | TBD backup | Owner/legal process | Can approve privacy/security user-facing communication. |
+| Incident commander | Blocked: owner/orchestrator must approve the commander role. | Escalate to owner/orchestrator to name the active commander and backup for the incident. | Repo/task docs | Until approved, owner/orchestrator classifies severity, coordinates updates, and closes the incident or delegates those actions in writing. |
+| Vercel deployment and rollback | Blocked: Vercel project owner or approved operator is not recorded. | Escalate to owner/orchestrator to identify an operator with Vercel project access. | Vercel dashboard | Only the approved Vercel operator can inspect deployment logs, promote a rollback target, or verify aliases. Rollback requires owner/orchestrator approval while this row is blocked. |
+| Repository release authority | Blocked: repository release owner or maintainer alias is not recorded. | Escalate to owner/orchestrator to identify the release approver with GitHub access. | GitHub repository | Only the approved release authority can approve commits, branches, merges, reverts, or release changes. |
+| MongoDB production data | Blocked: production database owner is not recorded. | Escalate to owner/orchestrator to identify the MongoDB operator and backup. | MongoDB provider dashboard | Only the approved database operator can inspect production DB health, backups, restore options, and data scope. Restore requires owner/orchestrator approval while this row is blocked. |
+| Shopify Storefront/API | Blocked: Shopify store owner or commerce operator is not recorded. | Escalate to owner/orchestrator to identify the commerce operator and backup. | Shopify admin/status | Only the approved commerce operator can inspect Storefront API health, product availability, and store configuration. |
+| Cloudinary media/upload | Blocked: Cloudinary owner or media operator is not recorded. | Escalate to owner/orchestrator to identify the media operator and backup. | Cloudinary console | Only the approved media operator can inspect upload preset, cloud, delivery, transformation, and asset state. Destructive media changes also require the Cloudinary runbook. |
+| Auth/NextAuth credentials | Blocked: auth credential owner is not recorded. | Escalate to owner/orchestrator to identify the auth operator and admin backup. | Password manager, deployment environment, OAuth dashboards | Only the approved auth operator can approve smoke accounts, rotate NextAuth credentials, or approve auth-provider checks. |
+| OAuth providers | Blocked: Google/GitHub OAuth console owner is not recorded. | Escalate to owner/orchestrator to identify the OAuth operator and auth backup. | Provider consoles | Only the approved OAuth operator can inspect callback/client configuration, provider incidents, and provider secret rotation. |
+| DNS/domain/TLS | Blocked: domain, DNS, or TLS owner is not recorded. | Escalate to owner/orchestrator to identify the DNS/domain operator and infra backup. | Registrar, DNS, and Vercel domain settings | Only the approved domain operator can inspect or change DNS, TLS, aliases, and production domain routing. |
+| Privacy/legal communication | Blocked: owner/legal reviewer and backup are not recorded. | Escalate to owner/orchestrator to identify the legal/privacy approver. | Owner/legal process | Only the approved owner/legal reviewer can approve privacy, security, data-loss, or other user-facing legal communication. |
+
+### Blocked Owner Decisions
+
+These decisions must be supplied by the owner/orchestrator before production
+launch or before an affected incident requires the authority.
+
+| Decision needed | Interim escalation | Next owner action |
+| --- | --- | --- |
+| Name the incident commander role and backup process. | Owner/orchestrator. | Approve a named owner, role label, team alias, or explicit commander assignment process. |
+| Name the Vercel deployment/log/rollback operator and backup. | Owner/orchestrator. | Confirm who can access Vercel logs, verify aliases, and promote rollback targets. |
+| Name the repository release approver and backup maintainer. | Owner/orchestrator. | Confirm who can approve merges, reverts, release branches, and fix-forward changes. |
+| Name the MongoDB production data operator and restore approver. | Owner/orchestrator. | Confirm who can inspect health/backups and who can approve restore or data-scope decisions. |
+| Name the Shopify commerce operator and backup. | Owner/orchestrator. | Confirm who can inspect Storefront API/product state and approve commerce-provider outage handling. |
+| Name the Cloudinary media operator and backup. | Owner/orchestrator. | Confirm who can inspect upload/delivery state and approve any future destructive asset operation. |
+| Name the auth credential and OAuth provider operators. | Owner/orchestrator. | Confirm who can approve smoke accounts, credentials rotation, callback checks, and provider incident checks. |
+| Name the DNS/domain/TLS operator and backup. | Owner/orchestrator. | Confirm who can inspect or change DNS, TLS, Vercel aliases, and production domain routing. |
+| Name the privacy/legal communication approver and backup. | Owner/orchestrator. | Confirm who can approve user-facing privacy, security, data-loss, or legal statements. |
+
+### Approval Authority While Blocked
+
+| Action | Required approval while owner rows are blocked |
+| --- | --- |
+| Rollback or production deployment promotion | Owner/orchestrator approval plus an identified Vercel operator with project access. Repository release authority is also required if a code revert or fix-forward follows. |
+| Release changes, merge, revert, or fix-forward | Owner/orchestrator approval plus the identified GitHub release approver. |
+| Provider health checks or dashboard inspection | Owner/orchestrator approval plus the identified operator for the affected provider: Vercel, MongoDB, Shopify, Cloudinary, Auth/NextAuth, OAuth, or DNS/domain. |
+| MongoDB restore or data-scope decision | Owner/orchestrator approval plus the identified MongoDB operator. Do not restore, delete, export, or mutate production data from this runbook alone. |
+| Credential or secret rotation | Owner/orchestrator approval plus the identified owner for the affected secret source, such as Auth/NextAuth, OAuth, Shopify, Cloudinary, MongoDB, Vercel, or DNS. |
+| Privacy, security, data-loss, or legal communication | Owner/legal reviewer approval. If no reviewer has been approved, do not publish user-facing communication beyond private owner/orchestrator escalation. |
 
 For SEV-1, the incident commander must escalate to the owner/orchestrator and
 the relevant service owner immediately. For SEV-2, escalate when the first
 triage pass cannot identify a safe rollback, defer, or provider-outage path.
+If the affected owner row is blocked, the owner/orchestrator must identify the
+approved operator before any privileged action continues.
 
 ## Rollback, Defer, Or Mitigate
 
@@ -123,11 +159,11 @@ failures. This runbook adds incident-level decision rules:
 
 | Decision | Use when | Approval |
 | --- | --- | --- |
-| Roll back | A recent deployment caused repeatable SEV-1 or SEV-2 failure, security/admin regression, wrong commit/environment promotion, root/serverless crash, public archive/shop `5xx`, credentials/admin smoke regression, or product not-found `500`. | Vercel rollback owner plus incident commander. Repository release owner if code revert/fix-forward follows. |
-| Defer release | A preview or pending production change fails smoke, build, auth/admin, Shopify, or runtime checks before promotion. | Repository release owner or orchestrator. |
-| Mitigate in place | The issue is scoped, reversible, not caused by the current deployment, and can be contained through config, content, provider recovery, or a small follow-up without increasing user/data risk. | Incident commander plus affected service owner. |
-| Treat as provider outage | Evidence points to MongoDB, Shopify, Cloudinary, OAuth, DNS, or Vercel external outage and the current deployment is otherwise healthy. | Incident commander plus affected service owner; owner approves any user-facing communication. |
-| Pause destructive/admin action | Data loss, data corruption, privacy/security issue, or destructive admin workflow risk is suspected. | Incident commander immediately; owner/database/privacy authority before resuming. |
+| Roll back | A recent deployment caused repeatable SEV-1 or SEV-2 failure, security/admin regression, wrong commit/environment promotion, root/serverless crash, public archive/shop `5xx`, credentials/admin smoke regression, or product not-found `500`. | Vercel rollback owner plus incident commander. Repository release owner if code revert/fix-forward follows. While owner rows are blocked, owner/orchestrator approval plus an identified Vercel operator is required. |
+| Defer release | A preview or pending production change fails smoke, build, auth/admin, Shopify, or runtime checks before promotion. | Repository release owner or orchestrator. While owner rows are blocked, owner/orchestrator approval plus the identified release approver is required. |
+| Mitigate in place | The issue is scoped, reversible, not caused by the current deployment, and can be contained through config, content, provider recovery, or a small follow-up without increasing user/data risk. | Incident commander plus affected service owner. While owner rows are blocked, owner/orchestrator must identify the affected service operator before privileged changes. |
+| Treat as provider outage | Evidence points to MongoDB, Shopify, Cloudinary, OAuth, DNS, or Vercel external outage and the current deployment is otherwise healthy. | Incident commander plus affected service owner; owner approves any user-facing communication. While owner rows are blocked, owner/orchestrator must identify the affected provider operator. |
+| Pause destructive/admin action | Data loss, data corruption, privacy/security issue, or destructive admin workflow risk is suspected. | Incident commander immediately; owner/database/privacy authority before resuming. While owner rows are blocked, keep the action paused until owner/orchestrator identifies the required authority. |
 
 After rollback or mitigation, rerun the minimum checks from
 [deployment smoke checks](deployment.md#smoke-checks-after-deploy) that match
@@ -223,7 +259,7 @@ Complete this section after production is stable.
 - Follow-up tasks:
 - Risks updated:
 - Runbooks/workstreams updated:
-- Owner decisions still TBD:
+- Owner decisions still unresolved:
 ```
 
 Follow-up rules:
@@ -246,5 +282,5 @@ Close the incident only after:
 - Minimum relevant smoke or targeted checks pass.
 - Evidence is redacted and summarized.
 - Follow-up tasks and risks are created or updated.
-- `TBD` owner gaps discovered during the incident are recorded in the owner
-  matrix or relevant workstream backlog.
+- Unresolved owner gaps discovered during the incident are recorded in the
+  owner matrix or relevant workstream backlog.

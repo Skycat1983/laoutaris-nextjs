@@ -3,10 +3,7 @@ import { CommentModel, UserModel, BlogModel } from "@/lib/data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { transformCommentPopulated } from "@/lib/transforms";
 import { requireApiUser } from "@/lib/api/requireApiUser";
-import {
-  ApiErrorResponse,
-  CommentLeanPopulated,
-} from "@/lib/data/types";
+import type { ApiErrorResponse, CommentLeanPopulated } from "@/lib/data/types";
 import {
   ApiUserCommentDeleteResult,
   ApiUserCommentUpdateResult,

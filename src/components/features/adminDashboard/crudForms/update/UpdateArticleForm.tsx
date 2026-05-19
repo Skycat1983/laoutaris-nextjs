@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import { ArticleFrontendPopulated } from "@/lib/data/types";
+import type { ArticleFrontendPopulated } from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 
 import {
   UpdateArticleFormValues,
@@ -73,11 +73,9 @@ export const UpdateArticleForm = ({
 
         setNewArtwork(artwork);
         setImagePreview(artwork.image.secure_url);
-      } else {
-        console.error("Error fetching artwork:", result.error);
       }
-    } catch (error) {
-      console.error("Error fetching artwork:", error);
+    } catch {
+      return;
     } finally {
       setIsLoadingArtwork(false);
     }
@@ -91,8 +89,8 @@ export const UpdateArticleForm = ({
         artwork: newArtwork?._id || articleInfo.artwork._id,
       });
       onSuccess();
-    } catch (error) {
-      console.error("Error in UpdateArticleForm:", error);
+    } catch {
+      return;
     } finally {
       setIsSubmitting(false);
     }

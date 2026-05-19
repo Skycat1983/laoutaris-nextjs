@@ -1,10 +1,7 @@
 import "server-only";
 
 import { BlogModel } from "@/lib/data/models/blogModel";
-import type {
-  BlogEntryFrontendWithAuthor,
-  BlogEntryLeanWithAuthor,
-} from "@/lib/data/types/blogTypes";
+import type { BlogEntryFrontendWithAuthor, BlogEntryLeanWithAuthor } from "@/lib/data/types/blogTypes";
 import dbConnect from "@/lib/db/mongodb";
 import { transformBlogWithAuthor } from "@/lib/transforms/blog/transformBlog";
 

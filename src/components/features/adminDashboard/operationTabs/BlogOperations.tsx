@@ -9,7 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateBlogForm } from "../crudForms/create";
 import { UpdateBlogForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
-import { AdminBlogPopulated, BlogEntryFrontend } from "@/lib/data/types";
+import type { AdminBlogPopulated, BlogEntryFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
 
@@ -51,8 +51,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
           <ModalMessage message="Failed to delete blog" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting blog:", error);
+    } catch {
       openModal(<ModalMessage message="Failed to delete blog" type="error" />);
     } finally {
       setIsDeleting(false);

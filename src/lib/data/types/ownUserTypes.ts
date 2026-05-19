@@ -1,13 +1,5 @@
-import { UserDB } from "@/lib/data/models";
-import {
-  CommentFrontend,
-  CommentLean,
-  ArtworkFrontend,
-  ArtworkLean,
-  Prettify,
-  WithPopulatedFields,
-  LeanDocument,
-} from "@/lib/data/types";
+import type { UserDB } from "@/lib/data/models";
+import type { CommentFrontend, CommentLean, ArtworkFrontend, ArtworkLean, Prettify, WithPopulatedFields, LeanDocument } from "@/lib/data/types";
 import { transformOwnUser } from "@/lib/transforms";
 
 export type OwnUserLean = LeanDocument<UserDB>;

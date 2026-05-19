@@ -1,11 +1,7 @@
 import "server-only";
 
 import { CollectionModel } from "@/lib/data/models/collectionModel";
-import type {
-  CollectionNavDataFrontend,
-  CollectionSelectFieldsLean,
-  ListResult,
-} from "@/lib/data/types";
+import type { CollectionNavDataFrontend, CollectionSelectFieldsLean, ListResult } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformCollectionNav } from "@/lib/transforms/navigation/transformNavData";
 

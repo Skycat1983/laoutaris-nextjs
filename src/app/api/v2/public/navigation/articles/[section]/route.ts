@@ -1,7 +1,7 @@
-import { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
+import type { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { ArticleSection } from "@/lib/constants";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { NextRequest } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";

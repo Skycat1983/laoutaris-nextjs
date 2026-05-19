@@ -3,12 +3,7 @@ import "server-only";
 import { ArticleModel } from "@/lib/data/models/articleModel";
 import { BlogModel } from "@/lib/data/models/blogModel";
 import { CollectionModel } from "@/lib/data/models/collectionModel";
-import type {
-  ArticleLean,
-  BlogEntryLean,
-  CollectionLean,
-  SingleResult,
-} from "@/lib/data/types";
+import type { ArticleLean, BlogEntryLean, CollectionLean, SingleResult } from "@/lib/data/types";
 import type {
   SearchableContentType,
   SearchResponse,

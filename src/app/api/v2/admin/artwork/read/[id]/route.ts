@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { NextRequest } from "next/server";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import { ArtworkModel } from "@/lib/data/models";
 import { ReadArtworkResult } from "@/lib/api/admin/read/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
@@ -9,9 +9,9 @@ import {
   adminReadInvalidIdResponse,
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
-import { AdminArtworkTransformations } from "@/lib/data/types";
+import type { AdminArtworkTransformations } from "@/lib/data/types";
 import { transformArtwork } from "@/lib/transforms";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";

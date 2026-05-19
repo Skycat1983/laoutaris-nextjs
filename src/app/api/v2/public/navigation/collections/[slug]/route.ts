@@ -1,6 +1,6 @@
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { ApiCollectionNavItemResult } from "@/lib/api/public/navigation/fetchers";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";

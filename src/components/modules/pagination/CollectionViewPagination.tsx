@@ -4,7 +4,7 @@ import {
   ArtworkPaginationItemSkeleton,
 } from "./ArtworkPaginationItem";
 import CollectionInfo from "../wip/CollectionInfo";
-import { ArtworkFrontend } from "@/lib/data/types";
+import type { ArtworkFrontend } from "@/lib/data/types";
 
 interface PaginationProps {
   items: ArtworkFrontend[];

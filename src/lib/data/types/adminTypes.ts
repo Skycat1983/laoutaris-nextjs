@@ -1,5 +1,5 @@
 // all of the above types but from /types
-import {
+import type {
   TransformedDocument,
   WithPopulated,
   LeanDocument,

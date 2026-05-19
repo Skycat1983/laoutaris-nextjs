@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { Logo } from "@/components/elements/icons";
-import { NavBarLink } from "@/components/loaders/componentLoaders/MainNavLoader";
+import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 import { useSession } from "next-auth/react";
 
 interface NavMenuProps {

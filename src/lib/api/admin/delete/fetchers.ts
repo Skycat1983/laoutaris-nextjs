@@ -1,4 +1,4 @@
-import { ApiSuccessResponse } from "@/lib/data/types";
+import type { ApiSuccessResponse } from "@/lib/data/types";
 import type { Fetcher } from "../../core/createFetcher";
 
 // This is what the fetcher expects

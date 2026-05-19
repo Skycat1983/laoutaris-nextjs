@@ -2,7 +2,7 @@ import "server-only";
 
 import type { FilterQuery } from "mongoose";
 import type { ArticleSection } from "@/lib/constants";
-import { ArticleModel, type ArticleDB } from "@/lib/data/models/articleModel";
+import { ArticleModel, ArticleDB } from "@/lib/data/models/articleModel";
 import type { ArticleFrontend, ArticleLean, ListResult } from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { transformArticle } from "@/lib/transforms/article/transformArticle";

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { ApiSearchResult } from "@/lib/api/public/search/fetchers";
+import { ApiSearchResult } from "@/lib/api/public/search/fetchers";
 import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import {
   parsePublicSearchQuery,

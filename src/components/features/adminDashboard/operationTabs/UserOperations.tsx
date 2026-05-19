@@ -6,7 +6,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete";
-import { UserFrontend } from "@/lib/data/types/userTypes";
+import type { UserFrontend } from "@/lib/data/types/userTypes";
 
 type OperationType = "read" | "delete";
 
@@ -44,8 +44,7 @@ export function UserOperations({ operationType }: UserOperationsProps) {
           <ModalMessage message="Failed to delete user" type="error" />
         );
       }
-    } catch (error) {
-      console.error("Error deleting user:", error);
+    } catch {
       openModal(<ModalMessage message="Failed to delete user" type="error" />);
     } finally {
       setIsDeleting(false);

@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import dbConnect from "@/lib/db/mongodb";
@@ -7,7 +7,7 @@ import {
   isValidObjectIdParam,
 } from "@/lib/api/admin/read/routeValidation";
 import { CommentModel } from "@/lib/data/models";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { ReadCommentResult } from "@/lib/api/admin/read/fetchers";
 import type {
   CommentFrontendPopulated,

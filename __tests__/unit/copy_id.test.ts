@@ -49,7 +49,7 @@ describe("copy_id", () => {
     await handler(testItem);
 
     expect(mockClipboardWrite).toHaveBeenCalledWith("test-id");
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Failed to copy:", mockError);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 

@@ -2,9 +2,9 @@ import type {
   ArticleFrontend,
   ArticleFrontendPopulated,
 } from "@/lib/data/types/articleTypes";
-import { Fetcher } from "../../core/createFetcher";
-import { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
-import { ArticleSection } from "@/lib/constants";
+import type { Fetcher } from "../../core/createFetcher";
+import type { SingleResult, ListResult } from "@/lib/data/types/apiTypes";
+import type { ArticleSection } from "@/lib/constants/articleConstants";
 
 interface FetchArticlesParams {
   section?: ArticleSection;

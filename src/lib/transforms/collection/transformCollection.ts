@@ -5,11 +5,7 @@ import {
   ExtendedPublicCollectionFields,
   SensitivePublicCollectionFields,
 } from "@/lib/constants";
-import {
-  CollectionFrontendPopulated,
-  CollectionLeanPopulated,
-  CollectionSelectFieldsLean,
-} from "@/lib/data/types";
+import type { CollectionFrontendPopulated, CollectionLeanPopulated, CollectionSelectFieldsLean } from "@/lib/data/types";
 import { CollectionDB, CollectionBase } from "@/lib/data/models";
 import { createTransformer, transformArtwork } from "@/lib/transforms";
 import {

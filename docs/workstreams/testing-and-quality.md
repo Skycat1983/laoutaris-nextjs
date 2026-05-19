@@ -328,9 +328,16 @@ refactoring without turning every change into a manual QA pass.
 - Reduce expected test/build noise by migrating remaining non-route direct
   `console.error()`/`console.warn()` calls in policy-aligned slices, starting
   with T-126 public loader/page logging. T-127 completed the scoped Shopify
-  provider/data service slice. T-128 is prepared for server actions/session
-  helpers; client/admin reporting, shared fetcher/client reporting, and
-  utility/helper warnings remain separate.
+  provider/data service slice. T-128 completed the scoped server
+  action/session-helper slice. T-129 completed the account saved-artwork loader
+  slice. T-130 completed the first public browsing client console-error
+  cleanup with focused source-hygiene and behavior coverage. T-131 completed
+  the account/user client console-error cleanup with focused source-hygiene and
+  behavior coverage for forms, logout, account navigation, comment owner
+  actions, and the error boundary. T-132 completed the shared fetcher and
+  low-value utility/helper slice with source-hygiene and focused fallback
+  behavior coverage. T-133 completed the remaining admin dashboard client
+  source-hygiene slice.
 - Add CI documentation after the chosen checks are stable.
 - Track residual production and dev-only dependency advisories after T-011 so
   future audits can distinguish accepted residual risk from newly introduced
@@ -338,6 +345,12 @@ refactoring without turning every change into a manual QA pass.
 - When the owner accepts a stable Next target, apply T-015's Next major
   verification plan: focused auth/admin/public archive/shop/Jest coverage, full
   Jest, env guard, lint after the `next lint` migration, and build.
+- Add focused coverage for reconciled A-011/A-017/A-018 gaps as they are
+  implemented: admin current-admin/last-admin delete guards, admin artwork
+  relationship existence checks, admin form server-error surfaces, public
+  search scope/no-results/pagination, `/artwork` page/API query parity, sorted
+  blog follow-up loading, main-nav fallbacks, visible breadcrumb labels, and
+  taxonomy option parity.
 
 ## Acceptance Criteria
 
@@ -1342,19 +1355,76 @@ npm run lint
   action/session-helper structured logging, preserved action return contracts,
   preserved saved-item mutation/revalidation behavior, preserved development
   test-header semantics, and scoped source hygiene.
+- 2026-05-18: Completed T-128 by adding structured logging assertions for
+  subscription, saved-item, and development test-header lookup failures plus
+  `serverActionSessionLoggingSourceHygiene.test.ts`. Focused Jest, scoped
+  source search, and `git diff --check` passed.
+- 2026-05-18: Completed T-129 by adding structured logging assertions for
+  account favourite artwork loader failure paths, preserved fallback/success/
+  Next control-flow behavior checks, and
+  `accountSavedArtworkLoaderLoggingSourceHygiene.test.ts`. Focused Jest,
+  scoped source search, and `git diff --check` passed.
+- 2026-05-18: Completed T-130 by adding
+  `publicBrowsingClientLoggingSourceHygiene.test.ts`,
+  `publicBrowsingClientErrorStates.test.tsx`, and a shop gallery filter
+  failure regression in `shopProductGallerySorting.test.tsx`. Focused Jest and
+  the scoped `console.error()`/`console.warn()` source search passed.
+- 2026-05-18: Completed T-131 by adding
+  `accountUserClientLoggingSourceHygiene.test.ts` and
+  `accountUserClientErrorStates.test.tsx` for the scoped account/user client
+  console-error cleanup. Focused Jest, adjacent contact/navigation/comment
+  component tests, scoped source search, and `git diff --check` passed.
+- 2026-05-18: Prepared T-132 with expected source-hygiene and focused behavior
+  coverage for shared fetcher contracts, date/translation fallbacks, copy
+  behavior, color icon fallback rendering, and blog sidebar state.
+- 2026-05-18: Completed T-132 by extending
+  `renderSourceHygiene.test.ts`, adding
+  `sharedFetcherUtilityFallbacks.test.tsx`, and updating focused fetcher, date,
+  and copy helper tests to assert silent fallback behavior. Focused Jest, the
+  scoped `console.error()`/`console.warn()` source search, and
+  `git diff --check` passed.
+- 2026-05-19: Prepared T-133 with expected admin dashboard source-hygiene and
+  focused behavior coverage for forms, feeds, read lists, operation tabs,
+  upload handling, and the document reader.
+- 2026-05-19: Completed T-133 by extending
+  `renderSourceHygiene.test.ts` with a recursive admin dashboard
+  `console.error()`/`console.warn()` guard. The focused admin dashboard source
+  search, focused Jest pair, and `git diff --check` passed.
+- 2026-05-19: Completed T-134 as a docs-only incident owner-matrix handoff.
+  Verification was limited to the required runbook owner-placeholder search,
+  runbook secret-pattern search, and `git diff --check`; no runtime behavior or
+  automated test surface changed.
+- 2026-05-19: Completed T-135 by adding
+  `contentImageUrlValidation.test.ts` plus focused admin article, blog, and
+  collection route coverage for allowed Cloudinary URLs, allowed
+  Flaticon/Shopify CDN URLs, rejected arbitrary hosts, rejected malformed URLs,
+  and unchanged successful persistence.
+- 2026-05-19: Completed T-137 by adding
+  `clientServerImportBoundary.test.ts`, a recursive static guard for client
+  runtime import graphs. The current inventory covers 120 client entries and
+  207 runtime-reachable local modules with no allowlist.
+- 2026-05-19: T-140 reconciled A-011, A-017, and A-018 testing follow-ups into
+  F-091 through F-104 and R-005. T-141 and T-142 include focused route tests in
+  their acceptance criteria; T-143 is decision-first and should prepare the
+  correct test surface only after search scope is chosen.
+- 2026-05-19: Completed T-141 and T-142 with focused admin delete,
+  article-write, and collection-write route coverage for current-admin/
+  last-admin deletion guards and artwork relationship existence checks.
 
 ## Next Agent Action
 
-Choose from monitoring provider smoke coverage or other active quality backlog
-items once the owner/platform provider decision is available. If continuing the
-non-route logging migration first, add focused coverage for the next
-T-125-defined category by assigning
-[T-128](../tasks/T-128-migrate-server-action-session-logging.md). Keep broader
-static/ISR migration separate from the
+Choose from T-143's decision-first search scope follow-up, monitoring provider
+smoke coverage once the owner/platform provider decision is available, or other
+active quality backlog items. T-141 and T-142 are complete; do not reassign
+their focused route coverage unless it regresses.
+Keep broader static/ISR migration separate from the
 completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
-and the completed T-117 through T-127 observability documentation, logging,
+and the completed T-117 through T-134 observability documentation, logging,
 source-hygiene, public-smoke workflow, policy, public loader/page migration,
-and Shopify provider/data service migration tasks.
+Shopify provider/data service migration, and server action/session-helper
+migration, account saved-artwork loader migration, public/account client
+cleanup, shared utility/fetcher cleanup, admin dashboard client cleanup, and
+incident owner-matrix handoff tasks.
 
 Keep the route/fetcher parity and protected API guard inventories current when
 fetchers or route handlers change. Do not reassign T-081, T-082, T-083, T-084,
@@ -1362,8 +1432,11 @@ T-085, T-086, T-087, T-088, T-089, or T-090 unless a regression is opened.
 Do not reassign T-091, T-092, or T-093 unless a regression is opened. T-094,
 T-095, T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105,
 T-106, T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116,
-T-117, T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, and
-T-127 are complete; do not reassign them unless a regression is opened.
+T-117, T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127,
+T-128, T-129, T-130, T-131, T-132, T-133, and T-134 are complete; do not
+reassign them unless a regression is opened. T-135 is also complete; do not
+reassign it unless content image URL validation regresses. T-137 is complete;
+do not reassign it unless the client import-boundary guard regresses.
 
 Use the T-025 deployment smoke checklist when validating future deployment,
 runtime, auth, Shopify, or route-contract changes. For Next dependencies, wait

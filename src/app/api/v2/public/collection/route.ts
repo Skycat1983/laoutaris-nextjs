@@ -1,8 +1,8 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
-import { RouteResponse } from "@/lib/data/types";
+import type { RouteResponse } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";

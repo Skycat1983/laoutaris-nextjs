@@ -2,7 +2,7 @@ import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import { ArticleModel } from "@/lib/data/models";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,

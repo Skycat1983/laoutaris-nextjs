@@ -2,8 +2,8 @@
 
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/utils/paginationTransforms";
-import { PaginationMetadata } from "@/lib/data/types/apiTypes";
-import { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { PaginationMetadata } from "@/lib/data/types/apiTypes";
+import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import {
   getBlogList,
   type BlogListSortBy,

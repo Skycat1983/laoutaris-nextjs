@@ -1,6 +1,6 @@
 import { ArtworkModel, ArticleModel, CollectionModel } from "@/lib/data/models";
 import mongoose from "mongoose";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import dbConnect from "@/lib/db/mongodb";

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon } from "lucide-react";
-import { CommentFrontendPopulated } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 
 export function ReadCommentList() {
@@ -37,8 +37,8 @@ export function ReadCommentList() {
   const handleCopyId = async (id: string) => {
     try {
       await navigator.clipboard.writeText(id);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+    } catch {
+      return;
     }
   };
 

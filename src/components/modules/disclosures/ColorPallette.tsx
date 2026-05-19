@@ -13,7 +13,7 @@ import {
 } from "@/components/shadcn/tooltip";
 import Link from "next/link";
 import { buildArtworkSearchUrl } from "@/lib/utils/urlUtils";
-import { ColourInfo } from "@/lib/data/types";
+import type { ColourInfo } from "@/lib/data/types";
 
 interface HexColorPaletteProps {
   colors: ColourInfo[];

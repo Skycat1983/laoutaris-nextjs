@@ -5,6 +5,7 @@ import { PATCH } from "@/app/api/v2/admin/blog/update/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
 import { BlogModel, UserModel } from "@/lib/data/models";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
+import { CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR } from "@/lib/validation/contentImageUrl";
 import { getServerSession } from "next-auth";
 
 jest.mock("next/server", () => ({
@@ -60,13 +61,19 @@ const blogId = "507f1f77bcf86cd799439012";
 const requestId = "req-admin-blog";
 const displayDate = new Date("2025-01-15T00:00:00.000Z");
 const updatedDisplayDate = new Date("2025-02-20T00:00:00.000Z");
+const cloudinaryBlogImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000000/blog.jpg";
+const cloudinaryUpdatedBlogImageUrl =
+  "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000001/updated-blog.jpg";
+const shopifyBlogImageUrl =
+  "https://cdn.shopify.com/s/files/1/0000/0001/files/blog.jpg";
 
 const validCreatePayload = {
   title: "Studio Journal",
   subtitle: "Notes from the archive",
   summary: "A focused blog summary.",
   text: "This blog text is long enough to satisfy the route validation boundary.",
-  imageUrl: "https://example.com/blog.jpg",
+  imageUrl: cloudinaryBlogImageUrl,
   displayDate: displayDate.toISOString(),
   featured: true,
 };
@@ -76,7 +83,7 @@ const validUpdatePayload = {
   subtitle: "Updated notes from the archive",
   summary: "An updated blog summary.",
   text: "This updated blog text is long enough to satisfy validation.",
-  imageUrl: "https://example.com/updated-blog.jpg",
+  imageUrl: cloudinaryUpdatedBlogImageUrl,
   displayDate: updatedDisplayDate.toISOString(),
   featured: false,
 };
@@ -297,6 +304,29 @@ describe("POST /api/v2/admin/blog/create", () => {
     expect(mockBlogCreate).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary create image hosts before persistence", async () => {
+    const request = createRequest({
+      ...validCreatePayload,
+      imageUrl: "https://example.com/blog.jpg",
+    });
+
+    const response = await POST(request as never);
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid blog input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogCreate).not.toHaveBeenCalled();
+  });
+
   it("rejects invalid create tags before persistence", async () => {
     const request = createRequest({
       ...validCreatePayload,
@@ -349,7 +379,7 @@ describe("POST /api/v2/admin/blog/create", () => {
       subtitle: "  Notes from the archive  ",
       summary: "  A focused blog summary.  ",
       text: "  This blog text is long enough to satisfy the route validation boundary.  ",
-      imageUrl: "  https://example.com/blog.jpg  ",
+      imageUrl: `  ${cloudinaryBlogImageUrl}  `,
       displayDate: displayDate.toISOString(),
       featured: true,
     });
@@ -368,6 +398,42 @@ describe("POST /api/v2/admin/blog/create", () => {
     expect(body).toEqual({
       success: true,
       data: createdBlog,
+    });
+  });
+
+  it("accepts explicitly allowed external image hosts on create", async () => {
+    const explicitCreatePayload = {
+      ...validCreatePayload,
+      imageUrl: shopifyBlogImageUrl,
+    };
+    const explicitCreatedBlog = {
+      ...createdBlog,
+      imageUrl: shopifyBlogImageUrl,
+    };
+    mockBlogCreate.mockResolvedValue(createBlogDocument(explicitCreatedBlog));
+
+    const response = await POST(
+      createRequest({
+        ...validCreatePayload,
+        imageUrl: `  ${shopifyBlogImageUrl}  `,
+      }) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(201);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogCreate).toHaveBeenCalledWith({
+      ...explicitCreatePayload,
+      pinned: false,
+      tags: [],
+      displayDate,
+      slug: "studio-journal",
+      author: adminUserId,
+    });
+    expect(body).toEqual({
+      success: true,
+      data: explicitCreatedBlog,
     });
   });
 
@@ -584,6 +650,31 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
     expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
   });
 
+  it("rejects arbitrary update image hosts before blog reads", async () => {
+    const request = createRequest({
+      imageUrl: "https://example.com/updated-blog.jpg",
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: blogId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid blog input",
+      fieldErrors: {
+        imageUrl: [CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR],
+      },
+      formErrors: [],
+    });
+    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockBlogFindById).not.toHaveBeenCalled();
+    expect(mockBlogFindByIdAndUpdate).not.toHaveBeenCalled();
+  });
+
   it("rejects invalid update tags before blog reads", async () => {
     const request = createRequest({
       tags: ["studio"],
@@ -690,7 +781,7 @@ describe("PATCH /api/v2/admin/blog/update/[id]", () => {
       subtitle: "  Updated notes from the archive  ",
       summary: "  An updated blog summary.  ",
       text: "  This updated blog text is long enough to satisfy validation.  ",
-      imageUrl: "  https://example.com/updated-blog.jpg  ",
+      imageUrl: `  ${cloudinaryUpdatedBlogImageUrl}  `,
       displayDate: updatedDisplayDate.toISOString(),
       featured: false,
     });

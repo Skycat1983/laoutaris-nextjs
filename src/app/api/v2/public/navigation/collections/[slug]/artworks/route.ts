@@ -1,8 +1,8 @@
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { CollectionModel } from "@/lib/data/models";
 import { NextRequest } from "next/server";
-import { RouteResponse } from "@/lib/data/types/apiTypes";
-import {
+import type { RouteResponse } from "@/lib/data/types/apiTypes";
+import type {
   CollectionLeanPopulated,
   CollectionFrontendPopulated,
 } from "@/lib/data/types";
