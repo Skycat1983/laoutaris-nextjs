@@ -1,6 +1,6 @@
 "use server";
 
-import { SortedBlogData } from "../loaders/viewLoaders/BlogListLoader";
+import type { SortedBlogData } from "../loaders/viewLoaders/BlogListLoader";
 import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import { BlogsViewCardSkeleton } from "../modules/cards/BlogsViewCard";
 import { SkeletonFactory } from "../compositions/SkeletonFactory";
@@ -13,16 +13,30 @@ import BlogSectionHeading from "../elements/typography/BlogSectionHeading";
 
 interface BlogListViewProps {
   blogData: SortedBlogData;
+  activeSortBy?: NonNullable<SortedBlogData["single"]>["type"];
   next: string | null;
   prev: string | null;
 }
 
-const BlogListView = ({ blogData, next, prev }: BlogListViewProps) => {
+const BlogListView = ({
+  blogData,
+  activeSortBy,
+  next,
+  prev,
+}: BlogListViewProps) => {
   if (blogData.single) {
+    const sortby = activeSortBy ?? blogData.single.type;
+
     return (
       <>
         <BlogSectionHeading heading={`${blogData.single.type} Posts`} />
-        <BlogSectionContinuous initialBlogEntries={blogData.single.data} />
+        <BlogSectionContinuous
+          initialBlogEntries={blogData.single.data}
+          initialPage={blogData.metadata.page}
+          initialHasMore={blogData.metadata.page < blogData.metadata.totalPages}
+          sortby={sortby}
+        />
+        <BlogsViewPagination next={next} prev={prev} />
       </>
     );
   }

@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { BlogFilterDropdowns } from "../../inputs/BlogFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
 import type { BlogEntryFrontend } from "@/lib/data/types";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 type FilterKey = "featured" | "year" | null;
 
@@ -25,6 +26,7 @@ export function ReadBlogList() {
     key: null,
     value: null,
   });
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -110,14 +112,45 @@ export function ReadBlogList() {
                   {blog.featured ? " Featured" : " Not Featured"}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(blog._id)}
-              >
-                <CopyIcon className="h-4 w-4" />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Update ${blog.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: blog._id,
+                      operation: "update",
+                    })
+                  }
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${blog.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: blog._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy ${blog.title} ID`}
+                  onClick={() => handleCopyId(blog._id)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

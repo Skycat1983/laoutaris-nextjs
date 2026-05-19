@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CopyIcon } from "@/components/elements/icons";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/shadcn/button";
 import { ArtworkFilterDropdowns } from "../../inputs/ArtworkFilterDropdowns";
@@ -9,6 +10,7 @@ import { Skeleton } from "@/components/shadcn/skeleton";
 import { clientApi } from "@/lib/api/clientApi";
 import type { ArtworkFrontend } from "@/lib/data/types";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 type ArtworkFilterKey = "decade" | "artstyle" | "medium" | "surface";
 
@@ -20,6 +22,7 @@ export function ReadArtworkList() {
     key: ArtworkFilterKey | null;
     value: string | null;
   }>({ key: null, value: null });
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchArtworks = async () => {
@@ -92,14 +95,45 @@ export function ReadArtworkList() {
                   {artwork.medium} on {artwork.surface}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(artwork._id)}
-              >
-                <CopyIcon />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Update ${artwork.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: artwork._id,
+                      operation: "update",
+                    })
+                  }
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${artwork.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: artwork._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy ${artwork.title} ID`}
+                  onClick={() => handleCopyId(artwork._id)}
+                >
+                  <CopyIcon />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

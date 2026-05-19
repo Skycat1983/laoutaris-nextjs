@@ -1,3 +1,6 @@
+"use client";
+
+import React, { createContext, useContext, useState } from "react";
 import {
   Tabs,
   TabsList,
@@ -5,18 +8,42 @@ import {
   TabsContent,
 } from "@/components/shadcn/tabs";
 
+type AdminOperation = "create" | "read" | "update" | "delete";
+
 interface AdminCrudTabsProps {
   createComponent?: React.ReactNode;
   readComponent?: React.ReactNode;
   updateComponent?: React.ReactNode;
   deleteComponent?: React.ReactNode;
-  disabledOperations?: readonly ("create" | "read" | "update" | "delete")[];
+  disabledOperations?: readonly AdminOperation[];
+}
+
+interface AdminArchiveEntryPoint {
+  documentId: string;
+  operation: Extract<AdminOperation, "update" | "delete">;
+}
+
+interface AdminArchiveEntryPointContextValue {
+  selectEntryForOperation: (entryPoint: AdminArchiveEntryPoint) => void;
+}
+
+interface OperationComponentProps {
+  initialDocumentId?: string | null;
 }
 
 const baseTabClass =
   "relative text-xl font-archivo px-8 text-gray-400 outline-none p-4 border-b-4 border-transparent transition-colors data-[state=active]:border-b-4";
 
 const disabledTabClass = "opacity-50 cursor-not-allowed";
+
+const AdminArchiveEntryPointContext =
+  createContext<AdminArchiveEntryPointContextValue>({
+    selectEntryForOperation: () => undefined,
+  });
+
+export function useAdminArchiveEntryPoint() {
+  return useContext(AdminArchiveEntryPointContext);
+}
 
 export function AdminCrudTabs({
   createComponent,
@@ -25,15 +52,57 @@ export function AdminCrudTabs({
   deleteComponent,
   disabledOperations = [],
 }: AdminCrudTabsProps) {
-  // Find first enabled operation for default value
   const enabledOperations = ["create", "read", "update", "delete"].filter(
-    (op) => !disabledOperations.includes(op as any)
+    (op): op is AdminOperation => !disabledOperations.includes(op as AdminOperation)
   );
   const defaultOperation = enabledOperations[0] || "read";
+  const [activeOperation, setActiveOperation] =
+    useState<AdminOperation>(defaultOperation);
+  const [selectedEntryPoint, setSelectedEntryPoint] =
+    useState<AdminArchiveEntryPoint | null>(null);
+
+  const selectEntryForOperation = (entryPoint: AdminArchiveEntryPoint) => {
+    if (disabledOperations.includes(entryPoint.operation)) return;
+
+    setSelectedEntryPoint(entryPoint);
+    setActiveOperation(entryPoint.operation);
+  };
+
+  const handleOperationChange = (operation: AdminOperation) => {
+    if (disabledOperations.includes(operation)) return;
+
+    setActiveOperation(operation);
+    if (operation === "create" || operation === "read") {
+      setSelectedEntryPoint(null);
+    }
+  };
+
+  const renderOperationComponent = (
+    component: React.ReactNode,
+    operation: AdminOperation
+  ) => {
+    if (activeOperation !== operation) return null;
+    if (
+      (operation !== "update" && operation !== "delete") ||
+      !React.isValidElement<OperationComponentProps>(component)
+    ) {
+      return component;
+    }
+
+    const initialDocumentId =
+      selectedEntryPoint?.operation === operation
+        ? selectedEntryPoint.documentId
+        : null;
+
+    return React.cloneElement(component, { initialDocumentId });
+  };
 
   return (
-    <div className="">
-      <Tabs defaultValue={defaultOperation}>
+    <AdminArchiveEntryPointContext.Provider value={{ selectEntryForOperation }}>
+      <Tabs
+        value={activeOperation}
+        onValueChange={(value) => handleOperationChange(value as AdminOperation)}
+      >
         <TabsList className="mb-10">
           <div className="flex flex-row gap-10 border-greyish/50">
             <TabsTrigger
@@ -42,6 +111,7 @@ export function AdminCrudTabs({
                 disabledOperations.includes("create") ? disabledTabClass : ""
               }`}
               disabled={disabledOperations.includes("create")}
+              onClick={() => handleOperationChange("create")}
             >
               Create
             </TabsTrigger>
@@ -51,6 +121,7 @@ export function AdminCrudTabs({
                 disabledOperations.includes("read") ? disabledTabClass : ""
               }`}
               disabled={disabledOperations.includes("read")}
+              onClick={() => handleOperationChange("read")}
             >
               Read
             </TabsTrigger>
@@ -60,6 +131,7 @@ export function AdminCrudTabs({
                 disabledOperations.includes("update") ? disabledTabClass : ""
               }`}
               disabled={disabledOperations.includes("update")}
+              onClick={() => handleOperationChange("update")}
             >
               Update
             </TabsTrigger>
@@ -69,16 +141,25 @@ export function AdminCrudTabs({
                 disabledOperations.includes("delete") ? disabledTabClass : ""
               }`}
               disabled={disabledOperations.includes("delete")}
+              onClick={() => handleOperationChange("delete")}
             >
               Delete
             </TabsTrigger>
           </div>
         </TabsList>
-        <TabsContent value="create">{createComponent}</TabsContent>
-        <TabsContent value="read">{readComponent}</TabsContent>
-        <TabsContent value="update">{updateComponent}</TabsContent>
-        <TabsContent value="delete">{deleteComponent}</TabsContent>
+        <TabsContent value="create">
+          {renderOperationComponent(createComponent, "create")}
+        </TabsContent>
+        <TabsContent value="read">
+          {renderOperationComponent(readComponent, "read")}
+        </TabsContent>
+        <TabsContent value="update">
+          {renderOperationComponent(updateComponent, "update")}
+        </TabsContent>
+        <TabsContent value="delete">
+          {renderOperationComponent(deleteComponent, "delete")}
+        </TabsContent>
       </Tabs>
-    </div>
+    </AdminArchiveEntryPointContext.Provider>
   );
 }

@@ -271,8 +271,6 @@ consistent enough for production refactoring and Shopify integration.
 - Decide whether public search is site-wide; if yes, extend search schema,
   service, DTOs, and result metadata for artworks and shop products, and if no,
   make the narrower scope explicit in route/UI contracts.
-- Align page and API query parsing for public browse routes, starting with
-  `/artwork`.
 - Add route-local runtime validation for public article/collection section
   parameters after the collection section taxonomy policy is decided.
 - Document whether admin action-segment API paths are canonical, or open an ADR
@@ -840,21 +838,27 @@ Add API route tests where behavior is changed.
 - 2026-05-19: T-140 reconciled A-011, A-017, and A-018 data/API findings into
   F-093, F-098, F-099, F-103, and updated F-049/R-006. T-142 is prepared for
   admin artwork relationship existence checks; public search scope, search
-  metadata, `/artwork` page/API query parity, and section runtime validation
-  remain separate follow-ups.
+  metadata, and section runtime validation remain separate follow-ups. T-145
+  later resolved `/artwork` page/API query parity.
 - 2026-05-19: Completed T-142 by adding route-local artwork existence checks to
   admin article create/update and collection `artworksToAdd` writes, with
   focused admin article/collection route coverage.
+- 2026-05-19: Completed T-144's shared fetcher slice by preserving structured
+  error-envelope fields such as `fieldErrors` and `formErrors` for client form
+  consumers without changing route envelopes.
+- 2026-05-19: Completed T-145 by aligning `/artwork` page query parsing,
+  defaults, valid filter normalization, invalid enum fallback, and pagination
+  bounds with the shared public artwork query schema.
 
 ## Next Agent Action
 
-Choose the next data/API slice from public search scope/metadata, page/API
-query parity, section runtime validation after taxonomy policy, broader
-response-helper cleanup, route-local DB ownership gaps, field-contract
-matrices, server-side shop pagination/sorting contracts, lower-level logging
-policy, admin Shopify-link work, or existing content image data migration.
-T-122, T-135, and T-142 are complete and should not be reassigned unless their
-guards or validation behavior regresses.
+Choose the next data/API slice from public search scope/metadata, section
+runtime validation after taxonomy policy, broader response-helper cleanup,
+route-local DB ownership gaps, field-contract matrices, server-side shop
+pagination/sorting contracts, lower-level logging policy, admin Shopify-link
+work, or existing content image data migration. T-122, T-135, T-142, T-144's
+fetcher preservation, and T-145 are complete and should not be reassigned
+unless their guards, validation behavior, or query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

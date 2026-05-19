@@ -29,14 +29,29 @@ import {
 } from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
 import Image from "next/image";
-import type { CloudinaryImageDB } from "@/lib/data/types";
+import type { ApiErrorResponse, CloudinaryImageDB } from "@/lib/data/types";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { CreateArtworkResult } from "@/lib/api/admin/create/fetchers";
 
 interface CreateArtworkFormProps {
   uploadInfo: CloudinaryImageDB | null;
   onSuccess: () => void;
 }
+
+const visibleArtworkFields = [
+  "title",
+  "decade",
+  "artstyle",
+  "medium",
+  "surface",
+  "featured",
+  "shopifyProducts",
+] as const;
 
 export function CreateArtworkForm({
   uploadInfo,
@@ -58,6 +73,7 @@ export function CreateArtworkForm({
 
   async function onSubmit(values: ArtworkFormValues) {
     if (!uploadInfo) return;
+    form.clearErrors();
     setIsSubmitting(true);
 
     try {
@@ -66,15 +82,28 @@ export function CreateArtworkForm({
         image: uploadInfo,
       };
 
-      const response = await clientApi.admin.create.artwork(artworkData);
-      if (response.success) {
-        onSuccess();
+      const response: CreateArtworkResult | ApiErrorResponse =
+        await clientApi.admin.create.artwork(artworkData);
+      if (!response.success) {
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleArtworkFields,
+          fallbackMessage: "Failed to create artwork",
+        });
+        return;
       }
+
+      onSuccess();
 
       // Revalidate the admin artwork page
       // revalidatePath("/admin/artwork");
-    } catch {
-      return;
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to create artwork",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -85,6 +114,12 @@ export function CreateArtworkForm({
       <div className="grid grid-cols-1  gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             <FormField
               control={form.control}
               name="title"

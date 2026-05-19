@@ -4,8 +4,10 @@ Last updated: 2026-05-19
 
 ## Current Priority
 
-The prepared implementation wave after A-011, A-017, and A-018 is complete:
-T-134, T-135, T-136, T-137, T-138, T-140, T-141, and T-142 are done.
+The prepared implementation waves after A-011, A-017, and A-018 are complete:
+T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, T-144, T-145, and
+T-146, T-147, T-148, and T-149 are done. T-150, T-151, and T-152 are prepared
+as the next concurrent implementation wave.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -13,7 +15,7 @@ to record an explicit no-decision blocker.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
-workstream backlogs, and prepared implementation briefs T-141 through T-143.
+workstream backlogs, and prepared implementation briefs T-141 through T-152.
 
 T-140 is complete:
 [Reconcile admin discovery taxonomy findings](../tasks/T-140-reconcile-admin-discovery-taxonomy-findings.md).
@@ -32,6 +34,56 @@ T-142 is complete:
 It adds route-local artwork existence checks for admin article create/update
 and collection `artworksToAdd` writes, while intentionally preserving
 `artworksToRemove` filter semantics.
+
+T-144 is complete:
+[Surface admin collection form errors](../tasks/T-144-surface-admin-collection-form-errors.md).
+It surfaces structured collection create/update route errors in admin forms,
+restores the collection create success callback, and preserves structured
+error-envelope fields through the client fetcher.
+
+T-145 is complete:
+[Align artwork page query parsing](../tasks/T-145-align-artwork-page-query-parsing.md).
+It routes `/artwork` page search params through the shared artwork list query
+schema so page defaults, valid filter normalization, invalid-query fallback,
+and API defaults now match.
+
+T-146 is complete:
+[Preserve sorted blog loading](../tasks/T-146-preserve-sorted-blog-loading.md).
+It preserves sorted blog `sortby` through loader/view props and follow-up
+client blog requests, and renders the existing sorted pagination links.
+
+T-147 is complete:
+[Render resilient main nav fallbacks](../tasks/T-147-render-resilient-main-nav-fallbacks.md).
+It keeps the public main navigation visible with `/biography` and
+`/collections` route-root fallbacks when dynamic navigation data is missing,
+empty, or unexpectedly unavailable.
+
+T-148 is complete:
+[Standardize admin article blog form errors](../tasks/T-148-standardize-admin-article-blog-form-errors.md).
+It applies the T-144 structured API error display pattern to article and blog
+create/update forms using a client-safe form-error helper.
+
+T-149 is complete:
+[Add admin content operations runbook](../tasks/T-149-add-admin-content-operations-runbook.md).
+It adds the admin content operations runbook, links it from the runbooks index,
+and documents production destructive deletes as blocked until cascade previews,
+backup/review evidence, and redacted audit evidence exist.
+
+T-150 is prepared:
+[Surface admin artwork form errors](../tasks/T-150-surface-admin-artwork-form-errors.md).
+It owns artwork create/update form error surfacing and Shopify product-link
+validation error placement.
+
+T-151 is prepared:
+[Add current-scope search empty and pagination states](../tasks/T-151-add-current-scope-search-empty-pagination.md).
+It owns current article/blog/collection search no-results behavior plus honest
+pagination metadata/UI behavior without deciding site-wide search scope.
+
+T-152 is prepared:
+[Improve admin archive entry points](../tasks/T-152-improve-admin-archive-entry-points.md).
+It owns direct read-list handoffs into existing admin update/delete workflows so
+manual ObjectId copy/paste becomes an escape hatch rather than the primary
+path.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1166,12 +1218,18 @@ completed:
 
 ## Next Orchestrator Action
 
+Assign the next concurrent wave:
+[T-150 Surface admin artwork form errors](../tasks/T-150-surface-admin-artwork-form-errors.md),
+[T-151 Add current-scope search empty and pagination states](../tasks/T-151-add-current-scope-search-empty-pagination.md),
+and [T-152 Improve admin archive entry points](../tasks/T-152-improve-admin-archive-entry-points.md).
+They can run in parallel only if agents keep to their owned files and leave
+shared tracker/index updates for orchestrator reconciliation.
+
 Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
-unless the owner/product answer is available. If unavailable, the next
-assignment should be another reconciled, decision-light implementation brief
-from F-094 through F-103, such as admin form error surfacing, `/artwork`
-page/API query parity, sorted blog loading, or resilient main-navigation
-fallbacks.
+unless the owner/product answer is available. If unavailable, do not guess the
+public search scope; T-151 may still improve current supported
+article/blog/collection no-results and pagination behavior without adding
+artworks or Shopify products.
 
 Assign T-139 only after owner/platform approval exists for a monitoring
 provider or explicit no-provider interim policy. Owner-approved incident roles
@@ -1188,8 +1246,9 @@ T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
 T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
 T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
-T-141, and T-142 are complete and should not be reassigned unless a regression
-is opened.
+T-141, T-142, T-144, T-145, T-146, T-147, T-148, and T-149 are complete and
+should not be reassigned unless a regression is opened. T-150, T-151, and
+T-152 are prepared but not yet complete.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

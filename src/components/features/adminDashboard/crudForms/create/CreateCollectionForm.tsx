@@ -20,13 +20,47 @@ import { useState } from "react";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import { useRouter } from "next/navigation";
 
-import type { ApiErrorResponse, ApiResponse, CollectionFrontend } from "@/lib/data/types";
+import type { ApiErrorResponse } from "@/lib/data/types";
 import {
   CreateCollectionFormValues,
   createCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
-import { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
+import type { CreateCollectionResult } from "@/lib/api/admin/create/fetchers";
+
+type CollectionCreateFieldName = keyof CreateCollectionFormValues;
+
+type CollectionFormErrorResponse = ApiErrorResponse & {
+  fieldErrors?: Partial<Record<string, string[] | undefined>>;
+  formErrors?: string[];
+};
+
+const visibleCollectionFields = [
+  "imageUrl",
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+] as const satisfies readonly CollectionCreateFieldName[];
+
+const isVisibleCollectionField = (
+  field: string
+): field is (typeof visibleCollectionFields)[number] =>
+  visibleCollectionFields.includes(
+    field as (typeof visibleCollectionFields)[number]
+  );
+
+const firstErrorMessage = (messages: unknown): string | null => {
+  if (!Array.isArray(messages)) {
+    return null;
+  }
+
+  return (
+    messages.find(
+      (message): message is string => typeof message === "string"
+    ) ?? null
+  );
+};
 
 export const CreateCollectionForm = ({
   onSuccess,
@@ -54,19 +88,63 @@ export const CreateCollectionForm = ({
     }
   };
 
+  const applyApiErrors = (response: CollectionFormErrorResponse) => {
+    let appliedFieldError = false;
+    const formMessages = response.formErrors?.filter(
+      (message): message is string => typeof message === "string"
+    ) ?? [];
+
+    Object.entries(response.fieldErrors ?? {}).forEach(([field, messages]) => {
+      const message = firstErrorMessage(messages);
+      if (!message) {
+        return;
+      }
+
+      if (isVisibleCollectionField(field)) {
+        form.setError(field, { type: "server", message });
+        appliedFieldError = true;
+        return;
+      }
+
+      formMessages.push(message);
+    });
+
+    if (formMessages.length > 0) {
+      form.setError("root", {
+        type: "server",
+        message: formMessages.join(" "),
+      });
+      return;
+    }
+
+    if (!appliedFieldError) {
+      form.setError("root", {
+        type: "server",
+        message: response.error || "Failed to create collection",
+      });
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof createCollectionSchema>) => {
+    form.clearErrors();
     try {
       setIsSubmitting(true);
       const response: CreateCollectionResult | ApiErrorResponse =
         await clientApi.admin.create.collection(values);
       if (!response.success) {
-        throw new Error("Failed to create collection");
+        applyApiErrors(response as CollectionFormErrorResponse);
+        return;
       }
 
       form.reset();
       router.refresh();
-    } catch {
-      return;
+      onSuccess();
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to create collection",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -77,6 +155,12 @@ export const CreateCollectionForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             <FormField
               control={form.control}
               name="imageUrl"

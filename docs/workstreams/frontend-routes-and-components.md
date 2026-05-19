@@ -215,10 +215,10 @@ Next.js server/client component boundaries.
   document reader while preserving existing visible dashboard behavior.
 - A-017 completed the public discovery audit. It confirmed `/search` does not
   include artworks or shop products, search no-results/pagination UI remains
-  incomplete, `/artwork` page query parsing drifts from the API schema, sorted
-  blog follow-up loading drops active sort, main navigation fails closed when
-  dynamic nav data is unavailable, visible breadcrumbs are not content-aware,
-  and shop sorting is still client-only.
+  incomplete, visible breadcrumbs are not content-aware, and shop sorting is
+  still client-only. T-145 resolved the `/artwork` page/API query parsing
+  drift, T-146 resolved sorted blog follow-up loading drift, and T-147 made
+  main navigation resilient when dynamic nav data is unavailable.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
   drift from canonical constants, blog pinned/tag controls remain hidden, and
@@ -266,11 +266,6 @@ Next.js server/client component boundaries.
   products, and if not, relabel/copy the UI so scope is explicit.
 - Add visible no-results behavior and a pagination/metadata policy for public
   search.
-- Align `/artwork` page query parsing/defaults with the public artwork API
-  schema.
-- Preserve sorted blog state through pagination or continuous loading.
-- Render stable main navigation fallbacks when dynamic biography or collection
-  navigation data is unavailable.
 - Make visible breadcrumbs content-aware for article, blog, artwork,
   collection-artwork, and product details.
 - Decide the i18n/frontend language direction before visible language controls
@@ -547,10 +542,10 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-19: T-140 reconciled A-017 and A-018 frontend findings into
   F-098 through F-104 plus existing F-013, F-023, F-033, and F-049 updates.
   T-143 is prepared for the public search scope decision. Search no-results/
-  pagination, `/artwork` page/API query parity, sorted blog loading, nav
-  fallbacks, visible breadcrumbs, language UI, taxonomy option parity, blog
-  controls, collection section policy, and footer/legal copy remain separate
-  implementation or decision slices.
+  pagination, nav fallbacks, visible breadcrumbs, language UI, taxonomy option
+  parity, blog controls, collection section policy, and footer/legal copy
+  remain separate implementation or decision slices. T-145 and T-146 later
+  resolved `/artwork` page/API query parity and sorted blog loading.
 - 2026-05-18: Prepared T-103 as the next A-010/F-085 slice for production-safe
   root metadata plus baseline `robots.ts` and `sitemap.ts`. Route-specific
   detail metadata and JSON-LD remain separate.
@@ -670,15 +665,36 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-19: Completed T-136 by replacing scoped direct Cloudinary upload-path
   string rewrites in cards, blog sections, masonry artwork lists, and admin
   previews with the shared delivery helper.
+- 2026-05-19: Completed T-144 for the admin collection form slice. Collection
+  create/update forms now surface structured route errors, and collection
+  create calls its parent success callback after successful persistence.
+- 2026-05-19: Completed T-145 by routing `/artwork` App Router search params
+  through the shared artwork list query schema before constructing loader
+  defaults.
+- 2026-05-19: Completed T-146 by preserving active blog `sortby` through
+  sorted list loader/view props, continuous follow-up requests, and sorted
+  pagination rendering.
+- 2026-05-19: Completed T-147 by rendering stable `/biography` and
+  `/collections` main-nav fallbacks when dynamic navigation data is missing,
+  empty, or unexpectedly unavailable.
+- 2026-05-19: Completed T-148 by applying structured API error display to
+  article and blog create/update forms while preserving successful submit
+  callbacks.
+- 2026-05-19: Prepared T-151 to add current-scope public search no-results and
+  honest pagination behavior for articles, blogs, and collections without
+  deciding the broader site-wide search scope.
+- 2026-05-19: Prepared T-152 to reduce manual admin ObjectId copy/paste through
+  direct read-list handoffs into update/delete workflows.
 
 ## Next Agent Action
 
-Choose the next separate frontend discovery or production-readiness slice:
-[T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md),
-search no-results/pagination, `/artwork` page/API query parity, sorted blog
-loading, navigation fallbacks, visible breadcrumbs, taxonomy option parity, or
-owner/legal-approved policy links/notices. Keep broad static/ISR migration and
-checkout/cart work separate unless explicitly assigned.
+Assign [T-151](../tasks/T-151-add-current-scope-search-empty-pagination.md) for
+current-scope public search no-results/pagination behavior while holding
+[T-143](../tasks/T-143-decide-public-search-scope.md) until the owner/product
+scope answer exists. T-152 may also run as an admin frontend entry-point slice.
+Keep visible breadcrumbs, taxonomy option parity, owner/legal-approved policy
+links/notices, broad static/ISR migration, and checkout/cart work separate
+unless explicitly assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
@@ -691,7 +707,11 @@ reassign T-133 unless admin dashboard source hygiene or existing dashboard
 failure behavior regresses. Do not reassign T-135 unless content image URL
 validation regresses. Do not reassign T-137 unless the client import-boundary
 guard or scoped direct-import cleanup regresses. Do not reassign T-136 unless
-the Cloudinary delivery helper or its source-hygiene guard regresses.
+the Cloudinary delivery helper or its source-hygiene guard regresses. Do not
+reassign T-144, T-145, or T-146 unless their collection-form error surfacing,
+`/artwork` query parity, or sorted blog loading behavior regresses. Do not
+reassign T-147 or T-148 unless main-nav fallback behavior or article/blog form
+error surfacing regresses.
 
 Keep favourite/watchlist server actions, broader account navigation, user
 comment mutations, profile editing, real pagination, checkout/cart, remaining

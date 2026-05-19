@@ -959,6 +959,11 @@ npm run lint
   lockout recovery, sanitized evidence handling, and credential/OAuth
   verification in the auth runbook without creating users, changing MongoDB
   data, inspecting environment values, or recording secrets.
+- 2026-05-19: Completed T-149 by adding the admin content operations runbook.
+  It links database, Cloudinary, Shopify, deployment, auth, and testing
+  runbooks for routine content maintenance and records destructive production
+  deletes as blocked until cascade preview, backup/review evidence, and
+  redacted audit evidence exist.
 
 ## Next Agent Action
 
@@ -973,7 +978,8 @@ reassigned unless their source-hygiene, documentation, policy, workflow,
 structured logging, public browsing client state contracts, or account/user
 client/shared utility/admin dashboard fallback contracts, or incident authority
 handoff regress. T-138 is complete and should not be reassigned unless the
-admin bootstrap/recovery runbook regresses.
+admin bootstrap/recovery runbook regresses. T-149 is complete and should not
+be reassigned unless the admin content operations runbook regresses.
 
 Keep Vercel project-setting ownership, CI/dependency-update automation,
 provider-specific monitoring, runtime Cloudinary cleanup or signed folder

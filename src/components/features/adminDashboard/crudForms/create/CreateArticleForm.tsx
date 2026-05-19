@@ -15,7 +15,7 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import type { ArtworkFrontend } from "@/lib/data/types";
+import type { ApiErrorResponse, ArtworkFrontend } from "@/lib/data/types";
 import {
   createArticleSchema,
   CreateArticleFormValues,
@@ -29,12 +29,27 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import { clientApi } from "@/lib/api/clientApi";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { CreateArticleResult } from "@/lib/api/admin/create/fetchers";
 
 interface CreateArticleFormProps {
   artworkInfo: ArtworkFrontend;
   onSuccess: () => void;
 }
+
+const visibleArticleCreateFields = [
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+  "section",
+  "overlayColour",
+  "artwork",
+] as const;
 
 export const CreateArticleForm = ({
   artworkInfo,
@@ -57,12 +72,29 @@ export const CreateArticleForm = ({
   });
 
   async function onSubmit(data: CreateArticleFormValues) {
+    form.clearErrors();
     setIsSubmitting(true);
     try {
-      await clientAdminApi.create.article(data);
+      const response: CreateArticleResult | ApiErrorResponse =
+        await clientApi.admin.create.article(data);
+
+      if (!response.success) {
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleArticleCreateFields,
+          fallbackMessage: "Failed to create article",
+        });
+        return;
+      }
+
       onSuccess();
-    } catch {
-      return;
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to create article",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -73,6 +105,12 @@ export const CreateArticleForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             <FormField
               control={form.control}
               name="title"
@@ -216,6 +254,11 @@ export const CreateArticleForm = ({
           <p className="text-sm text-gray-500">
             Artwork Title: {artworkInfo.title}
           </p>
+          {form.formState.errors.artwork?.message && (
+            <p role="alert" className="text-sm font-medium text-destructive">
+              {form.formState.errors.artwork.message}
+            </p>
+          )}
         </div>
       </div>
     </ScrollArea>

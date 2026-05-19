@@ -43,9 +43,28 @@ export type SearchResultItem = BaseSearchResultItem & {
   linkTo: LinkTo;
 };
 
+export type SearchResultTypeMetadata = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+  hasPreviousPage: boolean;
+};
+
+export type SearchResponseMetadata = {
+  page: number;
+  limit: number;
+  searchedTypes: SearchableContentType[];
+  total: number;
+  hasMore: boolean;
+  types: Partial<Record<SearchableContentType, SearchResultTypeMetadata>>;
+};
+
 // Type for the API response
 export interface SearchResponse {
   articles?: SearchResultItem[];
   blogs?: SearchResultItem[];
   collections?: SearchResultItem[];
+  metadata: SearchResponseMetadata;
 }

@@ -29,11 +29,27 @@ import {
 } from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
 import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
+import type { ApiErrorResponse } from "@/lib/data/types";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
 
 interface UpdateArtworkFormProps {
   artworkInfo: ArtworkFrontend; // Define this type based on your data structure
   onSuccess: () => void;
 }
+
+const visibleArtworkFields = [
+  "title",
+  "decade",
+  "artstyle",
+  "medium",
+  "surface",
+  "featured",
+  "shopifyProducts",
+] as const;
 
 export const UpdateArtworkForm = ({
   artworkInfo,
@@ -61,20 +77,29 @@ UpdateArtworkFormProps) => {
   });
 
   async function onSubmit(data: UpdateArtworkFormValues) {
+    form.clearErrors();
     setIsSubmitting(true);
     try {
-      const response = await clientApi.admin.update.patchArtwork(
-        artworkInfo._id,
-        data
-      );
+      const response: UpdateArtworkResult | ApiErrorResponse =
+        await clientApi.admin.update.patchArtwork(artworkInfo._id, data);
 
       if (!response.success) {
-        throw new Error("Failed to update artwork entry");
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleArtworkFields,
+          fallbackMessage: "Failed to update artwork",
+        });
+        return;
       }
 
       onSuccess();
-    } catch {
-      return;
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to update artwork",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -90,6 +115,12 @@ UpdateArtworkFormProps) => {
             })}
             className="space-y-8"
           >
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             <FormField
               control={form.control}
               name="title"

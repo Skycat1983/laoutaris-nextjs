@@ -43,6 +43,7 @@ describe("BlogListLoader", () => {
       page: 2,
     })) as ReactElement<{
       blogData: unknown;
+      activeSortBy?: string;
       prev: string | null;
       next: string | null;
     }>;
@@ -67,6 +68,7 @@ describe("BlogListLoader", () => {
           totalPages: 3,
         },
       },
+      activeSortBy: "latest",
       prev: "/blog?sortby=latest&page=1",
       next: "/blog?sortby=latest&page=3",
     });
@@ -99,6 +101,7 @@ describe("BlogListLoader", () => {
 
     const element = (await BlogListLoader({ page: 1 })) as ReactElement<{
       blogData: unknown;
+      activeSortBy?: string;
       prev: string | null;
       next: string | null;
     }>;
@@ -132,6 +135,7 @@ describe("BlogListLoader", () => {
           totalPages: 1,
         },
       },
+      activeSortBy: undefined,
       prev: null,
       next: null,
     });

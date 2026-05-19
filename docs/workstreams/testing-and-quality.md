@@ -346,11 +346,8 @@ refactoring without turning every change into a manual QA pass.
   verification plan: focused auth/admin/public archive/shop/Jest coverage, full
   Jest, env guard, lint after the `next lint` migration, and build.
 - Add focused coverage for reconciled A-011/A-017/A-018 gaps as they are
-  implemented: admin current-admin/last-admin delete guards, admin artwork
-  relationship existence checks, admin form server-error surfaces, public
-  search scope/no-results/pagination, `/artwork` page/API query parity, sorted
-  blog follow-up loading, main-nav fallbacks, visible breadcrumb labels, and
-  taxonomy option parity.
+  implemented: public search scope/no-results/pagination, visible breadcrumb
+  labels, and taxonomy option parity.
 
 ## Acceptance Criteria
 
@@ -1410,13 +1407,25 @@ npm run lint
 - 2026-05-19: Completed T-141 and T-142 with focused admin delete,
   article-write, and collection-write route coverage for current-admin/
   last-admin deletion guards and artwork relationship existence checks.
+- 2026-05-19: Completed T-144, T-145, and T-146 with focused admin collection
+  form, structured fetcher error, `/artwork` page/API query parity, blog
+  loader/view, and continuous-loading tests. Combined focused verification
+  passed across 8 suites and 30 tests.
+- 2026-05-19: Completed T-147 and T-148 with focused main-nav fallback and
+  admin article/blog form error-surface coverage. Combined focused verification
+  with the T-144 collection form regression suite passed across 3 suites and
+  15 tests.
+- 2026-05-19: Prepared T-150, T-151, and T-152 with focused verification
+  expectations for artwork form errors, current-scope search empty/pagination
+  behavior, and admin archive entry-point handoffs.
 
 ## Next Agent Action
 
-Choose from T-143's decision-first search scope follow-up, monitoring provider
-smoke coverage once the owner/platform provider decision is available, or other
-active quality backlog items. T-141 and T-142 are complete; do not reassign
-their focused route coverage unless it regresses.
+Use T-150, T-151, and T-152 as the next focused quality-bearing wave. Keep
+T-143 decision-first until the public search scope answer exists, and keep
+monitoring provider smoke coverage blocked until the owner/platform provider
+decision is available. T-141 through T-149 are complete; do not reassign their
+focused route/form/query/loading/nav/runbook coverage unless it regresses.
 Keep broader static/ISR migration separate from the
 completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
 and the completed T-117 through T-134 observability documentation, logging,

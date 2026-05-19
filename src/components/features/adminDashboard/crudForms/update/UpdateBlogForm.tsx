@@ -18,10 +18,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import type { BlogEntryFrontend } from "@/lib/data/types";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
+import type { ApiErrorResponse, BlogEntryFrontend } from "@/lib/data/types";
+import { clientApi } from "@/lib/api/clientApi";
 import { updateBlogFormSchema, UpdateBlogFormValues } from "@/lib/data/schemas";
 import { DatePicker } from "@/components/modules/datePicker/DatePicker";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
+
+const visibleBlogUpdateFields = [
+  "displayDate",
+  "imageUrl",
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+  "featured",
+] as const;
 
 export const UpdateBlogForm = ({
   blogInfo,
@@ -56,18 +71,28 @@ export const UpdateBlogForm = ({
   };
 
   async function onSubmit(data: UpdateBlogFormValues) {
+    form.clearErrors();
     setIsSubmitting(true);
     try {
-      const response = await clientAdminApi.update.patchBlog(
-        blogInfo._id,
-        data
-      );
+      const response: UpdateBlogResult | ApiErrorResponse =
+        await clientApi.admin.update.patchBlog(blogInfo._id, data);
 
-      if (response.success) {
-        onSuccess?.();
+      if (!response.success) {
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleBlogUpdateFields,
+          fallbackMessage: "Failed to update blog",
+        });
+        return;
       }
-    } catch {
-      return;
+
+      onSuccess?.();
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message: error instanceof Error ? error.message : "Failed to update blog",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -83,6 +108,12 @@ export const UpdateBlogForm = ({
             })}
             className="space-y-8"
           >
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             {/* Display Date Field with Year Dropdown */}
             <FormField
               control={form.control}
@@ -242,6 +273,7 @@ export const UpdateBlogForm = ({
                     <FormDescription>
                       Mark this blog post as featured
                     </FormDescription>
+                    <FormMessage />
                   </div>
                 </FormItem>
               )}

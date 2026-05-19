@@ -102,7 +102,14 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       currentUrl
     );
 
-    return <BlogListView blogData={blogData} next={next} prev={prev} />;
+    return (
+      <BlogListView
+        blogData={blogData}
+        activeSortBy={sortby}
+        next={next}
+        prev={prev}
+      />
+    );
   } catch (error) {
     throw error;
   }

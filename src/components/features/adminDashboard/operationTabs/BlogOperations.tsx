@@ -15,9 +15,13 @@ type OperationType = "create" | "update" | "delete";
 
 interface BlogOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
-export function BlogOperations({ operationType }: BlogOperationsProps) {
+export function BlogOperations({
+  operationType,
+  initialDocumentId = null,
+}: BlogOperationsProps) {
   const [blogInfo, setBlogInfo] = useState<BlogEntryFrontend | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
@@ -68,6 +72,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
             readDocument={(id) => clientAdminApi.read.blog(id)}
             documentType="Blog"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {blogInfo && (
@@ -87,6 +92,7 @@ export function BlogOperations({ operationType }: BlogOperationsProps) {
             readDocument={(id) => clientApi.admin.read.blog(id)}
             documentType="Blog"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {blogInfo && (

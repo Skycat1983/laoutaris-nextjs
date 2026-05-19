@@ -15,20 +15,30 @@ export const ARTWORK_LIST_QUERY_LIMITS = {
   maxLimit: 50,
 } as const;
 
+type ArtworkListQueryParam = string | string[] | null | undefined;
+
 export type ArtworkListQueryInput = {
-  filterMode?: string | string[] | null;
-  sortBy?: string | string[] | null;
-  sortColor?: string | string[] | null;
-  page?: string | string[] | null;
-  limit?: string | string[] | null;
-  decade?: string[] | null;
-  artstyle?: string[] | null;
-  medium?: string[] | null;
-  surface?: string[] | null;
+  filterMode?: ArtworkListQueryParam;
+  sortBy?: ArtworkListQueryParam;
+  sortColor?: ArtworkListQueryParam;
+  page?: ArtworkListQueryParam;
+  limit?: ArtworkListQueryParam;
+  decade?: ArtworkListQueryParam;
+  artstyle?: ArtworkListQueryParam;
+  medium?: ArtworkListQueryParam;
+  surface?: ArtworkListQueryParam;
 };
 
 const firstParamValue = (value: string | string[] | null | undefined) =>
   (Array.isArray(value) ? value[0] : value) ?? undefined;
+
+const paramValues = (value: ArtworkListQueryParam) => {
+  if (value == null) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+};
 
 const optionalParamValue = (value: unknown) =>
   value == null || (typeof value === "string" && value.trim() === "")
@@ -125,10 +135,10 @@ export const parseArtworkListQuery = (input: ArtworkListQueryInput) =>
     sortColor: firstParamValue(input.sortColor),
     page: firstParamValue(input.page),
     limit: firstParamValue(input.limit),
-    decade: input.decade ?? [],
-    artstyle: input.artstyle ?? [],
-    medium: input.medium ?? [],
-    surface: input.surface ?? [],
+    decade: paramValues(input.decade),
+    artstyle: paramValues(input.artstyle),
+    medium: paramValues(input.medium),
+    surface: paramValues(input.surface),
   });
 
 export const searchParamsToArtworkListQueryInput = (

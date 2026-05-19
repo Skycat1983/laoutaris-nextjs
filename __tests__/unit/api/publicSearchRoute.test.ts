@@ -48,6 +48,23 @@ const successResult = {
         linkTo: "/blog/studio-update",
       },
     ],
+    metadata: {
+      page: 1,
+      limit: 10,
+      searchedTypes: ["blogs"],
+      total: 1,
+      hasMore: false,
+      types: {
+        blogs: {
+          page: 1,
+          limit: 10,
+          total: 1,
+          totalPages: 1,
+          hasMore: false,
+          hasPreviousPage: false,
+        },
+      },
+    },
   },
 } as never;
 

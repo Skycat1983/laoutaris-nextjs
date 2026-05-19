@@ -11,6 +11,7 @@ when commands, environment variables, or workflows change.
 - [Deployment](deployment.md)
 - [Incident response](incident-response.md)
 - [Database](database.md)
+- [Admin content operations](admin-content-operations.md)
 - [Shopify operations](shopify-operations.md)
 - [Cloudinary](cloudinary.md)
 - [Auth and admin access](auth.md)

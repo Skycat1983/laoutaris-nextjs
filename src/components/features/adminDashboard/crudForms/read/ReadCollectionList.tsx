@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { CollectionFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 // TODO: when we click on a collection, we should fetch and render the artworks
 
@@ -15,6 +16,7 @@ export function ReadCollectionList() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -70,14 +72,45 @@ export function ReadCollectionList() {
                   {collection.summary}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(collection._id)}
-              >
-                <CopyIcon className="h-4 w-4" />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Update ${collection.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: collection._id,
+                      operation: "update",
+                    })
+                  }
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${collection.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: collection._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy ${collection.title} ID`}
+                  onClick={() => handleCopyId(collection._id)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

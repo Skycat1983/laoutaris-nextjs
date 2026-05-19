@@ -14,9 +14,13 @@ type OperationType = "create" | "update" | "delete";
 
 interface ArticleOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
-export function ArticleOperations({ operationType }: ArticleOperationsProps) {
+export function ArticleOperations({
+  operationType,
+  initialDocumentId = null,
+}: ArticleOperationsProps) {
   const [artworkInfo, setArtworkInfo] = useState<ArtworkFrontend | null>(null);
   const [articleInfo, setArticleInfo] =
     useState<ArticleFrontendPopulated | null>(null);
@@ -88,6 +92,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {articleInfo && (
@@ -106,6 +111,7 @@ export function ArticleOperations({ operationType }: ArticleOperationsProps) {
             readDocument={(id) => clientApi.admin.read.article(id)}
             documentType="Article"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {articleInfo && (

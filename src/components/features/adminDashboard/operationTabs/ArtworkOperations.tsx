@@ -19,9 +19,13 @@ type OperationType = "create" | "update" | "delete";
 
 interface ArtworkOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
-export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
+export function ArtworkOperations({
+  operationType,
+  initialDocumentId = null,
+}: ArtworkOperationsProps) {
   const [uploadInfo, setUploadInfo] = useState<CloudinaryImageDB | null>(null);
   const [artworkInfo, setArtworkInfo] = useState<ArtworkFrontend | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -113,6 +117,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
             readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {artworkInfo && (
@@ -131,6 +136,7 @@ export function ArtworkOperations({ operationType }: ArtworkOperationsProps) {
             readDocument={(id) => clientAdminApi.read.artwork(id)}
             documentType="Artwork"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {artworkInfo && (

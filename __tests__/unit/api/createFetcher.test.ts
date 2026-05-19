@@ -73,6 +73,10 @@ describe("createFetcher", () => {
         {
           success: false,
           error: "Artwork not found",
+          fieldErrors: {
+            imageUrl: ["Invalid image URL"],
+          },
+          formErrors: ["Check the submitted payload"],
         },
         { ok: false, status: 404 }
       )
@@ -86,6 +90,10 @@ describe("createFetcher", () => {
     await expect(fetcher("/missing")).resolves.toEqual({
       success: false,
       error: "Artwork not found",
+      fieldErrors: {
+        imageUrl: ["Invalid image URL"],
+      },
+      formErrors: ["Check the submitted payload"],
     });
   });
 

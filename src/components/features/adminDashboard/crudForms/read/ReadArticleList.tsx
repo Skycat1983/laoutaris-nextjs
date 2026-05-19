@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
 import type { ArticleFrontendPopulated } from "@/lib/data/types";
 import { ArticleFilterDropdowns } from "../../inputs/ArticleFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 type FilterKey = "section" | "overlayColour" | null;
 
@@ -25,6 +26,7 @@ export function ReadArticleList() {
     key: null,
     value: null,
   });
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -102,14 +104,45 @@ export function ReadArticleList() {
                   {article.section} - {article.overlayColour}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(article._id)}
-              >
-                <CopyIcon className="h-4 w-4" />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Update ${article.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: article._id,
+                      operation: "update",
+                    })
+                  }
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${article.title}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: article._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy ${article.title} ID`}
+                  onClick={() => handleCopyId(article._id)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

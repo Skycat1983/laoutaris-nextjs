@@ -44,7 +44,13 @@ export const createFetcher = (config: FetcherConfig): Fetcher => {
       const result = await response.json();
 
       if (!response.ok || !result.success) {
+        const errorPayload =
+          result && typeof result === "object"
+            ? (result as Record<string, unknown>)
+            : {};
+
         return {
+          ...errorPayload,
           success: false,
           error:
             typeof result.error === "string"

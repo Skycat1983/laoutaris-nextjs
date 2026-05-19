@@ -8,24 +8,32 @@ import { clientApi } from "@/lib/api/clientApi";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+
+type BlogSectionSortBy = "latest" | "oldest" | "popular" | "featured";
+
 interface BlogLayoutProps {
   initialBlogEntries: BlogEntryFrontend[];
   initialPage?: number;
+  initialHasMore?: boolean;
+  sortby?: BlogSectionSortBy;
 }
 
 export const BlogSectionContinuous = ({
   initialBlogEntries,
   initialPage = 1,
+  initialHasMore = true,
+  sortby,
 }: BlogLayoutProps) => {
   const [blogEntries, setBlogEntries] = useState(initialBlogEntries);
   const [page, setPage] = useState(initialPage);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialHasMore);
 
   const handleLoadMore = useCallback(async () => {
     const nextPage = page + 1;
     const response = await clientApi.public.blog.multiple({
       page: nextPage,
       limit: 10,
+      ...(sortby ? { sortby } : {}),
     });
 
     if (!response.success) {
@@ -37,8 +45,11 @@ export const BlogSectionContinuous = ({
     } else {
       setBlogEntries((prev) => [...prev, ...response.data]);
       setPage(nextPage);
+      setHasMore(
+        response.metadata ? nextPage < response.metadata.totalPages : true
+      );
     }
-  }, [page]);
+  }, [page, sortby]);
 
   const { observerRef, isLoading, error } = useInfiniteScroll({
     onLoadMore: handleLoadMore,

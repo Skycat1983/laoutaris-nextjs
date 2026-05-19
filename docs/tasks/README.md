@@ -153,6 +153,15 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-141 Protect admin user deletion](T-141-protect-admin-user-deletion.md) | Completed | Added current-admin and last-admin lockout protections to admin user deletion. |
 | [T-142 Verify admin artwork relationships](T-142-verify-admin-artwork-relationships.md) | Completed | Rejected admin article and collection relationship writes that reference missing artworks. |
 | [T-143 Decide public search scope](T-143-decide-public-search-scope.md) | Planned | Decide whether public search is site-wide or explicitly scoped to articles, blogs, and collections before implementation. |
+| [T-144 Surface admin collection form errors](T-144-surface-admin-collection-form-errors.md) | Completed | Made collection create/update API failures visible in admin forms, preserved structured fetcher errors, and restored the create success callback. |
+| [T-145 Align artwork page query parsing](T-145-align-artwork-page-query-parsing.md) | Completed | Made `/artwork` page query defaults and validation use the shared artwork list schema used by the API. |
+| [T-146 Preserve sorted blog loading](T-146-preserve-sorted-blog-loading.md) | Completed | Preserved active blog sort state through sorted list follow-up loading and rendered sorted pagination links. |
+| [T-147 Render resilient main nav fallbacks](T-147-render-resilient-main-nav-fallbacks.md) | Completed | Kept primary navigation visible with route-root fallbacks when dynamic biography or collection nav data is missing. |
+| [T-148 Standardize admin article blog form errors](T-148-standardize-admin-article-blog-form-errors.md) | Completed | Applied structured API error display to admin article and blog create/update forms. |
+| [T-149 Add admin content operations runbook](T-149-add-admin-content-operations-runbook.md) | Completed | Documented repeatable admin content maintenance steps and blocked destructive-delete preconditions. |
+| [T-150 Surface admin artwork form errors](T-150-surface-admin-artwork-form-errors.md) | Planned | Apply structured API error display to admin artwork create/update forms and Shopify product-link validation failures. |
+| [T-151 Add current-scope search empty and pagination states](T-151-add-current-scope-search-empty-pagination.md) | Planned | Add honest no-results and pagination metadata/UI behavior for current article, blog, and collection search. |
+| [T-152 Improve admin archive entry points](T-152-improve-admin-archive-entry-points.md) | Planned | Add direct read-list handoffs into admin update/delete workflows to reduce manual ObjectId copy/paste. |
 
 ## Rules
 

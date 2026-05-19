@@ -15,7 +15,11 @@ import {
 } from "@/components/shadcn/form";
 import { Input } from "@/components/shadcn/input";
 import { Button } from "@/components/shadcn/button";
-import type { ArticleFrontendPopulated } from "@/lib/data/types";
+import type {
+  ApiErrorResponse,
+  ArticleFrontendPopulated,
+  ArtworkFrontend,
+} from "@/lib/data/types";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
 import {
   Select,
@@ -25,17 +29,32 @@ import {
   SelectValue,
 } from "@/components/shadcn/select";
 import { Textarea } from "@/components/shadcn/textarea";
-import type { ArtworkFrontend } from "@/lib/data/types";
 
 import {
   UpdateArticleFormValues,
   updateArticleSchema,
 } from "@/lib/data/schemas";
 import { clientApi } from "@/lib/api/clientApi";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { UpdateArticleResult } from "@/lib/api/admin/update/fetchers";
+
 interface UpdateArticleFormProps {
   articleInfo: ArticleFrontendPopulated;
   onSuccess: () => void;
 }
+
+const visibleArticleUpdateFields = [
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+  "section",
+  "overlayColour",
+  "artwork",
+] as const;
 
 export const UpdateArticleForm = ({
   articleInfo,
@@ -82,15 +101,32 @@ export const UpdateArticleForm = ({
   };
 
   async function onSubmit(data: UpdateArticleFormValues) {
+    form.clearErrors();
     setIsSubmitting(true);
     try {
-      await clientApi.admin.update.patchArticle(articleInfo._id, {
-        ...data,
-        artwork: newArtwork?._id || articleInfo.artwork._id,
-      });
+      const response: UpdateArticleResult | ApiErrorResponse =
+        await clientApi.admin.update.patchArticle(articleInfo._id, {
+          ...data,
+          artwork: newArtwork?._id || articleInfo.artwork._id,
+        });
+
+      if (!response.success) {
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleArticleUpdateFields,
+          fallbackMessage: "Failed to update article",
+        });
+        return;
+      }
+
       onSuccess();
-    } catch {
-      return;
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to update article",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -101,6 +137,12 @@ export const UpdateArticleForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             {/* Artwork Selection Section */}
             <div className="space-y-4 p-4 border rounded-lg">
               <h3 className="font-semibold">Associated Artwork</h3>
@@ -121,6 +163,11 @@ export const UpdateArticleForm = ({
               {newArtwork && (
                 <p className="text-sm text-green-600">
                   ✓ New Artwork Selected: {newArtwork.title}
+                </p>
+              )}
+              {form.formState.errors.artwork?.message && (
+                <p role="alert" className="text-sm font-medium text-destructive">
+                  {form.formState.errors.artwork.message}
                 </p>
               )}
             </div>

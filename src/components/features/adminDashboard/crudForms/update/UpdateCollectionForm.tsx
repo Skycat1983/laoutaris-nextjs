@@ -16,8 +16,11 @@ import {
 import { Input } from "@/components/shadcn/input";
 import { Textarea } from "@/components/shadcn/textarea";
 import { ScrollArea } from "@/components/shadcn/scroll-area";
-import type { CollectionFrontendPopulated } from "@/lib/data/types";
-import type { ArtworkFrontend } from "@/lib/data/types";
+import type {
+  ApiErrorResponse,
+  ArtworkFrontend,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types";
 import {
   Tabs,
   TabsContent,
@@ -29,6 +32,42 @@ import {
   updateCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
+
+type CollectionUpdateFieldName = keyof UpdateCollectionFormValues;
+
+type CollectionFormErrorResponse = ApiErrorResponse & {
+  fieldErrors?: Partial<Record<string, string[] | undefined>>;
+  formErrors?: string[];
+};
+
+const visibleCollectionFields = [
+  "imageUrl",
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+  "artworksToAdd",
+] as const satisfies readonly CollectionUpdateFieldName[];
+
+const isVisibleCollectionField = (
+  field: string
+): field is (typeof visibleCollectionFields)[number] =>
+  visibleCollectionFields.includes(
+    field as (typeof visibleCollectionFields)[number]
+  );
+
+const firstErrorMessage = (messages: unknown): string | null => {
+  if (!Array.isArray(messages)) {
+    return null;
+  }
+
+  return (
+    messages.find(
+      (message): message is string => typeof message === "string"
+    ) ?? null
+  );
+};
+
 interface UpdateCollectionFormProps {
   collectionInfo: CollectionFrontendPopulated;
   onSuccess: () => void;
@@ -61,8 +100,47 @@ export const UpdateCollectionForm = ({
       summary: collectionInfo.summary,
       text: collectionInfo.text,
       imageUrl: collectionInfo.imageUrl,
+      artworksToAdd: [],
+      artworksToRemove: [],
     },
   });
+
+  const applyApiErrors = (response: CollectionFormErrorResponse) => {
+    let appliedFieldError = false;
+    const formMessages = response.formErrors?.filter(
+      (message): message is string => typeof message === "string"
+    ) ?? [];
+
+    Object.entries(response.fieldErrors ?? {}).forEach(([field, messages]) => {
+      const message = firstErrorMessage(messages);
+      if (!message) {
+        return;
+      }
+
+      if (isVisibleCollectionField(field)) {
+        form.setError(field, { type: "server", message });
+        appliedFieldError = true;
+        return;
+      }
+
+      formMessages.push(message);
+    });
+
+    if (formMessages.length > 0) {
+      form.setError("root", {
+        type: "server",
+        message: formMessages.join(" "),
+      });
+      return;
+    }
+
+    if (!appliedFieldError) {
+      form.setError("root", {
+        type: "server",
+        message: response.error || "Failed to update collection",
+      });
+    }
+  };
 
   const handleRemoveArtwork = (artworkId: string) => {
     setArtworks((current) => current.filter((a) => a._id !== artworkId));
@@ -101,10 +179,11 @@ export const UpdateCollectionForm = ({
   };
 
   async function onSubmit(data: UpdateCollectionFormValues) {
+    form.clearErrors();
     setIsSubmitting(true);
     try {
       // Send both the form data and artwork changes
-      await clientApi.admin.update.patchCollection(
+      const response = await clientApi.admin.update.patchCollection(
         collectionInfo._id,
         {
           ...data,
@@ -113,9 +192,18 @@ export const UpdateCollectionForm = ({
         }
       );
 
+      if (!response.success) {
+        applyApiErrors(response as CollectionFormErrorResponse);
+        return;
+      }
+
       onSuccess();
-    } catch {
-      return;
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message:
+          error instanceof Error ? error.message : "Failed to update collection",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -126,6 +214,12 @@ export const UpdateCollectionForm = ({
       <div className="grid grid-cols-1 gap-12 w-full lg:grid-cols-2 p-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             {/* Artwork Management Section */}
             <div className="space-y-4 p-4 border rounded-lg">
               <h3 className="font-semibold">Associated Artworks</h3>
@@ -151,6 +245,14 @@ export const UpdateCollectionForm = ({
                 {artworkToAdd && (
                   <p className="text-sm text-green-600">
                     ✓ Ready to add: {artworkToAdd.title}
+                  </p>
+                )}
+                {form.formState.errors.artworksToAdd?.message && (
+                  <p
+                    role="alert"
+                    className="text-sm font-medium text-destructive"
+                  >
+                    {form.formState.errors.artworksToAdd.message}
                   </p>
                 )}
               </div>

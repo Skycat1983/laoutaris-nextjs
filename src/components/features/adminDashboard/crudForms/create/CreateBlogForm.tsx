@@ -24,13 +24,28 @@ import {
   createBlogFormSchema,
   CreateBlogFormValues,
 } from "@/lib/data/schemas/blogSchema";
-import { clientAdminApi } from "@/lib/api/admin/clientAdminApi";
 import { clientApi } from "@/lib/api/clientApi";
 import { DatePicker } from "@/components/modules/datePicker/DatePicker";
+import type { ApiErrorResponse } from "@/lib/data/types";
+import {
+  applyApiFormErrors,
+  type StructuredFormErrorResponse,
+} from "../formApiErrors";
+import type { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
 
 interface CreateBlogFormProps {
   onSuccess?: () => void;
 }
+
+const visibleBlogCreateFields = [
+  "displayDate",
+  "imageUrl",
+  "title",
+  "subtitle",
+  "summary",
+  "text",
+  "featured",
+] as const;
 
 export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,17 +67,30 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
   });
 
   async function onSubmit(values: CreateBlogFormValues) {
+    form.clearErrors();
     try {
       setIsSubmitting(true);
-      const response = await clientApi.admin.create.blog(values);
+      const response: CreateBlogResult | ApiErrorResponse =
+        await clientApi.admin.create.blog(values);
 
-      if (response.success) {
-        form.reset();
-        router.refresh();
-        onSuccess?.();
+      if (!response.success) {
+        applyApiFormErrors({
+          form,
+          response: response as StructuredFormErrorResponse,
+          visibleFields: visibleBlogCreateFields,
+          fallbackMessage: "Failed to create blog",
+        });
+        return;
       }
-    } catch {
-      return;
+
+      form.reset();
+      router.refresh();
+      onSuccess?.();
+    } catch (error) {
+      form.setError("root", {
+        type: "server",
+        message: error instanceof Error ? error.message : "Failed to create blog",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -84,6 +112,12 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
             })}
             className="space-y-8"
           >
+            {form.formState.errors.root?.message && (
+              <p role="alert" className="text-sm font-medium text-destructive">
+                {form.formState.errors.root.message}
+              </p>
+            )}
+
             <FormField
               control={form.control}
               name="displayDate"
@@ -238,6 +272,7 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
                     <FormDescription>
                       Mark this blog post as featured
                     </FormDescription>
+                    <FormMessage />
                   </div>
                 </FormItem>
               )}

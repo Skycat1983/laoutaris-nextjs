@@ -154,8 +154,6 @@ content operations repeatable and safe.
 - Confirm delete behavior for content with related records.
 - Add cascade-preview, backup/review evidence, and redacted audit-event
   requirements for destructive admin deletes by resource type.
-- Surface structured admin API field/form errors in dashboard create/update
-  forms, and fix collection create success handling.
 - Replace normal admin maintenance flows that rely on manual ObjectId
   copy/paste with paginated/searchable entry points, keeping ObjectId lookup as
   an escape hatch.
@@ -169,8 +167,6 @@ content operations repeatable and safe.
   consistency.
 - Decide whether the mostly unused translation pipeline is in launch scope; if
   not, route it to a pruning task.
-- Add an admin content operations runbook for artwork, article, blog,
-  collection, comment, and user maintenance steps.
 - Consolidate useful root Shopify historical notes before deleting or archiving
   the root files.
 
@@ -351,18 +347,34 @@ Use manual admin checks when changing dashboard behavior.
   last-admin deletion in the admin user delete route.
 - 2026-05-19: Completed T-142 by server-verifying article `artwork` and
   collection `artworksToAdd` references before persistence.
+- 2026-05-19: Completed T-144 for collection admin forms. Structured route
+  field/form errors now surface in collection create/update forms, and
+  collection create invokes the operation success callback after persistence.
+- 2026-05-19: Completed T-148 by applying the structured API error display
+  pattern to article and blog create/update forms. Artwork/product-link form
+  error surfacing remains a separate candidate slice.
+- 2026-05-19: Completed T-149 by adding the admin content operations runbook
+  and linking it from the runbooks index. The runbook documents routine
+  create/update workflows and keeps production destructive deletes blocked
+  until cascade previews, backup/review evidence, and audit evidence exist.
+- 2026-05-19: Prepared T-150 for the remaining artwork/product-link form error
+  surfacing slice and T-152 for direct archive read-list handoffs into
+  update/delete workflows. These can run in parallel if they avoid shared
+  trackers and keep to their owned form versus read-list/operation surfaces.
 
 ## Next Agent Action
 
-Choose the next content/admin slice from remaining reconciled gaps: structured
-admin form error surfacing, destructive cascade previews, admin content
-operations runbook, blog pinned/tag workflow decision, collection section
-policy, or taxonomy option parity. T-141 and T-142 are complete; do not
-reassign them unless their route protections regress.
+Assign [T-150](../tasks/T-150-surface-admin-artwork-form-errors.md) and
+[T-152](../tasks/T-152-improve-admin-archive-entry-points.md) as separate
+content/admin slices when agents are available. Keep destructive cascade
+previews, blog pinned/tag workflow decision, collection section policy, and
+taxonomy option parity separate. T-141, T-142, T-144, T-148, and T-149 are
+complete; do not reassign them unless their route protections, form behavior,
+or runbook content regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, new delivery-transform retuning, and Cloudinary account changes
 separate unless explicitly assigned. Keep persistence-time Shopify API
 validation, checkout/cart ownership, product-link data migration, route-level
 API logging, global logging policy, destructive cascade previews, and admin
-content runbook work separate.
+content runbook follow-ups separate.

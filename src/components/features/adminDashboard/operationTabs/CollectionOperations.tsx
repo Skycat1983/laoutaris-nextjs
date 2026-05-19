@@ -15,10 +15,12 @@ type OperationType = "create" | "update" | "delete";
 
 interface CollectionOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
 export function CollectionOperations({
   operationType,
+  initialDocumentId = null,
 }: CollectionOperationsProps) {
   const [collectionInfo, setCollectionInfo] =
     useState<CollectionFrontendPopulated | null>(null);
@@ -79,6 +81,7 @@ export function CollectionOperations({
             readDocument={(id) => clientAdminApi.read.collection(id)}
             documentType="Collection"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {collectionInfo && (
@@ -97,6 +100,7 @@ export function CollectionOperations({
             readDocument={(id) => clientApi.admin.read.collection(id)}
             documentType="Collection"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {collectionInfo && (

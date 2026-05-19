@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Form,
   FormField,
@@ -27,6 +27,7 @@ interface DocumentReaderProps<T> {
   readDocument: (id: string) => Promise<ApiResponse<T>>;
   documentType: string;
   buttonVariant?: "default" | "destructive" | "outline";
+  initialObjectId?: string | null;
 }
 
 export function DocumentReader<T>({
@@ -34,8 +35,10 @@ export function DocumentReader<T>({
   readDocument,
   documentType,
   buttonVariant = "default",
+  initialObjectId = null,
 }: DocumentReaderProps<T>) {
   const [isFound, setIsFound] = useState(false);
+  const lastInitialObjectId = useRef<string | null>(null);
 
   const form = useForm<ReadFormValues>({
     resolver: zodResolver(readSchema),
@@ -44,17 +47,49 @@ export function DocumentReader<T>({
     },
   });
 
-  async function onSubmit(formData: ReadFormValues) {
-    try {
-      const response = await readDocument(formData.objectId);
-      if (response.success) {
-        setIsFound(true);
-        onDocumentFound(response.data);
-      } else {
+  const lookupDocument = useCallback(
+    async (objectId: string) => {
+      try {
+        const response = await readDocument(objectId);
+        if (response.success) {
+          setIsFound(true);
+          onDocumentFound(response.data);
+        } else {
+          setIsFound(false);
+          form.setError("objectId", {
+            message: `${documentType} not found`,
+          });
+        }
+      } catch {
+        setIsFound(false);
         form.setError("objectId", {
           message: `${documentType} not found`,
         });
       }
+    },
+    [documentType, form, onDocumentFound, readDocument]
+  );
+
+  useEffect(() => {
+    const normalizedInitialObjectId = initialObjectId?.trim();
+    if (
+      !normalizedInitialObjectId ||
+      lastInitialObjectId.current === normalizedInitialObjectId
+    ) {
+      return;
+    }
+
+    lastInitialObjectId.current = normalizedInitialObjectId;
+    form.setValue("objectId", normalizedInitialObjectId, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    void lookupDocument(normalizedInitialObjectId);
+  }, [form, initialObjectId, lookupDocument]);
+
+  async function onSubmit(formData: ReadFormValues) {
+    try {
+      await lookupDocument(formData.objectId);
     } catch {
       form.setError("objectId", {
         message: `${documentType} not found`,

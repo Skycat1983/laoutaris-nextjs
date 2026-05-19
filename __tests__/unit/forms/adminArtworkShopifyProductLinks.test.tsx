@@ -206,6 +206,61 @@ describe("admin artwork Shopify product-link forms", () => {
     expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 
+  it("surfaces artwork create field errors without calling success", async () => {
+    const onSuccess = jest.fn();
+    mockCreateArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Invalid artwork input",
+      fieldErrors: {
+        title: ["An artwork with this title already exists"],
+      },
+      formErrors: [],
+    });
+
+    render(<CreateArtworkForm uploadInfo={validImage} onSuccess={onSuccess} />);
+
+    fireEvent.change(screen.getByLabelText("Title"), {
+      target: { value: "Archive Work" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(
+      await screen.findByText("An artwork with this title already exists")
+    ).toBeInTheDocument();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it("surfaces artwork create product-link errors near the link controls", async () => {
+    const onSuccess = jest.fn();
+    mockCreateArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Invalid artwork input",
+      fieldErrors: {
+        shopifyProducts: ["Shopify product ID is already linked"],
+      },
+      formErrors: [],
+    });
+
+    render(<CreateArtworkForm uploadInfo={validImage} onSuccess={onSuccess} />);
+
+    fireEvent.change(screen.getByLabelText("Title"), {
+      target: { value: "Archive Work" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Add Shopify product link" })
+    );
+    fireEvent.change(screen.getByLabelText("Shopify product ID 1"), {
+      target: { value: "10538938761480" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+
+    expect(
+      await screen.findByText("Shopify product ID is already linked")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Shopify product links")).toBeInTheDocument();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
   it("blocks duplicate Shopify product IDs before the create API request", async () => {
     render(<CreateArtworkForm uploadInfo={validImage} onSuccess={jest.fn()} />);
 
@@ -411,5 +466,49 @@ describe("admin artwork Shopify product-link forms", () => {
       );
     });
     expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it("surfaces artwork update product-link errors without calling success", async () => {
+    const onSuccess = jest.fn();
+    mockPatchArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Invalid artwork input",
+      fieldErrors: {
+        shopifyProducts: ["Shopify product links must be unique"],
+      },
+      formErrors: [],
+    });
+
+    render(
+      <UpdateArtworkForm artworkInfo={existingArtwork} onSuccess={onSuccess} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Artwork" }));
+
+    expect(
+      await screen.findByText("Shopify product links must be unique")
+    ).toBeInTheDocument();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it("surfaces artwork update form errors without calling success", async () => {
+    const onSuccess = jest.fn();
+    mockPatchArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Invalid artwork input",
+      fieldErrors: {},
+      formErrors: ["Artwork update could not be saved"],
+    });
+
+    render(
+      <UpdateArtworkForm artworkInfo={existingArtwork} onSuccess={onSuccess} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Artwork" }));
+
+    expect(
+      await screen.findByText("Artwork update could not be saved")
+    ).toBeInTheDocument();
+    expect(onSuccess).not.toHaveBeenCalled();
   });
 });
