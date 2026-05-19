@@ -849,16 +849,22 @@ Add API route tests where behavior is changed.
 - 2026-05-19: Completed T-145 by aligning `/artwork` page query parsing,
   defaults, valid filter normalization, invalid enum fallback, and pagination
   bounds with the shared public artwork query schema.
+- 2026-05-19: Completed T-151 by adding per-type public search metadata for
+  articles, blogs, and collections, with selected-type pagination state exposed
+  through the service/API/page contract.
+- 2026-05-19: Prepared T-154 for route-local runtime validation of public
+  article and collection section parameters using canonical taxonomy constants.
 
 ## Next Agent Action
 
-Choose the next data/API slice from public search scope/metadata, section
-runtime validation after taxonomy policy, broader response-helper cleanup,
-route-local DB ownership gaps, field-contract matrices, server-side shop
-pagination/sorting contracts, lower-level logging policy, admin Shopify-link
-work, or existing content image data migration. T-122, T-135, T-142, T-144's
-fetcher preservation, and T-145 are complete and should not be reassigned
-unless their guards, validation behavior, or query/fetcher contracts regress.
+Assign [T-154](../tasks/T-154-validate-public-taxonomy-sections.md) for public
+taxonomy section runtime validation when an agent is available. Keep public
+search scope, broader response-helper cleanup, route-local DB ownership gaps,
+field-contract matrices, server-side shop pagination/sorting contracts,
+lower-level logging policy, admin Shopify-link work, and existing content image
+data migration separate. T-122, T-135, T-142, T-144's fetcher preservation,
+T-145, and T-151 are complete and should not be reassigned unless their guards,
+validation behavior, search metadata, or query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

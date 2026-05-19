@@ -1,6 +1,6 @@
 # T-151 Add Current-Scope Search Empty And Pagination States
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -79,6 +79,7 @@ List candidate tracker updates in this task's handoff notes.
 - `src/components/modules/search/SearchResultsSection.tsx`
 - `__tests__/unit/searchPage.test.tsx`
 - `__tests__/unit/data/getPublicSearchResults.test.ts`
+- `__tests__/unit/api/publicSearchRoute.test.ts`
 - `docs/tasks/T-151-add-current-scope-search-empty-pagination.md`
 
 ## Acceptance Criteria
@@ -103,6 +104,21 @@ Run `npm run lint` if shared public search types or page rendering change.
 ## Handoff Notes
 
 - Prepared after T-147 through T-149 reconciliation.
+- Completed on 2026-05-19.
+- Added per-type current-scope search metadata to `getPublicSearchResults()`,
+  including `page`, `limit`, total counts, total pages, and has-more/previous
+  state for articles, blogs, and collections.
+- `/search` now renders explicit no-results copy for all-type current-scope
+  searches and selected-type empty searches. Selected-type searches render
+  previous/next pagination only when backed by returned metadata; all-type
+  searches intentionally avoid global pagination controls.
+- `SearchResultsSection` preserves existing result cards and can render
+  metadata-backed totals plus a selected-section empty message.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/searchPage.test.tsx __tests__/unit/data/getPublicSearchResults.test.ts`;
+  `npm test -- --runTestsByPath __tests__/unit/api/publicSearchRoute.test.ts`;
+  `npm run lint`;
+  `git diff --check`.
 - Candidate shared-tracker update: mark the F-049/A-017 no-results and
   current-scope pagination gap partially or fully mitigated, while keeping
   F-098/T-143 search-scope decision open.

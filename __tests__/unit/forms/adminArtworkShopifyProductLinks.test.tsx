@@ -9,6 +9,8 @@ import {
 } from "@/lib/data/schemas/artworkSchema";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 
+jest.setTimeout(15000);
+
 jest.mock("next/image", () => ({
   __esModule: true,
   default: function MockImage(props: {

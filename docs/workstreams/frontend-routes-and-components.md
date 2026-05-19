@@ -685,16 +685,24 @@ Use browser checks for layout-sensitive changes.
   deciding the broader site-wide search scope.
 - 2026-05-19: Prepared T-152 to reduce manual admin ObjectId copy/paste through
   direct read-list handoffs into update/delete workflows.
+- 2026-05-19: Completed T-151 and T-152. Current-scope `/search` now has
+  metadata-backed selected-type pagination and no-results states, and admin
+  read lists can hand selected content into update/delete workflows without
+  manual ObjectId copy/paste.
+- 2026-05-19: Prepared T-153 for blog pinned/tag admin controls, T-154 for
+  public taxonomy section runtime validation, and T-155 for content-aware
+  visible breadcrumbs.
 
 ## Next Agent Action
 
-Assign [T-151](../tasks/T-151-add-current-scope-search-empty-pagination.md) for
-current-scope public search no-results/pagination behavior while holding
+Assign [T-153](../tasks/T-153-add-admin-blog-pinned-tag-controls.md),
+[T-154](../tasks/T-154-validate-public-taxonomy-sections.md), and
+[T-155](../tasks/T-155-render-content-aware-visible-breadcrumbs.md) as the next
+decision-light frontend wave. Hold
 [T-143](../tasks/T-143-decide-public-search-scope.md) until the owner/product
-scope answer exists. T-152 may also run as an admin frontend entry-point slice.
-Keep visible breadcrumbs, taxonomy option parity, owner/legal-approved policy
-links/notices, broad static/ISR migration, and checkout/cart work separate
-unless explicitly assigned.
+scope answer exists. Keep owner/legal-approved policy links/notices, broad
+static/ISR migration, and checkout/cart work separate unless explicitly
+assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

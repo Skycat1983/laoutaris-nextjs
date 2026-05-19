@@ -13,9 +13,11 @@ jest.mock("next/image", () => ({
     width?: number;
     height?: number;
     className?: string;
+    fill?: boolean;
   }) {
     const React = require("react");
-    return React.createElement("img", props);
+    const { fill: _fill, ...imageProps } = props;
+    return React.createElement("img", imageProps);
   },
 }));
 

@@ -361,16 +361,22 @@ Use manual admin checks when changing dashboard behavior.
   surfacing slice and T-152 for direct archive read-list handoffs into
   update/delete workflows. These can run in parallel if they avoid shared
   trackers and keep to their owned form versus read-list/operation surfaces.
+- 2026-05-19: Completed T-150 and T-152. Artwork create/update forms now
+  surface structured artwork and Shopify product-link errors, and admin
+  article/artwork/blog/collection read lists now provide direct Update/Delete
+  handoffs into existing workflows while preserving manual ObjectId lookup as
+  an escape hatch.
+- 2026-05-19: Prepared T-153 for the remaining F-096 blog pinned/tag admin
+  controls and stale blog read-filter options.
 
 ## Next Agent Action
 
-Assign [T-150](../tasks/T-150-surface-admin-artwork-form-errors.md) and
-[T-152](../tasks/T-152-improve-admin-archive-entry-points.md) as separate
-content/admin slices when agents are available. Keep destructive cascade
-previews, blog pinned/tag workflow decision, collection section policy, and
-taxonomy option parity separate. T-141, T-142, T-144, T-148, and T-149 are
-complete; do not reassign them unless their route protections, form behavior,
-or runbook content regresses.
+Assign [T-153](../tasks/T-153-add-admin-blog-pinned-tag-controls.md) for blog
+pinned/tag admin controls when an agent is available. Keep destructive cascade
+previews, collection section policy, and broader taxonomy option parity
+separate. T-141, T-142, T-144, T-148, T-149, T-150, and T-152 are complete; do
+not reassign them unless their route protections, form behavior, archive
+entry-point behavior, or runbook content regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, new delivery-transform retuning, and Cloudinary account changes

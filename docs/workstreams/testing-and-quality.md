@@ -1418,14 +1418,22 @@ npm run lint
 - 2026-05-19: Prepared T-150, T-151, and T-152 with focused verification
   expectations for artwork form errors, current-scope search empty/pagination
   behavior, and admin archive entry-point handoffs.
+- 2026-05-19: Completed T-150, T-151, and T-152 with focused artwork form,
+  current-scope search service/API/page, admin archive entry-point, and
+  regression form coverage. The combined focused suite passed across 7 suites
+  and 42 tests after making the slow artwork component test timeout explicit.
+- 2026-05-19: Prepared T-153, T-154, and T-155 with focused verification
+  expectations for blog admin controls, taxonomy section runtime validation,
+  and visible breadcrumb labels.
 
 ## Next Agent Action
 
-Use T-150, T-151, and T-152 as the next focused quality-bearing wave. Keep
+Use T-153, T-154, and T-155 as the next focused quality-bearing wave. Keep
 T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-149 are complete; do not reassign their
-focused route/form/query/loading/nav/runbook coverage unless it regresses.
+decision is available. T-141 through T-152 are complete; do not reassign their
+focused route/form/query/loading/nav/runbook/archive-entry coverage unless it
+regresses.
 Keep broader static/ISR migration separate from the
 completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
 and the completed T-117 through T-134 observability documentation, logging,

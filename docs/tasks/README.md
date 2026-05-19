@@ -159,9 +159,12 @@ orchestrator needs a one-line `/task ... details:` assignment.
 | [T-147 Render resilient main nav fallbacks](T-147-render-resilient-main-nav-fallbacks.md) | Completed | Kept primary navigation visible with route-root fallbacks when dynamic biography or collection nav data is missing. |
 | [T-148 Standardize admin article blog form errors](T-148-standardize-admin-article-blog-form-errors.md) | Completed | Applied structured API error display to admin article and blog create/update forms. |
 | [T-149 Add admin content operations runbook](T-149-add-admin-content-operations-runbook.md) | Completed | Documented repeatable admin content maintenance steps and blocked destructive-delete preconditions. |
-| [T-150 Surface admin artwork form errors](T-150-surface-admin-artwork-form-errors.md) | Planned | Apply structured API error display to admin artwork create/update forms and Shopify product-link validation failures. |
-| [T-151 Add current-scope search empty and pagination states](T-151-add-current-scope-search-empty-pagination.md) | Planned | Add honest no-results and pagination metadata/UI behavior for current article, blog, and collection search. |
-| [T-152 Improve admin archive entry points](T-152-improve-admin-archive-entry-points.md) | Planned | Add direct read-list handoffs into admin update/delete workflows to reduce manual ObjectId copy/paste. |
+| [T-150 Surface admin artwork form errors](T-150-surface-admin-artwork-form-errors.md) | Completed | Applied structured API error display to admin artwork create/update forms and Shopify product-link validation failures. |
+| [T-151 Add current-scope search empty and pagination states](T-151-add-current-scope-search-empty-pagination.md) | Completed | Added honest no-results and pagination metadata/UI behavior for current article, blog, and collection search. |
+| [T-152 Improve admin archive entry points](T-152-improve-admin-archive-entry-points.md) | Completed | Added direct read-list handoffs into admin update/delete workflows to reduce manual ObjectId copy/paste. |
+| [T-153 Add admin blog pinned tag controls](T-153-add-admin-blog-pinned-tag-controls.md) | Planned | Expose route-supported blog pinned/tag fields in admin create/update forms and replace stale blog read filters with current options. |
+| [T-154 Validate public taxonomy sections](T-154-validate-public-taxonomy-sections.md) | Planned | Add route-local runtime validation for public article and collection section parameters using canonical taxonomy constants. |
+| [T-155 Render content-aware visible breadcrumbs](T-155-render-content-aware-visible-breadcrumbs.md) | Planned | Replace mechanical visible breadcrumb labels on high-value detail routes with content-aware labels from existing server data. |
 
 ## Rules
 

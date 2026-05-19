@@ -1,6 +1,6 @@
 # T-152 Improve Admin Archive Entry Points
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -107,6 +107,18 @@ creates one. Run `npm run lint` if shared tab or operation components change.
 ## Handoff Notes
 
 - Prepared after T-147 through T-149 reconciliation.
+- Completed on 2026-05-19.
+- Added read-list Update/Delete icon actions for articles, artwork, blogs, and
+  collections. The actions switch the existing admin CRUD tabs to the requested
+  operation and pass the selected ObjectId into the existing `DocumentReader`
+  lookup path.
+- Kept the manual ObjectId form as an escape hatch; lookup failures still
+  surface through the `DocumentReader` field error.
+- Added `__tests__/unit/adminArchiveEntryPoints.test.tsx` for the article
+  read-list-to-update handoff and manual lookup failure/success behavior.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/adminArchiveEntryPoints.test.tsx __tests__/unit/forms/adminArticleBlogForms.test.tsx __tests__/unit/forms/adminCollectionForms.test.tsx`,
+  `npm run lint`, and `git diff --check`.
 - Candidate shared-tracker update: mark F-095 partially mitigated for direct
   update/delete entry points, while keeping paginated/searchable archive tables
   and destructive cascade previews as separate follow-ups.
