@@ -10,6 +10,7 @@ import {
 } from "@/components/shadcn/select";
 
 type FilterKey = "decade" | "artstyle" | "medium" | "surface";
+const NO_FILTER_VALUE = "no-filter";
 
 const filterOptions: Record<FilterKey, string[]> = {
   decade: [
@@ -48,10 +49,18 @@ export function ArtworkFilterDropdowns({
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
   const handleKeyChange = useCallback(
-    (key: FilterKey) => {
-      setSelectedKey(key);
+    (key: string) => {
+      if (key === NO_FILTER_VALUE) {
+        setSelectedKey(null);
+        setSelectedValue(null);
+        onFilterChange(null, null);
+        return;
+      }
+
+      const filterKey = key as FilterKey;
+      setSelectedKey(filterKey);
       setSelectedValue(null);
-      onFilterChange(key, null);
+      onFilterChange(filterKey, null);
     },
     [onFilterChange]
   );
@@ -66,11 +75,12 @@ export function ArtworkFilterDropdowns({
 
   return (
     <div className="flex gap-4 mb-6">
-      <Select onValueChange={handleKeyChange as (value: string) => void}>
+      <Select onValueChange={handleKeyChange}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select filter type" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value={NO_FILTER_VALUE}>No Filter</SelectItem>
           <SelectItem value="decade">Decade</SelectItem>
           <SelectItem value="artstyle">Art Style</SelectItem>
           <SelectItem value="medium">Medium</SelectItem>

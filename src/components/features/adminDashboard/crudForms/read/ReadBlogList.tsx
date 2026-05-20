@@ -5,8 +5,6 @@ import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
   CopyIcon,
   PencilIcon,
   SearchIcon,
@@ -18,19 +16,18 @@ import { clientApi } from "@/lib/api/clientApi";
 import type { BlogEntryFrontend } from "@/lib/data/types";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
+import {
+  AdminReadPagination,
+  type AdminReadPaginationMetadata,
+  createDefaultReadPaginationMetadata,
+  normalizeAdminReadPaginationMetadata,
+} from "./AdminReadPagination";
 
 type FilterKey = "featured" | "year" | null;
 
 interface FilterState {
   key: FilterKey;
   value: string | null;
-}
-
-interface BlogReadPaginationMetadata {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
 }
 
 const BLOG_READ_PAGE_SIZE = 10;
@@ -46,27 +43,13 @@ const getCurrentYearFilterOptions = () => {
   );
 };
 
-const defaultPaginationMetadata: BlogReadPaginationMetadata = {
-  page: 1,
-  limit: BLOG_READ_PAGE_SIZE,
-  total: 0,
-  totalPages: 1,
-};
-
-const normalizePaginationMetadata = (
-  metadata: Partial<BlogReadPaginationMetadata> | undefined,
-  fallbackPage: number
-): BlogReadPaginationMetadata => ({
-  page: metadata?.page ?? fallbackPage,
-  limit: metadata?.limit ?? BLOG_READ_PAGE_SIZE,
-  total: metadata?.total ?? 0,
-  totalPages: Math.max(metadata?.totalPages ?? 1, 1),
-});
+const defaultPaginationMetadata =
+  createDefaultReadPaginationMetadata(BLOG_READ_PAGE_SIZE);
 
 export function ReadBlogList() {
   const [blogs, setBlogs] = useState<BlogEntryFrontend[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [metadata, setMetadata] = useState<BlogReadPaginationMetadata>(
+  const [metadata, setMetadata] = useState<AdminReadPaginationMetadata>(
     defaultPaginationMetadata
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -102,7 +85,11 @@ export function ReadBlogList() {
         if (response.success) {
           setBlogs(response.data);
           setMetadata(
-            normalizePaginationMetadata(response.metadata, currentPage)
+            normalizeAdminReadPaginationMetadata(
+              response.metadata,
+              currentPage,
+              BLOG_READ_PAGE_SIZE
+            )
           );
           return;
         }
@@ -268,59 +255,15 @@ export function ReadBlogList() {
             </div>
           )}
           {metadata.total > 0 && (
-            <BlogReadPagination
+            <AdminReadPagination
               metadata={metadata}
               onPageChange={setCurrentPage}
               isLoading={isLoading}
+              resourceLabel="blog"
             />
           )}
         </>
       )}
-    </div>
-  );
-}
-
-interface BlogReadPaginationProps {
-  metadata: BlogReadPaginationMetadata;
-  onPageChange: (page: number) => void;
-  isLoading?: boolean;
-}
-
-function BlogReadPagination({
-  metadata,
-  onPageChange,
-  isLoading,
-}: BlogReadPaginationProps) {
-  const hasPrevious = metadata.page > 1;
-  const hasNext = metadata.page < metadata.totalPages;
-
-  return (
-    <div className="flex justify-center items-center w-full px-4 py-2 gap-8 mt-4">
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        aria-label="Previous blog page"
-        onClick={() => onPageChange(metadata.page - 1)}
-        disabled={!hasPrevious || isLoading}
-        className="flex items-center gap-2 outline-none border border-2 border-black rounded"
-      >
-        <ChevronLeftIcon className="h-4 w-4" />
-      </Button>
-      <span className="text-sm text-gray-600">
-        Page {metadata.page} of {metadata.totalPages}
-      </span>
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        aria-label="Next blog page"
-        onClick={() => onPageChange(metadata.page + 1)}
-        disabled={!hasNext || isLoading}
-        className="flex items-center gap-2 outline-none border border-2 border-black rounded"
-      >
-        <ChevronRightIcon className="h-4 w-4" />
-      </Button>
     </div>
   );
 }

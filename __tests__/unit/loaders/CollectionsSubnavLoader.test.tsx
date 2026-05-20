@@ -2,6 +2,10 @@ import type { ReactElement } from "react";
 import { CollectionsSubnavLoader } from "@/components/loaders/componentLoaders/CollectionsSubnavLoader";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import type {
+  CollectionNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 
 jest.mock("@/lib/data/services/getCollectionNavigationList", () => ({
   getCollectionNavigationList: jest.fn(),
@@ -16,32 +20,55 @@ const mockGetCollectionNavigationList =
     typeof getCollectionNavigationList
   >;
 
+const createCollectionNavItem = ({
+  slug,
+  title,
+  firstArtworkId = null,
+  hasArtwork = firstArtworkId !== null,
+}: {
+  slug: string;
+  title: string;
+  firstArtworkId?: CollectionNavDataFrontend["firstArtworkId"];
+  hasArtwork?: boolean;
+}): CollectionNavDataFrontend => ({
+  _id: `collection-${slug}`,
+  title,
+  slug,
+  artworks: [],
+  firstArtworkId,
+  hasArtwork,
+});
+
+const createCollectionNavResult = (
+  data: CollectionNavDataFrontend[]
+): ListResult<CollectionNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 describe("CollectionsSubnavLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([
+        createCollectionNavItem({
           title: "Paintings",
           slug: "paintings",
           firstArtworkId: "artwork-1",
-          hasArtwork: true,
-        },
-        {
+        }),
+        createCollectionNavItem({
           title: "Drawings",
           slug: "drawings",
-          firstArtworkId: null,
           hasArtwork: false,
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 2,
-        total: 2,
-        totalPages: 1,
-      },
-    });
+        }),
+      ])
+    );
   });
 
   it("loads collection links through the server data service without same-app fetches", async () => {

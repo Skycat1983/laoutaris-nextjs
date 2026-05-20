@@ -103,6 +103,8 @@ const articleId = "507f1f77bcf86cd799439013";
 const artworkId = "507f1f77bcf86cd799439014";
 const blogId = "507f1f77bcf86cd799439015";
 const collectionId = "507f1f77bcf86cd799439016";
+const overlongArticleSearch = "a".repeat(81);
+const overlongArtworkSearch = "a".repeat(81);
 const overlongBlogSearch = "s".repeat(81);
 const overlongCollectionSearch = "c".repeat(81);
 
@@ -419,12 +421,38 @@ const invalidListQueryCases: Array<{
     },
   },
   {
+    label: "article list with an oversized search",
+    handler: GET_ARTICLE_LIST as Handler,
+    requestUrl: `http://localhost/api/v2/admin/article/read?page=1&limit=10&search=${overlongArticleSearch}`,
+    expectedError: "Invalid article input",
+    expectedFieldErrors: {
+      search: ["Search must be 80 characters or fewer"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockArticleCountDocuments).not.toHaveBeenCalled();
+      expect(mockArticleFind).not.toHaveBeenCalled();
+    },
+  },
+  {
     label: "artwork list with an oversized limit",
     handler: GET_ARTWORK_LIST as Handler,
     requestUrl: "http://localhost/api/v2/admin/artwork/read?page=1&limit=101",
     expectedError: "Invalid artwork input",
     expectedFieldErrors: {
       limit: ["Limit must be 100 or less"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
+      expect(mockArtworkFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "artwork list with an oversized search",
+    handler: GET_ARTWORK_LIST as Handler,
+    requestUrl: `http://localhost/api/v2/admin/artwork/read?page=1&limit=10&search=${overlongArtworkSearch}`,
+    expectedError: "Invalid artwork input",
+    expectedFieldErrors: {
+      search: ["Search must be 80 characters or fewer"],
     },
     expectNoTargetRead: () => {
       expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
@@ -908,6 +936,354 @@ describe("admin read route shared guard migration", () => {
         limit: 5,
         total: 12,
         totalPages: 3,
+      },
+    });
+  });
+
+  it.each<
+    [string, string, Record<string, unknown>, number, string]
+  >([
+    ["section", "biography", { section: "biography" }, 6, "Biography Article"],
+    [
+      "overlayColour",
+      "black",
+      { overlayColour: "black" },
+      4,
+      "Black Overlay Article",
+    ],
+  ])(
+    "applies article %s filters before counting and pagination",
+    async (filterKey, filterValue, expectedQuery, total, title) => {
+      const rawArticle = {
+        _id: articleId,
+        title,
+      };
+      const frontendArticle = {
+        _id: articleId,
+        title,
+      };
+      const query = createListQuery([rawArticle]);
+      mockArticleFind.mockReturnValue(query);
+      mockArticleCountDocuments.mockResolvedValue(total);
+      mockTransformArticlePopulated.mockReturnValue(frontendArticle as never);
+
+      const response = await GET_ARTICLE_LIST(
+        createRequest(
+          `http://localhost/api/v2/admin/article/read?page=2&limit=3&filterKey=${filterKey}&filterValue=${filterValue}`
+        ) as never
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockArticleFind).toHaveBeenCalledWith(expectedQuery);
+      expect(mockArticleCountDocuments).toHaveBeenCalledWith(expectedQuery);
+      expect(query.sort).toHaveBeenCalledWith({ createdAt: -1 });
+      expect(query.skip).toHaveBeenCalledWith(3);
+      expect(query.limit).toHaveBeenCalledWith(3);
+      expect(mockTransformArticlePopulated).toHaveBeenCalledWith(rawArticle);
+      expect(body).toEqual({
+        success: true,
+        data: [frontendArticle],
+        metadata: {
+          page: 2,
+          limit: 3,
+          total,
+          totalPages: Math.ceil(total / 3),
+        },
+      });
+    }
+  );
+
+  it("applies trimmed article search before counting and pagination", async () => {
+    const rawArticle = {
+      _id: articleId,
+      title: "Studio Notes",
+    };
+    const frontendArticle = {
+      _id: articleId,
+      title: "Studio Notes",
+    };
+    const expectedQuery = {
+      $or: [
+        { title: { $regex: "Studio\\+Notes", $options: "i" } },
+        { slug: { $regex: "Studio\\+Notes", $options: "i" } },
+      ],
+    };
+    const query = createListQuery([rawArticle]);
+    mockArticleFind.mockReturnValue(query);
+    mockArticleCountDocuments.mockResolvedValue(8);
+    mockTransformArticlePopulated.mockReturnValue(frontendArticle as never);
+
+    const response = await GET_ARTICLE_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/article/read?page=2&limit=4&search=%20Studio%2BNotes%20"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArticleFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockArticleCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(query.sort).toHaveBeenCalledWith({ createdAt: -1 });
+    expect(query.skip).toHaveBeenCalledWith(4);
+    expect(query.limit).toHaveBeenCalledWith(4);
+    expect(mockTransformArticlePopulated).toHaveBeenCalledWith(rawArticle);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArticle],
+      metadata: {
+        page: 2,
+        limit: 4,
+        total: 8,
+        totalPages: 2,
+      },
+    });
+  });
+
+  it("keeps article search scoped to public title and slug fields when filters are active", async () => {
+    const rawArticle = {
+      _id: articleId,
+      title: "Filtered Studio Notes",
+    };
+    const frontendArticle = {
+      _id: articleId,
+      title: "Filtered Studio Notes",
+    };
+    const expectedQuery = {
+      section: "biography",
+      $or: [
+        { title: { $regex: "studio", $options: "i" } },
+        { slug: { $regex: "studio", $options: "i" } },
+      ],
+    };
+    const query = createListQuery([rawArticle]);
+    mockArticleFind.mockReturnValue(query);
+    mockArticleCountDocuments.mockResolvedValue(1);
+    mockTransformArticlePopulated.mockReturnValue(frontendArticle as never);
+
+    const response = await GET_ARTICLE_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/article/read?page=1&limit=10&search=studio&filterKey=section&filterValue=biography"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArticleFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockArticleCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArticle],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+  });
+
+  it.each<
+    [string, string, Record<string, unknown>, number, string]
+  >([
+    ["decade", "1970s", { decade: "1970s" }, 14, "Seventies Artwork"],
+    ["artstyle", "abstract", { artstyle: "abstract" }, 9, "Abstract Artwork"],
+    ["medium", "oil", { medium: "oil" }, 6, "Oil Artwork"],
+    ["surface", "canvas", { surface: "canvas" }, 3, "Canvas Artwork"],
+  ])(
+    "applies artwork %s filters before counting and pagination",
+    async (filterKey, filterValue, expectedQuery, total, title) => {
+      const rawArtwork = {
+        _id: artworkId,
+        title,
+      };
+      const frontendArtwork = {
+        _id: artworkId,
+        title,
+      };
+      const query = createListQuery([rawArtwork]);
+      mockArtworkFind.mockReturnValue(query);
+      mockArtworkCountDocuments.mockResolvedValue(total);
+      mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+      const response = await GET_ARTWORK_LIST(
+        createRequest(
+          `http://localhost/api/v2/admin/artwork/read?page=2&limit=3&filterKey=${filterKey}&filterValue=${filterValue}`
+        ) as never
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockArtworkFind).toHaveBeenCalledWith(expectedQuery);
+      expect(mockArtworkCountDocuments).toHaveBeenCalledWith(expectedQuery);
+      expect(query.sort).toHaveBeenCalledWith({ createdAt: -1 });
+      expect(query.skip).toHaveBeenCalledWith(3);
+      expect(query.limit).toHaveBeenCalledWith(3);
+      expect(mockTransformArtworkToFrontend).toHaveBeenCalledWith(rawArtwork);
+      expect(body).toEqual({
+        success: true,
+        data: [frontendArtwork],
+        metadata: {
+          page: 2,
+          limit: 3,
+          total,
+          totalPages: Math.ceil(total / 3),
+        },
+      });
+    }
+  );
+
+  it("ignores unsupported artwork filters before read query construction", async () => {
+    const rawArtwork = {
+      _id: artworkId,
+      title: "Visible Artwork",
+    };
+    const frontendArtwork = {
+      _id: artworkId,
+      title: "Visible Artwork",
+    };
+    const query = createListQuery([rawArtwork]);
+    mockArtworkFind.mockReturnValue(query);
+    mockArtworkCountDocuments.mockResolvedValue(1);
+    mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+    const response = await GET_ARTWORK_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/artwork/read?page=1&limit=10&filterKey=owner&filterValue=private"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFind).toHaveBeenCalledWith({});
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith({});
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArtwork],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+  });
+
+  it("ignores unsupported artwork filter values before read query construction", async () => {
+    const rawArtwork = {
+      _id: artworkId,
+      title: "Visible Artwork",
+    };
+    const frontendArtwork = {
+      _id: artworkId,
+      title: "Visible Artwork",
+    };
+    const query = createListQuery([rawArtwork]);
+    mockArtworkFind.mockReturnValue(query);
+    mockArtworkCountDocuments.mockResolvedValue(1);
+    mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+    const response = await GET_ARTWORK_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/artwork/read?page=1&limit=10&filterKey=medium&filterValue=bronze"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFind).toHaveBeenCalledWith({});
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith({});
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArtwork],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+  });
+
+  it("applies trimmed artwork title search before counting and pagination", async () => {
+    const rawArtwork = {
+      _id: artworkId,
+      title: "Blue Figure",
+    };
+    const frontendArtwork = {
+      _id: artworkId,
+      title: "Blue Figure",
+    };
+    const expectedQuery = {
+      title: { $regex: "Blue\\+Figure", $options: "i" },
+    };
+    const query = createListQuery([rawArtwork]);
+    mockArtworkFind.mockReturnValue(query);
+    mockArtworkCountDocuments.mockResolvedValue(8);
+    mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+    const response = await GET_ARTWORK_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/artwork/read?page=2&limit=4&search=%20Blue%2BFigure%20"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(query.sort).toHaveBeenCalledWith({ createdAt: -1 });
+    expect(query.skip).toHaveBeenCalledWith(4);
+    expect(query.limit).toHaveBeenCalledWith(4);
+    expect(mockTransformArtworkToFrontend).toHaveBeenCalledWith(rawArtwork);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArtwork],
+      metadata: {
+        page: 2,
+        limit: 4,
+        total: 8,
+        totalPages: 2,
+      },
+    });
+  });
+
+  it("keeps artwork search scoped to title when filters are active", async () => {
+    const rawArtwork = {
+      _id: artworkId,
+      title: "Filtered Figure",
+    };
+    const frontendArtwork = {
+      _id: artworkId,
+      title: "Filtered Figure",
+    };
+    const expectedQuery = {
+      medium: "oil",
+      title: { $regex: "figure", $options: "i" },
+    };
+    const query = createListQuery([rawArtwork]);
+    mockArtworkFind.mockReturnValue(query);
+    mockArtworkCountDocuments.mockResolvedValue(1);
+    mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+    const response = await GET_ARTWORK_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/artwork/read?page=1&limit=10&search=figure&filterKey=medium&filterValue=oil"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockArtworkCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendArtwork],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
       },
     });
   });

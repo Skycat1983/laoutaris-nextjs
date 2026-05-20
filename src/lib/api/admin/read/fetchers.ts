@@ -114,11 +114,22 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
 
   //! List fetchers
   // Artworks
-  artworks: async ({ page = 1, limit = 50, filter }: ReadListParams = {}) => {
+  artworks: async ({
+    page = 1,
+    limit = 50,
+    search,
+    filter,
+  }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
+
+    const trimmedSearch = search?.trim();
+
+    if (trimmedSearch) {
+      params.append("search", trimmedSearch);
+    }
 
     if (filter?.key && filter?.value) {
       params.append("filterKey", filter.key);

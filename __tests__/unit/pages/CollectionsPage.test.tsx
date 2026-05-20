@@ -1,5 +1,9 @@
 import CollectionsPage from "@/app/collections/page";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import type {
+  CollectionNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
@@ -24,6 +28,38 @@ const mockRedirect = redirect as unknown as jest.MockedFunction<
   typeof redirect
 >;
 
+const createCollectionNavItem = ({
+  slug,
+  title,
+  firstArtworkId = null,
+  hasArtwork = firstArtworkId !== null,
+}: {
+  slug: string;
+  title: string;
+  firstArtworkId?: CollectionNavDataFrontend["firstArtworkId"];
+  hasArtwork?: boolean;
+}): CollectionNavDataFrontend => ({
+  _id: `collection-${slug}`,
+  title,
+  slug,
+  artworks: [],
+  firstArtworkId,
+  hasArtwork,
+});
+
+const createCollectionNavResult = (
+  data: CollectionNavDataFrontend[]
+): ListResult<CollectionNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 describe("/collections page", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -33,29 +69,20 @@ describe("/collections page", () => {
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
     mockIsNextError.mockReturnValue(false);
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([
+        createCollectionNavItem({
           title: "Paintings",
           slug: "paintings",
           firstArtworkId: "artwork-1",
-          hasArtwork: true,
-        },
-        {
+        }),
+        createCollectionNavItem({
           title: "Drawings",
           slug: "drawings",
-          firstArtworkId: null,
           hasArtwork: false,
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 2,
-        total: 2,
-        totalPages: 1,
-      },
-    });
+        }),
+      ])
+    );
   });
 
   afterEach(() => {
@@ -85,23 +112,15 @@ describe("/collections page", () => {
       throw redirectError;
     });
     mockIsNextError.mockImplementation((error) => error === redirectError);
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([
+        createCollectionNavItem({
           title: "Drawings",
           slug: "drawings",
-          firstArtworkId: null,
           hasArtwork: false,
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 1,
-        total: 1,
-        totalPages: 1,
-      },
-    });
+        }),
+      ])
+    );
 
     await expect(CollectionsPage()).rejects.toThrow(redirectError);
 

@@ -2,6 +2,10 @@ import type { ReactElement } from "react";
 import { BiographySubnavLoader } from "@/components/loaders/componentLoaders/BiographySubnavLoader";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import type {
+  ArticleNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 
 jest.mock("@/lib/data/services/getArticleNavigationList", () => ({
   getArticleNavigationList: jest.fn(),
@@ -16,30 +20,37 @@ const mockGetArticleNavigationList =
     typeof getArticleNavigationList
   >;
 
+const createArticleNavItem = (
+  slug: string,
+  title: string
+): ArticleNavDataFrontend => ({
+  _id: `article-${slug}`,
+  title,
+  slug,
+});
+
+const createArticleNavResult = (
+  data: ArticleNavDataFrontend[]
+): ListResult<ArticleNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 describe("BiographySubnavLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          title: "Early Life",
-          slug: "early-life",
-          linkTo: "/early-life",
-        },
-        {
-          title: "Studio Years",
-          slug: "studio-years",
-          linkTo: "/studio",
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 2,
-        total: 2,
-        totalPages: 1,
-      },
-    });
+    mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([
+        createArticleNavItem("early-life", "Early Life"),
+        createArticleNavItem("studio-years", "Studio Years"),
+      ])
+    );
   });
 
   it("loads biography links through the server data service without same-app fetches", async () => {

@@ -3,6 +3,11 @@ import { MainNavLoader } from "@/components/loaders/componentLoaders/MainNavLoad
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import type {
+  ArticleNavDataFrontend,
+  CollectionNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 
 jest.mock("@/lib/data/services/getArticleNavigationList", () => ({
   getArticleNavigationList: jest.fn(),
@@ -32,6 +37,60 @@ type MainNavElement = ReactElement<{
   }>;
 }>;
 
+const createArticleNavItem = (
+  slug: string,
+  title: string
+): ArticleNavDataFrontend => ({
+  _id: `article-${slug}`,
+  title,
+  slug,
+});
+
+const createArticleNavResult = (
+  data: ArticleNavDataFrontend[]
+): ListResult<ArticleNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
+const createCollectionNavItem = ({
+  slug,
+  title,
+  firstArtworkId = null,
+  hasArtwork = firstArtworkId !== null,
+}: {
+  slug: string;
+  title: string;
+  firstArtworkId?: CollectionNavDataFrontend["firstArtworkId"];
+  hasArtwork?: boolean;
+}): CollectionNavDataFrontend => ({
+  _id: `collection-${slug}`,
+  title,
+  slug,
+  artworks: [],
+  firstArtworkId,
+  hasArtwork,
+});
+
+const createCollectionNavResult = (
+  data: CollectionNavDataFrontend[]
+): ListResult<CollectionNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 const renderMainNavLoader = async () =>
   (await MainNavLoader()) as MainNavElement;
 
@@ -43,39 +102,20 @@ describe("MainNavLoader", () => {
     consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          title: "Early Life",
-          slug: "early-life",
-          linkTo: "/early-life",
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 1,
-        total: 1,
-        totalPages: 1,
-      },
-    });
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
+    mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([
+        createArticleNavItem("early-life", "Early Life"),
+      ])
+    );
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([
+        createCollectionNavItem({
           title: "Paintings",
           slug: "paintings",
           firstArtworkId: "artwork-1",
-          hasArtwork: true,
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 1,
-        total: 1,
-        totalPages: 1,
-      },
-    });
+        }),
+      ])
+    );
   });
 
   afterEach(() => {
@@ -104,23 +144,15 @@ describe("MainNavLoader", () => {
   });
 
   it("preserves the collection path fallback when the first collection has no artwork", async () => {
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([
+        createCollectionNavItem({
           title: "Drawings",
           slug: "drawings",
-          firstArtworkId: null,
           hasArtwork: false,
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 1,
-        total: 1,
-        totalPages: 1,
-      },
-    });
+        }),
+      ])
+    );
 
     const element = await renderMainNavLoader();
 
@@ -169,26 +201,10 @@ describe("MainNavLoader", () => {
   });
 
   it("falls back to route roots when navigation services return empty arrays", async () => {
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [],
-      metadata: {
-        page: 1,
-        limit: 0,
-        total: 0,
-        totalPages: 0,
-      },
-    });
-    mockGetCollectionNavigationList.mockResolvedValue({
-      success: true,
-      data: [],
-      metadata: {
-        page: 1,
-        limit: 0,
-        total: 0,
-        totalPages: 0,
-      },
-    });
+    mockGetArticleNavigationList.mockResolvedValue(createArticleNavResult([]));
+    mockGetCollectionNavigationList.mockResolvedValue(
+      createCollectionNavResult([])
+    );
 
     const element = await renderMainNavLoader();
 

@@ -162,8 +162,9 @@ content operations repeatable and safe.
   an escape hatch.
 - Start that archive-maintenance path with T-174 route query bounds and T-178
   comment/user delete entry points before paginated/searchable main read tabs.
-  T-174 through T-179 are complete; T-180 is the next article read-list
-  pagination/filter/search rollout.
+  T-174 through T-183 are complete; all main read tabs now use route-backed
+  pagination metadata, resource-appropriate search/filter behavior, direct
+  handoff actions, and a shared pagination control.
 - Decide collection section taxonomy ownership for launch and document whether
   non-`collections` sections remain supported.
 - Consolidate repeated admin entity operation patterns into typed descriptors
@@ -425,23 +426,38 @@ Use manual admin checks when changing dashboard behavior.
   route metadata for pagination and sends bounded route-backed title/slug
   search while preserving artwork counts, summaries, and Update/Delete/Copy
   handoff.
+- 2026-05-20: Completed T-180. The main admin article read tab now consumes
+  route metadata for pagination and sends route-backed section/overlay filters
+  plus bounded title/slug search while preserving article image cards and
+  Update/Delete/Copy handoff.
+- 2026-05-20: Completed T-181. The main admin artwork read tab now consumes
+  route metadata for pagination and sends constrained artwork filters plus
+  bounded title search while preserving artwork cards and Update/Delete/Copy
+  handoff.
+- 2026-05-20: Completed T-182. The main admin comment and user read tabs now
+  consume route metadata for pagination while preserving Copy ID and guarded
+  Delete handoff actions.
+- 2026-05-20: Completed T-183. The six main admin read tabs now share the same
+  previous/next pagination control and metadata normalization helper without
+  changing route/fetcher contracts, cards, search, filters, or handoff actions.
 
 ## Next Agent Action
 
-No further F-092 implementation slice is ready after T-165/T-172/T-178. For
-admin archive maintenance, assign
-[T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md) next.
-Keep production delete policy review, collection section launch policy, broader
-taxonomy/i18n direction, Cloudinary asset deletion, and monitoring-provider
-work separate.
+No further F-092 implementation slice is ready after T-165/T-172/T-178, and no
+admin archive maintenance task is currently prepared after T-183. Keep
+production delete policy review, collection section launch policy, broader
+taxonomy/i18n direction, Cloudinary asset deletion, and monitoring-provider work
+separate.
 T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, T-163, T-164,
-T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, T-178, and T-179 are
-complete; do not reassign them unless their route protections, form behavior,
-archive entry-point behavior, blog pinned/tag controls, runbook content,
-preview contract/UI, evidence gate, audit-event persistence, image URL audit,
-delete-receipt verification, admin read-list audit, query bounds, blog
-pagination pilot, route-backed blog filters, route-backed blog search,
-collection pagination/search, or comment/user delete handoff regresses.
+T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, T-178, T-179, T-180,
+T-181, T-182, and T-183 are complete; do not reassign them unless their route
+protections, form behavior, archive entry-point behavior, blog pinned/tag
+controls, runbook content, preview contract/UI, evidence gate, audit-event
+persistence, image URL audit, delete-receipt verification, admin read-list
+audit, query bounds, blog pagination pilot, route-backed blog filters,
+route-backed blog search, collection pagination/search, article
+pagination/filter/search, artwork pagination/filter/search, comment/user
+pagination, shared pagination control, or comment/user delete handoff regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, future image-field
 model migrations, new delivery-transform retuning, and Cloudinary account changes

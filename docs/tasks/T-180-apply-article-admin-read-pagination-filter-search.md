@@ -1,6 +1,6 @@
 # T-180 Apply Article Admin Read Pagination Filter Search
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -118,3 +118,36 @@ edit shared trackers. Run focused route/fetcher/component tests, lint, and
 
 - Planned after T-179 completed the collection read-list pagination/search
   rollout.
+- Completed on 2026-05-20.
+- Added bounded route-backed article search through the existing shared admin
+  read-list query parser. The route trims `search`, rejects values over 80
+  characters with structured `400` field errors, escapes regex metacharacters,
+  and searches only article `title` and `slug`.
+- Moved the existing article read filters, `section` and `overlayColour`, to
+  route-backed `filterKey`/`filterValue` query params. Valid filter/search
+  predicates are applied before both `countDocuments()` and paginated `find()`
+  calls so metadata describes the visible dataset.
+- Updated the admin read fetcher and article filter type so article list reads
+  send trimmed `search` plus the active article filter, including
+  `overlayColour`.
+- Updated `ReadArticleList` to fetch the requested page, consume route
+  metadata, render previous/next controls, send bounded search, reset to page 1
+  when search or filters change, and stop filtering only the current browser
+  page.
+- Preserved the article card layout, Cloudinary `adminPreview` image handling,
+  section/overlay display, Copy ID action, and Update/Delete handoff.
+- Added focused coverage:
+  `__tests__/unit/api/adminReadRouteGuard.test.ts` covers overlong article
+  search rejection, route-backed section/overlay filters, escaped title/slug
+  search, and search combined with filters before counts and paginated reads;
+  `__tests__/unit/api/adminReadFetchers.test.ts` covers trimmed article search
+  and filter params; `__tests__/unit/adminArticleReadPagination.test.tsx`
+  covers pagination, both filters, search-with-filter reset, no-results/error
+  states, image card display, and retained Copy/Update/Delete actions.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminReadRouteGuard.test.ts __tests__/unit/api/adminReadFetchers.test.ts __tests__/unit/adminArticleReadPagination.test.tsx`;
+  `npm run lint`; `git diff --check`.
+- Candidate shared-tracker update: F-095 remains partially mitigated; the
+  article read tab now has route-backed pagination, filters, and search, while
+  artwork read-tab pagination/search and any shared read-list shell should
+  remain separate follow-up work.

@@ -1,5 +1,6 @@
 import CollectionSlugPage from "@/app/collections/[slug]/page";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
+import type { CollectionNavDataFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
@@ -24,6 +25,25 @@ const mockRedirect = redirect as unknown as jest.MockedFunction<
   typeof redirect
 >;
 
+const createCollectionNavItem = ({
+  slug,
+  title,
+  firstArtworkId = null,
+  hasArtwork = firstArtworkId !== null,
+}: {
+  slug: string;
+  title: string;
+  firstArtworkId?: CollectionNavDataFrontend["firstArtworkId"];
+  hasArtwork?: boolean;
+}): CollectionNavDataFrontend => ({
+  _id: `collection-${slug}`,
+  title,
+  slug,
+  artworks: [],
+  firstArtworkId,
+  hasArtwork,
+});
+
 describe("/collections/[slug] page", () => {
   let consoleErrorSpy: jest.SpyInstance;
   let consoleLogSpy: jest.SpyInstance;
@@ -37,12 +57,13 @@ describe("/collections/[slug] page", () => {
       .spyOn(console, "log")
       .mockImplementation(() => undefined);
     mockIsNextError.mockReturnValue(false);
-    mockGetCollectionNavigationItem.mockResolvedValue({
-      title: "Paintings",
-      slug: "paintings",
-      firstArtworkId: "artwork-1",
-      hasArtwork: true,
-    });
+    mockGetCollectionNavigationItem.mockResolvedValue(
+      createCollectionNavItem({
+        title: "Paintings",
+        slug: "paintings",
+        firstArtworkId: "artwork-1",
+      })
+    );
   });
 
   afterEach(() => {
@@ -76,12 +97,13 @@ describe("/collections/[slug] page", () => {
       throw redirectError;
     });
     mockIsNextError.mockImplementation((error) => error === redirectError);
-    mockGetCollectionNavigationItem.mockResolvedValue({
-      title: "Drawings",
-      slug: "drawings",
-      firstArtworkId: null,
-      hasArtwork: false,
-    });
+    mockGetCollectionNavigationItem.mockResolvedValue(
+      createCollectionNavItem({
+        title: "Drawings",
+        slug: "drawings",
+        hasArtwork: false,
+      })
+    );
 
     await expect(
       CollectionSlugPage({ params: { slug: "drawings" } })

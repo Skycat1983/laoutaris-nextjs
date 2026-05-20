@@ -193,7 +193,12 @@ Prompt packs:
 | [T-177 Pilot admin read search](T-177-pilot-admin-read-search.md) | Completed | Added a route-backed search pilot for the admin blog read list after pagination and filters stabilized. |
 | [T-178 Add comment user delete entry points](T-178-add-comment-user-delete-entry-points.md) | Completed | Added read-list-to-delete handoff for comments and users as a separate destructive workflow slice. |
 | [T-179 Apply collection admin read pagination search](T-179-apply-collection-admin-read-pagination-search.md) | Completed | Applied the proven admin read-list pagination/search pattern to the main collection read tab. |
-| [T-180 Apply article admin read pagination filter search](T-180-apply-article-admin-read-pagination-filter-search.md) | Planned | Apply route-backed pagination, existing filters, and bounded search to the main article read tab. |
+| [T-180 Apply article admin read pagination filter search](T-180-apply-article-admin-read-pagination-filter-search.md) | Completed | Applied route-backed pagination, existing filters, and bounded search to the main article read tab. |
+| [T-181 Apply artwork admin read pagination search](T-181-apply-artwork-admin-read-pagination-search.md) | Completed | Applied route-backed pagination and bounded search to the main artwork read tab while preserving artwork filters. |
+| [T-182 Add comment user admin read pagination](T-182-add-comment-user-admin-read-pagination.md) | Completed | Added route-metadata pagination to the main comment and user read tabs while preserving delete handoff. |
+| [T-183 Extract admin read pagination control](T-183-extract-admin-read-pagination-control.md) | Completed | Extracted the duplicated main admin read-tab previous/next pagination control without behavior changes. |
+| [T-184 Audit TypeScript noEmit test errors](T-184-audit-typescript-noemit-test-errors.md) | Completed | Categorized the existing strict TypeScript test-check failures as test-only before deciding whether to fix them or promote noEmit checks. |
+| [T-185 Fix navigation DTO test fixtures](T-185-fix-navigation-dto-test-fixtures.md) | Planned | Update stale public navigation test fixtures to match the current article and collection navigation DTOs. |
 
 ## Rules
 

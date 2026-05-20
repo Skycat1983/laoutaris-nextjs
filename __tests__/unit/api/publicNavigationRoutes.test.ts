@@ -8,6 +8,11 @@ import { CollectionModel } from "@/lib/data/models";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import type {
+  ArticleNavDataFrontend,
+  CollectionNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 import dbConnect from "@/lib/db/mongodb";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 import { transformCollectionPopulated } from "@/lib/transforms";
@@ -89,6 +94,60 @@ const createCollectionParams = (slug: string) => ({
   params: { slug },
 });
 
+const createArticleNavItem = (
+  slug: string,
+  title: string
+): ArticleNavDataFrontend => ({
+  _id: `article-${slug}`,
+  title,
+  slug,
+});
+
+const createArticleNavResult = (
+  data: ArticleNavDataFrontend[]
+): ListResult<ArticleNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    total: data.length,
+    page: 1,
+    limit: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
+const createCollectionNavItem = ({
+  slug,
+  title,
+  firstArtworkId = null,
+  hasArtwork = firstArtworkId !== null,
+}: {
+  slug: string;
+  title: string;
+  firstArtworkId?: CollectionNavDataFrontend["firstArtworkId"];
+  hasArtwork?: boolean;
+}): CollectionNavDataFrontend => ({
+  _id: `collection-${slug}`,
+  title,
+  slug,
+  artworks: [],
+  firstArtworkId,
+  hasArtwork,
+});
+
+const createCollectionNavResult = (
+  data: CollectionNavDataFrontend[]
+): ListResult<CollectionNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    total: data.length,
+    page: 1,
+    limit: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 const createPopulatedCollectionQuery = (result: unknown) => {
   const query = {
     populate: jest.fn(),
@@ -130,19 +189,12 @@ describe("public navigation routes", () => {
   describe("GET /api/v2/public/navigation/articles/[section]", () => {
     it("returns article navigation with existing metadata", async () => {
       const navItems = [
-        { slug: "early-life", title: "Early Life", linkTo: "/early-life" },
-        { slug: "studio-years", title: "Studio Years", linkTo: "/studio" },
+        createArticleNavItem("early-life", "Early Life"),
+        createArticleNavItem("studio-years", "Studio Years"),
       ];
-      mockGetArticleNavigationList.mockResolvedValue({
-        success: true,
-        data: navItems,
-        metadata: {
-          total: 2,
-          page: 1,
-          limit: 2,
-          totalPages: 1,
-        },
-      });
+      mockGetArticleNavigationList.mockResolvedValue(
+        createArticleNavResult(navItems)
+      );
 
       const response = await GET_ARTICLE_NAVIGATION(
         request,
@@ -237,29 +289,20 @@ describe("public navigation routes", () => {
   describe("GET /api/v2/public/navigation/collections", () => {
     it("returns collection navigation with existing metadata", async () => {
       const navItems = [
-        {
+        createCollectionNavItem({
           slug: "paintings",
           title: "Paintings",
           firstArtworkId: "artwork-1",
-          hasArtwork: true,
-        },
-        {
+        }),
+        createCollectionNavItem({
           slug: "drawings",
           title: "Drawings",
-          firstArtworkId: null,
           hasArtwork: false,
-        },
+        }),
       ];
-      mockGetCollectionNavigationList.mockResolvedValue({
-        success: true,
-        data: navItems,
-        metadata: {
-          total: 2,
-          page: 1,
-          limit: 2,
-          totalPages: 1,
-        },
-      });
+      mockGetCollectionNavigationList.mockResolvedValue(
+        createCollectionNavResult(navItems)
+      );
 
       const response = await GET_COLLECTION_NAVIGATION_LIST(request);
       const body = await response.json();
@@ -316,12 +359,12 @@ describe("public navigation routes", () => {
 
   describe("GET /api/v2/public/navigation/collections/[slug]", () => {
     it("returns a single collection navigation item", async () => {
-      const navItem = {
+      const navItem = createCollectionNavItem({
         slug: "paintings",
         title: "Paintings",
-        linkTo: "/paintings",
-      };
-      mockGetCollectionNavigationItem.mockResolvedValue(navItem as never);
+        firstArtworkId: "artwork-1",
+      });
+      mockGetCollectionNavigationItem.mockResolvedValue(navItem);
 
       const response = await GET_COLLECTION_NAVIGATION_DETAIL(
         request,

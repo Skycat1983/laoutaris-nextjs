@@ -12,6 +12,75 @@ import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
 import { parseAdminReadListQuery } from "@/lib/api/admin/read/routeValidation";
+import {
+  ARTSTYLE_OPTIONS,
+  DECADE_OPTIONS,
+  MEDIUM_OPTIONS,
+  SURFACE_OPTIONS,
+} from "@/lib/constants/artworkConstants";
+
+type ArtworkReadQuery = Record<string, unknown>;
+type ArtworkReadFilterKey = "decade" | "artstyle" | "medium" | "surface";
+
+const ARTWORK_READ_SEARCH_MAX_LENGTH = 80;
+
+const isArtworkReadFilterKey = (
+  filterKey: string | null
+): filterKey is ArtworkReadFilterKey =>
+  filterKey === "decade" ||
+  filterKey === "artstyle" ||
+  filterKey === "medium" ||
+  filterKey === "surface";
+
+const filterOptionsByKey: Record<ArtworkReadFilterKey, readonly string[]> = {
+  decade: DECADE_OPTIONS,
+  artstyle: ARTSTYLE_OPTIONS,
+  medium: MEDIUM_OPTIONS,
+  surface: SURFACE_OPTIONS,
+};
+
+const escapeRegexValue = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const buildArtworkReadFilterQuery = (
+  searchParams: URLSearchParams
+): ArtworkReadQuery => {
+  const filterKey = searchParams.get("filterKey");
+  const filterValue = searchParams.get("filterValue");
+
+  if (!isArtworkReadFilterKey(filterKey) || !filterValue) {
+    return {};
+  }
+
+  if (!filterOptionsByKey[filterKey].includes(filterValue)) {
+    return {};
+  }
+
+  return {
+    [filterKey]: filterValue,
+  };
+};
+
+const buildArtworkReadSearchQuery = (search?: string): ArtworkReadQuery => {
+  if (!search) {
+    return {};
+  }
+
+  return {
+    title: {
+      $regex: escapeRegexValue(search),
+      $options: "i",
+    },
+  };
+};
+
+const buildArtworkReadQuery = (
+  searchParams: URLSearchParams,
+  search?: string
+): ArtworkReadQuery => ({
+  ...buildArtworkReadFilterQuery(searchParams),
+  ...buildArtworkReadSearchQuery(search),
+});
 
 export async function GET(
   request: NextRequest
@@ -30,26 +99,17 @@ export async function GET(
   const { searchParams } = request.nextUrl;
   const parsedQuery = parseAdminReadListQuery(searchParams, "artwork", {
     defaultLimit: 100,
+    search: {
+      maxLength: ARTWORK_READ_SEARCH_MAX_LENGTH,
+    },
   });
 
   if (!parsedQuery.ok) {
     return parsedQuery.response;
   }
 
-  const { page, limit } = parsedQuery;
-  const filterKey = searchParams.get("filterKey") as
-    | "decade"
-    | "artstyle"
-    | "medium"
-    | "surface"
-    | null;
-  const filterValue = searchParams.get("filterValue");
-
-  const query: Record<string, any> = {};
-
-  if (filterKey && filterValue) {
-    query[filterKey] = filterValue;
-  }
+  const { page, limit, search } = parsedQuery;
+  const query = buildArtworkReadQuery(searchParams, search);
 
   try {
     await dbConnect();

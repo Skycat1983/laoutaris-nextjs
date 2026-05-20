@@ -910,26 +910,44 @@ Add API route tests where behavior is changed.
   route-backed `search` query parsing, escapes regex metacharacters, searches
   title/slug only, and applies before both `countDocuments()` and paginated
   `find()` calls.
+- 2026-05-20: Completed T-180. Admin article read filters now use route-backed
+  `filterKey`/`filterValue` query params, and article search uses bounded
+  route-backed `search` query parsing over title/slug before both
+  `countDocuments()` and paginated `find()` calls.
+- 2026-05-20: Completed T-181. Admin artwork read filters now use constrained
+  route-backed `filterKey`/`filterValue` query params, and artwork search uses
+  bounded route-backed `search` query parsing over title before both
+  `countDocuments()` and paginated `find()` calls.
+- 2026-05-20: Completed T-182. The comment and user main admin read tabs now
+  consume the existing comment/user read-route pagination metadata without
+  route contract changes.
+- 2026-05-20: Completed T-183. The shared admin read pagination-control
+  extraction was frontend-only and made no data/API route, fetcher, query, or
+  contract changes.
 
 ## Next Agent Action
 
 T-174's data/API prerequisite, T-175's blog pagination pilot, T-176's
 route-backed filter contract, T-177's route-backed search pilot, and T-179's
-collection pagination/search rollout are complete. The next admin archive task
-is [T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md),
-which should move article read filters to the route and add article pagination
-and bounded search.
+collection pagination/search rollout are complete. T-180's article
+pagination/filter/search rollout is also complete, and T-181 completed the
+artwork pagination/filter/search route contract. T-182 consumed existing
+comment/user route metadata without changing route contracts. T-183 was a
+frontend-only pagination-control extraction. No additional data/API admin
+archive task is open.
 Keep public search scope, collection section launch policy, broader
 response-helper cleanup, route-local DB ownership gaps, field-contract
 matrices, server-side shop pagination/sorting contracts, lower-level logging
 policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
-T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, and T-179 are
-complete; do not reassign them unless their guards, validation behavior, search
-metadata, preview contract/UI, evidence gate, audit receipts, image URL audit,
-admin read-list audit, admin read query bounds, blog pagination pilot,
-route-backed blog filters, route-backed blog search, collection
-pagination/search, or query/fetcher contracts regress.
+T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, T-179, T-180,
+T-181, T-182, and T-183 are complete; do not reassign them unless their guards,
+validation behavior, search metadata, preview contract/UI, evidence gate, audit
+receipts, image URL audit, admin read-list audit, admin read query bounds, blog
+pagination pilot, route-backed blog filters, route-backed blog
+search, collection pagination/search, article pagination/filter/search,
+artwork pagination/filter/search, comment/user metadata consumption, or
+query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

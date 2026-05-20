@@ -1,5 +1,9 @@
 import BiographyPage from "@/app/biography/page";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import type {
+  ArticleNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
@@ -24,6 +28,28 @@ const mockRedirect = redirect as unknown as jest.MockedFunction<
   typeof redirect
 >;
 
+const createArticleNavItem = (
+  slug: string,
+  title: string
+): ArticleNavDataFrontend => ({
+  _id: `article-${slug}`,
+  title,
+  slug,
+});
+
+const createArticleNavResult = (
+  data: ArticleNavDataFrontend[]
+): ListResult<ArticleNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 describe("/biography page", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -33,27 +59,12 @@ describe("/biography page", () => {
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
     mockIsNextError.mockReturnValue(false);
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          title: "Early Life",
-          slug: "early-life",
-          linkTo: "/early-life",
-        },
-        {
-          title: "Studio Years",
-          slug: "studio-years",
-          linkTo: "/studio-years",
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 2,
-        total: 2,
-        totalPages: 1,
-      },
-    });
+    mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([
+        createArticleNavItem("early-life", "Early Life"),
+        createArticleNavItem("studio-years", "Studio Years"),
+      ])
+    );
   });
 
   afterEach(() => {

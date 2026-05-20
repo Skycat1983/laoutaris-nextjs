@@ -766,6 +766,21 @@ Use browser checks for layout-sensitive changes.
   bounded route-backed title/slug search, consumes route metadata for
   pagination, and preserves artwork counts, summaries, no-results states, and
   Update/Delete/Copy actions.
+- 2026-05-20: Completed T-180. The main admin article read tab now sends
+  route-backed section/overlay filters plus bounded title/slug search,
+  consumes route metadata for pagination, and preserves image cards,
+  no-results states, and Update/Delete/Copy actions.
+- 2026-05-20: Completed T-181. The main admin artwork read tab now sends
+  constrained artwork filters plus bounded title search, consumes route
+  metadata for pagination, and preserves artwork cards, no-results states, and
+  Update/Delete/Copy actions.
+- 2026-05-20: Completed T-182. The main admin comment and user read tabs now
+  consume route metadata for previous/next pagination and preserve card
+  layout, no-results/error states, Copy ID, and Delete handoff actions.
+- 2026-05-20: Completed T-183. The main admin article, artwork, blog,
+  collection, comment, and user read tabs now share a small previous/next
+  pagination component and metadata normalization helper without changing
+  routes, fetchers, card layouts, search, filters, or handoff actions.
 
 ## Next Agent Action
 
@@ -778,12 +793,17 @@ unless the prototype route, section data mapping, visual QA handoff, style
 audit, width frame, section composition, expanded QA conclusion, owner packet,
 style scaffold, or admin read-list audit regresses.
 
-For admin archive maintenance, assign
-[T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md) next.
+No further admin archive maintenance UI task is currently prepared after
+T-183. Keep any future shared read-list shell extraction, comment/user search,
+or broader archive redesign separate and assign only if the duplication or
+workflow gap becomes actionable.
 T-174's route query prerequisite, T-175's blog pagination pilot, T-176's
 route-backed blog filters, T-177's blog search pilot, and T-178's comment/user
 delete handoff are complete. T-179's collection pagination/search rollout is
-also complete.
+also complete, and T-180's article pagination/filter/search rollout is
+complete. T-181's artwork pagination/filter/search rollout, T-182's
+comment/user pagination rollout, and T-183's shared pagination-control
+extraction are complete.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,

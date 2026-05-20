@@ -6,13 +6,14 @@ Last updated: 2026-05-20
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-179 are done and reconciled. F-070, F-096, F-102, and F-092 are resolved;
-F-095 remains partially mitigated after T-174 through T-179 because the blog
-read tab now has route-backed pagination, filters, and search, and the
-collection read tab has route-backed pagination and search, but article/artwork
-read-tab pagination/search rollout remains open. F-103 is partially mitigated
-because runtime validation is complete while collection section launch policy
-remains an owner decision.
+T-184 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are
+resolved. F-095 is resolved after T-174 through T-182 because all six main
+admin read tabs now consume route-backed pagination metadata, normal
+article/artwork/blog/collection maintenance has direct Update/Delete handoff,
+and comment/user cards can hand off to the guarded delete flow. T-183 then
+removed the duplicated pagination-control code from those read tabs without
+changing behavior. F-103 is partially mitigated because runtime validation is
+complete while collection section launch policy remains an owner decision.
 
 T-157 through T-162 are complete. `/prototype/home` now has the isolated
 full-width prototype route plus image-guided biography, blog, and shop teaser
@@ -30,13 +31,12 @@ delivery path. T-172 documented safe delete-audit receipt verification. T-173
 audited admin read-list pagination/search gaps and produced the next admin
 archive implementation split.
 
-The next task to run is T-180. T-174 hardened admin read-list query bounds at
-the route layer, T-178 added comment/user read-list delete handoff UI, and
-T-175 through T-177 proved the main admin blog read-tab sequence for
-metadata-driven pagination, route-backed filters, and bounded route-backed
-search. T-179 applied the pagination/search pattern to the main collection read
-tab. T-180 should apply route-backed pagination, existing filters, and bounded
-search to the main article read tab.
+The next owner-independent task to run is T-185. T-174 through T-183 completed
+the current admin archive pagination/search/delete-handoff sequence. T-184
+audited the existing strict TypeScript `noEmit` failures and found 46 top-level
+diagnostics across 18 files, all under `__tests__/`. T-185 should fix the
+largest coherent test-only group first: stale article and collection navigation
+DTO fixtures.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -216,18 +216,33 @@ It records that all six admin read-list routes return pagination metadata but
 main CRUD read tabs do not consume it, and it recommends the T-174 through
 T-178 implementation sequence.
 
-T-174, T-175, T-176, T-177, T-178, and T-179 are complete:
+T-174, T-175, T-176, T-177, T-178, T-179, T-180, T-181, and T-182 are complete:
 [Harden admin read-list query bounds](../tasks/T-174-harden-admin-read-list-query-bounds.md),
 [Pilot admin blog read pagination](../tasks/T-175-pilot-admin-blog-read-pagination.md),
 [Route-back admin read filters](../tasks/T-176-route-back-admin-read-filters.md),
 [Pilot admin read search](../tasks/T-177-pilot-admin-read-search.md),
-[Add comment user delete entry points](../tasks/T-178-add-comment-user-delete-entry-points.md), and
-[Apply collection admin read pagination search](../tasks/T-179-apply-collection-admin-read-pagination-search.md).
+[Add comment user delete entry points](../tasks/T-178-add-comment-user-delete-entry-points.md),
+[Apply collection admin read pagination search](../tasks/T-179-apply-collection-admin-read-pagination-search.md),
+[Apply article admin read pagination filter search](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md),
+[Apply artwork admin read pagination search](../tasks/T-181-apply-artwork-admin-read-pagination-search.md), and
+[Add comment user admin read pagination](../tasks/T-182-add-comment-user-admin-read-pagination.md).
 T-177 added bounded route-backed blog search over title/slug while preserving
 pagination, filters, and card actions. T-179 added route-backed collection
 pagination and bounded title/slug search while preserving card actions. T-180
-is prepared to apply route-backed pagination, existing filters, and bounded
-search to the main article read tab.
+added route-backed article pagination, existing filters, and bounded title/slug
+search while preserving article cards and handoff. T-181 added route-backed
+artwork pagination, constrained artwork filters, and bounded title search while
+preserving artwork cards and handoff. T-182 added route-backed comment/user
+pagination while preserving Copy ID and Delete handoff. T-183 extracted the
+shared previous/next pagination control and metadata normalization helper
+without route, fetcher, search, filter, card action, or delete workflow changes.
+
+T-184 is complete:
+[Audit TypeScript noEmit test errors](../tasks/T-184-audit-typescript-noemit-test-errors.md).
+It recorded the current strict TypeScript failure set as test-only, with 46
+top-level diagnostics across 18 files and no top-level runtime `src/` errors.
+It recommends fixing stale navigation DTO fixtures first before addressing
+over-narrow `never` fixtures and isolated test-helper typing issues.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1362,15 +1377,16 @@ completed:
 
 ## Next Orchestrator Action
 
-While owner review is pending, the next runnable implementation task is:
+While owner review is pending, the next runnable task is:
 
-- [T-180 Apply article admin read pagination filter search](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md)
-  for applying route-backed pagination, existing filters, and bounded search to
-  the main article read tab.
+- [T-185 Fix navigation DTO test fixtures](../tasks/T-185-fix-navigation-dto-test-fixtures.md)
+  for removing the largest stale-test-data group from the current strict
+  TypeScript `noEmit` failures.
 
-Keep any shared read-list shell extraction or broader resource rollout separate
-until the article and artwork read tabs are migrated or a dedicated extraction
-task is prepared.
+T-185 should touch only navigation test fixtures and should keep runtime source,
+navigation behavior, TypeScript/Jest/Next/package configuration, and CI gates
+unchanged. Keep `noEmit` out of the release gate until the remaining test-only
+backlog is cleared.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
@@ -1407,7 +1423,7 @@ T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
 T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
-T-175, T-176, T-177, T-178, and T-179 are
+T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, and T-184 are
 complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,

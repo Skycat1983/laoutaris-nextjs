@@ -3,6 +3,10 @@ import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import { ArticleView } from "@/components/views/ArticleView";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import type {
+  ArticleNavDataFrontend,
+  ListResult,
+} from "@/lib/data/types";
 
 jest.mock("@/lib/data/services/getArticleBySlugPopulated", () => ({
   getArticleBySlugPopulated: jest.fn(),
@@ -31,36 +35,39 @@ const article = {
   slug: "current",
 } as never;
 
+const createArticleNavItem = (
+  slug: string,
+  title: string
+): ArticleNavDataFrontend => ({
+  _id: `article-${slug}`,
+  title,
+  slug,
+});
+
+const createArticleNavResult = (
+  data: ArticleNavDataFrontend[]
+): ListResult<ArticleNavDataFrontend> => ({
+  success: true,
+  data,
+  metadata: {
+    page: 1,
+    limit: data.length,
+    total: data.length,
+    totalPages: data.length ? 1 : 0,
+  },
+});
+
 describe("ArticleLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetArticleBySlugPopulated.mockResolvedValue(article);
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          title: "Previous",
-          slug: "previous",
-          linkTo: "/previous",
-        },
-        {
-          title: "Current",
-          slug: "current",
-          linkTo: "/current",
-        },
-        {
-          title: "Next",
-          slug: "next",
-          linkTo: "/next",
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 3,
-        total: 3,
-        totalPages: 1,
-      },
-    });
+    mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([
+        createArticleNavItem("previous", "Previous"),
+        createArticleNavItem("current", "Current"),
+        createArticleNavItem("next", "Next"),
+      ])
+    );
   });
 
   it("builds previous and next links from the server navigation service without same-app navigation fetches", async () => {
@@ -93,22 +100,9 @@ describe("ArticleLoader", () => {
   });
 
   it("preserves null previous and next links at navigation boundaries", async () => {
-    mockGetArticleNavigationList.mockResolvedValue({
-      success: true,
-      data: [
-        {
-          title: "Only Article",
-          slug: "only",
-          linkTo: "/only",
-        },
-      ],
-      metadata: {
-        page: 1,
-        limit: 1,
-        total: 1,
-        totalPages: 1,
-      },
-    });
+    mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([createArticleNavItem("only", "Only Article")])
+    );
 
     const element = (await ArticleLoader({
       slug: "only",

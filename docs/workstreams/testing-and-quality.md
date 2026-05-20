@@ -1499,17 +1499,40 @@ npm run lint
   and paginated reads, trimmed fetcher params, pagination controls, search
   reset-to-page-1 behavior, no-results/error states, artwork count display, and
   retained card actions.
+- 2026-05-20: Completed T-180. Focused coverage now verifies bounded admin
+  article search validation, route-backed section/overlay filters, escaped
+  title/slug route queries before counts and paginated reads, trimmed fetcher
+  params, pagination controls, search/filter reset-to-page-1 behavior,
+  no-results/error states, image card display, and retained card actions.
+- 2026-05-20: Completed T-181. Focused coverage now verifies bounded admin
+  artwork title search validation, constrained route-backed artwork filters,
+  escaped title route queries before counts and paginated reads, trimmed
+  fetcher params, pagination controls, search/filter reset-to-page-1 behavior,
+  no-results/error states, artwork card display, and retained card actions.
+- 2026-05-20: Completed T-182. Focused coverage now verifies comment/user
+  read-tab pagination from route metadata, empty/error states, and retained
+  Copy ID plus guarded Delete handoff actions on paginated cards.
+- 2026-05-20: Completed T-183. Focused admin read-list pagination coverage,
+  archive entry-point coverage, and lint now pass after extracting the shared
+  admin read pagination control with no behavior changes.
+- 2026-05-20: Completed T-184. The strict TypeScript `noEmit` audit found 46
+  top-level diagnostics across 18 files, all under `__tests__/`, and
+  recommended fixing stale navigation DTO fixtures first.
 
 ## Next Agent Action
 
-T-180 is the next quality-bearing admin archive task. T-157 through T-179 are
-complete and should not be reassigned unless
+T-185 is the next quality task while owner decisions remain pending. It should
+fix only the stale navigation DTO test fixtures identified by T-184, then rerun
+the focused navigation tests and strict TypeScript command to confirm that group
+is gone. T-157 through T-184 are complete and should not be reassigned unless
 their prototype route, data mapping, fallback behavior, audit handoff, preview
 contract/UI, evidence gate, audit receipts, width frame, section composition,
 visual QA conclusions, owner packet, semantic style scaffold, image URL audit,
 delete-receipt runbook, admin read-list audit, read-list query bounds, blog
 pagination pilot, route-backed blog filters, route-backed blog search,
-collection pagination/search, or comment/user delete handoff regresses.
+collection pagination/search, article pagination/filter/search, artwork
+pagination/filter/search, comment/user pagination, shared pagination control,
+TypeScript `noEmit` audit result, or comment/user delete handoff regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-168 are complete; do not reassign their

@@ -4,53 +4,32 @@ import { type ChangeEvent, useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CopyIcon,
-  PencilIcon,
-  SearchIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { CopyIcon, PencilIcon, SearchIcon, Trash2Icon } from "lucide-react";
 import type { CollectionFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
+import {
+  AdminReadPagination,
+  type AdminReadPaginationMetadata,
+  createDefaultReadPaginationMetadata,
+  normalizeAdminReadPaginationMetadata,
+} from "./AdminReadPagination";
 
 // TODO: when we click on a collection, we should fetch and render the artworks
-
-interface CollectionReadPaginationMetadata {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
 
 const COLLECTION_READ_PAGE_SIZE = 10;
 const COLLECTION_READ_SEARCH_MAX_LENGTH = 80;
 
-const defaultPaginationMetadata: CollectionReadPaginationMetadata = {
-  page: 1,
-  limit: COLLECTION_READ_PAGE_SIZE,
-  total: 0,
-  totalPages: 1,
-};
-
-const normalizePaginationMetadata = (
-  metadata: Partial<CollectionReadPaginationMetadata> | undefined,
-  fallbackPage: number
-): CollectionReadPaginationMetadata => ({
-  page: metadata?.page ?? fallbackPage,
-  limit: metadata?.limit ?? COLLECTION_READ_PAGE_SIZE,
-  total: metadata?.total ?? 0,
-  totalPages: Math.max(metadata?.totalPages ?? 1, 1),
-});
+const defaultPaginationMetadata = createDefaultReadPaginationMetadata(
+  COLLECTION_READ_PAGE_SIZE
+);
 
 export function ReadCollectionList() {
   const [collections, setCollections] = useState<CollectionFrontendPopulated[]>(
     []
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [metadata, setMetadata] = useState<CollectionReadPaginationMetadata>(
+  const [metadata, setMetadata] = useState<AdminReadPaginationMetadata>(
     defaultPaginationMetadata
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -78,7 +57,11 @@ export function ReadCollectionList() {
         if (response.success) {
           setCollections(response.data);
           setMetadata(
-            normalizePaginationMetadata(response.metadata, currentPage)
+            normalizeAdminReadPaginationMetadata(
+              response.metadata,
+              currentPage,
+              COLLECTION_READ_PAGE_SIZE
+            )
           );
           return;
         }
@@ -220,59 +203,15 @@ export function ReadCollectionList() {
             </div>
           )}
           {metadata.total > 0 && (
-            <CollectionReadPagination
+            <AdminReadPagination
               metadata={metadata}
               onPageChange={setCurrentPage}
               isLoading={isLoading}
+              resourceLabel="collection"
             />
           )}
         </>
       )}
-    </div>
-  );
-}
-
-interface CollectionReadPaginationProps {
-  metadata: CollectionReadPaginationMetadata;
-  onPageChange: (page: number) => void;
-  isLoading?: boolean;
-}
-
-function CollectionReadPagination({
-  metadata,
-  onPageChange,
-  isLoading,
-}: CollectionReadPaginationProps) {
-  const hasPrevious = metadata.page > 1;
-  const hasNext = metadata.page < metadata.totalPages;
-
-  return (
-    <div className="flex justify-center items-center w-full px-4 py-2 gap-8 mt-4">
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        aria-label="Previous collection page"
-        onClick={() => onPageChange(metadata.page - 1)}
-        disabled={!hasPrevious || isLoading}
-        className="flex items-center gap-2 outline-none border border-2 border-black rounded"
-      >
-        <ChevronLeftIcon className="h-4 w-4" />
-      </Button>
-      <span className="text-sm text-gray-600">
-        Page {metadata.page} of {metadata.totalPages}
-      </span>
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        aria-label="Next collection page"
-        onClick={() => onPageChange(metadata.page + 1)}
-        disabled={!hasNext || isLoading}
-        className="flex items-center gap-2 outline-none border border-2 border-black rounded"
-      >
-        <ChevronRightIcon className="h-4 w-4" />
-      </Button>
     </div>
   );
 }
