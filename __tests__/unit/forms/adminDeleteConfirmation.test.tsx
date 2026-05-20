@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { DeleteConfirmation } from "@/components/features/adminDashboard/crudForms/delete/DeleteConfirmation";
 import type { AdminDeletePreview } from "@/lib/api/admin/delete/previewTypes";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 
 const documentId = "507f1f77bcf86cd799439013";
 
@@ -96,6 +97,32 @@ const unblockedPreview: AdminDeletePreview = {
   ],
 };
 
+const completedEvidence: AdminDeleteEvidence = {
+  backupExportConfirmed: true,
+  backupExportReference: "mongodump archive 2026-05-20",
+  ownerReviewConfirmed: true,
+  ownerReviewReference: "owner review T-164",
+};
+
+const fillValidEvidence = () => {
+  fireEvent.click(
+    screen.getByRole("checkbox", {
+      name: "Backup/export evidence verified",
+    })
+  );
+  fireEvent.change(screen.getByLabelText("Backup/export reference"), {
+    target: { value: ` ${completedEvidence.backupExportReference} ` },
+  });
+  fireEvent.click(
+    screen.getByRole("checkbox", {
+      name: "Owner/delegated review verified",
+    })
+  );
+  fireEvent.change(screen.getByLabelText("Owner/delegated review reference"), {
+    target: { value: ` ${completedEvidence.ownerReviewReference} ` },
+  });
+};
+
 const renderDeleteConfirmation = ({
   fetchDeletePreview = jest.fn().mockResolvedValue({
     success: true,
@@ -126,7 +153,7 @@ const renderDeleteConfirmation = ({
 };
 
 describe("DeleteConfirmation delete preview", () => {
-  it("loads the preview and disables confirmation while loading", async () => {
+  it("loads the preview and requires evidence before confirmation", async () => {
     let resolvePreview!: (value: { success: true; data: AdminDeletePreview }) => void;
     const fetchDeletePreview = jest.fn(
       () =>
@@ -150,10 +177,14 @@ describe("DeleteConfirmation delete preview", () => {
     resolvePreview({ success: true, data: unblockedPreview });
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: "Confirm Delete" })
-      ).not.toBeDisabled();
+      expect(screen.getByText("Preview target")).toBeInTheDocument();
     });
+    expect(screen.getByRole("button", { name: "Confirm Delete" })).toBeDisabled();
+
+    fillValidEvidence();
+
+    expect(screen.getByRole("button", { name: "Confirm Delete" }))
+      .not.toBeDisabled();
   });
 
   it("shows preview failures and keeps destructive confirmation disabled", async () => {
@@ -243,11 +274,15 @@ describe("DeleteConfirmation delete preview", () => {
     expect(screen.getByText("MongoDB backup/export evidence")).toBeInTheDocument();
     expect(screen.getByText("Owner or delegated review evidence")).toBeInTheDocument();
     expect(screen.getByText("Redacted audit-event evidence")).toBeInTheDocument();
+    expect(screen.getByText("Required delete evidence")).toBeInTheDocument();
 
     const confirmButton = screen.getByRole("button", { name: "Confirm Delete" });
+    expect(confirmButton).toBeDisabled();
+    fillValidEvidence();
     expect(confirmButton).not.toBeDisabled();
+
     fireEvent.click(confirmButton);
-    expect(onDelete).toHaveBeenCalledTimes(1);
+    expect(onDelete).toHaveBeenCalledWith(completedEvidence);
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(onCancel).toHaveBeenCalledTimes(1);

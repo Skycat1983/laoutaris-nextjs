@@ -1458,19 +1458,26 @@ npm run lint
   preview fetchers, route/fetcher parity, and delete confirmation loading,
   failure, blocked, and unblocked preview states. Orchestrator verification
   passed the focused T-163 tests, lint, `git diff --check`, and `npm run build`.
+- 2026-05-20: Completed T-164. Focused coverage now verifies admin delete
+  evidence fetcher bodies, route rejection before destructive work when
+  evidence is missing, UI evidence gating, trimmed evidence submission, and
+  existing successful delete behavior with valid evidence. Orchestrator
+  verification passed the focused T-164 tests, lint, `git diff --check`, and
+  `npm run build`.
 
 ## Next Agent Action
 
-Use [T-164](../tasks/T-164-require-admin-delete-evidence-gate.md) as the next
+Use [T-165](../tasks/T-165-persist-admin-delete-audit-events.md) as the next
 quality-bearing implementation slice if destructive-delete safety is the
-priority, because preview UI now needs route-enforced evidence coverage. For
-the prototype track, hold implementation until the T-162 owner decisions are
-answered. T-157 through T-163 are complete and should not be reassigned unless
-their prototype route, data mapping, fallback behavior, audit handoff, preview
-contract, or preview UI regresses.
+priority, because preview UI and route-enforced evidence now exist but
+redacted audit-event persistence is missing. For the prototype track, hold
+implementation until the T-162 owner decisions are answered. T-157 through
+T-164 are complete and should not be reassigned unless their prototype route,
+data mapping, fallback behavior, audit handoff, preview contract/UI, or
+evidence gate regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-163 are complete; do not reassign their
+decision is available. T-141 through T-164 are complete; do not reassign their
 focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb
 coverage unless it regresses.
 Keep broader static/ISR migration separate from the

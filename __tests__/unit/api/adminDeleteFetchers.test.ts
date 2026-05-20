@@ -1,6 +1,7 @@
 import { createDeleteFetchers } from "@/lib/api/admin/delete/fetchers";
 import type { Fetcher } from "@/lib/api/core/createFetcher";
 import type { AdminDeletePreview } from "@/lib/api/admin/delete/previewTypes";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 
 const preview: AdminDeletePreview = {
   resource: "article",
@@ -15,6 +16,13 @@ const preview: AdminDeletePreview = {
   wouldDetachOrUpdate: [],
   preserved: [],
   productionEvidenceReminders: [],
+};
+
+const evidence: AdminDeleteEvidence = {
+  backupExportConfirmed: true,
+  backupExportReference: "mongodump archive 2026-05-20",
+  ownerReviewConfirmed: true,
+  ownerReviewReference: "owner review T-164",
 };
 
 describe("admin delete fetchers", () => {
@@ -75,7 +83,7 @@ describe("admin delete fetchers", () => {
     );
   });
 
-  it("preserves destructive delete requests as DELETE calls", async () => {
+  it("sends evidence with destructive delete requests for every resource", async () => {
     const result = {
       success: true,
       data: null,
@@ -83,12 +91,59 @@ describe("admin delete fetchers", () => {
     const fetcher = jest.fn(async () => result);
     const deleteFetchers = createDeleteFetchers(fetcher as Fetcher);
 
-    await expect(deleteFetchers.article("article id")).resolves.toBe(result);
+    await deleteFetchers.article("article id", evidence);
+    await deleteFetchers.artwork("artwork id", evidence);
+    await deleteFetchers.blog("blog id", evidence);
+    await deleteFetchers.collection("collection id", evidence);
+    await deleteFetchers.comment("comment id", evidence);
+    await deleteFetchers.user("user id", evidence);
 
-    expect(fetcher).toHaveBeenCalledWith(
+    expect(fetcher).toHaveBeenNthCalledWith(
+      1,
       "/api/v2/admin/article/delete/article%20id",
       {
         method: "DELETE",
+        body: JSON.stringify(evidence),
+      }
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      2,
+      "/api/v2/admin/artwork/delete/artwork%20id",
+      {
+        method: "DELETE",
+        body: JSON.stringify(evidence),
+      }
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      3,
+      "/api/v2/admin/blog/delete/blog%20id",
+      {
+        method: "DELETE",
+        body: JSON.stringify(evidence),
+      }
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      4,
+      "/api/v2/admin/collection/delete/collection%20id",
+      {
+        method: "DELETE",
+        body: JSON.stringify(evidence),
+      }
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      5,
+      "/api/v2/admin/comment/delete/comment%20id",
+      {
+        method: "DELETE",
+        body: JSON.stringify(evidence),
+      }
+    );
+    expect(fetcher).toHaveBeenNthCalledWith(
+      6,
+      "/api/v2/admin/user/delete/user%20id",
+      {
+        method: "DELETE",
+        body: JSON.stringify(evidence),
       }
     );
   });

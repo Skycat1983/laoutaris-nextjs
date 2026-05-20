@@ -9,6 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateBlogForm } from "../crudForms/create";
 import { UpdateBlogForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { AdminBlogPopulated, BlogEntryFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
@@ -42,12 +43,15 @@ export function BlogOperations({
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!blogInfo?._id) return;
 
     try {
       setIsDeleting(true);
-      const response = await clientApi.admin.delete.blog(blogInfo._id);
+      const response = await clientApi.admin.delete.blog(
+        blogInfo._id,
+        evidence
+      );
       if (response.success) {
         handleSuccess();
       } else {

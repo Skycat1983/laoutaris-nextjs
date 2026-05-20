@@ -6,10 +6,10 @@ Last updated: 2026-05-20
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-163 are done and reconciled. F-096 and F-102 are resolved; F-092 is partially
-mitigated because the read-only delete preview contract and visible preview UI
-exist while route-enforced backup/review evidence capture and redacted audit
-events remain open. F-103 is partially mitigated because runtime validation is
+T-164 are done and reconciled. F-096 and F-102 are resolved; F-092 is partially
+mitigated because the read-only delete preview contract, visible preview UI, and
+route-enforced backup/review evidence gate exist while redacted audit events
+remain open. F-103 is partially mitigated because runtime validation is
 complete while collection section launch policy remains an owner decision.
 
 T-157 through T-162 are complete. `/prototype/home` now has the isolated
@@ -18,10 +18,9 @@ sections backed by real data. T-161 added the style-system audit without
 runtime changes. T-162 recorded visual QA and owner-decision notes before
 production migration.
 
-T-164 is prepared as the next admin-delete task: require backup/export and
-owner/delegated review evidence in the admin delete confirmation flow and route
-validation before destructive execution. Prototype implementation should wait
-for the owner decisions recorded in T-162.
+T-165 is prepared as the next admin-delete task: persist redacted audit events
+for admin destructive delete attempts that pass the T-164 evidence gate.
+Prototype implementation should wait for the owner decisions recorded in T-162.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -29,7 +28,7 @@ to record an explicit no-decision blocker.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
-workstream backlogs, and implementation briefs T-141 through T-164.
+workstream backlogs, and implementation briefs T-141 through T-165.
 
 T-140 is complete:
 [Reconcile admin discovery taxonomy findings](../tasks/T-140-reconcile-admin-discovery-taxonomy-findings.md).
@@ -136,6 +135,12 @@ T-163 is complete:
 It renders the T-156 preview contract in admin delete confirmations and blocks
 confirmation while preview loading, failed, or blocked, without changing
 destructive delete route execution.
+
+T-164 is complete:
+[Require admin delete evidence gate](../tasks/T-164-require-admin-delete-evidence-gate.md).
+It requires backup/export and owner/delegated review evidence in admin delete
+confirmations and validates that evidence at each admin delete route before
+destructive mutation. Redacted audit-event persistence remains open in T-165.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1270,19 +1275,20 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign [T-164 Require admin delete evidence gate](../tasks/T-164-require-admin-delete-evidence-gate.md)
-as the next decision-light admin delete implementation task. It should require
-backup/export and owner/delegated review evidence in the existing delete
-confirmation flow and route validation before destructive execution, without
-adding redacted audit-event persistence yet.
+Assign [T-165 Persist admin delete audit events](../tasks/T-165-persist-admin-delete-audit-events.md)
+as the next decision-light admin delete implementation task. It should persist
+redacted audit events for admin destructive delete attempts that pass the T-164
+evidence gate, without changing cascade behavior, Cloudinary asset lifecycle,
+or monitoring-provider ownership.
 
 For the homepage prototype track, hold implementation until the owner decisions
 from [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
 are answered. The open decisions are biography order, canonical dates, blog
 content strategy, shop/commerce wording, and mobile teaser density.
 
-Do not combine T-164 with prototype decision work in the same agent. T-164
-owns admin delete evidence gating; prototype decisions are owner/product work.
+Do not combine T-165 with prototype decision work in the same agent. T-165
+owns admin delete audit-event persistence; prototype decisions are
+owner/product work.
 
 Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
 unless the owner/product answer is available. If unavailable, do not guess the
@@ -1303,11 +1309,11 @@ T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
 T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
 T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
-T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, and
-T-152, T-153, T-154, T-155, T-156, T-162, and T-163 are complete and should not be reassigned unless
-a regression is opened. T-157 through T-161 are also complete and should not be
-reassigned unless the prototype route, section data mapping, or style audit
-regresses. T-164 is prepared but not yet complete.
+T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
+T-153, T-154, T-155, T-156, T-162, T-163, and T-164 are complete and should not
+be reassigned unless a regression is opened. T-157 through T-161 are also
+complete and should not be reassigned unless the prototype route, section data
+mapping, or style audit regresses.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

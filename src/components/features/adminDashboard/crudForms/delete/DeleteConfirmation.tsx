@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/shadcn/button";
+import { Checkbox } from "@/components/shadcn/checkbox";
+import { Input } from "@/components/shadcn/input";
 import type { ApiErrorResponse } from "@/lib/data/types";
 import type { DeletePreviewResult } from "@/lib/api/admin/delete/fetchers";
+import {
+  ADMIN_DELETE_EVIDENCE_REFERENCE_MAX_LENGTH,
+  createEmptyAdminDeleteEvidence,
+  isAdminDeleteEvidenceComplete,
+  normalizeAdminDeleteEvidence,
+} from "@/lib/api/admin/delete/evidenceTypes";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type {
   AdminDeletePreview,
   AdminDeletePreviewImpact,
@@ -23,7 +32,7 @@ interface DeleteConfirmationProps<T extends DocumentInfo> {
   document: T;
   documentType: string;
   fetchDeletePreview: DeletePreviewFetcher;
-  onDelete: () => Promise<void>;
+  onDelete: (evidence: AdminDeleteEvidence) => Promise<void>;
   isDeleting?: boolean;
   onCancel: () => void;
 }
@@ -214,6 +223,137 @@ const DeletePreviewDetails = ({
   </div>
 );
 
+const DeleteEvidenceControls = ({
+  evidence,
+  onChange,
+}: {
+  evidence: AdminDeleteEvidence;
+  onChange: (evidence: AdminDeleteEvidence) => void;
+}) => {
+  const normalizedEvidence = normalizeAdminDeleteEvidence(evidence);
+  const backupReferenceInvalid =
+    evidence.backupExportConfirmed &&
+    normalizedEvidence.backupExportReference.length === 0;
+  const ownerReviewReferenceInvalid =
+    evidence.ownerReviewConfirmed &&
+    normalizedEvidence.ownerReviewReference.length === 0;
+
+  return (
+    <section className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+      <h3 className="text-sm font-semibold text-gray-900">
+        Required delete evidence
+      </h3>
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-3 rounded border border-gray-200 bg-white p-3">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="backupExportConfirmed"
+              checked={evidence.backupExportConfirmed}
+              onCheckedChange={(checked) =>
+                onChange({
+                  ...evidence,
+                  backupExportConfirmed: checked === true,
+                })
+              }
+            />
+            <label
+              htmlFor="backupExportConfirmed"
+              className="text-sm font-medium text-gray-900"
+            >
+              Backup/export evidence verified
+            </label>
+          </div>
+          <div className="space-y-1">
+            <label
+              htmlFor="backupExportReference"
+              className="text-xs font-medium uppercase tracking-wide text-gray-500"
+            >
+              Backup/export reference
+            </label>
+            <Input
+              id="backupExportReference"
+              value={evidence.backupExportReference}
+              maxLength={ADMIN_DELETE_EVIDENCE_REFERENCE_MAX_LENGTH}
+              aria-invalid={backupReferenceInvalid}
+              aria-describedby={
+                backupReferenceInvalid ? "backupExportReferenceError" : undefined
+              }
+              onChange={(event) =>
+                onChange({
+                  ...evidence,
+                  backupExportReference: event.target.value,
+                })
+              }
+            />
+            {backupReferenceInvalid && (
+              <p
+                id="backupExportReferenceError"
+                className="text-xs text-red-700"
+              >
+                Backup/export reference is required.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-3 rounded border border-gray-200 bg-white p-3">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="ownerReviewConfirmed"
+              checked={evidence.ownerReviewConfirmed}
+              onCheckedChange={(checked) =>
+                onChange({
+                  ...evidence,
+                  ownerReviewConfirmed: checked === true,
+                })
+              }
+            />
+            <label
+              htmlFor="ownerReviewConfirmed"
+              className="text-sm font-medium text-gray-900"
+            >
+              Owner/delegated review verified
+            </label>
+          </div>
+          <div className="space-y-1">
+            <label
+              htmlFor="ownerReviewReference"
+              className="text-xs font-medium uppercase tracking-wide text-gray-500"
+            >
+              Owner/delegated review reference
+            </label>
+            <Input
+              id="ownerReviewReference"
+              value={evidence.ownerReviewReference}
+              maxLength={ADMIN_DELETE_EVIDENCE_REFERENCE_MAX_LENGTH}
+              aria-invalid={ownerReviewReferenceInvalid}
+              aria-describedby={
+                ownerReviewReferenceInvalid
+                  ? "ownerReviewReferenceError"
+                  : undefined
+              }
+              onChange={(event) =>
+                onChange({
+                  ...evidence,
+                  ownerReviewReference: event.target.value,
+                })
+              }
+            />
+            {ownerReviewReferenceInvalid && (
+              <p
+                id="ownerReviewReferenceError"
+                className="text-xs text-red-700"
+              >
+                Owner/delegated review reference is required.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export function DeleteConfirmation<T extends DocumentInfo>({
   document,
   documentType,
@@ -225,6 +365,9 @@ export function DeleteConfirmation<T extends DocumentInfo>({
   const [preview, setPreview] = useState<AdminDeletePreview | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(true);
   const [previewError, setPreviewError] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState<AdminDeleteEvidence>(
+    createEmptyAdminDeleteEvidence
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -233,6 +376,7 @@ export function DeleteConfirmation<T extends DocumentInfo>({
       setPreview(null);
       setPreviewError(null);
       setIsPreviewLoading(true);
+      setEvidence(createEmptyAdminDeleteEvidence());
 
       try {
         const response = await fetchDeletePreview(document._id);
@@ -267,14 +411,18 @@ export function DeleteConfirmation<T extends DocumentInfo>({
   }, [document._id, fetchDeletePreview]);
 
   const confirmDisabled =
-    isDeleting || isPreviewLoading || Boolean(previewError) || Boolean(preview?.blocked);
+    isDeleting ||
+    isPreviewLoading ||
+    Boolean(previewError) ||
+    Boolean(preview?.blocked) ||
+    !isAdminDeleteEvidenceComplete(evidence);
 
   const handleConfirmDelete = () => {
     if (confirmDisabled) {
       return;
     }
 
-    void onDelete();
+    void onDelete(normalizeAdminDeleteEvidence(evidence));
   };
 
   return (
@@ -309,7 +457,12 @@ export function DeleteConfirmation<T extends DocumentInfo>({
           Delete preview failed: {previewError}
         </div>
       )}
-      {preview && <DeletePreviewDetails preview={preview} />}
+      {preview && (
+        <>
+          <DeletePreviewDetails preview={preview} />
+          <DeleteEvidenceControls evidence={evidence} onChange={setEvidence} />
+        </>
+      )}
       <div className="flex gap-4">
         <Button
           variant="destructive"

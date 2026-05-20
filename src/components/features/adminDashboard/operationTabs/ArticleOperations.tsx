@@ -8,6 +8,7 @@ import { DocumentReader } from "../DocumentReader";
 import { UpdateArticleForm } from "../crudForms/update/UpdateArticleForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
 import { CreateArticleForm } from "../crudForms/create";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { AdminArticlePopulated, ArtworkFrontend, ArticleFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
@@ -44,12 +45,15 @@ export function ArticleOperations({
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!articleInfo?._id) return;
 
     try {
       setIsDeleting(true);
-      const response = await clientApi.admin.delete.article(articleInfo._id);
+      const response = await clientApi.admin.delete.article(
+        articleInfo._id,
+        evidence
+      );
       if (response.success) {
         handleSuccess();
       } else {

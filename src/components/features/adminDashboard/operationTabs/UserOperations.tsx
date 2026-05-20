@@ -6,6 +6,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { UserFrontend } from "@/lib/data/types/userTypes";
 
 type OperationType = "read" | "delete";
@@ -31,12 +32,15 @@ export function UserOperations({ operationType }: UserOperationsProps) {
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!userInfo?._id) return;
 
     try {
       setIsDeleting(true);
-      const response = await clientApi.admin.delete.user(userInfo._id);
+      const response = await clientApi.admin.delete.user(
+        userInfo._id,
+        evidence
+      );
       if (response.success) {
         handleSuccess();
       } else {

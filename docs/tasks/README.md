@@ -177,7 +177,8 @@ Prompt packs:
 | [T-161 Audit style system point of truth](T-161-audit-style-system-point-of-truth.md) | Completed | Audited current typography, spacing, layout, and repeated style patterns before any central style-system migration. |
 | [T-162 Review homepage prototype visual QA](T-162-review-homepage-prototype-visual-qa.md) | Completed | Reviewed `/prototype/home` against the design-guide images and recorded refinement and owner-decision notes before production migration. |
 | [T-163 Surface admin delete preview UI](T-163-surface-admin-delete-preview-ui.md) | Completed | Rendered the T-156 delete preview contract in admin delete confirmations before destructive confirmation is allowed. |
-| [T-164 Require admin delete evidence gate](T-164-require-admin-delete-evidence-gate.md) | Planned | Require backup/review evidence in admin delete confirmations and route validation before destructive delete execution. |
+| [T-164 Require admin delete evidence gate](T-164-require-admin-delete-evidence-gate.md) | Completed | Required backup/review evidence in admin delete confirmations and route validation before destructive delete execution. |
+| [T-165 Persist admin delete audit events](T-165-persist-admin-delete-audit-events.md) | Planned | Persist redacted audit events for admin destructive delete attempts that pass the evidence gate. |
 
 ## Rules
 

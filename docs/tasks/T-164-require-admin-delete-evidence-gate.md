@@ -1,6 +1,6 @@
 # T-164 Require Admin Delete Evidence Gate
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -117,3 +117,35 @@ update only this task handoff.
 ## Handoff Notes
 
 - Prepared after T-163 completion and orchestrator reconciliation.
+- Completed 2026-05-20: added a client/server-safe
+  `AdminDeleteEvidence` payload for destructive admin deletes with two required
+  gates: backup/export confirmation plus reference, and owner/delegated review
+  confirmation plus reference.
+- Extended the admin delete fetchers so article, artwork, blog, collection,
+  comment, and user `DELETE` calls send the evidence payload while preview
+  fetchers continue to use the read-only `GET` preview routes.
+- Updated `DeleteConfirmation` to render required evidence controls after a
+  loaded delete preview. Confirmation now remains disabled while the preview is
+  loading, failed, blocked, or while either evidence confirmation/reference is
+  incomplete; submitted references are trimmed before being sent.
+- Added shared route evidence validation in
+  `src/lib/api/admin/delete/routeValidation.ts` and wired it into each admin
+  delete route after `requireApiAdmin()` and ObjectId validation, before
+  route-local DB mutation/session work. Missing, malformed, unchecked, short,
+  overlong, or unknown evidence fields return structured `400` validation
+  envelopes without changing cascade behavior, Cloudinary asset handling, or
+  audit persistence.
+- Added/updated focused tests in
+  `__tests__/unit/api/adminDeleteRouteGuard.test.ts`,
+  `__tests__/unit/api/adminDeleteFetchers.test.ts`, and
+  `__tests__/unit/forms/adminDeleteConfirmation.test.tsx` for missing evidence,
+  invalid-ID ordering, evidence fetcher bodies, UI gating, sanitized evidence
+  submission, and existing successful delete behavior with valid evidence.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminDeleteRouteGuard.test.ts __tests__/unit/api/adminDeleteFetchers.test.ts __tests__/unit/forms/adminDeleteConfirmation.test.tsx`,
+  `npm run lint`, `npm run build`, and `git diff --check`.
+- Orchestrator reconciliation completed 2026-05-20: F-092/R-007 now note that
+  route-enforced backup/export and owner/delegated review evidence gates are
+  implemented. Redacted audit-event persistence remains open in
+  [T-165](T-165-persist-admin-delete-audit-events.md) before production
+  destructive deletes are fully repeatable.

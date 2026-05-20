@@ -8,6 +8,7 @@ import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
+  validateAdminDeleteEvidenceRequest,
 } from "@/lib/api/admin/delete/routeValidation";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
@@ -26,6 +27,14 @@ export async function DELETE(
   const { id } = params;
   if (!isValidObjectIdParam(id)) {
     return adminDeleteInvalidIdResponse("blog", "Invalid blog ID");
+  }
+
+  const evidenceValidationResponse = await validateAdminDeleteEvidenceRequest(
+    request,
+    "blog"
+  );
+  if (evidenceValidationResponse) {
+    return evidenceValidationResponse;
   }
 
   const requestContext = createRequestContext(

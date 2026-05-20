@@ -6,6 +6,7 @@ import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { AdminComment, CommentFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "read" | "delete";
@@ -32,12 +33,15 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!commentInfo?._id) return;
 
     try {
       setIsDeleting(true);
-      const response = await clientApi.admin.delete.comment(commentInfo._id);
+      const response = await clientApi.admin.delete.comment(
+        commentInfo._id,
+        evidence
+      );
       if (response.success) {
         handleSuccess();
       } else {

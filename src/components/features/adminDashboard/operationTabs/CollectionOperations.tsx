@@ -9,6 +9,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateCollectionForm } from "../crudForms/create";
 import { UpdateCollectionForm } from "../crudForms/update/UpdateCollectionForm";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { CollectionFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
@@ -43,13 +44,14 @@ export function CollectionOperations({
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!collectionInfo?._id) return;
 
     try {
       setIsDeleting(true);
       const response = await clientApi.admin.delete.collection(
-        collectionInfo._id
+        collectionInfo._id,
+        evidence
       );
       if (response.success) {
         handleSuccess();

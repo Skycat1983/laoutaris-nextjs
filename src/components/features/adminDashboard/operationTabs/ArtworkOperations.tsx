@@ -13,6 +13,7 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CreateArtworkForm } from "../crudForms/create";
 import { UpdateArtworkForm } from "../crudForms/update";
 import { DeleteConfirmation } from "../crudForms/delete";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import type { ArtworkFrontend } from "@/lib/data/types";
 
 type OperationType = "create" | "update" | "delete";
@@ -69,12 +70,15 @@ export function ArtworkOperations({
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (evidence: AdminDeleteEvidence) => {
     if (!artworkInfo?._id) return;
 
     try {
       setIsDeleting(true);
-      const response = await clientApi.admin.delete.artwork(artworkInfo._id);
+      const response = await clientApi.admin.delete.artwork(
+        artworkInfo._id,
+        evidence
+      );
       if (response.success) {
         handleSuccess();
       } else {

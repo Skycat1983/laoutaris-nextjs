@@ -155,8 +155,8 @@ content operations repeatable and safe.
 - Decide whether public artwork responses should expose Cloudinary `public_id`;
   if not, wire image sanitization into artwork transforms and tests.
 - Confirm delete behavior for content with related records.
-- Add cascade-preview, backup/review evidence, and redacted audit-event
-  requirements for destructive admin deletes by resource type.
+- Persist redacted audit events for destructive admin deletes now that cascade
+  previews, preview UI, and route-enforced backup/review evidence gates exist.
 - Replace normal admin maintenance flows that rely on manual ObjectId
   copy/paste with paginated/searchable entry points, keeping ObjectId lookup as
   an escape hatch.
@@ -388,22 +388,26 @@ Use manual admin checks when changing dashboard behavior.
   and user deletes, and disables confirmation while previews are loading,
   failed, or blocked. Backup/review evidence capture and audit-event
   persistence remain separate.
+- 2026-05-20: Completed T-164. Admin delete confirmations now require
+  backup/export and owner/delegated review evidence before confirmation, and
+  each admin delete route validates that evidence before destructive mutation.
+  Redacted audit-event persistence remains separate.
 
 ## Next Agent Action
 
-Assign [T-164](../tasks/T-164-require-admin-delete-evidence-gate.md) as the
-next runnable content/admin delete slice. It should require backup/export and
-owner/delegated review evidence in the delete confirmation UI and route
-validation before destructive execution, while keeping audit-event persistence,
-collection section launch policy, and broader taxonomy/i18n direction separate.
-T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, and T-163 are
-complete; do not reassign them unless their route protections, form behavior,
-archive entry-point behavior, blog pinned/tag controls, runbook content,
-preview contract, or preview UI regresses.
+Assign [T-165](../tasks/T-165-persist-admin-delete-audit-events.md) as the next
+runnable content/admin delete slice. It should persist redacted audit events for
+admin destructive delete attempts that pass the evidence gate, while keeping
+collection section launch policy, broader taxonomy/i18n direction, Cloudinary
+asset deletion, and monitoring-provider work separate. T-141, T-142, T-144,
+T-148, T-149, T-150, T-152, T-153, T-156, T-163, and T-164 are complete; do not
+reassign them unless their route protections, form behavior, archive entry-point
+behavior, blog pinned/tag controls, runbook content, preview contract/UI, or
+evidence gate regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, new delivery-transform retuning, and Cloudinary account changes
 separate unless explicitly assigned. Keep persistence-time Shopify API
 validation, checkout/cart ownership, product-link data migration, route-level
-API logging, global logging policy, delete evidence/audit follow-ups, and
-admin content runbook follow-ups separate.
+API logging, global logging policy, and admin content runbook follow-ups
+separate.

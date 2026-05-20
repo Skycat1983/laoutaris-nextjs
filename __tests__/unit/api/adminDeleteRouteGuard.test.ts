@@ -17,6 +17,7 @@ import {
   CommentModel,
   UserModel,
 } from "@/lib/data/models";
+import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
 import { REQUEST_ID_HEADER } from "@/lib/observability/requestContext";
 
 jest.mock("next/server", () => ({
@@ -118,12 +119,23 @@ const deletedUserId = "507f1f77bcf86cd799439018";
 const favouriteArtworkId = "507f1f77bcf86cd799439019";
 const requestId = "req-admin-delete";
 
-const createRequest = (suppliedRequestId: string | null = requestId) => ({
+const validDeleteEvidence: AdminDeleteEvidence = {
+  backupExportConfirmed: true,
+  backupExportReference: "mongodump archive 2026-05-20",
+  ownerReviewConfirmed: true,
+  ownerReviewReference: "owner review T-164",
+};
+
+const createRequest = (
+  suppliedRequestId: string | null = requestId,
+  body: unknown = validDeleteEvidence
+) => ({
   method: "DELETE",
   headers: new Headers(
     suppliedRequestId === null ? {} : { "x-request-id": suppliedRequestId }
   ),
   url: "http://localhost/api/v2/admin/delete/example",
+  json: jest.fn().mockResolvedValue(body),
 });
 
 const createRouteContext = (id: string) => ({
@@ -332,8 +344,9 @@ describe("admin delete route shared guard migration", () => {
   it.each(deleteRouteCases)(
     "returns 400 for invalid $label IDs before route-local destructive work",
     async ({ handler, invalidError, invalidIdError }) => {
+      const request = createRequest(requestId, {});
       const response = await handler(
-        createRequest() as never,
+        request as never,
         createRouteContext("not-a-valid-object-id")
       );
       const body = await response.json();
@@ -347,6 +360,47 @@ describe("admin delete route shared guard migration", () => {
         },
         formErrors: [],
       });
+      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(mockUserFindById).toHaveBeenCalledTimes(1);
+      expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+      expect(request.json).not.toHaveBeenCalled();
+      expect(mockStartSession).not.toHaveBeenCalled();
+      expectNoDestructiveModelWork();
+    }
+  );
+
+  it.each(deleteRouteCases)(
+    "returns 400 for missing $label delete evidence before route-local destructive work",
+    async ({ handler, label, validId }) => {
+      const request = createRequest(requestId, {});
+
+      const response = await handler(
+        request as never,
+        createRouteContext(validId)
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(body).toEqual({
+        success: false,
+        error: `Invalid ${label} delete evidence`,
+        fieldErrors: {
+          backupExportConfirmed: [
+            "Confirm backup/export evidence before deleting.",
+          ],
+          backupExportReference: [
+            "Enter backup/export evidence reference.",
+          ],
+          ownerReviewConfirmed: [
+            "Confirm owner/delegated review before deleting.",
+          ],
+          ownerReviewReference: [
+            "Enter owner/delegated review evidence reference.",
+          ],
+        },
+        formErrors: [],
+      });
+      expect(request.json).toHaveBeenCalledTimes(1);
       expect(mockDbConnect).toHaveBeenCalledTimes(1);
       expect(mockUserFindById).toHaveBeenCalledTimes(1);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);

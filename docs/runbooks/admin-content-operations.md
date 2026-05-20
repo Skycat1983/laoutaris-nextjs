@@ -40,16 +40,18 @@ resource being deleted:
   deleted, detached, preserved, or block the delete. This is now present in the
   admin delete confirmation UI.
 - Backup or export evidence for affected MongoDB collections, following the
-  [database runbook](database.md). Route-enforced evidence capture remains a
-  follow-up.
-- Review evidence from the owner or explicitly delegated operator.
+  [database runbook](database.md). The admin delete confirmation UI and route
+  boundary now require this evidence before destructive execution.
+- Review evidence from the owner or explicitly delegated operator. The admin
+  delete confirmation UI and route boundary now require this evidence before
+  destructive execution.
 - Redacted audit evidence containing actor class, resource type, resource ID,
   cascade summary, request ID when present, and timestamp.
 
-Until the remaining evidence and audit controls exist, do not use production
+Until the redacted audit-event persistence control exists, do not use production
 admin delete buttons for artwork, articles, blogs, collections, comments, or
 users except under an owner-approved incident procedure. Current route-level
-safeguards and preview UI do not replace backup/review evidence capture or the
+safeguards, preview UI, and backup/review evidence gate do not replace the
 missing audit trail.
 
 ## Before A Content Change
@@ -144,8 +146,8 @@ sanitized evidence.
 
 - Comment creation and update are not admin dashboard workflows.
 - For moderation needs, prefer a future approved moderation workflow. Production
-  comment deletion remains blocked until backup/review evidence capture and
-  redacted audit evidence exist.
+  comment deletion remains blocked until redacted audit-event persistence
+  exists.
 - Post-change smoke after an approved incident delete: affected blog detail,
   affected user account data if checked through an approved private path, and
   public comment count or absence.
@@ -157,8 +159,9 @@ sanitized evidence.
   dashboard.
 - Current delete routes block deleting the signed-in admin and the last
   remaining admin, and the dashboard shows the preview impact before
-  confirmation. Production user deletion is still blocked by the missing
-  backup/review evidence capture and audit evidence requirements.
+  confirmation. The dashboard and route now require backup/review evidence
+  before destructive execution. Production user deletion is still blocked by
+  the missing redacted audit-event persistence requirement.
 - Post-change smoke after an approved incident delete: admin access with an
   approved admin account, non-admin denial, and affected public comment or
   saved-artwork behavior when relevant.
