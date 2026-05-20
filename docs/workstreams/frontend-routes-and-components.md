@@ -723,15 +723,18 @@ Use browser checks for layout-sensitive changes.
   prototype visual direction settles.
 - 2026-05-20: Prepared T-162 for a visual QA and owner-feedback pass on
   `/prototype/home` before production migration or style-system implementation.
+- 2026-05-20: Completed T-162. The visual QA handoff says the biography,
+  blog, and shop prototype sections are stable enough for owner review, but
+  production migration should wait for decisions on biography order, canonical
+  dates, blog content strategy, shop/commerce wording, and mobile density.
 
 ## Next Agent Action
 
-For the homepage redesign track, review `/prototype/home` visually and decide
-which prototype sections should move toward production. The next likely task is
-[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md), followed by
-either refinement tasks per section or a semantic style-map pilot. T-157 through
-T-161 are complete; do not reassign them unless the prototype route, section
-data mapping, or style audit regresses.
+For the homepage redesign track, get the owner decisions recorded in
+[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md) before assigning
+section refinements, production migration, or a semantic style-map pilot.
+T-157 through T-162 are complete; do not reassign them unless the prototype
+route, section data mapping, visual QA handoff, or style audit regresses.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,
