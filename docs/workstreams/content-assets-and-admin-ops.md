@@ -162,8 +162,8 @@ content operations repeatable and safe.
   an escape hatch.
 - Start that archive-maintenance path with T-174 route query bounds and T-178
   comment/user delete entry points before paginated/searchable main read tabs.
-  T-174 through T-178 are complete; T-179 is the next collection read-list
-  pagination/search rollout.
+  T-174 through T-179 are complete; T-180 is the next article read-list
+  pagination/filter/search rollout.
 - Decide collection section taxonomy ownership for launch and document whether
   non-`collections` sections remain supported.
 - Consolidate repeated admin entity operation patterns into typed descriptors
@@ -421,23 +421,27 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-20: Completed T-177. The main admin blog read tab now sends bounded
   route-backed search over title/slug, with search applied before counts and
   paginated reads while preserving filters, pagination, and card actions.
+- 2026-05-20: Completed T-179. The main admin collection read tab now consumes
+  route metadata for pagination and sends bounded route-backed title/slug
+  search while preserving artwork counts, summaries, and Update/Delete/Copy
+  handoff.
 
 ## Next Agent Action
 
 No further F-092 implementation slice is ready after T-165/T-172/T-178. For
 admin archive maintenance, assign
-[T-179](../tasks/T-179-apply-collection-admin-read-pagination-search.md) next.
+[T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md) next.
 Keep production delete policy review, collection section launch policy, broader
 taxonomy/i18n direction, Cloudinary asset deletion, and monitoring-provider
 work separate.
 T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, T-163, T-164,
-T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, and T-178 are complete;
-do not reassign them unless their route protections, form behavior, archive
-entry-point behavior, blog pinned/tag controls, runbook content, preview
-contract/UI, evidence gate, audit-event persistence, image URL audit,
+T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, T-178, and T-179 are
+complete; do not reassign them unless their route protections, form behavior,
+archive entry-point behavior, blog pinned/tag controls, runbook content,
+preview contract/UI, evidence gate, audit-event persistence, image URL audit,
 delete-receipt verification, admin read-list audit, query bounds, blog
-pagination pilot, route-backed blog filters, route-backed blog search, or
-comment/user delete handoff regresses.
+pagination pilot, route-backed blog filters, route-backed blog search,
+collection pagination/search, or comment/user delete handoff regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, future image-field
 model migrations, new delivery-transform retuning, and Cloudinary account changes

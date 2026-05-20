@@ -762,6 +762,10 @@ Use browser checks for layout-sensitive changes.
   route-backed search over title/slug, resets to page 1 on search changes, and
   preserves pagination, filters, no-results states, and Update/Delete/Copy
   actions.
+- 2026-05-20: Completed T-179. The main admin collection read tab now sends
+  bounded route-backed title/slug search, consumes route metadata for
+  pagination, and preserves artwork counts, summaries, no-results states, and
+  Update/Delete/Copy actions.
 
 ## Next Agent Action
 
@@ -775,10 +779,11 @@ audit, width frame, section composition, expanded QA conclusion, owner packet,
 style scaffold, or admin read-list audit regresses.
 
 For admin archive maintenance, assign
-[T-179](../tasks/T-179-apply-collection-admin-read-pagination-search.md) next.
+[T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md) next.
 T-174's route query prerequisite, T-175's blog pagination pilot, T-176's
 route-backed blog filters, T-177's blog search pilot, and T-178's comment/user
-delete handoff are complete.
+delete handoff are complete. T-179's collection pagination/search rollout is
+also complete.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,

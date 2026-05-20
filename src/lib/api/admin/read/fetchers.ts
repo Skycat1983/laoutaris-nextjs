@@ -131,11 +131,27 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Articles
-  articles: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  articles: async ({
+    page = 1,
+    limit = 10,
+    search,
+    filter,
+  }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
+
+    const trimmedSearch = search?.trim();
+
+    if (trimmedSearch) {
+      params.append("search", trimmedSearch);
+    }
+
+    if (filter?.key && filter?.value) {
+      params.append("filterKey", filter.key);
+      params.append("filterValue", filter.value);
+    }
 
     return fetcher<ReadArticleListResult>(
       `/api/v2/admin/article/read?${params}`
@@ -143,11 +159,21 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Collections
-  collections: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  collections: async ({
+    page = 1,
+    limit = 10,
+    search,
+  }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
+
+    const trimmedSearch = search?.trim();
+
+    if (trimmedSearch) {
+      params.append("search", trimmedSearch);
+    }
 
     return fetcher<ReadCollectionListResult>(
       `/api/v2/admin/collection/read?${params}`

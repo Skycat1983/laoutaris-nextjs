@@ -26,6 +26,30 @@ describe("admin read fetchers", () => {
     );
   });
 
+  it("sends trimmed collection search as a route-backed query param", async () => {
+    const fetcher = jest.fn().mockResolvedValue({
+      success: true,
+      data: [],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    }) as jest.MockedFunction<Fetcher>;
+    const readFetchers = createReadFetchers(fetcher);
+
+    await readFetchers.collections({
+      page: 3,
+      limit: 10,
+      search: "  archive set  ",
+    });
+
+    expect(fetcher).toHaveBeenCalledWith(
+      "/api/v2/admin/collection/read?page=3&limit=10&search=archive+set"
+    );
+  });
+
   it("sends blog read filters as route-backed query params", async () => {
     const fetcher = jest.fn().mockResolvedValue({
       success: true,

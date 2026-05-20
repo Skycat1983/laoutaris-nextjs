@@ -906,25 +906,30 @@ Add API route tests where behavior is changed.
   route-backed `search` query parsing, escapes regex metacharacters, searches
   title/slug only, and applies before both `countDocuments()` and paginated
   `find()` calls.
+- 2026-05-20: Completed T-179. Admin collection read search now uses bounded
+  route-backed `search` query parsing, escapes regex metacharacters, searches
+  title/slug only, and applies before both `countDocuments()` and paginated
+  `find()` calls.
 
 ## Next Agent Action
 
 T-174's data/API prerequisite, T-175's blog pagination pilot, T-176's
-route-backed filter contract, and T-177's route-backed search pilot are
-complete. The next admin archive task is
-[T-179](../tasks/T-179-apply-collection-admin-read-pagination-search.md), which
-should apply the proven pagination/search contract to the main collection read
-tab.
+route-backed filter contract, T-177's route-backed search pilot, and T-179's
+collection pagination/search rollout are complete. The next admin archive task
+is [T-180](../tasks/T-180-apply-article-admin-read-pagination-filter-search.md),
+which should move article read filters to the route and add article pagination
+and bounded search.
 Keep public search scope, collection section launch policy, broader
 response-helper cleanup, route-local DB ownership gaps, field-contract
 matrices, server-side shop pagination/sorting contracts, lower-level logging
 policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
-T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, and T-177 are complete;
-do not reassign them unless their guards, validation behavior, search metadata,
-preview contract/UI, evidence gate, audit receipts, image URL audit, admin
-read-list audit, admin read query bounds, blog pagination pilot, route-backed
-blog filters, route-backed blog search, or query/fetcher contracts regress.
+T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, and T-179 are
+complete; do not reassign them unless their guards, validation behavior, search
+metadata, preview contract/UI, evidence gate, audit receipts, image URL audit,
+admin read-list audit, admin read query bounds, blog pagination pilot,
+route-backed blog filters, route-backed blog search, collection
+pagination/search, or query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

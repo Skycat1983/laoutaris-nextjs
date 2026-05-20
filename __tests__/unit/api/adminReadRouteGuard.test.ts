@@ -104,6 +104,7 @@ const artworkId = "507f1f77bcf86cd799439014";
 const blogId = "507f1f77bcf86cd799439015";
 const collectionId = "507f1f77bcf86cd799439016";
 const overlongBlogSearch = "s".repeat(81);
+const overlongCollectionSearch = "c".repeat(81);
 
 type Handler = (request: never, context?: never) => Promise<{
   status: number;
@@ -463,6 +464,19 @@ const invalidListQueryCases: Array<{
     expectedError: "Invalid collection input",
     expectedFieldErrors: {
       limit: ["Limit must be at least 1"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
+      expect(mockCollectionFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "collection list with an oversized search",
+    handler: GET_COLLECTION_LIST as Handler,
+    requestUrl: `http://localhost/api/v2/admin/collection/read?page=1&limit=10&search=${overlongCollectionSearch}`,
+    expectedError: "Invalid collection input",
+    expectedFieldErrors: {
+      search: ["Search must be 80 characters or fewer"],
     },
     expectNoTargetRead: () => {
       expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
@@ -1048,6 +1062,56 @@ describe("admin read route shared guard migration", () => {
         limit: 10,
         total: 1,
         totalPages: 1,
+      },
+    });
+  });
+
+  it("applies trimmed collection search to title and slug before counting and pagination", async () => {
+    const rawCollection = {
+      _id: collectionId,
+      title: "Archive Set",
+    };
+    const frontendCollection = {
+      _id: collectionId,
+      title: "Archive Set",
+    };
+    const expectedQuery = {
+      $or: [
+        { title: { $regex: "Archive\\+Set", $options: "i" } },
+        { slug: { $regex: "Archive\\+Set", $options: "i" } },
+      ],
+    };
+    const query = createListQuery([rawCollection]);
+    mockCollectionFind.mockReturnValue(query);
+    mockCollectionCountDocuments.mockResolvedValue(6);
+    mockTransformCollectionPopulated.mockReturnValue(
+      frontendCollection as never
+    );
+
+    const response = await GET_COLLECTION_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/collection/read?page=2&limit=4&search=%20Archive%2BSet%20"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockCollectionFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockCollectionCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(query.sort).toHaveBeenCalledWith({ createdAt: -1 });
+    expect(query.skip).toHaveBeenCalledWith(4);
+    expect(query.limit).toHaveBeenCalledWith(4);
+    expect(mockTransformCollectionPopulated).toHaveBeenCalledWith(
+      rawCollection
+    );
+    expect(body).toEqual({
+      success: true,
+      data: [frontendCollection],
+      metadata: {
+        page: 2,
+        limit: 4,
+        total: 6,
+        totalPages: 2,
       },
     });
   });

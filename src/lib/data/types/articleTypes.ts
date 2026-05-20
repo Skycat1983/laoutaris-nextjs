@@ -28,6 +28,6 @@ export type ArticleFrontendPopulated = Prettify<
 >;
 
 export interface ArticleFilterParams {
-  key: "section" | null;
+  key: "section" | "overlayColour" | null;
   value: string | null;
 }

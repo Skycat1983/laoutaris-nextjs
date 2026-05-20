@@ -1,6 +1,6 @@
 # T-179 Apply Collection Admin Read Pagination Search
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -108,3 +108,32 @@ edit shared trackers. Run focused route/fetcher/component tests, lint, and
 ## Handoff Notes
 
 - Planned after T-177 completed the blog read-list search pilot.
+- Completed on 2026-05-20.
+- Added bounded route-backed collection search through the existing shared
+  admin read-list query parser. The route trims `search`, rejects values over
+  80 characters with structured `400` field errors, escapes regex
+  metacharacters, and searches only collection `title` and `slug`.
+- Updated the collection read route so the search predicate is applied before
+  both `countDocuments()` and paginated `find()` calls, keeping pagination
+  metadata aligned with the visible filtered dataset.
+- Updated the admin read fetcher so collection list reads send trimmed
+  `search` without changing other resource filters.
+- Updated `ReadCollectionList` to fetch the requested page, consume route
+  metadata, render previous/next controls, and send a bounded search query that
+  resets to page 1.
+- Preserved the existing collection card layout, artwork count, summary, Copy
+  ID action, and Update/Delete handoff.
+- Added focused coverage:
+  `__tests__/unit/api/adminReadRouteGuard.test.ts` covers overlong collection
+  search rejection and escaped title/slug search metadata;
+  `__tests__/unit/api/adminReadFetchers.test.ts` covers trimmed collection
+  search params; `__tests__/unit/adminCollectionReadPagination.test.tsx` covers
+  pagination, search reset, no-results/error states, artwork count display, and
+  retained Copy/Update/Delete actions.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminReadRouteGuard.test.ts __tests__/unit/api/adminReadFetchers.test.ts __tests__/unit/adminCollectionReadPagination.test.tsx`;
+  `npm run lint`; `git diff --check`.
+- Candidate shared-tracker update: F-095 remains partially mitigated; the
+  collection read tab now has route-backed pagination and search, while article
+  and artwork read-tab pagination/search and any shared read-list shell should
+  remain separate follow-up work.

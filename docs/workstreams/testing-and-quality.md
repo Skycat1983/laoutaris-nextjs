@@ -1494,17 +1494,22 @@ npm run lint
   blog search validation, escaped title/slug route queries before counts and
   paginated reads, trimmed fetcher params, search reset-to-page-1 behavior,
   no-results messaging, and retained card actions.
+- 2026-05-20: Completed T-179. Focused coverage now verifies bounded admin
+  collection search validation, escaped title/slug route queries before counts
+  and paginated reads, trimmed fetcher params, pagination controls, search
+  reset-to-page-1 behavior, no-results/error states, artwork count display, and
+  retained card actions.
 
 ## Next Agent Action
 
-T-179 is the next quality-bearing admin archive task. T-157 through T-178 are
+T-180 is the next quality-bearing admin archive task. T-157 through T-179 are
 complete and should not be reassigned unless
 their prototype route, data mapping, fallback behavior, audit handoff, preview
 contract/UI, evidence gate, audit receipts, width frame, section composition,
 visual QA conclusions, owner packet, semantic style scaffold, image URL audit,
 delete-receipt runbook, admin read-list audit, read-list query bounds, blog
-pagination pilot, route-backed blog filters, route-backed blog search, or
-comment/user delete handoff regresses.
+pagination pilot, route-backed blog filters, route-backed blog search,
+collection pagination/search, or comment/user delete handoff regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-168 are complete; do not reassign their
