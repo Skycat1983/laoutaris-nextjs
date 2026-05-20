@@ -170,11 +170,12 @@ Prompt packs:
 | [T-154 Validate public taxonomy sections](T-154-validate-public-taxonomy-sections.md) | Completed | Added route-local runtime validation for public article and collection section parameters using canonical taxonomy constants. |
 | [T-155 Render content-aware visible breadcrumbs](T-155-render-content-aware-visible-breadcrumbs.md) | Completed | Replaced mechanical visible breadcrumb labels on high-value detail routes with content-aware labels from server-rendered breadcrumb JSON-LD. |
 | [T-156 Add admin delete cascade preview contract](T-156-add-admin-delete-cascade-preview-contract.md) | Planned | Add a read-only cascade preview contract for current destructive admin delete resources before delete UI or production gate changes. |
-| [T-157 Create homepage prototype route](T-157-create-homepage-prototype-route.md) | Planned | Create an isolated full-width `/prototype/home` route for landing-page redesign work without changing the live homepage. |
-| [T-158 Build biography prototype section](T-158-build-biography-prototype-section.md) | Planned | Build the full-width homepage biography teaser prototype from `to_prototype/biography.png` using real biography article data. |
-| [T-159 Build blog prototype section](T-159-build-blog-prototype-section.md) | Planned | Build the full-width homepage blog teaser prototype from `to_prototype/blog.png` using real blog entries, ignoring the guide image's biography copy. |
-| [T-160 Build shop prototype section](T-160-build-shop-prototype-section.md) | Planned | Build the full-width homepage shop teaser prototype from `to_prototype/shop.png` using enquiry-safe real shop/product data. |
-| [T-161 Audit style system point of truth](T-161-audit-style-system-point-of-truth.md) | Planned | Audit current typography, spacing, layout, and repeated style patterns before any central style-system migration. |
+| [T-157 Create homepage prototype route](T-157-create-homepage-prototype-route.md) | Completed | Created an isolated full-width `/prototype/home` route for landing-page redesign work without changing the live homepage. |
+| [T-158 Build biography prototype section](T-158-build-biography-prototype-section.md) | Completed | Built the full-width homepage biography teaser prototype from `to_prototype/biography.png` using real biography article data. |
+| [T-159 Build blog prototype section](T-159-build-blog-prototype-section.md) | Completed | Built the full-width homepage blog teaser prototype from `to_prototype/blog.png` using real blog entries, ignoring the guide image's biography copy. |
+| [T-160 Build shop prototype section](T-160-build-shop-prototype-section.md) | Completed | Built the full-width homepage shop teaser prototype from `to_prototype/shop.png` using enquiry-safe real shop/product data. |
+| [T-161 Audit style system point of truth](T-161-audit-style-system-point-of-truth.md) | Completed | Audited current typography, spacing, layout, and repeated style patterns before any central style-system migration. |
+| [T-162 Review homepage prototype visual QA](T-162-review-homepage-prototype-visual-qa.md) | Planned | Review `/prototype/home` against the design-guide images and produce refinement/owner-feedback notes before production migration. |
 
 ## Rules
 

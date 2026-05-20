@@ -26,7 +26,7 @@ export interface SortedBlogData {
     type: "latest" | "oldest" | "popular" | "featured";
     data: BlogEntryFrontend[];
   };
-  metadata: PaginationMetadata;
+  metadata: Required<PaginationMetadata>;
 }
 
 export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {

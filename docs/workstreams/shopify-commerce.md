@@ -387,13 +387,17 @@ Add targeted tests as shop behavior is hardened.
   prototype using `to_prototype/shop.png` and existing shop/product data. It
   must not add checkout/cart/payment/shipping/refund claims or alter live shop
   pages.
+- 2026-05-20: Completed T-160. `/prototype/home` now has an enquiry-safe shop
+  teaser backed by `getShopProductList`, limited to prototype rendering and
+  leaving live shop pages, checkout/cart behavior, Shopify DTOs, and commerce
+  claims unchanged.
 
 ## Next Agent Action
 
 Choose the next Shopify backlog slice from checkout handoff, commerce assurance
 copy alignment, remaining product-detail contract coverage, product pagination,
-server-side sorting, or the T-160 homepage shop teaser prototype. Keep those
-separate unless explicitly assigned.
+server-side sorting, or prototype-shop visual refinement after owner review.
+Keep those separate unless explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

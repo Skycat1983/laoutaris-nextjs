@@ -30,7 +30,7 @@ const getPageArtworkListQuery = (
 
 const toLoaderProps = (query: ArtworkListQuery) => {
   const sortConfig: ArtworkSortConfig = {
-    by: query.sortBy,
+    by: query.sortBy ?? "mostRecent",
     color: query.sortColor,
   };
 
@@ -39,7 +39,7 @@ const toLoaderProps = (query: ArtworkListQuery) => {
     artstyle: query.artstyle,
     medium: query.medium,
     surface: query.surface,
-    filterMode: query.filterMode,
+    filterMode: query.filterMode ?? "ALL",
     page: query.page,
     limit: query.limit,
   };

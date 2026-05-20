@@ -1,6 +1,6 @@
 # T-161 Audit Style System Point Of Truth
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -114,3 +114,23 @@ brief handoff; leave shared tracker updates for the orchestrator.
 
 - Prepared after the owner asked about a centrally planned CSS/style point of
   truth. This task is intentionally audit-only.
+- 2026-05-20: Completed the read-only style-system audit without changing
+  runtime CSS, Tailwind config, component classes, or prototype implementation
+  files.
+- Added [docs/architecture/style-system-audit.md](../architecture/style-system-audit.md)
+  with the current style decision map, repeated class-pattern inventory,
+  migration risks, semantic naming recommendations, staged migration plan, safe
+  pilot recommendation, and verification plan.
+- Current style decisions live across `tailwind.config.ts`,
+  `src/app/globals.css`, `src/lib/styles/fonts.ts`, root font variable wiring,
+  shadcn primitives, typography helpers, layout components, card modules,
+  route-local class strings, and isolated prototype sections.
+- Recommended next implementation is a client-safe semantic class map with
+  exact existing class strings, piloted on `/prototype/home` after T-157 through
+  T-160 settle. Avoid Tailwind/global token changes until semantic class
+  ownership is proven.
+- Candidate tracker updates were left in the audit doc for orchestrator review:
+  frontend follow-up for the semantic style map pilot, architecture follow-up
+  for client-safe style-module ownership, testing follow-up for scoped visual
+  verification, and a findings-register candidate about split style ownership.
+- Verification: `git diff --check` passed.

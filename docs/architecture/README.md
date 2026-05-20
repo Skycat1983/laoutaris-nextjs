@@ -13,6 +13,7 @@ reality changes.
 - [Rendering and data fetching](rendering-and-data-fetching.md)
 - [Monitoring and error reporting](monitoring-and-error-reporting.md)
 - [Logging and redaction](logging-and-redaction.md)
+- [Style system audit](style-system-audit.md)
 
 ## Update Rules
 

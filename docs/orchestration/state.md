@@ -15,10 +15,14 @@ safety. It should add a read-only cascade preview contract before any delete
 confirmation UI, backup/review evidence capture, or audit-event persistence
 changes.
 
-T-157 through T-161 are prepared as the homepage prototype/style-system prompt
-pack. T-157 creates the isolated `/prototype/home` route; T-158 through T-160
-build image-guided biography, blog, and shop teaser sections; T-161 audits the
-central style-system point of truth without runtime changes.
+T-157 through T-161 are complete. `/prototype/home` now has the isolated
+full-width prototype route plus image-guided biography, blog, and shop teaser
+sections backed by real data. T-161 added the style-system audit without
+runtime changes.
+
+T-162 is prepared as the next prototype-track task: a visual QA and
+owner-feedback pass on `/prototype/home` before production migration or style
+system implementation.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -26,7 +30,7 @@ to record an explicit no-decision blocker.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
-workstream backlogs, and implementation briefs T-141 through T-161.
+workstream backlogs, and implementation briefs T-141 through T-162.
 
 T-140 is complete:
 [Reconcile admin discovery taxonomy findings](../tasks/T-140-reconcile-admin-discovery-taxonomy-findings.md).
@@ -1262,17 +1266,12 @@ capture, and redacted audit-event persistence should follow in later tasks
 after the preview contract exists.
 
 For the homepage prototype track, assign
-[T-157 Create homepage prototype route](../tasks/T-157-create-homepage-prototype-route.md)
-first. After T-157 lands, the section builds can run concurrently:
-[T-158 Build biography prototype section](../tasks/T-158-build-biography-prototype-section.md),
-[T-159 Build blog prototype section](../tasks/T-159-build-blog-prototype-section.md),
-and [T-160 Build shop prototype section](../tasks/T-160-build-shop-prototype-section.md).
-[T-161 Audit style system point of truth](../tasks/T-161-audit-style-system-point-of-truth.md)
-can run in parallel at any time because it is read-only.
+[T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
+before production migration or style-system implementation. T-157 through
+T-161 are complete.
 
-Do not combine T-156 with prototype section work in the same agent. T-156 owns
-admin delete/API safety; T-157 through T-160 own prototype route/section files;
-T-161 owns audit docs only.
+Do not combine T-156 with prototype QA in the same agent. T-156 owns admin
+delete/API safety; T-162 owns prototype review notes only.
 
 Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
 unless the owner/product answer is available. If unavailable, do not guess the
@@ -1295,7 +1294,9 @@ T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
 T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, and
 T-152, T-153, T-154, and T-155 are complete and should not be reassigned unless
-a regression is opened. T-156 through T-161 are prepared but not yet complete.
+a regression is opened. T-157 through T-161 are also complete and should not be
+reassigned unless the prototype route, section data mapping, or style audit
+regresses. T-156 and T-162 are prepared but not yet complete.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

@@ -538,12 +538,16 @@ Use targeted import/reference searches for pruning tasks.
   system point of truth. It should inventory current Tailwind, global CSS,
   shadcn variables, font setup, typography helpers, layout components, and
   repeated class patterns before any runtime style migration.
+- 2026-05-20: Completed T-161. The audit is now linked from the architecture
+  index and recommends introducing a pure client-safe semantic class map with
+  exact current class strings, piloted on `/prototype/home` before any Tailwind
+  or global CSS token changes.
 
 ## Next Agent Action
 
 Choose the next architecture slice from broad route-builder work, staged
-source-pruning work, remaining route-local rendering follow-ups, or the
-read-only T-161 style-system audit.
+source-pruning work, remaining route-local rendering follow-ups, or a scoped
+semantic style-map pilot based on T-161.
 Keep broad static/ISR migration separate until a dedicated cache-freshness and
 route-param task is assigned.
 

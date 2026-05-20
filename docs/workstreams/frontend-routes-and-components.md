@@ -712,16 +712,26 @@ Use browser checks for layout-sensitive changes.
   T-161. T-157 creates the isolated `/prototype/home` route; T-158, T-159, and
   T-160 build the biography, blog, and shop teaser sections from
   `to_prototype/`; T-161 is a read-only style-system audit.
+- 2026-05-20: Completed T-157 through T-160. `/prototype/home` now renders an
+  isolated full-width prototype shell with image-guided biography, blog, and
+  shop teaser sections backed by real article, blog, and shop/product data. The
+  live homepage, `ContentLayout`, destination pages, global CSS, and public
+  navigation remain unchanged.
+- 2026-05-20: Completed T-161. The style-system audit is recorded in
+  [style-system-audit.md](../architecture/style-system-audit.md) and recommends
+  a client-safe semantic class map piloted on `/prototype/home` after the
+  prototype visual direction settles.
+- 2026-05-20: Prepared T-162 for a visual QA and owner-feedback pass on
+  `/prototype/home` before production migration or style-system implementation.
 
 ## Next Agent Action
 
-For the homepage redesign track, assign
-[T-157](../tasks/T-157-create-homepage-prototype-route.md) first. After T-157
-lands, [T-158](../tasks/T-158-build-biography-prototype-section.md),
-[T-159](../tasks/T-159-build-blog-prototype-section.md), and
-[T-160](../tasks/T-160-build-shop-prototype-section.md) can run in parallel if
-each agent keeps to its prototype section files. [T-161](../tasks/T-161-audit-style-system-point-of-truth.md)
-can run in parallel at any time because it is read-only.
+For the homepage redesign track, review `/prototype/home` visually and decide
+which prototype sections should move toward production. The next likely task is
+[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md), followed by
+either refinement tasks per section or a semantic style-map pilot. T-157 through
+T-161 are complete; do not reassign them unless the prototype route, section
+data mapping, or style audit regresses.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,

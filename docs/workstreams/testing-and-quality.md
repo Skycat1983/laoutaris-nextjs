@@ -1438,15 +1438,23 @@ npm run lint
   `git diff --check`, adding focused tests only when they introduce data
   mapping or fallback behavior that needs regression coverage. T-161 is
   audit-only and should verify with `git diff --check`.
+- 2026-05-20: Completed T-157 through T-161. Prototype route, biography/blog/
+  shop data loaders, route shell, fallback behavior, source-isolation guards,
+  and style-system audit handoff are covered by focused verification. The
+  orchestrator reran the combined prototype suite across 4 suites and 20 tests.
+- 2026-05-20: Prepared T-162 as a tightly scoped visual QA/owner-feedback task
+  for `/prototype/home`, with browser automation limited to targeted desktop
+  and mobile checks if needed.
 
 ## Next Agent Action
 
 Use [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) as the
 next quality-bearing implementation slice if destructive-delete safety is the
 priority. For the prototype track, run
-[T-157](../tasks/T-157-create-homepage-prototype-route.md) before assigning the
-section builds, then allow T-158, T-159, and T-160 to run in parallel with
-separate file ownership. T-161 can run in parallel because it is read-only.
+[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md) before
+production migration or style-system implementation. T-157 through T-161 are
+complete and should not be reassigned unless their prototype route, data
+mapping, fallback behavior, or audit handoff regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-155 are complete; do not reassign their

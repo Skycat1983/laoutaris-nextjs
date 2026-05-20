@@ -46,7 +46,7 @@ const verifyArtworksToAddExist = async (artworkIds: string[] | undefined) => {
     return true;
   }
 
-  const uniqueArtworkIds = [...new Set(artworkIds)];
+  const uniqueArtworkIds = Array.from(new Set(artworkIds));
   const matchingArtworkCount = await ArtworkModel.countDocuments({
     _id: { $in: uniqueArtworkIds },
   });

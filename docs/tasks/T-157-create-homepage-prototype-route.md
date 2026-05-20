@@ -1,6 +1,6 @@
 # T-157 Create Homepage Prototype Route
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
