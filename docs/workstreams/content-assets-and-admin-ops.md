@@ -122,6 +122,9 @@ content operations repeatable and safe.
   artwork/blog/comment/user cascade behavior with focused tests.
 - T-138 documented the operator path for admin bootstrap, promotion, lockout
   recovery, and verification in the [auth runbook](../runbooks/auth.md).
+- T-153 exposes blog `pinned` and canonical `tags` controls in admin
+  create/update forms, and admin blog read filters now derive year options from
+  returned blog data instead of a stale fixed list.
 
 ## Backlog
 
@@ -157,8 +160,6 @@ content operations repeatable and safe.
 - Replace normal admin maintenance flows that rely on manual ObjectId
   copy/paste with paginated/searchable entry points, keeping ObjectId lookup as
   an escape hatch.
-- Decide and document whether blog `pinned` and `tags` are launch-scope
-  operator workflows; if accepted, add visible controls and tests.
 - Decide collection section taxonomy ownership for launch and document whether
   non-`collections` sections remain supported.
 - Consolidate repeated admin entity operation patterns into typed descriptors
@@ -368,15 +369,26 @@ Use manual admin checks when changing dashboard behavior.
   an escape hatch.
 - 2026-05-19: Prepared T-153 for the remaining F-096 blog pinned/tag admin
   controls and stale blog read-filter options.
+- 2026-05-20: Completed T-153. Blog create/update forms now expose `pinned`
+  and canonical `BLOG_TAGS` controls, legacy records initialize safely, and
+  admin blog read filters derive year options from returned blog data. The
+  admin content operations runbook now treats those controls as the routine
+  blog workflow.
+- 2026-05-20: Prepared T-156 as the next F-092 destructive-delete slice. It
+  owns a read-only cascade preview contract for current admin delete resources
+  before delete confirmation UI, backup/review evidence capture, or audit-event
+  persistence changes.
 
 ## Next Agent Action
 
-Assign [T-153](../tasks/T-153-add-admin-blog-pinned-tag-controls.md) for blog
-pinned/tag admin controls when an agent is available. Keep destructive cascade
-previews, collection section policy, and broader taxonomy option parity
-separate. T-141, T-142, T-144, T-148, T-149, T-150, and T-152 are complete; do
-not reassign them unless their route protections, form behavior, archive
-entry-point behavior, or runbook content regresses.
+Assign [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) as
+the next runnable content/admin slice. It should add a read-only preview
+contract only; keep delete confirmation UI, backup/review evidence capture,
+audit-event persistence, collection section launch policy, and broader
+taxonomy/i18n direction separate. T-141, T-142, T-144, T-148, T-149, T-150,
+T-152, and T-153 are complete; do not reassign them unless their route
+protections, form behavior, archive entry-point behavior, blog pinned/tag
+controls, or runbook content regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, new delivery-transform retuning, and Cloudinary account changes

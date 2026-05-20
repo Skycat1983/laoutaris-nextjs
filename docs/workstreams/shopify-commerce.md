@@ -383,12 +383,17 @@ Add targeted tests as shop behavior is hardened.
   failures. The slice preserved product DTOs, Storefront cache policy,
   public-safe wrapper errors, linked product skip/null behavior, product-list
   metadata, filters, checkout behavior, and product detail UI.
+- 2026-05-20: Prepared T-160 for an enquiry-safe homepage shop teaser
+  prototype using `to_prototype/shop.png` and existing shop/product data. It
+  must not add checkout/cart/payment/shipping/refund claims or alter live shop
+  pages.
 
 ## Next Agent Action
 
 Choose the next Shopify backlog slice from checkout handoff, commerce assurance
 copy alignment, remaining product-detail contract coverage, product pagination,
-or server-side sorting. Keep those separate unless explicitly assigned.
+server-side sorting, or the T-160 homepage shop teaser prototype. Keep those
+separate unless explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify

@@ -128,6 +128,26 @@ describe("GET /api/v2/public/article", () => {
     });
   });
 
+  it("rejects invalid sections before calling the article list service", async () => {
+    const response = await GET_ARTICLE_LIST(
+      createRequest(
+        "https://example.com/api/v2/public/article?section=collections"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(mockGetArticleList).not.toHaveBeenCalled();
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid article query",
+      fieldErrors: {
+        section: expect.arrayContaining([expect.any(String)]),
+      },
+      formErrors: [],
+    });
+  });
+
   it("preserves the no-results response body", async () => {
     mockGetArticleList.mockResolvedValue(null);
 

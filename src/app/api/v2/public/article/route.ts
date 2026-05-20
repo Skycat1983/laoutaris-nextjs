@@ -2,8 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import { ApiArticleListResult } from "@/lib/api/public/article/fetchers";
 import { getArticleList } from "@/lib/data/services/getArticleList";
+import {
+  parsePublicArticleSectionQuery,
+  type PublicArticleSectionQueryFieldErrors,
+} from "@/lib/data/schemas/publicTaxonomySectionSchema";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
+
+type ArticleListValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: PublicArticleSectionQueryFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: PublicArticleSectionQueryFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ArticleListValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid article query",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
 
 export const GET = async (
   req: NextRequest
@@ -13,7 +36,16 @@ export const GET = async (
   const { searchParams } = req.nextUrl;
 
   try {
-    const section = searchParams.get("section");
+    const parsedSection = parsePublicArticleSectionQuery({
+      section: searchParams.get("section"),
+    });
+
+    if (!parsedSection.success) {
+      const { fieldErrors, formErrors } = parsedSection.error.flatten();
+      return validationErrorResponse(fieldErrors, formErrors);
+    }
+
+    const { section } = parsedSection.data;
     const fields = searchParams.get("fields")?.split(",").join(" ") || "";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");

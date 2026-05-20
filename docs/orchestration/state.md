@@ -1,13 +1,24 @@
 # Current Orchestration State
 
-Last updated: 2026-05-19
+Last updated: 2026-05-20
 
 ## Current Priority
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
-T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, T-144, T-145, and
-T-146, T-147, T-148, T-149, T-150, T-151, and T-152 are done. T-153, T-154,
-and T-155 are prepared as the next concurrent implementation wave.
+T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
+T-155 are done and reconciled. F-096 and F-102 are resolved; F-103 is
+partially mitigated because runtime validation is complete while collection
+section launch policy remains an owner decision.
+
+T-156 is prepared as the next runnable task for F-092 destructive admin delete
+safety. It should add a read-only cascade preview contract before any delete
+confirmation UI, backup/review evidence capture, or audit-event persistence
+changes.
+
+T-157 through T-161 are prepared as the homepage prototype/style-system prompt
+pack. T-157 creates the isolated `/prototype/home` route; T-158 through T-160
+build image-guided biography, blog, and shop teaser sections; T-161 audits the
+central style-system point of truth without runtime changes.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -15,7 +26,7 @@ to record an explicit no-decision blocker.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
-workstream backlogs, and prepared implementation briefs T-141 through T-155.
+workstream backlogs, and implementation briefs T-141 through T-161.
 
 T-140 is complete:
 [Reconcile admin discovery taxonomy findings](../tasks/T-140-reconcile-admin-discovery-taxonomy-findings.md).
@@ -87,20 +98,29 @@ It adds read-list Update/Delete actions for articles, artwork, blogs, and
 collections that seed existing update/delete workflows while keeping manual
 ObjectId lookup available as an escape hatch.
 
-T-153 is prepared:
+T-153 is complete:
 [Add admin blog pinned tag controls](../tasks/T-153-add-admin-blog-pinned-tag-controls.md).
-It owns visible admin blog `pinned` and `tags` controls plus stale blog read
-filter option cleanup.
+It exposes blog `pinned` and canonical `tags` controls in admin create/update
+forms, initializes existing values safely, and derives admin blog read-filter
+years from returned blog data.
 
-T-154 is prepared:
+T-154 is complete:
 [Validate public taxonomy sections](../tasks/T-154-validate-public-taxonomy-sections.md).
-It owns route-local runtime validation for public article and collection
-section parameters using canonical taxonomy constants.
+It validates public article list `section`, article navigation `[section]`,
+and collection list `section` inputs against canonical constants before service
+calls and returns public-safe `400` validation responses for invalid values.
 
-T-155 is prepared:
+T-155 is complete:
 [Render content-aware visible breadcrumbs](../tasks/T-155-render-content-aware-visible-breadcrumbs.md).
-It owns visible breadcrumb labels on high-value detail routes, avoiding raw
-ObjectIds and mechanical route-param labels.
+It makes targeted detail-route visible breadcrumb labels content-aware by
+reading the server-rendered `BreadcrumbList` JSON-LD already emitted by those
+pages, while preserving route-derived links and avoiding client fetches.
+
+T-156 is prepared:
+[Add admin delete cascade preview contract](../tasks/T-156-add-admin-delete-cascade-preview-contract.md).
+It owns a read-only preview contract for current admin delete resources and
+must not change destructive delete execution, delete confirmation UI, backup
+gate inputs, or audit-event persistence.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1235,12 +1255,24 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign the next concurrent wave:
-[T-153 Add admin blog pinned tag controls](../tasks/T-153-add-admin-blog-pinned-tag-controls.md),
-[T-154 Validate public taxonomy sections](../tasks/T-154-validate-public-taxonomy-sections.md),
-and [T-155 Render content-aware visible breadcrumbs](../tasks/T-155-render-content-aware-visible-breadcrumbs.md).
-They can run in parallel only if agents keep to their owned files and leave
-shared tracker/index updates for orchestrator reconciliation.
+Assign [T-156 Add admin delete cascade preview contract](../tasks/T-156-add-admin-delete-cascade-preview-contract.md)
+as the next decision-light implementation task. It should add read-only
+cascade preview behavior only; delete confirmation UI, backup/review evidence
+capture, and redacted audit-event persistence should follow in later tasks
+after the preview contract exists.
+
+For the homepage prototype track, assign
+[T-157 Create homepage prototype route](../tasks/T-157-create-homepage-prototype-route.md)
+first. After T-157 lands, the section builds can run concurrently:
+[T-158 Build biography prototype section](../tasks/T-158-build-biography-prototype-section.md),
+[T-159 Build blog prototype section](../tasks/T-159-build-blog-prototype-section.md),
+and [T-160 Build shop prototype section](../tasks/T-160-build-shop-prototype-section.md).
+[T-161 Audit style system point of truth](../tasks/T-161-audit-style-system-point-of-truth.md)
+can run in parallel at any time because it is read-only.
+
+Do not combine T-156 with prototype section work in the same agent. T-156 owns
+admin delete/API safety; T-157 through T-160 own prototype route/section files;
+T-161 owns audit docs only.
 
 Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
 unless the owner/product answer is available. If unavailable, do not guess the
@@ -1262,8 +1294,8 @@ T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
 T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
 T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, and
-T-152 are complete and should not be reassigned unless a regression is opened.
-T-153, T-154, and T-155 are prepared but not yet complete.
+T-152, T-153, T-154, and T-155 are complete and should not be reassigned unless
+a regression is opened. T-156 through T-161 are prepared but not yet complete.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

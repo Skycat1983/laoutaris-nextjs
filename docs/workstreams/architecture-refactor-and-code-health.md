@@ -534,11 +534,16 @@ Use targeted import/reference searches for pruning tasks.
   guard, splitting `NavBarLink` into a client-safe type module, replacing
   scoped mixed-barrel imports with direct imports, and converting DTO/data
   imports to type-only imports where appropriate.
+- 2026-05-20: Prepared T-161 as a read-only audit for a future central style
+  system point of truth. It should inventory current Tailwind, global CSS,
+  shadcn variables, font setup, typography helpers, layout components, and
+  repeated class patterns before any runtime style migration.
 
 ## Next Agent Action
 
 Choose the next architecture slice from broad route-builder work, staged
-source-pruning work, or remaining route-local rendering follow-ups.
+source-pruning work, remaining route-local rendering follow-ups, or the
+read-only T-161 style-system audit.
 Keep broad static/ISR migration separate until a dedicated cache-freshness and
 route-param task is assigned.
 

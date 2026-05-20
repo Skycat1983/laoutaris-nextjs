@@ -77,10 +77,13 @@ Admin dashboard sections are available under `/admin/dashboard/<section>`:
 | `comments` | Read, delete blocked in production. |
 | `users` | Read, delete blocked in production. Create and update are not dashboard workflows. |
 
-The dashboard still relies on manual ObjectId lookup for update and delete
-flows. Use read lists or approved private records to obtain IDs. If the normal
-dashboard path cannot identify a record safely, use MongoDB lookup as an
-escape hatch and record only sanitized evidence.
+For articles, artwork, blogs, and collections, use read-list Update/Delete
+actions to seed the existing update/delete workflows when the target record is
+visible there. Manual ObjectId lookup remains an escape hatch for records that
+cannot be identified safely through the dashboard, and for workflows that do not
+yet have a direct read-list handoff. If the normal dashboard path cannot
+identify a record safely, use MongoDB lookup only with approval and record
+sanitized evidence.
 
 ## Create And Update Workflow
 
@@ -121,9 +124,9 @@ escape hatch and record only sanitized evidence.
 ### Blogs
 
 - Blog `imageUrl` must use the approved content image URL policy.
-- The server supports `pinned` and `tags`, but the current dashboard forms do
-  not expose those as routine operator controls. Do not attempt to manage them
-  through ad hoc payloads.
+- Manage `pinned` with the dashboard checkbox and `tags` through the canonical
+  dashboard tag options. Do not invent ad hoc tag values outside the visible
+  options.
 - Post-change smoke: `/blog`, the blog detail route, and comment rendering if
   the blog has comments.
 

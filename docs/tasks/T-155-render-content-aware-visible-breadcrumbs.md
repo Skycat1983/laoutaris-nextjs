@@ -1,6 +1,6 @@
 # T-155 Render Content-Aware Visible Breadcrumbs
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -94,5 +94,23 @@ run `npm run lint`.
 ## Handoff Notes
 
 - Prepared after T-150 through T-152 reconciliation.
+- Implemented visible breadcrumb label overrides in
+  `src/components/modules/navigation/breadcrumbs/Breadcrumbs.tsx` by reading the
+  server-rendered `BreadcrumbList` JSON-LD already emitted by targeted detail
+  pages. The component keeps route-derived links, avoids client fetching, and
+  uses readable fallbacks that no longer render 24-character IDs as `artworkId`.
+- Added `__tests__/unit/visibleBreadcrumbs.test.tsx` covering artwork detail
+  labels, one slug detail route, delayed JSON-LD insertion, raw-ID suppression,
+  and the no-client-fetch/source guard.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/visibleBreadcrumbs.test.tsx`;
+  `npm test -- --runTestsByPath __tests__/unit/deployment/publicBreadcrumbStructuredData.test.tsx`;
+  `npm run lint`; `git diff --check`.
+- Additional check attempted: `./node_modules/.bin/tsc --noEmit --pretty false`
+  failed on existing unrelated type errors in admin route guard tests,
+  navigation/loader/page test fixtures, `sessionTestHeaders`, `dbHelpers`,
+  `uploadButton`, `clientServerImportBoundary`, `src/app/artwork/page.tsx`, and
+  `BlogListView`. No reported error referenced the T-155 breadcrumb component or
+  new visible breadcrumb test.
 - Candidate shared-tracker update: mark F-102 resolved if all targeted detail
   routes stop rendering mechanical visible breadcrumb labels.

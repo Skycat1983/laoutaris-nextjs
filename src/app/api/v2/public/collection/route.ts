@@ -1,11 +1,35 @@
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
 import { ApiCollectionListResult } from "@/lib/api/public/collection/fetchers";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
-import type { RouteResponse } from "@/lib/data/types";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
+import {
+  parsePublicCollectionSectionQuery,
+  type PublicCollectionSectionQueryFieldErrors,
+} from "@/lib/data/schemas/publicTaxonomySectionSchema";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
+
+type CollectionListValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: PublicCollectionSectionQueryFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: PublicCollectionSectionQueryFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<CollectionListValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid collection query",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
 
 export const GET = async (
   req: NextRequest
@@ -15,7 +39,16 @@ export const GET = async (
 
   try {
     const { searchParams } = req.nextUrl;
-    const section = searchParams.get("section");
+    const parsedSection = parsePublicCollectionSectionQuery({
+      section: searchParams.get("section"),
+    });
+
+    if (!parsedSection.success) {
+      const { fieldErrors, formErrors } = parsedSection.error.flatten();
+      return validationErrorResponse(fieldErrors, formErrors);
+    }
+
+    const { section } = parsedSection.data;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 

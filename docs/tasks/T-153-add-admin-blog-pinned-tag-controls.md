@@ -1,6 +1,6 @@
 # T-153 Add Admin Blog Pinned Tag Controls
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -94,6 +94,18 @@ Run `npm run lint` because this touches client form controls.
 ## Handoff Notes
 
 - Prepared after T-150 through T-152 reconciliation.
+- Completed blog create/update pinned and tag controls. Form schemas now include
+  `pinned` and `tags`, create defaults submit `false`/`[]`, update initializes
+  existing values with legacy-safe fallbacks, and tag checkboxes are generated
+  from `BLOG_TAGS`.
+- Replaced stale fixed blog read-filter year options with years derived from
+  returned blog data.
+- Added focused coverage for create submission, update initialization and
+  replacement submission, canonical tag options, and read-filter year option
+  derivation.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/forms/adminArticleBlogForms.test.tsx`,
+  `npm run lint`, and `git diff --check`.
 - Candidate shared-tracker update: mark F-096 partially mitigated or resolved
   depending on whether both visible pinned/tag controls and stale read-filter
   behavior are addressed.

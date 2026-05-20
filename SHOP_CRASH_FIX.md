@@ -11,7 +11,7 @@ The shop route crashed when rendering the product grid, despite the component st
 **Original import:**
 
 ```tsx
-import { ProductCard } from "@/components/modules/cards";
+import { ProductCard } fromI nents/modules/cards";
 ```
 
 This imports through the barrel export at `src/components/modules/cards/index.ts`, which exports **all 11 card components**:
@@ -102,7 +102,6 @@ import { ProductCard } from "@/components/modules/cards/ProductCard";
 2. Visit: `http://localhost:3000/shop/products`
 
 3. Expected:
-
    - ✅ Page loads without crash
    - ✅ Banner displays
    - ✅ Filters display

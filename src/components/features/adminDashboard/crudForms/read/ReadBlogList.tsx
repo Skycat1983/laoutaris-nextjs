@@ -5,7 +5,10 @@ import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
 import { CopyIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import Image from "next/image";
-import { BlogFilterDropdowns } from "../../inputs/BlogFilterDropdowns";
+import {
+  BlogFilterDropdowns,
+  deriveBlogYearOptions,
+} from "../../inputs/BlogFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
 import type { BlogEntryFrontend } from "@/lib/data/types";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
@@ -20,6 +23,7 @@ interface FilterState {
 
 export function ReadBlogList() {
   const [blogs, setBlogs] = useState<BlogEntryFrontend[]>([]);
+  const [yearOptions, setYearOptions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterState>({
@@ -38,6 +42,7 @@ export function ReadBlogList() {
         });
         if (response.success) {
           let filteredBlogs = response.data;
+          setYearOptions(deriveBlogYearOptions(response.data));
           if (activeFilter.key && activeFilter.value) {
             filteredBlogs = response.data.filter((blog) => {
               const key = activeFilter.key;
@@ -84,7 +89,10 @@ export function ReadBlogList() {
 
   return (
     <div className="p-4">
-      <BlogFilterDropdowns onFilterChange={handleFilterChange} />
+      <BlogFilterDropdowns
+        onFilterChange={handleFilterChange}
+        yearOptions={yearOptions}
+      />
       {isLoading ? (
         <BlogListSkeleton />
       ) : (

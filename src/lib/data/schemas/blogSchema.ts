@@ -96,6 +96,8 @@ export const createBlogFormSchema = z.object({
   imageUrl: blogBaseFields.imageUrl,
   displayDate: blogBaseFields.displayDate,
   featured: blogBaseFields.featured,
+  pinned: blogBaseFields.pinned,
+  tags: blogBaseFields.tags,
 });
 
 export type CreateBlogFormValues = z.infer<typeof createBlogFormSchema>;
@@ -108,6 +110,8 @@ export const updateBlogFormSchema = z.object({
   imageUrl: blogBaseFields.imageUrl,
   displayDate: blogBaseFields.displayDate,
   featured: blogBaseFields.featured,
+  pinned: blogBaseFields.pinned,
+  tags: blogBaseFields.tags,
 });
 
 export type UpdateBlogFormValues = z.infer<typeof updateBlogFormSchema>;

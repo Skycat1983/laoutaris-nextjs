@@ -346,8 +346,8 @@ refactoring without turning every change into a manual QA pass.
   verification plan: focused auth/admin/public archive/shop/Jest coverage, full
   Jest, env guard, lint after the `next lint` migration, and build.
 - Add focused coverage for reconciled A-011/A-017/A-018 gaps as they are
-  implemented: public search scope/no-results/pagination, visible breadcrumb
-  labels, and taxonomy option parity.
+  implemented: public search scope, destructive-delete preview behavior, and
+  future taxonomy/i18n option parity.
 
 ## Acceptance Criteria
 
@@ -1425,15 +1425,33 @@ npm run lint
 - 2026-05-19: Prepared T-153, T-154, and T-155 with focused verification
   expectations for blog admin controls, taxonomy section runtime validation,
   and visible breadcrumb labels.
+- 2026-05-20: Completed T-153, T-154, and T-155 with focused blog admin form,
+  public article/navigation/collection route validation, loader regression,
+  visible breadcrumb, and public breadcrumb structured-data coverage. Combined
+  focused verification passed across 8 suites and 61 tests; lint and
+  `git diff --check` passed.
+- 2026-05-20: Prepared T-156 with focused verification expectations for admin
+  delete cascade preview guard behavior, invalid-ID handling, cascade counts,
+  blocker reporting, and no mutation on preview.
+- 2026-05-20: Prepared T-157 through T-161 for the homepage prototype and
+  style-system audit track. Prototype implementation tasks should run lint and
+  `git diff --check`, adding focused tests only when they introduce data
+  mapping or fallback behavior that needs regression coverage. T-161 is
+  audit-only and should verify with `git diff --check`.
 
 ## Next Agent Action
 
-Use T-153, T-154, and T-155 as the next focused quality-bearing wave. Keep
-T-143 decision-first until the public search scope answer exists, and keep
+Use [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) as the
+next quality-bearing implementation slice if destructive-delete safety is the
+priority. For the prototype track, run
+[T-157](../tasks/T-157-create-homepage-prototype-route.md) before assigning the
+section builds, then allow T-158, T-159, and T-160 to run in parallel with
+separate file ownership. T-161 can run in parallel because it is read-only.
+Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-152 are complete; do not reassign their
-focused route/form/query/loading/nav/runbook/archive-entry coverage unless it
-regresses.
+decision is available. T-141 through T-155 are complete; do not reassign their
+focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb
+coverage unless it regresses.
 Keep broader static/ISR migration separate from the
 completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
 and the completed T-117 through T-134 observability documentation, logging,

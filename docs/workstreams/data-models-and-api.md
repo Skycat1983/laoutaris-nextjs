@@ -235,6 +235,9 @@ consistent enough for production refactoring and Shopify integration.
 - T-100 added optional `productHandle` support to the public enquiry DTO and
   Mongoose model. The public enquiry route persists normalized valid handles
   and rejects malformed product context with a validation `400`.
+- T-154 added route-local runtime validation for public article list
+  `section`, article navigation `[section]`, and collection list `section`
+  inputs before service calls, using canonical taxonomy constants.
 
 ## Backlog
 
@@ -271,8 +274,9 @@ consistent enough for production refactoring and Shopify integration.
 - Decide whether public search is site-wide; if yes, extend search schema,
   service, DTOs, and result metadata for artworks and shop products, and if no,
   make the narrower scope explicit in route/UI contracts.
-- Add route-local runtime validation for public article/collection section
-  parameters after the collection section taxonomy policy is decided.
+- Decide collection section launch policy for non-`collections` values, then
+  align public/admin contracts if the owner chooses to narrow or expose those
+  sections.
 - Document whether admin action-segment API paths are canonical, or open an ADR
   for a resource-oriented migration plan.
 - Audit form/input validation from UI through API persistence.
@@ -854,17 +858,26 @@ Add API route tests where behavior is changed.
   through the service/API/page contract.
 - 2026-05-19: Prepared T-154 for route-local runtime validation of public
   article and collection section parameters using canonical taxonomy constants.
+- 2026-05-20: Completed T-154. Public article list `section`, article
+  navigation `[section]`, and collection list `section` inputs now validate
+  against canonical constants before service calls, with public-safe `400`
+  responses for invalid values. Collection section launch policy and i18n label
+  direction remain separate owner decisions.
+- 2026-05-20: Prepared T-156 for a read-only admin delete cascade preview
+  contract across current destructive delete resources, before any delete UI,
+  backup/review evidence, or audit-event changes.
 
 ## Next Agent Action
 
-Assign [T-154](../tasks/T-154-validate-public-taxonomy-sections.md) for public
-taxonomy section runtime validation when an agent is available. Keep public
-search scope, broader response-helper cleanup, route-local DB ownership gaps,
-field-contract matrices, server-side shop pagination/sorting contracts,
-lower-level logging policy, admin Shopify-link work, and existing content image
-data migration separate. T-122, T-135, T-142, T-144's fetcher preservation,
-T-145, and T-151 are complete and should not be reassigned unless their guards,
-validation behavior, search metadata, or query/fetcher contracts regress.
+Assign [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) if
+the next priority is destructive-delete safety. Keep public search scope,
+collection section launch policy, broader response-helper cleanup, route-local
+DB ownership gaps, field-contract matrices, server-side shop
+pagination/sorting contracts, lower-level logging policy, admin Shopify-link
+work, and existing content image data migration separate. T-122, T-135, T-142,
+T-144's fetcher preservation, T-145, T-151, and T-154 are complete and should
+not be reassigned unless their guards, validation behavior, search metadata, or
+query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

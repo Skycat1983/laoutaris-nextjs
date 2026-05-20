@@ -8,23 +8,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
+import type { BlogEntryFrontend } from "@/lib/data/types";
 
 type FilterKey = "featured" | "year" | null;
 
-const filterOptions: Record<"featured" | "year", string[]> = {
-  featured: ["true", "false"],
-  year: ["2020", "2021", "2022", "2023", "2024"],
-} as const;
+const featuredFilterOptions = ["true", "false"] as const;
+
+export const deriveBlogYearOptions = (blogs: BlogEntryFrontend[]) =>
+  Array.from(
+    new Set(
+      blogs
+        .map((blog) => new Date(blog.displayDate).getFullYear())
+        .filter((year) => Number.isFinite(year))
+        .map((year) => year.toString())
+    )
+  ).sort((firstYear, secondYear) => Number(secondYear) - Number(firstYear));
+
+export const getBlogFilterOptions = (yearOptions: readonly string[]) =>
+  ({
+    featured: featuredFilterOptions,
+    year: yearOptions,
+  } satisfies Record<"featured" | "year", readonly string[]>);
 
 interface BlogFilterDropdownsProps {
   onFilterChange: (key: FilterKey, value: string | null) => void;
+  yearOptions?: readonly string[];
 }
 
 export function BlogFilterDropdowns({
   onFilterChange,
+  yearOptions = [],
 }: BlogFilterDropdownsProps) {
   const [selectedKey, setSelectedKey] = useState<FilterKey | null>(null);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
+  const filterOptions = getBlogFilterOptions(yearOptions);
 
   const handleKeyChange = useCallback(
     (key: string) => {

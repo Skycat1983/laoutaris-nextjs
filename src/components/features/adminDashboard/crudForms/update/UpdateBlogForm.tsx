@@ -22,6 +22,7 @@ import type { ApiErrorResponse, BlogEntryFrontend } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
 import { updateBlogFormSchema, UpdateBlogFormValues } from "@/lib/data/schemas";
 import { DatePicker } from "@/components/modules/datePicker/DatePicker";
+import { BLOG_TAGS } from "@/lib/constants/blogConstants";
 import {
   applyApiFormErrors,
   type StructuredFormErrorResponse,
@@ -36,6 +37,8 @@ const visibleBlogUpdateFields = [
   "summary",
   "text",
   "featured",
+  "pinned",
+  "tags",
 ] as const;
 
 export const UpdateBlogForm = ({
@@ -62,7 +65,8 @@ export const UpdateBlogForm = ({
       summary: blogInfo.summary,
       text: blogInfo.text,
       featured: blogInfo.featured,
-      // tags: blogInfo.tags,
+      pinned: blogInfo.pinned ?? false,
+      tags: blogInfo.tags ?? [],
     },
   });
 
@@ -277,6 +281,84 @@ export const UpdateBlogForm = ({
                   </div>
                 </FormItem>
               )}
+            />
+
+            <FormField
+              control={form.control}
+              name="pinned"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked === true)
+                      }
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Pinned</FormLabel>
+                    <FormDescription>
+                      Keep this blog post pinned in supported blog displays
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => {
+                const selectedTags = field.value ?? [];
+
+                return (
+                  <FormItem>
+                    <div
+                      id="update-blog-tags-label"
+                      className="text-sm font-medium"
+                    >
+                      Tags
+                    </div>
+                    <FormDescription>
+                      Choose the blog taxonomy tags for this post
+                    </FormDescription>
+                    <div
+                      role="group"
+                      aria-labelledby="update-blog-tags-label"
+                      className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+                    >
+                      {BLOG_TAGS.map((tag) => (
+                        <label
+                          key={tag}
+                          htmlFor={`update-blog-tag-${tag}`}
+                          className="flex items-center gap-2 rounded-md border p-3 text-sm capitalize"
+                        >
+                          <Checkbox
+                            id={`update-blog-tag-${tag}`}
+                            checked={selectedTags.includes(tag)}
+                            onCheckedChange={(checked) => {
+                              if (checked === true) {
+                                field.onChange([...selectedTags, tag]);
+                                return;
+                              }
+
+                              field.onChange(
+                                selectedTags.filter(
+                                  (selectedTag) => selectedTag !== tag
+                                )
+                              );
+                            }}
+                          />
+                          <span>{tag}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <Button type="submit" disabled={isSubmitting}>

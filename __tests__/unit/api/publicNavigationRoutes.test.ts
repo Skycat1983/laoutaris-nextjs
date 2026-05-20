@@ -183,6 +183,25 @@ describe("public navigation routes", () => {
       expect(consoleLogSpy).not.toHaveBeenCalled();
     });
 
+    it("rejects invalid article navigation sections before calling the service", async () => {
+      const response = await GET_ARTICLE_NAVIGATION(
+        request,
+        createArticleParams("collections") as never
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(mockGetArticleNavigationList).not.toHaveBeenCalled();
+      expect(body).toEqual({
+        success: false,
+        error: "Invalid article navigation query",
+        fieldErrors: {
+          section: expect.arrayContaining([expect.any(String)]),
+        },
+        formErrors: [],
+      });
+    });
+
     it("returns a public-safe 500 when article navigation fails", async () => {
       mockGetArticleNavigationList.mockRejectedValue(
         new Error("private article nav")

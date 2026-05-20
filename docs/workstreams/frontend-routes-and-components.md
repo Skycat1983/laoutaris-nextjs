@@ -214,15 +214,24 @@ Next.js server/client component boundaries.
   across forms, feeds, read lists, operation tabs, upload handling, and the
   document reader while preserving existing visible dashboard behavior.
 - A-017 completed the public discovery audit. It confirmed `/search` does not
-  include artworks or shop products, search no-results/pagination UI remains
-  incomplete, visible breadcrumbs are not content-aware, and shop sorting is
+  include artworks or shop products, search no-results/pagination UI was
+  incomplete, visible breadcrumbs were not content-aware, and shop sorting is
   still client-only. T-145 resolved the `/artwork` page/API query parsing
-  drift, T-146 resolved sorted blog follow-up loading drift, and T-147 made
-  main navigation resilient when dynamic nav data is unavailable.
+  drift, T-146 resolved sorted blog follow-up loading drift, T-147 made main
+  navigation resilient when dynamic nav data is unavailable, T-151 added
+  current-scope search no-results/pagination behavior, and T-155 made targeted
+  detail breadcrumbs content-aware.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
-  drift from canonical constants, blog pinned/tag controls remain hidden, and
+  drift from canonical constants, blog pinned/tag controls were hidden, and
   footer/legal copy cleanup must coordinate with A-020 owner/legal decisions.
+  T-153 now exposes blog pinned/tag controls and T-154 validates public
+  article/collection section inputs at route boundaries.
+- The owner added full-width homepage section design guides under
+  `to_prototype/`: `biography.png`, `blog.png`, and `shop.png`. These guide
+  homepage teaser sections, not the destination pages. Prototype work should
+  use an isolated `/prototype/home` route because the live homepage currently
+  uses `ContentLayout` side columns.
 
 ## Backlog
 
@@ -262,12 +271,14 @@ Next.js server/client component boundaries.
 - Decide the i18n/frontend language direction before pruning unused translation
   UI.
 - Add smoke-level tests for high-value public pages.
+- Create an isolated full-width homepage prototype route before redesigning the
+  live landing page.
+- Build image-guided homepage teaser prototypes for biography, blog, and shop
+  sections using real data and local prototype components.
+- Audit the current style system before introducing central typography,
+  spacing, or component style tokens.
 - Decide whether `/search` is site-wide; if yes, include artworks and shop
   products, and if not, relabel/copy the UI so scope is explicit.
-- Add visible no-results behavior and a pagination/metadata policy for public
-  search.
-- Make visible breadcrumbs content-aware for article, blog, artwork,
-  collection-artwork, and product details.
 - Decide the i18n/frontend language direction before visible language controls
   or taxonomy labels depend on translated copy.
 - Centralize taxonomy value+label options for public filters and admin forms.
@@ -692,17 +703,32 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-19: Prepared T-153 for blog pinned/tag admin controls, T-154 for
   public taxonomy section runtime validation, and T-155 for content-aware
   visible breadcrumbs.
+- 2026-05-20: Completed T-153, T-154, and T-155. Blog admin forms now expose
+  pinned/tag controls and data-derived read-filter years; public article and
+  collection section inputs validate at route boundaries before services are
+  called; and targeted detail breadcrumbs reuse server-rendered breadcrumb
+  JSON-LD for human-readable labels without client fetching.
+- 2026-05-20: Prepared homepage prototype prompts and task briefs T-157 through
+  T-161. T-157 creates the isolated `/prototype/home` route; T-158, T-159, and
+  T-160 build the biography, blog, and shop teaser sections from
+  `to_prototype/`; T-161 is a read-only style-system audit.
 
 ## Next Agent Action
 
-Assign [T-153](../tasks/T-153-add-admin-blog-pinned-tag-controls.md),
-[T-154](../tasks/T-154-validate-public-taxonomy-sections.md), and
-[T-155](../tasks/T-155-render-content-aware-visible-breadcrumbs.md) as the next
-decision-light frontend wave. Hold
-[T-143](../tasks/T-143-decide-public-search-scope.md) until the owner/product
-scope answer exists. Keep owner/legal-approved policy links/notices, broad
-static/ISR migration, and checkout/cart work separate unless explicitly
-assigned.
+For the homepage redesign track, assign
+[T-157](../tasks/T-157-create-homepage-prototype-route.md) first. After T-157
+lands, [T-158](../tasks/T-158-build-biography-prototype-section.md),
+[T-159](../tasks/T-159-build-blog-prototype-section.md), and
+[T-160](../tasks/T-160-build-shop-prototype-section.md) can run in parallel if
+each agent keeps to its prototype section files. [T-161](../tasks/T-161-audit-style-system-point-of-truth.md)
+can run in parallel at any time because it is read-only.
+
+Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
+owner/product scope answer exists. Keep collection section launch policy,
+owner/legal-approved policy links/notices, broad static/ISR migration, and
+checkout/cart work separate unless explicitly assigned. T-153, T-154, and T-155
+are complete; do not reassign them unless blog admin controls, public taxonomy
+validation, or visible breadcrumb labels regress.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

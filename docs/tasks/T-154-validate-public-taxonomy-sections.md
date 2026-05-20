@@ -1,6 +1,6 @@
 # T-154 Validate Public Taxonomy Sections
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Data Models And API](../workstreams/data-models-and-api.md),
@@ -99,6 +99,19 @@ Adjust the exact test list to match the files touched, and run `npm run lint`.
 ## Handoff Notes
 
 - Prepared after T-150 through T-152 reconciliation.
+- 2026-05-20: Added canonical constant-backed runtime validation for public
+  article list `section`, article navigation `[section]`, and collection list
+  `section` inputs before service calls. Invalid values now return public-safe
+  `400` validation responses and focused route tests prove the service layer is
+  not reached. Existing valid article and collection section behavior remains
+  covered by the public route/loader tests.
+- Verification: `npm test -- --runTestsByPath
+  __tests__/unit/api/publicArticleListRoute.test.ts
+  __tests__/unit/api/publicNavigationRoutes.test.ts
+  __tests__/unit/api/publicCollectionRoutes.test.ts
+  __tests__/unit/loaders/BiographySectionLoader.test.tsx
+  __tests__/unit/loaders/CollectionSectionLoader.test.tsx` passed;
+  `npm run lint` passed; `git diff --check` passed.
 - Candidate shared-tracker update: mark the runtime-validation part of F-103
   mitigated while leaving owner launch policy and i18n label decisions separate
   if they remain undecided.

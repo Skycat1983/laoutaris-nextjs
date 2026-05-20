@@ -5,6 +5,11 @@ import { UpdateArticleForm } from "@/components/features/adminDashboard/crudForm
 import { CreateBlogForm } from "@/components/features/adminDashboard/crudForms/create/CreateBlogForm";
 import { UpdateBlogForm } from "@/components/features/adminDashboard/crudForms/update/UpdateBlogForm";
 import { clientApi } from "@/lib/api/clientApi";
+import { BLOG_TAGS } from "@/lib/constants/blogConstants";
+import {
+  deriveBlogYearOptions,
+  getBlogFilterOptions,
+} from "@/components/features/adminDashboard/inputs/BlogFilterDropdowns";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -89,6 +94,8 @@ const blogInfo = {
   text: "A valid blog body with enough content for the form schema to pass.",
   imageUrl: validContentImageUrl,
   featured: false,
+  pinned: true,
+  tags: ["artwork", "news"],
   displayDate: "2026-05-01T00:00:00.000Z",
 } as never;
 
@@ -271,5 +278,83 @@ describe("admin article and blog forms", () => {
     render(<UpdateBlogForm blogInfo={blogInfo} onSuccess={updateBlogSuccess} />);
     fireEvent.click(screen.getByRole("button", { name: "Update Blog" }));
     await waitFor(() => expect(updateBlogSuccess).toHaveBeenCalledTimes(1));
+  });
+
+  it("submits explicit blog create pinned and tags values", async () => {
+    render(<CreateBlogForm />);
+    fillCreateBlogForm();
+
+    fireEvent.click(screen.getByLabelText("Pinned"));
+    fireEvent.click(screen.getByLabelText("artwork"));
+    fireEvent.click(screen.getByLabelText("news"));
+    fireEvent.click(screen.getByRole("button", { name: "Create Blog" }));
+
+    await waitFor(() =>
+      expect(mockCreateBlog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pinned: true,
+          tags: ["artwork", "news"],
+        })
+      )
+    );
+  });
+
+  it("initializes and submits blog update pinned and replacement tags", async () => {
+    render(<UpdateBlogForm blogInfo={blogInfo} />);
+
+    expect(screen.getByLabelText("Pinned")).toBeChecked();
+    expect(screen.getByLabelText("artwork")).toBeChecked();
+    expect(screen.getByLabelText("news")).toBeChecked();
+
+    fireEvent.click(screen.getByLabelText("Pinned"));
+    fireEvent.click(screen.getByLabelText("news"));
+    fireEvent.click(screen.getByLabelText("events"));
+    fireEvent.click(screen.getByRole("button", { name: "Update Blog" }));
+
+    await waitFor(() =>
+      expect(mockPatchBlog).toHaveBeenCalledWith(
+        blogId,
+        expect.objectContaining({
+          pinned: false,
+          tags: ["artwork", "events"],
+        })
+      )
+    );
+  });
+
+  it("derives blog read filter years from returned blog data", () => {
+    const years = deriveBlogYearOptions([
+      {
+        ...blogInfo,
+        displayDate: "2026-05-01T00:00:00.000Z",
+      },
+      {
+        ...blogInfo,
+        _id: "507f1f77bcf86cd799439015",
+        displayDate: "2025-01-01T00:00:00.000Z",
+      },
+      {
+        ...blogInfo,
+        _id: "507f1f77bcf86cd799439016",
+        displayDate: "2026-02-01T00:00:00.000Z",
+      },
+    ] as never);
+
+    expect(years).toEqual(["2026", "2025"]);
+    expect(years).not.toContain("2024");
+    expect(years).not.toContain("2020");
+  });
+
+  it("keeps blog tag form options aligned with canonical constants", () => {
+    render(<CreateBlogForm />);
+
+    for (const tag of BLOG_TAGS) {
+      expect(screen.getByLabelText(tag)).toBeInTheDocument();
+    }
+
+    const options = getBlogFilterOptions(["2026"]);
+
+    expect(options.year).toEqual(["2026"]);
+    expect(options.year).not.toContain("2024");
   });
 });

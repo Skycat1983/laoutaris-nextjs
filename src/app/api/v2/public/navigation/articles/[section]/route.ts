@@ -1,25 +1,54 @@
 import type { ApiArticleNavListResult } from "@/lib/api/public/navigation/fetchers";
 import { apiErrorResponse, apiListResponse } from "@/lib/api/apiResponse";
-import { ArticleSection } from "@/lib/constants";
-import type { RouteResponse } from "@/lib/data/types";
+import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
+import {
+  parsePublicArticleNavigationParams,
+  type PublicArticleNavigationParamsFieldErrors,
+} from "@/lib/data/schemas/publicTaxonomySectionSchema";
 
 export const dynamic = "force-dynamic";
 
+type ArticleNavigationValidationErrorResponse = ApiErrorResponse & {
+  fieldErrors: PublicArticleNavigationParamsFieldErrors;
+  formErrors: string[];
+};
+
+const validationErrorResponse = (
+  fieldErrors: PublicArticleNavigationParamsFieldErrors,
+  formErrors: string[] = []
+) =>
+  NextResponse.json<ArticleNavigationValidationErrorResponse>(
+    {
+      success: false,
+      error: "Invalid article navigation query",
+      fieldErrors,
+      formErrors,
+    },
+    { status: 400 }
+  );
+
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { section: ArticleSection } }
+  { params }: { params: { section: string } }
 ): Promise<RouteResponse<ApiArticleNavListResult>> => {
   const requestContext = createRequestContext(
     request,
     "/api/v2/public/navigation/articles/[section]"
   );
   const logger = createApiLogger(requestContext);
-  const { section } = params;
+  const parsedParams = parsePublicArticleNavigationParams(params);
+
+  if (!parsedParams.success) {
+    const { fieldErrors, formErrors } = parsedParams.error.flatten();
+    return validationErrorResponse(fieldErrors, formErrors);
+  }
+
+  const { section } = parsedParams.data;
 
   try {
     const result = await getArticleNavigationList(section);

@@ -121,14 +121,14 @@ describe("public collection routes", () => {
 
       const response = await GET_COLLECTION_LIST(
         requestWithSearch(
-          "https://example.test/api/v2/public/collection?section=archive&page=2&limit=5"
+          "https://example.test/api/v2/public/collection?section=collections&page=2&limit=5"
         )
       );
       const body = await response.json();
 
       expect(response.status).toBe(200);
       expect(mockGetCollectionList).toHaveBeenCalledWith({
-        section: "archive",
+        section: "collections",
         page: 2,
         limit: 5,
       });
@@ -143,6 +143,26 @@ describe("public collection routes", () => {
         },
       });
       expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+
+    it("rejects invalid sections before calling the collection list service", async () => {
+      const response = await GET_COLLECTION_LIST(
+        requestWithSearch(
+          "https://example.test/api/v2/public/collection?section=archive"
+        )
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(mockGetCollectionList).not.toHaveBeenCalled();
+      expect(body).toEqual({
+        success: false,
+        error: "Invalid collection query",
+        fieldErrors: {
+          section: expect.arrayContaining([expect.any(String)]),
+        },
+        formErrors: [],
+      });
     });
 
     it("preserves default list params when query values are omitted", async () => {
