@@ -169,6 +169,28 @@ describe("/prototype/home page", () => {
     }
   });
 
+  it("uses the route-local wider prototype frame instead of the earlier bounded section caps", () => {
+    const layoutSource = readRepoFile(
+      "src/components/prototypes/home/prototypeHomeLayout.ts"
+    );
+    const sectionSource = [
+      "src/components/prototypes/home/BiographyPrototypeSection.tsx",
+      "src/components/prototypes/home/BlogPrototypeSection.tsx",
+      "src/components/prototypes/home/ShopPrototypeSection.tsx",
+      "src/components/prototypes/home/PrototypeSectionPlaceholder.tsx",
+    ]
+      .map(readRepoFile)
+      .join("\n");
+
+    expect(layoutSource).toContain("max-w-[1920px]");
+    expect(sectionSource).not.toContain("max-w-[1440px]");
+    expect(sectionSource).not.toContain("max-w-[1536px]");
+    expect(
+      sectionSource.split("className={`${prototypeSectionFrameClassName}")
+        .length - 1
+    ).toBe(4);
+  });
+
   it("renders the prototype biography section with real article links", () => {
     render(
       <BiographyPrototypeSection
@@ -324,6 +346,7 @@ describe("/prototype/home page", () => {
       "src/components/prototypes/home/ShopPrototypeSection.tsx",
       "src/components/prototypes/home/ShopPrototypeLoader.tsx",
       "src/components/prototypes/home/PrototypeSectionPlaceholder.tsx",
+      "src/components/prototypes/home/prototypeHomeLayout.ts",
     ]
       .map(readRepoFile)
       .join("\n");

@@ -31,10 +31,10 @@ Related runbooks:
   workflow. Prefer the admin dashboard for create and update operations when it
   can express the intended change.
 
-## Production Delete Block
+## Production Delete Approval
 
-Production destructive deletes are blocked until all of these exist for the
-resource being deleted:
+Production destructive deletes are not routine maintenance. Before each
+production delete, confirm all of these exist for the resource being deleted:
 
 - An operator-visible cascade preview that shows related records that will be
   deleted, detached, preserved, or block the delete. This is now present in the
@@ -46,13 +46,103 @@ resource being deleted:
   delete confirmation UI and route boundary now require this evidence before
   destructive execution.
 - Redacted audit evidence containing actor class, resource type, resource ID,
-  cascade summary, request ID when present, and timestamp.
+  cascade summary, request ID when present, timestamp, and the final outcome
+  where the route reaches one.
 
-Until the redacted audit-event persistence control exists, do not use production
-admin delete buttons for artwork, articles, blogs, collections, comments, or
-users except under an owner-approved incident procedure. Current route-level
-safeguards, preview UI, and backup/review evidence gate do not replace the
-missing audit trail.
+The technical controls now exist for the current admin delete resources:
+preview, backup/review evidence validation, and redacted audit-event
+persistence before mutation. Those controls do not by themselves approve a
+delete. Use production admin delete buttons for artwork, articles, blogs,
+collections, comments, or users only when the change request follows this
+checklist and the owner-approved production policy.
+
+## Admin Delete Audit Receipt Verification
+
+After an approved production delete, verify that a redacted audit receipt exists
+in the `admin_delete_audit_events` collection before closing the handoff. Use
+the managed MongoDB console or approved shell only through private environment
+configuration. Do not paste connection strings, environment values, raw records,
+or query output into repo docs.
+
+Check only these receipt fields:
+
+- `eventType` is `admin_destructive_delete`.
+- `resource` and `resourceId` match the approved delete request.
+- `route`, `method`, `requestId` when present, `occurredAt`, and `completedAt`
+  match the operator action and deployment/request evidence.
+- `actor.class` is `authenticated_admin` and `actor.role` is `admin`; do not
+  look up or record the admin account identity in repo docs.
+- `evidence.backupExportReference` and `evidence.ownerReviewReference` point to
+  the private evidence locations supplied at confirmation time.
+- `previewSummary.targetFound`, `previewSummary.blocked`,
+  `previewSummary.blockerCodes`, `previewSummary.totals`, and
+  `previewSummary.impacts` contain only resource classes, actions, and counts.
+- `outcome.status`, `outcome.responseStatus`, and any short
+  `outcome.reason` code match the final route result where the route reached a
+  final state.
+
+Do not copy raw preview records, target labels, names, emails, request bodies,
+cookies, authorization values, session data, raw caught errors, raw MongoDB
+documents, private account data, Cloudinary URLs, or private asset identifiers
+into task notes, incident notes, screenshots, or chat.
+
+Use a placeholder-shaped query like this and remove the `requestId` line if no
+request ID was captured:
+
+```javascript
+db.admin_delete_audit_events.findOne(
+  {
+    eventType: "admin_destructive_delete",
+    resource: "<resource>",
+    resourceId: "<resource-id>",
+    requestId: "<request-id-if-present>",
+  },
+  {
+    _id: 0,
+    eventType: 1,
+    route: 1,
+    method: 1,
+    requestId: 1,
+    occurredAt: 1,
+    completedAt: 1,
+    resource: 1,
+    resourceId: 1,
+    actor: 1,
+    evidence: 1,
+    previewSummary: 1,
+    outcome: 1,
+  }
+);
+```
+
+If the receipt is missing or still shows `outcome.status: "started"` after the
+route returned a final response, do not repeat the delete. Capture only the
+sanitized route, resource type, resource ID placeholder, request ID when
+present, and private evidence location, then follow
+[incident-response.md](incident-response.md).
+
+Sanitized handoff example:
+
+```md
+## Admin Content Operation Evidence
+
+- Checked at, UTC: <YYYY-MM-DDTHH:MM:SSZ>
+- Environment: production
+- Admin account source, no identifiers: owner-approved admin account
+- Resource type: artwork
+- Operation: approved production delete
+- Resource route or public identifier: <public route or approved resource ID>
+- Private evidence location, if any: <private evidence system reference>
+- Backup/export evidence: reference verified in private evidence location
+- Dashboard result: delete returned 200
+- Public smoke routes: <route list and status summary>
+- Request ID or deployment log reference, if present: <request ID>
+- Delete audit receipt: found in `admin_delete_audit_events`
+- Audit receipt safe summary: event type `admin_destructive_delete`; resource
+  `artwork`; request ID matched; preview totals delete 1, detach/update 2,
+  preserve 1; blocker codes none; outcome `succeeded`; response status 200
+- Follow-up needed: none
+```
 
 ## Before A Content Change
 
@@ -75,12 +165,12 @@ Admin dashboard sections are available under `/admin/dashboard/<section>`:
 
 | Section | Routine operations |
 | --- | --- |
-| `artwork` | Create, read, update, delete blocked in production. |
-| `articles` | Create, read, update, delete blocked in production. |
-| `blogs` | Create, read, update, delete blocked in production. |
-| `collections` | Create, read, update, delete blocked in production. |
-| `comments` | Read, delete blocked in production. |
-| `users` | Read, delete blocked in production. Create and update are not dashboard workflows. |
+| `artwork` | Create, read, update, delete only through the production delete approval checklist. |
+| `articles` | Create, read, update, delete only through the production delete approval checklist. |
+| `blogs` | Create, read, update, delete only through the production delete approval checklist. |
+| `collections` | Create, read, update, delete only through the production delete approval checklist. |
+| `comments` | Read, delete only through the production delete approval checklist. |
+| `users` | Read, delete only through the production delete approval checklist. Create and update are not dashboard workflows. |
 
 For articles, artwork, blogs, and collections, use read-list Update/Delete
 actions to seed the existing update/delete workflows when the target record is
@@ -146,9 +236,8 @@ sanitized evidence.
 
 - Comment creation and update are not admin dashboard workflows.
 - For moderation needs, prefer a future approved moderation workflow. Production
-  comment deletion remains blocked until redacted audit-event persistence
-  exists.
-- Post-change smoke after an approved incident delete: affected blog detail,
+  comment deletion requires the production delete approval checklist.
+- Post-change smoke after an approved production delete: affected blog detail,
   affected user account data if checked through an approved private path, and
   public comment count or absence.
 
@@ -159,10 +248,10 @@ sanitized evidence.
   dashboard.
 - Current delete routes block deleting the signed-in admin and the last
   remaining admin, and the dashboard shows the preview impact before
-  confirmation. The dashboard and route now require backup/review evidence
-  before destructive execution. Production user deletion is still blocked by
-  the missing redacted audit-event persistence requirement.
-- Post-change smoke after an approved incident delete: admin access with an
+  confirmation. The dashboard and route now require backup/review evidence and
+  persist a redacted audit event before destructive execution. Production user
+  deletion requires the production delete approval checklist.
+- Post-change smoke after an approved production delete: admin access with an
   approved admin account, non-admin denial, and affected public comment or
   saved-artwork behavior when relevant.
 
@@ -260,7 +349,7 @@ Use this template in task notes, incident notes, or workstream handoff files:
 - Environment:
 - Admin account source, no identifiers:
 - Resource type:
-- Operation: create | update | approved incident delete | lookup only
+- Operation: create | update | approved production delete | lookup only
 - Resource route or public identifier:
 - Private evidence location, if any:
 - Backup/export evidence:
@@ -269,5 +358,7 @@ Use this template in task notes, incident notes, or workstream handoff files:
 - Dashboard result:
 - Public smoke routes:
 - Request ID or deployment log reference, if present:
+- Delete audit receipt, if approved production delete:
+- Audit receipt safe summary, if approved production delete:
 - Follow-up needed:
 ```

@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
 
 type PrototypeSectionTone = "hero" | "light" | "muted" | "dark";
 
@@ -35,7 +36,9 @@ export function PrototypeSectionPlaceholder({
       data-testid={`prototype-${id}-section`}
       {...props}
     >
-      <div className="mx-auto flex min-h-[360px] w-full max-w-[1440px] flex-col justify-center gap-6 px-4 py-20 sm:px-8 lg:px-14">
+      <div
+        className={`${prototypeSectionFrameClassName} flex min-h-[360px] flex-col justify-center gap-6 py-20`}
+      >
         <div className="flex flex-col gap-3">
           <p className="font-archivo text-xs uppercase tracking-[0.18em] opacity-70">
             {label}

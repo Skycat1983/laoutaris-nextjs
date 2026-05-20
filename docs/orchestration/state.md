@@ -6,21 +6,31 @@ Last updated: 2026-05-20
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-164 are done and reconciled. F-096 and F-102 are resolved; F-092 is partially
-mitigated because the read-only delete preview contract, visible preview UI, and
-route-enforced backup/review evidence gate exist while redacted audit events
-remain open. F-103 is partially mitigated because runtime validation is
+T-174, plus T-178, are done and reconciled. F-070, F-096, F-102, and F-092 are
+resolved; F-095 remains partially mitigated after T-174 and T-178 because main
+admin read-tab pagination, filters, and search are still queued as T-175
+through T-177. F-103 is partially mitigated because runtime validation is
 complete while collection section launch policy remains an owner decision.
 
 T-157 through T-162 are complete. `/prototype/home` now has the isolated
 full-width prototype route plus image-guided biography, blog, and shop teaser
 sections backed by real data. T-161 added the style-system audit without
 runtime changes. T-162 recorded visual QA and owner-decision notes before
-production migration.
+production migration. T-166 and T-167 widened the prototype review canvas and
+rebalanced the biography, blog, and shop sections. T-168 marked the expanded
+prototype owner-review-ready while keeping production migration and the
+semantic style-system pilot blocked on owner approval.
 
-T-165 is prepared as the next admin-delete task: persist redacted audit events
-for admin destructive delete attempts that pass the T-164 evidence gate.
-Prototype implementation should wait for the owner decisions recorded in T-162.
+T-169 prepared the owner-facing `/prototype/home` review packet. T-170 added
+the no-visual-change semantic style map scaffold. T-171 found all audited
+article, blog, and collection image URLs already use the configured Cloudinary
+delivery path. T-172 documented safe delete-audit receipt verification. T-173
+audited admin read-list pagination/search gaps and produced the next admin
+archive implementation split.
+
+The next task to run is T-175. T-174 hardened admin read-list query bounds at
+the route layer, and T-178 added comment/user read-list delete handoff UI.
+T-176 depends on T-175, and T-177 depends on T-176.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -79,8 +89,8 @@ create/update forms using a client-safe form-error helper.
 T-149 is complete:
 [Add admin content operations runbook](../tasks/T-149-add-admin-content-operations-runbook.md).
 It adds the admin content operations runbook, links it from the runbooks index,
-and documents production destructive deletes as blocked until cascade previews,
-backup/review evidence, and redacted audit evidence exist.
+and documents the production destructive delete safeguards that were later
+implemented through T-156, T-163, T-164, and T-165.
 
 T-150 is complete:
 [Surface admin artwork form errors](../tasks/T-150-surface-admin-artwork-form-errors.md).
@@ -140,7 +150,73 @@ T-164 is complete:
 [Require admin delete evidence gate](../tasks/T-164-require-admin-delete-evidence-gate.md).
 It requires backup/export and owner/delegated review evidence in admin delete
 confirmations and validates that evidence at each admin delete route before
-destructive mutation. Redacted audit-event persistence remains open in T-165.
+destructive mutation.
+
+T-165 is complete:
+[Persist admin delete audit events](../tasks/T-165-persist-admin-delete-audit-events.md).
+It adds a server-only redacted audit event model/helper and wires article,
+artwork, blog, collection, comment, and user delete routes to create audit
+receipts before destructive mutation, return public-safe failure without
+mutation when receipt creation fails, and best-effort record success, blocked,
+not-found, or handled-failure outcomes.
+
+T-166 is complete:
+[Expand homepage prototype width](../tasks/T-166-expand-homepage-prototype-width.md).
+It adds a route-local `max-w-[1920px]` prototype frame so `/prototype/home`
+sections can be reviewed wider than the live page wrapper while keeping
+full-bleed section backgrounds and leaving the live homepage untouched.
+
+T-167 is complete:
+[Rebalance expanded homepage prototype sections](../tasks/T-167-rebalance-expanded-homepage-prototype-sections.md).
+It refines the biography, blog, and shop prototype section compositions for
+the widened canvas while preserving real data, fallback behavior, and
+enquiry-safe shop wording.
+
+T-168 is complete:
+[Review expanded homepage prototype](../tasks/T-168-review-expanded-homepage-prototype.md).
+It confirms the widened `/prototype/home` direction is ready for owner review,
+with no page-level horizontal overflow observed at checked desktop/mobile
+viewports and with remaining production-migration decisions captured for
+biography order, canonical dates, blog strategy, shop wording, mobile density,
+and anchor/header behavior.
+
+T-169 is complete:
+[Prepare homepage prototype owner review packet](../tasks/T-169-prepare-homepage-prototype-owner-review-packet.md).
+It adds the owner-facing review packet at
+`docs/prototypes/homepage-owner-review-packet.md` so `/prototype/home` can be
+reviewed in plain language before production migration.
+
+T-170 is complete:
+[Create semantic style map scaffold](../tasks/T-170-create-semantic-style-map-scaffold.md).
+It adds `src/lib/styles/semanticStyles.ts` and focused source/invariant
+coverage as a client-safe no-visual-change style point-of-truth scaffold,
+without adopting it in runtime components.
+
+T-171 is complete:
+[Audit existing content image URLs](../tasks/T-171-audit-existing-content-image-urls.md).
+It adds a read-only audit script and result showing all audited article, blog,
+and collection image URLs use the configured Cloudinary delivery path; no
+scoped image URL migration is indicated.
+
+T-172 is complete:
+[Document admin delete audit receipt verification](../tasks/T-172-document-admin-delete-audit-receipt-verification.md).
+It updates the admin content operations runbook with safe audit-receipt fields,
+excluded private fields, a placeholder-only query shape, and a sanitized
+handoff example.
+
+T-173 is complete:
+[Audit admin read-list pagination needs](../tasks/T-173-audit-admin-read-list-pagination-needs.md).
+It records that all six admin read-list routes return pagination metadata but
+main CRUD read tabs do not consume it, and it recommends the T-174 through
+T-178 implementation sequence.
+
+T-174 and T-178 are complete; T-175 through T-177 remain prepared:
+[Harden admin read-list query bounds](../tasks/T-174-harden-admin-read-list-query-bounds.md),
+[Pilot admin blog read pagination](../tasks/T-175-pilot-admin-blog-read-pagination.md),
+[Route-back admin read filters](../tasks/T-176-route-back-admin-read-filters.md),
+[Pilot admin read search](../tasks/T-177-pilot-admin-read-search.md), and
+[Add comment user delete entry points](../tasks/T-178-add-comment-user-delete-entry-points.md).
+T-175 can run now. T-176 and T-177 should run in that order after T-175.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1275,20 +1351,25 @@ completed:
 
 ## Next Orchestrator Action
 
-Assign [T-165 Persist admin delete audit events](../tasks/T-165-persist-admin-delete-audit-events.md)
-as the next decision-light admin delete implementation task. It should persist
-redacted audit events for admin destructive delete attempts that pass the T-164
-evidence gate, without changing cascade behavior, Cloudinary asset lifecycle,
-or monitoring-provider ownership.
+While owner review is pending, the next runnable implementation task is:
 
-For the homepage prototype track, hold implementation until the owner decisions
-from [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
-are answered. The open decisions are biography order, canonical dates, blog
-content strategy, shop/commerce wording, and mobile teaser density.
+- [T-175 Pilot admin blog read pagination](../tasks/T-175-pilot-admin-blog-read-pagination.md)
+  for metadata-driven pagination in the main admin blog read tab.
 
-Do not combine T-165 with prototype decision work in the same agent. T-165
-owns admin delete audit-event persistence; prototype decisions are
-owner/product work.
+Do not assign T-176 or T-177 until T-175 is complete and reconciled.
+
+For the homepage prototype track, most section-content decisions from
+[T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
+remain open: biography order, canonical dates, blog content strategy,
+shop/commerce wording, and mobile teaser density. Do not move prototype
+sections into the live homepage or start the semantic style-map pilot until the
+owner accepts the expanded prototype direction.
+
+No further decision-light admin delete implementation task is open after
+T-165/T-172/T-178. Production delete use remains an operating-policy question:
+use the admin content runbook checklist and keep Cloudinary asset lifecycle,
+monitoring-provider ownership, broader backup/restore/rollback decisions, and
+owner approval separate unless explicitly assigned.
 
 Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
 unless the owner/product answer is available. If unavailable, do not guess the
@@ -1310,14 +1391,14 @@ T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
 T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
 T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
-T-153, T-154, T-155, T-156, T-162, T-163, and T-164 are complete and should not
-be reassigned unless a regression is opened. T-157 through T-161 are also
-complete and should not be reassigned unless the prototype route, section data
-mapping, or style audit regresses.
+T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
+T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
+and T-178 are
+complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,
-image-field migrations, full strict CSP
+future image-field model migrations, full strict CSP
 allowlist design, dynamic per-origin CORS, HSTS rollout, global production
 logging/redaction policy,
 CI/dependency-update automation, Vercel project-setting ownership, credential

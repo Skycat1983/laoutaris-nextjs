@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import type { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import type { AdminDeleteEvidence } from "./evidenceTypes";
 import type { AdminDeleteResource } from "./previewTypes";
 import {
   ADMIN_DELETE_EVIDENCE_REFERENCE_MAX_LENGTH,
@@ -21,6 +22,16 @@ type AdminDeleteValidationErrorResponse = ApiErrorResponse & {
   fieldErrors: AdminDeleteFieldErrors;
   formErrors: string[];
 };
+
+type AdminDeleteEvidenceRequestResult =
+  | {
+      ok: true;
+      evidence: AdminDeleteEvidence;
+    }
+  | {
+      ok: false;
+      response: NextResponse<AdminDeleteValidationErrorResponse>;
+    };
 
 const objectIdPattern = /^[0-9a-fA-F]{24}$/;
 
@@ -106,18 +117,21 @@ export const adminDeleteInvalidIdResponse = (
     { status: 400 }
   );
 
-export const validateAdminDeleteEvidenceRequest = async (
+export const readAdminDeleteEvidenceRequest = async (
   request: Request,
   resource: AdminDeleteResource
-): Promise<NextResponse<AdminDeleteValidationErrorResponse> | null> => {
+): Promise<AdminDeleteEvidenceRequestResult> => {
   let body: unknown;
 
   try {
     body = await request.json();
   } catch {
-    return adminDeleteEvidenceErrorResponse(resource, {}, [
-      "Request body must be valid JSON.",
-    ]);
+    return {
+      ok: false,
+      response: adminDeleteEvidenceErrorResponse(resource, {}, [
+        "Request body must be valid JSON.",
+      ]),
+    };
   }
 
   const parsedEvidence = adminDeleteEvidenceSchema.safeParse(body);
@@ -125,11 +139,30 @@ export const validateAdminDeleteEvidenceRequest = async (
   if (!parsedEvidence.success) {
     const { fieldErrors, formErrors } = parsedEvidence.error.flatten();
 
-    return adminDeleteEvidenceErrorResponse(
-      resource,
-      fieldErrors,
-      formErrors
-    );
+    return {
+      ok: false,
+      response: adminDeleteEvidenceErrorResponse(
+        resource,
+        fieldErrors,
+        formErrors
+      ),
+    };
+  }
+
+  return {
+    ok: true,
+    evidence: parsedEvidence.data,
+  };
+};
+
+export const validateAdminDeleteEvidenceRequest = async (
+  request: Request,
+  resource: AdminDeleteResource
+): Promise<NextResponse<AdminDeleteValidationErrorResponse> | null> => {
+  const result = await readAdminDeleteEvidenceRequest(request, resource);
+
+  if (!result.ok) {
+    return result.response;
   }
 
   return null;

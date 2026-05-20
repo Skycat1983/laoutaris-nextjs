@@ -150,6 +150,8 @@ const createListQuery = (result: unknown) => {
   return query;
 };
 
+type ListQuery = ReturnType<typeof createListQuery>;
+
 const createPopulatedLeanQuery = (result: unknown) => ({
   populate: jest.fn().mockReturnThis(),
   lean: jest.fn().mockResolvedValue(result),
@@ -380,6 +382,311 @@ const invalidDetailCases: Array<
   ],
 ];
 
+const invalidListQueryCases: Array<{
+  label: string;
+  handler: Handler;
+  requestUrl: string;
+  expectedError: string;
+  expectedFieldErrors: Record<string, string[]>;
+  expectNoTargetRead: () => void;
+}> = [
+  {
+    label: "article list with a zero page",
+    handler: GET_ARTICLE_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/article/read?page=0&limit=10",
+    expectedError: "Invalid article input",
+    expectedFieldErrors: {
+      page: ["Page must be at least 1"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockArticleCountDocuments).not.toHaveBeenCalled();
+      expect(mockArticleFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "article list with a non-numeric limit",
+    handler: GET_ARTICLE_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/article/read?page=1&limit=abc",
+    expectedError: "Invalid article input",
+    expectedFieldErrors: {
+      limit: ["Limit must be a positive integer"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockArticleCountDocuments).not.toHaveBeenCalled();
+      expect(mockArticleFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "artwork list with an oversized limit",
+    handler: GET_ARTWORK_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/artwork/read?page=1&limit=101",
+    expectedError: "Invalid artwork input",
+    expectedFieldErrors: {
+      limit: ["Limit must be 100 or less"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
+      expect(mockArtworkFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "blog list with a negative page",
+    handler: GET_BLOG_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/blog/read?page=-1&limit=10",
+    expectedError: "Invalid blog input",
+    expectedFieldErrors: {
+      page: ["Page must be a positive integer"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockBlogCountDocuments).not.toHaveBeenCalled();
+      expect(mockBlogFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "collection list with a zero limit",
+    handler: GET_COLLECTION_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/collection/read?page=1&limit=0",
+    expectedError: "Invalid collection input",
+    expectedFieldErrors: {
+      limit: ["Limit must be at least 1"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
+      expect(mockCollectionFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "comment list with a decimal page",
+    handler: GET_COMMENT_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/comment/read?page=1.5&limit=10",
+    expectedError: "Invalid comment input",
+    expectedFieldErrors: {
+      page: ["Page must be a positive integer"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockCommentCountDocuments).not.toHaveBeenCalled();
+      expect(mockCommentFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "user list with an oversized page",
+    handler: GET_USER_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/user/read?page=1001&limit=10",
+    expectedError: "Invalid user input",
+    expectedFieldErrors: {
+      page: ["Page must be 1000 or less"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockUserCountDocuments).not.toHaveBeenCalled();
+      expect(mockUserFind).not.toHaveBeenCalled();
+    },
+  },
+];
+
+const defaultPaginationCases: Array<{
+  label: string;
+  handler: Handler;
+  requestUrl: string;
+  total: number;
+  expectedLimit: number;
+  setup: () => {
+    query: ListQuery;
+    frontendData: unknown;
+    expectModelCalls: () => void;
+  };
+}> = [
+  {
+    label: "article",
+    handler: GET_ARTICLE_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/article/read",
+    total: 12,
+    expectedLimit: 10,
+    setup: () => {
+      const rawArticle = {
+        _id: articleId,
+        title: "Archive note",
+      };
+      const frontendArticle = {
+        _id: articleId,
+        title: "Archive note",
+      };
+      const query = createListQuery([rawArticle]);
+      mockArticleFind.mockReturnValue(query);
+      mockArticleCountDocuments.mockResolvedValue(12);
+      mockTransformArticlePopulated.mockReturnValue(frontendArticle as never);
+
+      return {
+        query,
+        frontendData: frontendArticle,
+        expectModelCalls: () => {
+          expect(mockArticleFind).toHaveBeenCalledWith();
+          expect(mockArticleCountDocuments).toHaveBeenCalledWith();
+          expect(mockTransformArticlePopulated).toHaveBeenCalledWith(rawArticle);
+        },
+      };
+    },
+  },
+  {
+    label: "artwork",
+    handler: GET_ARTWORK_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/artwork/read",
+    total: 120,
+    expectedLimit: 100,
+    setup: () => {
+      const rawArtwork = {
+        _id: artworkId,
+        title: "Blue Figure",
+      };
+      const frontendArtwork = {
+        _id: artworkId,
+        title: "Blue Figure",
+      };
+      const query = createListQuery([rawArtwork]);
+      mockArtworkFind.mockReturnValue(query);
+      mockArtworkCountDocuments.mockResolvedValue(120);
+      mockTransformArtworkToFrontend.mockReturnValue(frontendArtwork);
+
+      return {
+        query,
+        frontendData: frontendArtwork,
+        expectModelCalls: () => {
+          expect(mockArtworkFind).toHaveBeenCalledWith({});
+          expect(mockArtworkCountDocuments).toHaveBeenCalledWith({});
+          expect(mockTransformArtworkToFrontend).toHaveBeenCalledWith(rawArtwork);
+        },
+      };
+    },
+  },
+  {
+    label: "blog",
+    handler: GET_BLOG_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/blog/read",
+    total: 21,
+    expectedLimit: 10,
+    setup: () => {
+      const rawBlog = {
+        _id: blogId,
+        title: "Studio Journal",
+      };
+      const frontendBlog = {
+        _id: blogId,
+        title: "Studio Journal",
+      };
+      const query = createListQuery([rawBlog]);
+      mockBlogFind.mockReturnValue(query);
+      mockBlogCountDocuments.mockResolvedValue(21);
+      mockTransformBlogPopulated.mockReturnValue(frontendBlog as never);
+
+      return {
+        query,
+        frontendData: frontendBlog,
+        expectModelCalls: () => {
+          expect(mockBlogFind).toHaveBeenCalledWith();
+          expect(mockBlogCountDocuments).toHaveBeenCalledWith();
+          expect(mockTransformBlogPopulated).toHaveBeenCalledWith(rawBlog);
+        },
+      };
+    },
+  },
+  {
+    label: "collection",
+    handler: GET_COLLECTION_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/collection/read",
+    total: 15,
+    expectedLimit: 10,
+    setup: () => {
+      const rawCollection = {
+        _id: collectionId,
+        title: "Archive Set",
+      };
+      const frontendCollection = {
+        _id: collectionId,
+        title: "Archive Set",
+      };
+      const query = createListQuery([rawCollection]);
+      mockCollectionFind.mockReturnValue(query);
+      mockCollectionCountDocuments.mockResolvedValue(15);
+      mockTransformCollectionPopulated.mockReturnValue(
+        frontendCollection as never
+      );
+
+      return {
+        query,
+        frontendData: frontendCollection,
+        expectModelCalls: () => {
+          expect(mockCollectionFind).toHaveBeenCalledWith();
+          expect(mockCollectionCountDocuments).toHaveBeenCalledWith();
+          expect(mockTransformCollectionPopulated).toHaveBeenCalledWith(
+            rawCollection
+          );
+        },
+      };
+    },
+  },
+  {
+    label: "comment",
+    handler: GET_COMMENT_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/comment/read",
+    total: 18,
+    expectedLimit: 10,
+    setup: () => {
+      const rawComment = {
+        _id: "507f1f77bcf86cd799439017",
+        text: "Useful note",
+      };
+      const frontendComment = {
+        _id: "507f1f77bcf86cd799439017",
+        text: "Useful note",
+      };
+      const query = createListQuery([rawComment]);
+      mockCommentFind.mockReturnValue(query);
+      mockCommentCountDocuments.mockResolvedValue(18);
+      mockTransformCommentPopulated.mockReturnValue(frontendComment as never);
+
+      return {
+        query,
+        frontendData: frontendComment,
+        expectModelCalls: () => {
+          expect(mockCommentFind).toHaveBeenCalledWith();
+          expect(mockCommentCountDocuments).toHaveBeenCalledWith();
+          expect(mockTransformCommentPopulated).toHaveBeenCalledWith(rawComment);
+        },
+      };
+    },
+  },
+  {
+    label: "user",
+    handler: GET_USER_LIST as Handler,
+    requestUrl: "http://localhost/api/v2/admin/user/read",
+    total: 14,
+    expectedLimit: 10,
+    setup: () => {
+      const rawUser = {
+        _id: regularUserId,
+        username: "viewer",
+      };
+      const frontendUser = {
+        _id: regularUserId,
+        username: "viewer",
+      };
+      const query = createListQuery([rawUser]);
+      mockUserFind.mockReturnValue(query);
+      mockUserCountDocuments.mockResolvedValue(14);
+      mockTransformUserToFrontend.mockReturnValue(frontendUser);
+
+      return {
+        query,
+        frontendData: frontendUser,
+        expectModelCalls: () => {
+          expect(mockUserFind).toHaveBeenCalledWith();
+          expect(mockUserCountDocuments).toHaveBeenCalledWith();
+          expect(mockTransformUserToFrontend).toHaveBeenCalledWith(rawUser);
+        },
+      };
+    },
+  },
+];
+
 describe("admin read route shared guard migration", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -471,6 +778,65 @@ describe("admin read route shared guard migration", () => {
       expect(mockDbConnect).toHaveBeenCalledTimes(1);
       expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
       expectNoTargetRead();
+    }
+  );
+
+  it.each(invalidListQueryCases)(
+    "returns 400 for invalid $label pagination before target reads",
+    async ({
+      handler,
+      requestUrl,
+      expectedError,
+      expectedFieldErrors,
+      expectNoTargetRead,
+    }) => {
+      const response = await handler(createRequest(requestUrl) as never);
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(body).toEqual({
+        success: false,
+        error: expectedError,
+        fieldErrors: expectedFieldErrors,
+        formErrors: [],
+      });
+      expect(mockDbConnect).toHaveBeenCalledTimes(1);
+      expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+      expectNoTargetRead();
+    }
+  );
+
+  it.each(defaultPaginationCases)(
+    "uses default pagination metadata for $label list reads",
+    async ({
+      handler,
+      requestUrl,
+      total,
+      expectedLimit,
+      setup,
+    }) => {
+      const { query, frontendData, expectModelCalls } = setup();
+
+      const response = await handler(createRequest(requestUrl) as never);
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockDbConnect).toHaveBeenCalledTimes(2);
+      expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+      expect(query.limit).toHaveBeenCalledWith(expectedLimit);
+      expect(query.skip).toHaveBeenCalledWith(0);
+      expect(query.lean).toHaveBeenCalledTimes(1);
+      expectModelCalls();
+      expect(body).toEqual({
+        success: true,
+        data: [frontendData],
+        metadata: {
+          page: 1,
+          limit: expectedLimit,
+          total,
+          totalPages: Math.ceil(total / expectedLimit),
+        },
+      });
     }
   );
 

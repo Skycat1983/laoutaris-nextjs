@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
 
 type BlogPrototypeSectionProps = {
   blogs: BlogEntryFrontend[];
@@ -60,20 +61,20 @@ function BlogPrototypeCard({ blog }: { blog: BlogEntryFrontend }) {
         href={getBlogHref(blog.slug)}
         className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
       >
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#e5e2dc]">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#e5e2dc] 2xl:aspect-[3/2]">
           <BlogImage
             blog={blog}
             variant="blogGridCard"
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 1536px) 22vw, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         </div>
-        <div className="mt-4 flex min-w-0 flex-col gap-2">
-          <h3 className="min-w-0 break-words font-cormorant text-2xl font-semibold leading-none text-slate md:text-3xl">
+        <div className="mt-5 flex min-w-0 flex-col gap-2 2xl:gap-3">
+          <h3 className="min-w-0 break-words font-cormorant text-2xl font-semibold leading-none text-slate md:text-3xl 2xl:text-[34px]">
             {blog.title}
           </h3>
           {summary ? (
-            <p className="min-w-0 break-words font-archivo text-sm leading-6 text-slate/70">
+            <p className="line-clamp-3 min-w-0 break-words font-archivo text-sm leading-6 text-slate/70 2xl:max-w-[24rem]">
               {summary}
             </p>
           ) : null}
@@ -99,23 +100,25 @@ export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
       className="w-full border-t border-slate/10 bg-whitish text-slate"
       data-testid="prototype-blog-section"
     >
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-14 px-4 py-16 sm:px-8 sm:py-20 lg:px-14 lg:py-24">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
-          <div className="flex min-w-0 flex-col items-start gap-7">
-            <div className="flex min-w-0 flex-col gap-4">
+      <div
+        className={`${prototypeSectionFrameClassName} flex flex-col gap-14 py-16 sm:py-20 lg:gap-16 lg:py-24 2xl:gap-20 2xl:py-28`}
+      >
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(320px,0.62fr)_minmax(0,1.38fr)] lg:gap-14 xl:gap-16 2xl:grid-cols-[minmax(380px,0.56fr)_minmax(0,1.44fr)] 2xl:gap-24">
+          <div className="flex min-w-0 flex-col items-start gap-7 2xl:gap-8">
+            <div className="flex min-w-0 max-w-[780px] flex-col gap-4">
               <p className="font-archivo text-xs uppercase text-slate/80">
                 Blog
               </p>
               <h2
                 id={sectionHeadingId}
-                className="max-w-3xl break-words font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl"
+                className="max-w-[780px] break-words font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl xl:text-[78px] 2xl:text-[88px]"
               >
                 {leadBlog?.title ?? "Latest blog posts"}
               </h2>
             </div>
             <div className="h-px w-16 bg-slate" aria-hidden="true" />
             {leadSummary ? (
-              <p className="max-w-xl break-words font-archivo text-base leading-7 text-slate/80 sm:text-lg">
+              <p className="max-w-xl break-words font-archivo text-base leading-7 text-slate/80 sm:text-lg 2xl:max-w-[700px]">
                 {leadSummary}
               </p>
             ) : null}
@@ -133,11 +136,11 @@ export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
               href={getBlogHref(leadBlog.slug)}
               className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
             >
-              <div className="relative aspect-[1.12/1] w-full overflow-hidden bg-[#e5e2dc]">
+              <div className="relative aspect-[1.12/1] w-full overflow-hidden bg-[#e5e2dc] xl:aspect-[1.35/1] 2xl:aspect-[1.58/1]">
                 <BlogImage
                   blog={leadBlog}
                   variant="blogHero"
-                  sizes="(min-width: 1024px) 52vw, 100vw"
+                  sizes="(min-width: 1536px) 58vw, (min-width: 1024px) 52vw, 100vw"
                   priority
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                 />
@@ -151,7 +154,7 @@ export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
         </div>
 
         {cardBlogs.length > 0 ? (
-          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-x-8 gap-y-12 border-t border-slate/10 pt-10 sm:grid-cols-2 lg:grid-cols-4 2xl:gap-x-12 2xl:pt-12">
             {cardBlogs.map((blog) => (
               <BlogPrototypeCard key={blog.slug} blog={blog} />
             ))}

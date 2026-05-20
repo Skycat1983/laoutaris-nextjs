@@ -10,6 +10,7 @@ import { DELETE as DELETE_COMMENT } from "@/app/api/v2/admin/comment/delete/[id]
 import { DELETE as DELETE_USER } from "@/app/api/v2/admin/user/delete/[id]/route";
 import dbConnect from "@/lib/db/mongodb";
 import {
+  AdminDeleteAuditEventModel,
   ArticleModel,
   ArtworkModel,
   BlogModel,
@@ -55,11 +56,18 @@ jest.mock("mongoose", () => {
 });
 
 jest.mock("@/lib/data/models", () => ({
+  AdminDeleteAuditEventModel: {
+    create: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+  },
   ArticleModel: {
+    find: jest.fn(),
+    findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     findOne: jest.fn(),
   },
   ArtworkModel: {
+    findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     updateMany: jest.fn(),
   },
@@ -70,6 +78,8 @@ jest.mock("@/lib/data/models", () => ({
     updateMany: jest.fn(),
   },
   CollectionModel: {
+    find: jest.fn(),
+    findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     updateMany: jest.fn(),
   },
@@ -81,6 +91,7 @@ jest.mock("@/lib/data/models", () => ({
   },
   UserModel: {
     countDocuments: jest.fn(),
+    find: jest.fn(),
     findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     findByIdAndUpdate: jest.fn(),
@@ -118,6 +129,7 @@ const commentId = "507f1f77bcf86cd799439017";
 const deletedUserId = "507f1f77bcf86cd799439018";
 const favouriteArtworkId = "507f1f77bcf86cd799439019";
 const requestId = "req-admin-delete";
+const auditEventId = "507f1f77bcf86cd799439099";
 
 const validDeleteEvidence: AdminDeleteEvidence = {
   backupExportConfirmed: true,
@@ -151,9 +163,21 @@ const createMongoSession = () => ({
   endSession: jest.fn(),
 });
 
-const createSessionQuery = (result: unknown) => ({
-  session: jest.fn().mockResolvedValue(result),
-});
+const createSessionQuery = (result: unknown) => {
+  const query =
+    result && typeof result === "object"
+      ? Array.isArray(result)
+        ? [...result]
+        : { ...result }
+      : {};
+
+  Object.defineProperty(query, "session", {
+    value: jest.fn().mockResolvedValue(result),
+    enumerable: false,
+  });
+
+  return query as { session: jest.Mock };
+};
 
 const createRejectedSessionQuery = (error: unknown) => ({
   session: jest.fn().mockRejectedValue(error),
@@ -162,9 +186,16 @@ const createRejectedSessionQuery = (error: unknown) => ({
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockGetServerSession = getServerSession as jest.Mock;
 const mockStartSession = mongoose.startSession as jest.Mock;
+const mockAdminDeleteAuditCreate =
+  AdminDeleteAuditEventModel.create as jest.Mock;
+const mockAdminDeleteAuditFindByIdAndUpdate =
+  AdminDeleteAuditEventModel.findByIdAndUpdate as jest.Mock;
+const mockArticleFind = ArticleModel.find as jest.Mock;
+const mockArticleFindById = ArticleModel.findById as jest.Mock;
 const mockArticleFindByIdAndDelete =
   ArticleModel.findByIdAndDelete as jest.Mock;
 const mockArticleFindOne = ArticleModel.findOne as jest.Mock;
+const mockArtworkFindById = ArtworkModel.findById as jest.Mock;
 const mockArtworkFindByIdAndDelete =
   ArtworkModel.findByIdAndDelete as jest.Mock;
 const mockArtworkUpdateMany = ArtworkModel.updateMany as jest.Mock;
@@ -172,6 +203,8 @@ const mockBlogFindById = BlogModel.findById as jest.Mock;
 const mockBlogFindByIdAndDelete = BlogModel.findByIdAndDelete as jest.Mock;
 const mockBlogFindByIdAndUpdate = BlogModel.findByIdAndUpdate as jest.Mock;
 const mockBlogUpdateMany = BlogModel.updateMany as jest.Mock;
+const mockCollectionFind = CollectionModel.find as jest.Mock;
+const mockCollectionFindById = CollectionModel.findById as jest.Mock;
 const mockCollectionFindByIdAndDelete =
   CollectionModel.findByIdAndDelete as jest.Mock;
 const mockCollectionUpdateMany = CollectionModel.updateMany as jest.Mock;
@@ -181,6 +214,7 @@ const mockCommentFindById = CommentModel.findById as jest.Mock;
 const mockCommentFindByIdAndDelete =
   CommentModel.findByIdAndDelete as jest.Mock;
 const mockUserCountDocuments = UserModel.countDocuments as jest.Mock;
+const mockUserFind = UserModel.find as jest.Mock;
 const mockUserFindById = UserModel.findById as jest.Mock;
 const mockUserFindByIdAndDelete = UserModel.findByIdAndDelete as jest.Mock;
 const mockUserFindByIdAndUpdate = UserModel.findByIdAndUpdate as jest.Mock;
@@ -275,6 +309,26 @@ const expectNoDestructiveModelWork = () => {
   expect(mockUserUpdateMany).not.toHaveBeenCalled();
 };
 
+const expectAuditOutcome = (
+  status: string,
+  responseStatus: number,
+  reason?: string
+) => {
+  expect(mockAdminDeleteAuditFindByIdAndUpdate).toHaveBeenCalledWith(
+    auditEventId,
+    {
+      $set: {
+        completedAt: expect.any(Date),
+        outcome: {
+          status,
+          responseStatus,
+          ...(reason ? { reason } : {}),
+        },
+      },
+    }
+  );
+};
+
 describe("admin delete route shared guard migration", () => {
   let mongoSession: ReturnType<typeof createMongoSession>;
   let consoleLogSpy: jest.SpyInstance;
@@ -285,8 +339,19 @@ describe("admin delete route shared guard migration", () => {
     mongoSession = createMongoSession();
     mockDbConnect.mockResolvedValue(undefined);
     mockStartSession.mockResolvedValue(mongoSession);
+    mockAdminDeleteAuditCreate.mockResolvedValue({ _id: auditEventId });
+    mockAdminDeleteAuditFindByIdAndUpdate.mockResolvedValue({
+      _id: auditEventId,
+    });
     setAdminSession();
     mockUserFindById.mockResolvedValue({ role: "admin" });
+    mockArticleFind.mockResolvedValue([]);
+    mockArticleFindById.mockResolvedValue({ _id: articleId });
+    mockArtworkFindById.mockResolvedValue({ _id: artworkId });
+    mockCollectionFind.mockResolvedValue([]);
+    mockCollectionFindById.mockResolvedValue({ _id: collectionId });
+    mockUserFind.mockResolvedValue([]);
+    mockUserCountDocuments.mockResolvedValue(2);
   });
 
   afterEach(() => {
@@ -419,13 +484,105 @@ describe("admin delete route shared guard migration", () => {
 
     expect(response.status).toBe(200);
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockAdminDeleteAuditCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: "admin_destructive_delete",
+        route: "/api/v2/admin/article/delete/[id]",
+        method: "DELETE",
+        requestId,
+        resource: "article",
+        resourceId: articleId,
+        actor: {
+          class: "authenticated_admin",
+          role: "admin",
+        },
+        evidence: {
+          backupExportReference:
+            validDeleteEvidence.backupExportReference,
+          ownerReviewReference: validDeleteEvidence.ownerReviewReference,
+        },
+        previewSummary: {
+          targetFound: true,
+          blocked: false,
+          blockerCodes: [],
+          impacts: [
+            {
+              section: "wouldDelete",
+              action: "delete",
+              resource: "article",
+              count: 1,
+            },
+          ],
+          totals: {
+            wouldDelete: 1,
+            wouldDetachOrUpdate: 0,
+            preserved: 0,
+          },
+        },
+        outcome: {
+          status: "started",
+        },
+      })
+    );
+    expect(
+      mockAdminDeleteAuditCreate.mock.invocationCallOrder[0]
+    ).toBeLessThan(mockArticleFindByIdAndDelete.mock.invocationCallOrder[0]);
     expect(mockArticleFindByIdAndDelete).toHaveBeenCalledWith(articleId);
+    expectAuditOutcome("succeeded", 200);
     expect(body).toEqual({
       success: true,
       data: null,
       message: "Article deleted successfully",
     });
     expect(consoleLogSpy).not.toHaveBeenCalled();
+  });
+
+  it("returns a public-safe failure and skips mutation when audit creation fails", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockBlogFindById.mockReturnValue(
+      createSessionQuery({ _id: blogId, comments: [] })
+    );
+    mockAdminDeleteAuditCreate.mockRejectedValue(
+      new Error("private audit database detail")
+    );
+
+    try {
+      const response = await DELETE_BLOG(createRequest() as never, {
+        params: { id: blogId },
+      });
+      const body = await response.json();
+      const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+
+      expect(response.status).toBe(500);
+      expect(body).toEqual({
+        success: false,
+        message: "Unable to record delete audit event",
+        error: "Unable to record delete audit event",
+        requestId,
+      });
+      expect(JSON.stringify(body)).not.toContain("private audit database detail");
+      expect(logPayload).toEqual(
+        expect.objectContaining({
+          event: "api.admin.delete_audit.create_failed",
+          level: "error",
+          requestId,
+          route: "/api/v2/admin/blog/delete/[id]",
+          method: "DELETE",
+          operation: "admin.blog.delete",
+          resource: "blog",
+          errorLabel: "admin_delete_audit_create_failed",
+        })
+      );
+      expect(mockStartSession).not.toHaveBeenCalled();
+      expect(mockBlogFindByIdAndDelete).not.toHaveBeenCalled();
+      expect(mockCommentDeleteMany).not.toHaveBeenCalled();
+      expect(mockUserUpdateMany).not.toHaveBeenCalled();
+      expect(mockAdminDeleteAuditFindByIdAndUpdate).not.toHaveBeenCalled();
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
   });
 
   it("preserves collection not-found behavior", async () => {
@@ -443,11 +600,19 @@ describe("admin delete route shared guard migration", () => {
       error: "Collection not found",
     });
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
+    expect(mockAdminDeleteAuditCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource: "collection",
+        resourceId: collectionId,
+      })
+    );
     expect(mockCollectionFindByIdAndDelete).toHaveBeenCalledWith(collectionId);
+    expectAuditOutcome("not_found", 404, "not_found");
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
   it("blocks artwork deletion when an article references it", async () => {
+    mockArticleFind.mockResolvedValue([{ _id: articleId }]);
     mockArticleFindOne.mockResolvedValue({ _id: articleId });
 
     const response = await DELETE_ARTWORK(createRequest() as never, {
@@ -469,6 +634,17 @@ describe("admin delete route shared guard migration", () => {
     expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
     expect(mockArtworkFindByIdAndDelete).not.toHaveBeenCalled();
     expect(mockCollectionUpdateMany).not.toHaveBeenCalled();
+    expect(mockAdminDeleteAuditCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource: "artwork",
+        resourceId: artworkId,
+        previewSummary: expect.objectContaining({
+          blocked: true,
+          blockerCodes: ["artwork_referenced_by_article"],
+        }),
+      })
+    );
+    expectAuditOutcome("blocked", 409, "artwork_referenced_by_article");
   });
 
   it("deletes artwork and removes it from collections", async () => {
@@ -596,11 +772,24 @@ describe("admin delete route shared guard migration", () => {
       message: "Cannot delete the current admin account",
       error: "Cannot delete the current admin account",
     });
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
-    expect(mockUserFindById).toHaveBeenCalledTimes(1);
+    expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockUserFindById).toHaveBeenCalledWith(adminUserId);
+    expect(mockAdminDeleteAuditCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        resource: "user",
+        resourceId: adminUserId,
+        previewSummary: expect.objectContaining({
+          blockerCodes: ["current_admin_account"],
+        }),
+      })
+    );
+    expectAuditOutcome("blocked", 403, "current_admin_account");
     expect(mockStartSession).not.toHaveBeenCalled();
-    expectNoDestructiveModelWork();
+    expect(mockUserFindByIdAndDelete).not.toHaveBeenCalled();
+    expect(mockUserFindByIdAndUpdate).not.toHaveBeenCalled();
+    expect(mockUserUpdateMany).not.toHaveBeenCalled();
+    expect(mockCommentDeleteMany).not.toHaveBeenCalled();
+    expect(mockArtworkUpdateMany).not.toHaveBeenCalled();
   });
 
   it("blocks deletion of the last remaining admin account", async () => {

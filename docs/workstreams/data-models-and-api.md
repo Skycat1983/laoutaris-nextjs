@@ -268,6 +268,8 @@ consistent enough for production refactoring and Shopify integration.
   responses after the logging policy task is scoped.
 - Add newsletter consent/source metadata and unsubscribe route behavior after
   owner/legal requirements are accepted.
+- Harden admin read-list `page`/`limit` query parsing and bounds before adding
+  main read-tab pagination, route-backed filters, or search.
 - Document pagination and filtering contracts for artwork, collection, blog,
   article, search, and shop endpoints.
 - Choose list empty-state semantics and search pagination metadata behavior.
@@ -879,20 +881,36 @@ Add API route tests where behavior is changed.
   validated evidence payload, and article/artwork/blog/collection/comment/user
   delete routes reject missing or invalid backup/review evidence before
   destructive mutation.
+- 2026-05-20: Completed T-165. A server-only
+  `AdminDeleteAuditEventModel` and helper now persist redacted destructive
+  admin delete audit receipts with safe evidence references and summarized
+  preview counts. Article, artwork, blog, collection, comment, and user delete
+  routes create the receipt before destructive mutation and return a
+  public-safe failure without mutation if receipt creation fails.
+- 2026-05-20: Completed T-171 and T-173. T-171 found all audited article,
+  blog, and collection image URLs compatible with the current Cloudinary
+  delivery policy. T-173 found that admin read-list routes already return
+  pagination metadata but need shared query bounds before UI pagination,
+  filters, or search expand. T-174 is prepared as the first data/API slice.
+- 2026-05-20: Completed T-174. Article, artwork, blog, collection, comment,
+  and user admin read-list routes now share bounded `page`/`limit` parsing with
+  structured `400` responses for invalid pagination values before resource
+  list queries.
 
 ## Next Agent Action
 
-Assign [T-165](../tasks/T-165-persist-admin-delete-audit-events.md) if the next
-priority is destructive-delete safety, because preview UI and route-enforced
-evidence now exist but redacted audit-event persistence is still missing. Keep
-public search scope, collection section launch policy, broader response-helper
-cleanup, route-local DB ownership gaps, field-contract matrices, server-side
-shop pagination/sorting contracts, lower-level logging policy, admin
-Shopify-link work, and existing content image data migration separate. T-122,
-T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156, T-163,
-and T-164 are complete and should not be reassigned unless their guards,
-validation behavior, search metadata, preview contract/UI, evidence gate, or
-query/fetcher contracts regress.
+T-174's data/API prerequisite for admin read-tab pagination is complete. The
+next admin archive task is the frontend-led
+[T-175](../tasks/T-175-pilot-admin-blog-read-pagination.md). Keep public search
+scope, collection section launch policy, broader response-helper cleanup,
+route-local DB ownership gaps, field-contract matrices, server-side shop
+pagination/sorting contracts, lower-level logging policy, admin Shopify-link
+work, and Cloudinary runtime cleanup separate.
+T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
+T-163, T-164, T-165, T-171, T-173, and T-174 are complete and should not be
+reassigned unless their guards, validation behavior, search metadata, preview
+contract/UI, evidence gate, audit receipts, image URL audit, admin read-list
+audit, admin read query bounds, or query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.

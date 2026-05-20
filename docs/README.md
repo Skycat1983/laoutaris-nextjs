@@ -40,6 +40,8 @@ future artwork, print, and book sales.
 - [Decisions](decisions/README.md): accepted technical decisions and rationale.
 - [Risks](risks/production-readiness.md): known production gaps, severity, and
   mitigation status.
+- [Prototypes](prototypes/README.md): owner-review packets and prototype
+  handoff notes for isolated design exploration.
 - [Templates](templates/README.md): reusable formats for new docs.
 - [Archive](archive/README.md): historical notes that have not yet been fully
   consolidated or removed.

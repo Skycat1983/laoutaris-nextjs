@@ -178,7 +178,20 @@ Prompt packs:
 | [T-162 Review homepage prototype visual QA](T-162-review-homepage-prototype-visual-qa.md) | Completed | Reviewed `/prototype/home` against the design-guide images and recorded refinement and owner-decision notes before production migration. |
 | [T-163 Surface admin delete preview UI](T-163-surface-admin-delete-preview-ui.md) | Completed | Rendered the T-156 delete preview contract in admin delete confirmations before destructive confirmation is allowed. |
 | [T-164 Require admin delete evidence gate](T-164-require-admin-delete-evidence-gate.md) | Completed | Required backup/review evidence in admin delete confirmations and route validation before destructive delete execution. |
-| [T-165 Persist admin delete audit events](T-165-persist-admin-delete-audit-events.md) | Planned | Persist redacted audit events for admin destructive delete attempts that pass the evidence gate. |
+| [T-165 Persist admin delete audit events](T-165-persist-admin-delete-audit-events.md) | Completed | Persisted redacted audit events for admin destructive delete attempts that pass the evidence gate. |
+| [T-166 Expand homepage prototype width](T-166-expand-homepage-prototype-width.md) | Completed | Made `/prototype/home` demonstrate wider full-screen-width sections instead of the previous bounded prototype interiors. |
+| [T-167 Rebalance expanded homepage prototype sections](T-167-rebalance-expanded-homepage-prototype-sections.md) | Completed | Refined biography, blog, and shop prototype section composition after the width pass landed. |
+| [T-168 Review expanded homepage prototype](T-168-review-expanded-homepage-prototype.md) | Completed | Reviewed the expanded `/prototype/home` sections and marked the widened prototype owner-review-ready with remaining content/commerce decisions. |
+| [T-169 Prepare homepage prototype owner review packet](T-169-prepare-homepage-prototype-owner-review-packet.md) | Completed | Created a concise owner-facing review packet for `/prototype/home` with decision questions and plain-language implications. |
+| [T-170 Create semantic style map scaffold](T-170-create-semantic-style-map-scaffold.md) | Completed | Added a client-safe semantic style class map scaffold using exact existing class strings, without changing runtime visuals. |
+| [T-171 Audit existing content image URLs](T-171-audit-existing-content-image-urls.md) | Completed | Audited existing article, blog, and collection image URLs against the current allowed-host policy; all checked values use the configured Cloudinary delivery path. |
+| [T-172 Document admin delete audit receipt verification](T-172-document-admin-delete-audit-receipt-verification.md) | Completed | Documented how operators verify redacted admin delete audit receipts after approved production deletes. |
+| [T-173 Audit admin read-list pagination needs](T-173-audit-admin-read-list-pagination-needs.md) | Completed | Audited current admin read-list limits/search gaps and prepared the safest implementation split for better archive maintenance. |
+| [T-174 Harden admin read-list query bounds](T-174-harden-admin-read-list-query-bounds.md) | Completed | Added shared pagination query parsing and invalid-query route tests for admin read-list routes. |
+| [T-175 Pilot admin blog read pagination](T-175-pilot-admin-blog-read-pagination.md) | Planned | Make the main admin blog read tab consume route metadata and paginate without losing Update/Delete/Copy handoff. |
+| [T-176 Route-back admin read filters](T-176-route-back-admin-read-filters.md) | Planned | Move existing first-page admin blog/article filters to route-backed query params after pagination is stable. |
+| [T-177 Pilot admin read search](T-177-pilot-admin-read-search.md) | Planned | Add a route-backed search pilot for one admin read list after pagination and filters are stable. |
+| [T-178 Add comment user delete entry points](T-178-add-comment-user-delete-entry-points.md) | Completed | Added read-list-to-delete handoff for comments and users as a separate destructive workflow slice. |
 
 ## Rules
 

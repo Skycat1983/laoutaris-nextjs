@@ -13,9 +13,13 @@ type OperationType = "read" | "delete";
 
 interface UserOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
-export function UserOperations({ operationType }: UserOperationsProps) {
+export function UserOperations({
+  operationType,
+  initialDocumentId = null,
+}: UserOperationsProps) {
   const [userInfo, setUserInfo] = useState<UserFrontend | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const { openModal } = useGlobalFeatures();
@@ -65,6 +69,7 @@ export function UserOperations({ operationType }: UserOperationsProps) {
             readDocument={(id) => clientApi.admin.read.user(id)}
             documentType="User"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {userInfo && (

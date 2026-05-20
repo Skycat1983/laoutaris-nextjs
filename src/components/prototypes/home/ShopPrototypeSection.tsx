@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
 
 type ShopPrototypeSectionProps = {
   products: SimpleProduct[];
@@ -69,19 +70,24 @@ export function ShopPrototypeSection({
       className="w-full bg-[#f8f7f3] text-slate"
       data-testid="prototype-shop-section"
     >
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-4 py-16 sm:px-8 sm:py-20 lg:px-14 lg:py-24">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div className="max-w-3xl">
+      <div
+        className={`${prototypeSectionFrameClassName} flex flex-col gap-10 py-16 sm:py-20 lg:py-24 2xl:gap-12 2xl:py-28`}
+      >
+        <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.52fr)_minmax(280px,0.34fr)_auto] lg:items-end 2xl:grid-cols-[minmax(420px,0.48fr)_minmax(360px,0.36fr)_auto] 2xl:gap-12">
+          <div className="max-w-4xl">
             <p className="mb-5 font-archivo text-sm uppercase text-[#9a713d]">
               Shop
             </p>
             <h2
               id="prototype-shop-heading"
-              className="font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl"
+              className="font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl xl:text-[82px] 2xl:text-[96px]"
             >
               Available now
             </h2>
-            <p className="mt-7 max-w-xl font-archivo text-base leading-7 text-slate/70 sm:text-lg">
+          </div>
+
+          <div className="max-w-xl lg:pb-1">
+            <p className="mt-7 max-w-xl font-archivo text-base leading-7 text-slate/70 sm:text-lg lg:mt-0">
               A curated selection of original works, prints, and publications
               from the Joseph Laoutaris archive.
             </p>
@@ -94,7 +100,7 @@ export function ShopPrototypeSection({
             </Link>
           </div>
 
-          <div className="flex flex-wrap items-center gap-5 lg:justify-end">
+          <div className="flex flex-wrap items-center gap-5 lg:flex-col lg:items-end lg:gap-9 lg:justify-end">
             <Link
               href={SHOP_ROUTE}
               className="border-b border-[#9a713d] pb-2 font-archivo text-sm uppercase text-[#9a713d] transition-colors hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
@@ -135,7 +141,7 @@ export function ShopPrototypeSection({
           <div className="relative">
             <div
               ref={railRef}
-              className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:gap-5 2xl:gap-6 [&::-webkit-scrollbar]:hidden"
               data-testid="prototype-shop-product-rail"
             >
               {products.map((product) => {
@@ -145,7 +151,7 @@ export function ShopPrototypeSection({
                   <Link
                     key={product.id}
                     href={`/shop/products/${product.handle}`}
-                    className="group flex w-[74vw] min-w-[230px] max-w-[286px] snap-start flex-col overflow-hidden rounded-[4px] border border-slate/10 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:w-[260px] lg:w-[286px]"
+                    className="group flex w-[74vw] min-w-[230px] max-w-[286px] snap-start flex-col overflow-hidden rounded-[4px] border border-slate/10 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:w-[260px] lg:w-[clamp(232px,14vw,286px)] lg:max-w-none 2xl:w-[clamp(264px,14vw,292px)]"
                     data-testid="prototype-shop-product-card"
                   >
                     <article className="flex h-full flex-col">
@@ -156,7 +162,7 @@ export function ShopPrototypeSection({
                             alt={product.image.altText || product.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 260px, 286px"
+                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 260px, (max-width: 1536px) 232px, 14vw"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center px-6 text-center font-archivo text-sm text-slate/45">
@@ -167,7 +173,7 @@ export function ShopPrototypeSection({
 
                       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
                         <div>
-                          <p className="font-archivo text-xs uppercase text-[#9a713d]">
+                          <p className="line-clamp-2 break-words font-archivo text-xs uppercase text-[#9a713d]">
                             {getProductMeta(product)}
                           </p>
                           <h3 className="mt-2 line-clamp-2 break-words font-cormorant text-2xl font-semibold leading-tight text-slate">

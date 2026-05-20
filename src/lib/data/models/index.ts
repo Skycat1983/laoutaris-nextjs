@@ -1,4 +1,5 @@
 export * from "./adminModel";
+export * from "./adminDeleteAuditEventModel";
 export * from "./articleModel";
 export * from "./artworkModel";
 export * from "./baseUserModel";

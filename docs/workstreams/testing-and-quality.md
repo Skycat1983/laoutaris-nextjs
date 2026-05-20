@@ -1464,22 +1464,40 @@ npm run lint
   existing successful delete behavior with valid evidence. Orchestrator
   verification passed the focused T-164 tests, lint, `git diff --check`, and
   `npm run build`.
+- 2026-05-20: Completed T-165, T-166, and T-167. Focused coverage now verifies
+  redacted admin delete audit-event payload shape, audit create ordering,
+  no-mutation-on-audit-failure, representative audit outcomes, and the wider
+  route-local `/prototype/home` frame. Orchestrator verification passed the
+  combined focused suites for admin delete audit routes and prototype home,
+  lint, `git diff --check`, and `npm run build`.
+- 2026-05-20: Completed T-168. Read-only visual QA used targeted desktop and
+  mobile browser checks on `/prototype/home`, recorded no page-level horizontal
+  overflow in the checked viewports, and kept evidence concise in the task
+  handoff.
+- 2026-05-20: Completed T-169 through T-173. T-170 added focused
+  source/invariant coverage for the semantic style map, T-171 and T-173
+  recorded read-only audit evidence, and T-174 through T-178 are prepared as
+  the next admin archive maintenance sequence.
+- 2026-05-20: Completed T-174 and T-178. Focused coverage now verifies invalid
+  admin read-list pagination is rejected before resource list queries, default
+  metadata is preserved, and comment/user read-list delete handoffs open the
+  guarded confirmation flow without deleting before required evidence.
 
 ## Next Agent Action
 
-Use [T-165](../tasks/T-165-persist-admin-delete-audit-events.md) as the next
-quality-bearing implementation slice if destructive-delete safety is the
-priority, because preview UI and route-enforced evidence now exist but
-redacted audit-event persistence is missing. For the prototype track, hold
-implementation until the T-162 owner decisions are answered. T-157 through
-T-164 are complete and should not be reassigned unless their prototype route,
-data mapping, fallback behavior, audit handoff, preview contract/UI, or
-evidence gate regresses.
+T-175 is the next quality-bearing admin archive task. T-176 depends on T-175,
+and T-177 depends on T-176. T-157 through T-174 and T-178 are complete and
+should not be reassigned unless their prototype route, data mapping, fallback
+behavior, audit handoff, preview contract/UI, evidence gate, audit receipts,
+width frame, section composition, visual QA conclusions, owner packet,
+semantic style scaffold, image URL audit, delete-receipt runbook, admin
+read-list audit, read-list query bounds, or comment/user delete handoff
+regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-164 are complete; do not reassign their
-focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb
-coverage unless it regresses.
+decision is available. T-141 through T-168 are complete; do not reassign their
+focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb/
+audit/prototype coverage unless it regresses.
 Keep broader static/ISR migration separate from the
 completed T-115 Shopify fetch-option cleanup, the docs-only T-116 runbook work,
 and the completed T-117 through T-134 observability documentation, logging,

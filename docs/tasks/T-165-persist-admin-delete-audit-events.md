@@ -1,6 +1,6 @@
 # T-165 Persist Admin Delete Audit Events
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -139,3 +139,36 @@ plus lint, build, and `git diff --check`, and update only this task handoff.
 ## Handoff Notes
 
 - Prepared after T-164 completion and orchestrator reconciliation.
+- Completed 2026-05-20: added the server-only
+  `AdminDeleteAuditEventModel` collection model and
+  `src/lib/api/admin/delete/audit.ts` helper for redacted destructive admin
+  delete receipts.
+- Audit events store route, method, request ID, timestamp, resource type/ID,
+  admin actor class/role, sanitized backup and review evidence references,
+  summarized T-156 preview counts, blocker codes, and outcome/status only.
+  They do not store preview records, labels, image URLs, Cloudinary URLs, raw
+  documents, user names, emails, request bodies, cookies, tokens, stacks, or raw
+  caught errors.
+- Wired article, artwork, blog, collection, comment, and user admin delete
+  routes to parse sanitized T-164 evidence, create the audit event before
+  destructive mutation, return a public-safe `500` without mutation if audit
+  creation fails, and best-effort update outcomes for success, blocked,
+  not-found, and handled failure paths.
+- Preserved existing delete response bodies and cascade behavior. User
+  current-admin delete attempts now create and complete a blocked audit event
+  before returning the existing `403`, still before transaction/destructive
+  work.
+- Added focused coverage in
+  `__tests__/unit/api/adminDeleteAuditEvent.test.ts` for summary redaction,
+  persisted payload shape, and audit outcome update failure logging. Updated
+  `__tests__/unit/api/adminDeleteRouteGuard.test.ts` for audit create ordering,
+  success/not-found/blocked outcome updates, and no mutation when audit create
+  fails.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminDeleteRouteGuard.test.ts __tests__/unit/api/adminDeleteAuditEvent.test.ts`,
+  `npm run lint`, `npm run build`, and `git diff --check`.
+- Candidate tracker updates for the orchestrator: F-092/R-007 and the
+  content/admin, data/API, testing, admin-content runbook, and production-risk
+  trackers can mark redacted destructive admin delete audit-event persistence as
+  implemented. Production delete approval may still need owner policy review
+  outside this task.

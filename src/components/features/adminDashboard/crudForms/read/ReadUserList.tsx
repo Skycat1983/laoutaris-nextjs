@@ -3,14 +3,16 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, Trash2Icon } from "lucide-react";
 import type { UserFrontend } from "@/lib/data/types/userTypes";
 import { clientApi } from "@/lib/api/clientApi";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 export function ReadUserList() {
   const [users, setUsers] = useState<UserFrontend[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -60,14 +62,31 @@ export function ReadUserList() {
                 {/* <p className="text-xs text-gray-500 truncate">{user.email}</p> */}
                 <p className="text-xs text-gray-500">Role: {user.role}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(user._id)}
-              >
-                <CopyIcon className="h-4 w-4" />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete ${user.username}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: user._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy ${user.username} ID`}
+                  onClick={() => handleCopyId(user._id)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

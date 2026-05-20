@@ -8,8 +8,14 @@ import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
-  validateAdminDeleteEvidenceRequest,
+  readAdminDeleteEvidenceRequest,
 } from "@/lib/api/admin/delete/routeValidation";
+import {
+  createAdminDeleteAuditEvent,
+  updateAdminDeleteAuditEventOutcome,
+  type AdminDeleteAuditEventHandle,
+} from "@/lib/api/admin/delete/audit";
+import { getBlogDeletePreview } from "@/lib/api/admin/delete/preview";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
@@ -29,12 +35,12 @@ export async function DELETE(
     return adminDeleteInvalidIdResponse("blog", "Invalid blog ID");
   }
 
-  const evidenceValidationResponse = await validateAdminDeleteEvidenceRequest(
+  const evidenceValidation = await readAdminDeleteEvidenceRequest(
     request,
     "blog"
   );
-  if (evidenceValidationResponse) {
-    return evidenceValidationResponse;
+  if (!evidenceValidation.ok) {
+    return evidenceValidation.response;
   }
 
   const requestContext = createRequestContext(
@@ -42,11 +48,27 @@ export async function DELETE(
     "/api/v2/admin/blog/delete/[id]"
   );
   const logger = createApiLogger(requestContext);
+  const operation = "admin.blog.delete";
 
   let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
+  let auditEvent: AdminDeleteAuditEventHandle | null = null;
 
   try {
     await dbConnect();
+    const auditResult = await createAdminDeleteAuditEvent({
+      requestContext,
+      resource: "blog",
+      resourceId: id,
+      evidence: evidenceValidation.evidence,
+      operation,
+      logger,
+      getPreview: () => getBlogDeletePreview(id),
+    });
+    if (!auditResult.ok) {
+      return auditResult.response;
+    }
+    auditEvent = auditResult.auditEvent;
+
     session = await mongoose.startSession();
     session.startTransaction();
 
@@ -54,6 +76,14 @@ export async function DELETE(
     const blog = await BlogModel.findById(id).session(session);
     if (!blog) {
       await session.abortTransaction();
+      await updateAdminDeleteAuditEventOutcome({
+        auditEvent,
+        outcome: "not_found",
+        responseStatus: 404,
+        reason: "not_found",
+        operation,
+        logger,
+      });
       return apiErrorResponse({
         message: "Blog not found",
         status: 404,
@@ -90,6 +120,13 @@ export async function DELETE(
 
     // If everything succeeded, commit the transaction
     await session.commitTransaction();
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "succeeded",
+      responseStatus: 200,
+      operation,
+      logger,
+    });
 
     return apiSuccessResponse(null, {
       message: "Blog and associated comments deleted successfully",
@@ -103,9 +140,17 @@ export async function DELETE(
     // If anything fails, abort the transaction
     await session?.abortTransaction();
     logger.error("api.admin.blog_delete.failed", {
-      operation: "admin.blog.delete",
+      operation,
       error,
       errorLabel: "admin_blog_delete_failed",
+    });
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "failed",
+      responseStatus: 500,
+      reason: "handled_failure",
+      operation,
+      logger,
     });
     return apiErrorResponse({
       message: "Failed to delete blog and associated data",

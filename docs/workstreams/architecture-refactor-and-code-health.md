@@ -192,6 +192,8 @@ or inconsistent code forward.
   `serverApi` usage from server loaders/actions.
 - Maintain the T-137 client/server import-boundary guard when new client
   components, barrels, or data-service modules are added.
+- Plan scoped adoption of the T-170 semantic style map only after owner review
+  accepts the expanded homepage prototype direction.
 - Ensure every MongoDB-backed API route and server action reaches the database
   only through a service or shared wrapper that calls `dbConnect()`.
 - Move route-neutral DB/session work out of the root layout so dynamic rendering
@@ -542,12 +544,18 @@ Use targeted import/reference searches for pruning tasks.
   index and recommends introducing a pure client-safe semantic class map with
   exact current class strings, piloted on `/prototype/home` before any Tailwind
   or global CSS token changes.
+- 2026-05-20: Completed T-170. `src/lib/styles/semanticStyles.ts` now provides
+  a pure client-safe semantic class map with exact existing class strings and
+  focused source/invariant coverage. It is intentionally not adopted by runtime
+  components yet.
 
 ## Next Agent Action
 
-Choose the next architecture slice from broad route-builder work, staged
-source-pruning work, remaining route-local rendering follow-ups, or a scoped
-semantic style-map pilot based on T-161.
+Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
+adoption, and live homepage migration separate until owner review accepts the
+expanded prototype direction and a visual-parity migration task is prepared.
+Other architecture slices remain broad route-builder work, staged
+source-pruning work, and remaining route-local rendering follow-ups.
 Keep broad static/ISR migration separate until a dedicated cache-freshness and
 route-param task is assigned.
 

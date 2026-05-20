@@ -10,6 +10,7 @@ import { transformUser } from "@/lib/transforms";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
+import { parseAdminReadListQuery } from "@/lib/api/admin/read/routeValidation";
 
 // TODO: why are timestamps not being created? therefore we sort by displaydate instead
 export async function GET(
@@ -26,9 +27,17 @@ export async function GET(
     return admin.response;
   }
 
-  const { searchParams } = request.nextUrl;
-  const limit = parseInt(searchParams.get("limit") || "10");
-  const page = parseInt(searchParams.get("page") || "1");
+  const parsedQuery = parseAdminReadListQuery(
+    request.nextUrl.searchParams,
+    "user",
+    { defaultLimit: 10 }
+  );
+
+  if (!parsedQuery.ok) {
+    return parsedQuery.response;
+  }
+
+  const { page, limit } = parsedQuery;
   const skip = (page - 1) * limit;
   try {
     await dbConnect();

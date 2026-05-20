@@ -13,8 +13,14 @@ import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
-  validateAdminDeleteEvidenceRequest,
+  readAdminDeleteEvidenceRequest,
 } from "@/lib/api/admin/delete/routeValidation";
+import {
+  createAdminDeleteAuditEvent,
+  updateAdminDeleteAuditEventOutcome,
+  type AdminDeleteAuditEventHandle,
+} from "@/lib/api/admin/delete/audit";
+import { getUserDeletePreview } from "@/lib/api/admin/delete/preview";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
@@ -34,19 +40,12 @@ export async function DELETE(
     return adminDeleteInvalidIdResponse("user", "Invalid user ID");
   }
 
-  const evidenceValidationResponse = await validateAdminDeleteEvidenceRequest(
+  const evidenceValidation = await readAdminDeleteEvidenceRequest(
     request,
     "user"
   );
-  if (evidenceValidationResponse) {
-    return evidenceValidationResponse;
-  }
-
-  if (id === admin.userId) {
-    return apiErrorResponse({
-      message: "Cannot delete the current admin account",
-      status: 403,
-    });
+  if (!evidenceValidation.ok) {
+    return evidenceValidation.response;
   }
 
   const requestContext = createRequestContext(
@@ -54,11 +53,43 @@ export async function DELETE(
     "/api/v2/admin/user/delete/[id]"
   );
   const logger = createApiLogger(requestContext);
+  const operation = "admin.user.delete";
 
   let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
+  let auditEvent: AdminDeleteAuditEventHandle | null = null;
 
   try {
     await dbConnect();
+    const auditResult = await createAdminDeleteAuditEvent({
+      requestContext,
+      resource: "user",
+      resourceId: id,
+      evidence: evidenceValidation.evidence,
+      operation,
+      logger,
+      getPreview: () => getUserDeletePreview(id, admin.userId),
+    });
+    if (!auditResult.ok) {
+      return auditResult.response;
+    }
+    auditEvent = auditResult.auditEvent;
+
+    if (id === admin.userId) {
+      await updateAdminDeleteAuditEventOutcome({
+        auditEvent,
+        outcome: "blocked",
+        responseStatus: 403,
+        reason: "current_admin_account",
+        operation,
+        logger,
+      });
+
+      return apiErrorResponse({
+        message: "Cannot delete the current admin account",
+        status: 403,
+      });
+    }
+
     session = await mongoose.startSession();
     session.startTransaction();
 
@@ -66,6 +97,14 @@ export async function DELETE(
     const user = await UserModel.findById(id).session(session);
     if (!user) {
       await session.abortTransaction();
+      await updateAdminDeleteAuditEventOutcome({
+        auditEvent,
+        outcome: "not_found",
+        responseStatus: 404,
+        reason: "not_found",
+        operation,
+        logger,
+      });
       return apiErrorResponse({
         message: "User not found",
         status: 404,
@@ -79,6 +118,14 @@ export async function DELETE(
 
       if (adminCount <= 1) {
         await session.abortTransaction();
+        await updateAdminDeleteAuditEventOutcome({
+          auditEvent,
+          outcome: "blocked",
+          responseStatus: 409,
+          reason: "last_admin_account",
+          operation,
+          logger,
+        });
         return apiErrorResponse({
           message: "Cannot delete the last remaining admin account",
           status: 409,
@@ -134,6 +181,13 @@ export async function DELETE(
 
     // If everything succeeded, commit the transaction
     await session.commitTransaction();
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "succeeded",
+      responseStatus: 200,
+      operation,
+      logger,
+    });
 
     return apiSuccessResponse(null, {
       message: "User and associated data deleted successfully",
@@ -147,9 +201,17 @@ export async function DELETE(
     // If anything fails, abort the transaction
     await session?.abortTransaction();
     logger.error("api.admin.user_delete.failed", {
-      operation: "admin.user.delete",
+      operation,
       error,
       errorLabel: "admin_user_delete_failed",
+    });
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "failed",
+      responseStatus: 500,
+      reason: "handled_failure",
+      operation,
+      logger,
     });
     return apiErrorResponse({
       message: "Failed to delete user and associated data",

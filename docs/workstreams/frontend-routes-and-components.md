@@ -727,14 +727,48 @@ Use browser checks for layout-sensitive changes.
   blog, and shop prototype sections are stable enough for owner review, but
   production migration should wait for decisions on biography order, canonical
   dates, blog content strategy, shop/commerce wording, and mobile density.
+- 2026-05-20: Prepared T-166, T-167, and T-168 after owner feedback that
+  `/prototype/home` currently feels too bounded. T-166 owns the route-local
+  prototype width pass, T-167 owns section rebalancing after that width change,
+  and T-168 is the read-only visual QA checkpoint.
+- 2026-05-20: Completed T-166 and T-167. `/prototype/home` now uses a
+  route-local `max-w-[1920px]` prototype frame for biography, blog, shop, and
+  placeholder sections, and the biography/blog/shop sections have been
+  rebalanced for the wider canvas without changing the live homepage,
+  `ContentLayout`, global CSS, root layout, header, footer, or destination
+  pages.
+- 2026-05-20: Completed T-168. The expanded `/prototype/home` review found the
+  wider canvas ready for owner visual-direction review, with remaining
+  decisions on biography order, canonical dates, blog strategy, shop wording,
+  mobile density, and anchor/header behavior before production migration.
+- 2026-05-20: Completed T-169 and T-170. The owner-facing homepage prototype
+  review packet is recorded at
+  [homepage-owner-review-packet.md](../prototypes/homepage-owner-review-packet.md),
+  and the first semantic style-map scaffold exists without runtime adoption or
+  visual changes.
+- 2026-05-20: Completed T-173 and prepared T-174 through T-178 from its admin
+  read-list audit. Frontend follow-up should wait for route query hardening
+  before adding main read-tab pagination, filters, or search.
+- 2026-05-20: Completed T-178. Comment and user read-list cards now hand off
+  to the existing guarded delete workflows with selected IDs while preserving
+  manual ObjectId lookup.
 
 ## Next Agent Action
 
-For the homepage redesign track, get the owner decisions recorded in
-[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md) before assigning
-section refinements, production migration, or a semantic style-map pilot.
-T-157 through T-162 are complete; do not reassign them unless the prototype
-route, section data mapping, visual QA handoff, or style audit regresses.
+For the homepage redesign track, keep production migration blocked until owner
+review accepts the expanded prototype direction using the T-169 packet. The
+semantic style map from T-170 should not be adopted in prototype or live
+components until that direction is accepted and a visual-parity migration task
+is prepared. T-157 through T-170 and T-173 are complete; do not reassign them
+unless the prototype route, section data mapping, visual QA handoff, style
+audit, width frame, section composition, expanded QA conclusion, owner packet,
+style scaffold, or admin read-list audit regresses.
+
+For admin archive maintenance, assign
+[T-175](../tasks/T-175-pilot-admin-blog-read-pagination.md) next. T-174's route
+query prerequisite and T-178's comment/user delete handoff are complete. Run
+[T-176](../tasks/T-176-route-back-admin-read-filters.md) and
+[T-177](../tasks/T-177-pilot-admin-read-search.md) in order after T-175.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,

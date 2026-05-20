@@ -3,14 +3,16 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, Trash2Icon } from "lucide-react";
 import type { CommentFrontendPopulated } from "@/lib/data/types";
 import { clientApi } from "@/lib/api/clientApi";
+import { useAdminArchiveEntryPoint } from "@/components/modules/tabs/AdminCrudTabs";
 
 export function ReadCommentList() {
   const [comments, setComments] = useState<CommentFrontendPopulated[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { selectEntryForOperation } = useAdminArchiveEntryPoint();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -63,14 +65,31 @@ export function ReadCommentList() {
                   {comment.text}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleCopyId(comment._id)}
-              >
-                <CopyIcon className="h-4 w-4" />
-              </Button>
+              <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Delete comment by ${comment.author.username}`}
+                  onClick={() =>
+                    selectEntryForOperation({
+                      documentId: comment._id,
+                      operation: "delete",
+                    })
+                  }
+                >
+                  <Trash2Icon className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Copy comment by ${comment.author.username} ID`}
+                  onClick={() => handleCopyId(comment._id)}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

@@ -11,6 +11,7 @@ import type { ArtworkFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
+import { parseAdminReadListQuery } from "@/lib/api/admin/read/routeValidation";
 
 export async function GET(
   request: NextRequest
@@ -27,8 +28,15 @@ export async function GET(
   }
 
   const { searchParams } = request.nextUrl;
-  const limit = parseInt(searchParams.get("limit") || "100");
-  const page = parseInt(searchParams.get("page") || "1");
+  const parsedQuery = parseAdminReadListQuery(searchParams, "artwork", {
+    defaultLimit: 100,
+  });
+
+  if (!parsedQuery.ok) {
+    return parsedQuery.response;
+  }
+
+  const { page, limit } = parsedQuery;
   const filterKey = searchParams.get("filterKey") as
     | "decade"
     | "artstyle"

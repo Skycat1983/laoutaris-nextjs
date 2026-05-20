@@ -7,8 +7,14 @@ import dbConnect from "@/lib/db/mongodb";
 import {
   adminDeleteInvalidIdResponse,
   isValidObjectIdParam,
-  validateAdminDeleteEvidenceRequest,
+  readAdminDeleteEvidenceRequest,
 } from "@/lib/api/admin/delete/routeValidation";
+import {
+  createAdminDeleteAuditEvent,
+  updateAdminDeleteAuditEventOutcome,
+  type AdminDeleteAuditEventHandle,
+} from "@/lib/api/admin/delete/audit";
+import { getArtworkDeletePreview } from "@/lib/api/admin/delete/preview";
 import { apiErrorResponse, apiSuccessResponse } from "@/lib/api/apiResponse";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createApiLogger } from "@/lib/observability/logger";
@@ -28,12 +34,12 @@ export async function DELETE(
     return adminDeleteInvalidIdResponse("artwork", "Invalid artwork ID");
   }
 
-  const evidenceValidationResponse = await validateAdminDeleteEvidenceRequest(
+  const evidenceValidation = await readAdminDeleteEvidenceRequest(
     request,
     "artwork"
   );
-  if (evidenceValidationResponse) {
-    return evidenceValidationResponse;
+  if (!evidenceValidation.ok) {
+    return evidenceValidation.response;
   }
 
   const requestContext = createRequestContext(
@@ -41,11 +47,27 @@ export async function DELETE(
     "/api/v2/admin/artwork/delete/[id]"
   );
   const logger = createApiLogger(requestContext);
+  const operation = "admin.artwork.delete";
 
   let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
+  let auditEvent: AdminDeleteAuditEventHandle | null = null;
 
   try {
     await dbConnect();
+    const auditResult = await createAdminDeleteAuditEvent({
+      requestContext,
+      resource: "artwork",
+      resourceId: id,
+      evidence: evidenceValidation.evidence,
+      operation,
+      logger,
+      getPreview: () => getArtworkDeletePreview(id),
+    });
+    if (!auditResult.ok) {
+      return auditResult.response;
+    }
+    auditEvent = auditResult.auditEvent;
+
     session = await mongoose.startSession();
     session.startTransaction();
 
@@ -53,6 +75,14 @@ export async function DELETE(
     const articleUsingArtwork = await ArticleModel.findOne({ artwork: id });
     if (articleUsingArtwork) {
       await session.abortTransaction();
+      await updateAdminDeleteAuditEventOutcome({
+        auditEvent,
+        outcome: "blocked",
+        responseStatus: 409,
+        reason: "artwork_referenced_by_article",
+        operation,
+        logger,
+      });
       return apiErrorResponse({
         message: `Cannot delete artwork: It is currently used in a article with id ${articleUsingArtwork._id}`,
         error: "Cannot delete artwork: It is currently used in a article",
@@ -74,6 +104,14 @@ export async function DELETE(
 
     if (!deletedArtwork) {
       await session.abortTransaction();
+      await updateAdminDeleteAuditEventOutcome({
+        auditEvent,
+        outcome: "not_found",
+        responseStatus: 404,
+        reason: "not_found",
+        operation,
+        logger,
+      });
       return apiErrorResponse({
         message: "Artwork not found",
         status: 404,
@@ -81,6 +119,13 @@ export async function DELETE(
     }
 
     await session.commitTransaction();
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "succeeded",
+      responseStatus: 200,
+      operation,
+      logger,
+    });
     return apiSuccessResponse(null, {
       message: "Artwork deleted and removed from collections successfully",
     });
@@ -92,9 +137,17 @@ export async function DELETE(
 
     await session?.abortTransaction();
     logger.error("api.admin.artwork_delete.failed", {
-      operation: "admin.artwork.delete",
+      operation,
       error,
       errorLabel: "admin_artwork_delete_failed",
+    });
+    await updateAdminDeleteAuditEventOutcome({
+      auditEvent,
+      outcome: "failed",
+      responseStatus: 500,
+      reason: "handled_failure",
+      operation,
+      logger,
     });
     return apiErrorResponse({
       message: "Failed to delete artwork",

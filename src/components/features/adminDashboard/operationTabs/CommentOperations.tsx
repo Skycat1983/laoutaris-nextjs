@@ -7,15 +7,19 @@ import ModalMessage from "@/components/elements/typography/ModalMessage";
 import { clientApi } from "@/lib/api/clientApi";
 import { DeleteConfirmation } from "../crudForms/delete/DeleteConfirmation";
 import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
-import type { AdminComment, CommentFrontendPopulated } from "@/lib/data/types";
+import type { CommentFrontendPopulated } from "@/lib/data/types";
 
 type OperationType = "read" | "delete";
 
 interface CommentOperationsProps {
   operationType: OperationType;
+  initialDocumentId?: string | null;
 }
 
-export function CommentOperations({ operationType }: CommentOperationsProps) {
+export function CommentOperations({
+  operationType,
+  initialDocumentId = null,
+}: CommentOperationsProps) {
   const [commentInfo, setCommentInfo] =
     useState<CommentFrontendPopulated | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -68,6 +72,7 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
             readDocument={(id) => clientApi.admin.read.comment(id)}
             documentType="Comment"
             buttonVariant="destructive"
+            initialObjectId={initialDocumentId}
           />
         )}
         {commentInfo && (
@@ -75,7 +80,7 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
             document={{
               _id: commentInfo._id,
               title: commentInfo.text,
-              subtitle: `By: ${commentInfo.author}`,
+              subtitle: `By: ${commentInfo.author.username}`,
             }}
             documentType="Comment"
             fetchDeletePreview={clientApi.admin.delete.preview.comment}

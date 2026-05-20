@@ -961,23 +961,29 @@ npm run lint
   data, inspecting environment values, or recording secrets.
 - 2026-05-19: Completed T-149 by adding the admin content operations runbook.
   It links database, Cloudinary, Shopify, deployment, auth, and testing
-  runbooks for routine content maintenance and records destructive production
-  deletes as blocked until cascade preview, backup/review evidence, and
-  redacted audit evidence exist.
+  runbooks for routine content maintenance. The destructive production delete
+  safeguards it identified were later implemented through T-156, T-163, T-164,
+  and T-165.
+- 2026-05-20: Completed T-172. The admin content operations runbook now
+  documents how operators verify redacted admin delete audit receipts after
+  approved production deletes, including safe fields, excluded private fields,
+  a placeholder-only query shape, and a sanitized handoff example.
 
 ## Next Agent Action
 
 Use the T-123 monitoring architecture plan to obtain an owner/platform provider
 decision or explicit no-provider interim policy before installing any SDK,
 adding `instrumentation.ts`, or wiring provider alerts.
+
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad
 remaining implementation cleanup separate. T-122, T-123, T-124, T-125,
-T-126, T-127, T-128, T-129, T-130, T-131, T-132, T-133, and T-134 are complete and should not be
-reassigned unless their source-hygiene, documentation, policy, workflow,
-structured logging, public browsing client state contracts, or account/user
-client/shared utility/admin dashboard fallback contracts, or incident authority
-handoff regress. T-138 is complete and should not be reassigned unless the
+T-126, T-127, T-128, T-129, T-130, T-131, T-132, T-133, T-134, and T-172 are
+complete and should not be reassigned unless their source-hygiene,
+documentation, policy, workflow, structured logging, public browsing client
+state contracts, account/user client/shared utility/admin dashboard fallback
+contracts, incident authority handoff, or audit-receipt verification guidance
+regresses. T-138 is complete and should not be reassigned unless the
 admin bootstrap/recovery runbook regresses. T-149 is complete and should not
 be reassigned unless the admin content operations runbook regresses.
 
