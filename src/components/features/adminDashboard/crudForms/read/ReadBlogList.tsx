@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import { Button } from "@/components/shadcn/button";
+import { Input } from "@/components/shadcn/input";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CopyIcon,
   PencilIcon,
+  SearchIcon,
   Trash2Icon,
 } from "lucide-react";
 import Image from "next/image";
-import {
-  BlogFilterDropdowns,
-  deriveBlogYearOptions,
-} from "../../inputs/BlogFilterDropdowns";
+import { BlogFilterDropdowns } from "../../inputs/BlogFilterDropdowns";
 import { clientApi } from "@/lib/api/clientApi";
 import type { BlogEntryFrontend } from "@/lib/data/types";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
@@ -35,6 +34,17 @@ interface BlogReadPaginationMetadata {
 }
 
 const BLOG_READ_PAGE_SIZE = 10;
+const BLOG_READ_MIN_YEAR = 1900;
+const BLOG_READ_SEARCH_MAX_LENGTH = 80;
+
+const getCurrentYearFilterOptions = () => {
+  const currentYear = new Date().getFullYear();
+
+  return Array.from(
+    { length: currentYear - BLOG_READ_MIN_YEAR + 1 },
+    (_, index) => (currentYear - index).toString()
+  );
+};
 
 const defaultPaginationMetadata: BlogReadPaginationMetadata = {
   page: 1,
@@ -53,62 +63,44 @@ const normalizePaginationMetadata = (
   totalPages: Math.max(metadata?.totalPages ?? 1, 1),
 });
 
-const filterBlogsForVisiblePage = (
-  blogs: BlogEntryFrontend[],
-  activeFilter: FilterState
-) => {
-  if (!activeFilter.key || !activeFilter.value) return blogs;
-
-  return blogs.filter((blog) => {
-    if (activeFilter.key === "featured") {
-      return blog.featured === (activeFilter.value === "true");
-    }
-
-    if (activeFilter.key === "year") {
-      const blogYear = new Date(blog.displayDate).getFullYear().toString();
-      return blogYear === activeFilter.value;
-    }
-
-    return true;
-  });
-};
-
 export function ReadBlogList() {
   const [blogs, setBlogs] = useState<BlogEntryFrontend[]>([]);
-  const [yearOptions, setYearOptions] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [metadata, setMetadata] = useState<BlogReadPaginationMetadata>(
     defaultPaginationMetadata
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterState>({
     key: null,
     value: null,
   });
   const { selectEntryForOperation } = useAdminArchiveEntryPoint();
-  const visibleBlogs = useMemo(
-    () => filterBlogsForVisiblePage(blogs, activeFilter),
-    [blogs, activeFilter]
-  );
+  const yearOptions = getCurrentYearFilterOptions();
 
   useEffect(() => {
     let isActive = true;
 
     const fetchBlogs = async () => {
+      const trimmedSearch = searchQuery.trim();
+
       try {
         setIsLoading(true);
         setError(null);
         const response = await clientApi.admin.read.blogs({
           page: currentPage,
           limit: BLOG_READ_PAGE_SIZE,
+          ...(trimmedSearch ? { search: trimmedSearch } : {}),
+          ...(activeFilter.key && activeFilter.value
+            ? { filter: activeFilter }
+            : {}),
         });
 
         if (!isActive) return;
 
         if (response.success) {
           setBlogs(response.data);
-          setYearOptions(deriveBlogYearOptions(response.data));
           setMetadata(
             normalizePaginationMetadata(response.metadata, currentPage)
           );
@@ -116,7 +108,6 @@ export function ReadBlogList() {
         }
 
         setBlogs([]);
-        setYearOptions([]);
         setMetadata(defaultPaginationMetadata);
 
         if (response.error !== "No blogs found") {
@@ -140,7 +131,7 @@ export function ReadBlogList() {
     return () => {
       isActive = false;
     };
-  }, [currentPage]);
+  }, [currentPage, activeFilter, searchQuery]);
 
   const handleCopyId = async (id: string) => {
     try {
@@ -152,11 +143,23 @@ export function ReadBlogList() {
 
   const handleFilterChange = (key: FilterKey, value: string | null) => {
     setActiveFilter({ key, value });
+    setCurrentPage(1);
   };
 
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const hasSearchQuery = searchQuery.trim().length > 0;
+  const hasActiveFilter = Boolean(activeFilter.key && activeFilter.value);
   const emptyMessage =
-    activeFilter.key && activeFilter.value
-      ? "No blogs match this filter on the current page."
+    hasSearchQuery && hasActiveFilter
+      ? "No blogs found for this search and filter."
+      : hasSearchQuery
+      ? "No blogs found for this search."
+      : hasActiveFilter
+      ? "No blogs found for this filter."
       : "No blogs found on this page.";
 
   if (error) {
@@ -169,6 +172,21 @@ export function ReadBlogList() {
 
   return (
     <div className="p-4">
+      <div className="relative mb-4 w-full max-w-sm">
+        <SearchIcon
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+          aria-hidden="true"
+        />
+        <Input
+          aria-label="Search blog title or slug"
+          className="pl-9"
+          maxLength={BLOG_READ_SEARCH_MAX_LENGTH}
+          onChange={handleSearchChange}
+          placeholder="Search title or slug"
+          type="search"
+          value={searchQuery}
+        />
+      </div>
       <BlogFilterDropdowns
         onFilterChange={handleFilterChange}
         yearOptions={yearOptions}
@@ -177,11 +195,11 @@ export function ReadBlogList() {
         <BlogListSkeleton />
       ) : (
         <>
-          {visibleBlogs.length === 0 ? (
+          {blogs.length === 0 ? (
             <p className="text-sm text-gray-500">{emptyMessage}</p>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {visibleBlogs.map((blog) => (
+              {blogs.map((blog) => (
                 <div
                   key={blog._id}
                   className="relative group bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"

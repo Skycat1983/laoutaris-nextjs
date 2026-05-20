@@ -1,6 +1,6 @@
 # T-176 Route-Back Admin Read Filters
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -93,3 +93,33 @@ handoff.
 ## Handoff Notes
 
 - Planned after T-173.
+- Completed on 2026-05-20.
+- Selected the blog read tab, matching T-175's pagination pilot handoff.
+- Added route-backed blog read filters for the existing visible `featured` and
+  year controls via `filterKey`/`filterValue` query params.
+- Updated the blog admin read route so supported filters are applied before
+  `countDocuments()` and paginated `find()` calls; year filtering uses a
+  `displayDate` start/end range for the selected year.
+- Updated the admin read fetcher to send blog filters as route query params and
+  narrowed the read filter type to the visible blog read filters.
+- Updated `ReadBlogList` so filter changes reset to page 1, pass the active
+  filter to `clientApi.admin.read.blogs()`, consume filtered route metadata,
+  and no longer filters only the current browser page.
+- Kept the existing blog card layout, Cloudinary `adminPreview` image handling,
+  Copy ID action, and Update/Delete handoff.
+- Kept year options current-year bounded in the read tab so route-backed year
+  filtering is not limited to whichever years happen to appear on the current
+  page.
+- Added focused coverage:
+  `__tests__/unit/api/adminReadRouteGuard.test.ts` proves filtered blog
+  queries are used for both `find()` and `countDocuments()` metadata;
+  `__tests__/unit/api/adminReadFetchers.test.ts` proves the fetcher sends
+  `filterKey`/`filterValue`; `__tests__/unit/adminBlogReadPagination.test.tsx`
+  proves UI filter selection resets to page 1 and sends route-backed filters
+  while preserving pagination and card actions.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminReadRouteGuard.test.ts __tests__/unit/api/adminReadFetchers.test.ts __tests__/unit/adminBlogReadPagination.test.tsx`;
+  `npm run lint`; `git diff --check`.
+- Candidate shared-tracker update: mark T-176 complete and run T-177 next for
+  route-backed admin read search; F-095 remains partially mitigated until
+  search and broader read-tab pagination/filter rollout land.

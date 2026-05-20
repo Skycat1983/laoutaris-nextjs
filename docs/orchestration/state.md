@@ -6,11 +6,12 @@ Last updated: 2026-05-20
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-174, plus T-178, are done and reconciled. F-070, F-096, F-102, and F-092 are
-resolved; F-095 remains partially mitigated after T-174 and T-178 because main
-admin read-tab pagination, filters, and search are still queued as T-175
-through T-177. F-103 is partially mitigated because runtime validation is
-complete while collection section launch policy remains an owner decision.
+T-178 are done and reconciled. F-070, F-096, F-102, and F-092 are resolved;
+F-095 remains partially mitigated after T-174 through T-178 because the blog
+read tab now has route-backed pagination, filters, and search, but broader
+admin read-tab pagination/search rollout remains open. F-103 is partially
+mitigated because runtime validation is complete while collection section
+launch policy remains an owner decision.
 
 T-157 through T-162 are complete. `/prototype/home` now has the isolated
 full-width prototype route plus image-guided biography, blog, and shop teaser
@@ -28,9 +29,11 @@ delivery path. T-172 documented safe delete-audit receipt verification. T-173
 audited admin read-list pagination/search gaps and produced the next admin
 archive implementation split.
 
-The next task to run is T-175. T-174 hardened admin read-list query bounds at
-the route layer, and T-178 added comment/user read-list delete handoff UI.
-T-176 depends on T-175, and T-177 depends on T-176.
+The next task to run is T-179. T-174 hardened admin read-list query bounds at
+the route layer, T-178 added comment/user read-list delete handoff UI, and
+T-175 through T-177 proved the main admin blog read-tab sequence for
+metadata-driven pagination, route-backed filters, and bounded route-backed
+search. T-179 applies that proven pattern to the main collection read tab.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -210,13 +213,15 @@ It records that all six admin read-list routes return pagination metadata but
 main CRUD read tabs do not consume it, and it recommends the T-174 through
 T-178 implementation sequence.
 
-T-174 and T-178 are complete; T-175 through T-177 remain prepared:
+T-174, T-175, T-176, T-177, and T-178 are complete:
 [Harden admin read-list query bounds](../tasks/T-174-harden-admin-read-list-query-bounds.md),
 [Pilot admin blog read pagination](../tasks/T-175-pilot-admin-blog-read-pagination.md),
 [Route-back admin read filters](../tasks/T-176-route-back-admin-read-filters.md),
 [Pilot admin read search](../tasks/T-177-pilot-admin-read-search.md), and
 [Add comment user delete entry points](../tasks/T-178-add-comment-user-delete-entry-points.md).
-T-175 can run now. T-176 and T-177 should run in that order after T-175.
+T-177 added bounded route-backed blog search over title/slug while preserving
+pagination, filters, and card actions. T-179 is prepared to apply the same
+pagination/search pattern to the main collection read tab.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1353,10 +1358,13 @@ completed:
 
 While owner review is pending, the next runnable implementation task is:
 
-- [T-175 Pilot admin blog read pagination](../tasks/T-175-pilot-admin-blog-read-pagination.md)
-  for metadata-driven pagination in the main admin blog read tab.
+- [T-179 Apply collection admin read pagination search](../tasks/T-179-apply-collection-admin-read-pagination-search.md)
+  for applying the proven blog read-list pagination/search pattern to the main
+  collection read tab.
 
-Do not assign T-176 or T-177 until T-175 is complete and reconciled.
+Keep any shared read-list shell extraction or broader resource rollout separate
+until at least the collection read tab proves the same states as the completed
+blog pilot.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
@@ -1393,7 +1401,7 @@ T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
 T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
-and T-178 are
+T-175, T-176, T-177, and T-178 are
 complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,

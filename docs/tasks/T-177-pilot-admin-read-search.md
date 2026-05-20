@@ -1,6 +1,6 @@
 # T-177 Pilot Admin Read Search
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -93,3 +93,33 @@ then update only this task handoff.
 ## Handoff Notes
 
 - Planned after T-173.
+- Completed on 2026-05-20.
+- Selected the admin blog read tab, matching the T-175 pagination and T-176
+  route-backed filter pilots.
+- Added bounded route-backed blog search through the existing admin read-list
+  query parser. The route trims `search`, rejects values over 80 characters
+  with structured `400` field errors, escapes regex metacharacters, and searches
+  only public-ish `title` and `slug` fields.
+- Kept pagination and filters on the same route query contract: search and
+  filter predicates are applied before both `countDocuments()` and paginated
+  `find()` calls, so metadata describes the visible result set.
+- Updated the admin read fetcher to trim and send the blog `search` query param
+  without changing other resource read lists.
+- Added a blog read-tab search input that resets to page 1 on change, sends
+  search with any active route-backed filter, preserves the no-results,
+  loading, error, pagination, Copy ID, Update, and Delete states, and caps
+  operator input at the route limit.
+- Added focused coverage:
+  `__tests__/unit/api/adminReadRouteGuard.test.ts` covers invalid overlong
+  search, matched search metadata, and search combined with filters using only
+  `title`/`slug`; `__tests__/unit/api/adminReadFetchers.test.ts` covers
+  trimmed search params; `__tests__/unit/adminBlogReadPagination.test.tsx`
+  covers search reset, no-results messaging, metadata, and preserved card
+  actions.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminReadRouteGuard.test.ts __tests__/unit/api/adminReadFetchers.test.ts __tests__/unit/adminBlogReadPagination.test.tsx`;
+  `npm run lint`; `git diff --check`.
+- Candidate shared-tracker update: F-095 remains partially mitigated; the blog
+  read tab now has route-backed pagination, filters, and search, while broader
+  resource rollout and any shared read-list shell should remain separate
+  follow-up work.

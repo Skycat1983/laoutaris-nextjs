@@ -1476,23 +1476,35 @@ npm run lint
   handoff.
 - 2026-05-20: Completed T-169 through T-173. T-170 added focused
   source/invariant coverage for the semantic style map, T-171 and T-173
-  recorded read-only audit evidence, and T-174 through T-178 are prepared as
+  recorded read-only audit evidence, and T-174 through T-178 were prepared as
   the next admin archive maintenance sequence.
 - 2026-05-20: Completed T-174 and T-178. Focused coverage now verifies invalid
   admin read-list pagination is rejected before resource list queries, default
   metadata is preserved, and comment/user read-list delete handoffs open the
   guarded confirmation flow without deleting before required evidence.
+- 2026-05-20: Completed T-175. Focused coverage now verifies admin blog
+  read-list previous/next pagination from route metadata, retained
+  Copy/Update/Delete card actions on paginated results, and operator-visible
+  empty/error states.
+- 2026-05-20: Completed T-176. Focused coverage now verifies filtered admin
+  blog route queries are used for both `find()` and `countDocuments()`, the
+  read fetcher sends `filterKey`/`filterValue`, and the UI resets to page 1
+  when sending route-backed filters.
+- 2026-05-20: Completed T-177. Focused coverage now verifies bounded admin
+  blog search validation, escaped title/slug route queries before counts and
+  paginated reads, trimmed fetcher params, search reset-to-page-1 behavior,
+  no-results messaging, and retained card actions.
 
 ## Next Agent Action
 
-T-175 is the next quality-bearing admin archive task. T-176 depends on T-175,
-and T-177 depends on T-176. T-157 through T-174 and T-178 are complete and
-should not be reassigned unless their prototype route, data mapping, fallback
-behavior, audit handoff, preview contract/UI, evidence gate, audit receipts,
-width frame, section composition, visual QA conclusions, owner packet,
-semantic style scaffold, image URL audit, delete-receipt runbook, admin
-read-list audit, read-list query bounds, or comment/user delete handoff
-regresses.
+T-179 is the next quality-bearing admin archive task. T-157 through T-178 are
+complete and should not be reassigned unless
+their prototype route, data mapping, fallback behavior, audit handoff, preview
+contract/UI, evidence gate, audit receipts, width frame, section composition,
+visual QA conclusions, owner packet, semantic style scaffold, image URL audit,
+delete-receipt runbook, admin read-list audit, read-list query bounds, blog
+pagination pilot, route-backed blog filters, route-backed blog search, or
+comment/user delete handoff regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-168 are complete; do not reassign their

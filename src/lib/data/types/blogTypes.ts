@@ -123,9 +123,9 @@ export type BlogEntry = Prettify<BlogEntryPopulatedCommentsPopulatedFrontend>;
 // export type PublicBlogEntryPopulated =
 //   PublicBlogEntryTransformationsPopulated["Frontend"];
 
-//! PUBLIC BLOG ENTRY FILTER PARAMS
+//! ADMIN BLOG READ FILTER PARAMS
 export interface BlogFilterParams {
-  key: "featured" | "pinned" | "tags" | null;
+  key: "featured" | "year" | null;
   value: string | null;
 }
 

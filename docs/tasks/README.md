@@ -188,10 +188,11 @@ Prompt packs:
 | [T-172 Document admin delete audit receipt verification](T-172-document-admin-delete-audit-receipt-verification.md) | Completed | Documented how operators verify redacted admin delete audit receipts after approved production deletes. |
 | [T-173 Audit admin read-list pagination needs](T-173-audit-admin-read-list-pagination-needs.md) | Completed | Audited current admin read-list limits/search gaps and prepared the safest implementation split for better archive maintenance. |
 | [T-174 Harden admin read-list query bounds](T-174-harden-admin-read-list-query-bounds.md) | Completed | Added shared pagination query parsing and invalid-query route tests for admin read-list routes. |
-| [T-175 Pilot admin blog read pagination](T-175-pilot-admin-blog-read-pagination.md) | Planned | Make the main admin blog read tab consume route metadata and paginate without losing Update/Delete/Copy handoff. |
-| [T-176 Route-back admin read filters](T-176-route-back-admin-read-filters.md) | Planned | Move existing first-page admin blog/article filters to route-backed query params after pagination is stable. |
-| [T-177 Pilot admin read search](T-177-pilot-admin-read-search.md) | Planned | Add a route-backed search pilot for one admin read list after pagination and filters are stable. |
+| [T-175 Pilot admin blog read pagination](T-175-pilot-admin-blog-read-pagination.md) | Completed | Made the main admin blog read tab consume route metadata and paginate without losing Update/Delete/Copy handoff. |
+| [T-176 Route-back admin read filters](T-176-route-back-admin-read-filters.md) | Completed | Moved existing first-page admin blog filters to route-backed query params after pagination stabilized. |
+| [T-177 Pilot admin read search](T-177-pilot-admin-read-search.md) | Completed | Added a route-backed search pilot for the admin blog read list after pagination and filters stabilized. |
 | [T-178 Add comment user delete entry points](T-178-add-comment-user-delete-entry-points.md) | Completed | Added read-list-to-delete handoff for comments and users as a separate destructive workflow slice. |
+| [T-179 Apply collection admin read pagination search](T-179-apply-collection-admin-read-pagination-search.md) | Planned | Apply the proven admin read-list pagination/search pattern to the main collection read tab. |
 
 ## Rules
 

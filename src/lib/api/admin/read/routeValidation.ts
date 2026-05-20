@@ -13,6 +13,7 @@ type AdminReadFieldErrors = {
   id?: string[];
   page?: string[];
   limit?: string[];
+  search?: string[];
 };
 
 type AdminReadValidationErrorResponse = ApiErrorResponse & {
@@ -22,6 +23,9 @@ type AdminReadValidationErrorResponse = ApiErrorResponse & {
 
 type AdminReadPaginationOptions = {
   defaultLimit?: number;
+  search?: {
+    maxLength: number;
+  };
 };
 
 type AdminReadPaginationResult =
@@ -29,6 +33,7 @@ type AdminReadPaginationResult =
       ok: true;
       page: number;
       limit: number;
+      search?: string;
     }
   | {
       ok: false;
@@ -39,6 +44,16 @@ type ParsedBoundedInteger =
   | {
       ok: true;
       value: number;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
+
+type ParsedBoundedSearch =
+  | {
+      ok: true;
+      value?: string;
     }
   | {
       ok: false;
@@ -128,6 +143,39 @@ const parseBoundedIntegerParam = (
   };
 };
 
+const parseBoundedSearchParam = (
+  rawValue: string | null,
+  maxLength: number
+): ParsedBoundedSearch => {
+  if (rawValue === null) {
+    return {
+      ok: true,
+      value: undefined,
+    };
+  }
+
+  const value = rawValue.trim();
+
+  if (value.length === 0) {
+    return {
+      ok: true,
+      value: undefined,
+    };
+  }
+
+  if (value.length > maxLength) {
+    return {
+      ok: false,
+      error: `Search must be ${maxLength} characters or fewer`,
+    };
+  }
+
+  return {
+    ok: true,
+    value,
+  };
+};
+
 export const parseAdminReadListQuery = (
   searchParams: URLSearchParams,
   resource: AdminReadResource,
@@ -147,6 +195,15 @@ export const parseAdminReadListQuery = (
     limitDefault,
     ADMIN_READ_LIST_QUERY_LIMITS.maxLimit
   );
+  const searchResult = options.search
+    ? parseBoundedSearchParam(
+        searchParams.get("search"),
+        options.search.maxLength
+      )
+    : ({
+        ok: true,
+        value: undefined,
+      } as const);
 
   const fieldErrors: AdminReadFieldErrors = {};
 
@@ -158,7 +215,11 @@ export const parseAdminReadListQuery = (
     fieldErrors.limit = [limitResult.error];
   }
 
-  if (!pageResult.ok || !limitResult.ok) {
+  if (!searchResult.ok) {
+    fieldErrors.search = [searchResult.error];
+  }
+
+  if (!pageResult.ok || !limitResult.ok || !searchResult.ok) {
     return {
       ok: false,
       response: adminReadValidationErrorResponse(resource, fieldErrors),
@@ -169,5 +230,6 @@ export const parseAdminReadListQuery = (
     ok: true,
     page: pageResult.value,
     limit: limitResult.value,
+    search: searchResult.value,
   };
 };

@@ -155,11 +155,27 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   },
 
   // Blogs
-  blogs: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
+  blogs: async ({
+    page = 1,
+    limit = 10,
+    search,
+    filter,
+  }: ReadListParams = {}) => {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
+
+    const trimmedSearch = search?.trim();
+
+    if (trimmedSearch) {
+      params.append("search", trimmedSearch);
+    }
+
+    if (filter?.key && filter?.value) {
+      params.append("filterKey", filter.key);
+      params.append("filterValue", filter.value);
+    }
 
     return fetcher<ReadBlogListResult>(`/api/v2/admin/blog/read?${params}`);
   },

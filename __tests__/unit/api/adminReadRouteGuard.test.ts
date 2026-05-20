@@ -103,6 +103,7 @@ const articleId = "507f1f77bcf86cd799439013";
 const artworkId = "507f1f77bcf86cd799439014";
 const blogId = "507f1f77bcf86cd799439015";
 const collectionId = "507f1f77bcf86cd799439016";
+const overlongBlogSearch = "s".repeat(81);
 
 type Handler = (request: never, context?: never) => Promise<{
   status: number;
@@ -436,6 +437,19 @@ const invalidListQueryCases: Array<{
     expectedError: "Invalid blog input",
     expectedFieldErrors: {
       page: ["Page must be a positive integer"],
+    },
+    expectNoTargetRead: () => {
+      expect(mockBlogCountDocuments).not.toHaveBeenCalled();
+      expect(mockBlogFind).not.toHaveBeenCalled();
+    },
+  },
+  {
+    label: "blog list with an oversized search",
+    handler: GET_BLOG_LIST as Handler,
+    requestUrl: `http://localhost/api/v2/admin/blog/read?page=1&limit=10&search=${overlongBlogSearch}`,
+    expectedError: "Invalid blog input",
+    expectedFieldErrors: {
+      search: ["Search must be 80 characters or fewer"],
     },
     expectNoTargetRead: () => {
       expect(mockBlogCountDocuments).not.toHaveBeenCalled();
@@ -782,7 +796,7 @@ describe("admin read route shared guard migration", () => {
   );
 
   it.each(invalidListQueryCases)(
-    "returns 400 for invalid $label pagination before target reads",
+    "returns 400 for invalid $label before target reads",
     async ({
       handler,
       requestUrl,
@@ -880,6 +894,160 @@ describe("admin read route shared guard migration", () => {
         limit: 5,
         total: 12,
         totalPages: 3,
+      },
+    });
+  });
+
+  it.each<
+    [string, string, Record<string, unknown>, number, string]
+  >([
+    [
+      "featured",
+      "false",
+      { featured: false },
+      7,
+      "Filtered Blog",
+    ],
+    [
+      "year",
+      "2025",
+      {
+        displayDate: {
+          $gte: new Date(Date.UTC(2025, 0, 1)),
+          $lt: new Date(Date.UTC(2026, 0, 1)),
+        },
+      },
+      11,
+      "Year Filtered Blog",
+    ],
+  ])(
+    "applies blog %s filters before counting and pagination",
+    async (filterKey, filterValue, expectedQuery, total, title) => {
+      const rawBlog = {
+        _id: blogId,
+        title,
+      };
+      const frontendBlog = {
+        _id: blogId,
+        title,
+      };
+      const query = createListQuery([rawBlog]);
+      mockBlogFind.mockReturnValue(query);
+      mockBlogCountDocuments.mockResolvedValue(total);
+      mockTransformBlogPopulated.mockReturnValue(frontendBlog as never);
+
+      const response = await GET_BLOG_LIST(
+        createRequest(
+          `http://localhost/api/v2/admin/blog/read?page=2&limit=3&filterKey=${filterKey}&filterValue=${filterValue}`
+        ) as never
+      );
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockBlogFind).toHaveBeenCalledWith(expectedQuery);
+      expect(mockBlogCountDocuments).toHaveBeenCalledWith(expectedQuery);
+      expect(query.sort).toHaveBeenCalledWith({ displayDate: -1 });
+      expect(query.skip).toHaveBeenCalledWith(3);
+      expect(query.limit).toHaveBeenCalledWith(3);
+      expect(mockTransformBlogPopulated).toHaveBeenCalledWith(rawBlog);
+      expect(body).toEqual({
+        success: true,
+        data: [frontendBlog],
+        metadata: {
+          page: 2,
+          limit: 3,
+          total,
+          totalPages: Math.ceil(total / 3),
+        },
+      });
+    }
+  );
+
+  it("applies trimmed blog search before counting and pagination", async () => {
+    const rawBlog = {
+      _id: blogId,
+      title: "Studio Notes",
+    };
+    const frontendBlog = {
+      _id: blogId,
+      title: "Studio Notes",
+    };
+    const expectedQuery = {
+      $or: [
+        { title: { $regex: "Studio\\+Notes", $options: "i" } },
+        { slug: { $regex: "Studio\\+Notes", $options: "i" } },
+      ],
+    };
+    const query = createListQuery([rawBlog]);
+    mockBlogFind.mockReturnValue(query);
+    mockBlogCountDocuments.mockResolvedValue(9);
+    mockTransformBlogPopulated.mockReturnValue(frontendBlog as never);
+
+    const response = await GET_BLOG_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/blog/read?page=2&limit=4&search=%20Studio%2BNotes%20"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockBlogFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockBlogCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(query.sort).toHaveBeenCalledWith({ displayDate: -1 });
+    expect(query.skip).toHaveBeenCalledWith(4);
+    expect(query.limit).toHaveBeenCalledWith(4);
+    expect(mockTransformBlogPopulated).toHaveBeenCalledWith(rawBlog);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendBlog],
+      metadata: {
+        page: 2,
+        limit: 4,
+        total: 9,
+        totalPages: 3,
+      },
+    });
+  });
+
+  it("keeps blog search scoped to public title and slug fields when filters are active", async () => {
+    const rawBlog = {
+      _id: blogId,
+      title: "Filtered Studio Notes",
+    };
+    const frontendBlog = {
+      _id: blogId,
+      title: "Filtered Studio Notes",
+    };
+    const expectedQuery = {
+      featured: true,
+      $or: [
+        { title: { $regex: "studio", $options: "i" } },
+        { slug: { $regex: "studio", $options: "i" } },
+      ],
+    };
+    const query = createListQuery([rawBlog]);
+    mockBlogFind.mockReturnValue(query);
+    mockBlogCountDocuments.mockResolvedValue(1);
+    mockTransformBlogPopulated.mockReturnValue(frontendBlog as never);
+
+    const response = await GET_BLOG_LIST(
+      createRequest(
+        "http://localhost/api/v2/admin/blog/read?page=1&limit=10&search=studio&filterKey=featured&filterValue=true"
+      ) as never
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockBlogFind).toHaveBeenCalledWith(expectedQuery);
+    expect(mockBlogCountDocuments).toHaveBeenCalledWith(expectedQuery);
+    expect(body).toEqual({
+      success: true,
+      data: [frontendBlog],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
       },
     });
   });

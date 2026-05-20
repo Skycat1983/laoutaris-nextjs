@@ -752,6 +752,16 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-20: Completed T-178. Comment and user read-list cards now hand off
   to the existing guarded delete workflows with selected IDs while preserving
   manual ObjectId lookup.
+- 2026-05-20: Completed T-175. The main admin blog read tab now uses route
+  pagination metadata for previous/next paging, preserves Update/Delete/Copy
+  actions, and keeps the existing filters page-local until T-176.
+- 2026-05-20: Completed T-176. The main admin blog read tab now sends the
+  existing `featured` and year filters to the route, resets to page 1 on
+  filter changes, and no longer filters only the currently visible page.
+- 2026-05-20: Completed T-177. The main admin blog read tab now sends bounded
+  route-backed search over title/slug, resets to page 1 on search changes, and
+  preserves pagination, filters, no-results states, and Update/Delete/Copy
+  actions.
 
 ## Next Agent Action
 
@@ -765,10 +775,10 @@ audit, width frame, section composition, expanded QA conclusion, owner packet,
 style scaffold, or admin read-list audit regresses.
 
 For admin archive maintenance, assign
-[T-175](../tasks/T-175-pilot-admin-blog-read-pagination.md) next. T-174's route
-query prerequisite and T-178's comment/user delete handoff are complete. Run
-[T-176](../tasks/T-176-route-back-admin-read-filters.md) and
-[T-177](../tasks/T-177-pilot-admin-read-search.md) in order after T-175.
+[T-179](../tasks/T-179-apply-collection-admin-read-pagination-search.md) next.
+T-174's route query prerequisite, T-175's blog pagination pilot, T-176's
+route-backed blog filters, T-177's blog search pilot, and T-178's comment/user
+delete handoff are complete.
 
 Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
 owner/product scope answer exists. Keep collection section launch policy,

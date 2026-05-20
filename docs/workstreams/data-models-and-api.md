@@ -890,27 +890,41 @@ Add API route tests where behavior is changed.
 - 2026-05-20: Completed T-171 and T-173. T-171 found all audited article,
   blog, and collection image URLs compatible with the current Cloudinary
   delivery policy. T-173 found that admin read-list routes already return
-  pagination metadata but need shared query bounds before UI pagination,
-  filters, or search expand. T-174 is prepared as the first data/API slice.
+  pagination metadata but needed shared query bounds before UI pagination,
+  filters, or search expanded.
 - 2026-05-20: Completed T-174. Article, artwork, blog, collection, comment,
   and user admin read-list routes now share bounded `page`/`limit` parsing with
   structured `400` responses for invalid pagination values before resource
   list queries.
+- 2026-05-20: Completed T-175. The main admin blog read tab now consumes the
+  existing blog read-list pagination metadata. Route-backed filter contracts
+  remain the next data/API-adjacent admin archive slice.
+- 2026-05-20: Completed T-176. Admin blog read `featured` and year filters now
+  use route-backed `filterKey`/`filterValue` query params and apply before
+  `countDocuments()` and paginated `find()` calls.
+- 2026-05-20: Completed T-177. Admin blog read search now uses bounded
+  route-backed `search` query parsing, escapes regex metacharacters, searches
+  title/slug only, and applies before both `countDocuments()` and paginated
+  `find()` calls.
 
 ## Next Agent Action
 
-T-174's data/API prerequisite for admin read-tab pagination is complete. The
-next admin archive task is the frontend-led
-[T-175](../tasks/T-175-pilot-admin-blog-read-pagination.md). Keep public search
-scope, collection section launch policy, broader response-helper cleanup,
-route-local DB ownership gaps, field-contract matrices, server-side shop
-pagination/sorting contracts, lower-level logging policy, admin Shopify-link
-work, and Cloudinary runtime cleanup separate.
+T-174's data/API prerequisite, T-175's blog pagination pilot, T-176's
+route-backed filter contract, and T-177's route-backed search pilot are
+complete. The next admin archive task is
+[T-179](../tasks/T-179-apply-collection-admin-read-pagination-search.md), which
+should apply the proven pagination/search contract to the main collection read
+tab.
+Keep public search scope, collection section launch policy, broader
+response-helper cleanup, route-local DB ownership gaps, field-contract
+matrices, server-side shop pagination/sorting contracts, lower-level logging
+policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
-T-163, T-164, T-165, T-171, T-173, and T-174 are complete and should not be
-reassigned unless their guards, validation behavior, search metadata, preview
-contract/UI, evidence gate, audit receipts, image URL audit, admin read-list
-audit, admin read query bounds, or query/fetcher contracts regress.
+T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, and T-177 are complete;
+do not reassign them unless their guards, validation behavior, search metadata,
+preview contract/UI, evidence gate, audit receipts, image URL audit, admin
+read-list audit, admin read query bounds, blog pagination pilot, route-backed
+blog filters, route-backed blog search, or query/fetcher contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.
