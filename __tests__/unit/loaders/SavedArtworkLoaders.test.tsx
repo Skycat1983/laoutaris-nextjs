@@ -13,6 +13,7 @@ import {
   getOwnWatchlistArtwork,
   getOwnWatchlistArtworkList,
 } from "@/lib/data/services/getOwnSavedArtwork";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
@@ -59,11 +60,16 @@ const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 const userId = "507f1f77bcf86cd799439011";
 const artworkId = "64f1f77bcf86cd799439022";
 
+type ArtworkFixture = ArtworkFrontend & {
+  _id: string;
+  title: string;
+};
+
 const createArtwork = (id: string) =>
   ({
     _id: id,
     title: id,
-  }) as never;
+  }) as ArtworkFixture;
 
 describe("saved artwork account loaders", () => {
   let consoleErrorSpy: jest.SpyInstance;

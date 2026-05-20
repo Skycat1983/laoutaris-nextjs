@@ -4,6 +4,10 @@ import React, { type ReactElement } from "react";
 import { CollectionArtworksPaginationLoader } from "@/components/loaders/componentLoaders/CollectionArtworksPaginationLoader";
 import { ScrollableArtworkPagination } from "@/components/modules/pagination/ScrollableArtworkPagination";
 import { getCollectionWithArtworks } from "@/lib/data/services/getCollectionWithArtworks";
+import type {
+  ArtworkFrontend,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 jest.mock("@/lib/data/services/getCollectionWithArtworks", () => ({
@@ -24,11 +28,20 @@ const mockGetCollectionWithArtworks =
   >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 
+type ArtworkFixture = ArtworkFrontend & {
+  _id: string;
+  title: string;
+};
+type CollectionWithArtworksFixture = CollectionFrontendPopulated & {
+  slug: string;
+  artworks: ArtworkFixture[];
+};
+
 const createArtwork = (id: string) =>
   ({
     _id: id,
     title: id,
-  }) as never;
+  }) as ArtworkFixture;
 
 describe("CollectionArtworksPaginationLoader", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -53,7 +66,7 @@ describe("CollectionArtworksPaginationLoader", () => {
     mockGetCollectionWithArtworks.mockResolvedValue({
       slug: "paintings",
       artworks,
-    } as never);
+    } as CollectionWithArtworksFixture);
 
     const element = (await CollectionArtworksPaginationLoader({
       slug: "paintings",

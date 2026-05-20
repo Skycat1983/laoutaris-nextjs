@@ -6,6 +6,7 @@ import { SubscribeSection } from "@/components/sections";
 import { ArtworkView } from "@/components/views";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
+import type { ArtworkFrontend } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 
 jest.mock("@/lib/data/services/getArtworkById", () => ({
@@ -39,12 +40,15 @@ const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction
 >;
 
 const artworkId = "507f1f77bcf86cd799439011";
+type ArtworkFixture = ArtworkFrontend & {
+  shopifyProducts: NonNullable<ArtworkFrontend["shopifyProducts"]>;
+};
 const artwork = {
   _id: artworkId,
   title: "Archive Artwork",
   slug: "archive-artwork",
   shopifyProducts: [{ productId: "101", type: "original" }],
-} as never;
+} as unknown as ArtworkFixture;
 const shopProducts = {
   original: null,
   prints: [],

@@ -1518,13 +1518,18 @@ npm run lint
 - 2026-05-20: Completed T-184. The strict TypeScript `noEmit` audit found 46
   top-level diagnostics across 18 files, all under `__tests__/`, and
   recommended fixing stale navigation DTO fixtures first.
+- 2026-05-20: Completed T-185. Stale public navigation DTO fixtures were
+  updated across navigation loader/page tests; focused navigation tests passed,
+  and strict TypeScript now reports 26 remaining unrelated test-only
+  diagnostics.
 
 ## Next Agent Action
 
-T-185 is the next quality task while owner decisions remain pending. It should
-fix only the stale navigation DTO test fixtures identified by T-184, then rerun
-the focused navigation tests and strict TypeScript command to confirm that group
-is gone. T-157 through T-184 are complete and should not be reassigned unless
+T-186 is the next quality task while owner decisions remain pending. It should
+fix only the over-narrow `never` fixture group identified after T-185, then
+rerun the focused loader/form tests and strict TypeScript command to confirm
+that group is gone. T-157 through T-185 are complete and should not be
+reassigned unless
 their prototype route, data mapping, fallback behavior, audit handoff, preview
 contract/UI, evidence gate, audit receipts, width frame, section composition,
 visual QA conclusions, owner packet, semantic style scaffold, image URL audit,
@@ -1532,7 +1537,8 @@ delete-receipt runbook, admin read-list audit, read-list query bounds, blog
 pagination pilot, route-backed blog filters, route-backed blog search,
 collection pagination/search, article pagination/filter/search, artwork
 pagination/filter/search, comment/user pagination, shared pagination control,
-TypeScript `noEmit` audit result, or comment/user delete handoff regresses.
+TypeScript `noEmit` audit result, navigation DTO fixture cleanup, or
+comment/user delete handoff regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-168 are complete; do not reassign their

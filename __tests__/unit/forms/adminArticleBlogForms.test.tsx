@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import type { ComponentProps } from "react";
 import { useRouter } from "next/navigation";
 import { CreateArticleForm } from "@/components/features/adminDashboard/crudForms/create/CreateArticleForm";
 import { UpdateArticleForm } from "@/components/features/adminDashboard/crudForms/update/UpdateArticleForm";
@@ -66,13 +67,19 @@ const artworkId = "507f1f77bcf86cd799439012";
 const articleId = "507f1f77bcf86cd799439013";
 const blogId = "507f1f77bcf86cd799439014";
 
+type CreateArticleArtworkInfo = ComponentProps<
+  typeof CreateArticleForm
+>["artworkInfo"];
+type UpdateArticleInfo = ComponentProps<typeof UpdateArticleForm>["articleInfo"];
+type UpdateBlogInfo = ComponentProps<typeof UpdateBlogForm>["blogInfo"];
+
 const artworkInfo = {
   _id: artworkId,
   title: "Archive Work",
   image: {
     secure_url: validContentImageUrl,
   },
-} as never;
+} as CreateArticleArtworkInfo;
 
 const articleInfo = {
   _id: articleId,
@@ -84,20 +91,23 @@ const articleInfo = {
   section: "artwork",
   overlayColour: "white",
   artwork: artworkInfo,
-} as never;
+} as UpdateArticleInfo;
 
 const blogInfo = {
   _id: blogId,
   title: "Archive Blog",
+  slug: "archive-blog",
   subtitle: "Blog subtitle",
   summary: "A valid blog summary.",
   text: "A valid blog body with enough content for the form schema to pass.",
   imageUrl: validContentImageUrl,
+  readTime: 2,
+  commentCount: 0,
   featured: false,
   pinned: true,
   tags: ["artwork", "news"],
-  displayDate: "2026-05-01T00:00:00.000Z",
-} as never;
+  displayDate: new Date("2026-05-01T00:00:00.000Z"),
+} as UpdateBlogInfo;
 
 const fillCreateArticleForm = () => {
   fireEvent.change(screen.getByLabelText("Title"), {
@@ -326,19 +336,19 @@ describe("admin article and blog forms", () => {
     const years = deriveBlogYearOptions([
       {
         ...blogInfo,
-        displayDate: "2026-05-01T00:00:00.000Z",
+        displayDate: new Date("2026-05-01T00:00:00.000Z"),
       },
       {
         ...blogInfo,
         _id: "507f1f77bcf86cd799439015",
-        displayDate: "2025-01-01T00:00:00.000Z",
+        displayDate: new Date("2025-01-01T00:00:00.000Z"),
       },
       {
         ...blogInfo,
         _id: "507f1f77bcf86cd799439016",
-        displayDate: "2026-02-01T00:00:00.000Z",
+        displayDate: new Date("2026-02-01T00:00:00.000Z"),
       },
-    ] as never);
+    ]);
 
     expect(years).toEqual(["2026", "2025"]);
     expect(years).not.toContain("2024");

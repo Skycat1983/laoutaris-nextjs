@@ -6,7 +6,7 @@ Last updated: 2026-05-20
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-184 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are
+T-185 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are
 resolved. F-095 is resolved after T-174 through T-182 because all six main
 admin read tabs now consume route-backed pagination metadata, normal
 article/artwork/blog/collection maintenance has direct Update/Delete handoff,
@@ -31,12 +31,13 @@ delivery path. T-172 documented safe delete-audit receipt verification. T-173
 audited admin read-list pagination/search gaps and produced the next admin
 archive implementation split.
 
-The next owner-independent task to run is T-185. T-174 through T-183 completed
+The next owner-independent task to run is T-186. T-174 through T-183 completed
 the current admin archive pagination/search/delete-handoff sequence. T-184
 audited the existing strict TypeScript `noEmit` failures and found 46 top-level
-diagnostics across 18 files, all under `__tests__/`. T-185 should fix the
-largest coherent test-only group first: stale article and collection navigation
-DTO fixtures.
+diagnostics across 18 files, all under `__tests__/`. T-185 removed the stale
+public navigation DTO fixture group, leaving 26 unrelated test-only diagnostics.
+T-186 should fix the largest remaining coherent group: over-narrow `never`
+fixtures in loader/form tests.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -243,6 +244,14 @@ It recorded the current strict TypeScript failure set as test-only, with 46
 top-level diagnostics across 18 files and no top-level runtime `src/` errors.
 It recommends fixing stale navigation DTO fixtures first before addressing
 over-narrow `never` fixtures and isolated test-helper typing issues.
+
+T-185 is complete:
+[Fix navigation DTO test fixtures](../tasks/T-185-fix-navigation-dto-test-fixtures.md).
+It updated public navigation test fixtures to match current article and
+collection navigation DTOs, including the additional biography/collection page
+tests where the same stale fixture pattern appeared. Focused navigation tests
+passed, and strict TypeScript now reports 26 remaining unrelated test-only
+diagnostics.
 
 T-134 is complete:
 [Complete incident owner matrix](../tasks/T-134-complete-incident-owner-matrix.md).
@@ -1379,14 +1388,14 @@ completed:
 
 While owner review is pending, the next runnable task is:
 
-- [T-185 Fix navigation DTO test fixtures](../tasks/T-185-fix-navigation-dto-test-fixtures.md)
-  for removing the largest stale-test-data group from the current strict
-  TypeScript `noEmit` failures.
+- [T-186 Fix never-typed test fixtures](../tasks/T-186-fix-never-typed-test-fixtures.md)
+  for removing the largest remaining over-narrow fixture group from the current
+  strict TypeScript `noEmit` failures.
 
-T-185 should touch only navigation test fixtures and should keep runtime source,
-navigation behavior, TypeScript/Jest/Next/package configuration, and CI gates
-unchanged. Keep `noEmit` out of the release gate until the remaining test-only
-backlog is cleared.
+T-186 should touch only the listed loader/form tests and should keep runtime
+source, loader/service/component behavior, TypeScript/Jest/Next/package
+configuration, and CI gates unchanged. Keep `noEmit` out of the release gate
+until the remaining test-only backlog is cleared.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)
@@ -1423,7 +1432,7 @@ T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
 T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
-T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, and T-184 are
+T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, T-184, and T-185 are
 complete and should not be reassigned unless a regression is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,

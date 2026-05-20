@@ -198,7 +198,8 @@ Prompt packs:
 | [T-182 Add comment user admin read pagination](T-182-add-comment-user-admin-read-pagination.md) | Completed | Added route-metadata pagination to the main comment and user read tabs while preserving delete handoff. |
 | [T-183 Extract admin read pagination control](T-183-extract-admin-read-pagination-control.md) | Completed | Extracted the duplicated main admin read-tab previous/next pagination control without behavior changes. |
 | [T-184 Audit TypeScript noEmit test errors](T-184-audit-typescript-noemit-test-errors.md) | Completed | Categorized the existing strict TypeScript test-check failures as test-only before deciding whether to fix them or promote noEmit checks. |
-| [T-185 Fix navigation DTO test fixtures](T-185-fix-navigation-dto-test-fixtures.md) | Planned | Update stale public navigation test fixtures to match the current article and collection navigation DTOs. |
+| [T-185 Fix navigation DTO test fixtures](T-185-fix-navigation-dto-test-fixtures.md) | Completed | Updated stale public navigation test fixtures to match the current article and collection navigation DTOs. |
+| [T-186 Fix never-typed test fixtures](T-186-fix-never-typed-test-fixtures.md) | Planned | Replace over-narrow `never` test fixtures in loader/form tests with typed fixtures without runtime changes. |
 
 ## Rules
 

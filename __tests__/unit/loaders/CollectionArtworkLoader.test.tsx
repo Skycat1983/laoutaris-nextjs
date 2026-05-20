@@ -6,6 +6,10 @@ import { CollectionArtworkLoader } from "@/components/loaders/viewLoaders/Collec
 import { ArtworkView } from "@/components/views";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
+import type {
+  ArtworkFrontend,
+  CollectionFrontendPopulated,
+} from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
 
 jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
@@ -32,11 +36,19 @@ const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction
 >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 
+type ArtworkFixture = ArtworkFrontend & {
+  shopifyProducts: NonNullable<ArtworkFrontend["shopifyProducts"]>;
+};
+type CollectionFixture = CollectionFrontendPopulated & {
+  slug: string;
+  artworks: ArtworkFixture[];
+};
+
 const artwork = {
   _id: "64f1f77bcf86cd7994390111",
   title: "Blue Study",
   shopifyProducts: [{ productId: "101", type: "print" }],
-} as never;
+} as ArtworkFixture;
 const shopProducts = {
   original: null,
   prints: [],
@@ -54,7 +66,7 @@ describe("CollectionArtworkLoader", () => {
       collection: {
         slug: "paintings",
         artworks: [artwork],
-      } as never,
+      } as CollectionFixture,
     });
     mockGetArtworkShopProducts.mockResolvedValue(shopProducts);
     consoleErrorSpy = jest
