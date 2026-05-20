@@ -99,6 +99,7 @@ export function BlogOperations({
           <DeleteConfirmation
             document={blogInfo}
             documentType="Blog"
+            fetchDeletePreview={clientApi.admin.delete.preview.blog}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setBlogInfo(null)}

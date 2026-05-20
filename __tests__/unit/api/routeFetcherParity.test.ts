@@ -86,6 +86,42 @@ const FETCHER_OPERATIONS: FetcherOperation[] = [
     sourceFile: "src/lib/api/admin/delete/fetchers.ts",
   },
   {
+    id: "admin.delete.preview.article",
+    method: "GET",
+    path: "/api/v2/admin/article/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
+    id: "admin.delete.preview.artwork",
+    method: "GET",
+    path: "/api/v2/admin/artwork/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
+    id: "admin.delete.preview.blog",
+    method: "GET",
+    path: "/api/v2/admin/blog/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
+    id: "admin.delete.preview.collection",
+    method: "GET",
+    path: "/api/v2/admin/collection/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
+    id: "admin.delete.preview.comment",
+    method: "GET",
+    path: "/api/v2/admin/comment/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
+    id: "admin.delete.preview.user",
+    method: "GET",
+    path: "/api/v2/admin/user/delete/[id]/preview",
+    sourceFile: "src/lib/api/admin/delete/fetchers.ts",
+  },
+  {
     id: "admin.read.artwork",
     method: "GET",
     path: "/api/v2/admin/artwork/read/[id]",

@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import type { ApiErrorResponse } from "@/lib/data/types/apiTypes";
+import type { AdminDeleteResource } from "./previewTypes";
 
-type AdminDeleteResource =
-  | "article"
-  | "artwork"
-  | "blog"
-  | "collection"
-  | "comment"
-  | "user";
+export type { AdminDeleteResource } from "./previewTypes";
 
 type AdminDeleteFieldErrors = {
   id?: string[];

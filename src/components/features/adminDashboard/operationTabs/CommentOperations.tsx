@@ -74,6 +74,7 @@ export function CommentOperations({ operationType }: CommentOperationsProps) {
               subtitle: `By: ${commentInfo.author}`,
             }}
             documentType="Comment"
+            fetchDeletePreview={clientApi.admin.delete.preview.comment}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setCommentInfo(null)}

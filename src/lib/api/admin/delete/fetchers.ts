@@ -1,76 +1,78 @@
 import type { ApiSuccessResponse } from "@/lib/data/types";
 import type { Fetcher } from "../../core/createFetcher";
+import type { AdminDeletePreview } from "./previewTypes";
 
 // This is what the fetcher expects
 export type DeleteDocumentResult = ApiSuccessResponse<null>;
+export type DeletePreviewResult = ApiSuccessResponse<AdminDeletePreview>;
+
+const deletePath = (resource: string, id: string) =>
+  `/api/v2/admin/${resource}/delete/${encodeURIComponent(id)}`;
+
+const deletePreviewPath = (resource: string, id: string) =>
+  `${deletePath(resource, id)}/preview`;
 
 export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete artwork
   artwork: async (artworkId: string) => {
-    const encodedId = encodeURIComponent(artworkId);
-    return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/artwork/delete/${encodedId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    return fetcher<DeleteDocumentResult>(deletePath("artwork", artworkId), {
+      method: "DELETE",
+    });
   },
 
   // Delete article
   article: async (articleId: string) => {
-    const encodedId = encodeURIComponent(articleId);
-    return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/article/delete/${encodedId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    return fetcher<DeleteDocumentResult>(deletePath("article", articleId), {
+      method: "DELETE",
+    });
   },
 
   // Delete blog
   blog: async (blogId: string) => {
-    const encodedId = encodeURIComponent(blogId);
-    return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/blog/delete/${encodedId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    return fetcher<DeleteDocumentResult>(deletePath("blog", blogId), {
+      method: "DELETE",
+    });
   },
 
   // Delete collection
   collection: async (collectionId: string) => {
-    const encodedId = encodeURIComponent(collectionId);
     return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/collection/delete/${encodedId}`,
+      deletePath("collection", collectionId),
       {
         method: "DELETE",
       }
     );
   },
 
-  //! not implemented yet
   // Delete user
   user: async (userId: string) => {
-    const encodedId = encodeURIComponent(userId);
-    return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/user/delete/${encodedId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    return fetcher<DeleteDocumentResult>(deletePath("user", userId), {
+      method: "DELETE",
+    });
   },
 
-  //! not implemented yet
   // Delete comment
   comment: async (commentId: string) => {
-    const encodedId = encodeURIComponent(commentId);
-    return fetcher<DeleteDocumentResult>(
-      `/api/v2/admin/comment/delete/${encodedId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    return fetcher<DeleteDocumentResult>(deletePath("comment", commentId), {
+      method: "DELETE",
+    });
+  },
+
+  preview: {
+    article: async (articleId: string) =>
+      fetcher<DeletePreviewResult>(deletePreviewPath("article", articleId)),
+    artwork: async (artworkId: string) =>
+      fetcher<DeletePreviewResult>(deletePreviewPath("artwork", artworkId)),
+    blog: async (blogId: string) =>
+      fetcher<DeletePreviewResult>(deletePreviewPath("blog", blogId)),
+    collection: async (collectionId: string) =>
+      fetcher<DeletePreviewResult>(
+        deletePreviewPath("collection", collectionId)
+      ),
+    comment: async (commentId: string) =>
+      fetcher<DeletePreviewResult>(deletePreviewPath("comment", commentId)),
+    user: async (userId: string) =>
+      fetcher<DeletePreviewResult>(deletePreviewPath("user", userId)),
   },
 });
 

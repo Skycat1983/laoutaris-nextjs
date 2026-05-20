@@ -107,6 +107,7 @@ export function CollectionOperations({
           <DeleteConfirmation
             document={collectionInfo}
             documentType="Collection"
+            fetchDeletePreview={clientApi.admin.delete.preview.collection}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setCollectionInfo(null)}

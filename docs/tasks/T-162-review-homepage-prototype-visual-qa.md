@@ -1,6 +1,6 @@
 # T-162 Review Homepage Prototype Visual QA
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -103,4 +103,56 @@ this task handoff.
 
 ## Handoff Notes
 
-- Prepared after T-157 through T-161 completion.
+- 2026-05-20 QA pass against `/prototype/home` at 1448px desktop and 390px
+  mobile using section-scoped screenshots only.
+- Ready for owner review:
+  - Biography: the desktop timeline/card composition is structurally close to
+    `to_prototype/biography.png`; type is readable, images render, and no
+    page-level horizontal overflow was observed.
+  - Blog: the split lead story plus four-card grid is stable at desktop and
+    stacks cleanly on mobile; no text overlap or page-level horizontal overflow
+    was observed.
+  - Shop: the horizontal product rail, controls, product cards, and prices
+    render at desktop and mobile; rail overflow is contained inside the
+    scroller and does not create body-level horizontal overflow.
+- Needs visual refinement:
+  - Biography: the featured item currently differs from the guide because the
+    first rendered article is `Later Years`, not `Early Years`; this also
+    changes the featured image from the sketch in the guide to the magenta work.
+  - Blog: the implemented layout matches the broad split-hero/grid structure,
+    but the guide image uses biography copy and biography article imagery while
+    the prototype uses real blog posts. Owner should confirm whether this guide
+    is meant to be a blog section or a second biography layout.
+  - Shop: product cards are visually usable, but the current data produces
+    generic `ARCHIVE PRODUCT` labels and title truncation on longer products;
+    this is less polished than the guide's medium/year treatment.
+  - Mobile: all sections are readable, but anchor-style section positioning can
+    place large headings under the existing app header/breadcrumb chrome during
+    screenshot capture. Before migration, decide whether prototype sections need
+    scroll-margin or live-homepage chrome adjustments.
+- Needs content/data correction:
+  - Biography article ordering needs to be curated or sorted if the guide order
+    is canonical: `Early Years`, `Meeting Beryl`, `Later Years`, `Obituary`,
+    `Ethos`.
+  - Blog lead content shows `In Loving Memory of Joseph Laoutaris` with
+    `1935 - 2023`, while other prototype/biography content references
+    `1935 - 2022`; confirm and correct the canonical dates before production
+    migration.
+  - Blog card imagery/content does not match `to_prototype/blog.png` because the
+    prototype is using latest blog entries rather than curated guide content.
+  - Shop product metadata should be completed or mapped before migration so
+    cards can show meaningful type/medium/year labels instead of generic
+    `ARCHIVE PRODUCT`.
+- Owner decisions needed before production migration:
+  - Decide whether the guide images define exact curated content/order or only
+    layout direction.
+  - Decide whether the blog section should feature real latest posts, curated
+    posts, or the biography-style content shown in `to_prototype/blog.png`.
+  - Approve commerce wording before launch: `Available now`, `Explore the shop`,
+    `View full shop`, visible prices, and `Details` imply purchasable products.
+    If checkout, inventory, shipping, refunds, or enquiry-only flows are not
+    production-approved, revise the copy/CTA model first.
+  - Decide whether mobile homepage teasers should remain fully stacked or use a
+    more compact carousel/rail treatment for biography and blog cards.
+- Verification: local `npm run dev` on `http://localhost:3000`,
+  section-scoped headless Chrome screenshots/metrics, and `git diff --check`.

@@ -378,21 +378,32 @@ Use manual admin checks when changing dashboard behavior.
   owns a read-only cascade preview contract for current admin delete resources
   before delete confirmation UI, backup/review evidence capture, or audit-event
   persistence changes.
+- 2026-05-20: Completed T-156. Admin article, artwork, blog, collection,
+  comment, and user deletes now have read-only preview routes that report
+  cascade impact, blockers, preserved assets/records, and production evidence
+  reminders without mutating records. Visible delete-confirmation UI,
+  backup/review evidence capture, and audit-event persistence remain separate.
+- 2026-05-20: Completed T-163. The admin delete confirmation UI now renders
+  the T-156 preview contract for article, artwork, blog, collection, comment,
+  and user deletes, and disables confirmation while previews are loading,
+  failed, or blocked. Backup/review evidence capture and audit-event
+  persistence remain separate.
 
 ## Next Agent Action
 
-Assign [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) as
-the next runnable content/admin slice. It should add a read-only preview
-contract only; keep delete confirmation UI, backup/review evidence capture,
-audit-event persistence, collection section launch policy, and broader
-taxonomy/i18n direction separate. T-141, T-142, T-144, T-148, T-149, T-150,
-T-152, and T-153 are complete; do not reassign them unless their route
-protections, form behavior, archive entry-point behavior, blog pinned/tag
-controls, or runbook content regresses.
+Assign [T-164](../tasks/T-164-require-admin-delete-evidence-gate.md) as the
+next runnable content/admin delete slice. It should require backup/export and
+owner/delegated review evidence in the delete confirmation UI and route
+validation before destructive execution, while keeping audit-event persistence,
+collection section launch policy, and broader taxonomy/i18n direction separate.
+T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, and T-163 are
+complete; do not reassign them unless their route protections, form behavior,
+archive entry-point behavior, blog pinned/tag controls, runbook content,
+preview contract, or preview UI regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, image-field
 migrations, new delivery-transform retuning, and Cloudinary account changes
 separate unless explicitly assigned. Keep persistence-time Shopify API
 validation, checkout/cart ownership, product-link data migration, route-level
-API logging, global logging policy, destructive cascade previews, and admin
-content runbook follow-ups separate.
+API logging, global logging policy, delete evidence/audit follow-ups, and
+admin content runbook follow-ups separate.

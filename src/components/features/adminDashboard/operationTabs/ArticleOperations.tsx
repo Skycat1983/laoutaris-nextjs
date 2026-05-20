@@ -118,6 +118,7 @@ export function ArticleOperations({
           <DeleteConfirmation
             document={articleInfo}
             documentType="Article"
+            fetchDeletePreview={clientApi.admin.delete.preview.article}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setArticleInfo(null)}

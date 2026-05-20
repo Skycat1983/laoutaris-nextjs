@@ -1433,6 +1433,11 @@ npm run lint
 - 2026-05-20: Prepared T-156 with focused verification expectations for admin
   delete cascade preview guard behavior, invalid-ID handling, cascade counts,
   blocker reporting, and no mutation on preview.
+- 2026-05-20: Completed T-156 with focused admin delete preview route coverage
+  for guard short-circuiting, invalid IDs, representative cascade counts,
+  blocker reporting, production evidence reminders, and no mutation on preview.
+  Orchestrator verification passed the focused delete route suites, lint,
+  `git diff --check`, and `npm run build`.
 - 2026-05-20: Prepared T-157 through T-161 for the homepage prototype and
   style-system audit track. Prototype implementation tasks should run lint and
   `git diff --check`, adding focused tests only when they introduce data
@@ -1445,19 +1450,27 @@ npm run lint
 - 2026-05-20: Prepared T-162 as a tightly scoped visual QA/owner-feedback task
   for `/prototype/home`, with browser automation limited to targeted desktop
   and mobile checks if needed.
+- 2026-05-20: Completed T-162. The visual QA handoff records section-level
+  readiness, refinement notes, content/data corrections, and owner decisions
+  for biography ordering, canonical dates, blog content strategy, shop wording,
+  and mobile density before production migration.
+- 2026-05-20: Completed T-163. Focused coverage now verifies admin delete
+  preview fetchers, route/fetcher parity, and delete confirmation loading,
+  failure, blocked, and unblocked preview states. Orchestrator verification
+  passed the focused T-163 tests, lint, `git diff --check`, and `npm run build`.
 
 ## Next Agent Action
 
-Use [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) as the
-next quality-bearing implementation slice if destructive-delete safety is the
-priority. For the prototype track, run
-[T-162](../tasks/T-162-review-homepage-prototype-visual-qa.md) before
-production migration or style-system implementation. T-157 through T-161 are
-complete and should not be reassigned unless their prototype route, data
-mapping, fallback behavior, or audit handoff regresses.
+Use [T-164](../tasks/T-164-require-admin-delete-evidence-gate.md) as the next
+quality-bearing implementation slice if destructive-delete safety is the
+priority, because preview UI now needs route-enforced evidence coverage. For
+the prototype track, hold implementation until the T-162 owner decisions are
+answered. T-157 through T-163 are complete and should not be reassigned unless
+their prototype route, data mapping, fallback behavior, audit handoff, preview
+contract, or preview UI regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-155 are complete; do not reassign their
+decision is available. T-141 through T-163 are complete; do not reassign their
 focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb
 coverage unless it regresses.
 Keep broader static/ISR migration separate from the

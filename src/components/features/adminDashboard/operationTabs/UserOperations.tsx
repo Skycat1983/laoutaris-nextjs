@@ -71,6 +71,7 @@ export function UserOperations({ operationType }: UserOperationsProps) {
               subtitle: userInfo.role,
             }}
             documentType="User"
+            fetchDeletePreview={clientApi.admin.delete.preview.user}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setUserInfo(null)}

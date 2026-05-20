@@ -1,6 +1,6 @@
 # T-156 Add Admin Delete Cascade Preview Contract
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Content Assets And Admin Operations](../workstreams/content-assets-and-admin-ops.md),
@@ -114,7 +114,31 @@ Add the new focused preview test path to the Jest command, and run
 ## Handoff Notes
 
 - Prepared after T-153 through T-155 reconciliation.
-- Candidate shared-tracker update after completion: F-092/R-007 should move
-  from unimplemented cascade preview to partially mitigated, with visible UI,
-  backup/review evidence capture, and redacted audit-event implementation still
-  separate.
+- Completed 2026-05-20: added read-only `GET` preview routes for article,
+  artwork, blog, collection, comment, and user delete resources under the
+  existing admin delete route tree. The routes keep `requireApiAdmin()` and
+  invalid ObjectId rejection route-local before preview model reads.
+- Added the typed preview contract in `src/lib/api/admin/delete/preview.ts`
+  with target identity, `blockingConditions`, `wouldDelete`,
+  `wouldDetachOrUpdate`, `preserved`, and `productionEvidenceReminders`.
+  Preview routes return the contract through the existing success/error
+  response helpers and do not start transactions, update records, delete
+  records, or delete Cloudinary assets.
+- The preview contract reflects current destructive behavior: article,
+  collection, comment, blog, artwork, and user target deletes; blog/user
+  comment cascades; comment/user/blog reference updates; artwork collection
+  detaches; artwork article-reference blockers; current-admin and last-admin
+  user blockers; preserved Cloudinary assets; and preserved records that the
+  current delete behavior does not mutate.
+- Added focused coverage in
+  `__tests__/unit/api/adminDeletePreviewRoute.test.ts` for guard
+  short-circuiting, invalid IDs, representative cascade counts, blocker
+  reporting, production evidence reminders, and no mutation on preview.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminDeleteRouteGuard.test.ts __tests__/unit/api/adminDeletePreviewRoute.test.ts`,
+  `npm run lint`, and `git diff --check`.
+- Orchestrator verification also passed `npm run build` after reconciliation.
+- Shared tracker updates were reconciled by the orchestrator after completion:
+  F-092/R-007 now note that the preview contract is partially mitigated, with
+  visible UI, backup/review evidence capture, and redacted audit-event
+  implementation still separate.

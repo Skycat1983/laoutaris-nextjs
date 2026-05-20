@@ -143,6 +143,7 @@ export function ArtworkOperations({
           <DeleteConfirmation
             document={artworkInfo}
             documentType="Artwork"
+            fetchDeletePreview={clientApi.admin.delete.preview.artwork}
             onDelete={handleDelete}
             isDeleting={isDeleting}
             onCancel={() => setArtworkInfo(null)}

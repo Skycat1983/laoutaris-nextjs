@@ -866,18 +866,29 @@ Add API route tests where behavior is changed.
 - 2026-05-20: Prepared T-156 for a read-only admin delete cascade preview
   contract across current destructive delete resources, before any delete UI,
   backup/review evidence, or audit-event changes.
+- 2026-05-20: Completed T-156. The admin API now exposes read-only delete
+  preview routes for article, artwork, blog, collection, comment, and user
+  resources, with a typed contract for target identity, blockers, delete
+  impacts, detach/update impacts, preserved records/assets, and production
+  evidence reminders.
+- 2026-05-20: Completed T-163. Admin delete preview fetchers now call the
+  preview routes through a client-safe type boundary while existing destructive
+  delete fetchers still call the same `DELETE` routes. Route/fetcher parity was
+  updated for the new preview operations.
 
 ## Next Agent Action
 
-Assign [T-156](../tasks/T-156-add-admin-delete-cascade-preview-contract.md) if
-the next priority is destructive-delete safety. Keep public search scope,
-collection section launch policy, broader response-helper cleanup, route-local
-DB ownership gaps, field-contract matrices, server-side shop
-pagination/sorting contracts, lower-level logging policy, admin Shopify-link
-work, and existing content image data migration separate. T-122, T-135, T-142,
-T-144's fetcher preservation, T-145, T-151, and T-154 are complete and should
-not be reassigned unless their guards, validation behavior, search metadata, or
-query/fetcher contracts regress.
+Assign [T-164](../tasks/T-164-require-admin-delete-evidence-gate.md) if the
+next priority is destructive-delete safety, because preview UI now exists but
+delete routes still need evidence validation before mutation. Keep public
+search scope, collection section launch policy, broader response-helper
+cleanup, route-local DB ownership gaps, field-contract matrices, server-side
+shop pagination/sorting contracts, lower-level logging policy, admin
+Shopify-link work, and existing content image data migration separate. T-122,
+T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156, and
+T-163 are complete and should not be reassigned unless their guards,
+validation behavior, search metadata, preview contract/UI, or query/fetcher
+contracts regress.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.
