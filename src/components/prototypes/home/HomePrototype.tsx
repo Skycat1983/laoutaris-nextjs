@@ -1,9 +1,11 @@
 import { PrototypeSectionPlaceholder } from "./PrototypeSectionPlaceholder";
 import { BlogPrototypeSection } from "./BlogPrototypeSection";
 import { BiographyPrototypeSection } from "./BiographyPrototypeSection";
+import { CollectionPrototypeSection } from "./CollectionPrototypeSection";
 import { ShopPrototypeSection } from "./ShopPrototypeSection";
 import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
+import type { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 
 const prototypeSections = [
@@ -27,9 +29,9 @@ const prototypeSections = [
   {
     id: "collections",
     label: "Collections",
-    title: "Collections teaser slot",
+    title: "Collections prototype slot",
     description:
-      "Placeholder for a future collections-led section that can remain independent of the live homepage.",
+      "Reserved for the image-guided collections section backed by the existing collection data path.",
     tone: "muted" as const,
   },
   {
@@ -69,6 +71,7 @@ const prototypeSections = [
 type HomePrototypeProps = {
   biographyArticles?: ArticleFrontend[];
   blogEntries?: BlogEntryFrontend[];
+  collectionEntries?: CollectionFrontend[];
   shopProducts?: SimpleProduct[];
   shopHasLoadError?: boolean;
 };
@@ -76,6 +79,7 @@ type HomePrototypeProps = {
 export function HomePrototype({
   biographyArticles = [],
   blogEntries = [],
+  collectionEntries = [],
   shopProducts = [],
   shopHasLoadError = false,
 }: HomePrototypeProps) {
@@ -93,6 +97,15 @@ export function HomePrototype({
 
         if (section.id === "blog") {
           return <BlogPrototypeSection key={section.id} blogs={blogEntries} />;
+        }
+
+        if (section.id === "collections") {
+          return (
+            <CollectionPrototypeSection
+              key={section.id}
+              collections={collectionEntries}
+            />
+          );
         }
 
         if (section.id === "shop") {

@@ -1,0 +1,134 @@
+/* eslint-disable @next/next/no-img-element */
+import { readFileSync } from "fs";
+import path from "path";
+import { render, screen } from "@testing-library/react";
+import { FramedArtworkPreview } from "@/components/shop/frame-preview/FramedArtworkPreview";
+import { FRAME_PROFILES } from "@/lib/framePreview/frameProfiles";
+import { MAT_PROFILES } from "@/lib/framePreview/matProfiles";
+
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({ src, alt, ...props }: Record<string, unknown>) => (
+    <img src={String(src)} alt={String(alt)} {...props} />
+  ),
+}));
+
+const artwork = {
+  src: "/test-artwork.jpg",
+  alt: "Test artwork",
+  metrics: {
+    pixelWidth: 1200,
+    pixelHeight: 900,
+  },
+};
+
+describe("FramedArtworkPreview", () => {
+  it("renders a framed artwork preview from geometry output", () => {
+    render(
+      <FramedArtworkPreview
+        artwork={artwork}
+        frameProfile={FRAME_PROFILES[2]}
+        matProfile={MAT_PROFILES[1]}
+        bounds={{ maxWidthPx: 640, maxHeightPx: 480 }}
+      />
+    );
+
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toHaveAttribute("data-frame-profile-id", "natural-oak-medium");
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toHaveAttribute("data-mat-profile-id", "warm-white");
+    expect(screen.getByRole("img", { name: "Test artwork" })).toHaveAttribute(
+      "src",
+      "/test-artwork.jpg"
+    );
+    expect(screen.getByTestId("framed-preview-outer")).toHaveStyle({
+      maxWidth: "100%",
+    });
+    expect(screen.getByTestId("framed-preview-frame")).toHaveStyle({
+      background:
+        "linear-gradient(135deg, #c99b5b 0%, #d8b579 42%, #9f743f 51%, #d8b579 60%, #c99b5b 100%)",
+    });
+    expect(screen.getByTestId("framed-preview-mat")).toHaveStyle({
+      backgroundColor: "#f7f2e8",
+    });
+    expect(screen.getByText(/Natural Oak frame preview/)).toHaveClass(
+      "sr-only"
+    );
+  });
+
+  it("uses stable default profiles when none are supplied", () => {
+    render(
+      <FramedArtworkPreview
+        artwork={artwork}
+        bounds={{ maxWidthPx: 500, maxHeightPx: 500 }}
+      />
+    );
+
+    const figure = screen.getByRole("figure", {
+      name: "Framed preview of Test artwork",
+    });
+
+    expect(figure).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
+    expect(figure).toHaveAttribute("data-mat-profile-id", "none");
+    expect(figure).toHaveAttribute("data-scale-mode", "relativePreview");
+    expect(screen.getByTestId("framed-preview-mat")).toHaveStyle({
+      backgroundColor: "transparent",
+    });
+  });
+
+  it("surfaces physical scale mode when complete print dimensions are available", () => {
+    render(
+      <FramedArtworkPreview
+        artwork={{
+          ...artwork,
+          metrics: {
+            pixelWidth: 1000,
+            pixelHeight: 1000,
+            physicalPrintWidthCm: 40,
+            physicalPrintHeightCm: 40,
+          },
+        }}
+        frameProfile={FRAME_PROFILES[3]}
+        matProfile={MAT_PROFILES[1]}
+        bounds={{ maxWidthPx: 600, maxHeightPx: 600 }}
+      />
+    );
+
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toHaveAttribute("data-scale-mode", "physicalScalePreview");
+  });
+
+  it("does not own modal, carousel, product, or commerce behavior", () => {
+    render(
+      <FramedArtworkPreview
+        artwork={artwork}
+        bounds={{ maxWidthPx: 500, maxHeightPx: 500 }}
+      />
+    );
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/checkout|enquire|choose frame/i)
+    ).not.toBeInTheDocument();
+  });
+
+  it("keeps the standalone preview component isolated from later phases", () => {
+    const source = readFileSync(
+      path.join(
+        process.cwd(),
+        "src/components/shop/frame-preview/FramedArtworkPreview.tsx"
+      ),
+      "utf8"
+    );
+
+    expect(source).not.toMatch(/useState|useEffect|onClick/);
+    expect(source).not.toMatch(/@\/lib\/api\/shopify|@\/lib\/data\/services/);
+    expect(source).not.toMatch(/@\/lib\/data\/models|@\/lib\/db/);
+    expect(source).not.toMatch(/project\/contact|checkout|cart/i);
+    expect(source).not.toMatch(/FramedPrintPreviewModal|prototype\/frame/);
+  });
+});

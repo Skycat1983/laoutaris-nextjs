@@ -232,6 +232,11 @@ Next.js server/client component boundaries.
   homepage teaser sections, not the destination pages. Prototype work should
   use an isolated `/prototype/home` route because the live homepage currently
   uses `ContentLayout` side columns.
+- The owner supplied a collections section mockup during the prototype track.
+  `/prototype/home` now renders a collections prototype section that uses the
+  same `getCollectionList({ section: "collections", limit: 9 })` data path as
+  the live homepage collection section, while keeping its visual layout
+  isolated from the production `CollectionSection`.
 
 ## Backlog
 
@@ -746,6 +751,12 @@ Use browser checks for layout-sensitive changes.
   [homepage-owner-review-packet.md](../prototypes/homepage-owner-review-packet.md),
   and the first semantic style-map scaffold exists without runtime adoption or
   visual changes.
+- 2026-05-21: Added the mockup-guided `/prototype/home` collections section.
+  The route now loads collection data in parallel through
+  `getCollectionList({ section: "collections", limit: 9 })`, renders the first
+  collection as the expanded panel with supporting narrow panels, and keeps the
+  live homepage, `CollectionSection`, `CollectionsSectionLoader`,
+  `ContentLayout`, global CSS, and public navigation unchanged.
 - 2026-05-20: Completed T-173 and prepared T-174 through T-178 from its admin
   read-list audit. Frontend follow-up should wait for route query hardening
   before adding main read-tab pagination, filters, or search.
@@ -785,13 +796,14 @@ Use browser checks for layout-sensitive changes.
 ## Next Agent Action
 
 For the homepage redesign track, keep production migration blocked until owner
-review accepts the expanded prototype direction using the T-169 packet. The
-semantic style map from T-170 should not be adopted in prototype or live
-components until that direction is accepted and a visual-parity migration task
-is prepared. T-157 through T-170 and T-173 are complete; do not reassign them
-unless the prototype route, section data mapping, visual QA handoff, style
-audit, width frame, section composition, expanded QA conclusion, owner packet,
-style scaffold, or admin read-list audit regresses.
+review accepts the expanded prototype direction using the T-169 packet, now
+updated to include the collections prototype. The semantic style map from T-170
+should not be adopted in prototype or live components until that direction is
+accepted and a visual-parity migration task is prepared. T-157 through T-170
+and T-173 are complete; do not reassign them unless the prototype route,
+section data mapping, visual QA handoff, style audit, width frame, section
+composition, expanded QA conclusion, owner packet, style scaffold, collections
+prototype, or admin read-list audit regresses.
 
 No further admin archive maintenance UI task is currently prepared after
 T-183. Keep any future shared read-list shell extraction, comment/user search,

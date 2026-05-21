@@ -6,9 +6,10 @@ been reconciled.
 Use task briefs when a workstream backlog item is ready to commission and the
 orchestrator needs a one-line `/task ... details:` assignment.
 
-Prompt packs:
+Planning and prompt packs:
 
 - [Homepage prototype agent prompts](prototype-home-agent-prompts.md)
+- [Framed print preview implementation plan](framed-print-preview-implementation-plan.md)
 
 ## Active Tasks
 
@@ -200,6 +201,9 @@ Prompt packs:
 | [T-184 Audit TypeScript noEmit test errors](T-184-audit-typescript-noemit-test-errors.md) | Completed | Categorized the existing strict TypeScript test-check failures as test-only before deciding whether to fix them or promote noEmit checks. |
 | [T-185 Fix navigation DTO test fixtures](T-185-fix-navigation-dto-test-fixtures.md) | Completed | Updated stale public navigation test fixtures to match the current article and collection navigation DTOs. |
 | [T-186 Fix never-typed test fixtures](T-186-fix-never-typed-test-fixtures.md) | Planned | Replace over-narrow `never` test fixtures in loader/form tests with typed fixtures without runtime changes. |
+| [T-187 Add frame preview geometry contracts](T-187-add-frame-preview-geometry-contracts.md) | Completed | Added the pure frame/mat profile catalogs and geometry helper for future framed print previews without changing product page UI. |
+| [T-188 Build standalone framed artwork preview](T-188-build-standalone-framed-artwork-preview.md) | Completed | Added the presentational framed artwork preview component backed by the T-187 geometry helper without modal or product-page behavior. |
+| [T-189 Build framed print preview modal shell](T-189-build-framed-print-preview-modal-shell.md) | Completed | Added the controlled modal shell and frame-material controls around the standalone preview without route or product-page behavior. |
 
 ## Rules
 

@@ -15,10 +15,10 @@ the public navigation, and it is marked so search engines should not index it.
 ## What Changed
 
 - The prototype uses a wider homepage canvas than the current live homepage.
-- The biography, blog, and shop sections were built from the supplied visual
-  guide images.
+- The biography, blog, collections, and shop sections were built from supplied
+  visual guide images.
 - The sections use real site data where possible: biography articles, blog
-  posts, and shop products.
+  posts, collections, and shop products.
 - The wider version was rebalanced so desktop cards, images, rails, and text do
   not simply stretch across the screen.
 - A focused desktop and mobile QA pass found no page-level horizontal scrolling.
@@ -31,6 +31,8 @@ production behavior.
 Focus on these areas:
 
 - Overall width: whether the homepage should feel this broad and full-screen.
+- Collections: whether the first expanded room, narrow image panels, and
+  collection order match the archive direction.
 - Biography: whether the story order and featured first card are correct.
 - Blog: whether the homepage should show latest blog posts or selected content.
 - Shop: whether the wording, prices, and product-card labels set the right
@@ -39,9 +41,9 @@ Focus on these areas:
 - Section links: whether jumping to sections should account for the fixed site
   header and breadcrumb area.
 
-The hero, artwork, collections, and project sections are still placeholders.
-The review should focus mainly on the width direction plus the biography, blog,
-and shop sections.
+The hero, artwork, and project sections are still placeholders. The review
+should focus mainly on the width direction plus the collections, biography,
+blog, and shop sections.
 
 ## Recommendation
 
@@ -98,7 +100,25 @@ What this means:
 Project impact: this may require a small curated ordering rule before the
 section moves to production.
 
-### 3. Canonical Dates
+### 3. Collection Order
+
+Decision question: Should the collections section use the current data order, or
+should the first expanded room and narrow panel order be curated?
+
+Recommendation: Curate the order if the first expanded panel is meant to make a
+specific owner-approved statement about the archive.
+
+What this means:
+
+- Current data order: the prototype follows the same collection list service as
+  the live homepage section.
+- Curated order: the owner can choose which room opens the section and how the
+  supporting room panels are sequenced.
+
+Project impact: this may require a small ordering field or route-local curation
+rule before production migration.
+
+### 4. Canonical Dates
 
 Decision question: Which dates should the site use everywhere for Joseph
 Laoutaris?
@@ -121,7 +141,7 @@ What this means:
 Project impact: this affects visible copy, biography content, blog content,
 metadata, and owner-approved archive facts.
 
-### 4. Blog Strategy
+### 5. Blog Strategy
 
 Decision question: Should the homepage blog section show latest blog posts,
 selected posts, or a biography-style editorial feature?
@@ -141,7 +161,7 @@ What this means:
 Project impact: this determines whether the production section needs simple
 latest-post loading or an admin/curation rule.
 
-### 5. Shop And Commerce Wording
+### 6. Shop And Commerce Wording
 
 Decision question: Is the shop ready to use sales-forward wording and visible
 prices on the homepage?
@@ -174,7 +194,7 @@ Project impact: this affects customer expectations and the future Shopify sales
 path. The homepage should not imply a finished checkout or policy flow before
 those operations are ready.
 
-### 6. Shop Product Labels
+### 7. Shop Product Labels
 
 Decision question: What should product cards show above the title?
 
@@ -197,7 +217,7 @@ What this means:
 Project impact: this may require product data cleanup or a mapping rule before
 the section goes live.
 
-### 7. Mobile Density
+### 8. Mobile Density
 
 Decision question: On phones, should the homepage sections remain fully stacked,
 or should some sections become more compact?
@@ -216,7 +236,7 @@ What this means:
 Project impact: compact mobile behavior takes more design and accessibility
 work than the current stacked approach.
 
-### 8. Anchor And Header Behavior
+### 9. Anchor And Header Behavior
 
 Decision question: Should users be able to jump directly to homepage sections,
 and if so, where should the section land under the fixed header?
@@ -239,6 +259,7 @@ homepage gets section navigation or campaign links.
 Please answer these before production migration:
 
 - Width direction: wider, bounded, or mixed?
+- Collection order: current data order or curated room order?
 - Biography order: fixed story order or current data order?
 - Canonical dates: `1935 - 2022` or `1935 - 2023`?
 - Blog strategy: latest posts, selected posts, or biography-style feature?

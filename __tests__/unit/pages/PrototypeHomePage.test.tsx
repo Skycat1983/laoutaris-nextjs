@@ -8,6 +8,8 @@ import { BiographyPrototypeSection } from "@/components/prototypes/home/Biograph
 import { getBiographyPrototypeArticles } from "@/components/prototypes/home/BiographyPrototypeLoader";
 import { BlogPrototypeSection } from "@/components/prototypes/home/BlogPrototypeSection";
 import { getBlogPrototypeEntries } from "@/components/prototypes/home/BlogPrototypeLoader";
+import { CollectionPrototypeSection } from "@/components/prototypes/home/CollectionPrototypeSection";
+import { getCollectionPrototypeEntries } from "@/components/prototypes/home/CollectionPrototypeLoader";
 import { ShopPrototypeSection } from "@/components/prototypes/home/ShopPrototypeSection";
 import { getShopPrototypeProducts } from "@/components/prototypes/home/ShopPrototypeLoader";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
@@ -37,6 +39,10 @@ jest.mock("@/components/prototypes/home/ShopPrototypeLoader", () => ({
   getShopPrototypeProducts: jest.fn(),
 }));
 
+jest.mock("@/components/prototypes/home/CollectionPrototypeLoader", () => ({
+  getCollectionPrototypeEntries: jest.fn(),
+}));
+
 jest.mock("@/lib/images/cloudinaryDelivery", () => ({
   getCloudinaryDeliveryUrl: (src?: string) => src ?? "",
 }));
@@ -53,6 +59,10 @@ const mockGetBiographyPrototypeArticles =
 const mockGetShopPrototypeProducts =
   getShopPrototypeProducts as jest.MockedFunction<
     typeof getShopPrototypeProducts
+  >;
+const mockGetCollectionPrototypeEntries =
+  getCollectionPrototypeEntries as jest.MockedFunction<
+    typeof getCollectionPrototypeEntries
   >;
 
 const createBlog = (slug: string, title: string, subtitle?: string) =>
@@ -74,6 +84,23 @@ const createBiographyArticle = (
     title,
     subtitle,
     imageUrl: `https://res.cloudinary.com/dzncmfirr/image/upload/${slug}.jpg`,
+  }) as never;
+
+const createCollection = (
+  slug: string,
+  title: string,
+  firstArtworkId: string | null = `${slug}-artwork`
+) =>
+  ({
+    slug,
+    title,
+    subtitle: `${title} subtitle`,
+    summary: `${title} summary`,
+    text: `${title} text`,
+    imageUrl: `https://res.cloudinary.com/dzncmfirr/image/upload/${slug}.jpg`,
+    section: "collections",
+    artworkCount: 4,
+    firstArtworkId,
   }) as never;
 
 const createProduct = (
@@ -115,6 +142,14 @@ describe("/prototype/home page", () => {
       createBlog("lead-story", "Lead Story", "Lead blog subtitle"),
       createBlog("studio-note", "Studio Note"),
     ]);
+    mockGetCollectionPrototypeEntries.mockResolvedValue([
+      createCollection("extra-large", "Extra Large", "art-1"),
+      createCollection(
+        "grandads-living-room",
+        "Grandad's Living Room",
+        "art-2"
+      ),
+    ]);
     mockGetShopPrototypeProducts.mockResolvedValue({
       products: [createProduct("yellow-composition", "Yellow Composition")],
       hasLoadError: false,
@@ -147,7 +182,11 @@ describe("/prototype/home page", () => {
     ).toHaveClass("sr-only");
     expect(mockGetBiographyPrototypeArticles).toHaveBeenCalledTimes(1);
     expect(mockGetBlogPrototypeEntries).toHaveBeenCalledTimes(1);
+    expect(mockGetCollectionPrototypeEntries).toHaveBeenCalledTimes(1);
     expect(mockGetShopPrototypeProducts).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByTestId("prototype-collections-section")
+    ).toBeInTheDocument();
     expect(screen.getByTestId("prototype-shop-section")).toBeInTheDocument();
   });
 
@@ -176,6 +215,7 @@ describe("/prototype/home page", () => {
     const sectionSource = [
       "src/components/prototypes/home/BiographyPrototypeSection.tsx",
       "src/components/prototypes/home/BlogPrototypeSection.tsx",
+      "src/components/prototypes/home/CollectionPrototypeSection.tsx",
       "src/components/prototypes/home/ShopPrototypeSection.tsx",
       "src/components/prototypes/home/PrototypeSectionPlaceholder.tsx",
     ]
@@ -188,7 +228,7 @@ describe("/prototype/home page", () => {
     expect(
       sectionSource.split("className={`${prototypeSectionFrameClassName}")
         .length - 1
-    ).toBe(4);
+    ).toBe(5);
   });
 
   it("renders the prototype biography section with real article links", () => {
@@ -293,6 +333,51 @@ describe("/prototype/home page", () => {
     );
   });
 
+  it("renders the prototype collections section with real collection links", () => {
+    render(
+      <CollectionPrototypeSection
+        collections={[
+          createCollection("extra-large", "Extra Large", "art-1"),
+          createCollection("portraits-of-beryl", "Portraits of Beryl", "art-2"),
+          createCollection("family-favourites", "Family Favourites", null),
+        ]}
+      />
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Explore the Collections",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /^Explore the collections/i })
+    ).toHaveAttribute("href", "/collections");
+    expect(
+      screen.getByRole("link", { name: /Extra Large/i })
+    ).toHaveAttribute("href", "/collections/extra-large/art-1");
+    expect(
+      screen.getByRole("link", { name: /Portraits of Beryl/i })
+    ).toHaveAttribute("href", "/collections/portraits-of-beryl/art-2");
+    expect(
+      screen.getByRole("link", { name: /Family Favourites/i })
+    ).toHaveAttribute("href", "/collections/family-favourites");
+  });
+
+  it("keeps the prototype collections section present when collection data is unavailable", () => {
+    render(<CollectionPrototypeSection collections={[]} />);
+
+    expect(
+      screen.getByTestId("prototype-collections-section")
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("prototype-collections-empty")).toHaveTextContent(
+      "Collection rooms are unavailable."
+    );
+    expect(
+      screen.getByRole("link", { name: /^Explore the collections/i })
+    ).toHaveAttribute("href", "/collections");
+  });
+
   it("renders the prototype shop section with product links and enquiry-safe copy", () => {
     render(
       <ShopPrototypeSection
@@ -343,6 +428,8 @@ describe("/prototype/home page", () => {
       "src/components/prototypes/home/BiographyPrototypeLoader.tsx",
       "src/components/prototypes/home/BlogPrototypeSection.tsx",
       "src/components/prototypes/home/BlogPrototypeLoader.tsx",
+      "src/components/prototypes/home/CollectionPrototypeSection.tsx",
+      "src/components/prototypes/home/CollectionPrototypeLoader.tsx",
       "src/components/prototypes/home/ShopPrototypeSection.tsx",
       "src/components/prototypes/home/ShopPrototypeLoader.tsx",
       "src/components/prototypes/home/PrototypeSectionPlaceholder.tsx",
@@ -353,6 +440,8 @@ describe("/prototype/home page", () => {
 
     expect(combinedSource).not.toContain("@/components/views/Home");
     expect(combinedSource).not.toContain("ContentLayout");
+    expect(combinedSource).not.toContain("CollectionSectionLoader");
+    expect(combinedSource).not.toContain("CollectionSection");
     expect(combinedSource).not.toContain("src/app/page.tsx");
   });
 });

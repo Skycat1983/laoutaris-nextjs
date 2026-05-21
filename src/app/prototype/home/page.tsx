@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { HomePrototype } from "@/components/prototypes/home/HomePrototype";
 import { getBiographyPrototypeArticles } from "@/components/prototypes/home/BiographyPrototypeLoader";
 import { getBlogPrototypeEntries } from "@/components/prototypes/home/BlogPrototypeLoader";
+import { getCollectionPrototypeEntries } from "@/components/prototypes/home/CollectionPrototypeLoader";
 import { getShopPrototypeProducts } from "@/components/prototypes/home/ShopPrototypeLoader";
 
 export const metadata: Metadata = {
@@ -16,11 +17,13 @@ export const metadata: Metadata = {
 };
 
 export default async function PrototypeHomePage() {
-  const [biographyArticles, blogEntries, shopData] = await Promise.all([
-    getBiographyPrototypeArticles(),
-    getBlogPrototypeEntries(),
-    getShopPrototypeProducts(),
-  ]);
+  const [biographyArticles, blogEntries, collectionEntries, shopData] =
+    await Promise.all([
+      getBiographyPrototypeArticles(),
+      getBlogPrototypeEntries(),
+      getCollectionPrototypeEntries(),
+      getShopPrototypeProducts(),
+    ]);
 
   return (
     <main className="w-full overflow-hidden" data-testid="prototype-home-page">
@@ -28,6 +31,7 @@ export default async function PrototypeHomePage() {
       <HomePrototype
         biographyArticles={biographyArticles}
         blogEntries={blogEntries}
+        collectionEntries={collectionEntries}
         shopProducts={shopData.products}
         shopHasLoadError={shopData.hasLoadError}
       />

@@ -46,6 +46,14 @@ production while preserving MongoDB as the archive source of truth.
   client components.
 - Product route URLs should use Shopify handles:
   `/shop/products/[productHandle]`.
+- A planned framed print preview feature is documented in
+  [framed-print-preview.md](../architecture/framed-print-preview.md),
+  [framed-print-preview-implementation-plan.md](../tasks/framed-print-preview-implementation-plan.md),
+  and
+  [framed-print-preview-owner-review-plan.md](../prototypes/framed-print-preview-owner-review-plan.md).
+  It should start as a pixel-based, preview-only modal on eligible print product
+  pages and remain separate from checkout/cart work until Shopify option
+  ownership is decided.
 - A-001 found product detail linked artwork fetching, checkout scope, admin
   linking, credential hygiene, product ID validation, filters, pagination,
   sorting, transform coverage, and API envelope consistency are not
@@ -163,6 +171,10 @@ production while preserving MongoDB as the archive source of truth.
   extend the search service/result rendering without adding checkout claims.
 - Derive shop taxonomy filter options from canonical artwork constants instead
   of hand-maintained option arrays.
+- Implement the framed print preview plan in separate slices: frame profile and
+  geometry contracts, standalone preview component, modal controls,
+  `/prototype/frame`, product-page launcher wiring, targeted owner review,
+  Shopify option mapping, and physical dimension migration.
 - Add focused tests for product transformation, link helpers, API behavior,
   product detail artwork context, filters, sorting, and pagination.
 - Move useful root shop notes into architecture and runbook docs, then archive
@@ -391,18 +403,52 @@ Add targeted tests as shop behavior is hardened.
   teaser backed by `getShopProductList`, limited to prototype rendering and
   leaving live shop pages, checkout/cart behavior, Shopify DTOs, and commerce
   claims unchanged.
+- 2026-05-21: Planned the framed print preview feature for print product detail
+  pages. The plan documents a preview-only modal using linked artwork pixel
+  dimensions first, a data-driven frame/mat profile model, future physical
+  dimension support, targeted owner review, and a later Shopify option-mapping
+  phase that stays separate from checkout/cart work.
+- 2026-05-21: Reviewed and tightened the framed print preview plan. The
+  implementation should not start with product-page modal wiring; start with
+  frame profile and pure geometry contracts, then standalone preview rendering,
+  then modal controls, then an isolated `/prototype/frame` workshop, then
+  eligible product-page launcher wiring.
+- 2026-05-21: Completed T-187, the first framed print preview implementation
+  slice. Added pure frame/mat profile catalogs, display/geometry contracts, a
+  relative pixel-based geometry helper with future physical print scaling
+  support, and focused unit coverage. No product pages, modal UI, Shopify
+  contracts, MongoDB schemas, admin forms, checkout, or enquiry behavior
+  changed.
+- 2026-05-21: Completed T-188, the standalone framed artwork preview component.
+  It renders the geometry helper output with selected/default frame and mat
+  profiles while remaining isolated from modal state, product-page eligibility,
+  Shopify clients, checkout, and enquiry behavior. No visible route exists yet.
+- 2026-05-21: Completed T-189, the framed print preview modal shell. Added
+  controlled modal open/close behavior, Escape/backdrop close handling,
+  previous/next material cycling, and direct frame swatches around the standalone
+  preview while keeping product pages, Shopify contracts, checkout, and enquiry
+  behavior unchanged. No visible route exists yet.
 
 ## Next Agent Action
 
 Choose the next Shopify backlog slice from checkout handoff, commerce assurance
 copy alignment, remaining product-detail contract coverage, product pagination,
-server-side sorting, or prototype-shop visual refinement after owner review.
-Keep those separate unless explicitly assigned.
+server-side sorting, framed print preview implementation, or prototype-shop
+visual refinement after owner review. Keep those separate unless explicitly
+assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify
 API validation separate. No product-ID cleanup or migration is indicated by
 T-059 or T-082.
+
+If framed print preview implementation continues, start with the `/prototype/frame`
+workshop route slice from
+[framed-print-preview-implementation-plan.md](../tasks/framed-print-preview-implementation-plan.md).
+Use the completed T-187 geometry helper, T-188 standalone preview component, and
+T-189 modal shell. This should be the first user-visible framed preview route.
+Do not wire live product pages, begin Shopify option mapping, or start physical
+dimension migration in the same task.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.
