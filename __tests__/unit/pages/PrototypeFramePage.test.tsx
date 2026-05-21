@@ -48,16 +48,18 @@ describe("/prototype/frame page", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders fixture artwork shapes and frame material choices", () => {
+  it("renders fixture artwork samples, frame materials, and mat margin choices", () => {
     render(<FramePreviewPrototype />);
 
-    const shapeControls = screen.getByLabelText("Artwork shape samples");
-    for (const shape of ["Portrait", "Landscape", "Square", "Wide"]) {
+    const sampleControls = screen.getByLabelText("Artwork samples");
+    for (const sample of ["Sample A", "Sample B", "Sample C", "Sample D"]) {
       expect(
-        within(shapeControls).getByRole("button", { name: shape })
+        within(sampleControls).getByRole("button", { name: sample })
       ).toBeInTheDocument();
-      expect(screen.getAllByText(shape).length).toBeGreaterThanOrEqual(2);
+      expect(screen.getAllByText(sample).length).toBeGreaterThanOrEqual(2);
     }
+    expect(screen.queryByText("Portrait")).not.toBeInTheDocument();
+    expect(screen.queryByText("Landscape")).not.toBeInTheDocument();
 
     const materialControls = screen.getByLabelText("Frame material samples");
     for (const material of [
@@ -71,6 +73,13 @@ describe("/prototype/frame page", () => {
         within(materialControls).getByRole("button", { name: material })
       ).toBeInTheDocument();
     }
+
+    const matControls = screen.getByLabelText("Mat margin presets");
+    for (const margin of ["No Mat", "Warm White Mat", "Wide Gallery Mat"]) {
+      expect(
+        within(matControls).getByRole("button", { name: margin })
+      ).toBeInTheDocument();
+    }
   });
 
   it("updates the visible preview from fixture controls", () => {
@@ -78,34 +87,41 @@ describe("/prototype/frame page", () => {
 
     const figure = screen
       .getAllByRole("figure", {
-        name: "Framed preview of Portrait artwork frame preview sample",
+        name: "Framed preview of Sample A artwork frame preview",
       })
       .find(
         (preview) => preview.getAttribute("data-mat-profile-id") === "warm-white"
       );
 
     expect(figure).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
+    expect(figure).toHaveAttribute("data-render-mode", "rails");
 
-    fireEvent.click(screen.getByRole("button", { name: "Landscape" }));
+    fireEvent.click(screen.getByRole("button", { name: "Sample B" }));
 
     expect(
       screen.getAllByRole("figure", {
-        name: "Framed preview of Landscape artwork frame preview sample",
+        name: "Framed preview of Sample B artwork frame preview",
       }).length
     ).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole("button", { name: "Walnut" }));
+    fireEvent.click(screen.getByRole("button", { name: "Wide Gallery Mat" }));
 
     expect(
       screen
         .getAllByRole("figure", {
-          name: "Framed preview of Landscape artwork frame preview sample",
+          name: "Framed preview of Sample B artwork frame preview",
         })
         .find(
           (preview) =>
-            preview.getAttribute("data-mat-profile-id") === "warm-white"
+            preview.getAttribute("data-mat-profile-id") ===
+            "gallery-white-wide"
         )
     ).toHaveAttribute("data-frame-profile-id", "walnut-medium");
+
+    expect(
+      screen.getAllByTestId("framed-preview-miter-seam").length
+    ).toBeGreaterThanOrEqual(4);
   });
 
   it("opens and closes the modal preview without product-page behavior", () => {
@@ -120,6 +136,13 @@ describe("/prototype/frame page", () => {
     expect(
       screen.getByRole("dialog", { name: "Frame Preview Prototype" })
     ).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole("dialog", { name: "Frame Preview Prototype" })
+      ).getByRole("figure", {
+        name: "Framed preview of Sample A artwork frame preview",
+      })
+    ).toHaveAttribute("data-render-mode", "rails");
     expect(
       screen.queryByText(/checkout|cart|enquire|buy framed/i)
     ).not.toBeInTheDocument();

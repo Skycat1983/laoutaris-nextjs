@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -53,76 +56,115 @@ function CollectionImage({
   );
 }
 
-function ExpandedCollectionPanel({
-  collection,
-}: {
-  collection: CollectionFrontend;
-}) {
-  return (
-    <Link
-      href={getCollectionHref(collection)}
-      className="group relative flex min-h-[520px] overflow-hidden border border-[#d7cdbd] bg-[#ddd6ca] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9a713d] lg:min-h-[690px] lg:flex-[3.7] 2xl:min-h-[780px]"
-      data-testid="prototype-collection-featured-card"
-    >
-      <CollectionImage collection={collection} priority />
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/10"
-        aria-hidden="true"
-      />
-      <div className="absolute left-5 top-6 font-archivo text-lg text-white/80 sm:left-8 2xl:left-9">
-        {formatIndex(0)}
-      </div>
-      <div className="absolute right-5 top-6 hidden items-center gap-3 font-archivo text-sm uppercase text-white md:inline-flex 2xl:right-8">
-        View collection
-        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/80">
-          <ArrowRight aria-hidden="true" className="h-4 w-4" />
-        </span>
-      </div>
-      <div className="absolute bottom-7 left-5 right-5 flex flex-col gap-4 sm:left-8 sm:right-8 2xl:bottom-9 2xl:left-9">
-        <h3 className="break-words font-cormorant text-4xl font-semibold leading-none text-white sm:text-5xl xl:text-[56px]">
-          {collection.title}
-        </h3>
-        <span className="inline-flex w-fit items-center gap-5 border-b border-white pb-2 font-archivo text-sm uppercase text-white">
-          Explore this room
-          <ArrowRight aria-hidden="true" className="h-5 w-5" />
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-function NarrowCollectionPanel({
+function CollectionAccordionPanel({
   collection,
   index,
+  isActive,
+  onSelect,
 }: {
   collection: CollectionFrontend;
   index: number;
+  isActive: boolean;
+  onSelect: () => void;
 }) {
+  const panelId = `prototype-collection-panel-${collection.slug || index}`;
+  const collectionHref = getCollectionHref(collection);
+  const panelSizeClass = isActive
+    ? "min-h-[520px] lg:flex-[3.7] 2xl:min-h-[780px]"
+    : "min-h-[210px] sm:min-h-[260px] lg:min-h-[690px] lg:flex-[0.92] 2xl:min-h-[780px]";
+
   return (
-    <Link
-      href={getCollectionHref(collection)}
-      className="group relative flex min-h-[360px] overflow-hidden border border-[#d7cdbd] bg-[#ddd6ca] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9a713d] sm:min-h-[420px] lg:min-h-[690px] lg:flex-[0.92] lg:basis-0 2xl:min-h-[780px]"
-      data-testid="prototype-collection-card"
+    <article
+      className={`group relative flex overflow-hidden border border-[#d7cdbd] bg-[#ddd6ca] transition-[flex,min-height] duration-700 ease-out motion-reduce:transition-none lg:basis-0 ${panelSizeClass}`}
+      data-state={isActive ? "open" : "closed"}
+      data-testid={
+        isActive
+          ? "prototype-collection-featured-card"
+          : "prototype-collection-card"
+      }
     >
-      <CollectionImage collection={collection} />
+      <CollectionImage collection={collection} priority={isActive} />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/5"
+        className={`absolute inset-0 transition-colors duration-700 ${
+          isActive
+            ? "bg-gradient-to-t from-black/65 via-black/10 to-black/10"
+            : "bg-gradient-to-t from-black/70 via-black/15 to-black/5"
+        }`}
         aria-hidden="true"
       />
-      <div className="absolute left-5 top-6 font-archivo text-base text-white/80 lg:text-lg">
+
+      <button
+        type="button"
+        aria-expanded={isActive}
+        aria-controls={panelId}
+        aria-label={`Expand ${collection.title} collection panel`}
+        onClick={onSelect}
+        className="absolute inset-0 z-10 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-white"
+      />
+
+      <div className="pointer-events-none absolute left-5 top-6 z-20 font-archivo text-base text-white/80 sm:left-8 lg:text-lg 2xl:left-9">
         {formatIndex(index)}
       </div>
-      <div className="absolute bottom-6 left-5 right-5 lg:hidden">
-        <h3 className="break-words font-cormorant text-3xl font-semibold leading-none text-white">
-          {collection.title}
-        </h3>
-      </div>
-      <div className="absolute bottom-8 left-1/2 hidden max-h-[78%] -translate-x-1/2 rotate-180 items-center [writing-mode:vertical-rl] lg:flex">
-        <h3 className="break-words font-cormorant text-3xl font-semibold leading-none text-white 2xl:text-4xl">
-          {collection.title}
-        </h3>
-      </div>
-    </Link>
+
+      {isActive ? (
+        <>
+          <Link
+            href={collectionHref}
+            className="absolute right-5 top-6 z-30 hidden items-center gap-3 font-archivo text-sm uppercase text-white transition-colors hover:text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:inline-flex 2xl:right-8"
+          >
+            View collection
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/80">
+              <ArrowRight aria-hidden="true" className="h-4 w-4" />
+            </span>
+          </Link>
+          <div
+            id={panelId}
+            className="pointer-events-none absolute bottom-7 left-5 right-5 z-20 flex flex-col gap-4 opacity-100 transition-opacity delay-150 duration-500 sm:left-8 sm:right-8 2xl:bottom-9 2xl:left-9"
+          >
+            <Link
+              href={collectionHref}
+              className="pointer-events-auto w-fit max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            >
+              <h3 className="break-words font-cormorant text-4xl font-semibold leading-none text-white sm:text-5xl xl:text-[56px]">
+                {collection.title}
+              </h3>
+              <span className="mt-4 inline-flex w-fit items-center gap-5 border-b border-white pb-2 font-archivo text-sm uppercase text-white transition-colors hover:text-white/80">
+                Explore this room
+                <ArrowRight aria-hidden="true" className="h-5 w-5" />
+              </span>
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div className="pointer-events-none absolute bottom-6 left-5 right-5 z-20 transition-opacity duration-500 lg:bottom-8 lg:left-1/2 lg:right-auto lg:max-h-[78%] lg:-translate-x-1/2 lg:rotate-180 lg:[writing-mode:vertical-rl]">
+          <h3 className="break-words font-cormorant text-3xl font-semibold leading-none text-white 2xl:text-4xl">
+            {collection.title}
+          </h3>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function CollectionAccordion({
+  collections,
+}: {
+  collections: CollectionFrontend[];
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <div className="flex flex-col gap-3 lg:flex-row lg:gap-2 2xl:gap-3">
+      {collections.map((collection, index) => (
+        <CollectionAccordionPanel
+          key={collection.slug || `${collection.title}-${index}`}
+          collection={collection}
+          index={index}
+          isActive={index === activeIndex}
+          onSelect={() => setActiveIndex(index)}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -148,7 +190,6 @@ export function CollectionPrototypeSection({
   collections,
 }: CollectionPrototypeSectionProps) {
   const visibleCollections = collections.slice(0, MAX_VISIBLE_COLLECTIONS);
-  const [featuredCollection, ...supportingCollections] = visibleCollections;
   const hasCollections = visibleCollections.length > 0;
 
   return (
@@ -192,17 +233,8 @@ export function CollectionPrototypeSection({
           </Link>
         </div>
 
-        {hasCollections && featuredCollection ? (
-          <div className="flex flex-col gap-3 lg:flex-row lg:gap-2 2xl:gap-3">
-            <ExpandedCollectionPanel collection={featuredCollection} />
-            {supportingCollections.map((collection, index) => (
-              <NarrowCollectionPanel
-                key={collection.slug || `${collection.title}-${index}`}
-                collection={collection}
-                index={index + 1}
-              />
-            ))}
-          </div>
+        {hasCollections ? (
+          <CollectionAccordion collections={visibleCollections} />
         ) : (
           <CollectionPrototypeEmptyState />
         )}

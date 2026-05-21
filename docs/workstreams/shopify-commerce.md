@@ -54,6 +54,16 @@ production while preserving MongoDB as the archive source of truth.
   It should start as a pixel-based, preview-only modal on eligible print product
   pages and remain separate from checkout/cart work until Shopify option
   ownership is decided.
+- The first framed print preview review surface now exists at noindex
+  `/prototype/frame`. It uses fixture artwork metrics and local frame/mat
+  profiles only.
+- Available print product detail pages with valid linked archive artwork image
+  metrics now render a preview-only `Preview Frame Options` launcher. Selection
+  state is not persisted, submitted to enquiries, or mapped to Shopify variants.
+- `/prototype/frame` now has a prototype-only rail renderer with mitred seams,
+  bevel styling, non-repeating procedural material panel backgrounds, neutral
+  sample controls, and mat margin presets. Product-page previews still use the
+  simple renderer until visual review approves rollout.
 - A-001 found product detail linked artwork fetching, checkout scope, admin
   linking, credential hygiene, product ID validation, filters, pagination,
   sorting, transform coverage, and API envelope consistency are not
@@ -428,6 +438,30 @@ Add targeted tests as shop behavior is hardened.
   previous/next material cycling, and direct frame swatches around the standalone
   preview while keeping product pages, Shopify contracts, checkout, and enquiry
   behavior unchanged. No visible route exists yet.
+- 2026-05-21: Completed T-190, the first user-visible framed print preview
+  route. `/prototype/frame` is noindex and isolated from public navigation, uses
+  local portrait/landscape/square/wide fixture metrics, and exercises the T-188
+  preview plus T-189 modal shell without changing live shop product pages,
+  Shopify contracts, checkout, cart, enquiry, MongoDB, admin, or physical
+  dimension behavior.
+- 2026-05-21: Completed T-191, the product-page framed preview launcher slice.
+  Added centralized print-product eligibility and linked-artwork image metric
+  normalization, added the `FramedPrintPreviewLauncher` client island, and wired
+  it into `/shop/products/[productHandle]` only for available print products
+  with valid linked artwork image metrics. Existing enquiry CTA behavior,
+  checkout/cart scope, Shopify options, MongoDB/admin data, and physical
+  dimensions were unchanged.
+- 2026-05-21: Completed T-192, the prototype material-rendering slice. Added a
+  `rails` renderer mode for the framed preview component, frame profile visual
+  texture/bevel/seam intent fields, modal renderer pass-through, neutral sample
+  labels, and mat margin controls on `/prototype/frame`. The simple renderer
+  remains the product-page default; no Shopify, checkout/cart, enquiry,
+  MongoDB/admin, or physical-dimension behavior changed.
+- 2026-05-21: Completed T-193, the prototype material-panel slice. Replaced the
+  visible repeated stripe texture layers in the rail renderer with non-repeating
+  full-rail panel backgrounds while preserving bevels, mitred seams, rail
+  geometry, mat controls, modal behavior, and simple-renderer product-page
+  defaults.
 
 ## Next Agent Action
 
@@ -442,13 +476,12 @@ product-link data migration, automatic mutation, and persistence-time Shopify
 API validation separate. No product-ID cleanup or migration is indicated by
 T-059 or T-082.
 
-If framed print preview implementation continues, start with the `/prototype/frame`
-workshop route slice from
-[framed-print-preview-implementation-plan.md](../tasks/framed-print-preview-implementation-plan.md).
-Use the completed T-187 geometry helper, T-188 standalone preview component, and
-T-189 modal shell. This should be the first user-visible framed preview route.
-Do not wire live product pages, begin Shopify option mapping, or start physical
-dimension migration in the same task.
+If framed print preview implementation continues, run T-194 targeted visual QA
+and owner review for `/prototype/frame`. Decide whether to apply the rail
+renderer to product pages now or add real texture assets first. Record eligible
+and ineligible handles, visual notes, and owner decisions before starting
+Shopify option mapping, checkout/cart work, enquiry mutation, or physical
+dimension migration.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

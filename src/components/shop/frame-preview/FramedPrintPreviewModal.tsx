@@ -10,6 +10,7 @@ import {
 } from "@/lib/framePreview/matProfiles";
 import type {
   ArtworkDisplayMetrics,
+  FrameRenderMode,
   FramePreviewBounds,
   FrameProfile,
   MatProfile,
@@ -29,6 +30,7 @@ export type FramedPrintPreviewModalProps = {
   initialFrameProfileId?: string;
   matProfile?: MatProfile;
   bounds?: FramePreviewBounds;
+  renderMode?: FrameRenderMode;
   title?: string;
 };
 
@@ -76,6 +78,7 @@ export const FramedPrintPreviewModal = ({
   initialFrameProfileId,
   matProfile = fallbackMatProfile(),
   bounds = DEFAULT_MODAL_BOUNDS,
+  renderMode = "simple",
   title = "Frame Preview",
 }: FramedPrintPreviewModalProps) => {
   const titleId = useId();
@@ -166,6 +169,7 @@ export const FramedPrintPreviewModal = ({
             frameProfile={selectedFrameProfile}
             matProfile={matProfile}
             bounds={bounds}
+            renderMode={renderMode}
             className="flex justify-center"
           />
         </div>

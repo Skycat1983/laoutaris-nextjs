@@ -1,6 +1,6 @@
 # Framed Print Preview Implementation Plan
 
-Status: Planned
+Status: Partially implemented
 
 Workstreams:
 [Shopify Commerce](../workstreams/shopify-commerce.md),
@@ -220,7 +220,7 @@ Acceptance criteria:
 Verification:
 
 ```bash
-npm test -- --runTestsByPath <focused prototype frame tests>
+npm test -- --runTestsByPath __tests__/unit/pages/PrototypeFramePage.test.tsx __tests__/unit/components/FramedPrintPreviewModal.test.tsx __tests__/unit/components/FramedArtworkPreview.test.tsx __tests__/unit/framePreview/geometry.test.ts
 npm run lint
 git diff --check
 ```
@@ -274,6 +274,8 @@ client/server boundary are being touched.
 
 Outcome: the team can decide whether the visual direction is good enough to
 connect to commerce options.
+
+Status: pending after T-192/T-193 material-rendering refinements.
 
 Scope:
 
@@ -388,10 +390,15 @@ implementation:
 4. `T-190 Add frame preview prototype route`: implement M4 only.
 5. `T-191 Wire framed preview launcher to eligible product pages`: implement
    M5 only.
-6. `T-192 Review framed print preview visual QA`: run M6 and record decisions.
-7. `T-193 Connect preview profiles to Shopify options`: implement M7 after
+6. `T-192 Improve frame preview material rendering`: prototype rail rendering,
+   bevels, mitred joins, material texture styling, and mat margin controls.
+7. `T-193 Replace frame stripe textures with material panels`: replace the
+   regular stripe texture layers with non-repeating panel fills in the
+   prototype rail renderer.
+8. `T-194 Review framed print preview visual QA`: run M6 and record decisions.
+9. `T-195 Connect preview profiles to Shopify options`: implement M7 after
    commerce ownership is decided.
-8. `T-194 Add physical dimension fields and scaling`: implement M8 after data
+10. `T-196 Add physical dimension fields and scaling`: implement M8 after data
    ownership is decided.
 
 Do not combine modal rendering, product-page wiring, Shopify option mapping,
@@ -467,5 +474,26 @@ fallback. Run the listed verification and update the task handoff.
   tests for open/closed rendering, close button, Escape, backdrop close,
   previous/next wrapping, swatch selection, fallback initial profile, and
   product/commerce source isolation. No visible route exists yet.
-- Next framed-preview implementation step: M4/T-190 `/prototype/frame`, the
-  first user-visible route for owner review.
+- 2026-05-21 completed M4/T-190. Added the noindex `/prototype/frame` route and
+  `FramePreviewPrototype`, using local portrait, landscape, square, and wide
+  fixture metrics to exercise the standalone preview and modal shell in a
+  browser-reviewable workshop. No live shop product pages, Shopify contracts,
+  checkout, cart, enquiry, MongoDB, admin, or physical-dimension behavior
+  changed.
+- 2026-05-21 completed M5/T-191. Added centralized product eligibility and
+  linked-artwork preview payload normalization, a product-page client launcher,
+  and conditional `Preview Frame Options` rendering for available print products
+  with valid linked artwork image metrics. Existing enquiry behavior remained
+  unchanged, and frame selection remains preview-only.
+- 2026-05-21 completed T-192. Added prototype-only rail rendering with four
+  frame sides, mitred seam overlays, bevel/texture style intent, neutral sample
+  controls, and mat margin presets. The existing simple renderer remains the
+  default for product-page previews until the rail treatment is reviewed.
+- 2026-05-21 completed T-193. Replaced the prototype rail renderer's repeated
+  stripe texture layers with non-repeating full-rail material panel backgrounds
+  while preserving bevels, mitred seams, rail geometry, mat controls, and modal
+  behavior.
+- Next framed-preview step: T-194 targeted visual QA and owner review for
+  `/prototype/frame`; then decide whether to apply the rail renderer to product
+  pages or add real texture assets first. Do not begin Shopify option mapping
+  or physical-dimension migration before those review decisions are recorded.

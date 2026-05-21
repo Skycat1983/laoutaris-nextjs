@@ -72,10 +72,50 @@ describe("FramedArtworkPreview", () => {
 
     expect(figure).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
     expect(figure).toHaveAttribute("data-mat-profile-id", "none");
+    expect(figure).toHaveAttribute("data-render-mode", "simple");
     expect(figure).toHaveAttribute("data-scale-mode", "relativePreview");
     expect(screen.getByTestId("framed-preview-mat")).toHaveStyle({
       backgroundColor: "transparent",
     });
+  });
+
+  it("can render rail-based material panels, bevel, and mitred corner layers", () => {
+    render(
+      <FramedArtworkPreview
+        artwork={artwork}
+        frameProfile={FRAME_PROFILES[3]}
+        matProfile={MAT_PROFILES[1]}
+        bounds={{ maxWidthPx: 640, maxHeightPx: 480 }}
+        renderMode="rails"
+      />
+    );
+
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toHaveAttribute("data-render-mode", "rails");
+    expect(screen.getByTestId("framed-preview-frame")).toHaveAttribute(
+      "data-frame-renderer",
+      "rails"
+    );
+    expect(
+      screen.getByTestId("framed-preview-rail-top").getAttribute("style")
+    ).toContain("clip-path: polygon");
+    expect(screen.getByTestId("framed-preview-rail-top")).toHaveAttribute(
+      "data-frame-texture-kind",
+      "wood-grain"
+    );
+    expect(screen.getByTestId("framed-preview-rail-top")).toHaveAttribute(
+      "data-frame-texture-mode",
+      "panel"
+    );
+    expect(screen.getByTestId("framed-preview-rail-top")).toHaveStyle({
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "100% 100%",
+    });
+    expect(
+      screen.getByTestId("framed-preview-rail-top").getAttribute("style")
+    ).not.toContain("repeating-linear-gradient");
+    expect(screen.getAllByTestId("framed-preview-miter-seam")).toHaveLength(4);
   });
 
   it("surfaces physical scale mode when complete print dimensions are available", () => {

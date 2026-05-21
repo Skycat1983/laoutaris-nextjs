@@ -19,16 +19,34 @@ Implemented foundation:
 - `src/components/shop/frame-preview/FramedArtworkPreview.tsx` renders a
   standalone framed artwork preview from the geometry helper without owning
   modal state, carousel controls, product eligibility, checkout, or enquiry
-  behavior.
+  behavior. It now supports the original `simple` renderer and a prototype
+  `rails` renderer with four frame rails, bevel styling, procedural material
+  panel backgrounds, and mitred seam overlays.
 - `src/components/shop/frame-preview/FramedPrintPreviewModal.tsx` wraps the
   standalone preview in a controlled modal shell with close, Escape, backdrop,
-  previous/next, and direct frame-material swatch selection.
+  previous/next, direct frame-material swatch selection, and optional renderer
+  mode pass-through.
 - `src/components/shop/frame-preview/FrameMaterialControls.tsx` renders the
   modal's frame-material controls without product, Shopify, checkout, or
   enquiry behavior.
+- `src/app/prototype/frame/page.tsx` exposes the first noindex visual review
+  route for the feature.
+- `src/components/prototypes/frame/FramePreviewPrototype.tsx` uses fixture
+  artwork metrics to exercise the standalone preview and modal shell without
+  touching live shop routes. The visible controls use neutral sample labels,
+  derive orientation from pixel dimensions, and expose mat margin presets.
+- `src/lib/framePreview/productEligibility.ts` centralizes product metadata
+  eligibility and linked-artwork preview payload normalization for product
+  detail pages.
+- `src/components/shop/frame-preview/FramedPrintPreviewLauncher.tsx` provides
+  the product-page client island for the `Preview Frame Options` button and
+  modal open state.
+- `src/app/shop/products/[productHandle]/page.tsx` renders the launcher only
+  when the linked product is an available print with a valid linked archive
+  artwork image URL and positive pixel dimensions.
 
-Not yet implemented: `/prototype/frame`, product-page launcher, Shopify option
-mapping, physical dimension persistence, or checkout/enquiry integration.
+Not yet implemented: Shopify option mapping, physical dimension persistence, or
+checkout/enquiry integration.
 
 ## Purpose
 
@@ -99,6 +117,7 @@ Show the preview entry point only when all initial conditions are true:
 - The Shopify product is a print, identified through one approved eligibility
   helper that reads product metadata such as product type, tag, or a future
   explicit metafield.
+- The product is available for sale in Shopify.
 - The product has a valid `mongodbArtworkId`.
 - The linked artwork loads successfully.
 - The linked artwork has an image URL plus positive pixel width and height.
@@ -183,6 +202,10 @@ type FrameProfile = {
     outerColor: string;
     innerColor?: string;
     grainColor?: string;
+    highlightColor?: string;
+    shadowColor?: string;
+    seamColor?: string;
+    textureKind?: "wood-grain" | "painted-grain" | "brushed-metal";
   };
   fallbackFrameRatio: number;
   minFramePx: number;
@@ -193,10 +216,12 @@ type FrameProfile = {
 };
 ```
 
-The initial catalog should include a small set of visually distinct options,
-for example black wood, white wood, oak, walnut, and simple metal. Avoid adding
-large texture sets until the flat or lightly textured compositor has been
-reviewed.
+The initial catalog includes a small set of visually distinct options: black
+wood, white wood, oak, walnut, and brushed metal. T-192 added procedural texture
+intent fields and rail/bevel rendering, and T-193 replaced the visible repeated
+stripe pattern with non-repeating full-rail material panel backgrounds. No
+texture image assets are committed yet. Reusable texture assets can be added
+after visual review without changing geometry.
 
 Frame profile IDs should be stable. Visible labels and styling can change after
 owner review, but IDs should not be renamed casually once tests, product
@@ -244,12 +269,13 @@ modal
 
 Rendering tiers:
 
-1. Flat or lightly gradient CSS/SVG frame surfaces with calculated thickness.
+1. Flat or lightly gradient CSS frame surfaces with calculated thickness.
 2. A `/prototype/frame` route for isolated visual review using fixture or
    owner-approved sample artwork data.
 3. Modal controls and carousel state around the stable preview component.
 4. Product-detail launcher wiring after the isolated preview is acceptable.
-5. SVG corner treatment for mitred joins once the geometry is stable.
+5. Rail-based CSS rendering with bevels, non-repeating procedural material
+   panels, and mitred joins.
 6. Optional reusable texture assets or nine-slice frame assets after owner
    review confirms the feature is worth visual refinement.
 
@@ -257,18 +283,25 @@ Avoid AI-generating a complete frame per artwork. AI-generated or designed
 assets can be useful for material textures, but frame geometry and sizing should
 remain deterministic.
 
+For the current prototype rail renderer, material backgrounds should fill each
+rail as a single panel. Do not use repeating stripe gradients for the frame
+surface; they create an obvious tiled pattern when clipped into long rails.
+Until real texture assets exist, use non-repeating `backgroundImage` layers with
+`backgroundRepeat: "no-repeat"` and `backgroundSize: "100% 100%"` so the panel
+fills the trapezoid shape.
+
 ## Corner Treatment
 
-The frame should eventually show mitred joins. The first implementation may use
-a simpler frame surface if the geometry layer is isolated. The expected
-long-term options are:
+The frame can show mitred joins through the T-192 `rails` renderer. The current
+prototype uses four absolutely positioned rails with CSS `clip-path` ends and
+seam overlays. Expected long-term options remain:
 
 - CSS/SVG polygons for four frame sides, producing diagonal inner corner joins.
 - Nine-slice assets with separate corners and repeatable side textures.
 - Canvas compositing if exportable previews become a requirement.
 
-Do not block the first product-page experiment on photorealistic corners.
-Confirm sizing, modal behavior, and commerce positioning first.
+Do not block commerce mapping on photorealistic corners. Confirm sizing, modal
+behavior, material direction, and commerce positioning first.
 
 ## Product Detail UX
 
@@ -359,6 +392,8 @@ Geometry-level tests should cover:
 
 Component/page tests should cover:
 
+- Prototype route noindex metadata, fixture controls, source isolation, and
+  modal launch behavior.
 - Product eligibility helper behavior for print, book, original, and unknown
   product metadata.
 - Eligible print products render the preview button.

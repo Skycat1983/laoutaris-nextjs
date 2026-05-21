@@ -1,8 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 import ProductPage from "@/app/shop/products/[productHandle]/page";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { SimpleProduct } from "@/lib/data/types/shopify";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 jest.mock("@/components/metadata/PublicDetailJsonLd", () => ({
   ProductStructuredData: jest.fn(() => null),
@@ -14,6 +15,19 @@ jest.mock("@/lib/api/shopify/shopifyClient", () => ({
 
 jest.mock("@/lib/data/services/getArtworkById", () => ({
   getArtworkById: jest.fn(),
+}));
+
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({
+    src,
+    alt,
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => (
+    <img src={String(src)} alt={String(alt)} {...props} />
+  ),
 }));
 
 jest.mock("next/navigation", () => ({
@@ -57,6 +71,8 @@ const createArtwork = (id: string) =>
     decade: "1970s",
     image: {
       secure_url: "https://example.com/artwork.jpg",
+      pixelWidth: 1200,
+      pixelHeight: 900,
     },
   } as never);
 
@@ -129,6 +145,98 @@ describe("/shop/products/[productHandle]", () => {
         "Contact the archive team to confirm availability and purchase details."
       )
     ).toBeInTheDocument();
+  });
+
+  it("renders the framed preview launcher for available print products with linked artwork metrics", async () => {
+    mockGetProductByHandle.mockResolvedValue(
+      createProduct({
+        productType: "print",
+        mongodbArtworkId: validArtworkId,
+      })
+    );
+    mockGetArtworkById.mockResolvedValue(createArtwork(validArtworkId));
+
+    render(await ProductPage({ params: { productHandle: "test-product" } }));
+
+    expect(
+      screen.getByRole("link", { name: "Enquire About This Product" })
+    ).toHaveAttribute("href", "/project/contact?product=test-product");
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Preview Frame Options" })
+    );
+
+    expect(
+      screen.getByRole("dialog", { name: "Frame Preview" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("figure", {
+        name: `Framed preview of Artwork ${validArtworkId}`,
+      })
+    ).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
+    expect(
+      screen.getByRole("img", { name: `Artwork ${validArtworkId}` })
+    ).toHaveAttribute("src", "https://example.com/artwork.jpg");
+  });
+
+  it.each([
+    {
+      name: "original products",
+      product: createProduct({
+        productType: "original",
+        mongodbArtworkId: validArtworkId,
+      }),
+      artwork: createArtwork(validArtworkId),
+    },
+    {
+      name: "unlinked print products",
+      product: createProduct({
+        productType: "print",
+        mongodbArtworkId: undefined,
+      }),
+      artwork: null,
+    },
+    {
+      name: "unavailable print products",
+      product: createProduct({
+        productType: "print",
+        availableForSale: false,
+        mongodbArtworkId: validArtworkId,
+      }),
+      artwork: createArtwork(validArtworkId),
+    },
+    {
+      name: "print products with invalid linked artwork image metrics",
+      product: createProduct({
+        productType: "print",
+        mongodbArtworkId: validArtworkId,
+      }),
+      artwork: {
+        ...createArtwork(validArtworkId),
+        image: {
+          secure_url: "https://example.com/artwork.jpg",
+          pixelWidth: 0,
+          pixelHeight: 900,
+        },
+      },
+    },
+    {
+      name: "book products",
+      product: createProduct({
+        productType: "book",
+        featuredArtworkIds: [validArtworkId],
+      }),
+      artwork: createArtwork(validArtworkId),
+    },
+  ])("hides the framed preview launcher for $name", async ({ product, artwork }) => {
+    mockGetProductByHandle.mockResolvedValue(product);
+    mockGetArtworkById.mockResolvedValue(artwork as never);
+
+    render(await ProductPage({ params: { productHandle: product.handle } }));
+
+    expect(
+      screen.queryByRole("button", { name: "Preview Frame Options" })
+    ).not.toBeInTheDocument();
   });
 
   it("renders unavailable product status without a purchase or contact CTA", async () => {

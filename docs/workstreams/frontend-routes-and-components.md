@@ -65,6 +65,10 @@ Next.js server/client component boundaries.
   behavior: colour/dimension filters and hard-coded pagination.
 - T-061 replaced public shop default type sorting that read product titles with
   metadata-based sorting from Shopify `productType`.
+- The framed print preview component stack now includes a standalone preview,
+  modal controls, a noindex `/prototype/frame` workshop route, product-page
+  launcher wiring for eligible print products, and a prototype-only rail
+  renderer with non-repeating material panel backgrounds.
 - A-020 found missing policy links/notices on public data-collection and
   commerce surfaces, including newsletter, comments, contact, signup/OAuth
   entry, third-party embeds, and commerce assurance copy.
@@ -757,6 +761,11 @@ Use browser checks for layout-sensitive changes.
   collection as the expanded panel with supporting narrow panels, and keeps the
   live homepage, `CollectionSection`, `CollectionsSectionLoader`,
   `ContentLayout`, global CSS, and public navigation unchanged.
+- 2026-05-21: Refined the `/prototype/home` collections section into an
+  animated accordion. Clicking a collapsed collection panel now expands it in
+  place with route-local flex/min-height transitions, exposes the active
+  collection link inside the expanded panel, and preserves the same
+  server-loaded collection data.
 - 2026-05-20: Completed T-173 and prepared T-174 through T-178 from its admin
   read-list audit. Frontend follow-up should wait for route query hardening
   before adding main read-tab pagination, filters, or search.
@@ -792,6 +801,10 @@ Use browser checks for layout-sensitive changes.
   collection, comment, and user read tabs now share a small previous/next
   pagination component and metadata normalization helper without changing
   routes, fetchers, card layouts, search, filters, or handoff actions.
+- 2026-05-21: Completed T-193 for the framed print preview prototype. The
+  rail renderer now fills each clipped frame side with a non-repeating material
+  panel instead of a repeated stripe gradient, preserving bevels, mitred seams,
+  mat controls, modal behavior, and the simple product-page renderer default.
 
 ## Next Agent Action
 

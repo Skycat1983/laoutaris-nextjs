@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { readFileSync } from "fs";
 import path from "path";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import PrototypeHomePage, { metadata } from "@/app/prototype/home/page";
 import { HomePrototype } from "@/components/prototypes/home/HomePrototype";
 import { BiographyPrototypeSection } from "@/components/prototypes/home/BiographyPrototypeSection";
@@ -333,7 +333,7 @@ describe("/prototype/home page", () => {
     );
   });
 
-  it("renders the prototype collections section with real collection links", () => {
+  it("renders the prototype collections section as an animated accordion with real collection links", () => {
     render(
       <CollectionPrototypeSection
         collections={[
@@ -356,9 +356,44 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("link", { name: /Extra Large/i })
     ).toHaveAttribute("href", "/collections/extra-large/art-1");
+
+    expect(
+      screen.getByRole("button", {
+        name: "Expand Extra Large collection panel",
+      })
+    ).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("button", {
+        name: "Expand Portraits of Beryl collection panel",
+      })
+    ).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Expand Portraits of Beryl collection panel",
+      })
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: "Expand Extra Large collection panel",
+      })
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.getByRole("button", {
+        name: "Expand Portraits of Beryl collection panel",
+      })
+    ).toHaveAttribute("aria-expanded", "true");
     expect(
       screen.getByRole("link", { name: /Portraits of Beryl/i })
     ).toHaveAttribute("href", "/collections/portraits-of-beryl/art-2");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Expand Family Favourites collection panel",
+      })
+    );
+
     expect(
       screen.getByRole("link", { name: /Family Favourites/i })
     ).toHaveAttribute("href", "/collections/family-favourites");

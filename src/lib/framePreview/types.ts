@@ -6,11 +6,17 @@ export type FrameMaterial =
   | "metal";
 
 export type FrameScaleMode = "relativePreview" | "physicalScalePreview";
+export type FrameRenderMode = "simple" | "rails";
+export type FrameTextureKind = "wood-grain" | "painted-grain" | "brushed-metal";
 
 export interface FramePreviewStyle {
   outerColor: string;
   innerColor?: string;
   grainColor?: string;
+  highlightColor?: string;
+  shadowColor?: string;
+  seamColor?: string;
+  textureKind?: FrameTextureKind;
 }
 
 export interface FrameProfile {

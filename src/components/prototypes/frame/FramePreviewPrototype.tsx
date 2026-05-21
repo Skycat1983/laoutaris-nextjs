@@ -17,40 +17,40 @@ type PrototypeArtwork = {
 
 const PROTOTYPE_ARTWORKS = [
   {
-    id: "portrait",
-    label: "Portrait",
+    id: "sample-a",
+    label: "Sample A",
     src: "https://res.cloudinary.com/dzncmfirr/image/upload/v1713982689/artwork/xexbkermnflwwz3ubdtm.jpg",
-    alt: "Portrait artwork frame preview sample",
+    alt: "Sample A artwork frame preview",
     metrics: {
       pixelWidth: 1400,
       pixelHeight: 2000,
     },
   },
   {
-    id: "landscape",
-    label: "Landscape",
+    id: "sample-b",
+    label: "Sample B",
     src: "https://res.cloudinary.com/dzncmfirr/image/upload/v1739636066/artwork/lxkuzke740r4flfk8rky.jpg",
-    alt: "Landscape artwork frame preview sample",
+    alt: "Sample B artwork frame preview",
     metrics: {
       pixelWidth: 3000,
       pixelHeight: 1800,
     },
   },
   {
-    id: "square",
-    label: "Square",
+    id: "sample-c",
+    label: "Sample C",
     src: "https://res.cloudinary.com/dzncmfirr/image/upload/v1741015604/artwork/bnd2xppbo7msrnqogys3.jpg",
-    alt: "Square artwork frame preview sample",
+    alt: "Sample C artwork frame preview",
     metrics: {
       pixelWidth: 1800,
       pixelHeight: 1800,
     },
   },
   {
-    id: "wide",
-    label: "Wide",
+    id: "sample-d",
+    label: "Sample D",
     src: "https://res.cloudinary.com/dzncmfirr/image/upload/v1707470649/art-thumbnails/JRL_w111_crop_so0ecb.jpg",
-    alt: "Wide artwork frame preview sample",
+    alt: "Sample D artwork frame preview",
     metrics: {
       pixelWidth: 2500,
       pixelHeight: 1000,
@@ -69,11 +69,14 @@ const modalBounds = {
 };
 
 export const FramePreviewPrototype = () => {
-  const [selectedArtworkId, setSelectedArtworkId] = useState(
+  const [selectedArtworkId, setSelectedArtworkId] = useState<string>(
     PROTOTYPE_ARTWORKS[0].id
   );
-  const [selectedFrameProfileId, setSelectedFrameProfileId] = useState(
+  const [selectedFrameProfileId, setSelectedFrameProfileId] = useState<string>(
     FRAME_PROFILES[0].id
+  );
+  const [selectedMatProfileId, setSelectedMatProfileId] = useState<string>(
+    MAT_PROFILES[1].id
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -89,7 +92,12 @@ export const FramePreviewPrototype = () => {
       FRAME_PROFILES[0]
     );
   }, [selectedFrameProfileId]);
-  const matProfile = MAT_PROFILES[1];
+  const matProfile = useMemo(() => {
+    return (
+      MAT_PROFILES.find((profile) => profile.id === selectedMatProfileId) ??
+      MAT_PROFILES[1]
+    );
+  }, [selectedMatProfileId]);
 
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10">
@@ -103,6 +111,7 @@ export const FramePreviewPrototype = () => {
             frameProfile={selectedFrameProfile}
             matProfile={matProfile}
             bounds={previewBounds}
+            renderMode="rails"
             className="flex justify-center"
           />
         </div>
@@ -120,8 +129,8 @@ export const FramePreviewPrototype = () => {
             </h2>
           </div>
 
-          <div className="space-y-3" aria-label="Artwork shape samples">
-            <p className="text-sm font-medium text-gray-700">Artwork shape</p>
+          <div className="space-y-3" aria-label="Artwork samples">
+            <p className="text-sm font-medium text-gray-700">Artwork sample</p>
             <div className="grid grid-cols-2 gap-2">
               {PROTOTYPE_ARTWORKS.map((artwork) => (
                 <button
@@ -167,6 +176,27 @@ export const FramePreviewPrototype = () => {
             </div>
           </div>
 
+          <div className="space-y-3" aria-label="Mat margin presets">
+            <p className="text-sm font-medium text-gray-700">Mat margin</p>
+            <div className="grid grid-cols-1 gap-2">
+              {MAT_PROFILES.map((profile) => (
+                <button
+                  key={profile.id}
+                  type="button"
+                  aria-pressed={profile.id === matProfile.id}
+                  className={`border px-3 py-3 text-left text-sm transition ${
+                    profile.id === matProfile.id
+                      ? "border-gray-950 bg-white text-gray-950 ring-1 ring-gray-950"
+                      : "border-gray-300 bg-white text-gray-900 hover:border-gray-800"
+                  }`}
+                  onClick={() => setSelectedMatProfileId(profile.id)}
+                >
+                  {profile.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             type="button"
             className="w-full bg-gray-950 px-5 py-4 text-center text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-950"
@@ -179,15 +209,16 @@ export const FramePreviewPrototype = () => {
 
       <section
         className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
-        aria-label="Aspect ratio comparison"
+        aria-label="Sample comparison"
       >
         {PROTOTYPE_ARTWORKS.map((artwork) => (
           <div key={artwork.id} className="bg-white p-4 shadow-sm">
             <FramedArtworkPreview
               artwork={artwork}
               frameProfile={selectedFrameProfile}
-              matProfile={MAT_PROFILES[0]}
+              matProfile={matProfile}
               bounds={{ maxWidthPx: 320, maxHeightPx: 240 }}
+              renderMode="rails"
               className="flex justify-center"
             />
             <p className="mt-3 text-center text-sm font-medium text-gray-700">
@@ -205,6 +236,7 @@ export const FramePreviewPrototype = () => {
         initialFrameProfileId={selectedFrameProfile.id}
         matProfile={matProfile}
         bounds={modalBounds}
+        renderMode="rails"
         title="Frame Preview Prototype"
       />
     </div>

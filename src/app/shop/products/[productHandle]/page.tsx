@@ -5,11 +5,13 @@ import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { ProductStructuredData } from "@/components/metadata/PublicDetailJsonLd";
+import { FramedPrintPreviewLauncher } from "@/components/shop/frame-preview/FramedPrintPreviewLauncher";
 import {
   buildMissingPublicDetailMetadata,
   buildProductDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+import { buildFramedPrintPreviewArtwork } from "@/lib/framePreview/productEligibility";
 import { createServerLogger } from "@/lib/observability/logger";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -110,6 +112,10 @@ export default async function ProductPage({ params }: PageProps) {
   const bookArtworks = isBook
     ? await fetchArtworksInBook(featuredArtworkIds, product.handle)
     : [];
+  const framePreviewArtwork = buildFramedPrintPreviewArtwork(
+    product,
+    linkedArtwork
+  );
 
   return (
     <>
@@ -173,6 +179,9 @@ export default async function ProductPage({ params }: PageProps) {
                   Contact the archive team to confirm availability and purchase
                   details.
                 </p>
+                {framePreviewArtwork && (
+                  <FramedPrintPreviewLauncher artwork={framePreviewArtwork} />
+                )}
               </div>
             ) : (
               <div className="rounded-md border border-gray-200 bg-gray-50 p-4">

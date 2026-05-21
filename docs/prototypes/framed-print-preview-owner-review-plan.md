@@ -1,6 +1,6 @@
 # Framed Print Preview Owner Review Plan
 
-Status: Planned
+Status: Material-rendering review surface available
 
 This document defines how to review the framed print preview experiment as it is
 built. It is intentionally focused on product and visual approval, not code
@@ -15,7 +15,7 @@ The first experimental review surface should be:
 ```
 
 Use it to review frame geometry, materials, mat behavior, modal controls, and
-mobile fit before touching live shop product routes.
+mobile fit independently from live shop product data.
 
 The first commerce-context review surface should be a print product detail page:
 
@@ -29,6 +29,26 @@ a linked archive artwork and qualifies as a print.
 `/prototype/frame` must be noindex, isolated from public navigation, and safe to
 change freely while the visual direction is unsettled.
 
+Implementation status on 2026-05-21: `/prototype/frame` exists and renders a
+fixture-based workshop with neutral sample artwork controls, frame material
+controls, mat margin presets, and the modal preview shell. It does not load
+live Shopify product data and does not change checkout, cart, enquiry, or
+product detail behavior.
+
+Product-page implementation status on 2026-05-21: eligible available print
+product pages with valid linked artwork image metrics now render
+`Preview Frame Options`. The modal remains preview-only; selected frame
+materials are not submitted to enquiries, persisted, or mapped to Shopify
+variants.
+
+Material-rendering status on 2026-05-21: `/prototype/frame` uses the new
+rail-based renderer with four computed sides, mitred seam overlays, bevel
+styling, non-repeating procedural material panel backgrounds, and independent
+mat margin selection. The visible repeating stripe pattern reported during
+owner review has been removed from the rail renderer. Product-page previews
+still use the simple fallback renderer until the rail treatment is visually
+approved.
+
 ## Review Gates
 
 Review can happen in stages:
@@ -36,8 +56,10 @@ Review can happen in stages:
 - After the standalone preview component exists, review basic frame thickness
   and material direction with fixture artwork metrics.
 - After `/prototype/frame` exists, review controls, copy, keyboard behavior,
-  aspect-ratio examples, and mobile fit without depending on Shopify product
-  eligibility.
+  varied aspect-ratio examples, and mobile fit without depending on Shopify
+  product eligibility.
+- After rail rendering exists, review material panel direction, bevel depth,
+  diagonal joins, and mat margins before applying the renderer to product pages.
 - After product-page wiring exists, review real eligible and ineligible product
   routes.
 - Before Shopify option mapping begins, decide whether the preview may remain
@@ -48,8 +70,8 @@ Review can happen in stages:
 - Is a modal the right place for the preview, or should the preview be visible
   directly on the product page later?
 - Are the first frame materials useful enough for print buyers?
-- Does the frame thickness look plausible across portrait, landscape, and
-  square artworks?
+- Does the frame thickness look plausible across tall, wide, square, and
+  unusual-ratio artworks?
 - Should a mat option be visible in the first release, or should it wait?
 - Does the copy clearly communicate preview behavior without implying checkout
   or a selected purchasable option?
@@ -62,8 +84,8 @@ Review can happen in stages:
 
 Before visual review, choose at least:
 
-- One portrait print with linked artwork.
-- One landscape print with linked artwork.
+- One tall print with linked artwork.
+- One wide print with linked artwork.
 - One square print with linked artwork.
 - One unusual aspect-ratio artwork if available.
 - One unlinked or non-print product to confirm the button is hidden.
@@ -77,9 +99,12 @@ review packet. Do not paste private Shopify data or credentials into docs.
 For `/prototype/frame`:
 
 - The route is noindex and not linked from public navigation.
-- Portrait, landscape, square, and unusual aspect-ratio examples are visible or
-  selectable.
+- Tall, wide, square, and unusual aspect-ratio examples are visible or
+  selectable through neutral sample controls.
 - Frame materials can be compared without Shopify product data.
+- Mat margin presets can be compared independently from frame material.
+- Mitred corners and bevel shadows look intentional rather than broken.
+- Frame materials do not show a regular stripe or tiled pattern.
 - The preview remains clearly experimental and does not include enquiry,
   checkout, price, shipping, refund, or guarantee copy.
 - Mobile layout has no overlapping text, clipped controls, or unusable arrows.

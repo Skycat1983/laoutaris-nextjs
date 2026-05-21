@@ -40,6 +40,11 @@ refactoring without turning every change into a manual QA pass.
   1.76% lines, with no coverage gate.
 - The build is currently environment-sensitive because it fetches Google Fonts
   and performs live MongoDB/data work during static generation.
+- Framed print preview coverage now includes pure geometry tests, standalone
+  preview component tests, modal control tests, prototype route tests, product
+  eligibility tests, and product-page launcher tests. T-193 specifically
+  asserts the rail renderer uses non-repeating material panel backgrounds
+  instead of repeated stripe gradients.
 - A-002, A-003, and A-004 added concrete missing coverage for route status
   contracts, route/fetcher parity, DB ownership checks, validation/transform
   outputs, credentials role persistence, stable ownership helpers, and
@@ -1522,6 +1527,10 @@ npm run lint
   updated across navigation loader/page tests; focused navigation tests passed,
   and strict TypeScript now reports 26 remaining unrelated test-only
   diagnostics.
+- 2026-05-21: Completed T-193. Focused frame-preview tests now verify the rail
+  renderer exposes panel mode, uses no-repeat full-size rail backgrounds, and
+  does not emit `repeating-linear-gradient`; lint, build, and a targeted
+  `/prototype/frame` route check passed for the slice.
 
 ## Next Agent Action
 

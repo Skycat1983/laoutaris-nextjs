@@ -31,8 +31,8 @@ production behavior.
 Focus on these areas:
 
 - Overall width: whether the homepage should feel this broad and full-screen.
-- Collections: whether the first expanded room, narrow image panels, and
-  collection order match the archive direction.
+- Collections: whether the animated room accordion, first expanded room, narrow
+  image panels, and collection order match the archive direction.
 - Biography: whether the story order and featured first card are correct.
 - Blog: whether the homepage should show latest blog posts or selected content.
 - Shop: whether the wording, prices, and product-card labels set the right

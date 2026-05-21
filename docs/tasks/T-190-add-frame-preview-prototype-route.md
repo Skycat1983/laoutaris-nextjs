@@ -100,6 +100,10 @@ npm run lint
 git diff --check
 ```
 
+- Local dev server started with `npm run dev` on
+  `http://localhost:3000/prototype/frame`. A targeted
+  `curl -I http://localhost:3000/prototype/frame` returned `200 OK` after the
+  route compiled.
 - Next framed-preview step: owner/developer review of `/prototype/frame` in a
   browser. If the visual direction is acceptable, prepare T-191 to wire a
   preview launcher into eligible print product pages only.
