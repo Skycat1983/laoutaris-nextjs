@@ -43,11 +43,22 @@ variants.
 
 Material-rendering status on 2026-05-21: `/prototype/frame` uses the new
 rail-based renderer with four computed sides, mitred seam overlays, bevel
-styling, non-repeating procedural material panel backgrounds, and independent
-mat margin selection. The visible repeating stripe pattern reported during
-owner review has been removed from the rail renderer. Product-page previews
-still use the simple fallback renderer until the rail treatment is visually
-approved.
+styling, non-repeating procedural material panel backgrounds, inner bevel/glass
+sheen overlays, and independent mat margin selection. The visible repeating
+stripe pattern reported during owner review has been removed from the rail
+renderer. Product-page previews still use the simple fallback renderer until
+the rail treatment is visually approved.
+
+Room-preview status on 2026-05-21: `/prototype/frame` now includes four
+generated blank-wall home backgrounds under
+`public/prototypes/frame-backgrounds/`. The route lets reviewers switch between
+modern gallery, Scandinavian living room, townhouse study, and Mediterranean
+plaster hallway scenes and composites the selected framed artwork into a
+route-local hanging zone. Background switching is buffered so the existing
+room composition remains visible until the requested room image has loaded.
+The fixture artwork metrics have also been corrected to the measured source
+image dimensions so the artwork box and mat spacing stay aligned. These
+generated backgrounds are prototype review assets only.
 
 ## Review Gates
 
@@ -60,6 +71,9 @@ Review can happen in stages:
   product eligibility.
 - After rail rendering exists, review material panel direction, bevel depth,
   diagonal joins, and mat margins before applying the renderer to product pages.
+- After room backgrounds exist, review whether wall-scale previews help buyers
+  understand size/context, and whether the background set should be curated,
+  regenerated, or reduced before any production use.
 - After product-page wiring exists, review real eligible and ineligible product
   routes.
 - Before Shopify option mapping begins, decide whether the preview may remain
@@ -105,6 +119,12 @@ For `/prototype/frame`:
 - Mat margin presets can be compared independently from frame material.
 - Mitred corners and bevel shadows look intentional rather than broken.
 - Frame materials do not show a regular stripe or tiled pattern.
+- The room-preview backgrounds leave a believable blank wall zone for the
+  framed artwork and do not visually compete with the print.
+- Switching room backgrounds keeps the framed print centered in a plausible
+  hanging position and does not flash a half-loaded background/frame composite.
+- Mat spacing around the artwork remains even when switching between the tall,
+  wide, and near-square sample images.
 - The preview remains clearly experimental and does not include enquiry,
   checkout, price, shipping, refund, or guarantee copy.
 - Mobile layout has no overlapping text, clipped controls, or unusable arrows.

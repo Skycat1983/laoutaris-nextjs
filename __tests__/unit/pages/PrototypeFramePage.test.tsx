@@ -7,9 +7,18 @@ import { FramePreviewPrototype } from "@/components/prototypes/frame/FramePrevie
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt, ...props }: Record<string, unknown>) => (
-    <img src={String(src)} alt={String(alt)} {...props} />
-  ),
+  default: ({
+    src,
+    alt,
+    fill,
+    priority,
+    ...props
+  }: Record<string, unknown>) => {
+    void fill;
+    void priority;
+
+    return <img src={String(src)} alt={String(alt)} {...props} />;
+  },
 }));
 
 const readRepoFile = (relativePath: string) =>
@@ -80,6 +89,18 @@ describe("/prototype/frame page", () => {
         within(matControls).getByRole("button", { name: margin })
       ).toBeInTheDocument();
     }
+
+    const roomControls = screen.getByLabelText("Room background samples");
+    for (const room of [
+      "Modern Gallery",
+      "Scandinavian Living",
+      "Townhouse Study",
+      "Plaster Hallway",
+    ]) {
+      expect(
+        within(roomControls).getByRole("button", { name: room })
+      ).toBeInTheDocument();
+    }
   });
 
   it("updates the visible preview from fixture controls", () => {
@@ -104,6 +125,51 @@ describe("/prototype/frame page", () => {
       }).length
     ).toBeGreaterThan(0);
 
+    expect(screen.getByTestId("prototype-frame-room-scene")).toBeInTheDocument();
+    expect(
+      screen.getByAltText("Modern white gallery-style living room wall background")
+    ).toHaveAttribute(
+      "src",
+      "/prototypes/frame-backgrounds/modern-gallery-wall.png"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Townhouse Study" }));
+
+    expect(
+      screen.getByAltText("Modern white gallery-style living room wall background")
+    ).toHaveAttribute(
+      "src",
+      "/prototypes/frame-backgrounds/modern-gallery-wall.png"
+    );
+    expect(screen.getByTestId("prototype-frame-room-scene")).toHaveAttribute(
+      "data-room-transitioning",
+      "true"
+    );
+    expect(screen.getByTestId("prototype-frame-room-preloader")).toHaveAttribute(
+      "src",
+      "/prototypes/frame-backgrounds/townhouse-study-wall.png"
+    );
+
+    fireEvent.load(screen.getByTestId("prototype-frame-room-preloader"));
+
+    expect(
+      screen.getByAltText("Older townhouse study wall background")
+    ).toHaveAttribute(
+      "src",
+      "/prototypes/frame-backgrounds/townhouse-study-wall.png"
+    );
+    expect(
+      screen.getByTestId("prototype-frame-room-hanging-zone")
+    ).toHaveStyle({
+      left: "52%",
+      top: "42%",
+      width: "22%",
+    });
+    expect(screen.getByTestId("prototype-frame-room-scene")).toHaveAttribute(
+      "data-room-transitioning",
+      "false"
+    );
+
     fireEvent.click(screen.getByRole("button", { name: "Walnut" }));
     fireEvent.click(screen.getByRole("button", { name: "Wide Gallery Mat" }));
 
@@ -122,6 +188,22 @@ describe("/prototype/frame page", () => {
     expect(
       screen.getAllByTestId("framed-preview-miter-seam").length
     ).toBeGreaterThanOrEqual(4);
+  });
+
+  it("keeps sample artwork frame ratios aligned to the loaded assets", () => {
+    render(<FramePreviewPrototype />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sample D" }));
+
+    const sampleDImages = screen.getAllByRole("img", {
+      name: "Sample D artwork frame preview",
+    });
+
+    for (const sampleDImage of sampleDImages) {
+      expect(Number.parseFloat(sampleDImage.style.height)).toBeGreaterThan(
+        Number.parseFloat(sampleDImage.style.width)
+      );
+    }
   });
 
   it("opens and closes the modal preview without product-page behavior", () => {

@@ -116,6 +116,8 @@ describe("FramedArtworkPreview", () => {
       screen.getByTestId("framed-preview-rail-top").getAttribute("style")
     ).not.toContain("repeating-linear-gradient");
     expect(screen.getAllByTestId("framed-preview-miter-seam")).toHaveLength(4);
+    expect(screen.getByTestId("framed-preview-inner-bevel")).toBeInTheDocument();
+    expect(screen.getByTestId("framed-preview-glass-sheen")).toBeInTheDocument();
   });
 
   it("surfaces physical scale mode when complete print dimensions are available", () => {

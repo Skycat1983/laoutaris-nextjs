@@ -64,6 +64,14 @@ production while preserving MongoDB as the archive source of truth.
   bevel styling, non-repeating procedural material panel backgrounds, neutral
   sample controls, and mat margin presets. Product-page previews still use the
   simple renderer until visual review approves rollout.
+- `/prototype/frame` also includes generated blank-wall room backgrounds for
+  modern gallery, Scandinavian living room, townhouse study, and Mediterranean
+  plaster hallway contexts. The prototype composites the selected framed print
+  into a route-local hanging zone for wall-scale review; product-page previews
+  remain unchanged.
+- `/prototype/frame` buffers room background changes until the requested room
+  image has loaded and uses measured fixture artwork dimensions so prototype
+  mat spacing does not appear uneven from asset/metric ratio drift.
 - A-001 found product detail linked artwork fetching, checkout scope, admin
   linking, credential hygiene, product ID validation, filters, pagination,
   sorting, transform coverage, and API envelope consistency are not
@@ -462,6 +470,17 @@ Add targeted tests as shop behavior is hardened.
   full-rail panel backgrounds while preserving bevels, mitred seams, rail
   geometry, mat controls, modal behavior, and simple-renderer product-page
   defaults.
+- 2026-05-21: Added the next `/prototype/frame` refinement for visual review.
+  The rail renderer now includes inner bevel and subtle glass-sheen overlays,
+  and the prototype route now offers four generated room-wall backgrounds with
+  framed-print compositing in a fixed hanging zone. Product-page previews,
+  Shopify contracts, checkout/cart, enquiry behavior, and public navigation
+  were unchanged.
+- 2026-05-21: Refined `/prototype/frame` room-scene switching and sample
+  artwork sizing. Background changes now wait for the requested room image to
+  load before swapping the visible room composition, and the sample artwork
+  metrics now match the measured Cloudinary asset dimensions so the framed mat
+  spacing stays even across the prototype examples.
 
 ## Next Agent Action
 
@@ -477,11 +496,13 @@ API validation separate. No product-ID cleanup or migration is indicated by
 T-059 or T-082.
 
 If framed print preview implementation continues, run T-194 targeted visual QA
-and owner review for `/prototype/frame`. Decide whether to apply the rail
-renderer to product pages now or add real texture assets first. Record eligible
-and ineligible handles, visual notes, and owner decisions before starting
-Shopify option mapping, checkout/cart work, enquiry mutation, or physical
-dimension migration.
+and owner review for `/prototype/frame`. Include both close-up frame materials
+and generated room-wall context scenes in review. Decide whether to apply the
+rail renderer to product pages now, regenerate/curate room backgrounds, or add
+real texture assets first. Confirm buffered room switching and even mat spacing
+across the corrected prototype artwork samples. Record eligible and ineligible
+handles, visual notes, and owner decisions before starting Shopify option
+mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

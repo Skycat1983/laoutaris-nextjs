@@ -387,6 +387,34 @@ const RailFrameRenderer = ({
           matProfile={matProfile}
           priority={priority}
         />
+        <span
+          aria-hidden="true"
+          data-testid="framed-preview-inner-bevel"
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            boxShadow: [
+              "inset 0 0 0 1px rgba(255,255,255,0.38)",
+              "inset 0 0 0 2px rgba(0,0,0,0.08)",
+              "inset 0 18px 24px rgba(255,255,255,0.1)",
+              "inset 0 -18px 22px rgba(0,0,0,0.12)",
+            ].join(", "),
+          }}
+        />
+        <span
+          aria-hidden="true"
+          data-testid="framed-preview-glass-sheen"
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background:
+              "linear-gradient(125deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.04) 28%, rgba(255,255,255,0) 42%)",
+            mixBlendMode: "screen",
+            opacity: 0.45,
+          }}
+        />
       </div>
     </div>
   );

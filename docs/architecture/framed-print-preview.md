@@ -21,7 +21,7 @@ Implemented foundation:
   modal state, carousel controls, product eligibility, checkout, or enquiry
   behavior. It now supports the original `simple` renderer and a prototype
   `rails` renderer with four frame rails, bevel styling, procedural material
-  panel backgrounds, and mitred seam overlays.
+  panel backgrounds, mitred seam overlays, inner bevel, and subtle glass sheen.
 - `src/components/shop/frame-preview/FramedPrintPreviewModal.tsx` wraps the
   standalone preview in a controlled modal shell with close, Escape, backdrop,
   previous/next, direct frame-material swatch selection, and optional renderer
@@ -34,7 +34,14 @@ Implemented foundation:
 - `src/components/prototypes/frame/FramePreviewPrototype.tsx` uses fixture
   artwork metrics to exercise the standalone preview and modal shell without
   touching live shop routes. The visible controls use neutral sample labels,
-  derive orientation from pixel dimensions, and expose mat margin presets.
+  derive orientation from pixel dimensions, expose mat margin presets, and
+  composite the selected preview onto generated room-wall backgrounds. Room
+  switches keep the current composition visible until the requested background
+  has loaded, and fixture metrics are measured from the source images so the
+  artwork box matches the visible image ratio.
+- `public/prototypes/frame-backgrounds/` stores the current generated
+  blank-wall room scenes for `/prototype/frame` review. These are prototype
+  assets and are not loaded by product pages.
 - `src/lib/framePreview/productEligibility.ts` centralizes product metadata
   eligibility and linked-artwork preview payload normalization for product
   detail pages.
