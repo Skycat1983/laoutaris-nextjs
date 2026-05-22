@@ -324,9 +324,16 @@ npm run build
 
 Use browser checks for layout-sensitive changes.
 
+2026-05-22 deployment build fix verification: `npm run build` passed.
+
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-22: Fixed the prototype deployment TypeScript failures by guarding
+  the optional frame room-shadow `min` input prop and widening the homepage
+  biography prototype order-index map for normalized runtime slug/title
+  lookups. `npm run build` now passes; local static generation still reports
+  existing structured MongoDB timeout logs when the database is unavailable.
 - 2026-05-14: Reconciled A-001, A-013, A-014, and A-015 frontend findings into
   `docs/audits/findings-register.md`, production risks, and this backlog.
 - 2026-05-14: Reconciled A-002 public list/search semantics into F-049 and this
@@ -867,6 +874,10 @@ Use browser checks for layout-sensitive changes.
   mat controls, modal behavior, and the simple product-page renderer default.
 
 ## Next Agent Action
+
+No follow-up remains for the 2026-05-22 prototype TypeScript deployment build
+fix; keep the next frontend agent on the existing homepage prototype owner
+review track unless a new deployment error appears.
 
 For the homepage redesign track, keep production migration blocked until owner
 review accepts the expanded prototype direction using the T-169 packet, now

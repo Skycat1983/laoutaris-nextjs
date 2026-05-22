@@ -480,7 +480,7 @@ export const FramePreviewPrototype = () => {
                   <input
                     type="number"
                     step={control.step}
-                    min={control.min}
+                    min={"min" in control ? control.min : undefined}
                     value={roomShadowSettings[control.key]}
                     onChange={handleRoomShadowChange(control.key)}
                     className="h-10 border border-gray-300 bg-white px-3 text-sm text-gray-950 focus:border-gray-950 focus:outline-none"

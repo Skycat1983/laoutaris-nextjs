@@ -25,7 +25,7 @@ const BIOGRAPHY_ARTICLE_ORDER = [
   "later-years",
   "obituary",
 ] as const;
-const BIOGRAPHY_ARTICLE_ORDER_INDEX = new Map(
+const BIOGRAPHY_ARTICLE_ORDER_INDEX: ReadonlyMap<string, number> = new Map(
   BIOGRAPHY_ARTICLE_ORDER.map((slug, index) => [slug, index])
 );
 
