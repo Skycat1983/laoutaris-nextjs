@@ -154,10 +154,18 @@ describe("ShopProductGallery sorting", () => {
     ]);
   });
 
-  it("preserves the current products and clears loading after filter fetch failures", async () => {
-    (global.fetch as jest.Mock).mockResolvedValue({
-      ok: false,
-    });
+  it("shows filter failures, preserves products, and clears after retry", async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: [createProduct("Recovered Print", "Print", "15.00")],
+        }),
+      });
 
     render(<ShopProductGallery initialProducts={products} />);
 
@@ -171,11 +179,22 @@ describe("ShopProductGallery sorting", () => {
     await waitFor(() =>
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument()
     );
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Unable to update product filters"
+    );
     expect(renderedProductTitles()).toEqual([
       "B Title Book",
       "C Title Original",
       "A Title Print",
       "Bookish Unknown",
     ]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry filters" }));
+
+    await waitFor(() =>
+      expect(screen.getByText("Recovered Print")).toBeInTheDocument()
+    );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(renderedProductTitles()).toEqual(["Recovered Print"]);
   });
 });

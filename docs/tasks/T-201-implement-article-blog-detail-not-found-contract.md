@@ -157,3 +157,10 @@ tests, then update this handoff with candidate tracker updates.
   keep the broader public-detail finding open for Shopify route-local UI
   follow-up; note that shared workstream, risk, audit, and orchestration
   trackers were intentionally not edited by this implementation task.
+- Reconciled by the orchestrator on 2026-05-22: shared trackers now mark T-201
+  complete, and T-202 was created for the remaining Shopify product detail
+  route-local not-found UI slice.
+- Orchestration follow-up on 2026-05-22: corrected the optional article
+  navigation missing-result log reason to match the
+  `getArticleNavigationList()` success-or-null service contract. The focused
+  ArticleLoader test and strict TypeScript `noEmit` pass after the correction.

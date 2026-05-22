@@ -1541,10 +1541,27 @@ npm run lint
   and upload button tests. Focused tests passed, and
   `npx tsc --noEmit --pretty false --skipLibCheck` now passes without adding a
   CI or release gate.
+- 2026-05-22: Completed T-203. Focused homepage section-loader tests now verify
+  visible unavailable and empty fallbacks for biography, collections, and blog
+  sections, structured server logging on non-Next failures, Next control-flow
+  rethrows, preserved successful service inputs, and no same-app HTTP usage.
+- 2026-05-22: Completed T-204. Focused public browsing client tests now verify
+  visible retryable failure states for artwork filtering/load-more, shop
+  product filtering, and blog continuous loading while preserving already
+  rendered content; public browsing client source-hygiene coverage still
+  passes. A reconciliation follow-up also cleared the ArticleLoader no-emit
+  diagnostic, and strict TypeScript `noEmit` passes again.
+- 2026-05-22: Completed T-205. The client/server import-boundary test now also
+  guards `src/app` and `src/components/loaders` against mixed component barrel
+  value imports, and focused loader/form tests pass after mocks were moved to
+  direct file paths.
 
 ## Next Agent Action
 
-The current strict TypeScript `noEmit` backlog is clear after T-198. Do not add
+The next owner-independent frontend quality slice is T-206 for account layout
+coverage that proves the existing account subnav loader is mounted.
+The current strict TypeScript `noEmit` backlog is clear after T-198 and the
+2026-05-22 ArticleLoader follow-up. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision
 task is prepared and assigned. T-157 through T-198 are complete and should not
 be reassigned unless one of their recorded prototype, audit handoff, admin

@@ -212,7 +212,12 @@ Planning and prompt packs:
 | [T-198 Clear remaining test noEmit diagnostics](T-198-clear-remaining-test-noemit-diagnostics.md) | Completed | Cleared the remaining test-only strict TypeScript diagnostics after T-186; strict noEmit now passes without adding a CI gate. |
 | [T-199 Define public detail not-found contract](T-199-define-public-detail-not-found-contract.md) | Completed | Defined the public detail route not-found/error contract before runtime route changes. |
 | [T-200 Implement artwork detail not-found contract](T-200-implement-artwork-detail-not-found-contract.md) | Completed | Applied the accepted not-found/error contract to standalone and collection-scoped artwork detail routes. |
-| [T-201 Implement article and blog detail not-found contract](T-201-implement-article-blog-detail-not-found-contract.md) | Planned | Extend the accepted public detail not-found/error contract to biography article and blog detail routes. |
+| [T-201 Implement article and blog detail not-found contract](T-201-implement-article-blog-detail-not-found-contract.md) | Completed | Extended the accepted public detail not-found/error contract to biography article and blog detail routes. |
+| [T-202 Add Shopify product detail not-found UI](T-202-add-shopify-product-detail-not-found-ui.md) | Completed | Added route-local shared not-found presentation and focused coverage for missing Shopify product detail pages. |
+| [T-203 Add visible home section fallback states](T-203-add-visible-home-section-fallback-states.md) | Completed | Replaced silent home section `null` fallbacks with visible unavailable and empty states for biography, collections, and blog sections. |
+| [T-204 Add public browsing client fetch error states](T-204-add-public-browsing-client-fetch-error-states.md) | Completed | Added visible retry/error states for artwork browse, shop filtering, and blog continuous-loading client fetch failures. |
+| [T-205 Replace mixed component barrel imports](T-205-replace-mixed-component-barrel-imports.md) | Completed | Replaced remaining mixed component barrel value imports in server routes/loaders with direct file imports and source-hygiene coverage. |
+| [T-206 Restore account subnav mount](T-206-restore-account-subnav-mount.md) | Planned | Restore the tested account subnavigation loader in the account layout with layout-level coverage. |
 
 ## Rules
 

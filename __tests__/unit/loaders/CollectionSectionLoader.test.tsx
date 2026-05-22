@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import fs from "fs";
 import path from "path";
+import { render, screen } from "@testing-library/react";
 import { CollectionsSectionLoader } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
@@ -74,10 +75,10 @@ describe("CollectionsSectionLoader", () => {
     expect(element.props).toEqual({ collections });
   });
 
-  it("returns null when the section collection list is missing", async () => {
+  it("renders an unavailable fallback when the section collection list is missing", async () => {
     mockGetCollectionList.mockResolvedValue(null);
 
-    await expect(CollectionsSectionLoader()).resolves.toBeNull();
+    render((await CollectionsSectionLoader()) as ReactElement);
 
     expect(mockIsNextError).toHaveBeenCalledWith(expect.any(Error));
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
@@ -93,13 +94,44 @@ describe("CollectionsSectionLoader", () => {
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(CollectionSection).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId("collections-section-unavailable")
+    ).toHaveTextContent("Collections are temporarily unavailable");
+    expect(screen.getByText("Collections:")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /see more/i })).toHaveAttribute(
+      "href",
+      "/collections"
+    );
   });
 
-  it("returns null for non-Next loading failures", async () => {
+  it("renders an empty fallback when no section collections are available", async () => {
+    mockGetCollectionList.mockResolvedValue({
+      success: true,
+      data: [],
+      metadata: {
+        page: 1,
+        limit: 9,
+        total: 0,
+        totalPages: 0,
+      },
+    });
+
+    render((await CollectionsSectionLoader()) as ReactElement);
+
+    expect(mockIsNextError).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(CollectionSection).not.toHaveBeenCalled();
+    expect(screen.getByTestId("collections-section-empty")).toHaveTextContent(
+      "No collections are available yet"
+    );
+  });
+
+  it("renders an unavailable fallback for non-Next loading failures", async () => {
     const error = new Error("private section failure");
     mockGetCollectionList.mockRejectedValue(error);
 
-    await expect(CollectionsSectionLoader()).resolves.toBeNull();
+    render((await CollectionsSectionLoader()) as ReactElement);
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
@@ -113,6 +145,9 @@ describe("CollectionsSectionLoader", () => {
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(CollectionSection).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId("collections-section-unavailable")
+    ).toHaveTextContent("Collections are temporarily unavailable");
   });
 
   it("rethrows Next control-flow errors", async () => {

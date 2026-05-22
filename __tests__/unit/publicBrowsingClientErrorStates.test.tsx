@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
 import { BlogDetail } from "@/components/views/BlogDetail";
 import { clientApi } from "@/lib/api/clientApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
@@ -36,7 +37,62 @@ jest.mock("@/components/modules/forms/user/CommentForm", () => ({
   ),
 }));
 
-jest.mock("@/components/sections", () => ({
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
+jest.mock("@/components/artwork/filters/FilterDrawerWrapper", () => ({
+  FilterDrawerWrapper: ({
+    children,
+    filterComponent: FilterComponent,
+    filterProps,
+  }: {
+    children: React.ReactNode;
+    filterComponent: React.ComponentType<Record<string, unknown>>;
+    filterProps: Record<string, unknown>;
+  }) => (
+    <div>
+      <FilterComponent {...filterProps} />
+      {children}
+    </div>
+  ),
+}));
+
+jest.mock("@/components/artwork/filters/ArtworkSortAndFilter", () => ({
+  ArtworkSortAndFilter: ({
+    onFilterChange,
+    onClearFilters,
+  }: {
+    onFilterChange: (filters: {
+      decade: string[];
+      filterMode: "ALL";
+      sort: { by: "decade" };
+    }) => void;
+    onClearFilters: () => void;
+  }) => (
+    <div>
+      <button
+        type="button"
+        onClick={() =>
+          onFilterChange({
+            decade: ["1970s"],
+            filterMode: "ALL",
+            sort: { by: "decade" },
+          })
+        }
+      >
+        apply artwork filter
+      </button>
+      <button type="button" onClick={onClearFilters}>
+        clear artwork filters
+      </button>
+    </div>
+  ),
+}));
+
+jest.mock("@/components/sections/BlogCommentsList", () => ({
   BlogCommentsList: () => <div data-testid="blog-comments-list" />,
 }));
 
@@ -47,6 +103,9 @@ jest.mock("@/contexts/GlobalFeaturesContext", () => ({
 jest.mock("@/lib/api/clientApi", () => ({
   clientApi: {
     public: {
+      artwork: {
+        multiple: jest.fn(),
+      },
       blog: {
         singlePopulated: jest.fn(),
       },
@@ -60,6 +119,7 @@ jest.mock("@/lib/api/clientApi", () => ({
 }));
 
 const mockUseGlobalFeatures = useGlobalFeatures as jest.Mock;
+const mockArtworkMultiple = clientApi.public.artwork.multiple as jest.Mock;
 const mockSinglePopulated = clientApi.public.blog.singlePopulated as jest.Mock;
 const mockCreateComment = clientApi.user.comments.createComment as jest.Mock;
 const mockOpenModal = jest.fn();
@@ -98,6 +158,24 @@ const blog = {
   slug: "studio-news",
   commentCount: 3,
 };
+
+const createArtwork = (id: string, title: string) =>
+  ({
+    _id: id,
+    title,
+    decade: "1970s",
+    medium: "oil",
+    surface: "canvas",
+    favouriteCount: 0,
+    watchlistCount: 0,
+    collectionCount: 0,
+    image: {
+      secure_url: `https://res.cloudinary.com/demo/image/upload/${id}.jpg`,
+      pixelWidth: 600,
+      pixelHeight: 400,
+      hexColors: [{ color: "#111111" }],
+    },
+  }) as never;
 
 describe("public browsing client error states", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -148,6 +226,89 @@ describe("public browsing client error states", () => {
       "Next page failed"
     );
     expect(screen.getByTestId("loading-state")).toHaveTextContent("idle");
+  });
+
+  it("shows artwork filter failures, preserves the current list, and clears after retry", async () => {
+    mockArtworkMultiple
+      .mockResolvedValueOnce({ success: false })
+      .mockResolvedValueOnce({
+        success: true,
+        data: [createArtwork("filtered", "Filtered artwork")],
+        metadata: {
+          page: 1,
+          limit: 10,
+          total: 1,
+          totalPages: 1,
+        },
+      });
+
+    render(
+      <ArtworkGallery
+        startingArtworks={[createArtwork("current", "Current artwork")]}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "apply artwork filter" })
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Unable to update the artwork filters"
+    );
+    expect(screen.getByText("Current artwork")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry filters" }));
+
+    await waitFor(() =>
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+    );
+    expect(screen.getByText("Filtered artwork")).toBeInTheDocument();
+    expect(screen.queryByText("Current artwork")).not.toBeInTheDocument();
+  });
+
+  it("shows artwork load-more failures, preserves loaded artworks, and clears after retry", async () => {
+    mockArtworkMultiple
+      .mockResolvedValueOnce({ success: false })
+      .mockResolvedValueOnce({
+        success: true,
+        data: [createArtwork("next", "Next artwork")],
+        metadata: {
+          page: 2,
+          limit: 10,
+          total: 2,
+          totalPages: 2,
+        },
+      });
+
+    render(
+      <ArtworkGallery
+        startingArtworks={[createArtwork("current", "Current artwork")]}
+      />
+    );
+
+    expect(intersectionCallback).toBeDefined();
+
+    await act(async () => {
+      await intersectionCallback!(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver
+      );
+    });
+
+    expect(
+      await screen.findByText(/Unable to load more artworks/)
+    ).toBeInTheDocument();
+    expect(screen.getByText("Current artwork")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+
+    await waitFor(() =>
+      expect(
+        screen.queryByText(/Unable to load more artworks/)
+      ).not.toBeInTheDocument()
+    );
+    expect(screen.getByText("Current artwork")).toBeInTheDocument();
+    expect(screen.getByText("Next artwork")).toBeInTheDocument();
   });
 
   it("keeps the comment-load failure modal behavior", async () => {

@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import fs from "fs";
 import path from "path";
+import { render, screen } from "@testing-library/react";
 import { BiographySectionLoader } from "@/components/loaders/sectionLoaders/BiographySectionLoader";
 import { BiographySection } from "@/components/sections/BiographySection";
 import { getArticleList } from "@/lib/data/services/getArticleList";
@@ -70,10 +71,10 @@ describe("BiographySectionLoader", () => {
     expect(element.props).toEqual({ articles });
   });
 
-  it("returns null when no biography articles exist", async () => {
+  it("renders an unavailable fallback when the biography article result is missing", async () => {
     mockGetArticleList.mockResolvedValue(null);
 
-    await expect(BiographySectionLoader()).resolves.toBeNull();
+    render((await BiographySectionLoader()) as ReactElement);
 
     expect(mockIsNextError).toHaveBeenCalledWith(expect.any(Error));
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
@@ -89,13 +90,44 @@ describe("BiographySectionLoader", () => {
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BiographySection).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId("biography-section-unavailable")
+    ).toHaveTextContent("Biography is temporarily unavailable");
+    expect(screen.getByText("Biography:")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /read more/i })).toHaveAttribute(
+      "href",
+      "/biography"
+    );
   });
 
-  it("returns null for non-Next loading failures", async () => {
+  it("renders an empty fallback when no biography articles are available", async () => {
+    mockGetArticleList.mockResolvedValue({
+      success: true,
+      data: [],
+      metadata: {
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    });
+
+    render((await BiographySectionLoader()) as ReactElement);
+
+    expect(mockIsNextError).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(BiographySection).not.toHaveBeenCalled();
+    expect(screen.getByTestId("biography-section-empty")).toHaveTextContent(
+      "No biography entries are available yet"
+    );
+  });
+
+  it("renders an unavailable fallback for non-Next loading failures", async () => {
     const error = new Error("private section failure");
     mockGetArticleList.mockRejectedValue(error);
 
-    await expect(BiographySectionLoader()).resolves.toBeNull();
+    render((await BiographySectionLoader()) as ReactElement);
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
@@ -109,6 +141,9 @@ describe("BiographySectionLoader", () => {
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BiographySection).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId("biography-section-unavailable")
+    ).toHaveTextContent("Biography is temporarily unavailable");
   });
 
   it("rethrows Next control-flow errors", async () => {

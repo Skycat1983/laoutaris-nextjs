@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import React, { type ReactElement } from "react";
 import ArtworkLoader from "@/components/loaders/viewLoaders/ArtworkLoader";
-import { SubscribeSection } from "@/components/sections";
-import { ArtworkView } from "@/components/views";
+import { SubscribeSection } from "@/components/sections/SubscribeSection";
+import { ArtworkView } from "@/components/views/ArtworkView";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import type { ArtworkFrontend } from "@/lib/data/types";
@@ -28,11 +28,11 @@ jest.mock("@/lib/data/services/getArtworkShopProducts", () => ({
   getArtworkShopProducts: jest.fn(),
 }));
 
-jest.mock("@/components/views", () => ({
+jest.mock("@/components/views/ArtworkView", () => ({
   ArtworkView: jest.fn(() => null),
 }));
 
-jest.mock("@/components/sections", () => ({
+jest.mock("@/components/sections/SubscribeSection", () => ({
   SubscribeSection: jest.fn(() => null),
 }));
 

@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { MasonryLayout } from "../layouts/public/MasonryLayout";
-import type { ArtworkFilterParams, ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import type {
+  ArtworkFilterParams,
+  ArtworkFrontend,
+  ArtworkQueryParams,
+} from "@/lib/data/types/artworkTypes";
 import { clientApi } from "@/lib/api/clientApi";
 import { FilterDrawerWrapper } from "./filters/FilterDrawerWrapper";
 import type { ArtworkSortConfig } from "@/lib/data/types";
@@ -34,6 +38,33 @@ export const ArtworkGallery = ({
   const [filterMode, setFilterMode] = useState<FilterMode>(
     filterDefaults?.filterMode || "ALL"
   );
+  const [filterError, setFilterError] = useState<string | null>(null);
+  const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
+  const [lastFilterRequest, setLastFilterRequest] =
+    useState<ArtworkQueryParams | null>(null);
+
+  const fetchFilteredArtworks = async (cleanFilters: ArtworkQueryParams) => {
+    setFilterError(null);
+    setLoadMoreError(null);
+
+    if (Object.keys(cleanFilters).length === 0) {
+      setArtworks(startingArtworks);
+      setPage(1);
+      setHasMore(true);
+      return;
+    }
+
+    const response = await clientApi.public.artwork.multiple(cleanFilters);
+
+    if (!response.success) {
+      throw new Error("Failed to fetch artworks");
+    }
+    const { data: artworks, metadata } = response;
+
+    setArtworks(artworks);
+    setPage(1);
+    setHasMore(metadata ? metadata.page < metadata.totalPages : true);
+  };
 
   const handleFilterChange = async (
     newFilters: ArtworkFilterParams & { sort?: ArtworkSortConfig }
@@ -43,7 +74,7 @@ export const ArtworkGallery = ({
 
       const { sort, ...filterParams } = newFilters;
 
-      const cleanFilters = {
+      const cleanFilters: ArtworkQueryParams = {
         ...Object.fromEntries(
           Object.entries(filterParams).filter(([_, value]) =>
             isValidValue(value)
@@ -71,22 +102,28 @@ export const ArtworkGallery = ({
       router.push(`/artwork?${searchParams.toString()}`, { scroll: false });
 
       setFilters(cleanFilters);
+      setLastFilterRequest(cleanFilters);
 
-      if (Object.keys(cleanFilters).length === 0) {
-        setArtworks(startingArtworks);
-        return;
-      }
-
-      const response = await clientApi.public.artwork.multiple(cleanFilters);
-
-      if (!response.success) {
-        throw new Error("Failed to fetch artworks");
-      }
-      const { data: artworks, metadata } = response;
-
-      setArtworks(artworks);
+      await fetchFilteredArtworks(cleanFilters);
     } catch {
-      // Keep the existing artwork list visible; loading is cleared in finally.
+      setFilterError(
+        "Unable to update the artwork filters. The current artworks are still shown."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const retryFilterFetch = async () => {
+    if (!lastFilterRequest) return;
+
+    try {
+      setIsLoading(true);
+      await fetchFilteredArtworks(lastFilterRequest);
+    } catch {
+      setFilterError(
+        "Unable to update the artwork filters. The current artworks are still shown."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -97,12 +134,18 @@ export const ArtworkGallery = ({
       filterMode: "ALL",
     });
     setArtworks(startingArtworks);
+    setPage(1);
+    setHasMore(true);
+    setFilterError(null);
+    setLoadMoreError(null);
+    setLastFilterRequest(null);
   };
 
   const loadMoreArtworks = async () => {
     if (isLoading) return;
 
     setIsLoading(true);
+    setLoadMoreError(null);
     try {
       const nextPage = page + 1;
       const newArtworks = await clientApi.public.artwork.multiple({
@@ -136,7 +179,9 @@ export const ArtworkGallery = ({
         setPage(nextPage);
       }
     } catch {
-      // Keep the existing artwork list visible; loading is cleared in finally.
+      setLoadMoreError(
+        "Unable to load more artworks. The artworks already loaded are still shown."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -154,12 +199,29 @@ export const ArtworkGallery = ({
         filterDefaults,
       }}
     >
+      {filterError && (
+        <div
+          role="alert"
+          className="mx-4 my-4 flex flex-col items-center gap-3 border border-red-200 bg-red-50 px-4 py-4 text-center text-red-700 md:mx-8"
+        >
+          <p>{filterError}</p>
+          <button
+            type="button"
+            onClick={retryFilterFetch}
+            className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
+          >
+            Retry filters
+          </button>
+        </div>
+      )}
       {artworks.length > 0 ? (
         <MasonryLayout
           artworks={artworks}
           hasMore={hasMore}
           onLoadMore={loadMoreArtworks}
           isLoading={isLoading}
+          loadMoreError={loadMoreError}
+          onRetryLoadMore={loadMoreArtworks}
         />
       ) : (
         <div className="flex justify-center py-4 text-center flex-col gap-4">

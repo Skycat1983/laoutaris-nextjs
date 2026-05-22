@@ -47,12 +47,17 @@ visual QA and owner review for `/prototype/frame` before Shopify option
 mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
 
 A-005 is complete and reconciled. F-105 through F-110 now track frontend
-route/component-boundary follow-ups, R-032/R-033 track the unresolved public
-fallback/error-state and mixed-barrel risks, T-199 defined the public detail
-route not-found/error contract, T-200 completed the first runtime
-implementation slice for standalone and collection-scoped artwork detail
-routes, and T-201 is prepared as the next runtime slice for biography article
-and blog detail routes.
+route/component-boundary follow-ups, R-032 records the mitigated public
+fallback/error-state risk, and R-033 tracks the mixed-barrel risk. T-199
+defined the public detail route not-found/error contract, T-200 completed the
+first runtime implementation slice for standalone and collection-scoped
+artwork detail routes, T-201 completed the article/blog runtime slice, and
+T-202 completed the remaining Shopify product detail route-local not-found UI
+slice. F-105 is resolved. T-203 resolved F-106 home section fallback states,
+and T-204 resolved F-107 public browsing client fetch error states. R-032 is
+mitigated for the reconciled A-005 fallback scope. T-205 resolved F-108 and
+mitigated R-033 for scoped mixed component barrel cleanup in server
+routes/loaders. T-206 is prepared next for F-109 account subnav mounting.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -1402,8 +1407,8 @@ implementation wave needs discovery before task scoping.
 The next practical assignment depends on the priority:
 
 - If owner-independent frontend hardening is preferred, assign
-  [T-201 Implement article and blog detail not-found contract](../tasks/T-201-implement-article-blog-detail-not-found-contract.md):
-  `/task effort: high details: docs/tasks/T-201-implement-article-blog-detail-not-found-contract.md`.
+  [T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md):
+  `/task effort: medium details: docs/tasks/T-206-restore-account-subnav-mount.md`.
 - If framed print preview implementation continues, run T-194 targeted visual
   QA and owner review for `/prototype/frame`. Keep that review separate from
   Shopify option mapping, checkout/cart work, enquiry mutation, and physical

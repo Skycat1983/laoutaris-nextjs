@@ -1,4 +1,7 @@
 import type { ReactElement } from "react";
+import fs from "fs";
+import path from "path";
+import { render, screen } from "@testing-library/react";
 import { BlogSectionLoader } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
 import { BlogSection } from "@/components/sections/BlogSection";
 import { getBlogList } from "@/lib/data/services/getBlogList";
@@ -72,11 +75,63 @@ describe("BlogSectionLoader", () => {
     expect(element.props).toEqual({ blogs });
   });
 
-  it("returns null for non-Next loading failures", async () => {
+  it("renders an unavailable fallback when the blog result is missing", async () => {
+    mockGetBlogList.mockResolvedValue(null as never);
+
+    render((await BlogSectionLoader()) as ReactElement);
+
+    expect(mockIsNextError).toHaveBeenCalledWith(expect.any(Error));
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.blog_section.failed",
+        component: "BlogSectionLoader",
+        operation: "public.blog_section.loader",
+        error: {
+          name: "Error",
+          message: "No blog posts found",
+        },
+      })
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(BlogSection).not.toHaveBeenCalled();
+    expect(screen.getByTestId("blog-section-unavailable")).toHaveTextContent(
+      "Recent posts are temporarily unavailable"
+    );
+    expect(screen.getByText("Blog:")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /see more/i })).toHaveAttribute(
+      "href",
+      "/blog"
+    );
+  });
+
+  it("renders an empty fallback when no blog posts are available", async () => {
+    mockGetBlogList.mockResolvedValue({
+      success: true,
+      data: [],
+      metadata: {
+        page: 1,
+        limit: 4,
+        total: 0,
+        totalPages: 0,
+      },
+    });
+
+    render((await BlogSectionLoader()) as ReactElement);
+
+    expect(mockIsNextError).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(BlogSection).not.toHaveBeenCalled();
+    expect(screen.getByTestId("blog-section-empty")).toHaveTextContent(
+      "No recent posts are available yet"
+    );
+  });
+
+  it("renders an unavailable fallback for non-Next loading failures", async () => {
     const error = new Error("private section failure");
     mockGetBlogList.mockRejectedValue(error);
 
-    await expect(BlogSectionLoader()).resolves.toBeNull();
+    render((await BlogSectionLoader()) as ReactElement);
 
     expect(mockIsNextError).toHaveBeenCalledWith(error);
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
@@ -92,6 +147,9 @@ describe("BlogSectionLoader", () => {
     );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BlogSection).not.toHaveBeenCalled();
+    expect(screen.getByTestId("blog-section-unavailable")).toHaveTextContent(
+      "Recent posts are temporarily unavailable"
+    );
   });
 
   it("rethrows Next control-flow errors", async () => {
@@ -103,5 +161,20 @@ describe("BlogSectionLoader", () => {
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("does not import same-app HTTP clients or direct fetches", () => {
+    const loaderSource = fs.readFileSync(
+      path.join(
+        process.cwd(),
+        "src/components/loaders/sectionLoaders/BlogSectionLoader.tsx"
+      ),
+      "utf8"
+    );
+
+    expect(loaderSource).not.toContain(["server", "PublicApi"].join(""));
+    expect(loaderSource).not.toContain("serverApi");
+    expect(loaderSource).not.toContain(".multiple(");
+    expect(loaderSource).not.toContain("fetch(");
   });
 });

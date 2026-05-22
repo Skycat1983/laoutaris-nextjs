@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import ProductPage from "@/app/shop/products/[productHandle]/page";
+import ShopProductNotFound from "@/app/shop/products/[productHandle]/not-found";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
+import { notFound } from "next/navigation";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 jest.mock("@/components/metadata/PublicDetailJsonLd", () => ({
@@ -43,6 +45,7 @@ const mockGetProductByHandle = getProductByHandle as jest.MockedFunction<
 const mockGetArtworkById = getArtworkById as jest.MockedFunction<
   typeof getArtworkById
 >;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 
 const validArtworkId = "507f1f77bcf86cd799439011";
 const secondArtworkId = "507f1f77bcf86cd799439012";
@@ -102,6 +105,37 @@ describe("/shop/products/[productHandle]", () => {
 
   afterEach(() => {
     consoleErrorSpy.mockRestore();
+  });
+
+  it("calls notFound for missing primary Shopify products without same-app HTTP", async () => {
+    mockGetProductByHandle.mockResolvedValue(null);
+
+    await expect(
+      ProductPage({ params: { productHandle: "missing-product" } })
+    ).rejects.toThrow("NEXT_NOT_FOUND");
+
+    expect(mockGetProductByHandle).toHaveBeenCalledWith("missing-product");
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
+    expect(mockGetArtworkById).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("uses shared public presentation for the route-local product not-found view", () => {
+    render(<ShopProductNotFound />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Product not found"
+    );
+    expect(screen.getByText("Not found")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The product you are looking for is not available in the shop."
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Browse shop" })).toHaveAttribute(
+      "href",
+      "/shop/products"
+    );
   });
 
   it("resolves a linked original artwork through the server data service without same-app artwork fetches", async () => {

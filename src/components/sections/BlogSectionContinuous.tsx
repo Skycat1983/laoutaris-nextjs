@@ -51,7 +51,7 @@ export const BlogSectionContinuous = ({
     }
   }, [page, sortby]);
 
-  const { observerRef, isLoading, error } = useInfiniteScroll({
+  const { observerRef, isLoading, error, retry } = useInfiniteScroll({
     onLoadMore: handleLoadMore,
     hasMore,
   });
@@ -120,6 +120,24 @@ export const BlogSectionContinuous = ({
         {isLoading && (
           <div className="flex justify-center py-4">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+          </div>
+        )}
+        {error && (
+          <div
+            role="alert"
+            className="flex flex-col items-center gap-3 py-4 text-center text-red-600"
+          >
+            <p>
+              Unable to load more blog posts. The posts already loaded are
+              still shown.
+            </p>
+            <button
+              type="button"
+              onClick={retry}
+              className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
+            >
+              Try again
+            </button>
           </div>
         )}
       </div>

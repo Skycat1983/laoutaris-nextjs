@@ -7,8 +7,10 @@ import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 interface ArtworkLayoutProps {
   artworks: ArtworkFrontend[];
   hasMore: boolean;
-  onLoadMore: () => void;
+  onLoadMore: () => Promise<void> | void;
   isLoading?: boolean;
+  loadMoreError?: string | null;
+  onRetryLoadMore?: () => Promise<void> | void;
 }
 
 export const MasonryLayout = ({
@@ -16,6 +18,8 @@ export const MasonryLayout = ({
   hasMore,
   onLoadMore,
   isLoading = false,
+  loadMoreError,
+  onRetryLoadMore,
 }: ArtworkLayoutProps) => {
   const {
     observerRef,
@@ -23,12 +27,14 @@ export const MasonryLayout = ({
     error,
   } = useInfiniteScroll({
     onLoadMore: async () => {
-      onLoadMore();
+      await onLoadMore();
     },
     hasMore,
   });
 
   const loading = isLoading || scrollLoading;
+  const visibleError =
+    loadMoreError || (error ? "Error loading more artworks" : null);
 
   return (
     <div className="container mx-auto p-4">
@@ -100,9 +106,18 @@ export const MasonryLayout = ({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
           </div>
         )}
-        {error && (
-          <div className="text-center text-red-500">
-            Error loading more artworks
+        {visibleError && (
+          <div className="flex flex-col items-center gap-3 py-4 text-center text-red-600">
+            <p>{visibleError}</p>
+            {onRetryLoadMore && (
+              <button
+                type="button"
+                onClick={onRetryLoadMore}
+                className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
+              >
+                Try again
+              </button>
+            )}
           </div>
         )}
       </div>

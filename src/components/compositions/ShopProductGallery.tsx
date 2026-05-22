@@ -51,6 +51,50 @@ export const ShopProductGallery = ({
       sortBy: "type",
     }
   );
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  const fetchProductsForFilters = async (updatedFilters: ShopFiltersState) => {
+    setFetchError(null);
+
+    // Build query params
+    const params = new URLSearchParams();
+
+    // Add artwork filters (skip "all" values)
+    if (updatedFilters.artstyle && updatedFilters.artstyle !== "all-style") {
+      params.append("artstyle", updatedFilters.artstyle);
+    }
+    if (updatedFilters.medium && updatedFilters.medium !== "all-medium") {
+      params.append("medium", updatedFilters.medium);
+    }
+    if (updatedFilters.surface && updatedFilters.surface !== "all-surface") {
+      params.append("surface", updatedFilters.surface);
+    }
+    if (updatedFilters.decade && updatedFilters.decade !== "all-epochs") {
+      params.append("decade", updatedFilters.decade);
+    }
+
+    // Add product type filters
+    params.append(
+      "showOriginals",
+      String(updatedFilters.showOriginals ?? true)
+    );
+    params.append("showPrints", String(updatedFilters.showPrints ?? true));
+    params.append("showBooks", String(updatedFilters.showBooks ?? true));
+
+    const response = await fetch(`/api/v2/public/shop/products?${params}`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.error || "Failed to fetch products");
+    }
+
+    setProducts(data.data);
+  };
 
   // Sort products based on current sortBy value
   const sortedProducts = useMemo(() => {
@@ -87,46 +131,24 @@ export const ShopProductGallery = ({
       const updatedFilters = { ...filters, ...newFilters };
       setFilters(updatedFilters);
 
-      // Build query params
-      const params = new URLSearchParams();
-
-      // Add artwork filters (skip "all" values)
-      if (updatedFilters.artstyle && updatedFilters.artstyle !== "all-style") {
-        params.append("artstyle", updatedFilters.artstyle);
-      }
-      if (updatedFilters.medium && updatedFilters.medium !== "all-medium") {
-        params.append("medium", updatedFilters.medium);
-      }
-      if (updatedFilters.surface && updatedFilters.surface !== "all-surface") {
-        params.append("surface", updatedFilters.surface);
-      }
-      if (updatedFilters.decade && updatedFilters.decade !== "all-epochs") {
-        params.append("decade", updatedFilters.decade);
-      }
-
-      // Add product type filters
-      params.append(
-        "showOriginals",
-        String(updatedFilters.showOriginals ?? true)
-      );
-      params.append("showPrints", String(updatedFilters.showPrints ?? true));
-      params.append("showBooks", String(updatedFilters.showBooks ?? true));
-
-      const response = await fetch(`/api/v2/public/shop/products?${params}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch products");
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || "Failed to fetch products");
-      }
-
-      setProducts(data.data);
+      await fetchProductsForFilters(updatedFilters);
     } catch {
-      // Preserve the current product grid or empty state; loading is cleared in finally.
+      setFetchError(
+        "Unable to update product filters. The current products are still shown."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const retryProductFetch = async () => {
+    try {
+      setIsLoading(true);
+      await fetchProductsForFilters(filters);
+    } catch {
+      setFetchError(
+        "Unable to update product filters. The current products are still shown."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -145,6 +167,7 @@ export const ShopProductGallery = ({
     });
     setSortBy("type");
     setProducts(initialProducts);
+    setFetchError(null);
   };
 
   return (
@@ -158,6 +181,22 @@ export const ShopProductGallery = ({
         sortBy={sortBy}
         onSortChange={handleSortChange}
       />
+
+      {fetchError && (
+        <div
+          role="alert"
+          className="mx-8 mt-8 flex flex-col items-center gap-3 border border-red-200 bg-red-50 px-4 py-4 text-center text-red-700"
+        >
+          <p>{fetchError}</p>
+          <button
+            type="button"
+            onClick={retryProductFetch}
+            className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
+          >
+            Retry filters
+          </button>
+        </div>
+      )}
 
       {/* Products Section */}
       <div className="px-8 py-12 relative">

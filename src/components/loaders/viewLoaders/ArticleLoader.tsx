@@ -46,7 +46,7 @@ const buildArticleNavigation = async ({
       logger.error("loader.public.article_navigation.failed", {
         slug,
         section,
-        reason: result?.error ?? "No articles found",
+        reason: "No articles found",
       });
       return emptyNavigation();
     }

@@ -1,5 +1,5 @@
 import ArticleViewSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
-import { ArticleLoader } from "@/components/loaders/viewLoaders";
+import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import ContactForm from "@/components/modules/forms/user/ContactForm";
 import { normalizeProductHandle } from "@/lib/data/schemas/enquirySchema";
 import { Suspense } from "react";

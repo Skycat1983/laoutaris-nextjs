@@ -251,6 +251,29 @@ Next.js server/client component boundaries.
   access, call `notFound()` for missing primary artwork content, preserve
   upstream failures as errors, and degrade optional linked Shopify product
   failures to empty linked-product props.
+- T-201 implemented the next public detail runtime slice for article/blog
+  detail routes. Missing primary article or blog content now maps to
+  `notFound()`, primary-content service failures continue through the error
+  path, route-local not-found UI exists for biography articles and blog posts,
+  article navigation degrades to empty previous/next links, and blog comment
+  loading degrades to the non-comment detail render for found posts.
+- T-202 completed the remaining Shopify product detail not-found UI slice.
+  Missing primary Shopify products still call `notFound()`, and the route now
+  has shared public route-local not-found presentation with focused coverage.
+- T-203 resolved home section loader blank fallbacks. Biography, collections,
+  and blog homepage section loaders now render visible unavailable states for
+  missing service results or non-Next failures and visible empty states for
+  empty result arrays, while preserving successful rendering, service inputs,
+  Suspense skeleton ownership, and Next control-flow rethrows.
+- T-204 resolved public browsing client follow-up fetch failure states.
+  Artwork filter and load-more failures, shop product filter failures, and
+  blog continuous-loading failures now show visible retry/recovery UI while
+  preserving already-rendered content and public browsing source hygiene.
+- T-205 resolved the mixed component barrel cleanup for scoped server
+  routes/loaders. Remaining value imports from `@/components/sections`,
+  `@/components/views`, and `@/components/loaders/viewLoaders` in `src/app`
+  and `src/components/loaders` were replaced with direct file imports and
+  guarded by source-hygiene coverage.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
   drift from canonical constants, blog pinned/tag controls were hidden, and
@@ -326,20 +349,6 @@ Next.js server/client component boundaries.
 - Centralize taxonomy value+label options for public filters and admin forms.
 - Coordinate footer placeholder social links, current-year/copyright text, and
   assurance copy with A-020 owner/legal-approved requirements.
-- Convert article/blog detail routes through T-201 so missing primary content
-  maps to `notFound()` and optional navigation/comment failures degrade without
-  blanking or failing found primary content.
-- Revisit Shopify product detail after the shared not-found UI exists; missing
-  primary Shopify products already call `notFound()`, while linked archive
-  artwork remains optional related content.
-- Replace silent `null` home section loader fallbacks with accepted
-  unavailable/empty states for noncritical sections, or route-level errors for
-  critical archive sections.
-- Standardize visible client follow-up fetch failure states for artwork
-  filtering/load-more, shop product filtering/sorting, and blog continuous
-  loading.
-- Replace remaining mixed component barrel value imports in server routes and
-  loaders with direct file imports where practical.
 - Decide whether account subnavigation should be mounted; if yes, restore the
   account layout Suspense block with layout-level coverage, and if no, prune the
   unused loader/test claims.
@@ -927,18 +936,42 @@ Use browser checks for layout-sensitive changes.
   routes now implement the accepted not-found/error contract, including
   route-local not-found UI, malformed ObjectId pre-fetch validation, missing
   primary-content `notFound()` handling, upstream failure propagation, and
-  optional Shopify product-link degradation. T-201 is prepared for biography
-  article and blog detail routes.
+  optional Shopify product-link degradation. T-201 was prepared for biography
+  article and blog detail routes and completed later the same day.
+- 2026-05-22: Completed T-201. Biography article and blog detail routes now
+  implement the accepted not-found/error contract for missing primary content,
+  upstream primary failures, route-local not-found UI, article navigation
+  degradation, and blog comment degradation. T-202 was created for the
+  remaining Shopify product detail route-local not-found UI slice and completed
+  later the same day.
+- 2026-05-22: Completed T-202. Shopify product detail now has route-local
+  shared not-found UI and focused missing-product coverage while preserving
+  existing metadata, enquiry, framed-preview, and optional linked-artwork
+  behavior. F-105 is resolved, and T-203 was created for F-106 home section
+  fallback states.
+- 2026-05-22: Completed T-203. Biography, collections, and blog homepage
+  section loaders now render visible unavailable or empty states instead of
+  resolving to `null` after missing service results, empty result arrays, or
+  non-Next failures. F-106 is resolved, and T-204 was prepared for F-107 public
+  browsing client fetch error states.
+- 2026-05-22: Completed T-204. Artwork browse filtering/load-more, shop
+  product filtering, and blog continuous loading now expose visible retryable
+  client fetch failure states while preserving existing rendered content.
+  F-107 is resolved, and T-205 is prepared for F-108 mixed component barrel
+  cleanup.
+- 2026-05-22: Completed T-205. Scoped server routes/loaders no longer
+  value-import mixed component barrels, focused mocks were moved to direct file
+  paths, and `clientServerImportBoundary.test.ts` now guards `src/app` and
+  `src/components/loaders` against reintroducing those barrel value imports.
+  F-108 is resolved, and T-206 is prepared for F-109 account subnav mounting.
 
 ## Next Agent Action
 
 The next owner-independent frontend task is
-[T-201 Implement article and blog detail not-found contract](../tasks/T-201-implement-article-blog-detail-not-found-contract.md):
-extend the accepted contract to biography article and blog detail routes only.
-Reuse the shared public detail not-found presentation, map missing primary
-content to `notFound()`, keep upstream failures as errors, and make article
-navigation/blog comments degrade as optional related content when primary
-content is found.
+[T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md):
+restore the existing `AccountSubnavLoader` Suspense block in the account
+layout, preserve its current links/disabled behavior, and add layout-level
+coverage so the loader stays mounted.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify
@@ -978,6 +1011,8 @@ Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is
 opened. Do not reassign T-130 unless the scoped public browsing client
 source-hygiene or existing failure-state behavior regresses. Do not reassign
+T-204 unless public browsing client retry/error states regress. Do not reassign
+T-205 unless scoped mixed-barrel import hygiene regresses. Do not reassign
 T-131 unless scoped account/user client source-hygiene or existing
 failure-state behavior regresses. Do not reassign T-132 unless scoped shared
 frontend-adjacent source hygiene or fallback behavior regresses. Do not

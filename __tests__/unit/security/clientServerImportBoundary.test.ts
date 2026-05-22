@@ -187,8 +187,63 @@ const clientUnsafeFilePatterns = [
   /^src\/components\/modules\/cards\/index\.ts$/,
 ];
 
+const mixedComponentBarrelSpecifiers = new Set([
+  "@/components/sections",
+  "@/components/views",
+  "@/components/loaders/viewLoaders",
+]);
+
 const hasServerOnlyImport = (relativePath: string) =>
   /^\s*import\s+["']server-only["']/.test(readRepoFile(relativePath));
+
+const importsRuntimeValues = (importClause: ts.ImportClause | undefined) => {
+  if (!importClause) {
+    return true;
+  }
+
+  if (importClause.isTypeOnly) {
+    return false;
+  }
+
+  if (importClause.name) {
+    return true;
+  }
+
+  const namedBindings = importClause.namedBindings;
+
+  if (!namedBindings) {
+    return false;
+  }
+
+  if (ts.isNamespaceImport(namedBindings)) {
+    return true;
+  }
+
+  return namedBindings.elements.some((element) => !element.isTypeOnly);
+};
+
+const getMixedComponentBarrelImports = (relativePath: string) => {
+  const sourceFile = parseSourceFile(relativePath);
+  const violations: string[] = [];
+
+  for (const statement of sourceFile.statements) {
+    if (
+      ts.isImportDeclaration(statement) &&
+      ts.isStringLiteral(statement.moduleSpecifier) &&
+      mixedComponentBarrelSpecifiers.has(statement.moduleSpecifier.text) &&
+      importsRuntimeValues(statement.importClause)
+    ) {
+      const { line } = sourceFile.getLineAndCharacterOfPosition(
+        statement.getStart()
+      );
+      violations.push(
+        `${relativePath}:${line + 1} imports ${statement.moduleSpecifier.text}`
+      );
+    }
+  }
+
+  return violations;
+};
 
 const formatImportChain = (
   relativePath: string,
@@ -224,6 +279,15 @@ describe("client/server import boundary", () => {
 
         return chain ? `${sourceFile}\n  ${chain}` : sourceFile;
       });
+
+    expect(violations).toEqual([]);
+  });
+
+  it("keeps app routes and server loaders away from mixed component barrel value imports", () => {
+    const violations = [
+      ...listRepoSourceFiles("src/app"),
+      ...listRepoSourceFiles("src/components/loaders"),
+    ].flatMap(getMixedComponentBarrelImports);
 
     expect(violations).toEqual([]);
   });

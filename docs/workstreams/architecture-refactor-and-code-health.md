@@ -548,6 +548,14 @@ Use targeted import/reference searches for pruning tasks.
   a pure client-safe semantic class map with exact existing class strings and
   focused source/invariant coverage. It is intentionally not adopted by runtime
   components yet.
+- 2026-05-22: Prepared T-205 as the focused F-108/R-033 cleanup for remaining
+  mixed component barrel value imports in server routes/loaders. T-137 still
+  guards the current client runtime graph; T-205 is a preventive direct-import
+  cleanup and source-hygiene slice, not a broad barrel deletion.
+- 2026-05-22: Completed T-205. Scoped `src/app` and
+  `src/components/loaders` server callers now avoid value imports from the
+  mixed component barrels, and source-hygiene coverage guards the cleaned
+  scopes. R-033 is mitigated for the reconciled A-005 route/loader scope.
 
 ## Next Agent Action
 
@@ -560,8 +568,8 @@ Keep broad static/ISR migration separate until a dedicated cache-freshness and
 route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
-T-089, T-090, T-091, T-092, T-093, T-094, T-095, or T-137 unless a regression
-is opened.
+T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, or T-205 unless a
+regression is opened.
 
 Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
 `serverApi` option, DB connection semantics, broad route-builder centralization,

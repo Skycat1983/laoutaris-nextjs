@@ -1,4 +1,4 @@
-import { ArtworkView } from "@/components/views";
+import { ArtworkView } from "@/components/views/ArtworkView";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import {
   getArtworkShopProducts,

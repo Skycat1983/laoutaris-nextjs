@@ -1,11 +1,11 @@
 import ContactPage from "@/app/project/contact/page";
 import ContactForm from "@/components/modules/forms/user/ContactForm";
-import { ArticleLoader } from "@/components/loaders/viewLoaders";
+import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import { clientApi } from "@/lib/api/clientApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
-jest.mock("@/components/loaders/viewLoaders", () => ({
+jest.mock("@/components/loaders/viewLoaders/ArticleLoader", () => ({
   ArticleLoader: jest.fn(({ form }) => (
     <div data-testid="article-loader">{form}</div>
   )),

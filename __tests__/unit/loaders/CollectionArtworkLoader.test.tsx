@@ -3,7 +3,7 @@ import path from "path";
 import React from "react";
 import type { ReactElement } from "react";
 import { CollectionArtworkLoader } from "@/components/loaders/viewLoaders/CollectionArtworkLoader";
-import { ArtworkView } from "@/components/views";
+import { ArtworkView } from "@/components/views/ArtworkView";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import type {
@@ -27,7 +27,7 @@ jest.mock("@/lib/data/services/getArtworkShopProducts", () => ({
   getArtworkShopProducts: jest.fn(),
 }));
 
-jest.mock("@/components/views", () => ({
+jest.mock("@/components/views/ArtworkView", () => ({
   ArtworkView: jest.fn(() => null),
 }));
 

@@ -1,4 +1,4 @@
-import { SubscribeSection } from "@/components/sections";
+import { SubscribeSection } from "@/components/sections/SubscribeSection";
 
 export default async function BlogLayout({
   children,

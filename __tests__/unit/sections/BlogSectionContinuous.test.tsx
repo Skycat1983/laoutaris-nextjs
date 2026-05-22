@@ -61,6 +61,7 @@ describe("BlogSectionContinuous", () => {
         observerRef: { current: null },
         isLoading: false,
         error: null,
+        retry: jest.fn(),
       };
     });
   });
@@ -130,5 +131,28 @@ describe("BlogSectionContinuous", () => {
     );
 
     expect(latestInfiniteScrollOptions?.hasMore).toBe(false);
+  });
+
+  it("renders a visible follow-up loading error without removing existing posts", () => {
+    const retry = jest.fn();
+    mockUseInfiniteScroll.mockImplementation((options) => {
+      latestInfiniteScrollOptions = options;
+      return {
+        observerRef: { current: null },
+        isLoading: false,
+        error: new Error("private fetch details"),
+        retry,
+      };
+    });
+
+    render(<BlogSectionContinuous initialBlogEntries={[createBlog("first")]} />);
+
+    expect(screen.getByText("first")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Unable to load more blog posts"
+    );
+
+    screen.getByRole("button", { name: "Try again" }).click();
+    expect(retry).toHaveBeenCalledTimes(1);
   });
 });

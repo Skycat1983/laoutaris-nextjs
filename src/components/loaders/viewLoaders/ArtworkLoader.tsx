@@ -1,5 +1,5 @@
-import { SubscribeSection } from "@/components/sections";
-import { ArtworkView } from "@/components/views";
+import { SubscribeSection } from "@/components/sections/SubscribeSection";
+import { ArtworkView } from "@/components/views/ArtworkView";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import {
   getArtworkShopProducts,

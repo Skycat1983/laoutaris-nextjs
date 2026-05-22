@@ -5,7 +5,6 @@ import { Suspense } from "react";
 import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";
 import { CollectionArtworksPaginationLoader } from "@/components/loaders/componentLoaders/CollectionArtworksPaginationLoader";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { SubscribeSection } from "@/components/sections";
 
 export default async function CollectionSlugLayout({
   params,

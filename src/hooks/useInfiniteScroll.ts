@@ -13,6 +13,7 @@ interface UseInfiniteScrollReturn {
   observerRef: React.RefObject<HTMLDivElement>;
   isLoading: boolean;
   error: Error | null;
+  retry: () => Promise<void>;
 }
 
 export const useInfiniteScroll = ({
@@ -25,23 +26,30 @@ export const useInfiniteScroll = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const loadMore = useCallback(async () => {
+    if (!hasMore || isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      await onLoadMore();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to load more items")
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [hasMore, isLoading, onLoadMore]);
+
   const handleObserver = useCallback(
     async (entries: IntersectionObserverEntry[]) => {
       const [target] = entries;
-      if (target.isIntersecting && hasMore && !isLoading) {
-        setIsLoading(true);
-        try {
-          await onLoadMore();
-        } catch (err) {
-          setError(
-            err instanceof Error ? err : new Error("Failed to load more items")
-          );
-        } finally {
-          setIsLoading(false);
-        }
+      if (target.isIntersecting) {
+        await loadMore();
       }
     },
-    [hasMore, isLoading, onLoadMore]
+    [loadMore]
   );
 
   useEffect(() => {
@@ -62,5 +70,5 @@ export const useInfiniteScroll = ({
     };
   }, [handleObserver, rootMargin, threshold]);
 
-  return { observerRef, isLoading, error };
+  return { observerRef, isLoading, error, retry: loadMore };
 };

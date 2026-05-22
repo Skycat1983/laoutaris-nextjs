@@ -124,6 +124,11 @@ features before production launch.
 - T-081 moved `AccountSubnavLoader` off same-app HTTP by sharing account
   navigation service logic with `GET /api/v2/user/navigation` while preserving
   the route's `requireApiUser()` guard.
+- A-005 later found the account layout still comments out the
+  `AccountSubnavLoader` Suspense block despite that loader/test contract.
+  T-206 is prepared to restore the existing mount without changing account
+  navigation semantics, auth policy, cart/orders behavior, or saved-item
+  redirects.
 - T-083 moved account favourites/watchlist read loaders off same-app HTTP by
   sharing saved-artwork service logic with the protected user saved-artwork
   read routes while preserving their `requireApiUser()` guards.
@@ -482,8 +487,16 @@ Add targeted tests for `routeUtils` and session helpers when changed.
 - 2026-05-19: Completed T-141 by adding current-admin self-delete and
   last-admin deletion protections to the admin user delete route with focused
   guard-order and cascade-preservation coverage.
+- 2026-05-22: Prepared T-206 to restore the existing tested account subnav
+  mount in `src/app/account/layout.tsx` with layout-level coverage. It should
+  preserve the T-081 loader/service contract and avoid broader account
+  navigation, auth/session, cart/orders, and saved-item redirect changes.
 
 ## Next Agent Action
+
+If account UX hardening is prioritized, assign
+[T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md)
+as the next bounded slice.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-088 unless a regression is
 opened. Do not reassign T-094, T-095, T-119, T-120, or T-121 unless a

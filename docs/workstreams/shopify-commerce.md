@@ -157,6 +157,10 @@ production while preserving MongoDB as the archive source of truth.
   for `/shop/products/[productHandle]` without adding checkout, offer, sale,
   shipping, refund, payment, guarantee, or availability claims to structured
   data.
+- T-202 added route-local shared not-found UI and focused missing-product
+  coverage for `/shop/products/[productHandle]`. The route still maps missing
+  primary Shopify products to `notFound()` and treats linked archive
+  artwork/book artwork as optional related content.
 - T-111 renders artwork-to-shop product summaries from the server-side artwork
   detail path instead of client-side `ArtworkShopSection` fetches.
 - T-115 cleaned up Shopify Storefront fetch options so development reads use
@@ -506,10 +510,9 @@ Add targeted tests as shop behavior is hardened.
 ## Next Agent Action
 
 Choose the next Shopify backlog slice from checkout handoff, commerce assurance
-copy alignment, remaining product-detail contract coverage, product pagination,
-server-side sorting, framed print preview implementation, or prototype-shop
-visual refinement after owner review. Keep those separate unless explicitly
-assigned.
+copy alignment, product pagination, server-side sorting, framed print preview
+implementation, or prototype-shop visual refinement after owner review. Keep
+those separate unless explicitly assigned.
 
 Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
 product-link data migration, automatic mutation, and persistence-time Shopify
