@@ -1,6 +1,6 @@
 # T-143 Decide Public Search Scope
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -110,3 +110,6 @@ changes rendered search UI.
   separate commerce-specific follow-up for Shopify product results, using the
   existing public shop product data path and avoiding checkout/cart or policy
   claims.
+- Completed on 2026-05-22. Public search now includes articles, blogs,
+  collections, artworks, and Shopify products, while checkout/cart, shop
+  listing controls, commerce policy, and owner/legal work remain separate.

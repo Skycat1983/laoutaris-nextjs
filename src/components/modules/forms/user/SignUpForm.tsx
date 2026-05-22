@@ -9,12 +9,22 @@ import {
   RegistrationResponse,
   processRegistration,
 } from "@/lib/actions/processRegistration";
+import {
+  ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME,
+  ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_VALUE,
+} from "@/lib/constants";
+import Link from "next/link";
 
 // TODO: redo this form with shadcn/ui
 
 const initialState: RegistrationResponse = {
   type: "validation",
-  formValidationErrors: { email: "", password: "", username: "" },
+  formValidationErrors: {
+    email: "",
+    password: "",
+    username: "",
+    accountPrivacyAcknowledged: "",
+  },
 };
 
 const SignUpForm = () => {
@@ -71,6 +81,37 @@ const SignUpForm = () => {
               {state.formValidationErrors.username}
             </p>
           )}
+          <div className="flex items-start gap-3 rounded-md border border-gray-300 p-3 text-sm text-[#000000BF]">
+            <input
+              type="checkbox"
+              name={ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME}
+              id={ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME}
+              value={ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_VALUE}
+              className="mt-1 h-4 w-4"
+              aria-describedby="account-privacy-acknowledgement-copy"
+            />
+            <label
+              htmlFor={ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME}
+              id="account-privacy-acknowledgement-copy"
+              className="leading-6"
+            >
+              I acknowledge the account{" "}
+              <Link className="text-blue-600 underline" href="/privacy">
+                Privacy Policy
+              </Link>{" "}
+              and{" "}
+              <Link className="text-blue-600 underline" href="/terms">
+                Terms of Use
+              </Link>
+              . This acknowledgement is stored with new account records.
+            </label>
+          </div>
+          {state?.type === "validation" &&
+            state.formValidationErrors.accountPrivacyAcknowledged && (
+              <p aria-live="polite" className="bg-red-100">
+                {state.formValidationErrors.accountPrivacyAcknowledged}
+              </p>
+            )}
           {state?.type === "auth" && (
             <p aria-live="polite" className="bg-red-100">
               {JSON.stringify(state.authError)}

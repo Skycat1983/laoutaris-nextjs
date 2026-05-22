@@ -636,10 +636,11 @@ Use browser checks for layout-sensitive changes.
   MongoDB/Shopify loaders, or optional session-aware UI.
 - 2026-05-19: T-140 reconciled A-017 and A-018 frontend findings into
   F-098 through F-104 plus existing F-013, F-023, F-033, and F-049 updates.
-  T-143 is prepared for the public search scope decision. Search no-results/
+  T-143 later selected staged site-wide public search widening, completed by
+  T-210/T-211 for artwork and Shopify product results. Search no-results/
   pagination, nav fallbacks, visible breadcrumbs, language UI, taxonomy option
   parity, blog controls, collection section policy, and footer/legal copy
-  remain separate implementation or decision slices. T-145 and T-146 later
+  remained separate implementation or decision slices. T-145 and T-146 later
   resolved `/artwork` page/API query parity and sorted blog loading.
 - 2026-05-18: Prepared T-103 as the next A-010/F-085 slice for production-safe
   root metadata plus baseline `robots.ts` and `sitemap.ts`. Route-specific
@@ -1006,16 +1007,43 @@ Use browser checks for layout-sensitive changes.
   all-type searches, supports selected `type=shop-products` pages with the
   existing no-results and pagination patterns, and updates supported-type and
   all-types empty copy to include shop products without commerce claims.
+- 2026-05-22: Completed T-212 as the R-018 compliance decision-packet task.
+  The owner later approved the packet recommendations for implementation
+  scoping.
+- 2026-05-22: Completed T-213. `/privacy`, `/terms`, and footer legal links
+  are in place with focused coverage. Account privacy UI, comment/contact
+  notices, third-party consent UI, social URLs, and commerce-policy URL work
+  remain separate.
+- 2026-05-22: Completed T-214. Newsletter form consent copy/links and
+  `/newsletter/unsubscribe` are in place. Account privacy/terms
+  acknowledgement UI and manual privacy request handoff remained separate until
+  T-215.
+- 2026-05-22: Completed T-215. Credentials signup now renders required
+  privacy/terms acknowledgement UI, `/sign-in` renders provider controls with
+  a policy notice before OAuth continuation, account and mobile navigation now
+  target the app-owned sign-in route, and account settings exposes a manual
+  delete/export/correction request handoff instead of an inert delete button.
+- 2026-05-22: Completed T-216. `CommentForm` now renders visible posting
+  notice copy with `/privacy` and `/terms` links plus the approved manual
+  moderation/removal/correction handoff to hlaoutaris@gmail.com, while
+  preserving existing comment submission and display behavior.
+- 2026-05-22: Completed T-217. Contact/product and artwork enquiry forms now
+  render the shared privacy/retention notice with `/privacy` and `/terms`
+  links plus the manual privacy/legal handoff to hlaoutaris@gmail.com, while
+  preserving existing enquiry form behavior.
 
 ## Next Agent Action
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
-it is complete. The next frontend production task should be selected from the
-remaining unreconciled discovery, compliance, fallback-pattern, or route-polish
-backlog without changing artwork browse filters, shop listing
-filters/sorting/pagination, checkout/cart, product detail handoff, or commerce
-copy unless that behavior is explicitly assigned.
+it is complete. T-215 is complete; do not reassign it unless account
+acknowledgement/manual request UI regresses. Assign
+[T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md)
+for the next footer cleanup slice. T-216 and T-217 are complete; do not
+reassign them unless comment or contact/enquiry notice behavior regresses. Keep
+third-party consent UI, commerce-policy URL wiring, and real social target
+wiring separate until owner-supplied targets exist. Keep T-207 fallback
+patterns deferred as polish unless explicitly prioritized.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

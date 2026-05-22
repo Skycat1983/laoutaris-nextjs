@@ -181,3 +181,6 @@ with what changed and list candidate shared-tracker updates.
   Shopify product search from the remaining discovery gaps while keeping
   unrelated language/i18n launch direction, collection section launch policy,
   and footer/legal cleanup tracked separately.
+- Reconciled by orchestrator on 2026-05-22: F-098 is resolved, R-016 records
+  T-210/T-211 as complete for public search widening, T-143 is completed, and
+  T-212 is prepared as the next R-018 compliance decision-packet task.

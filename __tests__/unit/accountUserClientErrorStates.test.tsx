@@ -188,6 +188,26 @@ describe("account and user client error states", () => {
     expect(screen.getByRole("button", { name: "Logout" })).toBeEnabled();
   });
 
+  it("replaces account deletion with a manual privacy request handoff", () => {
+    render(<LogoutForm />);
+
+    expect(
+      screen.queryByRole("button", { name: "Delete Account" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Email privacy request" })
+    ).toHaveAttribute(
+      "href",
+      expect.stringContaining("mailto:hlaoutaris@gmail.com")
+    );
+    expect(
+      screen.getByText(/account deletion, data export, or account correction/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/does not perform self-service deletion or export/)
+    ).toBeInTheDocument();
+  });
+
   it("keeps account dropdown logout failure modal behavior", async () => {
     mockSignOut.mockRejectedValue(new Error("private auth failure"));
 

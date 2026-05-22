@@ -63,7 +63,20 @@ production work. T-208 completed the R-001 Shopify-hosted purchase handoff
 slice, and T-209 resolved the visible shared-banner commerce assurance copy
 slice for F-078/R-018. T-210 completed the first F-098/R-016 public search
 discovery slice by adding MongoDB-backed artwork results to `/search`. T-211
-is prepared next for the remaining Shopify product search slice.
+completed the remaining Shopify product search slice, resolving F-098. T-212
+prepared the R-018 owner/legal compliance decision packet and now records
+Heron Laoutaris / hlaoutaris@gmail.com as the approved owner/privacy contact,
+with recommendations approved for implementation scoping. T-213 completed the
+first runtime compliance slice by adding public `/privacy`, `/terms`, and
+footer legal links. T-214 completed newsletter consent/source metadata and
+unsubscribe behavior. T-215 completed account privacy/terms acknowledgement
+metadata, app-owned provider sign-in notices, and a manual account privacy
+request handoff for delete/export/correction requests. T-216 completed public
+comment posting notice, privacy/terms links, and manual moderation/removal/
+correction request handoff. T-217 completed contact/product and artwork
+enquiry privacy/retention notice and manual privacy/legal handoff. T-218 is
+prepared next for footer placeholder social-link cleanup and stale copyright
+text.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -750,23 +763,38 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- Immediate handoff: T-211 is the next recommended assignment:
-  `/task effort: high details: docs/tasks/T-211-add-shopify-product-results-to-public-search.md`.
+- Immediate handoff: assign
+  [T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md):
+  `/task effort: high details: docs/tasks/T-218-remove-footer-placeholder-social-links.md`.
 - Recent orchestration wave: T-206 restored the account subnav mount; T-207 was
   prepared for route fallback polish but deferred; T-208 completed the
   Shopify-hosted purchase handoff for available products with valid
   `onlineStoreUrl`; T-209 removed unsupported commerce assurance claims from
   shared security banners and matching security translation files; T-210 added
-  MongoDB-backed artwork results to public search.
+  MongoDB-backed artwork results to public search; T-211 added Shopify product
+  results to public search; T-212 prepared the R-018 owner/legal decision
+  packet, and the owner approved its recommendations for implementation
+  scoping; T-213 added public privacy/terms routes and footer legal links;
+  T-214 added newsletter consent/source metadata and unsubscribe behavior;
+  T-215 added account privacy/terms acknowledgement metadata, app-owned
+  provider sign-in notices, and manual delete/export/correction request
+  handoff; T-216 added public comment posting notice, privacy/terms links, and
+  manual moderation/removal/correction handoff; T-217 added contact/product
+  and artwork enquiry privacy/retention notice and manual privacy/legal
+  handoff.
 - Public search direction: staged site-wide widening is now selected for
-  T-143. T-210 added MongoDB-backed artwork results first. T-211 owns Shopify
-  product results next and must not expand into checkout/cart, product detail
-  handoff, shop listing controls, or commerce policy claims.
+  T-143 and completed by T-210/T-211. Public search now covers articles, blogs,
+  collections, artworks, and Shopify products. Checkout/cart, product detail
+  handoff, shop listing controls, and commerce policy claims remain separate.
 - Reconciliation status: F-009/R-001 mention the hosted Shopify handoff;
   F-078 is resolved for the visible shared-banner assurance-copy scope; R-018
   still tracks policy, consent, retention, third-party disclosure, and legal
-  page work; F-098/R-016 now record T-210 as complete and point to T-211 for
-  Shopify product search.
+  page work. F-074 is partially mitigated by T-215, F-075 is partially
+  mitigated by T-216, F-076 is resolved by T-100/T-217, and T-218 is prepared
+  for footer placeholder social-link/current-year cleanup; F-073 and F-077 are
+  resolved, F-072 is partially mitigated,
+  F-098 is resolved after T-210/T-211, and R-016 no longer tracks Shopify
+  product search as an open discovery gap.
 - T-131 is complete: scoped account/user client console-error output is removed
   while preserving existing UI behavior.
 - T-130 is complete: scoped public browsing client console-error output is
@@ -1430,8 +1458,8 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md):
-  `/task effort: high details: docs/tasks/T-211-add-shopify-product-results-to-public-search.md`.
+  [T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md):
+  `/task effort: high details: docs/tasks/T-218-remove-footer-placeholder-social-links.md`.
 - If framed print preview implementation continues, run T-194 targeted visual
   QA and owner review for `/prototype/frame`. Keep that review separate from
   Shopify option mapping, checkout/cart work, enquiry mutation, and physical
@@ -1453,11 +1481,20 @@ use the admin content runbook checklist and keep Cloudinary asset lifecycle,
 monitoring-provider ownership, broader backup/restore/rollback decisions, and
 owner approval separate unless explicitly assigned.
 
-T-143 now has an orchestrator direction recorded in its handoff notes: stage
-site-wide search widening by adding MongoDB-backed artwork results first.
-T-210 completed that implementation. T-211 owns the next Shopify product search
-slice and must stay separate from checkout/cart, product detail handoff, shop
-listing controls, and commerce policy claims.
+T-143 is complete: public search widening landed in stages through T-210 and
+T-211. Do not reopen search scope unless a regression or new product
+requirement is filed. T-212 is complete: the R-018 owner/legal compliance
+decision packet records owner approval for implementation scoping. T-213 is
+complete: public `/privacy`, `/terms`, and footer legal links are in place.
+T-214 is complete: newsletter consent/source metadata and unsubscribe behavior
+are in place. T-215 is complete: account privacy/terms acknowledgement and
+manual privacy request handoff are in place. T-216 is complete: public comment
+posting notice and manual moderation/removal request handoff are in place.
+T-217 is complete: contact/product and artwork enquiry privacy and retention
+notice is in place. T-218 should only remove or hide footer placeholder social
+links and refresh stale copyright text. Keep Shopify policy URL, real social
+URL wiring, jurisdiction/audience-specific legal work, future self-service
+privacy workflows, and future comment moderation/reporting workflows separate.
 
 Assign T-139 only after owner/platform approval exists for a monitoring
 provider or explicit no-provider interim policy. Owner-approved incident roles
@@ -1479,8 +1516,9 @@ T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
 T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, T-184, T-185,
 T-186, T-197, T-198, T-199, T-200, T-201, T-202, T-203, T-204, T-205, T-206,
-T-208, T-209, and T-210 are complete and should not be reassigned unless a
-regression is opened. T-207 is deferred; T-211 is planned next.
+T-208, T-209, T-210, T-211, T-212, T-213, T-214, T-215, T-216, and T-217 are complete and
+should not be reassigned unless a regression is opened. T-207 is deferred;
+T-218 is planned next.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

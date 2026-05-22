@@ -953,6 +953,31 @@ Add API route tests where behavior is changed.
   `type=shop-products`; all-type public search includes Shopify product results
   from `getShopProductList()`; and product result metadata uses the same
   per-type pagination contract as articles, blogs, collections, and artworks.
+- 2026-05-22: Completed T-212 as a docs-only compliance decision-packet task.
+  The owner later approved the packet recommendations for implementation
+  scoping. Newsletter consent/source fields, unsubscribe routes, account
+  privacy actions, and contact/comment retention behavior remain separate
+  implementation tasks; T-213 is frontend-only for privacy/terms routes and
+  footer legal links.
+- 2026-05-22: Completed T-213 as the frontend policy-route/footer-link slice.
+  Prepared T-214 as the next data/API compliance slice for newsletter
+  consent/source metadata and public unsubscribe behavior.
+- 2026-05-22: Completed T-214. New subscriber records now persist
+  consent/source metadata and a generated public unsubscribe identifier, and
+  public unsubscribe behavior marks matching subscribers unsubscribed without
+  exposing private subscriber data. Account acknowledgement metadata remained
+  separate until T-215.
+- 2026-05-22: Completed T-215. New credentials and OAuth-created users can now
+  persist optional account privacy acknowledgement metadata with privacy
+  version, terms version, accepted timestamp, accepted-by surface, and source,
+  while historical users remain valid and existing adapter defaults are
+  preserved.
+- 2026-05-22: Completed T-216. The comment posting notice/manual handoff slice
+  made no schema, API, persistence, moderation-state, request-persistence, or
+  retention automation changes.
+- 2026-05-22: Completed T-217. The contact/product and artwork enquiry notice
+  slice made no enquiry schema, API, persistence, stored notice metadata,
+  operator workflow, or retention automation changes.
 
 ## Next Agent Action
 
@@ -970,10 +995,19 @@ decision introduces line-item, variant-selection, or checkout ownership
 contracts.
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
-it is complete. Keep collection section launch policy, broader response-helper
-cleanup, route-local DB ownership gaps, field-contract matrices, server-side
-shop pagination/sorting contracts, lower-level logging policy, admin
-Shopify-link work, and Cloudinary runtime cleanup separate.
+it is complete. Do not reassign
+[T-214 Add newsletter consent source and unsubscribe](../tasks/T-214-add-newsletter-consent-source-unsubscribe.md);
+it is complete. T-215 is complete; do not reassign it unless account
+acknowledgement metadata persistence regresses. T-216 is complete; do not
+reassign it unless comment notice behavior regresses. T-217 is complete; do not
+reassign it unless contact/enquiry notice behavior regresses. T-218 is a
+frontend-only footer cleanup and should not change data/API behavior. Keep
+enquiry schema changes, retained notice metadata, operator workflow changes,
+and retention automation separate unless explicitly assigned. Keep collection
+section launch policy, broader response-helper
+cleanup, route-local DB ownership gaps, field-contract
+matrices, server-side shop pagination/sorting contracts, lower-level logging
+policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
 T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, T-179, T-180,
 T-181, T-182, and T-183 are complete; do not reassign them unless their guards,

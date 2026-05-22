@@ -1,6 +1,12 @@
 "use server";
 
 import dbConnect from "@/lib/db/mongodb";
+import {
+  ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME,
+  ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_VALUE,
+  ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_REQUIRED_MESSAGE,
+  createAccountPrivacyAcknowledgement,
+} from "@/lib/constants";
 import { getErrorMessage } from "@/lib/helpers/getErrorMessage";
 import { validateRegistrationData } from "../validation/validateRegistrationData";
 import { registerUser } from "./registerUser";
@@ -9,6 +15,7 @@ export interface SignUpFormData {
   email: string;
   password: string;
   username: string;
+  accountPrivacyAcknowledged: boolean;
 }
 
 interface RegistrationValidationErrorResult {
@@ -40,22 +47,42 @@ export async function processRegistration(
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const username = formData.get("username") as string;
+  const accountPrivacyAcknowledged =
+    formData.get(ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME) ===
+    ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_VALUE;
 
   const validationErrors = validateRegistrationData(email, password, username);
+  const formValidationErrors: Partial<Record<keyof SignUpFormData, string>> = {
+    ...validationErrors.formValidationErrors,
+  };
+
+  if (!accountPrivacyAcknowledged) {
+    formValidationErrors.accountPrivacyAcknowledged =
+      ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_REQUIRED_MESSAGE;
+  }
 
   const hasValidationErrors =
-    Object.keys(validationErrors.formValidationErrors).length > 0;
+    Object.keys(formValidationErrors).length > 0;
 
   if (hasValidationErrors) {
     return {
       type: "validation",
-      formValidationErrors: validationErrors.formValidationErrors,
+      formValidationErrors,
     };
   }
 
   try {
     // Try to register the user
-    const result = await registerUser({ email, username, password });
+    const result = await registerUser({
+      email,
+      username,
+      password,
+      accountPrivacyAcknowledgement: createAccountPrivacyAcknowledgement({
+        acceptedBy: "credentials",
+        provider: "credentials",
+        sourceSurface: "credentials-signup",
+      }),
+    });
 
     // Handle the registerUser result
     if (result.success) {

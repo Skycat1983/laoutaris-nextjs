@@ -1,7 +1,14 @@
-import { SignUpFormData } from "@/lib/actions/processRegistration";
 import { UserModel } from "@/lib/data/models";
 import { encryptPassword } from "@/lib/helpers/bcrypt";
 import { getErrorMessage } from "@/lib/helpers/getErrorMessage";
+import type { AccountPrivacyAcknowledgement } from "@/lib/constants";
+
+interface RegisterUserInput {
+  email: string;
+  username: string;
+  password: string;
+  accountPrivacyAcknowledgement: AccountPrivacyAcknowledgement;
+}
 
 interface RegisterUserSuccess {
   success: true;
@@ -24,7 +31,8 @@ export const registerUser = async ({
   email,
   username,
   password,
-}: SignUpFormData): Promise<RegisterUserResponse> => {
+  accountPrivacyAcknowledgement,
+}: RegisterUserInput): Promise<RegisterUserResponse> => {
   try {
     // Encrypt the password
     const hashedPassword = await encryptPassword(password);
@@ -34,6 +42,7 @@ export const registerUser = async ({
       email,
       username,
       password: hashedPassword,
+      accountPrivacyAcknowledgement,
     });
 
     // Save the user to the database

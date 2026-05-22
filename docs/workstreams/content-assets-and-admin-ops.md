@@ -440,14 +440,18 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-20: Completed T-183. The six main admin read tabs now share the same
   previous/next pagination control and metadata normalization helper without
   changing route/fetcher contracts, cards, search, filters, or handoff actions.
+- 2026-05-22: Prepared T-218 as the footer content cleanup slice for removing
+  placeholder social links and stale copyright text without inventing real
+  owner-managed social URLs.
 
 ## Next Agent Action
 
 No further F-092 implementation slice is ready after T-165/T-172/T-178, and no
-admin archive maintenance task is currently prepared after T-183. Keep
+admin archive maintenance task is currently prepared after T-183. T-218 is
+prepared for footer placeholder social-link/current-year cleanup only. Keep
 production delete policy review, collection section launch policy, broader
-taxonomy/i18n direction, Cloudinary asset deletion, and monitoring-provider work
-separate.
+taxonomy/i18n direction, real social URL wiring, Cloudinary asset deletion, and
+monitoring-provider work separate.
 T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, T-163, T-164,
 T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, T-178, T-179, T-180,
 T-181, T-182, and T-183 are complete; do not reassign them unless their route

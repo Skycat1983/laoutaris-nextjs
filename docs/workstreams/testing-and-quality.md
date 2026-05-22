@@ -1417,8 +1417,9 @@ npm run lint
   207 runtime-reachable local modules with no allowlist.
 - 2026-05-19: T-140 reconciled A-011, A-017, and A-018 testing follow-ups into
   F-091 through F-104 and R-005. T-141 and T-142 include focused route tests in
-  their acceptance criteria; T-143 is decision-first and should prepare the
-  correct test surface only after search scope is chosen.
+  their acceptance criteria; T-143 later selected staged site-wide public search
+  widening, and T-210/T-211 added the focused search service/API/page coverage
+  for artwork and Shopify product results.
 - 2026-05-19: Completed T-141 and T-142 with focused admin delete,
   article-write, and collection-write route coverage for current-admin/
   last-admin deletion guards and artwork relationship existence checks.
@@ -1581,6 +1582,34 @@ npm run lint
   `type=shop-products`, unsupported type validation copy, all-type Shop
   Products section rendering, selected product no-results states, lint, and
   strict TypeScript verification.
+- 2026-05-22: Completed T-212 as the docs-only compliance decision-packet
+  task. The owner later approved the packet recommendations for implementation
+  scoping before T-213 was assigned.
+- 2026-05-22: Completed T-213. `PolicyPages.test.tsx` covers `/privacy`,
+  `/terms`, footer legal links, metadata, owner/contact details, approved
+  version display, disclosed privacy surfaces, Shopify boundary copy, and
+  source checks against unsupported jurisdiction-specific labels and commerce
+  assurances.
+- 2026-05-22: Completed T-214. Focused subscription, unsubscribe page, and
+  newsletter form tests cover consent validation, persisted consent/source
+  metadata, duplicate stability, public-safe unsubscribe behavior, source path
+  hygiene, and redacted logging. Account acknowledgement and manual request
+  handoff coverage remained separate until T-215.
+- 2026-05-22: Completed T-215. Focused registration, user model/adapter,
+  sign-up acknowledgement, provider sign-in notice, account privacy request,
+  middleware, navigation, and smoke discovery tests cover the account
+  acknowledgement/manual request slice. The focused Jest run emitted the
+  existing `punycode` deprecation warning.
+- 2026-05-22: Completed T-216. `CommentFormNotice.test.tsx` covers the public
+  comment posting notice, policy links, manual request email link,
+  moderation/removal/correction wording, and the preserved submit/reset
+  contract. Adjacent account-user and public browsing client error-state tests
+  also passed.
+- 2026-05-22: Completed T-217. `ContactEnquiryNotice.test.tsx` covers contact
+  and artwork enquiry notices, policy links, manual email handoff,
+  product/artwork context wording, and preserved contact/artwork submit
+  payloads. Adjacent product-context and account-user error-state tests also
+  passed.
 
 ## Next Agent Action
 
@@ -1589,7 +1618,15 @@ T-209's commerce assurance copy coverage is complete. The focused
 refund, guarantee, or buyer-protection claims return to shared security banners
 or matching security translation files. T-210's public search artwork coverage
 is complete. T-211's Shopify product public-search coverage is complete. T-207
-fallback pattern coverage remains deferred as polish.
+fallback pattern coverage remains deferred as polish. T-212's compliance owner
+decision packet is complete; T-213 policy route/footer coverage is complete.
+T-214 newsletter consent/unsubscribe coverage is complete. T-215 account
+privacy/terms acknowledgement metadata and manual privacy request handoff
+coverage is complete. T-216 comment posting notice and manual
+moderation/removal handoff coverage is complete. T-217 contact/product and
+artwork enquiry notice coverage is complete. T-218 should add focused footer
+placeholder social-link/current-year coverage. Later runtime compliance tests
+for Shopify policy URLs and real social URLs remain separate.
 The current strict TypeScript `noEmit` backlog is clear after T-198 and the
 2026-05-22 ArticleLoader follow-up. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision

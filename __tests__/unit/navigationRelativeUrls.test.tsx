@@ -78,6 +78,6 @@ describe("relative navigation URLs", () => {
       expect(source).not.toContain("process.env.VERCEL_URL");
     }
 
-    expect(touchedSources[1]).toContain('path: "/api/auth/signin"');
+    expect(touchedSources[1]).toContain('path: "/sign-in"');
   });
 });

@@ -1,5 +1,6 @@
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { MongoClient } from "mongodb";
+import { createAccountPrivacyAcknowledgement } from "@/lib/constants";
 
 // extends the MongoDB adapter for Auth with custom user fields
 export const CustomMongoDBAdapter = (client: Promise<MongoClient>) => {
@@ -16,6 +17,11 @@ export const CustomMongoDBAdapter = (client: Promise<MongoClient>) => {
         favourites: [],
         createdAt: new Date(),
         updatedAt: new Date(),
+        accountPrivacyAcknowledgement: createAccountPrivacyAcknowledgement({
+          acceptedBy: "oauth",
+          provider: "oauth",
+          sourceSurface: "oauth-provider-sign-in",
+        }),
       };
 
       if (!baseAdapter.createUser) {

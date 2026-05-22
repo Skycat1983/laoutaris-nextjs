@@ -22,6 +22,7 @@ import {
   enquirySchema,
   type EnquiryInput,
 } from "@/lib/data/schemas/enquirySchema";
+import ContactEnquiryPrivacyNotice from "./ContactEnquiryPrivacyNotice";
 // import { submitEnquiry } from "@/lib/server/enquiry/actions/submitEnquiry";
 
 // TODO: redo this form with shadcn/ui
@@ -171,7 +172,8 @@ const ContactForm = ({ productHandle }: ContactFormProps) => {
           )}
         />
 
-        {/* Submit Button */}
+        <ContactEnquiryPrivacyNotice />
+
         <Button type="submit" className="w-full">
           Send Message
         </Button>

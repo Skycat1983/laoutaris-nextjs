@@ -8,3 +8,4 @@ export * from "./userConstants";
 export * from "./navigationLinks";
 export * from "./routeConstants";
 export * from "./heroSlideData";
+export * from "./accountPrivacyAcknowledgement";

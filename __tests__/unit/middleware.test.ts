@@ -73,7 +73,7 @@ describe("middleware", () => {
     });
   });
 
-  it("redirects unauthenticated protected frontend requests to NextAuth sign-in", async () => {
+  it("redirects unauthenticated protected frontend requests to the app sign-in page", async () => {
     const request = createRequest("/account/settings");
     mockGetToken.mockResolvedValue(null);
 
@@ -82,10 +82,10 @@ describe("middleware", () => {
     expect(response).toEqual({
       type: "redirect",
       status: 307,
-      url: "https://example.com/api/auth/signin",
+      url: "https://example.com/sign-in",
     });
     expect(mockRedirect).toHaveBeenCalledWith(
-      new URL("https://example.com/api/auth/signin")
+      new URL("https://example.com/sign-in")
     );
   });
 

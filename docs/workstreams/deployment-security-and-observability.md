@@ -977,15 +977,48 @@ npm run lint
   buyer-protection, money-back, guarantee, insured/global-shipping, or
   payment-method assurances. Owner/legal policy pages, consent records,
   third-party disclosures, and app-owned checkout remain separate R-018 work.
+- 2026-05-22: Completed T-212 as the next R-018 step. It created an
+  owner-facing compliance decision packet before runtime policy pages, consent
+  fields, unsubscribe behavior, account privacy actions, or third-party
+  disclosure changes are assigned.
+- 2026-05-22: Recorded owner approval for the T-212 recommendations using
+  Heron Laoutaris / hlaoutaris@gmail.com as the owner/privacy contact. Prepared
+  T-213 as the first runtime policy-route/footer-link slice.
+- 2026-05-22: Completed T-213. Public `/privacy` and `/terms` routes, footer
+  legal links, owner approval version display, cookie/session/third-party
+  disclosure, and factual Shopify-hosted handoff boundary copy are in place.
+  Prepared T-214 as the next newsletter consent/source/unsubscribe slice.
+- 2026-05-22: Completed T-214. Newsletter consent/source metadata and public
+  unsubscribe behavior are in place with public-safe invalid/expired messages
+  and redacted logging. Prepared T-215 as the next account
+  acknowledgement/manual privacy request handoff slice.
+- 2026-05-22: Completed T-215. App-owned `/sign-in` redirects and smoke
+  targets are in place, provider sign-in surfaces include the owner-approved
+  privacy/terms notice, and account privacy requests now use a public-safe
+  manual handoff to hlaoutaris@gmail.com without exposing private account data.
+- 2026-05-22: Completed T-216. Public comment posting now includes the
+  owner-approved privacy/terms notice and a public-safe manual
+  moderation/removal/correction request handoff to hlaoutaris@gmail.com without
+  adding request persistence or moderation workflow promises.
+- 2026-05-22: Completed T-217. Contact/product and artwork enquiry forms now
+  include public-safe privacy/retention notice copy, policy links, and the
+  manual privacy/legal handoff to hlaoutaris@gmail.com without adding stored
+  notice fields, operator workflow promises, or retention automation.
 
 ## Next Agent Action
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
-it is complete. Continue R-018 by preparing owner/legal policy, consent,
-retention-notice, or third-party disclosure slices, or use the T-123 monitoring
-architecture plan only after an owner/platform provider decision or explicit
-no-provider interim policy exists.
+it is complete. T-215 is complete; do not reassign it unless app-owned sign-in
+notice, account acknowledgement, or manual request handoff behavior regresses.
+Assign
+[T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md)
+as the next R-018/F-104 cleanup task. T-216 and T-217 are complete; do not
+reassign them unless comment or contact/enquiry notice/manual handoff behavior
+regresses. Keep Shopify policy URLs, real social URLs, and
+jurisdiction/audience-specific legal claims separate.
+Use the T-123 monitoring architecture plan only after an owner/platform
+provider decision or explicit no-provider interim policy exists.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad

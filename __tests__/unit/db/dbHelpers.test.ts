@@ -2,6 +2,10 @@ import dbConnect from "@/lib/db/mongodb";
 import { CustomMongoDBAdapter } from "@/lib/db/adapter";
 import { withDbConnect } from "@/lib/db/connectWithRetry";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import {
+  ACCOUNT_PRIVACY_VERSION,
+  ACCOUNT_TERMS_VERSION,
+} from "@/lib/constants";
 
 jest.mock("@/lib/db/mongodb", () => ({
   __esModule: true,
@@ -70,6 +74,14 @@ describe("DB helper behavior", () => {
       favourites: [],
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
+      accountPrivacyAcknowledgement: {
+        privacyVersion: ACCOUNT_PRIVACY_VERSION,
+        termsVersion: ACCOUNT_TERMS_VERSION,
+        acceptedAt: expect.any(Date),
+        acceptedBy: "oauth",
+        provider: "oauth",
+        sourceSurface: "oauth-provider-sign-in",
+      },
     });
   });
 

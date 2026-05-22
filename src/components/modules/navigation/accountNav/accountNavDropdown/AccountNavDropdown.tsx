@@ -101,7 +101,7 @@ export function AccountNavDropdown() {
                         ? "from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
                         : "opacity-50 cursor-not-allowed"
                     }`}
-                    href={isDisabled ? "/api/auth/signin" : "#"}
+                    href={isDisabled ? "/sign-in" : "#"}
                     onClick={(e) => {
                       if (!isDisabled) {
                         e.preventDefault();
@@ -129,7 +129,7 @@ export function AccountNavDropdown() {
                         ? "hover:bg-accent hover:text-accent-foreground"
                         : "opacity-50 cursor-not-allowed"
                     }`}
-                    href={isDisabled ? "/api/auth/signup" : "#"}
+                    href={isDisabled ? "/sign-in?mode=signup" : "#"}
                     onClick={(e) => {
                       if (!isDisabled) {
                         e.preventDefault();

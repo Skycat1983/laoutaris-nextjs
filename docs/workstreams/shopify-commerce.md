@@ -540,6 +540,16 @@ Add targeted tests as shop behavior is hardened.
   `getShopProductList()` and `type=shop-products`, with product links pointing
   to `/shop/products/[productHandle]` and no checkout/cart or commerce policy
   claims added.
+- 2026-05-22: Completed T-212 as the compliance decision-packet task for
+  owner/legal policy boundaries around hosted Shopify handoff, sale terms,
+  payment, shipping, returns/refunds, and footer/legal link ownership.
+- 2026-05-22: Recorded owner approval for the Shopify-hosted handoff boundary:
+  checkout, payment, shipping, returns/refunds, taxes, fulfilment, and buyer
+  support stay outside this app unless separately assigned. Shopify policy
+  target URLs were not supplied.
+- 2026-05-22: Completed T-213. Local `/privacy` and `/terms` pages now include
+  factual Shopify-hosted handoff boundary copy, but Shopify policy target URLs
+  remain unsupplied and separate.
 
 ## Next Agent Action
 
@@ -549,7 +559,9 @@ or
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
 both are complete.
 
-Keep app-owned checkout/cart, real pagination, server-side sorting, broader
+T-213 completed local privacy/terms pages and footer legal links with factual
+Shopify-hosted handoff boundary copy. Keep Shopify policy URL wiring,
+app-owned checkout/cart, real pagination, server-side sorting, broader
 product-detail redesign, product-link data migration, automatic mutation, and
 persistence-time Shopify API validation separate. No product-ID cleanup or
 migration is indicated by T-059 or T-082.

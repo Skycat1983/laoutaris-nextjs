@@ -495,6 +495,24 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   account content, preserving the T-081 loader/service contract and avoiding
   account navigation semantics, auth/session, cart/orders, and saved-item
   redirect changes.
+- 2026-05-22: Completed T-212. Account signup/OAuth privacy
+  acknowledgements, account privacy request handling, self-service delete/export
+  behavior, and retention rules are owner-approved for future implementation
+  scoping but remain separate from T-213's policy route/footer-link slice.
+- 2026-05-22: Prepared T-215 as the next account compliance slice. It should
+  add credentials signup and OAuth/provider privacy/terms acknowledgement
+  metadata plus manual privacy request handoff, without implementing
+  self-service delete/export or broader retention workflows.
+- 2026-05-22: Completed T-215. Credentials signup now requires
+  privacy/terms acknowledgement before registration, new credentials and
+  OAuth-created users persist acknowledgement metadata, `/sign-in` is the
+  app-owned provider entry with a visible policy notice, and the inert account
+  delete control is replaced by a manual delete/export/correction request
+  handoff to hlaoutaris@gmail.com.
+- 2026-05-22: Completed T-216. Public comment posting notice and manual
+  moderation/removal/correction handoff are in place, while existing owner-only
+  comment edit/delete controls were preserved and no moderation/admin workflow
+  was added.
 
 ## Next Agent Action
 
@@ -512,5 +530,10 @@ and add focused route coverage before changing protected user/admin route
 behavior.
 
 T-141 is complete; do not reassign it unless current-admin or last-admin
-deletion protection regresses. Keep account privacy self-service, owner/legal
-retention decisions, and broader destructive admin cascade previews separate.
+deletion protection regresses. T-215 is complete; do not reassign it unless
+credentials/OAuth acknowledgement metadata, app-owned sign-in notice, or the
+manual privacy request handoff regresses. Keep future account privacy
+self-service, owner/legal retention decisions, public contact/enquiry notices,
+and broader destructive admin cascade previews separate. T-216 is complete; do
+not reassign it unless comment notice or manual moderation handoff behavior
+regresses.

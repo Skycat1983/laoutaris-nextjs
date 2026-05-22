@@ -288,7 +288,7 @@ const makeChecks = (options) => {
     },
     {
       name: "Sign-in shell",
-      path: "/api/auth/signin",
+      path: "/sign-in",
       expectedStatuses: [200],
     },
     {
@@ -301,7 +301,7 @@ const makeChecks = (options) => {
       path: "/admin/dashboard/articles",
       redirect: "manual",
       expectedStatuses: [302, 303, 307, 308],
-      expectedLocationIncludes: "/api/auth/signin",
+      expectedLocationIncludes: "/sign-in",
     },
   ];
 

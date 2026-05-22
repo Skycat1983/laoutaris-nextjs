@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/shadcn/button";
 import { Textarea } from "@/components/shadcn/textarea";
@@ -63,6 +64,26 @@ const CommentForm = ({ blogSlug, onCommentSubmit }: CommentFormProps) => {
             </FormItem>
           )}
         />
+        <p className="mt-4 text-sm leading-6 text-neutral-600">
+          Comments you submit, along with your display name or username, may be
+          shown publicly on this blog post. Please only post what you want
+          public. Read the{" "}
+          <Link className="underline underline-offset-4" href="/privacy">
+            Privacy Policy
+          </Link>{" "}
+          and{" "}
+          <Link className="underline underline-offset-4" href="/terms">
+            Terms of Use
+          </Link>
+          . For comment removal, correction, or moderation concerns, email{" "}
+          <a
+            className="underline underline-offset-4"
+            href="mailto:hlaoutaris@gmail.com"
+          >
+            hlaoutaris@gmail.com
+          </a>
+          .
+        </p>
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}

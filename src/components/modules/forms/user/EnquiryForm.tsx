@@ -24,6 +24,7 @@ import {
   enquirySchema,
   type EnquiryInput,
 } from "@/lib/data/schemas/enquirySchema";
+import ContactEnquiryPrivacyNotice from "./ContactEnquiryPrivacyNotice";
 
 // TODO: redo this form with shadcn/ui
 
@@ -136,6 +137,8 @@ const EnquiryForm = ({ artworkId }: { artworkId: string }) => {
             </FormItem>
           )}
         />
+
+        <ContactEnquiryPrivacyNotice />
 
         <Button type="submit">Submit</Button>
       </form>

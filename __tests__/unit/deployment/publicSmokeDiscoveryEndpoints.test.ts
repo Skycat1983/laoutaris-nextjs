@@ -69,11 +69,11 @@ Sitemap: ${canonicalOrigin}/sitemap.xml
     headers: { "Content-Type": "application/xml" },
     body: stableSitemapBody(),
   },
-  "/api/auth/signin": { status: 200, body: "signin" },
+  "/sign-in": { status: 200, body: "signin" },
   "/api/auth/signout": { status: 200, body: "signout" },
   "/admin/dashboard/articles": {
     status: 302,
-    headers: { Location: "/api/auth/signin" },
+    headers: { Location: "/sign-in" },
     body: "",
   },
   ...overrides,

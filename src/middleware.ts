@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
       return apiAuthError("Unauthorized", 401);
     }
 
-    return NextResponse.redirect(new URL("/api/auth/signin", request.url));
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   if (isAdminRoute(path)) {

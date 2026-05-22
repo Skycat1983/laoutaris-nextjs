@@ -157,7 +157,7 @@ Planning and prompt packs:
 | [T-140 Reconcile admin discovery taxonomy findings](T-140-reconcile-admin-discovery-taxonomy-findings.md) | Completed | Reconciled remaining A-011, A-017, and A-018 candidate findings into shared trackers and prepared the next implementation briefs. |
 | [T-141 Protect admin user deletion](T-141-protect-admin-user-deletion.md) | Completed | Added current-admin and last-admin lockout protections to admin user deletion. |
 | [T-142 Verify admin artwork relationships](T-142-verify-admin-artwork-relationships.md) | Completed | Rejected admin article and collection relationship writes that reference missing artworks. |
-| [T-143 Decide public search scope](T-143-decide-public-search-scope.md) | Planned | Decide whether public search is site-wide or explicitly scoped to articles, blogs, and collections before implementation. |
+| [T-143 Decide public search scope](T-143-decide-public-search-scope.md) | Completed | Selected staged site-wide public search widening; T-210 added artworks and T-211 added Shopify products. |
 | [T-144 Surface admin collection form errors](T-144-surface-admin-collection-form-errors.md) | Completed | Made collection create/update API failures visible in admin forms, preserved structured fetcher errors, and restored the create success callback. |
 | [T-145 Align artwork page query parsing](T-145-align-artwork-page-query-parsing.md) | Completed | Made `/artwork` page query defaults and validation use the shared artwork list schema used by the API. |
 | [T-146 Preserve sorted blog loading](T-146-preserve-sorted-blog-loading.md) | Completed | Preserved active blog sort state through sorted list follow-up loading and rendered sorted pagination links. |
@@ -223,6 +223,13 @@ Planning and prompt packs:
 | [T-209 Align commerce assurance copy](T-209-align-commerce-assurance-copy.md) | Completed | Removed unsupported payment, shipping, refund, guarantee, and buyer-protection claims from shared public assurance copy. |
 | [T-210 Add artwork results to public search](T-210-add-artwork-results-to-public-search.md) | Completed | Expanded public search to include MongoDB-backed artwork results as the first staged site-wide search slice. |
 | [T-211 Add Shopify product results to public search](T-211-add-shopify-product-results-to-public-search.md) | Completed | Expanded public search to include Shopify product results using the existing public shop product-list data path. |
+| [T-212 Prepare compliance owner decision packet](T-212-prepare-compliance-owner-decision-packet.md) | Completed | Prepared the owner/legal decision packet for R-018 privacy, consent, third-party disclosure, and commerce-policy gaps before runtime changes. |
+| [T-213 Add owner approved policy routes and footer links](T-213-add-owner-approved-policy-routes-and-footer-links.md) | Completed | Added public privacy/terms routes and footer legal links as the first owner-approved R-018 runtime compliance slice. |
+| [T-214 Add newsletter consent source and unsubscribe](T-214-add-newsletter-consent-source-unsubscribe.md) | Completed | Added owner-approved newsletter consent/source metadata and public unsubscribe behavior. |
+| [T-215 Add account privacy acknowledgement and manual request handoff](T-215-add-account-privacy-acknowledgement-manual-request.md) | Completed | Added owner-approved credentials/OAuth account terms/privacy acknowledgement metadata, app-owned sign-in notices, and a manual privacy request handoff. |
+| [T-216 Add comment posting notice and moderation handoff](T-216-add-comment-posting-notice-moderation-handoff.md) | Completed | Added owner-approved public comment posting notice, privacy/terms links, and manual moderation/removal/correction request handoff. |
+| [T-217 Add contact enquiry privacy notice](T-217-add-contact-enquiry-privacy-notice.md) | Completed | Added owner-approved contact/product and artwork enquiry privacy notice with policy links and manual privacy/legal handoff. |
+| [T-218 Remove footer placeholder social links](T-218-remove-footer-placeholder-social-links.md) | Planned | Remove footer `href="#"` social placeholders and refresh stale copyright text without inventing real social URLs. |
 
 ## Rules
 
