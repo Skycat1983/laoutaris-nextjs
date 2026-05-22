@@ -126,23 +126,32 @@ Exit behavior:
 - `1`: invalid product IDs, unknown product types, missing `MONGO_URI`, or an
   audit runtime failure occurred.
 
-## First-Release Purchase Handoff
+## Purchase Handoff
 
-Product detail pages currently use an enquiry handoff instead of cart or
-checkout. When a Shopify product is available for sale, the public product
-detail page links to `/project/contact?product=[handle]`. When a product is not
-available for sale, the page shows that it cannot currently be purchased.
+Product detail pages use Shopify-hosted product links when Shopify provides
+them. When a Shopify product is available for sale and the Storefront API
+returns a valid `onlineStoreUrl`, the public product detail page links users to
+that hosted Shopify URL in a new tab. Checkout is completed on Shopify.
 
-Before enabling checkout or cart controls, define the Shopify checkout owner,
-variant ID handling, line-item construction, and unavailable-product behavior.
+When a Shopify product is available for sale but does not expose a valid hosted
+URL, the product detail page falls back to
+`/project/contact?product=[handle]`. When a product is not available for sale,
+the page shows that it cannot currently be purchased and does not render a
+purchase or enquiry completion CTA.
+
+Before enabling app-owned checkout or cart controls, define the Shopify
+checkout owner, variant ID handling, line-item construction, and
+unavailable-product behavior.
 
 ## Manual Verification
 
 - `/shop/products` shows the expected product set.
 - Product filters do not duplicate book products.
 - Product detail loads from `/shop/products/[productHandle]`.
-- Product detail shows an enquiry link for available products and no
-  `Add to Cart` control.
+- Product detail shows an external Shopify purchase link for available products
+  with a valid `onlineStoreUrl` and no `Add to Cart` control.
+- Product detail shows an enquiry fallback for available products without a
+  valid `onlineStoreUrl`.
 - Product detail shows non-purchase status for unavailable products.
 - Product detail links back to archive artwork where linked.
 - Artwork detail shows sale affordances only when `shopifyProducts` exists.

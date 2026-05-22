@@ -57,7 +57,12 @@ slice. F-105 is resolved. T-203 resolved F-106 home section fallback states,
 and T-204 resolved F-107 public browsing client fetch error states. R-032 is
 mitigated for the reconciled A-005 fallback scope. T-205 resolved F-108 and
 mitigated R-033 for scoped mixed component barrel cleanup in server
-routes/loaders. T-206 is prepared next for F-109 account subnav mounting.
+routes/loaders. T-206 resolved F-109 account subnav mounting. T-207 exists for
+F-110 route loading/fallback polish, but it is deferred behind higher-value
+production work. T-208 completed the R-001 Shopify-hosted purchase handoff
+slice, and T-209 resolved the visible shared-banner commerce assurance copy
+slice for F-078/R-018. T-210 is prepared next for the F-098/R-016 public
+search discovery gap by adding MongoDB-backed artwork results to `/search`.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -744,6 +749,21 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
+- Immediate handoff: T-210 is the next recommended assignment:
+  `/task effort: high details: docs/tasks/T-210-add-artwork-results-to-public-search.md`.
+- Recent orchestration wave: T-206 restored the account subnav mount; T-207 was
+  prepared for route fallback polish but deferred; T-208 completed the
+  Shopify-hosted purchase handoff for available products with valid
+  `onlineStoreUrl`; T-209 removed unsupported commerce assurance claims from
+  shared security banners and matching security translation files.
+- Public search direction: staged site-wide widening is now selected for
+  T-143. T-210 adds MongoDB-backed artwork results first. Shopify product
+  search remains a separate commerce-specific follow-up and must not be folded
+  into T-210.
+- Reconciliation status: F-009/R-001 mention the hosted Shopify handoff;
+  F-078 is resolved for the visible shared-banner assurance-copy scope; R-018
+  still tracks policy, consent, retention, third-party disclosure, and legal
+  page work; F-098/R-016 now point to T-210 for artwork search.
 - T-131 is complete: scoped account/user client console-error output is removed
   while preserving existing UI behavior.
 - T-130 is complete: scoped public browsing client console-error output is
@@ -1404,11 +1424,11 @@ implementation wave needs discovery before task scoping.
 
 ## Next Orchestrator Action
 
-The next practical assignment depends on the priority:
+The recommended next assignment is:
 
-- If owner-independent frontend hardening is preferred, assign
-  [T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md):
-  `/task effort: medium details: docs/tasks/T-206-restore-account-subnav-mount.md`.
+- Assign
+  [T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md):
+  `/task effort: high details: docs/tasks/T-210-add-artwork-results-to-public-search.md`.
 - If framed print preview implementation continues, run T-194 targeted visual
   QA and owner review for `/prototype/frame`. Keep that review separate from
   Shopify option mapping, checkout/cart work, enquiry mutation, and physical
@@ -1430,9 +1450,10 @@ use the admin content runbook checklist and keep Cloudinary asset lifecycle,
 monitoring-provider ownership, broader backup/restore/rollback decisions, and
 owner approval separate unless explicitly assigned.
 
-Hold [T-143 Decide public search scope](../tasks/T-143-decide-public-search-scope.md)
-unless the owner/product answer is available. If unavailable, do not guess the
-public search scope or add artworks/Shopify products to `/search`.
+T-143 now has an orchestrator direction recorded in its handoff notes: stage
+site-wide search widening by adding MongoDB-backed artwork results first.
+T-210 owns that implementation. Do not add Shopify product search to T-210;
+prepare a separate commerce-discovery task after artwork search lands.
 
 Assign T-139 only after owner/platform approval exists for a monitoring
 provider or explicit no-provider interim policy. Owner-approved incident roles
@@ -1452,8 +1473,10 @@ T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
 T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
-T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, T-184, and T-185 are
-complete and should not be reassigned unless a regression is opened.
+T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, T-184, T-185,
+T-186, T-197, T-198, T-199, T-200, T-201, T-202, T-203, T-204, T-205, T-206,
+T-208, and T-209 are complete and should not be reassigned unless a regression
+is opened. T-207 is deferred; T-210 is planned next.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

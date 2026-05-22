@@ -2,21 +2,13 @@
 
 import React from "react";
 import {
-  Lock,
-  UserRound,
-  ShieldCheck,
-  Truck,
-  Clock,
-  CreditCard,
+  Archive,
+  BookOpen,
+  ExternalLink,
+  FileText,
   HeartHandshake,
-  Package,
-  BadgeCheck,
-  Medal,
-  ShieldAlert,
-  Users,
-  Wallet,
-  Building,
-  Phone,
+  Mail,
+  UserRound,
 } from "lucide-react";
 
 export const SecurityBannerWhite = () => {
@@ -25,31 +17,29 @@ export const SecurityBannerWhite = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-5 gap-8">
           <div className="flex flex-col items-center text-center">
-            <Lock className="w-8 h-8 mb-4 text-gray-700" />
-            <h3 className="text-sm font-medium mb-2">Secure Payment</h3>
-            <p className="text-xs text-gray-600">By invoice or credit card</p>
+            <Archive className="w-8 h-8 mb-4 text-gray-700" />
+            <h3 className="text-sm font-medium mb-2">Archive Records</h3>
+            <p className="text-xs text-gray-600">Artwork details and images</p>
           </div>
           <div className="flex flex-col items-center text-center">
             <UserRound className="w-8 h-8 mb-4 text-gray-700" />
-            <h3 className="text-sm font-medium mb-2">Personal Consultation</h3>
-            <p className="text-xs text-gray-600">
-              Contact us without obligation
-            </p>
+            <h3 className="text-sm font-medium mb-2">Studio Contact</h3>
+            <p className="text-xs text-gray-600">Reach us by enquiry form</p>
           </div>
           <div className="flex flex-col items-center text-center">
-            <ShieldCheck className="w-8 h-8 mb-4 text-gray-700" />
-            <h3 className="text-sm font-medium mb-2">Buyer Protection</h3>
-            <p className="text-xs text-gray-600">100% money-back guarantee</p>
+            <ExternalLink className="w-8 h-8 mb-4 text-gray-700" />
+            <h3 className="text-sm font-medium mb-2">Shopify Links</h3>
+            <p className="text-xs text-gray-600">Hosted pages when available</p>
           </div>
           <div className="flex flex-col items-center text-center">
-            <Truck className="w-8 h-8 mb-4 text-gray-700" />
-            <h3 className="text-sm font-medium mb-2">Insured Shipping</h3>
-            <p className="text-xs text-gray-600">Professional art logistics</p>
+            <FileText className="w-8 h-8 mb-4 text-gray-700" />
+            <h3 className="text-sm font-medium mb-2">Artwork Enquiries</h3>
+            <p className="text-xs text-gray-600">Product context is preserved</p>
           </div>
           <div className="flex flex-col items-center text-center">
-            <Clock className="w-8 h-8 mb-4 text-gray-700" />
-            <h3 className="text-sm font-medium mb-2">24/7 Support</h3>
-            <p className="text-xs text-gray-600">Always here to help</p>
+            <BookOpen className="w-8 h-8 mb-4 text-gray-700" />
+            <h3 className="text-sm font-medium mb-2">Public Catalogue</h3>
+            <p className="text-xs text-gray-600">Browse artworks and articles</p>
           </div>
         </div>
       </div>
@@ -64,29 +54,29 @@ export const SecurityBannerBlack = () => {
         <div className="grid grid-cols-5 gap-8">
           {[
             {
-              icon: <Lock />,
-              title: "Secure Payments",
-              desc: "Protected transactions",
+              icon: <Archive />,
+              title: "Archive Browsing",
+              desc: "Public artwork records",
             },
             {
-              icon: <ShieldCheck />,
-              title: "Buyer Protection",
-              desc: "100% guaranteed",
+              icon: <FileText />,
+              title: "Artwork Context",
+              desc: "Archive details",
             },
             {
               icon: <UserRound />,
-              title: "Personal Service",
-              desc: "Expert assistance",
+              title: "Studio Contact",
+              desc: "Direct enquiries",
             },
             {
-              icon: <Truck />,
-              title: "Global Shipping",
-              desc: "Worldwide delivery",
+              icon: <ExternalLink />,
+              title: "Shopify Links",
+              desc: "Hosted pages when available",
             },
             {
               icon: <HeartHandshake />,
-              title: "Trust & Safety",
-              desc: "Verified artworks",
+              title: "Archive Care",
+              desc: "Maintained catalogue",
             },
           ].map((item, index) => (
             <div
@@ -120,29 +110,29 @@ export const SecurityBannerGrey = () => {
         <div className="grid grid-cols-5 gap-12">
           {[
             {
-              icon: <Lock />,
-              title: "Secure Platform",
-              desc: "Encrypted transactions",
+              icon: <Archive />,
+              title: "Archive Platform",
+              desc: "Public artwork records",
             },
             {
-              icon: <ShieldCheck />,
-              title: "Verified Artists",
-              desc: "Authentic artworks",
+              icon: <BookOpen />,
+              title: "Artist Archive",
+              desc: "Joseph Laoutaris works",
             },
             {
-              icon: <CreditCard />,
-              title: "Safe Payments",
-              desc: "Multiple methods",
+              icon: <ExternalLink />,
+              title: "Shopify Links",
+              desc: "Hosted pages when available",
             },
             {
-              icon: <UserRound />,
-              title: "Expert Support",
-              desc: "Dedicated service",
+              icon: <Mail />,
+              title: "Direct Contact",
+              desc: "Enquiry form available",
             },
             {
-              icon: <Package />,
-              title: "Safe Delivery",
-              desc: "Insured shipping",
+              icon: <FileText />,
+              title: "Catalogue Access",
+              desc: "Artworks and articles",
             },
           ].map((item, index) => (
             <div key={index} className="flex flex-col items-center text-center">

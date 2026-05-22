@@ -40,6 +40,7 @@ const createProduct = (productId: string): SimpleProduct => ({
   description: "A product used by the shop listing route contract test.",
   descriptionHtml:
     "<p>A product used by the shop listing route contract test.</p>",
+  onlineStoreUrl: `https://laoutaris.myshopify.com/products/product-${productId}`,
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],

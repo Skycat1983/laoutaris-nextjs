@@ -161,6 +161,11 @@ production while preserving MongoDB as the archive source of truth.
   coverage for `/shop/products/[productHandle]`. The route still maps missing
   primary Shopify products to `notFound()` and treats linked archive
   artwork/book artwork as optional related content.
+- T-208 carries Shopify `onlineStoreUrl` through product list, handle, and ID
+  reads. Available product detail pages now render an external Shopify purchase
+  CTA when that hosted URL is valid, preserve enquiry as the fallback or
+  secondary contact path, and keep unavailable products in a non-purchase
+  state.
 - T-111 renders artwork-to-shop product summaries from the server-side artwork
   detail path instead of client-side `ArtworkShopSection` fetches.
 - T-115 cleaned up Shopify Storefront fetch options so development reads use
@@ -180,8 +185,9 @@ production while preserving MongoDB as the archive source of truth.
 
 ## Backlog
 
-- Decide the full checkout handoff: Shopify-hosted product/checkout link or
-  Shopify cart/checkout with variant selection.
+- Decide any future app-owned cart/checkout behavior, variant selection,
+  line-item construction, and checkout ownership beyond the current
+  Shopify-hosted product URL handoff.
 - Align commerce assurance copy with implemented checkout/cart behavior and
   owner/legal-approved sale, payment, shipping, refund, and buyer-protection
   policies.
@@ -506,18 +512,39 @@ Add targeted tests as shop behavior is hardened.
   added edge bands read as duplicate shadows. The separate bottom and right
   bands were removed; the room composite now uses the frame-attached cast
   shadow plus the short south-east diagonal corner shadows only.
+- 2026-05-22: Prepared T-208 as the next commerce implementation slice and
+  deferred T-207 route fallback polish. T-208 moves product detail pages beyond
+  enquiry-only commerce through a Shopify-hosted purchase handoff when Shopify
+  exposes a public product URL, without taking on app-owned cart/checkout.
+- 2026-05-22: Completed T-208. Shopify product queries now request
+  `onlineStoreUrl`, the transform carries only valid absolute HTTP(S) hosted
+  URLs through `SimpleProduct.onlineStoreUrl`, and available product detail
+  pages render an external `Purchase on Shopify` CTA when present. Available
+  products without a hosted URL keep the enquiry fallback; unavailable products
+  still render no purchase or enquiry completion CTA.
+- 2026-05-22: Prepared T-209 as the next owner-independent commerce/compliance
+  slice. It removes unsupported payment, shipping, refund, guarantee, and
+  buyer-protection claims from shared public assurance copy without adding
+  policy pages or app-owned checkout behavior.
+- 2026-05-22: Completed T-209. Shared security banners and matching security
+  translation files now use factual archive, direct contact, enquiry-context,
+  catalogue, and Shopify-hosted-link copy instead of unsupported payment,
+  buyer-protection, guarantee, insured/global-shipping, or payment-method
+  assurances. Focused coverage guards against reintroducing the retired claims.
 
 ## Next Agent Action
 
-Choose the next Shopify backlog slice from checkout handoff, commerce assurance
-copy alignment, product pagination, server-side sorting, framed print preview
-implementation, or prototype-shop visual refinement after owner review. Keep
-those separate unless explicitly assigned.
+Do not reassign
+[T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
+it is complete. The next owner-independent implementation assignment is
+[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md),
+which deliberately excludes Shopify product search. Keep future Shopify product
+search as a separate commerce discovery slice after artwork search lands.
 
-Keep checkout handoff, real pagination, server-side sorting, product-detail UI,
-product-link data migration, automatic mutation, and persistence-time Shopify
-API validation separate. No product-ID cleanup or migration is indicated by
-T-059 or T-082.
+Keep app-owned checkout/cart, real pagination, server-side sorting, broader
+product-detail redesign, product-link data migration, automatic mutation, and
+persistence-time Shopify API validation separate. No product-ID cleanup or
+migration is indicated by T-059 or T-082.
 
 If framed print preview implementation continues, run T-194 targeted visual QA
 and owner review for `/prototype/frame`. Include both close-up frame materials

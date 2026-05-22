@@ -104,3 +104,8 @@ changes rendered search UI.
 - If the decision is not available, do not guess; update this task with the
   blocked decision state and next owner question instead of changing runtime
   behavior.
+- 2026-05-22 orchestrator direction: use staged site-wide widening rather than
+  copy-only narrowing. T-210 is prepared to add MongoDB-backed artwork results
+  first because artwork discovery is core archive behavior. Shopify product
+  search remains a separate commerce-specific follow-up because it may require
+  Shopify fan-out and product-result policy decisions.

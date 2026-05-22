@@ -126,9 +126,8 @@ features before production launch.
   the route's `requireApiUser()` guard.
 - A-005 later found the account layout still comments out the
   `AccountSubnavLoader` Suspense block despite that loader/test contract.
-  T-206 is prepared to restore the existing mount without changing account
-  navigation semantics, auth policy, cart/orders behavior, or saved-item
-  redirects.
+  T-206 restored the existing mount without changing account navigation
+  semantics, auth policy, cart/orders behavior, or saved-item redirects.
 - T-083 moved account favourites/watchlist read loaders off same-app HTTP by
   sharing saved-artwork service logic with the protected user saved-artwork
   read routes while preserving their `requireApiUser()` guards.
@@ -491,17 +490,19 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   mount in `src/app/account/layout.tsx` with layout-level coverage. It should
   preserve the T-081 loader/service contract and avoid broader account
   navigation, auth/session, cart/orders, and saved-item redirect changes.
+- 2026-05-22: Completed T-206. `src/app/account/layout.tsx` now mounts
+  `AccountSubnavLoader` inside `Suspense` with `SubnavSkeleton` fallback before
+  account content, preserving the T-081 loader/service contract and avoiding
+  account navigation semantics, auth/session, cart/orders, and saved-item
+  redirect changes.
 
 ## Next Agent Action
-
-If account UX hardening is prioritized, assign
-[T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md)
-as the next bounded slice.
 
 Do not reassign T-081, T-082, T-083, T-084, or T-088 unless a regression is
 opened. Do not reassign T-094, T-095, T-119, T-120, or T-121 unless a
 regression is opened. Do not reassign T-122 unless the API-v2 route
-source-hygiene guard regresses.
+source-hygiene guard regresses. Do not reassign T-206 unless the account layout
+subnav mount regresses.
 
 Keep broader production logging policy, root-layout session redesign,
 favourite/watchlist server actions, account navigation, comment mutations,

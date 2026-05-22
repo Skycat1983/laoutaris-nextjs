@@ -235,6 +235,10 @@ consistent enough for production refactoring and Shopify integration.
 - T-100 added optional `productHandle` support to the public enquiry DTO and
   Mongoose model. The public enquiry route persists normalized valid handles
   and rejects malformed product context with a validation `400`.
+- T-208 adds Shopify's hosted public product URL to the Shopify product DTO and
+  `SimpleProduct` as `onlineStoreUrl`. Product list, handle, and ID transforms
+  preserve valid absolute HTTP(S) URLs and normalize missing, empty, relative,
+  malformed, or non-HTTP(S) values to `null`.
 - T-154 added route-local runtime validation for public article list
   `section`, article navigation `[section]`, and collection list `section`
   inputs before service calls, using canonical taxonomy constants.
@@ -645,6 +649,16 @@ Add API route tests where behavior is changed.
   `descriptionHtml` for list, handle, and ID reads while existing plain
   `description`, product metadata, variant metadata, API envelopes,
   product-detail UI, checkout/cart, and admin linking remain unchanged.
+- 2026-05-22: Prepared T-208 as the next Shopify DTO/API contract slice. It
+  should carry Shopify's hosted public product URL through product list, handle,
+  and ID reads so product detail pages can hand off to Shopify-hosted purchase
+  when available, while preserving enquiry fallback and keeping app-owned
+  cart/checkout separate.
+- 2026-05-22: Completed T-208. Shopify product queries now request
+  `onlineStoreUrl`, `SimpleProduct.onlineStoreUrl` carries valid hosted URLs
+  through list, handle, and ID reads, and invalid or missing hosted URL values
+  normalize to `null` without changing variant, price, image, product type,
+  tags, metafield, or description behavior.
 - 2026-05-16: Prepared T-068 as a no-contract-change shop API cleanup. It
   should remove public shop product-listing route debug logs while preserving
   query validation, MongoDB filter construction, malformed ID skipping,
@@ -924,6 +938,9 @@ Add API route tests where behavior is changed.
 - 2026-05-20: Completed T-183. The shared admin read pagination-control
   extraction was frontend-only and made no data/API route, fetcher, query, or
   contract changes.
+- 2026-05-22: Prepared T-210 as the next public search data/API slice. It adds
+  MongoDB-backed artwork results to the public search schema, result types, and
+  service while keeping Shopify product search out of scope.
 
 ## Next Agent Action
 
@@ -935,7 +952,14 @@ artwork pagination/filter/search route contract. T-182 consumed existing
 comment/user route metadata without changing route contracts. T-183 was a
 frontend-only pagination-control extraction. No additional data/API admin
 archive task is open.
-Keep public search scope, collection section launch policy, broader
+T-208 is complete for the Shopify hosted product URL DTO/API contract. No
+additional data/API task is open for this handoff unless a future cart/checkout
+decision introduces line-item, variant-selection, or checkout ownership
+contracts.
+Assign
+[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
+for the next owner-independent data/API slice. Keep Shopify product search,
+collection section launch policy, broader
 response-helper cleanup, route-local DB ownership gaps, field-contract
 matrices, server-side shop pagination/sorting contracts, lower-level logging
 policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.

@@ -164,55 +164,55 @@
     "de": "Suche",
     "fr": "Rechercher"
   },
-  "secure_platform": {
-    "en": "Secure Platform",
-    "de": "Sichere Plattform",
-    "fr": "Plateforme sécurisée"
+  "archive_platform": {
+    "en": "Archive Platform",
+    "de": "Archivplattform",
+    "fr": "Plateforme d'archives"
   },
-  "secure_platform_desc": {
-    "en": "Encrypted transactions",
-    "de": "Verschlüsselte Transaktionen",
-    "fr": "Transactions cryptées"
+  "archive_platform_desc": {
+    "en": "Public artwork records",
+    "de": "Öffentliche Werkdaten",
+    "fr": "Notices d'œuvres publiques"
   },
-  "verified_artists": {
-    "en": "Verified Artists",
-    "de": "Verifizierte Künstler",
-    "fr": "Artistes vérifiés"
+  "artist_archive": {
+    "en": "Artist Archive",
+    "de": "Künstlerarchiv",
+    "fr": "Archives de l'artiste"
   },
-  "verified_artists_desc": {
-    "en": "Authentic artworks",
-    "de": "Authentische Kunstwerke",
-    "fr": "Œuvres authentiques"
+  "artist_archive_desc": {
+    "en": "Joseph Laoutaris works",
+    "de": "Werke von Joseph Laoutaris",
+    "fr": "Œuvres de Joseph Laoutaris"
   },
-  "safe_payments": {
-    "en": "Safe Payments",
-    "de": "Sichere Zahlungen",
-    "fr": "Paiements sécurisés"
+  "shopify_links": {
+    "en": "Shopify Links",
+    "de": "Shopify-Links",
+    "fr": "Liens Shopify"
   },
-  "safe_payments_desc": {
-    "en": "Multiple methods",
-    "de": "Mehrere Zahlungsmethoden",
-    "fr": "Méthodes multiples"
+  "shopify_links_desc": {
+    "en": "Hosted pages when available",
+    "de": "Gehostete Seiten, wenn verfügbar",
+    "fr": "Pages hébergées lorsqu'elles sont disponibles"
   },
-  "expert_support": {
-    "en": "Expert Support",
-    "de": "Experten-Support",
-    "fr": "Support expert"
+  "direct_contact": {
+    "en": "Direct Contact",
+    "de": "Direkter Kontakt",
+    "fr": "Contact direct"
   },
-  "expert_support_desc": {
-    "en": "Dedicated service",
-    "de": "Engagierter Service",
-    "fr": "Service dédié"
+  "direct_contact_desc": {
+    "en": "Enquiry form available",
+    "de": "Anfrageformular verfügbar",
+    "fr": "Formulaire de demande disponible"
   },
-  "safe_delivery": {
-    "en": "Safe Delivery",
-    "de": "Sichere Lieferung",
-    "fr": "Livraison sécurisée"
+  "catalogue_access": {
+    "en": "Catalogue Access",
+    "de": "Katalogzugang",
+    "fr": "Accès au catalogue"
   },
-  "safe_delivery_desc": {
-    "en": "Insured shipping",
-    "de": "Versicherter Versand",
-    "fr": "Expédition assurée"
+  "catalogue_access_desc": {
+    "en": "Artworks and articles",
+    "de": "Kunstwerke und Artikel",
+    "fr": "Œuvres et articles"
   },
   "color_proximity": {
     "en": "Color Proximity",

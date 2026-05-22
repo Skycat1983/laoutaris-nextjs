@@ -116,6 +116,9 @@ export default async function ProductPage({ params }: PageProps) {
     product,
     linkedArtwork
   );
+  const enquiryHref = `/project/contact?product=${encodeURIComponent(
+    product.handle
+  )}`;
 
   return (
     <>
@@ -167,18 +170,40 @@ export default async function ProductPage({ params }: PageProps) {
 
             {product.availableForSale ? (
               <div className="rounded-md border border-gray-200 p-4">
-                <Link
-                  href={`/project/contact?product=${encodeURIComponent(
-                    product.handle
-                  )}`}
-                  className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
-                >
-                  Enquire About This Product
-                </Link>
-                <p className="mt-3 text-sm text-gray-600">
-                  Contact the archive team to confirm availability and purchase
-                  details.
-                </p>
+                {product.onlineStoreUrl ? (
+                  <>
+                    <a
+                      href={product.onlineStoreUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
+                    >
+                      Purchase on Shopify
+                    </a>
+                    <p className="mt-3 text-sm text-gray-600">
+                      Checkout is completed on Shopify.
+                    </p>
+                    <Link
+                      href={enquiryHref}
+                      className="mt-3 inline-flex text-sm font-medium text-gray-700 underline underline-offset-4 hover:text-black"
+                    >
+                      Contact the archive team about this product
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={enquiryHref}
+                      className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
+                    >
+                      Enquire About This Product
+                    </Link>
+                    <p className="mt-3 text-sm text-gray-600">
+                      Contact the archive team to confirm availability and
+                      purchase details.
+                    </p>
+                  </>
+                )}
                 {framePreviewArtwork && (
                   <FramedPrintPreviewLauncher artwork={framePreviewArtwork} />
                 )}

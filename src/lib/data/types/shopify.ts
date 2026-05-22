@@ -28,6 +28,7 @@ export interface ShopifyProduct {
   title: string;
   description: string;
   descriptionHtml: string;
+  onlineStoreUrl?: string | null;
   vendor: string;
   productType: string;
   tags: string[];
@@ -92,6 +93,7 @@ export interface SimpleProduct {
   title: string;
   description: string;
   descriptionHtml: string;
+  onlineStoreUrl?: string | null;
   vendor: string;
   productType: string;
   tags: string[];

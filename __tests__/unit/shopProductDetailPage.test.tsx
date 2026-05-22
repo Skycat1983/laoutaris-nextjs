@@ -66,6 +66,7 @@ const createProduct = (overrides: Partial<SimpleProduct> = {}): SimpleProduct =>
   title: "Test Product",
   description: "A product used by the page test.",
   descriptionHtml: "<p>A product used by the page test.</p>",
+  onlineStoreUrl: null,
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],
@@ -181,7 +182,41 @@ describe("/shop/products/[productHandle]", () => {
     );
   });
 
-  it("renders a safe contact handoff for available products instead of Add to Cart", async () => {
+  it("renders an external Shopify purchase handoff for available products with a hosted URL", async () => {
+    mockGetProductByHandle.mockResolvedValue(
+      createProduct({
+        onlineStoreUrl:
+          "https://laoutaris.myshopify.com/products/test-product",
+      })
+    );
+
+    render(await ProductPage({ params: { productHandle: "test-product" } }));
+
+    const purchaseLink = screen.getByRole("link", {
+      name: "Purchase on Shopify",
+    });
+
+    expect(screen.queryByText("Add to Cart")).not.toBeInTheDocument();
+    expect(purchaseLink).toHaveAttribute(
+      "href",
+      "https://laoutaris.myshopify.com/products/test-product"
+    );
+    expect(purchaseLink).toHaveAttribute("target", "_blank");
+    expect(purchaseLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(
+      screen.getByText("Checkout is completed on Shopify.")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", {
+        name: "Contact the archive team about this product",
+      })
+    ).toHaveAttribute("href", "/project/contact?product=test-product");
+    expect(
+      screen.queryByRole("link", { name: "Enquire About This Product" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders the contact enquiry fallback for available products without a hosted URL", async () => {
     mockGetProductByHandle.mockResolvedValue(createProduct());
 
     render(await ProductPage({ params: { productHandle: "test-product" } }));
@@ -195,6 +230,9 @@ describe("/shop/products/[productHandle]", () => {
         "Contact the archive team to confirm availability and purchase details."
       )
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Purchase on Shopify" })
+    ).not.toBeInTheDocument();
   });
 
   it("renders the framed preview launcher for available print products with linked artwork metrics", async () => {
@@ -299,6 +337,9 @@ describe("/shop/products/[productHandle]", () => {
     render(await ProductPage({ params: { productHandle: "test-product" } }));
 
     expect(screen.queryByText("Add to Cart")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Purchase on Shopify" })
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Enquire About This Product" })
     ).not.toBeInTheDocument();

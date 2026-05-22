@@ -34,6 +34,32 @@ const getGraphqlErrorCount = (errors: unknown) =>
 
 class LoggedShopifyFetchError extends Error {}
 
+const normalizeOnlineStoreUrl = (
+  onlineStoreUrl: ShopifyProduct["onlineStoreUrl"]
+) => {
+  if (typeof onlineStoreUrl !== "string") {
+    return null;
+  }
+
+  const trimmedUrl = onlineStoreUrl.trim();
+
+  if (!trimmedUrl) {
+    return null;
+  }
+
+  try {
+    const parsedUrl = new URL(trimmedUrl);
+
+    if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+      return null;
+    }
+
+    return trimmedUrl;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Make a GraphQL request to Shopify Storefront API
  */
@@ -174,6 +200,7 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
     title: product.title,
     description: product.description,
     descriptionHtml: product.descriptionHtml,
+    onlineStoreUrl: normalizeOnlineStoreUrl(product.onlineStoreUrl),
     vendor: product.vendor,
     productType: product.productType || "",
     tags: Array.isArray(product.tags) ? product.tags : [],

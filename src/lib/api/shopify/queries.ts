@@ -15,6 +15,7 @@ export const GET_PRODUCTS_QUERY = `
           title
           description
           descriptionHtml
+          onlineStoreUrl
           vendor
           productType
           tags
@@ -88,6 +89,7 @@ export const GET_PRODUCT_BY_HANDLE_QUERY = `
       title
       description
       descriptionHtml
+      onlineStoreUrl
       vendor
       productType
       tags
@@ -162,6 +164,7 @@ export const GET_PRODUCT_BY_ID_QUERY = `
       title
       description
       descriptionHtml
+      onlineStoreUrl
       vendor
       productType
       tags

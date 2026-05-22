@@ -968,12 +968,24 @@ npm run lint
   documents how operators verify redacted admin delete audit receipts after
   approved production deletes, including safe fields, excluded private fields,
   a placeholder-only query shape, and a sanitized handoff example.
+- 2026-05-22: Prepared T-209 as an owner-independent A-020/R-018 compliance
+  slice. It removes unsupported commerce assurance claims from shared public
+  banner copy while owner/legal policy pages, consent records, third-party
+  disclosures, and app-owned checkout remain separate decisions.
+- 2026-05-22: Completed T-209. Shared public security banner copy and matching
+  security translation strings no longer advertise unsupported payment,
+  buyer-protection, money-back, guarantee, insured/global-shipping, or
+  payment-method assurances. Owner/legal policy pages, consent records,
+  third-party disclosures, and app-owned checkout remain separate R-018 work.
 
 ## Next Agent Action
 
-Use the T-123 monitoring architecture plan to obtain an owner/platform provider
-decision or explicit no-provider interim policy before installing any SDK,
-adding `instrumentation.ts`, or wiring provider alerts.
+Do not reassign
+[T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
+it is complete. Continue R-018 by preparing owner/legal policy, consent,
+retention-notice, or third-party disclosure slices, or use the T-123 monitoring
+architecture plan only after an owner/platform provider decision or explicit
+no-provider interim policy exists.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad

@@ -556,8 +556,17 @@ Use targeted import/reference searches for pruning tasks.
   `src/components/loaders` server callers now avoid value imports from the
   mixed component barrels, and source-hygiene coverage guards the cleaned
   scopes. R-033 is mitigated for the reconciled A-005 route/loader scope.
+- 2026-05-22: Prepared T-207 as the remaining A-005 route-local rendering
+  follow-up. It should document route loading/fallback patterns in
+  `docs/architecture/rendering-and-data-fetching.md` and replace the
+  `/project/aims` generic inline loading fallback without changing broader
+  cache, not-found, or route-builder policy.
 
 ## Next Agent Action
+
+If route-local rendering documentation is prioritized, assign
+[T-207 Document route fallback patterns](../tasks/T-207-document-route-fallback-patterns.md)
+before broad static/ISR or route-builder work.
 
 Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
 adoption, and live homepage migration separate until owner review accepts the

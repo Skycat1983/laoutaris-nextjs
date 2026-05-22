@@ -129,3 +129,6 @@ updates.
   T-206 completion fact to the frontend, auth/admin, and testing workstreams;
   update any active orchestration/risk entries that still list the account
   subnav mount as open.
+- Reconciled by the orchestrator on 2026-05-22: shared trackers now mark F-109
+  resolved and T-206 complete. F-110 route loading/fallback documentation was
+  captured in T-207, then deferred behind higher-value production work.

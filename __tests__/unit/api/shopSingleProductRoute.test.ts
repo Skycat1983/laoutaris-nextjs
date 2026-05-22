@@ -39,6 +39,7 @@ const product: SimpleProduct = {
   title: "Test Product",
   description: "A product used by the route contract test.",
   descriptionHtml: "<p>A product used by the route contract test.</p>",
+  onlineStoreUrl: "https://laoutaris.myshopify.com/products/test-product",
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],

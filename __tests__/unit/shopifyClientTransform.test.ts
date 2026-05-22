@@ -20,6 +20,7 @@ const createShopifyProduct = (
   title: "Test Product",
   description: "A product used by Shopify transform tests.",
   descriptionHtml: "<p>A product used by Shopify transform tests.</p>",
+  onlineStoreUrl: null,
   vendor: "Joseph Laoutaris",
   productType: "Original Artwork",
   tags: ["archive", "featured"],
@@ -243,6 +244,89 @@ describe("Shopify product transforms", () => {
       })
     );
   });
+
+  it("queries Shopify hosted product URLs on list, handle, and ID reads", () => {
+    expect(GET_PRODUCTS_QUERY).toContain("onlineStoreUrl");
+    expect(GET_PRODUCT_BY_HANDLE_QUERY).toContain("onlineStoreUrl");
+    expect(GET_PRODUCT_BY_ID_QUERY).toContain("onlineStoreUrl");
+  });
+
+  it("preserves valid Shopify hosted product URLs for list, handle, and ID reads", async () => {
+    mockShopifyResponse({
+      products: {
+        edges: [
+          {
+            node: createShopifyProduct({
+              onlineStoreUrl:
+                "https://laoutaris.myshopify.com/products/list-product",
+            }),
+          },
+        ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+      },
+    });
+    mockShopifyResponse({
+      productByHandle: createShopifyProduct({
+        onlineStoreUrl:
+          "https://laoutaris.myshopify.com/products/handle-product",
+      }),
+    });
+    mockShopifyResponse({
+      product: createShopifyProduct({
+        onlineStoreUrl: "https://laoutaris.myshopify.com/products/id-product",
+      }),
+    });
+
+    const listResult = await getProducts();
+    const handleResult = await getProductByHandle("test-product");
+    const idResult = await getProductById("gid://shopify/Product/123456");
+
+    expect(listResult.products[0].onlineStoreUrl).toBe(
+      "https://laoutaris.myshopify.com/products/list-product"
+    );
+    expect(handleResult?.onlineStoreUrl).toBe(
+      "https://laoutaris.myshopify.com/products/handle-product"
+    );
+    expect(idResult?.onlineStoreUrl).toBe(
+      "https://laoutaris.myshopify.com/products/id-product"
+    );
+  });
+
+  it("treats a missing Shopify hosted product URL as null", async () => {
+    const product = createShopifyProduct();
+    delete product.onlineStoreUrl;
+
+    mockShopifyResponse({
+      productByHandle: product,
+    });
+
+    const result = await getProductByHandle("test-product");
+
+    expect(result?.onlineStoreUrl).toBeNull();
+  });
+
+  it.each([
+    ["null", null],
+    ["empty", ""],
+    ["whitespace", "   "],
+    ["relative", "/products/test-product"],
+    ["malformed", "not a url"],
+    ["unsupported protocol", "javascript:alert(1)"],
+  ] as Array<[string, ShopifyProduct["onlineStoreUrl"]]>)(
+    "treats %s Shopify hosted product URLs as null",
+    async (_name, onlineStoreUrl) => {
+      mockShopifyResponse({
+        productByHandle: createShopifyProduct({ onlineStoreUrl }),
+      });
+
+      const result = await getProductByHandle("test-product");
+
+      expect(result?.onlineStoreUrl).toBeNull();
+    }
+  );
 
   it("preserves multiple variants in Shopify order for product list reads", async () => {
     mockShopifyResponse({

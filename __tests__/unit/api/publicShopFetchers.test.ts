@@ -8,6 +8,7 @@ const product: SimpleProduct = {
   title: "Verified Original",
   description: "Verified product description.",
   descriptionHtml: "<p>Verified product description.</p>",
+  onlineStoreUrl: "https://laoutaris.myshopify.com/products/verified-original",
   vendor: "Joseph Laoutaris",
   productType: "original",
   tags: ["archive"],

@@ -182,6 +182,11 @@ refactoring without turning every change into a manual QA pass.
 - T-063 extended focused Shopify transform coverage for preserving plain
   `description` and Shopify `descriptionHtml` across list, handle, and ID
   reads while keeping metadata and variant behavior covered.
+- T-208 extended focused Shopify transform, product detail page, public
+  shop-product API, and public shop fetcher coverage for hosted
+  `onlineStoreUrl` preservation, invalid/missing URL fallback, external
+  Shopify purchase CTA behavior, enquiry fallback behavior, and unavailable
+  product behavior.
 - T-064 pinned the local runtime/install baseline and added the lockfile install
   dry-run to setup, deployment, and testing docs. Verification passed with Node
   `v22.14.0`, npm `10.9.2`, `npm ci --dry-run --ignore-scripts`, full Jest,
@@ -808,6 +813,11 @@ npm run lint
   `description` and Shopify `descriptionHtml` across list, handle, and ID
   reads. Focused transform tests, lint, and build passed; build retained
   existing MongoDB/fetcher/static-generation log noise.
+- 2026-05-22: T-208 extended focused Shopify tests for `onlineStoreUrl`
+  querying/preservation across list, handle, and ID reads, invalid or missing
+  hosted URL normalization to `null`, product detail external Shopify CTA
+  behavior, enquiry fallback behavior, unavailable-product behavior, and
+  public shop API/fetcher fixture contracts.
 - 2026-05-16: Prepared T-064 with install/runtime verification expectations:
   record Node/npm versions, prove the lockfile install path with
   `npm ci --dry-run --ignore-scripts`, then run the normal test, lint, and
@@ -1555,11 +1565,20 @@ npm run lint
   guards `src/app` and `src/components/loaders` against mixed component barrel
   value imports, and focused loader/form tests pass after mocks were moved to
   direct file paths.
+- 2026-05-22: Completed T-206. Account layout coverage now proves
+  `AccountSubnavLoader` is mounted inside `Suspense` before account content and
+  that the source cannot satisfy the invariant with a JSX-commented loader
+  block; existing account subnav loader tests still pass.
 
 ## Next Agent Action
 
-The next owner-independent frontend quality slice is T-206 for account layout
-coverage that proves the existing account subnav loader is mounted.
+T-209's commerce assurance copy coverage is complete. The focused
+`securityBannerCommerceCopy` test fails if unsupported payment, shipping,
+refund, guarantee, or buyer-protection claims return to shared security banners
+or matching security translation files. Assign
+[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
+as the next quality slice, covering public search service/API/page behavior for
+artwork results. T-207 fallback pattern coverage remains deferred as polish.
 The current strict TypeScript `noEmit` backlog is clear after T-198 and the
 2026-05-22 ArticleLoader follow-up. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision

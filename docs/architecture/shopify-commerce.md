@@ -73,18 +73,27 @@ Product listing:
 6. Fetch product details from Shopify.
 7. Render products and apply client-side sorting where appropriate.
 
-## First-Release Purchase Handoff
+## Purchase Handoff
 
-Product detail pages do not implement Shopify cart or checkout yet. For the
-first release, products that Shopify marks `availableForSale` link users to
-`/project/contact?product=[handle]` with enquiry copy. Products that are not
-available for sale show non-purchase status copy.
+Product detail pages do not implement an app-owned Shopify cart or checkout.
+The public product DTO carries Shopify `onlineStoreUrl` when the Storefront API
+returns a valid absolute HTTP(S) URL.
 
-Do not render `Add to Cart`, checkout, or direct purchase controls until the
-product contract exposes the required checkout data and ownership is decided.
-A future cart/checkout implementation must define variant IDs, line items,
-availability checks, and whether checkout is owned by a Shopify-hosted flow or
-an app-managed cart flow.
+Products that Shopify marks `availableForSale` and that expose a valid
+`onlineStoreUrl` render an external `Purchase on Shopify` link. The link opens
+in a new tab with `target="_blank"` and `rel="noopener noreferrer"`, and the
+page states only that checkout is completed on Shopify. The archive enquiry
+link remains available as a secondary contact option.
+
+Products that are available for sale but do not expose a valid hosted URL keep
+the enquiry fallback at `/project/contact?product=[handle]`. Products that are
+not available for sale show non-purchase status copy and do not render a
+purchase or enquiry completion CTA.
+
+Do not render `Add to Cart` or app-owned checkout controls until the product
+contract and ownership model define variant IDs, line items, availability
+checks, and whether checkout is owned by a Shopify-hosted flow or an app-managed
+cart flow.
 
 ## Product Types
 
@@ -125,6 +134,10 @@ saving.
 
 - Product availability, price, variants, image, and handle should come from
   Shopify.
+- Public product DTOs expose Shopify's hosted product URL only through
+  `SimpleProduct.onlineStoreUrl` after URL validation. Missing, empty,
+  relative, malformed, or non-HTTP(S) values become `null`; the app must not
+  invent hosted product URLs from handles.
 - Public product DTOs expose queried variant IDs, titles, availability, price
   money, compare-at price money, and optional variant image URL/alt text through
   `SimpleProduct.variants`. This is contract preparation only; it does not

@@ -260,6 +260,11 @@ Next.js server/client component boundaries.
 - T-202 completed the remaining Shopify product detail not-found UI slice.
   Missing primary Shopify products still call `notFound()`, and the route now
   has shared public route-local not-found presentation with focused coverage.
+- T-208 moved available Shopify product detail pages beyond enquiry-only
+  commerce when Shopify exposes a valid hosted product URL. The route now
+  renders an external `Purchase on Shopify` CTA for that case, keeps enquiry as
+  fallback or secondary contact, and keeps unavailable products in a
+  non-purchase state.
 - T-203 resolved home section loader blank fallbacks. Biography, collections,
   and blog homepage section loaders now render visible unavailable states for
   missing service results or non-Next failures and visible empty states for
@@ -274,6 +279,10 @@ Next.js server/client component boundaries.
   `@/components/views`, and `@/components/loaders/viewLoaders` in `src/app`
   and `src/components/loaders` were replaced with direct file imports and
   guarded by source-hygiene coverage.
+- T-206 restored the account subnav mount. The account layout now actively
+  renders `AccountSubnavLoader` inside `Suspense` with `SubnavSkeleton`
+  fallback before account route content, and layout-level coverage prevents
+  the mount from being replaced by a JSX comment.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
   drift from canonical constants, blog pinned/tag controls were hidden, and
@@ -349,9 +358,6 @@ Next.js server/client component boundaries.
 - Centralize taxonomy value+label options for public filters and admin forms.
 - Coordinate footer placeholder social links, current-year/copyright text, and
   assurance copy with A-020 owner/legal-approved requirements.
-- Decide whether account subnavigation should be mounted; if yes, restore the
-  account layout Suspense block with layout-level coverage, and if no, prune the
-  unused loader/test claims.
 - Document route loading/empty/error fallback patterns by route type and replace
   generic inline loading copy such as `/project/aims` with accepted fallback
   components.
@@ -963,15 +969,39 @@ Use browser checks for layout-sensitive changes.
   value-import mixed component barrels, focused mocks were moved to direct file
   paths, and `clientServerImportBoundary.test.ts` now guards `src/app` and
   `src/components/loaders` against reintroducing those barrel value imports.
-  F-108 is resolved, and T-206 is prepared for F-109 account subnav mounting.
+  F-108 is resolved, and T-206 was prepared for F-109 account subnav mounting.
+- 2026-05-22: Completed T-206. The account layout now actively mounts
+  `AccountSubnavLoader` inside `Suspense` with `SubnavSkeleton` fallback, and
+  layout-level coverage guards against returning to a commented-out mount.
+  F-109 is resolved. F-110 route fallback patterns were captured in T-207.
+- 2026-05-22: Deferred T-207 after priority review. Route fallback
+  documentation and `/project/aims` loading-copy cleanup remain valid polish,
+  but commerce/search/compliance production blockers take priority.
+- 2026-05-22: Completed T-208. `/shop/products/[productHandle]` now renders an
+  external hosted Shopify purchase CTA for available products with valid
+  `onlineStoreUrl`, preserves the contact enquiry fallback when that URL is
+  missing, keeps unavailable products free of purchase/enquiry completion CTAs,
+  and adds focused page coverage for all three states.
+- 2026-05-22: Prepared T-209 as the next frontend/compliance slice. It should
+  neutralize unsupported commerce assurance copy in shared security banners and
+  matching security translation strings without redesigning the footer or shop
+  pages.
+- 2026-05-22: Completed T-209. Shared security banners and matching security
+  translation strings now avoid unsupported payment, buyer-protection,
+  money-back, insured/global-shipping, payment-method, and guarantee claims.
+  The replacement copy stays within archive browsing, direct contact,
+  enquiry-context, catalogue access, and Shopify-hosted-link facts.
+- 2026-05-22: Prepared T-210 as the next public-discovery slice. It starts the
+  staged site-wide search expansion by adding artwork results to `/search`,
+  while keeping Shopify product search separate.
 
 ## Next Agent Action
 
-The next owner-independent frontend task is
-[T-206 Restore account subnav mount](../tasks/T-206-restore-account-subnav-mount.md):
-restore the existing `AccountSubnavLoader` Suspense block in the account
-layout, preserve its current links/disabled behavior, and add layout-level
-coverage so the loader stays mounted.
+Assign
+[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
+as the next frontend production task. It should add artwork results to public
+search without changing shop product search, artwork browse filters, or
+commerce behavior.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify
@@ -1000,8 +1030,10 @@ complete. T-181's artwork pagination/filter/search rollout, T-182's
 comment/user pagination rollout, and T-183's shared pagination-control
 extraction are complete.
 
-Hold [T-143](../tasks/T-143-decide-public-search-scope.md) until the
-owner/product scope answer exists. Keep collection section launch policy,
+[T-143](../tasks/T-143-decide-public-search-scope.md) now records the staged
+public-search widening direction: [T-210](../tasks/T-210-add-artwork-results-to-public-search.md)
+owns MongoDB-backed artwork results first, and Shopify product search remains a
+separate later decision. Keep collection section launch policy,
 owner/legal-approved policy links/notices, broad static/ISR migration, and
 checkout/cart work separate unless explicitly assigned. T-153, T-154, and T-155
 are complete; do not reassign them unless blog admin controls, public taxonomy
@@ -1013,6 +1045,7 @@ opened. Do not reassign T-130 unless the scoped public browsing client
 source-hygiene or existing failure-state behavior regresses. Do not reassign
 T-204 unless public browsing client retry/error states regress. Do not reassign
 T-205 unless scoped mixed-barrel import hygiene regresses. Do not reassign
+T-206 unless the account layout subnav mount regresses. Do not reassign
 T-131 unless scoped account/user client source-hygiene or existing
 failure-state behavior regresses. Do not reassign T-132 unless scoped shared
 frontend-adjacent source hygiene or fallback behavior regresses. Do not

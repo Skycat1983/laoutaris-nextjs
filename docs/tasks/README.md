@@ -217,7 +217,11 @@ Planning and prompt packs:
 | [T-203 Add visible home section fallback states](T-203-add-visible-home-section-fallback-states.md) | Completed | Replaced silent home section `null` fallbacks with visible unavailable and empty states for biography, collections, and blog sections. |
 | [T-204 Add public browsing client fetch error states](T-204-add-public-browsing-client-fetch-error-states.md) | Completed | Added visible retry/error states for artwork browse, shop filtering, and blog continuous-loading client fetch failures. |
 | [T-205 Replace mixed component barrel imports](T-205-replace-mixed-component-barrel-imports.md) | Completed | Replaced remaining mixed component barrel value imports in server routes/loaders with direct file imports and source-hygiene coverage. |
-| [T-206 Restore account subnav mount](T-206-restore-account-subnav-mount.md) | Planned | Restore the tested account subnavigation loader in the account layout with layout-level coverage. |
+| [T-206 Restore account subnav mount](T-206-restore-account-subnav-mount.md) | Completed | Restored the tested account subnavigation loader in the account layout with layout-level coverage. |
+| [T-207 Document route fallback patterns](T-207-document-route-fallback-patterns.md) | Deferred | Document route loading/fallback patterns and replace the `/project/aims` generic inline loading copy; parked behind higher-value commerce/search/compliance work. |
+| [T-208 Implement Shopify-hosted purchase handoff](T-208-implement-shopify-hosted-purchase-handoff.md) | Completed | Replaced enquiry-only product detail purchase flow with a Shopify-hosted purchase handoff when Shopify exposes a public product URL. |
+| [T-209 Align commerce assurance copy](T-209-align-commerce-assurance-copy.md) | Completed | Removed unsupported payment, shipping, refund, guarantee, and buyer-protection claims from shared public assurance copy. |
+| [T-210 Add artwork results to public search](T-210-add-artwork-results-to-public-search.md) | Planned | Expand public search to include MongoDB-backed artwork results as the first staged site-wide search slice. |
 
 ## Rules
 
