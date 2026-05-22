@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
+import type {
+  CloudinaryUploadWidgetInstanceMethods,
+  CloudinaryUploadWidgetResults,
+} from "next-cloudinary";
 import { CldUploadWidget } from "next-cloudinary";
 import { UploadButton } from "@/components/elements/buttons/UploadButton";
 
@@ -26,6 +29,28 @@ jest.mock("next-cloudinary", () => ({
 const mockedCldUploadWidget = CldUploadWidget as jest.MockedFunction<
   typeof CldUploadWidget
 >;
+type UploadWidgetProps = Parameters<typeof CldUploadWidget>[0];
+type UploadSuccessWidget = Parameters<
+  NonNullable<UploadWidgetProps["onSuccess"]>
+>[1];
+
+const createWidgetMethods = (): CloudinaryUploadWidgetInstanceMethods => ({
+  close: () => undefined,
+  destroy: async () => undefined,
+  hide: () => undefined,
+  isDestroyed: () => false,
+  isMinimized: () => false,
+  isShowing: () => false,
+  minimize: () => undefined,
+  open: () => undefined,
+  show: () => undefined,
+  update: () => undefined,
+});
+
+const createUploadSuccessWidget = (): UploadSuccessWidget => ({
+  widget: {},
+  ...createWidgetMethods(),
+});
 
 describe("UploadButton", () => {
   beforeEach(() => {
@@ -87,7 +112,7 @@ describe("UploadButton", () => {
     render(<UploadButton onUploadSuccess={onUploadSuccess} />);
 
     const widgetProps = mockedCldUploadWidget.mock.calls[0][0];
-    widgetProps.onSuccess?.(result, { widget: {} });
+    widgetProps.onSuccess?.(result, createUploadSuccessWidget());
 
     expect(onUploadSuccess).toHaveBeenCalledWith(result);
   });

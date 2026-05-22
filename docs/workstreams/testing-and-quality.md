@@ -1527,27 +1527,28 @@ npm run lint
   updated across navigation loader/page tests; focused navigation tests passed,
   and strict TypeScript now reports 26 remaining unrelated test-only
   diagnostics.
+- 2026-05-20: Completed T-186. The loader/form `never` fixture group was
+  replaced with current contract-based typed fixtures; focused loader/form
+  tests passed, strict TypeScript no longer reports diagnostics in the five
+  T-186 files, and remaining test-only `noEmit` cleanup moves to T-198.
 - 2026-05-21: Completed T-193. Focused frame-preview tests now verify the rail
   renderer exposes panel mode, uses no-repeat full-size rail backgrounds, and
   does not emit `repeating-linear-gradient`; lint, build, and a targeted
   `/prototype/frame` route check passed for the slice.
+- 2026-05-22: Completed T-198. The remaining test-only strict TypeScript
+  `noEmit` diagnostics were cleared across admin read-route guard,
+  session-header, DB helper, client/server import-boundary, shop product detail,
+  and upload button tests. Focused tests passed, and
+  `npx tsc --noEmit --pretty false --skipLibCheck` now passes without adding a
+  CI or release gate.
 
 ## Next Agent Action
 
-T-186 is the next quality task while owner decisions remain pending. It should
-fix only the over-narrow `never` fixture group identified after T-185, then
-rerun the focused loader/form tests and strict TypeScript command to confirm
-that group is gone. T-157 through T-185 are complete and should not be
-reassigned unless
-their prototype route, data mapping, fallback behavior, audit handoff, preview
-contract/UI, evidence gate, audit receipts, width frame, section composition,
-visual QA conclusions, owner packet, semantic style scaffold, image URL audit,
-delete-receipt runbook, admin read-list audit, read-list query bounds, blog
-pagination pilot, route-backed blog filters, route-backed blog search,
-collection pagination/search, article pagination/filter/search, artwork
-pagination/filter/search, comment/user pagination, shared pagination control,
-TypeScript `noEmit` audit result, navigation DTO fixture cleanup, or
-comment/user delete handoff regresses.
+The current strict TypeScript `noEmit` backlog is clear after T-198. Do not add
+`noEmit` to CI or release verification until a separate quality-gate decision
+task is prepared and assigned. T-157 through T-198 are complete and should not
+be reassigned unless one of their recorded prototype, audit handoff, admin
+read-list, strict TypeScript cleanup, or framed-preview contracts regresses.
 Keep T-143 decision-first until the public search scope answer exists, and keep
 monitoring provider smoke coverage blocked until the owner/platform provider
 decision is available. T-141 through T-168 are complete; do not reassign their

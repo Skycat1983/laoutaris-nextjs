@@ -1,12 +1,12 @@
 # Current Orchestration State
 
-Last updated: 2026-05-20
+Last updated: 2026-05-22
 
 ## Current Priority
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
-T-185 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are
+T-186 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are
 resolved. F-095 is resolved after T-174 through T-182 because all six main
 admin read tabs now consume route-backed pagination metadata, normal
 article/artwork/blog/collection maintenance has direct Update/Delete handoff,
@@ -31,13 +31,20 @@ delivery path. T-172 documented safe delete-audit receipt verification. T-173
 audited admin read-list pagination/search gaps and produced the next admin
 archive implementation split.
 
-The next owner-independent task to run is T-186. T-174 through T-183 completed
-the current admin archive pagination/search/delete-handoff sequence. T-184
-audited the existing strict TypeScript `noEmit` failures and found 46 top-level
-diagnostics across 18 files, all under `__tests__/`. T-185 removed the stale
-public navigation DTO fixture group, leaving 26 unrelated test-only diagnostics.
-T-186 should fix the largest remaining coherent group: over-narrow `never`
-fixtures in loader/form tests.
+T-174 through T-183 completed the current admin archive
+pagination/search/delete-handoff sequence. T-184 audited the existing strict
+TypeScript `noEmit` failures and found 46 top-level diagnostics across 18
+files, all under `__tests__/`. T-185 removed the stale public navigation DTO
+fixture group. T-186 then cleared the over-narrow loader/form `never` fixture
+group; no diagnostics remain in the five T-186 files. T-197 synced shared
+orchestration trackers after that cleanup, and T-198 cleared the remaining
+test-only strict TypeScript diagnostics. `npx tsc --noEmit --pretty false
+--skipLibCheck` now passes, but no CI or release gate was added.
+
+T-187 through T-193 completed the framed print preview track through the
+prototype material-panel renderer. If that track continues, run T-194 targeted
+visual QA and owner review for `/prototype/frame` before Shopify option
+mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
 
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
@@ -1386,16 +1393,18 @@ completed:
 
 ## Next Orchestrator Action
 
-While owner review is pending, the next runnable task is:
+The next practical assignment depends on the priority:
 
-- [T-186 Fix never-typed test fixtures](../tasks/T-186-fix-never-typed-test-fixtures.md)
-  for removing the largest remaining over-narrow fixture group from the current
-  strict TypeScript `noEmit` failures.
-
-T-186 should touch only the listed loader/form tests and should keep runtime
-source, loader/service/component behavior, TypeScript/Jest/Next/package
-configuration, and CI gates unchanged. Keep `noEmit` out of the release gate
-until the remaining test-only backlog is cleared.
+- If framed print preview implementation continues, run T-194 targeted visual
+  QA and owner review for `/prototype/frame`. Keep that review separate from
+  Shopify option mapping, checkout/cart work, enquiry mutation, and physical
+  dimension migration.
+- If owner-independent discovery is preferred, assign A-005 frontend routes and
+  component boundaries:
+  `/goal effort: xhigh details: docs/audits/goals.md#a-005-frontend-routes-and-component-boundaries`.
+- If quality gating is preferred, prepare a separate task to decide whether and
+  how strict TypeScript `noEmit` should enter CI or release verification now
+  that T-198 has made the command pass.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)

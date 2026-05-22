@@ -3,6 +3,7 @@ import ProductPage from "@/app/shop/products/[productHandle]/page";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { SimpleProduct } from "@/lib/data/types/shopify";
+import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 jest.mock("@/components/metadata/PublicDetailJsonLd", () => ({
@@ -45,6 +46,16 @@ const mockGetArtworkById = getArtworkById as jest.MockedFunction<
 
 const validArtworkId = "507f1f77bcf86cd799439011";
 const secondArtworkId = "507f1f77bcf86cd799439012";
+type LinkedArtworkFixture = {
+  _id: string;
+  title: string;
+  decade: ArtworkFrontend["decade"];
+  image: {
+    secure_url: string;
+    pixelWidth: number;
+    pixelHeight: number;
+  };
+};
 
 const createProduct = (overrides: Partial<SimpleProduct> = {}): SimpleProduct => ({
   id: "gid://shopify/Product/123456",
@@ -64,17 +75,20 @@ const createProduct = (overrides: Partial<SimpleProduct> = {}): SimpleProduct =>
   ...overrides,
 });
 
-const createArtwork = (id: string) =>
-  ({
-    _id: id,
-    title: `Artwork ${id}`,
-    decade: "1970s",
-    image: {
-      secure_url: "https://example.com/artwork.jpg",
-      pixelWidth: 1200,
-      pixelHeight: 900,
-    },
-  } as never);
+const createArtwork = (id: string): LinkedArtworkFixture => ({
+  _id: id,
+  title: `Artwork ${id}`,
+  decade: "1970s",
+  image: {
+    secure_url: "https://example.com/artwork.jpg",
+    pixelWidth: 1200,
+    pixelHeight: 900,
+  },
+});
+
+const asArtworkResult = (
+  artwork: LinkedArtworkFixture | null
+): ArtworkFrontend | null => artwork as ArtworkFrontend | null;
 
 describe("/shop/products/[productHandle]", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -94,7 +108,9 @@ describe("/shop/products/[productHandle]", () => {
     mockGetProductByHandle.mockResolvedValue(
       createProduct({ mongodbArtworkId: validArtworkId })
     );
-    mockGetArtworkById.mockResolvedValue(createArtwork(validArtworkId));
+    mockGetArtworkById.mockResolvedValue(
+      asArtworkResult(createArtwork(validArtworkId))
+    );
 
     await expect(
       ProductPage({ params: { productHandle: "test-product" } })
@@ -154,7 +170,9 @@ describe("/shop/products/[productHandle]", () => {
         mongodbArtworkId: validArtworkId,
       })
     );
-    mockGetArtworkById.mockResolvedValue(createArtwork(validArtworkId));
+    mockGetArtworkById.mockResolvedValue(
+      asArtworkResult(createArtwork(validArtworkId))
+    );
 
     render(await ProductPage({ params: { productHandle: "test-product" } }));
 
@@ -230,7 +248,7 @@ describe("/shop/products/[productHandle]", () => {
     },
   ])("hides the framed preview launcher for $name", async ({ product, artwork }) => {
     mockGetProductByHandle.mockResolvedValue(product);
-    mockGetArtworkById.mockResolvedValue(artwork as never);
+    mockGetArtworkById.mockResolvedValue(asArtworkResult(artwork));
 
     render(await ProductPage({ params: { productHandle: product.handle } }));
 
@@ -263,7 +281,9 @@ describe("/shop/products/[productHandle]", () => {
       })
     );
     mockGetArtworkById.mockImplementation(async (artworkId) => {
-      return artworkId === validArtworkId ? createArtwork(validArtworkId) : null;
+      return artworkId === validArtworkId
+        ? asArtworkResult(createArtwork(validArtworkId))
+        : null;
     });
 
     await expect(

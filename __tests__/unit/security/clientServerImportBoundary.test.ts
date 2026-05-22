@@ -212,7 +212,7 @@ describe("client/server import boundary", () => {
 
     expect(clientEntries.length).toBeGreaterThan(0);
 
-    const violations = [...visited]
+    const violations = Array.from(visited)
       .filter(
         (sourceFile) =>
           hasServerOnlyImport(sourceFile) ||

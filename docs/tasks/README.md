@@ -200,7 +200,7 @@ Planning and prompt packs:
 | [T-183 Extract admin read pagination control](T-183-extract-admin-read-pagination-control.md) | Completed | Extracted the duplicated main admin read-tab previous/next pagination control without behavior changes. |
 | [T-184 Audit TypeScript noEmit test errors](T-184-audit-typescript-noemit-test-errors.md) | Completed | Categorized the existing strict TypeScript test-check failures as test-only before deciding whether to fix them or promote noEmit checks. |
 | [T-185 Fix navigation DTO test fixtures](T-185-fix-navigation-dto-test-fixtures.md) | Completed | Updated stale public navigation test fixtures to match the current article and collection navigation DTOs. |
-| [T-186 Fix never-typed test fixtures](T-186-fix-never-typed-test-fixtures.md) | Planned | Replace over-narrow `never` test fixtures in loader/form tests with typed fixtures without runtime changes. |
+| [T-186 Fix never-typed test fixtures](T-186-fix-never-typed-test-fixtures.md) | Completed | Replaced over-narrow loader/form test fixtures; no T-186 file diagnostics remain and remaining noEmit cleanup moves to T-198. |
 | [T-187 Add frame preview geometry contracts](T-187-add-frame-preview-geometry-contracts.md) | Completed | Added the pure frame/mat profile catalogs and geometry helper for future framed print previews without changing product page UI. |
 | [T-188 Build standalone framed artwork preview](T-188-build-standalone-framed-artwork-preview.md) | Completed | Added the presentational framed artwork preview component backed by the T-187 geometry helper without modal or product-page behavior. |
 | [T-189 Build framed print preview modal shell](T-189-build-framed-print-preview-modal-shell.md) | Completed | Added the controlled modal shell and frame-material controls around the standalone preview without route or product-page behavior. |
@@ -208,6 +208,8 @@ Planning and prompt packs:
 | [T-191 Wire framed preview launcher to product pages](T-191-wire-framed-preview-launcher-to-product-pages.md) | Completed | Wired the preview modal into eligible print product pages only, keeping frame selection preview-only and preserving enquiry behavior. |
 | [T-192 Improve frame preview material rendering](T-192-improve-frame-preview-material-rendering.md) | Completed | Added prototype-only rail, bevel, mitred corner, material texture, and mat margin controls while keeping commerce behavior unchanged. |
 | [T-193 Replace frame stripe textures with material panels](T-193-replace-frame-stripe-textures-with-material-panels.md) | Completed | Replaced regular stripe texture layers with non-repeating material panel fills in the prototype rail renderer. |
+| [T-197 Sync orchestration trackers after T-186](T-197-sync-orchestration-trackers-after-t186.md) | Completed | Synced shared trackers so T-186 was completed and the remaining noEmit cleanup was routed to T-198. |
+| [T-198 Clear remaining test noEmit diagnostics](T-198-clear-remaining-test-noemit-diagnostics.md) | Completed | Cleared the remaining test-only strict TypeScript diagnostics after T-186; strict noEmit now passes without adding a CI gate. |
 
 ## Rules
 

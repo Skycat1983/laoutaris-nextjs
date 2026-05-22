@@ -28,6 +28,7 @@ describe("DB helper behavior", () => {
     const callOrder: string[] = [];
     mockedDbConnect.mockImplementation(async () => {
       callOrder.push("connect");
+      return undefined;
     });
 
     const result = await withDbConnect(async () => {

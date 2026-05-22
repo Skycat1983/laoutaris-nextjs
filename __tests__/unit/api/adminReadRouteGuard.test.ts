@@ -108,18 +108,10 @@ const overlongArtworkSearch = "a".repeat(81);
 const overlongBlogSearch = "s".repeat(81);
 const overlongCollectionSearch = "c".repeat(81);
 
-type Handler = (request: never, context?: never) => Promise<{
+type RouteResponse = Promise<{
   status: number;
   json: () => Promise<unknown>;
 }>;
-
-type ReadRouteCase = {
-  label: string;
-  handler: Handler;
-  request: unknown;
-  context?: unknown;
-  expectNoTargetRead: () => void;
-};
 
 const createRequest = (
   url = "http://localhost/api/v2/admin/read?page=1&limit=10"
@@ -138,6 +130,57 @@ const createRouteContext = (id: string) => ({
     id,
   },
 });
+
+type TestRequest = ReturnType<typeof createRequest>;
+type TestRouteContext = ReturnType<typeof createRouteContext>;
+type ListReadHandler = (request: TestRequest) => RouteResponse;
+type DetailReadHandler = (
+  request: TestRequest,
+  context: TestRouteContext
+) => RouteResponse;
+
+type ReadRouteCase =
+  | {
+      kind: "list";
+      label: string;
+      handler: ListReadHandler;
+      request: TestRequest;
+      expectNoTargetRead: () => void;
+    }
+  | {
+      kind: "detail";
+      label: string;
+      handler: DetailReadHandler;
+      request: TestRequest;
+      context: TestRouteContext;
+      expectNoTargetRead: () => void;
+    };
+
+const articleListHandler: ListReadHandler = (request) =>
+  GET_ARTICLE_LIST(request as never);
+const articleDetailHandler: DetailReadHandler = (request, context) =>
+  GET_ARTICLE_DETAIL(request as never, context as never);
+const artworkListHandler: ListReadHandler = (request) =>
+  GET_ARTWORK_LIST(request as never);
+const artworkDetailHandler: DetailReadHandler = (request, context) =>
+  GET_ARTWORK_DETAIL(request as never, context as never);
+const blogListHandler: ListReadHandler = (request) =>
+  GET_BLOG_LIST(request as never);
+const blogDetailHandler: DetailReadHandler = (request, context) =>
+  GET_BLOG_DETAIL(request as never, context as never);
+const collectionListHandler: ListReadHandler = (request) =>
+  GET_COLLECTION_LIST(request as never);
+const collectionDetailHandler: DetailReadHandler = (request, context) =>
+  GET_COLLECTION_DETAIL(request as never, context as never);
+const commentListHandler: ListReadHandler = (request) =>
+  GET_COMMENT_LIST(request as never);
+const userListHandler: ListReadHandler = (request) =>
+  GET_USER_LIST(request as never);
+
+const callReadRouteCase = (routeCase: ReadRouteCase) =>
+  routeCase.kind === "detail"
+    ? routeCase.handler(routeCase.request, routeCase.context)
+    : routeCase.handler(routeCase.request);
 
 const createListQuery = (result: unknown) => {
   const query = {
@@ -250,8 +293,9 @@ const expectNoAnyModelRead = () => {
 
 const readRouteCases: ReadRouteCase[] = [
   {
+    kind: "list",
     label: "article list",
-    handler: GET_ARTICLE_LIST as Handler,
+    handler: articleListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/article/read?page=1&limit=10"
     ),
@@ -261,8 +305,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "detail",
     label: "article detail",
-    handler: GET_ARTICLE_DETAIL as Handler,
+    handler: articleDetailHandler,
     request: createRequest(),
     context: createRouteContext(articleId),
     expectNoTargetRead: () => {
@@ -270,8 +315,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "list",
     label: "artwork list",
-    handler: GET_ARTWORK_LIST as Handler,
+    handler: artworkListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/artwork/read?page=1&limit=10"
     ),
@@ -281,8 +327,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "detail",
     label: "artwork detail",
-    handler: GET_ARTWORK_DETAIL as Handler,
+    handler: artworkDetailHandler,
     request: createRequest(),
     context: createRouteContext(artworkId),
     expectNoTargetRead: () => {
@@ -290,8 +337,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "list",
     label: "blog list",
-    handler: GET_BLOG_LIST as Handler,
+    handler: blogListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/blog/read?page=1&limit=10"
     ),
@@ -301,8 +349,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "detail",
     label: "blog detail",
-    handler: GET_BLOG_DETAIL as Handler,
+    handler: blogDetailHandler,
     request: createRequest(),
     context: createRouteContext(blogId),
     expectNoTargetRead: () => {
@@ -310,8 +359,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "list",
     label: "collection list",
-    handler: GET_COLLECTION_LIST as Handler,
+    handler: collectionListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/collection/read?page=1&limit=10"
     ),
@@ -321,8 +371,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "detail",
     label: "collection detail",
-    handler: GET_COLLECTION_DETAIL as Handler,
+    handler: collectionDetailHandler,
     request: createRequest(),
     context: createRouteContext(collectionId),
     expectNoTargetRead: () => {
@@ -330,8 +381,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "list",
     label: "comment list",
-    handler: GET_COMMENT_LIST as Handler,
+    handler: commentListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/comment/read?page=1&limit=10"
     ),
@@ -341,8 +393,9 @@ const readRouteCases: ReadRouteCase[] = [
     },
   },
   {
+    kind: "list",
     label: "user list",
-    handler: GET_USER_LIST as Handler,
+    handler: userListHandler,
     request: createRequest(
       "http://localhost/api/v2/admin/user/read?page=1&limit=10"
     ),
@@ -354,32 +407,32 @@ const readRouteCases: ReadRouteCase[] = [
 ];
 
 const invalidDetailCases: Array<
-  [string, Handler, string, string, () => void]
+  [string, DetailReadHandler, string, string, () => void]
 > = [
   [
     "article",
-    GET_ARTICLE_DETAIL as Handler,
+    articleDetailHandler,
     "Invalid article input",
     "Invalid article ID",
     () => expect(mockArticleFindById).not.toHaveBeenCalled(),
   ],
   [
     "artwork",
-    GET_ARTWORK_DETAIL as Handler,
+    artworkDetailHandler,
     "Invalid artwork input",
     "Invalid artwork ID",
     () => expect(mockArtworkFindById).not.toHaveBeenCalled(),
   ],
   [
     "blog",
-    GET_BLOG_DETAIL as Handler,
+    blogDetailHandler,
     "Invalid blog input",
     "Invalid blog ID",
     () => expect(mockBlogFindById).not.toHaveBeenCalled(),
   ],
   [
     "collection",
-    GET_COLLECTION_DETAIL as Handler,
+    collectionDetailHandler,
     "Invalid collection input",
     "Invalid collection ID",
     () => expect(mockCollectionFindById).not.toHaveBeenCalled(),
@@ -388,7 +441,7 @@ const invalidDetailCases: Array<
 
 const invalidListQueryCases: Array<{
   label: string;
-  handler: Handler;
+  handler: ListReadHandler;
   requestUrl: string;
   expectedError: string;
   expectedFieldErrors: Record<string, string[]>;
@@ -396,7 +449,7 @@ const invalidListQueryCases: Array<{
 }> = [
   {
     label: "article list with a zero page",
-    handler: GET_ARTICLE_LIST as Handler,
+    handler: articleListHandler,
     requestUrl: "http://localhost/api/v2/admin/article/read?page=0&limit=10",
     expectedError: "Invalid article input",
     expectedFieldErrors: {
@@ -409,7 +462,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "article list with a non-numeric limit",
-    handler: GET_ARTICLE_LIST as Handler,
+    handler: articleListHandler,
     requestUrl: "http://localhost/api/v2/admin/article/read?page=1&limit=abc",
     expectedError: "Invalid article input",
     expectedFieldErrors: {
@@ -422,7 +475,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "article list with an oversized search",
-    handler: GET_ARTICLE_LIST as Handler,
+    handler: articleListHandler,
     requestUrl: `http://localhost/api/v2/admin/article/read?page=1&limit=10&search=${overlongArticleSearch}`,
     expectedError: "Invalid article input",
     expectedFieldErrors: {
@@ -435,7 +488,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "artwork list with an oversized limit",
-    handler: GET_ARTWORK_LIST as Handler,
+    handler: artworkListHandler,
     requestUrl: "http://localhost/api/v2/admin/artwork/read?page=1&limit=101",
     expectedError: "Invalid artwork input",
     expectedFieldErrors: {
@@ -448,7 +501,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "artwork list with an oversized search",
-    handler: GET_ARTWORK_LIST as Handler,
+    handler: artworkListHandler,
     requestUrl: `http://localhost/api/v2/admin/artwork/read?page=1&limit=10&search=${overlongArtworkSearch}`,
     expectedError: "Invalid artwork input",
     expectedFieldErrors: {
@@ -461,7 +514,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "blog list with a negative page",
-    handler: GET_BLOG_LIST as Handler,
+    handler: blogListHandler,
     requestUrl: "http://localhost/api/v2/admin/blog/read?page=-1&limit=10",
     expectedError: "Invalid blog input",
     expectedFieldErrors: {
@@ -474,7 +527,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "blog list with an oversized search",
-    handler: GET_BLOG_LIST as Handler,
+    handler: blogListHandler,
     requestUrl: `http://localhost/api/v2/admin/blog/read?page=1&limit=10&search=${overlongBlogSearch}`,
     expectedError: "Invalid blog input",
     expectedFieldErrors: {
@@ -487,7 +540,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "collection list with a zero limit",
-    handler: GET_COLLECTION_LIST as Handler,
+    handler: collectionListHandler,
     requestUrl: "http://localhost/api/v2/admin/collection/read?page=1&limit=0",
     expectedError: "Invalid collection input",
     expectedFieldErrors: {
@@ -500,7 +553,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "collection list with an oversized search",
-    handler: GET_COLLECTION_LIST as Handler,
+    handler: collectionListHandler,
     requestUrl: `http://localhost/api/v2/admin/collection/read?page=1&limit=10&search=${overlongCollectionSearch}`,
     expectedError: "Invalid collection input",
     expectedFieldErrors: {
@@ -513,7 +566,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "comment list with a decimal page",
-    handler: GET_COMMENT_LIST as Handler,
+    handler: commentListHandler,
     requestUrl: "http://localhost/api/v2/admin/comment/read?page=1.5&limit=10",
     expectedError: "Invalid comment input",
     expectedFieldErrors: {
@@ -526,7 +579,7 @@ const invalidListQueryCases: Array<{
   },
   {
     label: "user list with an oversized page",
-    handler: GET_USER_LIST as Handler,
+    handler: userListHandler,
     requestUrl: "http://localhost/api/v2/admin/user/read?page=1001&limit=10",
     expectedError: "Invalid user input",
     expectedFieldErrors: {
@@ -541,7 +594,7 @@ const invalidListQueryCases: Array<{
 
 const defaultPaginationCases: Array<{
   label: string;
-  handler: Handler;
+  handler: ListReadHandler;
   requestUrl: string;
   total: number;
   expectedLimit: number;
@@ -553,7 +606,7 @@ const defaultPaginationCases: Array<{
 }> = [
   {
     label: "article",
-    handler: GET_ARTICLE_LIST as Handler,
+    handler: articleListHandler,
     requestUrl: "http://localhost/api/v2/admin/article/read",
     total: 12,
     expectedLimit: 10,
@@ -584,7 +637,7 @@ const defaultPaginationCases: Array<{
   },
   {
     label: "artwork",
-    handler: GET_ARTWORK_LIST as Handler,
+    handler: artworkListHandler,
     requestUrl: "http://localhost/api/v2/admin/artwork/read",
     total: 120,
     expectedLimit: 100,
@@ -615,7 +668,7 @@ const defaultPaginationCases: Array<{
   },
   {
     label: "blog",
-    handler: GET_BLOG_LIST as Handler,
+    handler: blogListHandler,
     requestUrl: "http://localhost/api/v2/admin/blog/read",
     total: 21,
     expectedLimit: 10,
@@ -646,7 +699,7 @@ const defaultPaginationCases: Array<{
   },
   {
     label: "collection",
-    handler: GET_COLLECTION_LIST as Handler,
+    handler: collectionListHandler,
     requestUrl: "http://localhost/api/v2/admin/collection/read",
     total: 15,
     expectedLimit: 10,
@@ -681,7 +734,7 @@ const defaultPaginationCases: Array<{
   },
   {
     label: "comment",
-    handler: GET_COMMENT_LIST as Handler,
+    handler: commentListHandler,
     requestUrl: "http://localhost/api/v2/admin/comment/read",
     total: 18,
     expectedLimit: 10,
@@ -712,7 +765,7 @@ const defaultPaginationCases: Array<{
   },
   {
     label: "user",
-    handler: GET_USER_LIST as Handler,
+    handler: userListHandler,
     requestUrl: "http://localhost/api/v2/admin/user/read",
     total: 14,
     expectedLimit: 10,
@@ -777,10 +830,10 @@ describe("admin read route shared guard migration", () => {
 
   it.each(readRouteCases)(
     "returns 401 for unauthenticated $label callers before route-local reads",
-    async ({ handler, request, context }) => {
+    async (routeCase) => {
       setSession(null);
 
-      const response = await handler(request as never, context as never);
+      const response = await callReadRouteCase(routeCase);
       const body = await response.json();
 
       expect(response.status).toBe(401);
@@ -796,10 +849,10 @@ describe("admin read route shared guard migration", () => {
 
   it.each(readRouteCases)(
     "returns 403 for non-admin $label callers before route-local reads",
-    async ({ handler, request, context }) => {
+    async (routeCase) => {
       setNonAdminSession();
 
-      const response = await handler(request as never, context as never);
+      const response = await callReadRouteCase(routeCase);
       const body = await response.json();
 
       expect(response.status).toBe(403);
@@ -817,8 +870,8 @@ describe("admin read route shared guard migration", () => {
     "returns 400 for invalid %s detail IDs before target reads",
     async (_label, handler, error, idError, expectNoTargetRead) => {
       const response = await handler(
-        createRequest() as never,
-        createRouteContext("not-a-valid-id") as never
+        createRequest(),
+        createRouteContext("not-a-valid-id")
       );
       const body = await response.json();
 
@@ -846,7 +899,7 @@ describe("admin read route shared guard migration", () => {
       expectedFieldErrors,
       expectNoTargetRead,
     }) => {
-      const response = await handler(createRequest(requestUrl) as never);
+      const response = await handler(createRequest(requestUrl));
       const body = await response.json();
 
       expect(response.status).toBe(400);
@@ -873,7 +926,7 @@ describe("admin read route shared guard migration", () => {
     }) => {
       const { query, frontendData, expectModelCalls } = setup();
 
-      const response = await handler(createRequest(requestUrl) as never);
+      const response = await handler(createRequest(requestUrl));
       const body = await response.json();
 
       expect(response.status).toBe(200);

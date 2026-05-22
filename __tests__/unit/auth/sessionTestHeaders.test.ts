@@ -34,6 +34,15 @@ const mockExec = jest.fn();
 const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
+const setNodeEnv = (value: NodeJS.ProcessEnv["NODE_ENV"]) => {
+  Object.defineProperty(process.env, "NODE_ENV", {
+    value,
+    configurable: true,
+    enumerable: true,
+    writable: true,
+  });
+};
+
 const requestWithHeaders = (headers: Record<string, string>) =>
   ({
     headers: {
@@ -48,7 +57,7 @@ describe("getUserFromSession development test headers", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.NODE_ENV = "development";
+    setNodeEnv("development");
     mockFindById.mockReturnValue({ select: mockSelect });
     mockSelect.mockReturnValue({ lean: mockLean });
     mockLean.mockReturnValue({ exec: mockExec });
@@ -59,7 +68,7 @@ describe("getUserFromSession development test headers", () => {
   });
 
   afterEach(() => {
-    process.env.NODE_ENV = originalNodeEnv;
+    setNodeEnv(originalNodeEnv);
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
   });
