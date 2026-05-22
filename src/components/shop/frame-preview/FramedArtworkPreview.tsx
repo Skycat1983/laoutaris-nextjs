@@ -1,5 +1,8 @@
 import Image from "next/image";
-import { calculateFramePreviewGeometry } from "@/lib/framePreview/geometry";
+import {
+  calculateFixedArtworkFramePreviewGeometry,
+  calculateFramePreviewGeometry,
+} from "@/lib/framePreview/geometry";
 import {
   DEFAULT_FRAME_PROFILE_ID,
   getFrameProfileById,
@@ -14,6 +17,7 @@ import type {
   FramePreviewBounds,
   FramePreviewGeometry,
   FrameProfile,
+  FrameSizingMode,
   MatProfile,
 } from "@/lib/framePreview/types";
 
@@ -29,6 +33,7 @@ export type FramedArtworkPreviewProps = {
   matProfile?: MatProfile;
   bounds?: FramePreviewBounds;
   renderMode?: FrameRenderMode;
+  sizingMode?: FrameSizingMode;
   priority?: boolean;
   className?: string;
 };
@@ -426,15 +431,21 @@ export const FramedArtworkPreview = ({
   matProfile = requireMatProfile(),
   bounds = DEFAULT_PREVIEW_BOUNDS,
   renderMode = "simple",
+  sizingMode = "fitOuter",
   priority = false,
   className,
 }: FramedArtworkPreviewProps) => {
-  const geometry = calculateFramePreviewGeometry({
+  const geometryInput = {
     artwork: artwork.metrics,
     frameProfile,
     matProfile,
     bounds,
-  });
+  };
+  const geometry =
+    sizingMode === "fixedArtwork"
+      ? calculateFixedArtworkFramePreviewGeometry(geometryInput)
+      : calculateFramePreviewGeometry(geometryInput);
+
   return (
     <figure
       aria-label={`Framed preview of ${artwork.alt}`}
@@ -442,6 +453,7 @@ export const FramedArtworkPreview = ({
       data-frame-profile-id={frameProfile.id}
       data-mat-profile-id={matProfile.id}
       data-render-mode={renderMode}
+      data-sizing-mode={sizingMode}
       data-scale-mode={geometry.scaleMode}
     >
       <div

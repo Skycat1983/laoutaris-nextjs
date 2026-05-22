@@ -5,14 +5,51 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
+import {
+  prototypeHeadingStyle,
+  prototypeSectionEyebrowClassName,
+  prototypeSectionFrameClassName,
+} from "./prototypeHomeLayout";
 
 type ShopPrototypeSectionProps = {
   products: SimpleProduct[];
   hasLoadError?: boolean;
+  productSizePreset?: ProductSizePreset;
 };
 
 const SHOP_ROUTE = "/shop/products";
+
+const sectionHeadingStyle = prototypeHeadingStyle({
+  base: "2.75rem",
+  sm: "3.5rem",
+  lg: "4.5rem",
+});
+
+export const shopProductSizePresets = {
+  large: {
+    label: "Large",
+    cardClass:
+      "w-[82vw] min-w-[280px] max-w-[360px] sm:w-[330px] lg:w-[clamp(300px,18vw,360px)] 2xl:w-[clamp(340px,18vw,390px)]",
+    imageSizes:
+      "(max-width: 640px) 82vw, (max-width: 1024px) 330px, (max-width: 1536px) 360px, 18vw",
+  },
+  larger: {
+    label: "Larger",
+    cardClass:
+      "w-[86vw] min-w-[310px] max-w-[410px] sm:w-[370px] lg:w-[clamp(340px,21vw,430px)] 2xl:w-[clamp(390px,21vw,470px)]",
+    imageSizes:
+      "(max-width: 640px) 86vw, (max-width: 1024px) 370px, (max-width: 1536px) 430px, 21vw",
+  },
+  feature: {
+    label: "Feature",
+    cardClass:
+      "w-[88vw] min-w-[320px] max-w-[430px] sm:w-[390px] lg:w-[clamp(360px,22vw,460px)] 2xl:w-[clamp(420px,22vw,500px)]",
+    imageSizes:
+      "(max-width: 640px) 88vw, (max-width: 1024px) 390px, (max-width: 1536px) 460px, 22vw",
+  },
+} as const;
+
+export type ProductSizePreset = keyof typeof shopProductSizePresets;
 
 const formatProductPrice = (product: SimpleProduct) => {
   const amount = Number.parseFloat(product.price);
@@ -49,9 +86,11 @@ const getProductTags = (product: SimpleProduct) =>
 export function ShopPrototypeSection({
   products,
   hasLoadError = false,
+  productSizePreset = "large",
 }: ShopPrototypeSectionProps) {
   const railRef = useRef<HTMLDivElement>(null);
   const hasProducts = products.length > 0;
+  const activeProductSize = shopProductSizePresets[productSizePreset];
 
   const scrollProducts = (direction: -1 | 1) => {
     const rail = railRef.current;
@@ -75,12 +114,11 @@ export function ShopPrototypeSection({
       >
         <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.52fr)_minmax(280px,0.34fr)_auto] lg:items-end 2xl:grid-cols-[minmax(420px,0.48fr)_minmax(360px,0.36fr)_auto] 2xl:gap-12">
           <div className="max-w-4xl">
-            <p className="mb-5 font-archivo text-sm uppercase text-[#9a713d]">
-              Shop
-            </p>
+            <p className={`mb-5 ${prototypeSectionEyebrowClassName}`}>Shop</p>
             <h2
               id="prototype-shop-heading"
-              className="font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl xl:text-[82px] 2xl:text-[96px]"
+              className="prototype-home-section-heading font-cormorant text-4xl font-semibold leading-tight text-slate sm:text-5xl lg:text-6xl"
+              style={sectionHeadingStyle}
             >
               Available now
             </h2>
@@ -142,6 +180,7 @@ export function ShopPrototypeSection({
             <div
               ref={railRef}
               className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:gap-5 2xl:gap-6 [&::-webkit-scrollbar]:hidden"
+              data-size-preset={productSizePreset}
               data-testid="prototype-shop-product-rail"
             >
               {products.map((product) => {
@@ -151,7 +190,7 @@ export function ShopPrototypeSection({
                   <Link
                     key={product.id}
                     href={`/shop/products/${product.handle}`}
-                    className="group flex w-[74vw] min-w-[230px] max-w-[286px] snap-start flex-col overflow-hidden rounded-[4px] border border-slate/10 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:w-[260px] lg:w-[clamp(232px,14vw,286px)] lg:max-w-none 2xl:w-[clamp(264px,14vw,292px)]"
+                    className={`group flex ${activeProductSize.cardClass} snap-start flex-col overflow-hidden rounded-[4px] border border-slate/10 bg-white shadow-sm transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate lg:max-w-none`}
                     data-testid="prototype-shop-product-card"
                   >
                     <article className="flex h-full flex-col">
@@ -162,7 +201,7 @@ export function ShopPrototypeSection({
                             alt={product.image.altText || product.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-                            sizes="(max-width: 640px) 74vw, (max-width: 1024px) 260px, (max-width: 1536px) 232px, 14vw"
+                            sizes={activeProductSize.imageSizes}
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center px-6 text-center font-archivo text-sm text-slate/45">

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { readFileSync } from "fs";
 import path from "path";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import PrototypeHomePage, { metadata } from "@/app/prototype/home/page";
 import { HomePrototype } from "@/components/prototypes/home/HomePrototype";
 import { BiographyPrototypeSection } from "@/components/prototypes/home/BiographyPrototypeSection";
@@ -208,9 +208,90 @@ describe("/prototype/home page", () => {
     }
   });
 
+  it("renders fixed bottom dropdown controls for frame, headings, and shop item size", () => {
+    render(
+      <HomePrototype
+        shopProducts={[
+          createProduct("yellow-composition", "Yellow Composition"),
+          createProduct("orange-form", "Orange Form"),
+        ]}
+      />
+    );
+
+    const prototype = screen.getByTestId("prototype-home");
+    const productRail = screen.getByTestId("prototype-shop-product-rail");
+    expect(screen.getByTestId("prototype-home-controls")).toBeInTheDocument();
+    expect(prototype).toHaveAttribute("data-frame-preset", "wide");
+    expect(prototype).toHaveAttribute("data-font-preset", "smaller");
+    expect(prototype).toHaveStyle({
+      "--prototype-home-frame-max": "1920px",
+      "--prototype-home-heading-scale": "0.9",
+    });
+    expect(productRail).toHaveAttribute("data-size-preset", "feature");
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Frame" }), {
+      target: { value: "inset" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "Headings" }), {
+      target: { value: "compact" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
+      target: { value: "large" },
+    });
+
+    expect(prototype).toHaveAttribute("data-frame-preset", "inset");
+    expect(prototype).toHaveAttribute("data-font-preset", "compact");
+    expect(prototype).toHaveStyle({
+      "--prototype-home-frame-max": "1180px",
+      "--prototype-home-heading-scale": "0.82",
+    });
+    expect(productRail).toHaveAttribute("data-size-preset", "large");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Reset prototype layout controls",
+      })
+    );
+
+    expect(prototype).toHaveAttribute("data-frame-preset", "wide");
+    expect(prototype).toHaveAttribute("data-font-preset", "smaller");
+    expect(prototype).toHaveStyle({
+      "--prototype-home-frame-max": "1920px",
+      "--prototype-home-heading-scale": "0.9",
+    });
+    expect(productRail).toHaveAttribute("data-size-preset", "feature");
+  });
+
+  it("adds the documentary video to the project prototype placeholder with live-page copy", () => {
+    render(<HomePrototype />);
+
+    const projectSection = screen.getByTestId("prototype-project-section");
+    const projectVideo = within(projectSection).getByTestId(
+      "prototype-project-video"
+    );
+    const iframe = within(projectVideo).getByTitle("YouTube video player");
+
+    expect(iframe).toHaveAttribute(
+      "src",
+      "https://www.youtube.com/embed/6ynF2gO-J30?rel=0"
+    );
+    expect(projectSection).toHaveTextContent("Project:");
+    expect(projectSection).toHaveTextContent("Watch the documentary");
+    expect(projectSection).toHaveTextContent(
+      "The life, ethos & regrets of Joseph Laoutaris"
+    );
+    expect(projectSection).toHaveTextContent(
+      "A short film about my grandfather"
+    );
+    expect(projectSection).toHaveTextContent("By Heron Laoutaris");
+  });
+
   it("uses the route-local wider prototype frame instead of the earlier bounded section caps", () => {
     const layoutSource = readRepoFile(
       "src/components/prototypes/home/prototypeHomeLayout.ts"
+    );
+    const homeSource = readRepoFile(
+      "src/components/prototypes/home/HomePrototype.tsx"
     );
     const sectionSource = [
       "src/components/prototypes/home/BiographyPrototypeSection.tsx",
@@ -222,13 +303,47 @@ describe("/prototype/home page", () => {
       .map(readRepoFile)
       .join("\n");
 
-    expect(layoutSource).toContain("max-w-[1920px]");
+    expect(layoutSource).toContain("--prototype-home-frame-max");
+    expect(layoutSource).toContain("1920px");
+    expect(layoutSource).toContain("prototypeSectionEyebrowClassName");
+    expect(homeSource).toContain("1180px");
+    expect(homeSource).toContain("prototype-home-section-heading");
     expect(sectionSource).not.toContain("max-w-[1440px]");
     expect(sectionSource).not.toContain("max-w-[1536px]");
+    expect(sectionSource).not.toContain("prototype-home-heading");
     expect(
       sectionSource.split("className={`${prototypeSectionFrameClassName}")
         .length - 1
     ).toBe(5);
+  });
+
+  it("keeps prototype section labels visually consistent", () => {
+    const sectionSource = [
+      "src/components/prototypes/home/BiographyPrototypeSection.tsx",
+      "src/components/prototypes/home/BlogPrototypeSection.tsx",
+      "src/components/prototypes/home/CollectionPrototypeSection.tsx",
+      "src/components/prototypes/home/ShopPrototypeSection.tsx",
+      "src/components/prototypes/home/PrototypeSectionPlaceholder.tsx",
+    ]
+      .map(readRepoFile)
+      .join("\n");
+
+    render(<BiographyPrototypeSection articles={[]} />);
+
+    expect(screen.getByText("Biography")).toHaveClass(
+      "font-archivo",
+      "text-sm",
+      "uppercase",
+      "tracking-[0.14em]",
+      "text-[#9a713d]"
+    );
+    expect(screen.queryByText("Biography:")).not.toBeInTheDocument();
+    expect(sectionSource).not.toContain(
+      "font-archivo text-3xl font-semibold leading-none text-black"
+    );
+    expect(sectionSource).not.toContain("Biography:");
+    expect(sectionSource).toContain("prototypeSectionEyebrowClassName");
+    expect(sectionSource).toContain("prototypeSectionMutedEyebrowClassName");
   });
 
   it("renders the prototype biography section with real article links", () => {
@@ -236,19 +351,25 @@ describe("/prototype/home page", () => {
       <BiographyPrototypeSection
         articles={[
           createBiographyArticle(
-            "early-years",
-            "Early Years",
-            "First Encounters with Art"
+            "obituary",
+            "Obituary",
+            "Final archive remembrance"
           ),
+          createBiographyArticle(
+            "later-years",
+            "Later Years",
+            "Resignation and Disappointment"
+          ),
+          createBiographyArticle("ethos", "Ethos", "A way of working"),
           createBiographyArticle(
             "meeting-beryl",
             "Meeting Beryl",
             "Legacy of Love and Loss"
           ),
           createBiographyArticle(
-            "later-years",
-            "Later Years",
-            "Resignation and Disappointment"
+            "early-years",
+            "Early Years",
+            "First Encounters with Art"
           ),
         ]}
       />
@@ -264,6 +385,17 @@ describe("/prototype/home page", () => {
       "href",
       "/biography"
     );
+    expect(
+      screen.getByTestId("prototype-biography-featured-card")
+    ).toHaveTextContent("Early Years");
+    expect(
+      screen
+        .getAllByTestId("prototype-biography-card")
+        .map(
+          (card) =>
+            within(card).getByRole("heading", { level: 3 }).textContent
+        )
+    ).toEqual(["Meeting Beryl", "Ethos", "Later Years", "Obituary"]);
     expect(screen.getByRole("link", { name: /Early Years/i })).toHaveAttribute(
       "href",
       "/biography/early-years"
@@ -271,7 +403,44 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("link", { name: /Meeting Beryl/i })
     ).toHaveAttribute("href", "/biography/meeting-beryl");
+    expect(screen.getByRole("link", { name: /Ethos/i })).toHaveAttribute(
+      "href",
+      "/biography/ethos"
+    );
     expect(screen.getAllByText("03").length).toBeGreaterThan(0);
+  });
+
+  it("centers the biography timeline and read-more dividers behind their markers", () => {
+    const biographySource = readRepoFile(
+      "src/components/prototypes/home/BiographyPrototypeSection.tsx"
+    );
+
+    render(
+      <BiographyPrototypeSection
+        articles={[
+          createBiographyArticle("early-years", "Early Years", "Early"),
+          createBiographyArticle("meeting-beryl", "Meeting Beryl", "Beryl"),
+          createBiographyArticle("ethos", "Ethos", "Ethos"),
+          createBiographyArticle("later-years", "Later Years", "Later"),
+          createBiographyArticle("obituary", "Obituary", "Obituary"),
+        ]}
+      />
+    );
+
+    expect(screen.getByTestId("prototype-biography-timeline-line")).toHaveClass(
+      "top-9",
+      "z-0",
+      "2xl:top-11"
+    );
+    expect(
+      screen.getByTestId("prototype-biography-read-more-divider")
+    ).toHaveClass("top-1/2", "z-0");
+    expect(screen.getByRole("link", { name: /Read more/i })).toHaveClass(
+      "relative",
+      "z-10"
+    );
+    expect(biographySource).toContain("absolute -top-5");
+    expect(biographySource).not.toContain("-mt-px");
   });
 
   it("keeps the prototype biography section present when article data is unavailable", () => {
@@ -347,7 +516,7 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Explore the Collections",
+        name: "Explore the collections",
       })
     ).toBeInTheDocument();
     expect(
@@ -356,6 +525,20 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("link", { name: /Extra Large/i })
     ).toHaveAttribute("href", "/collections/extra-large/art-1");
+    expect(
+      screen.getByTestId("prototype-collection-featured-card")
+    ).toHaveClass("overflow-hidden");
+    expect(
+      screen.getAllByTestId("prototype-collection-expanded-title")[0]
+    ).toHaveClass(
+      "w-[var(--prototype-collection-expanded-copy-width)]",
+      "translate-x-0",
+      "opacity-100",
+      "delay-200"
+    );
+    expect(
+      screen.getAllByTestId("prototype-collection-collapsed-title")[0]
+    ).toHaveClass("-translate-x-12", "opacity-0");
 
     expect(
       screen.getByRole("button", {
@@ -384,6 +567,15 @@ describe("/prototype/home page", () => {
         name: "Expand Portraits of Beryl collection panel",
       })
     ).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getAllByTestId("prototype-collection-expanded-title")[1]
+    ).toHaveClass("translate-x-0", "opacity-100", "delay-200");
+    expect(
+      screen.getAllByTestId("prototype-collection-collapsed-title")[1]
+    ).toHaveClass("-translate-x-12", "opacity-0");
+    expect(
+      screen.getAllByTestId("prototype-collection-expanded-title")[0]
+    ).toHaveClass("translate-x-16", "opacity-0");
     expect(
       screen.getByRole("link", { name: /Portraits of Beryl/i })
     ).toHaveAttribute("href", "/collections/portraits-of-beryl/art-2");
@@ -413,6 +605,37 @@ describe("/prototype/home page", () => {
     ).toHaveAttribute("href", "/collections");
   });
 
+  it("lets the fixed bottom shop dropdown resize the shop rail", () => {
+    render(
+      <HomePrototype
+        shopProducts={[
+          createProduct("yellow-composition", "Yellow Composition"),
+          createProduct("orange-form", "Orange Form"),
+        ]}
+      />
+    );
+
+    const productRail = screen.getByTestId("prototype-shop-product-rail");
+
+    expect(
+      screen.queryByTestId("prototype-shop-product-size-controls")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("prototype-shop-size-rail")
+    ).not.toBeInTheDocument();
+    expect(productRail).toHaveAttribute("data-size-preset", "feature");
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
+      target: { value: "larger" },
+    });
+    expect(productRail).toHaveAttribute("data-size-preset", "larger");
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
+      target: { value: "large" },
+    });
+    expect(productRail).toHaveAttribute("data-size-preset", "large");
+  });
+
   it("renders the prototype shop section with product links and enquiry-safe copy", () => {
     render(
       <ShopPrototypeSection
@@ -430,6 +653,10 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "Available now" })
     ).toBeInTheDocument();
+    expect(screen.getByTestId("prototype-shop-product-rail")).toHaveAttribute(
+      "data-size-preset",
+      "large"
+    );
     expect(
       screen.getByRole("link", { name: /View full shop/i })
     ).toHaveAttribute("href", "/shop/products");

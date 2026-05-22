@@ -7,6 +7,7 @@ export type FrameMaterial =
 
 export type FrameScaleMode = "relativePreview" | "physicalScalePreview";
 export type FrameRenderMode = "simple" | "rails";
+export type FrameSizingMode = "fitOuter" | "fixedArtwork";
 export type FrameTextureKind = "wood-grain" | "painted-grain" | "brushed-metal";
 
 export interface FramePreviewStyle {

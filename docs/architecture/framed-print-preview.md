@@ -22,6 +22,9 @@ Implemented foundation:
   behavior. It now supports the original `simple` renderer and a prototype
   `rails` renderer with four frame rails, bevel styling, procedural material
   panel backgrounds, mitred seam overlays, inner bevel, and subtle glass sheen.
+  The default sizing mode fits the full framed object within bounds; the
+  prototype wall scene can opt into fixed-artwork sizing so mat margin grows the
+  frame around a constant-size print.
 - `src/components/shop/frame-preview/FramedPrintPreviewModal.tsx` wraps the
   standalone preview in a controlled modal shell with close, Escape, backdrop,
   previous/next, direct frame-material swatch selection, and optional renderer
@@ -37,11 +40,21 @@ Implemented foundation:
   derive orientation from pixel dimensions, expose mat margin presets, and
   composite the selected preview onto generated room-wall backgrounds. Room
   switches keep the current composition visible until the requested background
-  has loaded, and fixture metrics are measured from the source images so the
-  artwork box matches the visible image ratio.
+  has loaded, use a shared centered hanging anchor for every background, and use
+  fixed-artwork sizing for the wall composite so changing mat margin increases
+  the framed object size rather than shrinking the visible print. The wall
+  composite also exposes prototype-only right/down shadow controls for offset,
+  edge blur, diffusion, spread, and darkness so generated room lighting can be
+  tuned without changing product-page previews. It also renders short diagonal
+  south-east corner shadows from the bottom-left and top-right frame points to
+  better match
+  top-left room lighting. Fixture metrics are measured from the source images
+  so the artwork box matches the visible image ratio.
 - `public/prototypes/frame-backgrounds/` stores the current generated
-  blank-wall room scenes for `/prototype/frame` review. These are prototype
-  assets and are not loaded by product pages.
+  blank-wall room scenes for `/prototype/frame` review, including regenerated
+  Scandinavian white-wall and white plaster hallway scenes plus additional
+  bright white-wall candidates for owner comparison. These are prototype assets
+  and are not loaded by product pages.
 - `src/lib/framePreview/productEligibility.ts` centralizes product metadata
   eligibility and linked-artwork preview payload normalization for product
   detail pages.

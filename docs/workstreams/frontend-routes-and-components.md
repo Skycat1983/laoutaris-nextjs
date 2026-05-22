@@ -69,6 +69,13 @@ Next.js server/client component boundaries.
   modal controls, a noindex `/prototype/frame` workshop route, product-page
   launcher wiring for eligible print products, and a prototype-only rail
   renderer with non-repeating material panel backgrounds.
+- `/prototype/frame` room-scene previews now use a shared centered hanging
+  anchor and fixed-artwork wall geometry so room background switches do not move
+  the artwork and mat margin changes grow the framed object around the print.
+- `/prototype/frame` also exposes prototype-only right/down wall shadow controls
+  for offset, edge blur, diffusion, spread, and darkness.
+- Those shadow controls are placed in the room-preview column, and the room
+  composite includes short south-east diagonal corner shadows from the frame.
 - A-020 found missing policy links/notices on public data-collection and
   commerce surfaces, including newsletter, comments, contact, signup/OAuth
   entry, third-party embeds, and commerce assurance copy.
@@ -241,6 +248,13 @@ Next.js server/client component boundaries.
   same `getCollectionList({ section: "collections", limit: 9 })` data path as
   the live homepage collection section, while keeping its visual layout
   isolated from the production `CollectionSection`.
+- `/prototype/home` now includes a fixed bottom route-local dropdown rail for
+  comparing the expanded 1920px frame against an inset 1180px frame, scaling
+  only section-level prototype headings through default, smaller, and compact
+  presets, and adjusting shop product cards through large, larger, and feature
+  artwork preview sizes. The project placeholder also embeds the existing
+  documentary YouTube player to the right of the live homepage film copy on
+  wider screens.
 
 ## Backlog
 
@@ -766,6 +780,52 @@ Use browser checks for layout-sensitive changes.
   place with route-local flex/min-height transitions, exposes the active
   collection link inside the expanded panel, and preserves the same
   server-loaded collection data.
+- 2026-05-22: Added a route-local `/prototype/home` control rail with width and
+  heading-size presets, changed the shared prototype frame to use a CSS variable
+  defaulting to 1920px, and embedded the existing documentary video in the
+  project placeholder. Focused Jest and lint passed. `npm run build` compiled
+  and typechecked, then failed during page-data collection on unrelated
+  protected/account page module lookups; the referenced source and generated
+  `.next` files were present. The dev server is running on port 3002, and
+  `/prototype/home` returned `200 OK` after slow restricted-network font
+  retries.
+- 2026-05-22: Refined the `/prototype/home` controls after owner feedback:
+  heading presets now target only section-level headings, those headings use the
+  smaller placeholder-scale default, the project video section uses the live
+  homepage film copy, and the shop section gained product-card size controls.
+  Focused Jest and lint passed;
+  the running dev server returned `200 OK` for `/prototype/home`.
+- 2026-05-22: Moved the `/prototype/home` shop size controls out of the shop
+  section into a separate band above it, removed the smaller product-card option
+  so the controls only compare large/larger/feature artwork previews, and made
+  the inset frame preset visibly narrower at 1180px. Focused Jest and lint
+  passed. Restarted the stale dev server after a hot-reload webpack runtime
+  error; `/prototype/home` now returns `200 OK` on port 3001.
+- 2026-05-22: Converted the `/prototype/home` controls into a fixed bottom
+  dropdown rail so width, heading scale, and shop item size can be adjusted
+  while reviewing any section. Section heading defaults were raised from the
+  prior small pass without returning to the earlier oversized 80px+ headings.
+  Focused Jest and lint passed, and `/prototype/home` returned `200 OK` on the
+  running port 3001 dev server.
+- 2026-05-22: Normalized `/prototype/home` section eyebrow labels after owner
+  review found the Biography label inconsistent. Real content sections now
+  share the same small uppercase tan eyebrow treatment, placeholders share the
+  same scale/tracking in muted current color, the blog divider uses the shared
+  tan accent, and the collections heading is sentence-cased. Focused Jest and
+  lint passed, and `/prototype/home` returned `200 OK` on port 3001. Remaining
+  prototype visual consistency areas to review are CTA treatment and divider
+  density across Biography, Blog, Collections, and Shop.
+- 2026-05-22: Updated the `/prototype/home` biography section after owner
+  review so the cards render in the fixed order `Early Years`, `Meeting Beryl`,
+  `Ethos`, `Later Years`, `Obituary` regardless of loader order. The biography
+  timeline marker circle now aligns with the center of the rule above the
+  images, and the read-more divider now runs behind the button at its center
+  instead of along the button top edge.
+- 2026-05-22: Changed the `/prototype/home` control rail defaults to smaller
+  section headings and feature-sized shop items. The collections accordion now
+  renders separate collapsed and expanded title layers, clips both inside the
+  panel, measures the final open-panel title width, and slides the collapsed
+  title out left while the width-stable expanded title eases in from the right.
 - 2026-05-20: Completed T-173 and prepared T-174 through T-178 from its admin
   read-list audit. Frontend follow-up should wait for route query hardening
   before adding main read-tab pagination, filters, or search.

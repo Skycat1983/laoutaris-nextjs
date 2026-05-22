@@ -311,8 +311,40 @@ export const calculateFramePreviewGeometry = (
     }
   }
 
-  const geometry = calculateAtScale(input, scaleMode, low);
+  return finalizeGeometry(
+    input,
+    scaleMode,
+    calculateAtScale(input, scaleMode, low)
+  );
+};
 
+export const calculateFixedArtworkFramePreviewGeometry = (
+  input: FramePreviewGeometryInput
+): FramePreviewGeometry => {
+  validateInput(input);
+
+  const scaleMode = getFrameScaleMode(
+    input.artwork,
+    input.frameProfile,
+    input.matProfile
+  );
+  const artworkScale = Math.min(
+    input.bounds.maxWidthPx / input.artwork.pixelWidth,
+    input.bounds.maxHeightPx / input.artwork.pixelHeight
+  );
+
+  return finalizeGeometry(
+    input,
+    scaleMode,
+    calculateAtScale(input, scaleMode, artworkScale)
+  );
+};
+
+const finalizeGeometry = (
+  input: FramePreviewGeometryInput,
+  scaleMode: FrameScaleMode,
+  geometry: ReturnType<typeof calculateAtScale>
+): FramePreviewGeometry => {
   if (geometry.artwork.widthPx < 1 || geometry.artwork.heightPx < 1) {
     throw new RangeError("Preview bounds are too small for the frame preview.");
   }

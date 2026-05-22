@@ -90,12 +90,31 @@ describe("/prototype/frame page", () => {
       ).toBeInTheDocument();
     }
 
+    const shadowControls = screen.getByLabelText("Wall shadow controls");
+    for (const control of [
+      "Right offset",
+      "Bottom offset",
+      "Edge blur",
+      "Diffusion",
+      "Spread",
+      "Darkness %",
+    ]) {
+      expect(
+        within(shadowControls).getByRole("spinbutton", { name: control })
+      ).toBeInTheDocument();
+    }
+
     const roomControls = screen.getByLabelText("Room background samples");
     for (const room of [
       "Modern Gallery",
-      "Scandinavian Living",
+      "Scandinavian White Wall",
       "Townhouse Study",
-      "Plaster Hallway",
+      "White Plaster Hallway",
+      "Minimal Gallery Alcove",
+      "Bright Loft",
+      "White Bedroom",
+      "White Townhouse Sitting Room",
+      "Artist Studio Wall",
     ]) {
       expect(
         within(roomControls).getByRole("button", { name: room })
@@ -116,6 +135,14 @@ describe("/prototype/frame page", () => {
 
     expect(figure).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
     expect(figure).toHaveAttribute("data-render-mode", "rails");
+    expect(
+      within(screen.getByTestId("prototype-frame-room-scene")).getByRole(
+        "figure",
+        {
+          name: "Framed preview of Sample A artwork frame preview",
+        }
+      )
+    ).toHaveAttribute("data-sizing-mode", "fixedArtwork");
 
     fireEvent.click(screen.getByRole("button", { name: "Sample B" }));
 
@@ -161,14 +188,33 @@ describe("/prototype/frame page", () => {
     expect(
       screen.getByTestId("prototype-frame-room-hanging-zone")
     ).toHaveStyle({
-      left: "52%",
-      top: "42%",
-      width: "22%",
+      left: "50%",
+      top: "40%",
+      width: "38%",
     });
     expect(screen.getByTestId("prototype-frame-room-scene")).toHaveAttribute(
       "data-room-transitioning",
       "false"
     );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "White Plaster Hallway" })
+    );
+    fireEvent.load(screen.getByTestId("prototype-frame-room-preloader"));
+
+    expect(
+      screen.getByAltText("Bright white plaster hallway wall background")
+    ).toHaveAttribute(
+      "src",
+      "/prototypes/frame-backgrounds/white-plaster-hallway-wall.png"
+    );
+    expect(
+      screen.getByTestId("prototype-frame-room-hanging-zone")
+    ).toHaveStyle({
+      left: "50%",
+      top: "40%",
+      width: "38%",
+    });
 
     fireEvent.click(screen.getByRole("button", { name: "Walnut" }));
     fireEvent.click(screen.getByRole("button", { name: "Wide Gallery Mat" }));
@@ -188,6 +234,78 @@ describe("/prototype/frame page", () => {
     expect(
       screen.getAllByTestId("framed-preview-miter-seam").length
     ).toBeGreaterThanOrEqual(4);
+  });
+
+  it("lets prototype reviewers tune right and bottom wall shadows", () => {
+    render(<FramePreviewPrototype />);
+
+    const roomShadow = screen.getByTestId("prototype-frame-room-shadow");
+
+    expect(roomShadow.getAttribute("style")).toContain(
+      "box-shadow: 6px 6px 6px -1px"
+    );
+    expect(roomShadow.getAttribute("style")).toContain(
+      "drop-shadow(6px 6px 10px"
+    );
+    expect(
+      screen.queryByTestId("prototype-frame-room-side-shadow-right")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("prototype-frame-room-side-shadow-bottom")
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("prototype-frame-room-corner-shadow-bottom-left")
+    ).toHaveAttribute("data-shadow-direction", "south-east");
+    expect(
+      screen.getByTestId("prototype-frame-room-corner-shadow-top-right")
+    ).toHaveAttribute("data-shadow-direction", "south-east");
+    expect(
+      screen
+        .getByTestId("prototype-frame-room-corner-shadow-top-right")
+        .getAttribute("style")
+    ).toContain("rotate");
+
+    fireEvent.change(
+      screen.getByRole("spinbutton", { name: "Right offset" }),
+      {
+        target: { value: "1" },
+      }
+    );
+    expect(roomShadow.getAttribute("style")).toContain(
+      "box-shadow: 1px 6px"
+    );
+
+    fireEvent.change(
+      screen.getByRole("spinbutton", { name: "Right offset" }),
+      {
+        target: { value: "34" },
+      }
+    );
+    fireEvent.change(
+      screen.getByRole("spinbutton", { name: "Bottom offset" }),
+      {
+        target: { value: "42" },
+      }
+    );
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Edge blur" }), {
+      target: { value: "4" },
+    });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Diffusion" }), {
+      target: { value: "58" },
+    });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Spread" }), {
+      target: { value: "6" },
+    });
+    fireEvent.change(screen.getByRole("spinbutton", { name: "Darkness %" }), {
+      target: { value: "45" },
+    });
+
+    expect(roomShadow.getAttribute("style")).toContain(
+      "box-shadow: 34px 42px 4px 6px"
+    );
+    expect(roomShadow.getAttribute("style")).toContain(
+      "drop-shadow(34px 42px 58px"
+    );
   });
 
   it("keeps sample artwork frame ratios aligned to the loaded assets", () => {

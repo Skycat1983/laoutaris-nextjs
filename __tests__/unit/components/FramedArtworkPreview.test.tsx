@@ -73,6 +73,7 @@ describe("FramedArtworkPreview", () => {
     expect(figure).toHaveAttribute("data-frame-profile-id", "black-wood-thin");
     expect(figure).toHaveAttribute("data-mat-profile-id", "none");
     expect(figure).toHaveAttribute("data-render-mode", "simple");
+    expect(figure).toHaveAttribute("data-sizing-mode", "fitOuter");
     expect(figure).toHaveAttribute("data-scale-mode", "relativePreview");
     expect(screen.getByTestId("framed-preview-mat")).toHaveStyle({
       backgroundColor: "transparent",

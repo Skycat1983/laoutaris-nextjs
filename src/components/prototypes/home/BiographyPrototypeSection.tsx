@@ -2,7 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
-import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
+import {
+  prototypeHeadingStyle,
+  prototypeSectionEyebrowClassName,
+  prototypeSectionFrameClassName,
+} from "./prototypeHomeLayout";
 
 type BiographyPrototypeArticle = Pick<
   ArticleFrontend,
@@ -14,11 +18,58 @@ type BiographyPrototypeSectionProps = {
 };
 
 const MAX_ARTICLES = 5;
+const BIOGRAPHY_ARTICLE_ORDER = [
+  "early-years",
+  "meeting-beryl",
+  "ethos",
+  "later-years",
+  "obituary",
+] as const;
+const BIOGRAPHY_ARTICLE_ORDER_INDEX = new Map(
+  BIOGRAPHY_ARTICLE_ORDER.map((slug, index) => [slug, index])
+);
 
 const formatIndex = (index: number) => String(index + 1).padStart(2, "0");
 
 const getArticleHref = (article: BiographyPrototypeArticle) =>
   article.slug ? `/biography/${article.slug}` : "/biography";
+
+const getArticleOrderKey = (article: BiographyPrototypeArticle) => {
+  const slugKey = article.slug?.trim().toLowerCase();
+  if (slugKey && BIOGRAPHY_ARTICLE_ORDER_INDEX.has(slugKey)) {
+    return (
+      BIOGRAPHY_ARTICLE_ORDER_INDEX.get(slugKey) ?? Number.MAX_SAFE_INTEGER
+    );
+  }
+
+  const titleKey = article.title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  return (
+    BIOGRAPHY_ARTICLE_ORDER_INDEX.get(titleKey) ?? Number.MAX_SAFE_INTEGER
+  );
+};
+
+const getOrderedBiographyArticles = (articles: BiographyPrototypeArticle[]) =>
+  articles
+    .map((article, index) => ({ article, index }))
+    .sort((left, right) => {
+      const orderDelta =
+        getArticleOrderKey(left.article) - getArticleOrderKey(right.article);
+
+      return orderDelta || left.index - right.index;
+    })
+    .slice(0, MAX_ARTICLES)
+    .map(({ article }) => article);
+
+const sectionHeadingStyle = prototypeHeadingStyle({
+  base: "2.75rem",
+  sm: "3.5rem",
+  lg: "4.5rem",
+});
 
 function BiographyPrototypeImage({
   article,
@@ -98,12 +149,12 @@ function BiographyTimelineCard({
 }) {
   return (
     <article className="relative flex min-h-full flex-col pt-10 2xl:pt-12">
-      <div className="absolute left-1/2 top-0 hidden -translate-x-1/2 flex-col items-center gap-4 lg:flex">
+      <div className="absolute -top-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-4 lg:flex 2xl:-top-4">
         <span className="font-archivo text-lg leading-none text-black/90">
           {formatIndex(index)}
         </span>
         <span
-          className="h-3 w-3 rounded-full border border-black bg-[#f7f5f1]"
+          className="h-3 w-3 rounded-full border border-black"
           aria-hidden="true"
         />
       </div>
@@ -155,7 +206,7 @@ function BiographyPrototypeEmptyState() {
 export function BiographyPrototypeSection({
   articles,
 }: BiographyPrototypeSectionProps) {
-  const visibleArticles = articles.slice(0, MAX_ARTICLES);
+  const visibleArticles = getOrderedBiographyArticles(articles);
   const [featuredArticle, ...timelineArticles] = visibleArticles;
   const hasArticles = visibleArticles.length > 0;
 
@@ -170,12 +221,11 @@ export function BiographyPrototypeSection({
         className={`${prototypeSectionFrameClassName} flex min-h-[720px] flex-col py-16 lg:py-24 2xl:py-28`}
       >
         <div className="mb-12 sm:mb-16 2xl:mb-20">
-          <p className="font-archivo text-3xl font-semibold leading-none text-black sm:text-4xl lg:text-[42px]">
-            Biography:
-          </p>
+          <p className={prototypeSectionEyebrowClassName}>Biography</p>
           <h2
             id="prototype-biography-heading"
-            className="mt-3 max-w-[1180px] font-cormorant text-5xl font-normal leading-none text-black sm:text-6xl lg:text-7xl xl:text-[82px] 2xl:text-[94px]"
+            className="prototype-home-section-heading mt-3 max-w-[1180px] font-cormorant text-4xl font-normal leading-tight text-black sm:text-5xl lg:text-6xl"
+            style={sectionHeadingStyle}
           >
             Read my grandfather&apos;s story
           </h2>
@@ -188,7 +238,8 @@ export function BiographyPrototypeSection({
             {timelineArticles.length > 0 ? (
               <div className="relative lg:pt-4 2xl:pt-5">
                 <div
-                  className="absolute left-0 right-0 top-[37px] hidden border-t border-black/20 lg:block 2xl:top-[45px]"
+                  className="absolute left-0 right-0 top-9 z-0 hidden border-t border-black/20 lg:block 2xl:top-11"
+                  data-testid="prototype-biography-timeline-line"
                   aria-hidden="true"
                 />
                 <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 2xl:gap-6">
@@ -207,10 +258,15 @@ export function BiographyPrototypeSection({
           <BiographyPrototypeEmptyState />
         )}
 
-        <div className="relative mt-14 flex justify-center border-t border-black/20 sm:mt-16 2xl:mt-20">
+        <div className="relative mt-14 flex justify-center sm:mt-16 2xl:mt-20">
+          <div
+            className="absolute left-0 right-0 top-1/2 z-0 border-t border-black/20"
+            data-testid="prototype-biography-read-more-divider"
+            aria-hidden="true"
+          />
           <Link
             href="/biography"
-            className="-mt-px inline-flex min-h-16 w-full max-w-[330px] items-center justify-center gap-12 border border-black bg-[#f7f5f1] px-8 py-4 font-archivo text-base text-black transition hover:bg-black hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-lg 2xl:max-w-[360px]"
+            className="relative z-10 inline-flex min-h-16 w-full max-w-[330px] items-center justify-center gap-12 border border-black bg-[#f7f5f1] px-8 py-4 font-archivo text-base text-black transition hover:bg-black hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-black sm:text-lg 2xl:max-w-[360px]"
           >
             <span>Read more</span>
             <ArrowRight className="h-5 w-5" aria-hidden="true" />

@@ -1,18 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 import { buildUrl } from "@/lib/utils/urlUtils";
-import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
+import {
+  prototypeHeadingStyle,
+  prototypeSectionEyebrowClassName,
+  prototypeSectionFrameClassName,
+} from "./prototypeHomeLayout";
 
 type CollectionPrototypeSectionProps = {
   collections: CollectionFrontend[];
 };
 
 const MAX_VISIBLE_COLLECTIONS = 6;
+const OPEN_PANEL_FLEX = 3.7;
+const CLOSED_PANEL_FLEX = 0.92;
+const DEFAULT_EXPANDED_COPY_WIDTH = 560;
+const EXPANDED_COPY_HORIZONTAL_INSET = 64;
 
 const sectionHeadingId = "prototype-collections-heading";
 
@@ -24,6 +32,12 @@ const getCollectionHref = (collection: CollectionFrontend) =>
     collection.slug,
     collection.firstArtworkId ?? "",
   ]);
+
+const sectionHeadingStyle = prototypeHeadingStyle({
+  base: "2.75rem",
+  sm: "3.5rem",
+  lg: "4.5rem",
+});
 
 function CollectionImage({
   collection,
@@ -72,6 +86,12 @@ function CollectionAccordionPanel({
   const panelSizeClass = isActive
     ? "min-h-[520px] lg:flex-[3.7] 2xl:min-h-[780px]"
     : "min-h-[210px] sm:min-h-[260px] lg:min-h-[690px] lg:flex-[0.92] 2xl:min-h-[780px]";
+  const expandedCopyStateClass = isActive
+    ? "translate-x-0 opacity-100 delay-200"
+    : "translate-x-16 opacity-0";
+  const collapsedCopyStateClass = isActive
+    ? "-translate-x-12 opacity-0"
+    : "translate-x-0 opacity-100 delay-200";
 
   return (
     <article
@@ -106,45 +126,63 @@ function CollectionAccordionPanel({
         {formatIndex(index)}
       </div>
 
-      {isActive ? (
-        <>
-          <Link
-            href={collectionHref}
-            className="absolute right-5 top-6 z-30 hidden items-center gap-3 font-archivo text-sm uppercase text-white transition-colors hover:text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:inline-flex 2xl:right-8"
-          >
-            View collection
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/80">
-              <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </span>
-          </Link>
-          <div
-            id={panelId}
-            className="pointer-events-none absolute bottom-7 left-5 right-5 z-20 flex flex-col gap-4 opacity-100 transition-opacity delay-150 duration-500 sm:left-8 sm:right-8 2xl:bottom-9 2xl:left-9"
-          >
-            <Link
-              href={collectionHref}
-              className="pointer-events-auto w-fit max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              <h3 className="break-words font-cormorant text-4xl font-semibold leading-none text-white sm:text-5xl xl:text-[56px]">
-                {collection.title}
-              </h3>
-              <span className="mt-4 inline-flex w-fit items-center gap-5 border-b border-white pb-2 font-archivo text-sm uppercase text-white transition-colors hover:text-white/80">
-                Explore this room
-                <ArrowRight aria-hidden="true" className="h-5 w-5" />
-              </span>
-            </Link>
-          </div>
-        </>
-      ) : (
-        <div className="pointer-events-none absolute bottom-6 left-5 right-5 z-20 transition-opacity duration-500 lg:bottom-8 lg:left-1/2 lg:right-auto lg:max-h-[78%] lg:-translate-x-1/2 lg:rotate-180 lg:[writing-mode:vertical-rl]">
+      <Link
+        href={collectionHref}
+        className={`absolute right-5 top-6 z-30 hidden items-center gap-3 font-archivo text-sm uppercase text-white transition-[opacity,color] duration-300 hover:text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:inline-flex 2xl:right-8 ${
+          isActive
+            ? "pointer-events-auto opacity-100 delay-200"
+            : "pointer-events-none opacity-0"
+        }`}
+        aria-hidden={!isActive}
+        tabIndex={isActive ? undefined : -1}
+      >
+        View collection
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/80">
+          <ArrowRight aria-hidden="true" className="h-4 w-4" />
+        </span>
+      </Link>
+
+      <div
+        className={`pointer-events-none absolute bottom-6 left-5 right-5 z-20 transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none lg:bottom-8 lg:left-1/2 lg:right-auto lg:max-h-[78%] ${collapsedCopyStateClass}`}
+        data-testid="prototype-collection-collapsed-title"
+        aria-hidden={isActive}
+      >
+        <div className="lg:-translate-x-1/2 lg:rotate-180 lg:[writing-mode:vertical-rl]">
           <h3 className="break-words font-cormorant text-3xl font-semibold leading-none text-white 2xl:text-4xl">
             {collection.title}
           </h3>
         </div>
-      )}
+      </div>
+
+      <div
+        id={panelId}
+        className={`pointer-events-none absolute bottom-7 left-5 z-20 flex w-[var(--prototype-collection-expanded-copy-width)] max-w-[calc(100vw-2.5rem)] flex-col gap-4 transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none sm:left-8 sm:max-w-[calc(100vw-4rem)] 2xl:bottom-9 2xl:left-9 ${expandedCopyStateClass}`}
+        data-testid="prototype-collection-expanded-title"
+        aria-hidden={!isActive}
+      >
+        <Link
+          href={collectionHref}
+          className={`w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
+            isActive ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+          tabIndex={isActive ? undefined : -1}
+        >
+          <h3 className="break-words font-cormorant text-4xl font-semibold leading-none text-white sm:text-5xl xl:text-[56px]">
+            {collection.title}
+          </h3>
+          <span className="mt-4 inline-flex w-fit items-center gap-5 border-b border-white pb-2 font-archivo text-sm uppercase text-white transition-colors hover:text-white/80">
+            Explore this room
+            <ArrowRight aria-hidden="true" className="h-5 w-5" />
+          </span>
+        </Link>
+      </div>
     </article>
   );
 }
+
+type CollectionAccordionStyle = CSSProperties & {
+  "--prototype-collection-expanded-copy-width": string;
+};
 
 function CollectionAccordion({
   collections,
@@ -152,9 +190,60 @@ function CollectionAccordion({
   collections: CollectionFrontend[];
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [expandedCopyWidth, setExpandedCopyWidth] = useState(
+    DEFAULT_EXPANDED_COPY_WIDTH
+  );
+  const accordionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const accordion = accordionRef.current;
+    if (!accordion) return undefined;
+
+    const updateExpandedCopyWidth = () => {
+      const panelCount = collections.length;
+      const accordionWidth = accordion.getBoundingClientRect().width;
+      if (!panelCount || accordionWidth <= 0) return;
+
+      const styles = window.getComputedStyle(accordion);
+      const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+      const availableWidth = Math.max(
+        0,
+        accordionWidth - gap * Math.max(panelCount - 1, 0)
+      );
+      const openFlexTotal =
+        OPEN_PANEL_FLEX + CLOSED_PANEL_FLEX * Math.max(panelCount - 1, 0);
+      const openPanelWidth =
+        panelCount > 1
+          ? (availableWidth * OPEN_PANEL_FLEX) / openFlexTotal
+          : availableWidth;
+      const copyWidth = Math.max(
+        220,
+        Math.round(openPanelWidth - EXPANDED_COPY_HORIZONTAL_INSET)
+      );
+
+      setExpandedCopyWidth(copyWidth);
+    };
+
+    updateExpandedCopyWidth();
+
+    if (typeof ResizeObserver === "undefined") return undefined;
+
+    const observer = new ResizeObserver(updateExpandedCopyWidth);
+    observer.observe(accordion);
+
+    return () => observer.disconnect();
+  }, [collections.length]);
+
+  const accordionStyle: CollectionAccordionStyle = {
+    "--prototype-collection-expanded-copy-width": `${expandedCopyWidth}px`,
+  };
 
   return (
-    <div className="flex flex-col gap-3 lg:flex-row lg:gap-2 2xl:gap-3">
+    <div
+      ref={accordionRef}
+      className="flex flex-col gap-3 lg:flex-row lg:gap-2 2xl:gap-3"
+      style={accordionStyle}
+    >
       {collections.map((collection, index) => (
         <CollectionAccordionPanel
           key={collection.slug || `${collection.title}-${index}`}
@@ -203,7 +292,7 @@ export function CollectionPrototypeSection({
         className={`${prototypeSectionFrameClassName} grid min-h-[760px] gap-12 py-16 sm:py-20 lg:grid-cols-[minmax(280px,0.36fr)_minmax(0,1fr)] lg:items-center lg:gap-14 lg:py-24 xl:grid-cols-[minmax(330px,0.34fr)_minmax(0,1fr)] 2xl:min-h-[900px] 2xl:gap-20 2xl:py-28`}
       >
         <div className="flex min-w-0 flex-col items-start lg:max-w-[440px]">
-          <p className="font-archivo text-sm uppercase text-[#9a713d]">
+          <p className={prototypeSectionEyebrowClassName}>
             Private collection rooms
           </p>
           <div className="my-7 flex w-full max-w-[320px] items-center gap-3">
@@ -216,9 +305,10 @@ export function CollectionPrototypeSection({
           </div>
           <h2
             id={sectionHeadingId}
-            className="max-w-[460px] break-words font-cormorant text-6xl font-semibold leading-none text-slate sm:text-7xl lg:text-[82px] xl:text-[88px] 2xl:text-[98px]"
+            className="prototype-home-section-heading max-w-[460px] break-words font-cormorant text-4xl font-semibold leading-tight text-slate sm:text-5xl lg:text-6xl"
+            style={sectionHeadingStyle}
           >
-            Explore the Collections
+            Explore the collections
           </h2>
           <p className="mt-8 max-w-[340px] break-words font-archivo text-base leading-7 text-slate/70 sm:text-lg">
             Discover curated groups of works, each offering a unique

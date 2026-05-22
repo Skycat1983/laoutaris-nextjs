@@ -49,16 +49,19 @@ stripe pattern reported during owner review has been removed from the rail
 renderer. Product-page previews still use the simple fallback renderer until
 the rail treatment is visually approved.
 
-Room-preview status on 2026-05-21: `/prototype/frame` now includes four
-generated blank-wall home backgrounds under
-`public/prototypes/frame-backgrounds/`. The route lets reviewers switch between
-modern gallery, Scandinavian living room, townhouse study, and Mediterranean
-plaster hallway scenes and composites the selected framed artwork into a
-route-local hanging zone. Background switching is buffered so the existing
-room composition remains visible until the requested room image has loaded.
-The fixture artwork metrics have also been corrected to the measured source
-image dimensions so the artwork box and mat spacing stay aligned. These
-generated backgrounds are prototype review assets only.
+Room-preview status on 2026-05-22: `/prototype/frame` includes generated
+blank-wall home backgrounds under `public/prototypes/frame-backgrounds/`,
+including regenerated Scandinavian white-wall and white plaster hallway scenes
+plus additional bright white-wall candidates for comparison. The route
+composites the selected framed artwork into a shared centered hanging zone.
+Background switching is buffered so the existing room composition remains
+visible until the requested room image has loaded. The fixture artwork metrics
+have also been corrected to the measured source image dimensions, and the wall
+scene uses fixed-artwork sizing so mat margin grows the framed object around a
+constant-size print. The wall scene also includes prototype-only right/down
+shadow controls for offset, edge blur, diffusion, spread, and darkness near the
+room preview, plus short south-east diagonal corner shadows from the frame.
+These generated backgrounds are prototype review assets only.
 
 ## Review Gates
 
@@ -123,6 +126,14 @@ For `/prototype/frame`:
   framed artwork and do not visually compete with the print.
 - Switching room backgrounds keeps the framed print centered in a plausible
   hanging position and does not flash a half-loaded background/frame composite.
+- On the room wall, changing mat margin grows or shrinks the framed object
+  around a fixed-size print rather than shrinking the print inside a fixed
+  outer frame.
+- Wall shadows cast to the right and bottom of the frame and can be tuned for
+  length, edge blur, diffusion, spread, and darkness against the selected room
+  backgrounds.
+- Short diagonal shadows from the bottom-left and top-right frame points read as
+  south-east cast shadows rather than visual artifacts.
 - Mat spacing around the artwork remains even when switching between the tall,
   wide, and near-square sample images.
 - The preview remains clearly experimental and does not include enquiry,

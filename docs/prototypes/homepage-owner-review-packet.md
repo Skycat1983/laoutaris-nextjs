@@ -83,9 +83,9 @@ Suggested fixed order:
 
 1. Early Years
 2. Meeting Beryl
-3. Later Years
-4. Obituary
-5. Ethos
+3. Ethos
+4. Later Years
+5. Obituary
 
 Recommendation: Use a fixed story order if the homepage is meant to introduce
 Joseph's life in a clear sequence.

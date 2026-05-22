@@ -65,10 +65,15 @@ production while preserving MongoDB as the archive source of truth.
   sample controls, and mat margin presets. Product-page previews still use the
   simple renderer until visual review approves rollout.
 - `/prototype/frame` also includes generated blank-wall room backgrounds for
-  modern gallery, Scandinavian living room, townhouse study, and Mediterranean
-  plaster hallway contexts. The prototype composites the selected framed print
-  into a route-local hanging zone for wall-scale review; product-page previews
-  remain unchanged.
+  modern gallery, townhouse study, regenerated Scandinavian white-wall and
+  white plaster hallway contexts, plus five additional bright white-wall
+  candidates. The prototype composites the selected framed print into a shared
+  centered hanging zone for wall-scale review and uses fixed-artwork sizing so
+  switching backgrounds does not move the artwork and changing mat margin grows
+  the framed object around the print. The room composite includes prototype-only
+  controls for right/down shadow offset, edge blur, diffusion, spread, and
+  darkness plus short south-east corner-shadow lines from the bottom-left and
+  top-right frame points. Product-page previews remain unchanged.
 - `/prototype/frame` buffers room background changes until the requested room
   image has loaded and uses measured fixture artwork dimensions so prototype
   mat spacing does not appear uneven from asset/metric ratio drift.
@@ -481,6 +486,22 @@ Add targeted tests as shop behavior is hardened.
   load before swapping the visible room composition, and the sample artwork
   metrics now match the measured Cloudinary asset dimensions so the framed mat
   spacing stays even across the prototype examples.
+- 2026-05-22: Refined `/prototype/frame` room review after owner feedback.
+  Regenerated the Scandinavian white-wall and white plaster hallway scenes from
+  scratch, added five additional bright white-wall room candidates, moved all
+  room backgrounds to one centered hanging anchor, and changed the wall scene to
+  fixed-artwork sizing so mat margin grows the framed object around the print.
+- 2026-05-22: Added prototype-only wall shadow controls to `/prototype/frame`.
+  Shadows are always cast to the right and bottom of the frame, with uncapped
+  numeric controls for offset, edge blur, diffusion, spread, and darkness so
+  reviewer feedback can tune the generated room lighting. The controls now sit
+  in the room-preview column near the wall render, and the wall composite adds
+  short south-east diagonal corner shadows from the bottom-left and top-right
+  frame points.
+- 2026-05-22: Refined the `/prototype/frame` wall shadow after review found the
+  added edge bands read as duplicate shadows. The separate bottom and right
+  bands were removed; the room composite now uses the frame-attached cast
+  shadow plus the short south-east diagonal corner shadows only.
 
 ## Next Agent Action
 
@@ -497,12 +518,15 @@ T-059 or T-082.
 
 If framed print preview implementation continues, run T-194 targeted visual QA
 and owner review for `/prototype/frame`. Include both close-up frame materials
-and generated room-wall context scenes in review. Decide whether to apply the
-rail renderer to product pages now, regenerate/curate room backgrounds, or add
-real texture assets first. Confirm buffered room switching and even mat spacing
-across the corrected prototype artwork samples. Record eligible and ineligible
-handles, visual notes, and owner decisions before starting Shopify option
-mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
+and the centered bright-wall room context candidates in review. Decide which
+room backgrounds to keep, whether to apply the rail renderer to product pages
+now, or whether to add real texture assets first. Confirm buffered room
+switching, centered hanging placement, fixed-print mat behavior, and even mat
+spacing across the corrected prototype artwork samples. Tune and record the
+right/down wall shadow values that work best across the selected room
+backgrounds. Record eligible and ineligible handles, visual notes, and owner
+decisions before starting Shopify option mapping, checkout/cart work, enquiry
+mutation, or physical dimension migration.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

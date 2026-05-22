@@ -3,7 +3,11 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
-import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
+import {
+  prototypeHeadingStyle,
+  prototypeSectionEyebrowClassName,
+  prototypeSectionFrameClassName,
+} from "./prototypeHomeLayout";
 
 type BlogPrototypeSectionProps = {
   blogs: BlogEntryFrontend[];
@@ -15,6 +19,12 @@ const getBlogHref = (slug: string) => `/blog/${slug}`;
 
 const getBlogSummary = (blog: BlogEntryFrontend) =>
   blog.subtitle?.trim() || blog.summary?.trim() || "";
+
+const sectionHeadingStyle = prototypeHeadingStyle({
+  base: "2.75rem",
+  sm: "3.5rem",
+  lg: "4.5rem",
+});
 
 function BlogImage({
   blog,
@@ -106,17 +116,16 @@ export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(320px,0.62fr)_minmax(0,1.38fr)] lg:gap-14 xl:gap-16 2xl:grid-cols-[minmax(380px,0.56fr)_minmax(0,1.44fr)] 2xl:gap-24">
           <div className="flex min-w-0 flex-col items-start gap-7 2xl:gap-8">
             <div className="flex min-w-0 max-w-[780px] flex-col gap-4">
-              <p className="font-archivo text-xs uppercase text-slate/80">
-                Blog
-              </p>
+              <p className={prototypeSectionEyebrowClassName}>Blog</p>
               <h2
                 id={sectionHeadingId}
-                className="max-w-[780px] break-words font-cormorant text-5xl font-semibold leading-none text-slate sm:text-6xl lg:text-7xl xl:text-[78px] 2xl:text-[88px]"
+                className="prototype-home-section-heading max-w-[780px] break-words font-cormorant text-4xl font-semibold leading-tight text-slate sm:text-5xl lg:text-6xl"
+                style={sectionHeadingStyle}
               >
                 {leadBlog?.title ?? "Latest blog posts"}
               </h2>
             </div>
-            <div className="h-px w-16 bg-slate" aria-hidden="true" />
+            <div className="h-px w-16 bg-[#b9915a]" aria-hidden="true" />
             {leadSummary ? (
               <p className="max-w-xl break-words font-archivo text-base leading-7 text-slate/80 sm:text-lg 2xl:max-w-[700px]">
                 {leadSummary}

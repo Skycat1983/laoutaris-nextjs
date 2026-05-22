@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "fs";
 import path from "path";
 import {
+  calculateFixedArtworkFramePreviewGeometry,
   calculateFramePreviewGeometry,
   getFrameScaleMode,
 } from "@/lib/framePreview/geometry";
@@ -217,6 +218,38 @@ describe("calculateFramePreviewGeometry", () => {
     );
     expect(matGeometry.outer.widthPx).toBeLessThanOrEqual(800);
     expect(matGeometry.outer.heightPx).toBeLessThanOrEqual(600);
+  });
+
+  it("can keep artwork size fixed while mat margin grows the framed object", () => {
+    const input = {
+      artwork: {
+        pixelWidth: 1000,
+        pixelHeight: 1000,
+      },
+      frameProfile: testFrameProfile,
+      bounds: {
+        maxWidthPx: 400,
+        maxHeightPx: 400,
+      },
+    };
+    const noMatGeometry = calculateFixedArtworkFramePreviewGeometry({
+      ...input,
+      matProfile: noMatProfile,
+    });
+    const matGeometry = calculateFixedArtworkFramePreviewGeometry({
+      ...input,
+      matProfile: testMatProfile,
+    });
+
+    expect(matGeometry.artwork.widthPx).toBe(noMatGeometry.artwork.widthPx);
+    expect(matGeometry.artwork.heightPx).toBe(noMatGeometry.artwork.heightPx);
+    expect(matGeometry.mat.widthPx).toBeGreaterThan(0);
+    expect(matGeometry.outer.widthPx).toBeGreaterThan(
+      noMatGeometry.outer.widthPx
+    );
+    expect(matGeometry.outer.heightPx).toBeGreaterThan(
+      noMatGeometry.outer.heightPx
+    );
   });
 
   it("uses physical scale only when complete print dimensions are available", () => {

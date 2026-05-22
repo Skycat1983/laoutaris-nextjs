@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties, ChangeEvent } from "react";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { FramedArtworkPreview } from "@/components/shop/frame-preview/FramedArtworkPreview";
@@ -9,6 +10,8 @@ import { MAT_PROFILES } from "@/lib/framePreview/matProfiles";
 import type {
   ArtworkDisplayMetrics,
   FramePreviewBounds,
+  FrameProfile,
+  MatProfile,
 } from "@/lib/framePreview/types";
 
 type PrototypeArtwork = {
@@ -24,13 +27,18 @@ type RoomScene = {
   label: string;
   imageSrc: string;
   imageAlt: string;
-  hangingZone: {
-    leftPercent: number;
-    topPercent: number;
-    widthPercent: number;
-  };
-  bounds: FramePreviewBounds;
 };
+
+type RoomShadowSettings = {
+  rightOffsetPx: number;
+  bottomOffsetPx: number;
+  sharpnessPx: number;
+  diffusionPx: number;
+  spreadPx: number;
+  opacityPercent: number;
+};
+
+type RoomShadowSettingKey = keyof RoomShadowSettings;
 
 const PROTOTYPE_ARTWORKS = [
   {
@@ -81,60 +89,54 @@ const ROOM_SCENES = [
     label: "Modern Gallery",
     imageSrc: "/prototypes/frame-backgrounds/modern-gallery-wall.png",
     imageAlt: "Modern white gallery-style living room wall background",
-    hangingZone: {
-      leftPercent: 51,
-      topPercent: 42,
-      widthPercent: 24,
-    },
-    bounds: {
-      maxWidthPx: 255,
-      maxHeightPx: 188,
-    },
   },
   {
     id: "scandinavian-living",
-    label: "Scandinavian Living",
-    imageSrc: "/prototypes/frame-backgrounds/scandinavian-living-wall.png",
-    imageAlt: "Warm Scandinavian living room wall background",
-    hangingZone: {
-      leftPercent: 50,
-      topPercent: 39,
-      widthPercent: 23,
-    },
-    bounds: {
-      maxWidthPx: 245,
-      maxHeightPx: 178,
-    },
+    label: "Scandinavian White Wall",
+    imageSrc: "/prototypes/frame-backgrounds/scandinavian-white-wall.png",
+    imageAlt: "Bright Scandinavian living room with a white wall background",
   },
   {
     id: "townhouse-study",
     label: "Townhouse Study",
     imageSrc: "/prototypes/frame-backgrounds/townhouse-study-wall.png",
     imageAlt: "Older townhouse study wall background",
-    hangingZone: {
-      leftPercent: 52,
-      topPercent: 42,
-      widthPercent: 22,
-    },
-    bounds: {
-      maxWidthPx: 235,
-      maxHeightPx: 172,
-    },
   },
   {
     id: "plaster-hallway",
-    label: "Plaster Hallway",
-    imageSrc: "/prototypes/frame-backgrounds/mediterranean-plaster-wall.png",
-    imageAlt: "Mediterranean plaster hallway wall background",
-    hangingZone: {
-      leftPercent: 50,
-      topPercent: 40,
-      widthPercent: 22,
-    },
-    bounds: {
-      maxWidthPx: 235,
-      maxHeightPx: 172,
-    },
+    label: "White Plaster Hallway",
+    imageSrc: "/prototypes/frame-backgrounds/white-plaster-hallway-wall.png",
+    imageAlt: "Bright white plaster hallway wall background",
+  },
+  {
+    id: "minimal-gallery-alcove",
+    label: "Minimal Gallery Alcove",
+    imageSrc: "/prototypes/frame-backgrounds/minimal-gallery-alcove-wall.png",
+    imageAlt: "Minimal contemporary gallery alcove with a white wall background",
+  },
+  {
+    id: "bright-loft",
+    label: "Bright Loft",
+    imageSrc: "/prototypes/frame-backgrounds/bright-loft-wall.png",
+    imageAlt: "Bright modern loft with a white wall background",
+  },
+  {
+    id: "white-bedroom",
+    label: "White Bedroom",
+    imageSrc: "/prototypes/frame-backgrounds/white-bedroom-wall.png",
+    imageAlt: "Calm white bedroom wall background",
+  },
+  {
+    id: "townhouse-sitting",
+    label: "White Townhouse Sitting Room",
+    imageSrc: "/prototypes/frame-backgrounds/white-townhouse-sitting-wall.png",
+    imageAlt: "Elegant white townhouse sitting room wall background",
+  },
+  {
+    id: "artist-studio",
+    label: "Artist Studio Wall",
+    imageSrc: "/prototypes/frame-backgrounds/artist-studio-white-wall.png",
+    imageAlt: "Bright artist studio with a white wall background",
   },
 ] as const satisfies readonly RoomScene[];
 
@@ -143,9 +145,137 @@ const previewBounds = {
   maxHeightPx: 380,
 };
 
+const ROOM_HANGING_ZONE = {
+  leftPercent: 50,
+  topPercent: 40,
+  widthPercent: 38,
+} as const;
+
+const ROOM_PREVIEW_SCALE = 0.49;
+
+const roomPreviewBounds: FramePreviewBounds = {
+  maxWidthPx: previewBounds.maxWidthPx * ROOM_PREVIEW_SCALE,
+  maxHeightPx: previewBounds.maxHeightPx * ROOM_PREVIEW_SCALE,
+};
+
+const DEFAULT_ROOM_SHADOW_SETTINGS: RoomShadowSettings = {
+  rightOffsetPx: 6,
+  bottomOffsetPx: 6,
+  sharpnessPx: 6,
+  diffusionPx: 10,
+  spreadPx: -1,
+  opacityPercent: 28,
+};
+
+const ROOM_SHADOW_CONTROLS = [
+  {
+    key: "rightOffsetPx",
+    label: "Right offset",
+    step: 1,
+    min: 0,
+  },
+  {
+    key: "bottomOffsetPx",
+    label: "Bottom offset",
+    step: 1,
+    min: 0,
+  },
+  {
+    key: "sharpnessPx",
+    label: "Edge blur",
+    step: 1,
+    min: 0,
+  },
+  {
+    key: "diffusionPx",
+    label: "Diffusion",
+    step: 1,
+    min: 0,
+  },
+  {
+    key: "spreadPx",
+    label: "Spread",
+    step: 1,
+  },
+  {
+    key: "opacityPercent",
+    label: "Darkness %",
+    step: 1,
+    min: 0,
+  },
+] as const satisfies readonly {
+  key: RoomShadowSettingKey;
+  label: string;
+  step: number;
+  min?: number;
+}[];
+
 const modalBounds = {
   maxWidthPx: 760,
   maxHeightPx: 560,
+};
+
+const scaleFrameProfileForRoom = (profile: FrameProfile): FrameProfile => ({
+  ...profile,
+  minFramePx: profile.minFramePx * ROOM_PREVIEW_SCALE,
+  maxFramePx: profile.maxFramePx * ROOM_PREVIEW_SCALE,
+});
+
+const scaleMatProfileForRoom = (profile: MatProfile): MatProfile => ({
+  ...profile,
+  minMatPx: profile.minMatPx * ROOM_PREVIEW_SCALE,
+  maxMatPx: profile.maxMatPx * ROOM_PREVIEW_SCALE,
+});
+
+const clamp = (value: number, min: number, max: number): number => {
+  return Math.min(Math.max(value, min), max);
+};
+
+const getFiniteNumber = (value: number, fallback: number): number => {
+  return Number.isFinite(value) ? value : fallback;
+};
+
+const getRoomShadowStyle = (
+  settings: RoomShadowSettings
+): {
+  frameShadow: CSSProperties;
+  cornerShadow: CSSProperties;
+} => {
+  const rightOffset = Math.abs(getFiniteNumber(settings.rightOffsetPx, 0));
+  const bottomOffset = Math.abs(getFiniteNumber(settings.bottomOffsetPx, 0));
+  const sharpness = Math.max(0, getFiniteNumber(settings.sharpnessPx, 0));
+  const diffusion = Math.max(0, getFiniteNumber(settings.diffusionPx, 0));
+  const spread = getFiniteNumber(settings.spreadPx, 0);
+  const opacity = clamp(
+    getFiniteNumber(settings.opacityPercent, 0) / 100,
+    0,
+    1
+  );
+  const castOpacity = Math.round(opacity * 1000) / 1000;
+  const diffuseOpacity = Math.round(opacity * 0.55 * 1000) / 1000;
+  const cornerLength = Math.max(
+    10,
+    Math.hypot(Math.max(rightOffset, bottomOffset * 0.55), bottomOffset)
+  );
+  const rawCornerAngle =
+    rightOffset === 0 && bottomOffset === 0
+      ? 45
+      : Math.atan2(bottomOffset, Math.max(rightOffset, 0.001)) * (180 / Math.PI);
+  const cornerAngle = clamp(rawCornerAngle, 28, 64);
+
+  return {
+    frameShadow: {
+      boxShadow: `${rightOffset}px ${bottomOffset}px ${sharpness}px ${spread}px rgba(0, 0, 0, ${castOpacity})`,
+      filter: `drop-shadow(${rightOffset}px ${bottomOffset}px ${diffusion}px rgba(0, 0, 0, ${diffuseOpacity}))`,
+    },
+    cornerShadow: {
+      width: `${cornerLength}px`,
+      height: `${Math.max(1, Math.min(8, sharpness * 0.42 + 1))}px`,
+      background: `linear-gradient(90deg, rgba(0, 0, 0, ${castOpacity}) 0%, rgba(0, 0, 0, ${diffuseOpacity}) 56%, rgba(0, 0, 0, 0) 100%)`,
+      filter: `blur(${Math.max(0, diffusion * 0.16)}px)`,
+      transform: `rotate(${cornerAngle}deg)`,
+    },
+  };
 };
 
 export const FramePreviewPrototype = () => {
@@ -167,6 +297,8 @@ export const FramePreviewPrototype = () => {
   const [selectedMatProfileId, setSelectedMatProfileId] = useState<string>(
     MAT_PROFILES[1].id
   );
+  const [roomShadowSettings, setRoomShadowSettings] =
+    useState<RoomShadowSettings>(DEFAULT_ROOM_SHADOW_SETTINGS);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const selectedArtwork = useMemo(() => {
@@ -197,6 +329,18 @@ export const FramePreviewPrototype = () => {
       MAT_PROFILES[1]
     );
   }, [selectedMatProfileId]);
+  const roomFrameProfile = useMemo(
+    () => scaleFrameProfileForRoom(selectedFrameProfile),
+    [selectedFrameProfile]
+  );
+  const roomMatProfile = useMemo(
+    () => scaleMatProfileForRoom(matProfile),
+    [matProfile]
+  );
+  const roomShadowStyles = useMemo(
+    () => getRoomShadowStyle(roomShadowSettings),
+    [roomShadowSettings]
+  );
   const isRoomChangePending = requestedRoom.id !== selectedRoom.id;
 
   const commitLoadedRoom = (roomId: string) => {
@@ -220,6 +364,17 @@ export const FramePreviewPrototype = () => {
       setSelectedRoomId(roomId);
     }
   };
+
+  const handleRoomShadowChange =
+    (key: RoomShadowSettingKey) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const nextValue = Number.parseFloat(event.currentTarget.value);
+
+      setRoomShadowSettings((currentSettings) => ({
+        ...currentSettings,
+        [key]: Number.isFinite(nextValue) ? nextValue : 0,
+      }));
+    };
 
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10">
@@ -258,20 +413,39 @@ export const FramePreviewPrototype = () => {
               className="absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
               data-testid="prototype-frame-room-hanging-zone"
               style={{
-                left: `${selectedRoom.hangingZone.leftPercent}%`,
-                top: `${selectedRoom.hangingZone.topPercent}%`,
-                width: `${selectedRoom.hangingZone.widthPercent}%`,
+                left: `${ROOM_HANGING_ZONE.leftPercent}%`,
+                top: `${ROOM_HANGING_ZONE.topPercent}%`,
+                width: `${ROOM_HANGING_ZONE.widthPercent}%`,
               }}
             >
-              <div className="relative flex w-full items-center justify-center drop-shadow-[0_18px_22px_rgba(0,0,0,0.28)]">
+              <div
+                className="relative inline-flex items-center justify-center"
+                data-testid="prototype-frame-room-shadow"
+                style={roomShadowStyles.frameShadow}
+              >
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-0 top-full z-0 origin-left"
+                  data-shadow-direction="south-east"
+                  data-testid="prototype-frame-room-corner-shadow-bottom-left"
+                  style={roomShadowStyles.cornerShadow}
+                />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-full top-0 z-0 origin-left"
+                  data-shadow-direction="south-east"
+                  data-testid="prototype-frame-room-corner-shadow-top-right"
+                  style={roomShadowStyles.cornerShadow}
+                />
                 <FramedArtworkPreview
                   artwork={selectedArtwork}
-                  frameProfile={selectedFrameProfile}
-                  matProfile={matProfile}
-                  bounds={selectedRoom.bounds}
+                  frameProfile={roomFrameProfile}
+                  matProfile={roomMatProfile}
+                  bounds={roomPreviewBounds}
                   renderMode="rails"
+                  sizingMode="fixedArtwork"
                   priority
-                  className="flex justify-center"
+                  className="relative z-10 flex justify-center"
                 />
               </div>
             </div>
@@ -287,6 +461,33 @@ export const FramePreviewPrototype = () => {
           <div className="flex items-center justify-between gap-4 bg-white px-4 py-3 text-sm text-gray-600 shadow-sm">
             <span>{selectedRoom.label}</span>
             <span>Room-scale wall preview</span>
+          </div>
+
+          <div
+            className="bg-white p-4 shadow-sm"
+            aria-label="Wall shadow controls"
+          >
+            <p className="mb-3 text-sm font-medium text-gray-700">
+              Wall shadow
+            </p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {ROOM_SHADOW_CONTROLS.map((control) => (
+                <label
+                  key={control.key}
+                  className="flex flex-col gap-1 text-xs font-medium text-gray-600"
+                >
+                  {control.label}
+                  <input
+                    type="number"
+                    step={control.step}
+                    min={control.min}
+                    value={roomShadowSettings[control.key]}
+                    onChange={handleRoomShadowChange(control.key)}
+                    className="h-10 border border-gray-300 bg-white px-3 text-sm text-gray-950 focus:border-gray-950 focus:outline-none"
+                  />
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="flex items-center justify-center bg-white p-5 shadow-sm">
