@@ -68,6 +68,38 @@ const successResult = {
   },
 } as never;
 
+const artworkSuccessResult = {
+  success: true,
+  data: {
+    artworks: [
+      {
+        title: "Blue figure",
+        subtitle: "1980s, Abstract",
+        summary: "Oil on Canvas",
+        imageUrl: "https://res.cloudinary.com/demo/image/upload/blue-figure.jpg",
+        linkTo: "/artwork/artwork-123",
+      },
+    ],
+    metadata: {
+      page: 1,
+      limit: 10,
+      searchedTypes: ["artworks"],
+      total: 1,
+      hasMore: false,
+      types: {
+        artworks: {
+          page: 1,
+          limit: 10,
+          total: 1,
+          totalPages: 1,
+          hasMore: false,
+          hasPreviousPage: false,
+        },
+      },
+    },
+  },
+} as never;
+
 describe("GET /api/v2/public/search", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -101,6 +133,26 @@ describe("GET /api/v2/public/search", () => {
     expect(body).toBe(successResult);
   });
 
+  it("accepts artwork searches and returns artwork service results", async () => {
+    mockGetPublicSearchResults.mockResolvedValue(artworkSuccessResult);
+
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/search?q=blue&type=artworks"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetPublicSearchResults).toHaveBeenCalledWith({
+      q: "blue",
+      type: "artworks",
+      page: 1,
+      limit: 10,
+    });
+    expect(body).toBe(artworkSuccessResult);
+  });
+
   it("returns 400 when q is missing and avoids database work", async () => {
     const response = await GET(
       createRequest("https://example.test/api/v2/public/search")
@@ -132,7 +184,7 @@ describe("GET /api/v2/public/search", () => {
       success: false,
       error: "Invalid search query",
       fieldErrors: {
-        type: ["Search type must be articles, blogs, or collections"],
+        type: ["Search type must be articles, blogs, collections, or artworks"],
       },
       formErrors: [],
     });

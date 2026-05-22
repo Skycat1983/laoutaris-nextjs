@@ -1569,25 +1569,34 @@ npm run lint
   `AccountSubnavLoader` is mounted inside `Suspense` before account content and
   that the source cannot satisfy the invariant with a JSX-commented loader
   block; existing account subnav loader tests still pass.
+- 2026-05-22: Completed T-210. Focused public search service, API route, and
+  page tests now cover all-type artwork results, selected `type=artworks`,
+  unsupported type validation copy, all-type artwork section rendering, and
+  selected artwork no-results states.
+- 2026-05-22: Prepared T-211 as the next public search quality slice, covering
+  Shopify product search service/API/page behavior while preserving existing
+  article, blog, collection, and artwork search coverage.
 
 ## Next Agent Action
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,
 refund, guarantee, or buyer-protection claims return to shared security banners
-or matching security translation files. Assign
-[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
-as the next quality slice, covering public search service/API/page behavior for
-artwork results. T-207 fallback pattern coverage remains deferred as polish.
+or matching security translation files. T-210's public search artwork coverage
+is complete. Assign
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md)
+as the next quality slice. T-207 fallback pattern coverage remains deferred as
+polish.
 The current strict TypeScript `noEmit` backlog is clear after T-198 and the
 2026-05-22 ArticleLoader follow-up. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision
 task is prepared and assigned. T-157 through T-198 are complete and should not
 be reassigned unless one of their recorded prototype, audit handoff, admin
 read-list, strict TypeScript cleanup, or framed-preview contracts regresses.
-Keep T-143 decision-first until the public search scope answer exists, and keep
-monitoring provider smoke coverage blocked until the owner/platform provider
-decision is available. T-141 through T-168 are complete; do not reassign their
+T-143 now records staged public-search widening: T-210 completed artworks, and
+T-211 is prepared for Shopify product results. Keep monitoring provider smoke
+coverage blocked until the owner/platform provider decision is available.
+T-141 through T-168 are complete; do not reassign their
 focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb/
 audit/prototype coverage unless it regresses.
 Keep broader static/ISR migration separate from the

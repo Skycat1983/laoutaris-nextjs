@@ -531,15 +531,20 @@ Add targeted tests as shop behavior is hardened.
   catalogue, and Shopify-hosted-link copy instead of unsupported payment,
   buyer-protection, guarantee, insured/global-shipping, or payment-method
   assurances. Focused coverage guards against reintroducing the retired claims.
+- 2026-05-22: T-210 completed the MongoDB-backed artwork public-search slice.
+  T-211 is now prepared as the separate commerce discovery slice for adding
+  Shopify product results to `/search` through the existing public shop
+  product-list data path.
 
 ## Next Agent Action
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
-it is complete. The next owner-independent implementation assignment is
-[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md),
-which deliberately excludes Shopify product search. Keep future Shopify product
-search as a separate commerce discovery slice after artwork search lands.
+it is complete. The next owner-independent commerce discovery assignment is
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md).
+It should reuse the public shop product-list data path and avoid checkout/cart,
+product detail handoff, shop listing filter/sort/pagination, and commerce
+claim changes.
 
 Keep app-owned checkout/cart, real pagination, server-side sorting, broader
 product-detail redesign, product-link data migration, automatic mutation, and

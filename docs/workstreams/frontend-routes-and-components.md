@@ -994,14 +994,23 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-22: Prepared T-210 as the next public-discovery slice. It starts the
   staged site-wide search expansion by adding artwork results to `/search`,
   while keeping Shopify product search separate.
+- 2026-05-22: Completed T-210. `/search` now renders Artworks sections in
+  all-type searches, supports selected `type=artworks` result pages with the
+  existing pagination pattern, and updates no-results copy to include artworks
+  without implying Shopify product search.
+- 2026-05-22: Prepared T-211 as the next public-discovery slice. It adds
+  Shopify product results to `/search` using the existing public shop
+  product-list data path while keeping checkout/cart, shop listing controls,
+  and commerce claims separate.
 
 ## Next Agent Action
 
 Assign
-[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
-as the next frontend production task. It should add artwork results to public
-search without changing shop product search, artwork browse filters, or
-commerce behavior.
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md)
+as the next frontend production task. It should add a Shop Products search
+section and selected `type=shop-products` rendering without changing artwork
+browse filters, shop listing filters/sorting/pagination, checkout/cart,
+product detail handoff, or commerce copy.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify
@@ -1032,8 +1041,9 @@ extraction are complete.
 
 [T-143](../tasks/T-143-decide-public-search-scope.md) now records the staged
 public-search widening direction: [T-210](../tasks/T-210-add-artwork-results-to-public-search.md)
-owns MongoDB-backed artwork results first, and Shopify product search remains a
-separate later decision. Keep collection section launch policy,
+completed MongoDB-backed artwork results first, and
+[T-211](../tasks/T-211-add-shopify-product-results-to-public-search.md) owns
+Shopify product results next. Keep collection section launch policy,
 owner/legal-approved policy links/notices, broad static/ISR migration, and
 checkout/cart work separate unless explicitly assigned. T-153, T-154, and T-155
 are complete; do not reassign them unless blog admin controls, public taxonomy

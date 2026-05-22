@@ -941,6 +941,14 @@ Add API route tests where behavior is changed.
 - 2026-05-22: Prepared T-210 as the next public search data/API slice. It adds
   MongoDB-backed artwork results to the public search schema, result types, and
   service while keeping Shopify product search out of scope.
+- 2026-05-22: Completed T-210. `/api/v2/public/search` now accepts
+  `type=artworks`; all-type public search includes MongoDB-backed artwork
+  results; `getPublicSearchResults` queries `ArtworkModel` by escaped title
+  regex plus exact artwork taxonomy matches and maps results to the shared
+  search DTO with sanitized Cloudinary image URLs.
+- 2026-05-22: Prepared T-211 as the next public search data/API slice. It adds
+  Shopify product results to the public search schema, result types, service,
+  and metadata by reusing the existing public shop product-list service path.
 
 ## Next Agent Action
 
@@ -957,12 +965,12 @@ additional data/API task is open for this handoff unless a future cart/checkout
 decision introduces line-item, variant-selection, or checkout ownership
 contracts.
 Assign
-[T-210 Add artwork results to public search](../tasks/T-210-add-artwork-results-to-public-search.md)
-for the next owner-independent data/API slice. Keep Shopify product search,
-collection section launch policy, broader
-response-helper cleanup, route-local DB ownership gaps, field-contract
-matrices, server-side shop pagination/sorting contracts, lower-level logging
-policy, admin Shopify-link work, and Cloudinary runtime cleanup separate.
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md)
+as the next owner-independent data/API slice. Keep collection section launch
+policy, broader response-helper cleanup, route-local DB ownership gaps,
+field-contract matrices, server-side shop pagination/sorting contracts,
+lower-level logging policy, admin Shopify-link work, and Cloudinary runtime
+cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
 T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, T-179, T-180,
 T-181, T-182, and T-183 are complete; do not reassign them unless their guards,

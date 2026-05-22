@@ -1,6 +1,6 @@
 # T-210 Add Artwork Results To Public Search
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -118,7 +118,7 @@ List candidate tracker updates in this task's handoff notes.
 ## Verification
 
 ```bash
-npm test -- --runTestsByPath __tests__/unit/data/getPublicSearchResults.test.ts __tests__/unit/api/publicSearchRoute.test.ts
+npm test -- --runTestsByPath __tests__/unit/data/getPublicSearchResults.test.ts __tests__/unit/api/publicSearchRoute.test.ts __tests__/unit/searchPage.test.tsx
 npm run lint
 git diff --check
 ```
@@ -144,3 +144,28 @@ update this handoff with what changed and list candidate shared-tracker updates.
 - This is the next meaningful owner-independent discovery slice because it
   addresses the high-value archive side of F-098 without blocking on Shopify
   product-search scope or legal/commerce policy decisions.
+- Completed on 2026-05-22. Public search now accepts `type=artworks`, includes
+  artwork results in all-type searches, maps artwork results to
+  `/artwork/[artworkId]`, uses sanitized stored Cloudinary image URLs, and
+  derives neutral subtitle/summary text from artwork archive metadata.
+- `getPublicSearchResults` now queries `ArtworkModel` with escaped title regex
+  matching plus exact taxonomy matches for `decade`, `artstyle`, `medium`, and
+  `surface`, using the same page/limit behavior and metadata shape as existing
+  result types.
+- `/search` renders an Artworks section, selected-type artwork empty states,
+  and selected-type pagination through the existing section and pagination
+  patterns. All-types empty copy now mentions artworks alongside articles,
+  blogs, and collections.
+- Focused coverage was added for all-type artwork service results, selected
+  `type=artworks` service/API/page behavior, unsupported type validation copy,
+  and all-type/selected-type artwork page states.
+- Verification run before handoff:
+  `npm test -- --runTestsByPath __tests__/unit/data/getPublicSearchResults.test.ts __tests__/unit/api/publicSearchRoute.test.ts __tests__/unit/searchPage.test.tsx`
+  passed with 3 suites and 19 tests; `npm run lint` passed with no ESLint
+  warnings or errors; `git diff --check` passed;
+  `./node_modules/.bin/tsc --noEmit --pretty false --skipLibCheck` passed.
+- Candidate shared-tracker updates: F-098 should move from prepared/converted to
+  partially mitigated for the MongoDB-backed artwork slice, while noting
+  Shopify product search remains open; R-016 should record T-210 as completed
+  and keep Shopify product search scope, i18n/launch direction, collection
+  section launch policy, and footer/legal cleanup as remaining discovery gaps.

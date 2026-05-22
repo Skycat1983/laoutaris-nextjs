@@ -30,6 +30,14 @@ const searchItem = {
   linkTo: "/blog/studio-update",
 } as never;
 
+const artworkItem = {
+  title: "Blue figure",
+  subtitle: "1980s, Abstract",
+  summary: "Oil on Canvas",
+  imageUrl: "https://res.cloudinary.com/demo/image/upload/blue-figure.jpg",
+  linkTo: "/artwork/artwork-123",
+} as never;
+
 const createMetadata = ({
   page = 1,
   limit = 10,
@@ -139,6 +147,110 @@ describe("/search page", () => {
     });
   });
 
+  it("renders a selected artwork no-results state with backed zero-result metadata", async () => {
+    mockGetPublicSearchResults.mockResolvedValue({
+      success: true,
+      data: {
+        artworks: [],
+        metadata: createMetadata({
+          total: 0,
+          totalPages: 0,
+          searchedTypes: ["artworks"],
+          type: "artworks",
+        }),
+      },
+    });
+
+    const element = (await SearchPage({
+      searchParams: {
+        q: "missing",
+        type: "artworks",
+      },
+    })) as ReactElement;
+    const resultsGrid = element.props.children[1] as ReactElement;
+    const resultsFragment = resultsGrid.props.children as ReactElement;
+    const resultsSection = resultsFragment.props.children[0] as ReactElement;
+
+    expect(resultsSection.type).toBe(SearchResultsSection);
+    expect(resultsSection.props).toEqual({
+      title: "Artworks",
+      items: [],
+      type: "artworks",
+      total: 0,
+      emptyMessage: 'No artworks matched "missing".',
+    });
+  });
+
+  it("renders artwork sections in all-type search results", async () => {
+    mockGetPublicSearchResults.mockResolvedValue({
+      success: true,
+      data: {
+        articles: [],
+        blogs: [],
+        collections: [],
+        artworks: [artworkItem],
+        metadata: {
+          page: 1,
+          limit: 10,
+          searchedTypes: ["articles", "blogs", "collections", "artworks"],
+          total: 1,
+          hasMore: false,
+          types: {
+            articles: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            blogs: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            collections: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            artworks: {
+              page: 1,
+              limit: 10,
+              total: 1,
+              totalPages: 1,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+          },
+        },
+      },
+    });
+
+    const element = (await SearchPage({
+      searchParams: {
+        q: "blue",
+      },
+    })) as ReactElement;
+    renderToStaticMarkup(element);
+
+    expect(SearchResultsSection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Artworks",
+        items: [artworkItem],
+        type: "artworks",
+        total: 1,
+      }),
+      {}
+    );
+  });
+
   it("renders an all-type no-results state without selected-type pagination", async () => {
     mockGetPublicSearchResults.mockResolvedValue({
       success: true,
@@ -149,7 +261,7 @@ describe("/search page", () => {
         metadata: {
           page: 1,
           limit: 10,
-          searchedTypes: ["articles", "blogs", "collections"],
+          searchedTypes: ["articles", "blogs", "collections", "artworks"],
           total: 0,
           hasMore: false,
           types: {
@@ -177,6 +289,14 @@ describe("/search page", () => {
               hasMore: false,
               hasPreviousPage: false,
             },
+            artworks: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
           },
         },
       },
@@ -190,7 +310,7 @@ describe("/search page", () => {
     const markup = renderToStaticMarkup(element);
 
     expect(markup).toContain(
-      'No articles, blogs, or collections matched &quot;missing&quot;.'
+      'No articles, blogs, collections, or artworks matched &quot;missing&quot;.'
     );
     expect(markup).not.toContain("search pagination");
   });
@@ -242,7 +362,7 @@ describe("/search page", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.props).toEqual({
       title: "Search Error",
-      message: "Search type must be articles, blogs, or collections",
+      message: "Search type must be articles, blogs, collections, or artworks",
     });
   });
 

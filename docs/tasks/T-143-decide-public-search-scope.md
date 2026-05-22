@@ -105,7 +105,8 @@ changes rendered search UI.
   blocked decision state and next owner question instead of changing runtime
   behavior.
 - 2026-05-22 orchestrator direction: use staged site-wide widening rather than
-  copy-only narrowing. T-210 is prepared to add MongoDB-backed artwork results
-  first because artwork discovery is core archive behavior. Shopify product
-  search remains a separate commerce-specific follow-up because it may require
-  Shopify fan-out and product-result policy decisions.
+  copy-only narrowing. T-210 completed MongoDB-backed artwork results first
+  because artwork discovery is core archive behavior. T-211 is prepared as the
+  separate commerce-specific follow-up for Shopify product results, using the
+  existing public shop product data path and avoiding checkout/cart or policy
+  claims.

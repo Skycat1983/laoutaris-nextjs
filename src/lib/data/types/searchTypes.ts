@@ -1,9 +1,14 @@
-import { CollectionFrontend } from "./collectionTypes";
-import { BlogEntryFrontend } from "./blogTypes";
-import { ArticleFrontend } from "./articleTypes";
+import type { CollectionFrontend } from "./collectionTypes";
+import type { BlogEntryFrontend } from "./blogTypes";
+import type { ArticleFrontend } from "./articleTypes";
+import type { ArtworkFrontend } from "./artworkTypes";
 
 // Content type literal
-export type SearchableContentType = "articles" | "blogs" | "collections";
+export type SearchableContentType =
+  | "articles"
+  | "blogs"
+  | "collections"
+  | "artworks";
 
 // Search params with proper typing
 export interface SearchParams {
@@ -19,7 +24,7 @@ export interface SearchableFields {
   title: string;
   subtitle?: string;
   summary?: string;
-  slug: string;
+  slug?: string;
   imageUrl?: string;
 }
 
@@ -27,16 +32,20 @@ export interface SearchableFields {
 export type SearchableContent =
   | ArticleFrontend
   | BlogEntryFrontend
-  | CollectionFrontend;
+  | CollectionFrontend
+  | ArtworkFrontend;
 
 // Add a type for the URL
 export type LinkTo = `/${string}`; // Template literal type to ensure it starts with /
 
 // Base search result type
-export type BaseSearchResultItem = Pick<
-  SearchableContent,
-  "title" | "subtitle" | "summary" | "imageUrl" | "slug"
->;
+export type BaseSearchResultItem = {
+  title: string;
+  subtitle?: string;
+  summary?: string;
+  imageUrl?: string;
+  slug?: string;
+};
 
 // Extended search result with link
 export type SearchResultItem = BaseSearchResultItem & {
@@ -66,5 +75,6 @@ export interface SearchResponse {
   articles?: SearchResultItem[];
   blogs?: SearchResultItem[];
   collections?: SearchResultItem[];
+  artworks?: SearchResultItem[];
   metadata: SearchResponseMetadata;
 }

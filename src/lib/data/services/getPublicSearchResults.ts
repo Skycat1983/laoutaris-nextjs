@@ -1,10 +1,18 @@
 import "server-only";
 
 import { ArticleModel } from "@/lib/data/models/articleModel";
+import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import { BlogModel } from "@/lib/data/models/blogModel";
 import { CollectionModel } from "@/lib/data/models/collectionModel";
+import {
+  ARTSTYLE_OPTIONS,
+  DECADE_OPTIONS,
+  MEDIUM_OPTIONS,
+  SURFACE_OPTIONS,
+} from "@/lib/constants/artworkConstants";
 import type {
   ArticleLean,
+  ArtworkLean,
   BlogEntryLean,
   CollectionLean,
   SingleResult,
@@ -17,10 +25,20 @@ import type {
 } from "@/lib/data/types/searchTypes";
 import type { PublicSearchQuery } from "@/lib/data/schemas/searchSchema";
 import dbConnect from "@/lib/db/mongodb";
+import { sanitizeCloudinaryImage } from "@/lib/transforms/artwork/transformImage";
 
 type SearchField = "title" | "subtitle" | "summary" | "text";
 type SearchFilter = {
   $or: Partial<Record<SearchField, RegExp>>[];
+};
+type ArtworkSearchFilter = {
+  $or: Array<
+    | { title: RegExp }
+    | { decade: ArtworkLean["decade"] }
+    | { artstyle: ArtworkLean["artstyle"] }
+    | { medium: ArtworkLean["medium"] }
+    | { surface: ArtworkLean["surface"] }
+  >;
 };
 
 export type PublicSearchServiceResult = SingleResult<SearchResponse>;
@@ -33,6 +51,12 @@ const SEARCH_RESULT_FIELDS = [
   "imageUrl",
   "slug",
 ] as const;
+const SEARCH_TYPES = [
+  "articles",
+  "blogs",
+  "collections",
+  "artworks",
+] as const;
 
 const escapeRegexLiteral = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -44,6 +68,33 @@ const buildSearchFilter = (query: string): SearchFilter => {
     $or: SEARCH_FIELDS.map((field) => ({
       [field]: searchRegex,
     })),
+  };
+};
+
+const findExactOption = <Option extends string>(
+  options: readonly Option[],
+  query: string
+): Option | undefined => {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  return options.find((option) => option.toLowerCase() === normalizedQuery);
+};
+
+const buildArtworkSearchFilter = (query: string): ArtworkSearchFilter => {
+  const searchRegex = new RegExp(escapeRegexLiteral(query), "i");
+  const exactDecade = findExactOption(DECADE_OPTIONS, query);
+  const exactArtstyle = findExactOption(ARTSTYLE_OPTIONS, query);
+  const exactMedium = findExactOption(MEDIUM_OPTIONS, query);
+  const exactSurface = findExactOption(SURFACE_OPTIONS, query);
+
+  return {
+    $or: [
+      { title: searchRegex },
+      ...(exactDecade ? [{ decade: exactDecade }] : []),
+      ...(exactArtstyle ? [{ artstyle: exactArtstyle }] : []),
+      ...(exactMedium ? [{ medium: exactMedium }] : []),
+      ...(exactSurface ? [{ surface: exactSurface }] : []),
+    ],
   };
 };
 
@@ -63,6 +114,31 @@ const toSearchResultItem = (
   ),
   linkTo,
 });
+
+const formatArtworkLabel = (value: string) =>
+  value
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("-");
+
+const toArtworkSearchResultItem = (item: ArtworkLean): SearchResultItem => {
+  const metadata = [item.decade, item.artstyle].filter(Boolean);
+  const material = [item.medium, item.surface].filter(Boolean);
+  const imageUrl = item.image
+    ? sanitizeCloudinaryImage(item.image).secure_url
+    : undefined;
+
+  return {
+    title: item.title,
+    subtitle: metadata.map(formatArtworkLabel).join(", "),
+    summary:
+      material.length > 0
+        ? material.map(formatArtworkLabel).join(" on ")
+        : undefined,
+    imageUrl,
+    linkTo: `/artwork/${String(item._id)}`,
+  };
+};
 
 const searchArticles = (
   filter: SearchFilter,
@@ -97,6 +173,16 @@ const searchCollections = (
 const countCollections = async (filter: SearchFilter) =>
   CollectionModel.countDocuments(filter);
 
+const searchArtworks = (
+  filter: ArtworkSearchFilter,
+  skip: number,
+  limit: number
+): Promise<ArtworkLean[]> =>
+  ArtworkModel.find(filter).skip(skip).limit(limit).lean<ArtworkLean[]>();
+
+const countArtworks = async (filter: ArtworkSearchFilter) =>
+  ArtworkModel.countDocuments(filter);
+
 const buildTypeMetadata = (
   total: number,
   page: number,
@@ -123,30 +209,39 @@ export const getPublicSearchResults = async ({
   await dbConnect();
 
   const filter = buildSearchFilter(q);
+  const artworkFilter = buildArtworkSearchFilter(q);
   const skip = (page - 1) * limit;
   const shouldSearch = (candidate: SearchableContentType) =>
     !type || type === candidate;
-  const searchedTypes = (
-    ["articles", "blogs", "collections"] as const
-  ).filter(shouldSearch);
+  const searchedTypes = SEARCH_TYPES.filter(shouldSearch);
 
-  const [articles, articleTotal, blogs, blogTotal, collections, collectionTotal] =
-    await Promise.all([
-      shouldSearch("articles")
-        ? searchArticles(filter, skip, limit)
-        : Promise.resolve([]),
-      shouldSearch("articles") ? countArticles(filter) : Promise.resolve(0),
-      shouldSearch("blogs")
-        ? searchBlogs(filter, skip, limit)
-        : Promise.resolve([]),
-      shouldSearch("blogs") ? countBlogs(filter) : Promise.resolve(0),
-      shouldSearch("collections")
-        ? searchCollections(filter, skip, limit)
-        : Promise.resolve([]),
-      shouldSearch("collections")
-        ? countCollections(filter)
-        : Promise.resolve(0),
-    ]);
+  const [
+    articles,
+    articleTotal,
+    blogs,
+    blogTotal,
+    collections,
+    collectionTotal,
+    artworks,
+    artworkTotal,
+  ] = await Promise.all([
+    shouldSearch("articles")
+      ? searchArticles(filter, skip, limit)
+      : Promise.resolve([]),
+    shouldSearch("articles") ? countArticles(filter) : Promise.resolve(0),
+    shouldSearch("blogs")
+      ? searchBlogs(filter, skip, limit)
+      : Promise.resolve([]),
+    shouldSearch("blogs") ? countBlogs(filter) : Promise.resolve(0),
+    shouldSearch("collections")
+      ? searchCollections(filter, skip, limit)
+      : Promise.resolve([]),
+    shouldSearch("collections") ? countCollections(filter) : Promise.resolve(0),
+    shouldSearch("artworks")
+      ? searchArtworks(artworkFilter, skip, limit)
+      : Promise.resolve([]),
+    shouldSearch("artworks") ? countArtworks(artworkFilter) : Promise.resolve(0),
+  ]);
 
   const metadata: SearchResponse["metadata"] = {
     page,
@@ -177,6 +272,11 @@ export const getPublicSearchResults = async ({
       toSearchResultItem(item, `/collections/${item.slug}`)
     );
     metadata.types.collections = buildTypeMetadata(collectionTotal, page, limit);
+  }
+
+  if (shouldSearch("artworks")) {
+    data.artworks = artworks.map(toArtworkSearchResultItem);
+    metadata.types.artworks = buildTypeMetadata(artworkTotal, page, limit);
   }
 
   metadata.total = searchedTypes.reduce(

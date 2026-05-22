@@ -23,9 +23,15 @@ const SEARCH_TYPE_TITLES: Record<SearchableContentType, string> = {
   articles: "Articles",
   blogs: "Blogs",
   collections: "Collections",
+  artworks: "Artworks",
 };
 
-const SEARCH_TYPES = ["articles", "blogs", "collections"] as const;
+const SEARCH_TYPES = [
+  "articles",
+  "blogs",
+  "collections",
+  "artworks",
+] as const;
 
 const firstErrorMessage = (
   fieldErrors: PublicSearchQueryFieldErrors,
@@ -195,8 +201,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     : undefined;
   const allTypesEmptyMessage =
     searchData.metadata.total === 0
-      ? `No articles, blogs, or collections matched "${query}".`
-      : "No results are available on this page for articles, blogs, or collections.";
+      ? `No articles, blogs, collections, or artworks matched "${query}".`
+      : "No results are available on this page for articles, blogs, collections, or artworks.";
 
   return (
     <main className="container mx-auto p-4">
@@ -253,6 +259,14 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 items={searchData.collections}
                 type="collections"
                 total={searchData.metadata.types.collections?.total}
+              />
+            )}
+            {searchData.artworks && searchData.artworks.length > 0 && (
+              <SearchResultsSection
+                title="Artworks"
+                items={searchData.artworks}
+                type="artworks"
+                total={searchData.metadata.types.artworks?.total}
               />
             )}
           </>
