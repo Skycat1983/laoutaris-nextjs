@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import type { ReactElement } from "react";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import { ArticleView } from "@/components/views/ArticleView";
@@ -7,6 +9,13 @@ import type {
   ArticleNavDataFrontend,
   ListResult,
 } from "@/lib/data/types";
+import { notFound } from "next/navigation";
+
+jest.mock("next/navigation", () => ({
+  notFound: jest.fn(() => {
+    throw new Error("NEXT_NOT_FOUND");
+  }),
+}));
 
 jest.mock("@/lib/data/services/getArticleBySlugPopulated", () => ({
   getArticleBySlugPopulated: jest.fn(),
@@ -28,6 +37,7 @@ const mockGetArticleNavigationList =
   getArticleNavigationList as jest.MockedFunction<
     typeof getArticleNavigationList
   >;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 
 const article = {
   _id: "article-1",
@@ -58,6 +68,8 @@ const createArticleNavResult = (
 });
 
 describe("ArticleLoader", () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetArticleBySlugPopulated.mockResolvedValue(article);
@@ -68,6 +80,13 @@ describe("ArticleLoader", () => {
         createArticleNavItem("next", "Next"),
       ])
     );
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it("builds previous and next links from the server navigation service without same-app navigation fetches", async () => {
@@ -121,24 +140,45 @@ describe("ArticleLoader", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("throws the existing no-results error when navigation has no articles", async () => {
+  it("renders a found article with empty navigation when navigation has no articles", async () => {
     mockGetArticleNavigationList.mockResolvedValue(null);
 
-    await expect(
-      ArticleLoader({ slug: "current", section: "biography" })
-    ).rejects.toThrow("No articles found");
+    const element = (await ArticleLoader({
+      slug: "current",
+      section: "biography",
+    })) as ReactElement<{
+      navigation: {
+        prev: string | null;
+        next: string | null;
+      };
+    }>;
 
-    expect(ArticleView).not.toHaveBeenCalled();
+    expect(element.props.navigation).toEqual({
+      prev: null,
+      next: null,
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.article_navigation.failed",
+        component: "ArticleLoader",
+        operation: "public.article.loader",
+        slug: "current",
+        section: "biography",
+        reason: "No articles found",
+      })
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("throws the existing article not-found error when the detail service returns null", async () => {
+  it("calls notFound when the detail service returns null", async () => {
     mockGetArticleBySlugPopulated.mockResolvedValue(null);
 
     await expect(
       ArticleLoader({ slug: "missing", section: "biography" })
-    ).rejects.toThrow("Article not found");
+    ).rejects.toThrow("NEXT_NOT_FOUND");
 
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
+    expect(mockGetArticleNavigationList).not.toHaveBeenCalled();
     expect(ArticleView).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
@@ -156,17 +196,55 @@ describe("ArticleLoader", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("continues fetching article detail while converting navigation service errors to the existing message", async () => {
+  it("renders a found article with empty navigation when navigation loading fails", async () => {
     mockGetArticleNavigationList.mockRejectedValue(
       new Error("private navigation failure")
     );
 
-    await expect(
-      ArticleLoader({ slug: "current", section: "biography" })
-    ).rejects.toThrow("Failed to fetch article navigation");
+    const element = (await ArticleLoader({
+      slug: "current",
+      section: "biography",
+    })) as ReactElement<{
+      navigation: {
+        prev: string | null;
+        next: string | null;
+      };
+    }>;
 
     expect(mockGetArticleBySlugPopulated).toHaveBeenCalledWith("current");
-    expect(ArticleView).not.toHaveBeenCalled();
+    expect(element.props.navigation).toEqual({
+      prev: null,
+      next: null,
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.article_navigation.failed",
+        component: "ArticleLoader",
+        operation: "public.article.loader",
+        slug: "current",
+        section: "biography",
+        error: {
+          name: "Error",
+          message: "private navigation failure",
+        },
+      })
+    );
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("does not import same-app HTTP dependencies", () => {
+    const source = fs.readFileSync(
+      path.join(
+        process.cwd(),
+        "src/components/loaders/viewLoaders/ArticleLoader.tsx"
+      ),
+      "utf8"
+    );
+
+    const retiredPublicApiName = ["server", "PublicApi"].join("");
+
+    expect(source).not.toMatch(
+      new RegExp(`${retiredPublicApiName}|serverApi|fetch\\(`)
+    );
   });
 });

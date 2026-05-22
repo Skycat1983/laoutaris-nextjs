@@ -88,7 +88,7 @@ Expected output: [results/A-004-auth-admin-permissions.md](results/A-004-auth-ad
 
 ## A-005 Frontend Routes And Component Boundaries
 
-Status: Not started
+Status: Completed
 
 Goal: audit page/loader/client component patterns, shared component boundaries,
 barrel import risks, loading states, empty states, error states, and responsive

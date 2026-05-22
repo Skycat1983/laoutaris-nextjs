@@ -46,6 +46,14 @@ prototype material-panel renderer. If that track continues, run T-194 targeted
 visual QA and owner review for `/prototype/frame` before Shopify option
 mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
 
+A-005 is complete and reconciled. F-105 through F-110 now track frontend
+route/component-boundary follow-ups, R-032/R-033 track the unresolved public
+fallback/error-state and mixed-barrel risks, T-199 defined the public detail
+route not-found/error contract, T-200 completed the first runtime
+implementation slice for standalone and collection-scoped artwork detail
+routes, and T-201 is prepared as the next runtime slice for biography article
+and blog detail routes.
+
 Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
 until the owner/platform decision is available, unless the assignment is only
 to record an explicit no-decision blocker.
@@ -1359,10 +1367,8 @@ Completed, pending reconciliation:
 
 ## Recommended Next Audits
 
-Good follow-up audit after the next implementation batch is assigned or
-completed:
-
-1. [A-005 Frontend routes and component boundaries](../audits/goals.md#a-005-frontend-routes-and-component-boundaries)
+All planned audits are complete. Start new audits only when a new risk or
+implementation wave needs discovery before task scoping.
 
 ## Open Coordination Tasks
 
@@ -1376,7 +1382,7 @@ completed:
   future completed audit results.
 - Convert future completed audit findings into workstream backlog items before
   assigning implementation work.
-- Keep A-002, A-003, A-004, A-007, A-008, A-009, A-010, A-011, A-016, A-017,
+- Keep A-002, A-003, A-004, A-005, A-007, A-008, A-009, A-010, A-011, A-016, A-017,
   A-018, A-019, A-020, and A-021 findings linked when assigning implementation
   work after reconciliation.
 - Add ADRs when architecture or process decisions become settled.
@@ -1395,13 +1401,13 @@ completed:
 
 The next practical assignment depends on the priority:
 
+- If owner-independent frontend hardening is preferred, assign
+  [T-201 Implement article and blog detail not-found contract](../tasks/T-201-implement-article-blog-detail-not-found-contract.md):
+  `/task effort: high details: docs/tasks/T-201-implement-article-blog-detail-not-found-contract.md`.
 - If framed print preview implementation continues, run T-194 targeted visual
   QA and owner review for `/prototype/frame`. Keep that review separate from
   Shopify option mapping, checkout/cart work, enquiry mutation, and physical
   dimension migration.
-- If owner-independent discovery is preferred, assign A-005 frontend routes and
-  component boundaries:
-  `/goal effort: xhigh details: docs/audits/goals.md#a-005-frontend-routes-and-component-boundaries`.
 - If quality gating is preferred, prepare a separate task to decide whether and
   how strict TypeScript `noEmit` should enter CI or release verification now
   that T-198 has made the command pass.

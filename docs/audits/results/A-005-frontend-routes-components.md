@@ -84,6 +84,9 @@ layout.
 Shared trackers are orchestrator-owned in concurrent audit mode, so this audit
 does not edit `docs/audits/findings-register.md` directly.
 
+Reconciled on 2026-05-22 into F-105 through F-110. T-199 was prepared for the
+highest-severity follow-up, the public detail route not-found/error contract.
+
 Candidate findings for reconciliation:
 
 | Source | Severity | Suggested finding | Evidence | Suggested routing |
@@ -97,7 +100,11 @@ Candidate findings for reconciliation:
 
 ## Risks Updated
 
-None directly. Candidate risk updates for reconciliation:
+Reconciled on 2026-05-22. R-014 now records A-005 reconciliation, and new
+R-032/R-033 track the public route fallback/error-state and mixed-barrel cleanup
+risks.
+
+Original candidate risk updates:
 
 - Update R-005 with missing focused coverage for route-level not-found/error
   behavior, section-loader failure output, client filter failure states, and the

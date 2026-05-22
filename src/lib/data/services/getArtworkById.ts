@@ -3,12 +3,11 @@ import "server-only";
 import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import type { ArtworkFrontend, ArtworkLean } from "@/lib/data/types/artworkTypes";
 import dbConnect from "@/lib/db/mongodb";
+import { isValidArtworkObjectId } from "@/lib/routes/publicDetailParams";
 import { transformArtwork } from "@/lib/transforms/artwork/transformArtwork";
 
-const objectIdPattern = /^[a-f\d]{24}$/i;
-
 export const isValidArtworkId = (artworkId: string): boolean => {
-  return objectIdPattern.test(artworkId);
+  return isValidArtworkObjectId(artworkId);
 };
 
 export const getArtworkById = async (

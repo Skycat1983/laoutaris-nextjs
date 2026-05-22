@@ -13,7 +13,7 @@ file instead of creating scattered notes.
 | A-002 | [API contracts](A-002-api-contracts.md) | Completed |
 | A-003 | [Data models and transforms](A-003-data-models-transforms.md) | Completed |
 | A-004 | [Auth, admin, and permissions](A-004-auth-admin-permissions.md) | Completed |
-| A-005 | [Frontend routes and components](A-005-frontend-routes-components.md) | Not started |
+| A-005 | [Frontend routes and components](A-005-frontend-routes-components.md) | Completed |
 | A-006 | [Testing and quality baseline](A-006-testing-quality-baseline.md) | Completed |
 | A-007 | [Deployment and environment](A-007-deployment-environment.md) | Completed |
 | A-008 | [Security headers, CORS, and logging](A-008-security-headers-cors-logging.md) | Completed |

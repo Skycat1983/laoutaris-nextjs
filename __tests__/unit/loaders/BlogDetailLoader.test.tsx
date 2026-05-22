@@ -1,8 +1,17 @@
+import fs from "fs";
+import path from "path";
 import type { ReactElement } from "react";
 import { BlogDetailLoader } from "@/components/loaders/viewLoaders/BlogDetailLoader";
 import { BlogDetail } from "@/components/views/BlogDetail";
 import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
 import { getBlogBySlugWithComments } from "@/lib/data/services/getBlogBySlugWithComments";
+import { notFound } from "next/navigation";
+
+jest.mock("next/navigation", () => ({
+  notFound: jest.fn(() => {
+    throw new Error("NEXT_NOT_FOUND");
+  }),
+}));
 
 jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
   getBlogBySlugWithAuthor: jest.fn(),
@@ -24,6 +33,7 @@ const mockGetBlogBySlugWithComments =
   getBlogBySlugWithComments as jest.MockedFunction<
     typeof getBlogBySlugWithComments
   >;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 
 const blogWithAuthor = {
   slug: "gallery-news",
@@ -83,8 +93,8 @@ describe("BlogDetailLoader", () => {
       showComments: true;
     }>;
 
+    expect(mockGetBlogBySlugWithAuthor).toHaveBeenCalledWith("gallery-news");
     expect(mockGetBlogBySlugWithComments).toHaveBeenCalledWith("gallery-news");
-    expect(mockGetBlogBySlugWithAuthor).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
     expect(element.type).toBe(BlogDetail);
@@ -94,21 +104,23 @@ describe("BlogDetailLoader", () => {
     });
   });
 
-  it("throws the existing not-found error when the selected service returns null", async () => {
+  it("calls notFound when the primary blog detail service returns null", async () => {
     mockGetBlogBySlugWithAuthor.mockResolvedValue(null);
 
-    await expect(BlogDetailLoader({ slug: "missing-blog" })).rejects.toThrow(
-      "Blog entry not found"
-    );
+    await expect(
+      BlogDetailLoader({ slug: "missing-blog" })
+    ).rejects.toThrow("NEXT_NOT_FOUND");
 
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
+    expect(mockGetBlogBySlugWithComments).not.toHaveBeenCalled();
     expect(BlogDetail).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
 
-  it("preserves service errors while keeping same-app fetches out of the loader", async () => {
+  it("preserves primary service errors while keeping same-app fetches out of the loader", async () => {
     const error = new Error("private blog failure");
-    mockGetBlogBySlugWithComments.mockRejectedValue(error);
+    mockGetBlogBySlugWithAuthor.mockRejectedValue(error);
 
     await expect(
       BlogDetailLoader({ slug: "gallery-news", showComments: true })
@@ -117,5 +129,70 @@ describe("BlogDetailLoader", () => {
     expect(BlogDetail).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.blog_detail.failed",
+        component: "BlogDetailLoader",
+        operation: "public.blog.detail_loader",
+        slug: "gallery-news",
+        showComments: true,
+        error: {
+          name: "Error",
+          message: "private blog failure",
+        },
+      })
+    );
+  });
+
+  it("renders the found blog without comments when comment loading fails", async () => {
+    mockGetBlogBySlugWithComments.mockRejectedValue(
+      new Error("private comments failure")
+    );
+
+    const element = (await BlogDetailLoader({
+      slug: "gallery-news",
+      showComments: true,
+    })) as ReactElement<{
+      blog: typeof blogWithAuthor;
+      showComments: false;
+    }>;
+
+    expect(mockGetBlogBySlugWithAuthor).toHaveBeenCalledWith("gallery-news");
+    expect(mockGetBlogBySlugWithComments).toHaveBeenCalledWith("gallery-news");
+    expect(element.type).toBe(BlogDetail);
+    expect(element.props).toEqual({
+      blog: blogWithAuthor,
+      showComments: false,
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.blog_detail.comments.failed",
+        component: "BlogDetailLoader",
+        operation: "public.blog.detail_loader",
+        slug: "gallery-news",
+        error: {
+          name: "Error",
+          message: "private comments failure",
+        },
+      })
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(consoleLogSpy).not.toHaveBeenCalled();
+  });
+
+  it("does not import same-app HTTP dependencies", () => {
+    const source = fs.readFileSync(
+      path.join(
+        process.cwd(),
+        "src/components/loaders/viewLoaders/BlogDetailLoader.tsx"
+      ),
+      "utf8"
+    );
+
+    const retiredPublicApiName = ["server", "PublicApi"].join("");
+
+    expect(source).not.toMatch(
+      new RegExp(`${retiredPublicApiName}|serverApi|fetch\\(`)
+    );
   });
 });

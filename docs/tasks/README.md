@@ -210,6 +210,9 @@ Planning and prompt packs:
 | [T-193 Replace frame stripe textures with material panels](T-193-replace-frame-stripe-textures-with-material-panels.md) | Completed | Replaced regular stripe texture layers with non-repeating material panel fills in the prototype rail renderer. |
 | [T-197 Sync orchestration trackers after T-186](T-197-sync-orchestration-trackers-after-t186.md) | Completed | Synced shared trackers so T-186 was completed and the remaining noEmit cleanup was routed to T-198. |
 | [T-198 Clear remaining test noEmit diagnostics](T-198-clear-remaining-test-noemit-diagnostics.md) | Completed | Cleared the remaining test-only strict TypeScript diagnostics after T-186; strict noEmit now passes without adding a CI gate. |
+| [T-199 Define public detail not-found contract](T-199-define-public-detail-not-found-contract.md) | Completed | Defined the public detail route not-found/error contract before runtime route changes. |
+| [T-200 Implement artwork detail not-found contract](T-200-implement-artwork-detail-not-found-contract.md) | Completed | Applied the accepted not-found/error contract to standalone and collection-scoped artwork detail routes. |
+| [T-201 Implement article and blog detail not-found contract](T-201-implement-article-blog-detail-not-found-contract.md) | Planned | Extend the accepted public detail not-found/error contract to biography article and blog detail routes. |
 
 ## Rules
 

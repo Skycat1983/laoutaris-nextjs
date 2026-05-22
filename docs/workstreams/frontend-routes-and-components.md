@@ -11,6 +11,7 @@ Next.js server/client component boundaries.
 - [Routes and API architecture](../architecture/routes-and-api.md)
 - [Testing runbook](../runbooks/testing.md)
 - [Production-readiness risks](../risks/production-readiness.md)
+- [A-005 Frontend routes and component boundaries](../audits/goals.md#a-005-frontend-routes-and-component-boundaries)
 - [A-017 Search, navigation, and content discovery](../audits/goals.md#a-017-search-navigation-and-content-discovery)
 - [A-010 Performance, SEO, and accessibility](../audits/goals.md#a-010-performance-seo-and-accessibility)
 
@@ -232,6 +233,24 @@ Next.js server/client component boundaries.
   navigation resilient when dynamic nav data is unavailable, T-151 added
   current-scope search no-results/pagination behavior, and T-155 made targeted
   detail breadcrumbs content-aware.
+- A-005 completed the frontend route/component-boundary audit. It found that
+  public detail routes need a shared not-found/error contract, home section
+  loaders can silently drop sections on failure, client follow-up fetch
+  failures need visible states, mixed component barrels remain in server
+  callers, the account subnav loader is not mounted in the account layout, and
+  loading-state patterns need route-type documentation.
+- T-199 defined the public detail not-found/error contract in
+  `docs/architecture/rendering-and-data-fetching.md`: malformed canonical
+  params and missing primary detail content should map to `notFound()`,
+  upstream/service failures should throw through the App Router error boundary,
+  and optional related-content failures should degrade without changing the
+  route status.
+- T-200 implemented the first runtime slice of that contract for standalone and
+  collection-scoped artwork detail routes. Those routes now share public
+  not-found presentation, validate artwork ObjectIds before primary content data
+  access, call `notFound()` for missing primary artwork content, preserve
+  upstream failures as errors, and degrade optional linked Shopify product
+  failures to empty linked-product props.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
   drift from canonical constants, blog pinned/tag controls were hidden, and
@@ -307,6 +326,26 @@ Next.js server/client component boundaries.
 - Centralize taxonomy value+label options for public filters and admin forms.
 - Coordinate footer placeholder social links, current-year/copyright text, and
   assurance copy with A-020 owner/legal-approved requirements.
+- Convert article/blog detail routes through T-201 so missing primary content
+  maps to `notFound()` and optional navigation/comment failures degrade without
+  blanking or failing found primary content.
+- Revisit Shopify product detail after the shared not-found UI exists; missing
+  primary Shopify products already call `notFound()`, while linked archive
+  artwork remains optional related content.
+- Replace silent `null` home section loader fallbacks with accepted
+  unavailable/empty states for noncritical sections, or route-level errors for
+  critical archive sections.
+- Standardize visible client follow-up fetch failure states for artwork
+  filtering/load-more, shop product filtering/sorting, and blog continuous
+  loading.
+- Replace remaining mixed component barrel value imports in server routes and
+  loaders with direct file imports where practical.
+- Decide whether account subnavigation should be mounted; if yes, restore the
+  account layout Suspense block with layout-level coverage, and if no, prune the
+  unused loader/test claims.
+- Document route loading/empty/error fallback patterns by route type and replace
+  generic inline loading copy such as `/project/aims` with accepted fallback
+  components.
 
 ## Acceptance Criteria
 
@@ -872,12 +911,39 @@ Use browser checks for layout-sensitive changes.
   rail renderer now fills each clipped frame side with a non-repeating material
   panel instead of a repeated stripe gradient, preserving bevels, mitred seams,
   mat controls, modal behavior, and the simple product-page renderer default.
+- 2026-05-22: Completed and reconciled A-005. Findings F-105 through F-110 now
+  track public detail not-found/error contracts, silent home section loader
+  fallbacks, invisible client follow-up fetch failures, mixed barrel cleanup,
+  the unmounted account subnav, and route loading-state documentation. T-199
+  was prepared as the first follow-up for F-105.
+- 2026-05-22: Completed T-199 as a documentation-only contract. Public detail
+  pages now have an accepted not-found/error split for malformed params,
+  missing primary content, upstream/service failures, and optional
+  related-content degradation. No runtime code changed.
+- 2026-05-22: Prepared T-200 as the first runtime implementation slice for the
+  accepted public detail contract. It covers `/artwork/[artworkId]` and
+  `/collections/[slug]/[artworkId]` only.
+- 2026-05-22: Completed T-200. Standalone and collection-scoped artwork detail
+  routes now implement the accepted not-found/error contract, including
+  route-local not-found UI, malformed ObjectId pre-fetch validation, missing
+  primary-content `notFound()` handling, upstream failure propagation, and
+  optional Shopify product-link degradation. T-201 is prepared for biography
+  article and blog detail routes.
 
 ## Next Agent Action
 
-No follow-up remains for the 2026-05-22 prototype TypeScript deployment build
-fix; keep the next frontend agent on the existing homepage prototype owner
-review track unless a new deployment error appears.
+The next owner-independent frontend task is
+[T-201 Implement article and blog detail not-found contract](../tasks/T-201-implement-article-blog-detail-not-found-contract.md):
+extend the accepted contract to biography article and blog detail routes only.
+Reuse the shared public detail not-found presentation, map missing primary
+content to `notFound()`, keep upstream failures as errors, and make article
+navigation/blog comments degrade as optional related content when primary
+content is found.
+
+If framed print preview implementation is prioritized instead, run T-194
+targeted visual QA and owner review for `/prototype/frame` before Shopify
+option mapping, checkout/cart work, enquiry mutation, or physical-dimension
+migration.
 
 For the homepage redesign track, keep production migration blocked until owner
 review accepts the expanded prototype direction using the T-169 packet, now

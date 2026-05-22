@@ -11,6 +11,13 @@ import type {
   CollectionFrontendPopulated,
 } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { notFound } from "next/navigation";
+
+jest.mock("next/navigation", () => ({
+  notFound: jest.fn(() => {
+    throw new Error("NEXT_NOT_FOUND");
+  }),
+}));
 
 jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
   getCollectionArtwork: jest.fn(),
@@ -35,6 +42,7 @@ const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction
   typeof getArtworkShopProducts
 >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 
 type ArtworkFixture = ArtworkFrontend & {
   shopifyProducts: NonNullable<ArtworkFrontend["shopifyProducts"]>;
@@ -100,7 +108,7 @@ describe("CollectionArtworkLoader", () => {
     });
   });
 
-  it("returns null for non-Next missing collection artwork results", async () => {
+  it("calls notFound for missing collection artwork results", async () => {
     mockGetCollectionArtwork.mockResolvedValue({
       status: "artwork-not-found",
       collection: null,
@@ -111,9 +119,26 @@ describe("CollectionArtworkLoader", () => {
         slug: "paintings",
         artworkId: "missing-artwork",
       })
-    ).resolves.toBeNull();
+    ).rejects.toThrow("NEXT_NOT_FOUND");
 
     expect(global.fetch).not.toHaveBeenCalled();
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
+  });
+
+  it("throws an error-boundary failure for non-Next loading failures", async () => {
+    const error = new Error("private collection artwork failure");
+    mockGetCollectionArtwork.mockRejectedValue(error);
+
+    await expect(
+      CollectionArtworkLoader({
+        slug: "paintings",
+        artworkId: "64f1f77bcf86cd7994390111",
+      })
+    ).rejects.toThrow("Failed to fetch collection artwork");
+
+    expect(mockIsNextError).toHaveBeenCalledWith(error);
     expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
       expect.objectContaining({
         event: "loader.public.collection_artwork.failed",
@@ -123,25 +148,42 @@ describe("CollectionArtworkLoader", () => {
         hasArtworkId: true,
         error: {
           name: "Error",
-          message: "Failed to fetch collection artwork",
+          message: "private collection artwork failure",
         },
       })
     );
-    expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("returns null for non-Next loading failures", async () => {
-    const error = new Error("private collection artwork failure");
-    mockGetCollectionArtwork.mockRejectedValue(error);
+  it("renders the artwork with empty shop products when linked product loading fails", async () => {
+    mockGetArtworkShopProducts.mockRejectedValue(
+      new Error("private Shopify link failure")
+    );
 
-    await expect(
-      CollectionArtworkLoader({
+    const element = (await CollectionArtworkLoader({
+      slug: "paintings",
+      artworkId: "64f1f77bcf86cd7994390111",
+    })) as ReactElement<{ children: ReactElement }>;
+
+    expect(element.props.children.type).toBe(ArtworkView);
+    expect(element.props.children.props.shopProducts).toEqual({
+      original: null,
+      prints: [],
+      books: [],
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.collection_artwork.shop_products.failed",
+        component: "CollectionArtworkLoader",
+        operation: "public.collection_artwork.loader",
         slug: "paintings",
-        artworkId: "64f1f77bcf86cd7994390111",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "private Shopify link failure",
+        },
       })
-    ).resolves.toBeNull();
-
-    expect(mockIsNextError).toHaveBeenCalledWith(error);
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

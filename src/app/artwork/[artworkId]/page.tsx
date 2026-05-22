@@ -9,6 +9,7 @@ import {
   buildMissingPublicDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+import { isValidArtworkObjectId } from "@/lib/routes/publicDetailParams";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,10 @@ type ArtworkPageProps = {
 export async function generateMetadata({
   params,
 }: ArtworkPageProps): Promise<Metadata> {
+  if (!isValidArtworkObjectId(params.artworkId)) {
+    return buildMissingPublicDetailMetadata("Artwork");
+  }
+
   try {
     const artwork = await getArtworkById(params.artworkId);
 
@@ -34,11 +39,7 @@ export async function generateMetadata({
 }
 
 const ArtworkView = ({ params }: ArtworkPageProps) => {
-  // Validate that artworkId looks like a MongoDB ObjectId (24 hex characters)
-  // This prevents browser source map requests (e.g., "installHook.js.map") from hitting the API
-  const isValidObjectId = /^[a-f\d]{24}$/i.test(params.artworkId);
-
-  if (!isValidObjectId) {
+  if (!isValidArtworkObjectId(params.artworkId)) {
     notFound();
   }
 

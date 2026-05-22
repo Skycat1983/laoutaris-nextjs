@@ -8,6 +8,13 @@ import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { getArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import type { ArtworkFrontend } from "@/lib/data/types";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
+import { notFound } from "next/navigation";
+
+jest.mock("next/navigation", () => ({
+  notFound: jest.fn(() => {
+    throw new Error("NEXT_NOT_FOUND");
+  }),
+}));
 
 jest.mock("@/lib/data/services/getArtworkById", () => ({
   getArtworkById: jest.fn(),
@@ -38,6 +45,7 @@ const mockGetUserIdFromSession = getUserIdFromSession as jest.MockedFunction<
 const mockGetArtworkShopProducts = getArtworkShopProducts as jest.MockedFunction<
   typeof getArtworkShopProducts
 >;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 
 const artworkId = "507f1f77bcf86cd799439011";
 type ArtworkFixture = ArtworkFrontend & {
@@ -61,6 +69,7 @@ const getOnlyChild = (element: ReactElement): ReactElement => {
 
 describe("ArtworkLoader", () => {
   let consoleLogSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -70,11 +79,15 @@ describe("ArtworkLoader", () => {
     consoleLogSpy = jest
       .spyOn(console, "log")
       .mockImplementation(() => undefined);
+    consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     expect(consoleLogSpy).not.toHaveBeenCalled();
     consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   it("renders artwork detail from the server service without same-app fetches or result logs", async () => {
@@ -125,17 +138,18 @@ describe("ArtworkLoader", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("throws the generic loader failure when the artwork service returns null", async () => {
+  it("calls notFound when the artwork service returns null", async () => {
     mockGetArtworkById.mockResolvedValue(null);
 
     await expect(
       ArtworkLoader({ params: { id: "missing-artwork" } })
-    ).rejects.toThrow("Failed to fetch artwork");
+    ).rejects.toThrow("NEXT_NOT_FOUND");
 
     expect(mockGetArtworkById).toHaveBeenCalledWith(
       "missing-artwork",
       "user-123"
     );
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
     expect(mockGetArtworkShopProducts).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
@@ -147,6 +161,40 @@ describe("ArtworkLoader", () => {
       ArtworkLoader({ params: { id: artworkId } })
     ).rejects.toThrow("Failed to fetch artwork");
 
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("renders the artwork with empty shop products when linked product loading fails", async () => {
+    mockGetArtworkShopProducts.mockRejectedValue(
+      new Error("private Shopify link failure")
+    );
+
+    const element = (await ArtworkLoader({
+      params: { id: artworkId },
+    })) as ReactElement<{ children: React.ReactNode }>;
+    const children = React.Children.toArray(
+      element.props.children
+    ) as ReactElement[];
+    const artworkElement = getOnlyChild(children[0] as ReactElement);
+
+    expect(artworkElement.type).toBe(ArtworkView);
+    expect(artworkElement.props.shopProducts).toEqual({
+      original: null,
+      prints: [],
+      books: [],
+    });
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.artwork.shop_products.failed",
+        component: "ArtworkLoader",
+        operation: "public.artwork.loader",
+        hasArtworkId: true,
+        error: {
+          name: "Error",
+          message: "private Shopify link failure",
+        },
+      })
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

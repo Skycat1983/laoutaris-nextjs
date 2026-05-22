@@ -8,6 +8,8 @@ import {
   buildMissingPublicDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
+import { isValidArtworkObjectId } from "@/lib/routes/publicDetailParams";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +21,10 @@ type CollectionArtworkPageProps = {
 export async function generateMetadata({
   params,
 }: CollectionArtworkPageProps): Promise<Metadata> {
+  if (!isValidArtworkObjectId(params.artworkId)) {
+    return buildMissingPublicDetailMetadata("Artwork");
+  }
+
   try {
     const result = await getCollectionArtwork(params.slug, params.artworkId);
 
@@ -36,6 +42,10 @@ export default async function ArtworkId({
   params,
 }: CollectionArtworkPageProps) {
   const { slug, artworkId } = params;
+
+  if (!isValidArtworkObjectId(artworkId)) {
+    notFound();
+  }
 
   return (
     <main>

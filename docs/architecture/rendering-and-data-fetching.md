@@ -98,6 +98,62 @@ Implemented proof slices:
   pagination and selected-artwork server rendering no longer self-fetch the
   same app for collection artwork reads.
 
+## Public Detail Not-Found And Error Contract
+
+T-199 accepts this contract for public detail pages before runtime changes are
+split across route families. It covers standalone artwork, collection-scoped
+artwork, biography articles, blog posts, and Shopify product details.
+
+Primary content is the thing named by the URL: the artwork, collection-scoped
+artwork, article, blog post, or Shopify product. Missing primary content is a
+404. Upstream/service failures are not 404s. Optional related content can
+degrade without changing the route status when the primary content is present.
+
+| Condition | Accepted route behavior | Implementation owner |
+| --- | --- | --- |
+| Malformed route params | Return `notFound()` before expensive data access when the route param has a canonical syntactic shape. MongoDB artwork IDs must be 24 hex characters for `/artwork/[artworkId]` and `/collections/[slug]/[artworkId]`. Slugs and Shopify product handles remain opaque path segments unless a future accepted schema defines stricter validation. | Page-level param guards or a narrow route-local helper. |
+| Valid params with missing primary content | Return `notFound()`. This includes `getArtworkById()` returning `null`, `getCollectionArtwork()` returning `collection-not-found` or `artwork-not-found`, `getArticleBySlugPopulated()` returning `null`, blog detail services returning `null`, and `getProductByHandle()` returning `null`. | Route page or server loader wrapper that is closest to the primary content fetch. Shared data services must not call `notFound()` because they also back API routes. |
+| Upstream/service failure while loading primary content | Throw after structured server logging where the route or loader already owns logging. Let the App Router error boundary handle the failure. Do not convert provider, database, transform, or unexpected service failures into a 404. | Route page or server loader. |
+| Optional related-content failure | Render the primary detail page, log the failure when useful, and omit or replace the related area with a compact unavailable/empty state. Do not call `notFound()` and do not fail the route. | Route loader/component that owns the related section. |
+
+Accepted optional related content by route family:
+
+| Route family | Primary content | Optional related content |
+| --- | --- | --- |
+| `/artwork/[artworkId]` | Artwork document. | Shopify product links, subscribe section session state, structured data. |
+| `/collections/[slug]/[artworkId]` | Collection plus selected artwork membership. Missing collection and missing selected artwork both mean the URL has no primary content. | Shopify product links and structured data. |
+| `/biography/[slug]` and project article detail pages | Article document. | Previous/next navigation and route-specific form content. Navigation failure should not hide a found article. |
+| `/blog/[slug]` | Blog post document. | Author/comment population, comment list mode, and structured data. A found post should render even if comments are unavailable. |
+| `/shop/products/[productHandle]` | Shopify product. | Linked archive artwork, book featured artwork cards, framed-preview eligibility data, and structured data. Missing linked archive records do not make the Shopify product 404. |
+
+Not-found UI should be public and consistent, but route families need different
+return links. The accepted implementation shape is a shared
+`PublicDetailNotFound` view/component plus route-local `not-found.tsx` files for
+the detail route families that call it with route-appropriate labels and links.
+The first implementation slice should add only the route-local files needed by
+the routes it converts; later slices can add the remaining route-local
+not-found files as they change those routes.
+
+`generateMetadata()` should mirror the same distinction without creating
+runtime side effects: missing primary content uses the existing missing-detail
+metadata helper, upstream failures use unavailable-detail metadata, and optional
+related-content failures should not change primary detail metadata.
+
+Runtime implementation order:
+
+1. Convert artwork and collection-scoped artwork first. Add the shared public
+   detail not-found view, route-local not-found files for those two route
+   families, page-level ObjectId validation for collection-scoped artwork, and
+   loader/page mappings from missing primary content to `notFound()`. Preserve
+   optional Shopify product-link degradation.
+2. Convert biography/project article and blog detail loaders. Missing articles
+   or blog posts become `notFound()`, while article navigation and comment
+   population become optional related-content paths with logged degradation.
+3. Revisit Shopify product detail only for consistency after the shared
+   not-found UI exists. Product primary-content behavior already calls
+   `notFound()` for missing Shopify products; linked archive artwork and book
+   artwork failures already degrade.
+
 ## Patterns To Audit
 
 - Page-level data fetching in `src/app/**/page.tsx`.

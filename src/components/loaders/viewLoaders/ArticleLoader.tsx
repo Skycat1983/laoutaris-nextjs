@@ -4,9 +4,11 @@ import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
-import type { ArticleFrontendPopulated, ArticleNavDataFrontend, ApiResponse, ApiSuccessResponse } from "@/lib/data/types";
+import type { ArticleNavDataFrontend } from "@/lib/data/types";
 import { ArticleSection } from "@/lib/constants";
 import { isNextError } from "@/lib/helpers/isNextError";
+import { createServerLogger } from "@/lib/observability/logger";
+import { notFound } from "next/navigation";
 
 interface ArticleLoaderProps {
   slug: string;
@@ -14,63 +16,84 @@ interface ArticleLoaderProps {
   form?: React.ReactNode;
 }
 
-type FetcherResponses = [
-  ApiResponse<ArticleFrontendPopulated>,
-  ApiResponse<ArticleNavDataFrontend[]>
-];
-
-const fetchArticleDetail = async (
-  slug: string
-): Promise<ApiResponse<ArticleFrontendPopulated>> => {
-  try {
-    const result = await getArticleBySlugPopulated(slug);
-
-    if (!result) {
-      return {
-        success: false,
-        error: "Article not found",
-      };
-    }
-
-    return {
-      success: true,
-      data: result,
-    };
-  } catch (error) {
-    if (isNextError(error)) {
-      throw error;
-    }
-
-    return {
-      success: false,
-      error: "Failed to fetch article",
-    };
-  }
+type ArticleNavigation = {
+  prev: string | null;
+  next: string | null;
 };
 
-const fetchArticleNavigation = async (
-  section: ArticleSection
-): Promise<ApiResponse<ArticleNavDataFrontend[]>> => {
+const logger = createServerLogger({
+  component: "ArticleLoader",
+  operation: "public.article.loader",
+  surface: "server_loader",
+});
+
+const emptyNavigation = (): ArticleNavigation => ({
+  prev: null,
+  next: null,
+});
+
+const buildArticleNavigation = async ({
+  slug,
+  section,
+}: {
+  slug: string;
+  section: ArticleSection;
+}): Promise<ArticleNavigation> => {
   try {
     const result = await getArticleNavigationList(section);
 
-    if (!result) {
-      return {
-        success: false,
-        error: "No articles found",
-      };
+    if (!result?.success) {
+      logger.error("loader.public.article_navigation.failed", {
+        slug,
+        section,
+        reason: result?.error ?? "No articles found",
+      });
+      return emptyNavigation();
     }
 
-    return result;
+    const navigationList = result.data;
+
+    if (navigationList.length === 0) {
+      logger.error("loader.public.article_navigation.failed", {
+        slug,
+        section,
+        reason: "No articles found",
+      });
+      return emptyNavigation();
+    }
+
+    const currentIndex = navigationList.findIndex((a) => a.slug === slug);
+
+    if (currentIndex === -1) {
+      logger.error("loader.public.article_navigation.failed", {
+        slug,
+        section,
+        reason: "Current article missing from navigation",
+      });
+      return emptyNavigation();
+    }
+
+    return {
+      prev:
+        currentIndex > 0
+          ? buildUrl([section, navigationList[currentIndex - 1].slug])
+          : null,
+      next:
+        currentIndex < navigationList.length - 1
+          ? buildUrl([section, navigationList[currentIndex + 1].slug])
+          : null,
+    };
   } catch (error) {
     if (isNextError(error)) {
       throw error;
     }
 
-    return {
-      success: false,
-      error: "Failed to fetch article navigation",
-    };
+    logger.error("loader.public.article_navigation.failed", {
+      error,
+      slug,
+      section,
+    });
+    return emptyNavigation();
   }
 };
 
@@ -79,42 +102,23 @@ export async function ArticleLoader({
   section,
   form,
 }: ArticleLoaderProps) {
-  const [articleResponse, navigationResponse] = (await Promise.all([
-    fetchArticleDetail(slug),
-    fetchArticleNavigation(section),
-  ])) as FetcherResponses;
+  let article: Awaited<ReturnType<typeof getArticleBySlugPopulated>>;
 
-  if (!articleResponse.success) {
-    throw new Error(articleResponse.error || "Failed to fetch article");
+  try {
+    article = await getArticleBySlugPopulated(slug);
+  } catch (error) {
+    if (isNextError(error)) {
+      throw error;
+    }
+
+    throw new Error("Failed to fetch article");
   }
 
-  if (!navigationResponse.success) {
-    throw new Error(
-      navigationResponse.error || "Failed to fetch article navigation"
-    );
+  if (!article) {
+    notFound();
   }
 
-  const { data: article } =
-    articleResponse as ApiSuccessResponse<ArticleFrontendPopulated>;
-
-  const { data: navigationList } = navigationResponse as ApiSuccessResponse<
-    ArticleNavDataFrontend[]
-  >;
-
-  // Find current article index
-  const currentIndex = navigationList.findIndex((a) => a.slug === slug);
-
-  // Build navigation links
-  const navigation = {
-    prev:
-      currentIndex > 0
-        ? buildUrl([section, navigationList[currentIndex - 1].slug])
-        : null,
-    next:
-      currentIndex < navigationList.length - 1
-        ? buildUrl([section, navigationList[currentIndex + 1].slug])
-        : null,
-  };
+  const navigation = await buildArticleNavigation({ slug, section });
 
   if (form) {
     return (
