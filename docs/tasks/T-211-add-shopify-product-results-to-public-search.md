@@ -1,6 +1,6 @@
 # T-211 Add Shopify Product Results To Public Search
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Shopify Commerce](../workstreams/shopify-commerce.md),
@@ -153,3 +153,31 @@ with what changed and list candidate shared-tracker updates.
 - This is the next staged F-098/R-016 search widening slice. It addresses the
   commerce discovery side of site-wide search while keeping checkout/cart and
   legal policy work separate.
+- Completed on 2026-05-22. Public search now accepts `type=shop-products`,
+  includes Shopify product results in all-type searches, maps product links to
+  `/shop/products/[productHandle]`, and renders a Shop Products section on the
+  `/search` page.
+- `getPublicSearchResults` reuses `getShopProductList()` as the product source
+  path, filters returned public product DTOs by `title`, `handle`,
+  `description`, `productType`, `tags`, and `vendor`, and paginates the matched
+  product set with the existing per-type metadata contract.
+- Product result copy stays discovery-focused: title, image, product type,
+  vendor, and tags only. Product descriptions are searchable but are not
+  rendered as search-result summary copy. No checkout, cart, payment, shipping,
+  refund, guarantee, buyer-protection, variant-selection, or purchase
+  completion claims were added.
+- Focused coverage was added for all-type product service results, selected
+  `type=shop-products` service/API/page behavior, unsupported type validation
+  copy, all-type Shop Products rendering, and selected product no-results
+  states while preserving article, blog, collection, and artwork coverage.
+- Verification run before handoff:
+  `npm test -- --runTestsByPath __tests__/unit/data/getPublicSearchResults.test.ts __tests__/unit/api/publicSearchRoute.test.ts __tests__/unit/searchPage.test.tsx`
+  passed with 3 suites and 24 tests; `npm run lint` passed with no ESLint
+  warnings or errors; `./node_modules/.bin/tsc --noEmit --pretty false --skipLibCheck`
+  passed; `git diff --check` passed.
+- Candidate shared-tracker updates: F-098 can move to resolved for the public
+  search scope gap because articles, blogs, collections, artworks, and Shopify
+  products are now included; R-016 should record T-211 as completed and remove
+  Shopify product search from the remaining discovery gaps while keeping
+  unrelated language/i18n launch direction, collection section launch policy,
+  and footer/legal cleanup tracked separately.

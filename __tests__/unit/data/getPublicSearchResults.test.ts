@@ -5,6 +5,8 @@ import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import { BlogModel } from "@/lib/data/models/blogModel";
 import { CollectionModel } from "@/lib/data/models/collectionModel";
 import { getPublicSearchResults } from "@/lib/data/services/getPublicSearchResults";
+import { getShopProductList } from "@/lib/data/services/getShopProductList";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import dbConnect from "@/lib/db/mongodb";
 
 jest.mock("@/lib/db/mongodb", () => ({
@@ -40,6 +42,10 @@ jest.mock("@/lib/data/models/artworkModel", () => ({
   },
 }));
 
+jest.mock("@/lib/data/services/getShopProductList", () => ({
+  getShopProductList: jest.fn(),
+}));
+
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockArticleFind = ArticleModel.find as jest.Mock;
 const mockArticleCountDocuments = ArticleModel.countDocuments as jest.Mock;
@@ -49,6 +55,9 @@ const mockCollectionFind = CollectionModel.find as jest.Mock;
 const mockCollectionCountDocuments = CollectionModel.countDocuments as jest.Mock;
 const mockArtworkFind = ArtworkModel.find as jest.Mock;
 const mockArtworkCountDocuments = ArtworkModel.countDocuments as jest.Mock;
+const mockGetShopProductList = getShopProductList as jest.MockedFunction<
+  typeof getShopProductList
+>;
 
 const createFindChain = (results: unknown[]) => {
   const lean = jest.fn().mockResolvedValue(results);
@@ -119,6 +128,38 @@ const artwork = {
   updatedAt: new Date("2026-01-02T00:00:00.000Z"),
 };
 
+const product: SimpleProduct = {
+  id: "gid://shopify/Product/101",
+  handle: "blue-figure-print",
+  title: "Joseph (draft).* print",
+  description: "A studio print from the public Shopify product list.",
+  descriptionHtml: "<p>A studio print from the public Shopify product list.</p>",
+  vendor: "Joseph Laoutaris",
+  productType: "print",
+  tags: ["blue-figure", "archive"],
+  price: "100.00",
+  currencyCode: "GBP",
+  compareAtPrice: null,
+  image: {
+    url: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
+    altText: "Blue figure print",
+  },
+  availableForSale: true,
+  variants: [],
+};
+
+const otherProduct: SimpleProduct = {
+  ...product,
+  id: "gid://shopify/Product/102",
+  handle: "red-book",
+  title: "Red book",
+  description: "A publication entry.",
+  descriptionHtml: "<p>A publication entry.</p>",
+  productType: "book",
+  tags: ["publication"],
+  image: null,
+};
+
 describe("getPublicSearchResults", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -131,6 +172,14 @@ describe("getPublicSearchResults", () => {
     mockCollectionCountDocuments.mockResolvedValue(1);
     mockArtworkFind.mockReturnValue(createFindChain([artwork]).query);
     mockArtworkCountDocuments.mockResolvedValue(1);
+    mockGetShopProductList.mockResolvedValue({
+      success: true,
+      data: [product, otherProduct],
+      metadata: {
+        totalArtworks: 2,
+        totalProducts: 2,
+      },
+    });
   });
 
   it("owns MongoDB connection, escapes regex input, paginates, and shapes DTOs", async () => {
@@ -200,11 +249,18 @@ describe("getPublicSearchResults", () => {
             linkTo: "/artwork/artwork-123",
           },
         ],
+        "shop-products": [],
         metadata: {
           page: 3,
           limit: 5,
-          searchedTypes: ["articles", "blogs", "collections", "artworks"],
-          total: 4,
+          searchedTypes: [
+            "articles",
+            "blogs",
+            "collections",
+            "artworks",
+            "shop-products",
+          ],
+          total: 5,
           hasMore: false,
           types: {
             articles: {
@@ -239,6 +295,14 @@ describe("getPublicSearchResults", () => {
               hasMore: false,
               hasPreviousPage: true,
             },
+            "shop-products": {
+              page: 3,
+              limit: 5,
+              total: 1,
+              totalPages: 1,
+              hasMore: false,
+              hasPreviousPage: true,
+            },
           },
         },
       },
@@ -259,6 +323,7 @@ describe("getPublicSearchResults", () => {
     expect(mockArticleFind).not.toHaveBeenCalled();
     expect(mockCollectionFind).not.toHaveBeenCalled();
     expect(mockArtworkFind).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
     expect(mockArticleCountDocuments).not.toHaveBeenCalled();
     expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
     expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
@@ -317,6 +382,7 @@ describe("getPublicSearchResults", () => {
     expect(mockArticleFind).not.toHaveBeenCalled();
     expect(mockBlogFind).not.toHaveBeenCalled();
     expect(mockCollectionFind).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
     expect(mockArticleCountDocuments).not.toHaveBeenCalled();
     expect(mockBlogCountDocuments).not.toHaveBeenCalled();
     expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
@@ -360,6 +426,90 @@ describe("getPublicSearchResults", () => {
     });
   });
 
+  it("honors selected shop product searches through the public product list service", async () => {
+    const result = await getPublicSearchResults({
+      q: "blue-figure",
+      type: "shop-products",
+      page: 1,
+      limit: 1,
+    });
+
+    expect(mockArticleFind).not.toHaveBeenCalled();
+    expect(mockBlogFind).not.toHaveBeenCalled();
+    expect(mockCollectionFind).not.toHaveBeenCalled();
+    expect(mockArtworkFind).not.toHaveBeenCalled();
+    expect(mockArticleCountDocuments).not.toHaveBeenCalled();
+    expect(mockBlogCountDocuments).not.toHaveBeenCalled();
+    expect(mockCollectionCountDocuments).not.toHaveBeenCalled();
+    expect(mockArtworkCountDocuments).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).toHaveBeenCalledWith();
+    expect(result).toEqual({
+      success: true,
+      data: {
+        "shop-products": [
+          {
+            title: "Joseph (draft).* print",
+            subtitle: "Print, Joseph Laoutaris",
+            summary: "Blue Figure, Archive",
+            imageUrl: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
+            linkTo: "/shop/products/blue-figure-print",
+          },
+        ],
+        metadata: {
+          page: 1,
+          limit: 1,
+          searchedTypes: ["shop-products"],
+          total: 1,
+          hasMore: false,
+          types: {
+            "shop-products": {
+              page: 1,
+              limit: 1,
+              total: 1,
+              totalPages: 1,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it("includes matched shop products in all-type searches", async () => {
+    const result = await getPublicSearchResults({
+      q: "blue-figure",
+      page: 1,
+      limit: 10,
+    });
+
+    expect(mockGetShopProductList).toHaveBeenCalledWith();
+    expect(result.data["shop-products"]).toEqual([
+      {
+        title: "Joseph (draft).* print",
+        subtitle: "Print, Joseph Laoutaris",
+        summary: "Blue Figure, Archive",
+        imageUrl: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
+        linkTo: "/shop/products/blue-figure-print",
+      },
+    ]);
+    expect(result.data.metadata.searchedTypes).toEqual([
+      "articles",
+      "blogs",
+      "collections",
+      "artworks",
+      "shop-products",
+    ]);
+    expect(result.data.metadata.types["shop-products"]).toEqual({
+      page: 1,
+      limit: 10,
+      total: 1,
+      totalPages: 1,
+      hasMore: false,
+      hasPreviousPage: false,
+    });
+  });
+
   it("returns selected-type zero-result metadata without querying other types", async () => {
     const blogChain = createFindChain([]);
     mockBlogFind.mockReturnValue(blogChain.query);
@@ -375,6 +525,7 @@ describe("getPublicSearchResults", () => {
     expect(mockArticleFind).not.toHaveBeenCalled();
     expect(mockCollectionFind).not.toHaveBeenCalled();
     expect(mockArtworkFind).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
     expect(mockBlogFind).toHaveBeenCalledTimes(1);
     expect(mockBlogCountDocuments).toHaveBeenCalledTimes(1);
     expect(result).toEqual({

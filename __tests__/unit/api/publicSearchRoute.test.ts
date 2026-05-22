@@ -100,6 +100,38 @@ const artworkSuccessResult = {
   },
 } as never;
 
+const shopProductSuccessResult = {
+  success: true,
+  data: {
+    "shop-products": [
+      {
+        title: "Blue figure print",
+        subtitle: "Print, Joseph Laoutaris",
+        summary: "Blue Figure, Archive",
+        imageUrl: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
+        linkTo: "/shop/products/blue-figure-print",
+      },
+    ],
+    metadata: {
+      page: 1,
+      limit: 10,
+      searchedTypes: ["shop-products"],
+      total: 1,
+      hasMore: false,
+      types: {
+        "shop-products": {
+          page: 1,
+          limit: 10,
+          total: 1,
+          totalPages: 1,
+          hasMore: false,
+          hasPreviousPage: false,
+        },
+      },
+    },
+  },
+} as never;
+
 describe("GET /api/v2/public/search", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -153,6 +185,26 @@ describe("GET /api/v2/public/search", () => {
     expect(body).toBe(artworkSuccessResult);
   });
 
+  it("accepts shop product searches and returns product service results", async () => {
+    mockGetPublicSearchResults.mockResolvedValue(shopProductSuccessResult);
+
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/search?q=blue&type=shop-products"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetPublicSearchResults).toHaveBeenCalledWith({
+      q: "blue",
+      type: "shop-products",
+      page: 1,
+      limit: 10,
+    });
+    expect(body).toBe(shopProductSuccessResult);
+  });
+
   it("returns 400 when q is missing and avoids database work", async () => {
     const response = await GET(
       createRequest("https://example.test/api/v2/public/search")
@@ -184,7 +236,9 @@ describe("GET /api/v2/public/search", () => {
       success: false,
       error: "Invalid search query",
       fieldErrors: {
-        type: ["Search type must be articles, blogs, collections, or artworks"],
+        type: [
+          "Search type must be articles, blogs, collections, artworks, or shop-products",
+        ],
       },
       formErrors: [],
     });

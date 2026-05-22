@@ -949,6 +949,10 @@ Add API route tests where behavior is changed.
 - 2026-05-22: Prepared T-211 as the next public search data/API slice. It adds
   Shopify product results to the public search schema, result types, service,
   and metadata by reusing the existing public shop product-list service path.
+- 2026-05-22: Completed T-211. `/api/v2/public/search` now accepts
+  `type=shop-products`; all-type public search includes Shopify product results
+  from `getShopProductList()`; and product result metadata uses the same
+  per-type pagination contract as articles, blogs, collections, and artworks.
 
 ## Next Agent Action
 
@@ -964,13 +968,12 @@ T-208 is complete for the Shopify hosted product URL DTO/API contract. No
 additional data/API task is open for this handoff unless a future cart/checkout
 decision introduces line-item, variant-selection, or checkout ownership
 contracts.
-Assign
-[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md)
-as the next owner-independent data/API slice. Keep collection section launch
-policy, broader response-helper cleanup, route-local DB ownership gaps,
-field-contract matrices, server-side shop pagination/sorting contracts,
-lower-level logging policy, admin Shopify-link work, and Cloudinary runtime
-cleanup separate.
+Do not reassign
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
+it is complete. Keep collection section launch policy, broader response-helper
+cleanup, route-local DB ownership gaps, field-contract matrices, server-side
+shop pagination/sorting contracts, lower-level logging policy, admin
+Shopify-link work, and Cloudinary runtime cleanup separate.
 T-122, T-135, T-142, T-144's fetcher preservation, T-145, T-151, T-154, T-156,
 T-163, T-164, T-165, T-171, T-173, T-174, T-175, T-176, T-177, T-179, T-180,
 T-181, T-182, and T-183 are complete; do not reassign them unless their guards,

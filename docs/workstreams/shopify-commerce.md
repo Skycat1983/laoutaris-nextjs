@@ -200,8 +200,8 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Define any future server-side shop sorting contract before moving current
   client-side sorting into the API.
-- Decide whether global public search should include Shopify products; if yes,
-  extend the search service/result rendering without adding checkout claims.
+- Keep Shopify product search tied to the existing public product-list data path
+  unless a separate search/indexing decision is made.
 - Derive shop taxonomy filter options from canonical artwork constants instead
   of hand-maintained option arrays.
 - Implement the framed print preview plan in separate slices: frame profile and
@@ -535,16 +535,19 @@ Add targeted tests as shop behavior is hardened.
   T-211 is now prepared as the separate commerce discovery slice for adding
   Shopify product results to `/search` through the existing public shop
   product-list data path.
+- 2026-05-22: Completed T-211. Public `/search` and
+  `/api/v2/public/search` now include Shopify product results through
+  `getShopProductList()` and `type=shop-products`, with product links pointing
+  to `/shop/products/[productHandle]` and no checkout/cart or commerce policy
+  claims added.
 
 ## Next Agent Action
 
 Do not reassign
-[T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
-it is complete. The next owner-independent commerce discovery assignment is
-[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md).
-It should reuse the public shop product-list data path and avoid checkout/cart,
-product detail handoff, shop listing filter/sort/pagination, and commerce
-claim changes.
+[T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)
+or
+[T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
+both are complete.
 
 Keep app-owned checkout/cart, real pagination, server-side sorting, broader
 product-detail redesign, product-link data migration, automatic mutation, and

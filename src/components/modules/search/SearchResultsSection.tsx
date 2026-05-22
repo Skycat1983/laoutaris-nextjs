@@ -9,6 +9,7 @@ interface SearchResultsSectionProps {
   title: string;
   items: SearchResultItem[];
   type: SearchableContentType;
+  resultLabel?: string;
   total?: number;
   emptyMessage?: string;
 }
@@ -17,6 +18,7 @@ const SearchResultsSection = ({
   title,
   items,
   type,
+  resultLabel,
   total,
   emptyMessage,
 }: SearchResultsSectionProps) => {
@@ -27,7 +29,8 @@ const SearchResultsSection = ({
   return (
     <section className="mb-8">
       <h2 className="text-xl font-semibold mb-4">
-        {title} ({resultCount > 0 ? `${resultCount}` : "No"} {type})
+        {title} ({resultCount > 0 ? `${resultCount}` : "No"}{" "}
+        {resultLabel ?? type})
       </h2>
 
       {!items?.length && emptyMessage && (

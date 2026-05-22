@@ -4,6 +4,7 @@ import { ArticleModel } from "@/lib/data/models/articleModel";
 import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import { BlogModel } from "@/lib/data/models/blogModel";
 import { CollectionModel } from "@/lib/data/models/collectionModel";
+import { getShopProductList } from "@/lib/data/services/getShopProductList";
 import {
   ARTSTYLE_OPTIONS,
   DECADE_OPTIONS,
@@ -23,6 +24,7 @@ import type {
   SearchResultItem,
   SearchResultTypeMetadata,
 } from "@/lib/data/types/searchTypes";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { PublicSearchQuery } from "@/lib/data/schemas/searchSchema";
 import dbConnect from "@/lib/db/mongodb";
 import { sanitizeCloudinaryImage } from "@/lib/transforms/artwork/transformImage";
@@ -56,6 +58,7 @@ const SEARCH_TYPES = [
   "blogs",
   "collections",
   "artworks",
+  "shop-products",
 ] as const;
 
 const escapeRegexLiteral = (value: string) =>
@@ -137,6 +140,51 @@ const toArtworkSearchResultItem = (item: ArtworkLean): SearchResultItem => {
         : undefined,
     imageUrl,
     linkTo: `/artwork/${String(item._id)}`,
+  };
+};
+
+const normalizeSearchText = (value: string) => value.trim().toLowerCase();
+
+const productMatchesQuery = (product: SimpleProduct, query: string) => {
+  const normalizedQuery = normalizeSearchText(query);
+  const searchableValues = [
+    product.title,
+    product.handle,
+    product.description,
+    product.productType,
+    product.vendor,
+    ...product.tags,
+  ];
+
+  return searchableValues.some((value) =>
+    normalizeSearchText(value).includes(normalizedQuery)
+  );
+};
+
+const formatProductMetadata = (value: string) =>
+  value
+    .trim()
+    .replace(/[-_]+/g, " ")
+    .split(/\s+/)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+const toShopProductSearchResultItem = (
+  product: SimpleProduct
+): SearchResultItem => {
+  const subtitle = [product.productType, product.vendor]
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .map(formatProductMetadata)
+    .join(", ");
+  const summary = product.tags.map(formatProductMetadata).join(", ");
+
+  return {
+    title: product.title,
+    subtitle: subtitle || undefined,
+    summary: summary || undefined,
+    imageUrl: product.image?.url,
+    linkTo: `/shop/products/${product.handle}`,
   };
 };
 
@@ -224,6 +272,7 @@ export const getPublicSearchResults = async ({
     collectionTotal,
     artworks,
     artworkTotal,
+    shopProductsResult,
   ] = await Promise.all([
     shouldSearch("articles")
       ? searchArticles(filter, skip, limit)
@@ -241,7 +290,16 @@ export const getPublicSearchResults = async ({
       ? searchArtworks(artworkFilter, skip, limit)
       : Promise.resolve([]),
     shouldSearch("artworks") ? countArtworks(artworkFilter) : Promise.resolve(0),
+    shouldSearch("shop-products")
+      ? getShopProductList()
+      : Promise.resolve(null),
   ]);
+
+  const matchingShopProducts =
+    shopProductsResult?.data.filter((product) => productMatchesQuery(product, q)) ??
+    [];
+  const shopProducts = matchingShopProducts.slice(skip, skip + limit);
+  const shopProductTotal = matchingShopProducts.length;
 
   const metadata: SearchResponse["metadata"] = {
     page,
@@ -277,6 +335,15 @@ export const getPublicSearchResults = async ({
   if (shouldSearch("artworks")) {
     data.artworks = artworks.map(toArtworkSearchResultItem);
     metadata.types.artworks = buildTypeMetadata(artworkTotal, page, limit);
+  }
+
+  if (shouldSearch("shop-products")) {
+    data["shop-products"] = shopProducts.map(toShopProductSearchResultItem);
+    metadata.types["shop-products"] = buildTypeMetadata(
+      shopProductTotal,
+      page,
+      limit
+    );
   }
 
   metadata.total = searchedTypes.reduce(

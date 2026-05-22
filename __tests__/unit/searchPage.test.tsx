@@ -38,6 +38,14 @@ const artworkItem = {
   linkTo: "/artwork/artwork-123",
 } as never;
 
+const shopProductItem = {
+  title: "Blue figure print",
+  subtitle: "Print, Joseph Laoutaris",
+  summary: "Blue Figure, Archive",
+  imageUrl: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
+  linkTo: "/shop/products/blue-figure-print",
+} as never;
+
 const createMetadata = ({
   page = 1,
   limit = 10,
@@ -113,6 +121,7 @@ describe("/search page", () => {
       title: "Blogs",
       items: [searchItem],
       type: "blogs",
+      resultLabel: "blogs",
       total: 1,
       emptyMessage: undefined,
     });
@@ -142,6 +151,7 @@ describe("/search page", () => {
       title: "Blogs",
       items: [],
       type: "blogs",
+      resultLabel: "blogs",
       total: 0,
       emptyMessage: 'No blogs matched "missing".',
     });
@@ -176,8 +186,44 @@ describe("/search page", () => {
       title: "Artworks",
       items: [],
       type: "artworks",
+      resultLabel: "artworks",
       total: 0,
       emptyMessage: 'No artworks matched "missing".',
+    });
+  });
+
+  it("renders a selected shop product no-results state with backed zero-result metadata", async () => {
+    mockGetPublicSearchResults.mockResolvedValue({
+      success: true,
+      data: {
+        "shop-products": [],
+        metadata: createMetadata({
+          total: 0,
+          totalPages: 0,
+          searchedTypes: ["shop-products"],
+          type: "shop-products",
+        }),
+      },
+    });
+
+    const element = (await SearchPage({
+      searchParams: {
+        q: "missing",
+        type: "shop-products",
+      },
+    })) as ReactElement;
+    const resultsGrid = element.props.children[1] as ReactElement;
+    const resultsFragment = resultsGrid.props.children as ReactElement;
+    const resultsSection = resultsFragment.props.children[0] as ReactElement;
+
+    expect(resultsSection.type).toBe(SearchResultsSection);
+    expect(resultsSection.props).toEqual({
+      title: "Shop Products",
+      items: [],
+      type: "shop-products",
+      resultLabel: "shop products",
+      total: 0,
+      emptyMessage: 'No shop products matched "missing".',
     });
   });
 
@@ -245,6 +291,93 @@ describe("/search page", () => {
         title: "Artworks",
         items: [artworkItem],
         type: "artworks",
+        resultLabel: "artworks",
+        total: 1,
+      }),
+      {}
+    );
+  });
+
+  it("renders shop product sections in all-type search results", async () => {
+    mockGetPublicSearchResults.mockResolvedValue({
+      success: true,
+      data: {
+        articles: [],
+        blogs: [],
+        collections: [],
+        artworks: [],
+        "shop-products": [shopProductItem],
+        metadata: {
+          page: 1,
+          limit: 10,
+          searchedTypes: [
+            "articles",
+            "blogs",
+            "collections",
+            "artworks",
+            "shop-products",
+          ],
+          total: 1,
+          hasMore: false,
+          types: {
+            articles: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            blogs: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            collections: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            artworks: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+            "shop-products": {
+              page: 1,
+              limit: 10,
+              total: 1,
+              totalPages: 1,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+          },
+        },
+      },
+    });
+
+    const element = (await SearchPage({
+      searchParams: {
+        q: "blue",
+      },
+    })) as ReactElement;
+    renderToStaticMarkup(element);
+
+    expect(SearchResultsSection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Shop Products",
+        items: [shopProductItem],
+        type: "shop-products",
+        resultLabel: "shop products",
         total: 1,
       }),
       {}
@@ -261,7 +394,13 @@ describe("/search page", () => {
         metadata: {
           page: 1,
           limit: 10,
-          searchedTypes: ["articles", "blogs", "collections", "artworks"],
+          searchedTypes: [
+            "articles",
+            "blogs",
+            "collections",
+            "artworks",
+            "shop-products",
+          ],
           total: 0,
           hasMore: false,
           types: {
@@ -297,6 +436,14 @@ describe("/search page", () => {
               hasMore: false,
               hasPreviousPage: false,
             },
+            "shop-products": {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
           },
         },
       },
@@ -310,7 +457,7 @@ describe("/search page", () => {
     const markup = renderToStaticMarkup(element);
 
     expect(markup).toContain(
-      'No articles, blogs, collections, or artworks matched &quot;missing&quot;.'
+      'No articles, blogs, collections, artworks, or shop products matched &quot;missing&quot;.'
     );
     expect(markup).not.toContain("search pagination");
   });
@@ -362,7 +509,8 @@ describe("/search page", () => {
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.props).toEqual({
       title: "Search Error",
-      message: "Search type must be articles, blogs, collections, or artworks",
+      message:
+        "Search type must be articles, blogs, collections, artworks, or shop-products",
     });
   });
 

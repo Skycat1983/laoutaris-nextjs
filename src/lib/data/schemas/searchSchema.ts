@@ -6,6 +6,7 @@ export const SEARCH_CONTENT_TYPES = [
   "blogs",
   "collections",
   "artworks",
+  "shop-products",
 ] as const satisfies readonly SearchableContentType[];
 
 export const SEARCH_QUERY_LIMITS = {
@@ -66,7 +67,7 @@ export const publicSearchQuerySchema = z.object({
       z.enum(SEARCH_CONTENT_TYPES, {
         errorMap: () => ({
           message:
-            "Search type must be articles, blogs, collections, or artworks",
+            "Search type must be articles, blogs, collections, artworks, or shop-products",
         }),
       }).optional()
     ),

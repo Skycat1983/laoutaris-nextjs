@@ -222,7 +222,7 @@ Planning and prompt packs:
 | [T-208 Implement Shopify-hosted purchase handoff](T-208-implement-shopify-hosted-purchase-handoff.md) | Completed | Replaced enquiry-only product detail purchase flow with a Shopify-hosted purchase handoff when Shopify exposes a public product URL. |
 | [T-209 Align commerce assurance copy](T-209-align-commerce-assurance-copy.md) | Completed | Removed unsupported payment, shipping, refund, guarantee, and buyer-protection claims from shared public assurance copy. |
 | [T-210 Add artwork results to public search](T-210-add-artwork-results-to-public-search.md) | Completed | Expanded public search to include MongoDB-backed artwork results as the first staged site-wide search slice. |
-| [T-211 Add Shopify product results to public search](T-211-add-shopify-product-results-to-public-search.md) | Planned | Expand public search to include Shopify product results using the existing public shop product-list data path. |
+| [T-211 Add Shopify product results to public search](T-211-add-shopify-product-results-to-public-search.md) | Completed | Expanded public search to include Shopify product results using the existing public shop product-list data path. |
 
 ## Rules
 

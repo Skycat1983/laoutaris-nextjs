@@ -2,13 +2,15 @@ import type { CollectionFrontend } from "./collectionTypes";
 import type { BlogEntryFrontend } from "./blogTypes";
 import type { ArticleFrontend } from "./articleTypes";
 import type { ArtworkFrontend } from "./artworkTypes";
+import type { SimpleProduct } from "./shopify";
 
 // Content type literal
 export type SearchableContentType =
   | "articles"
   | "blogs"
   | "collections"
-  | "artworks";
+  | "artworks"
+  | "shop-products";
 
 // Search params with proper typing
 export interface SearchParams {
@@ -33,7 +35,8 @@ export type SearchableContent =
   | ArticleFrontend
   | BlogEntryFrontend
   | CollectionFrontend
-  | ArtworkFrontend;
+  | ArtworkFrontend
+  | SimpleProduct;
 
 // Add a type for the URL
 export type LinkTo = `/${string}`; // Template literal type to ensure it starts with /
@@ -76,5 +79,6 @@ export interface SearchResponse {
   blogs?: SearchResultItem[];
   collections?: SearchResultItem[];
   artworks?: SearchResultItem[];
+  "shop-products"?: SearchResultItem[];
   metadata: SearchResponseMetadata;
 }

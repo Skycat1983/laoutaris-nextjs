@@ -24,6 +24,15 @@ const SEARCH_TYPE_TITLES: Record<SearchableContentType, string> = {
   blogs: "Blogs",
   collections: "Collections",
   artworks: "Artworks",
+  "shop-products": "Shop Products",
+};
+
+const SEARCH_TYPE_RESULT_LABELS: Record<SearchableContentType, string> = {
+  articles: "articles",
+  blogs: "blogs",
+  collections: "collections",
+  artworks: "artworks",
+  "shop-products": "shop products",
 };
 
 const SEARCH_TYPES = [
@@ -31,6 +40,7 @@ const SEARCH_TYPES = [
   "blogs",
   "collections",
   "artworks",
+  "shop-products",
 ] as const;
 
 const firstErrorMessage = (
@@ -196,13 +206,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   );
   const selectedEmptyMessage = type
     ? selectedTypeMetadata?.total === 0
-      ? `No ${type} matched "${query}".`
+      ? `No ${SEARCH_TYPE_RESULT_LABELS[type]} matched "${query}".`
       : "No results are available on this page for the selected search type."
     : undefined;
   const allTypesEmptyMessage =
     searchData.metadata.total === 0
-      ? `No articles, blogs, collections, or artworks matched "${query}".`
-      : "No results are available on this page for articles, blogs, collections, or artworks.";
+      ? `No articles, blogs, collections, artworks, or shop products matched "${query}".`
+      : "No results are available on this page for articles, blogs, collections, artworks, or shop products.";
 
   return (
     <main className="container mx-auto p-4">
@@ -217,6 +227,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               title={SEARCH_TYPE_TITLES[type]}
               items={searchData[type] || []}
               type={type}
+              resultLabel={SEARCH_TYPE_RESULT_LABELS[type]}
               total={selectedTypeMetadata?.total}
               emptyMessage={
                 (searchData[type]?.length ?? 0) === 0
@@ -242,6 +253,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 title="Articles"
                 items={searchData.articles}
                 type="articles"
+                resultLabel={SEARCH_TYPE_RESULT_LABELS.articles}
                 total={searchData.metadata.types.articles?.total}
               />
             )}
@@ -250,6 +262,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 title="Blogs"
                 items={searchData.blogs}
                 type="blogs"
+                resultLabel={SEARCH_TYPE_RESULT_LABELS.blogs}
                 total={searchData.metadata.types.blogs?.total}
               />
             )}
@@ -258,6 +271,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 title="Collections"
                 items={searchData.collections}
                 type="collections"
+                resultLabel={SEARCH_TYPE_RESULT_LABELS.collections}
                 total={searchData.metadata.types.collections?.total}
               />
             )}
@@ -266,9 +280,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 title="Artworks"
                 items={searchData.artworks}
                 type="artworks"
+                resultLabel={SEARCH_TYPE_RESULT_LABELS.artworks}
                 total={searchData.metadata.types.artworks?.total}
               />
             )}
+            {searchData["shop-products"] &&
+              searchData["shop-products"].length > 0 && (
+                <SearchResultsSection
+                  title="Shop Products"
+                  items={searchData["shop-products"]}
+                  type="shop-products"
+                  resultLabel={SEARCH_TYPE_RESULT_LABELS["shop-products"]}
+                  total={searchData.metadata.types["shop-products"]?.total}
+                />
+              )}
           </>
         )}
       </div>
