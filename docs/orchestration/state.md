@@ -82,6 +82,14 @@ T-139 completed the blocked monitoring decision record in ADR 0005: no provider
 and no explicit no-provider interim launch policy are approved, so monitoring
 implementation remains blocked until owner/platform approval.
 
+A-022 is complete and reconciled. F-111 through F-117 now route the Next.js
+feature-utilization findings: controlled public caching/ISR and sitemap/default
+redirect freshness, the current client import-boundary regression, broad
+middleware matching, global public client-provider cost, duplicate monitoring
+instrumentation blocker, and low-priority non-action `"use server"` cleanup.
+Planned tasks T-230 through T-235 are prepared. The safe order is T-230, T-231,
+T-232, T-233, then lower-priority T-234 and T-235.
+
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
 workstream backlogs, and implementation briefs T-141 through T-165.

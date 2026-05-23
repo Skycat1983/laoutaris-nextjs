@@ -15,6 +15,7 @@ or inconsistent code forward.
 - [A-013 Architecture refactor scope](../audits/goals.md#a-013-architecture-refactor-scope)
 - [A-014 Unused code and dependency pruning](../audits/goals.md#a-014-unused-code-and-dependency-pruning)
 - [A-015 SSR and data-fetching strategy](../audits/goals.md#a-015-ssr-and-data-fetching-strategy)
+- [A-022 Next.js feature utilization](../audits/goals.md#a-022-nextjs-feature-utilization)
 
 ## Blocks
 
@@ -45,6 +46,12 @@ or inconsistent code forward.
 - Root and component-level code likely contains WIP, historical, or unused paths
   that should be audited before pruning.
 - A-013, A-014, and A-015 are complete and reconciled.
+- A-022 is complete and reconciled. It confirmed the app is using App Router,
+  server loaders, direct server data services, metadata conventions, image/font
+  optimization, and source guards well, but needs a staged Next.js efficiency
+  sequence: repair the current client import-boundary regression, narrow
+  middleware matching, define public data freshness, then pilot ISR/cached
+  public reads.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
   server loaders, API routes, and server actions should share direct
   server-only data-access services instead of same-app HTTP fetches.
@@ -191,15 +198,28 @@ or inconsistent code forward.
   remaining route-critical loaders off same-app HTTP in small slices and retire
   `serverApi` usage from server loaders/actions.
 - Maintain the T-137 client/server import-boundary guard when new client
-  components, barrels, or data-service modules are added.
+  components, barrels, or data-service modules are added. T-230 is the next
+  repair because A-022 found the guard currently fails through
+  `SignUpForm` -> `@/lib/constants`.
 - Plan scoped adoption of the T-170 semantic style map only after owner review
   accepts the expanded homepage prototype direction.
 - Ensure every MongoDB-backed API route and server action reaches the database
   only through a service or shared wrapper that calls `dbConnect()`.
 - Move route-neutral DB/session work out of the root layout so dynamic rendering
   and cache policy can be owned by the routes that need them.
+- Narrow middleware matching to protected frontend/API prefixes through T-231
+  before broad public route cache work, while leaving the future
+  `middleware.ts` -> `proxy.ts` rename for the accepted Next major migration.
 - Document route-specific cache/revalidation policy for public archive,
-  authenticated, admin, and Shopify data.
+  authenticated, admin, and Shopify data. T-232 owns the next docs-first
+  public freshness decision for sitemap/default redirects and the first cache
+  proof route; T-233 owns the first runtime ISR/cache proof after that policy is
+  accepted.
+- Scope public client-provider/client-island reductions after the import-boundary
+  and cache policy work. T-234 should measure and plan route-local provider or
+  lazy-client slices before runtime changes.
+- Remove non-action top-level `"use server"` directives in a low-risk cleanup
+  slice after higher-priority boundary/cache work. T-235 owns that cleanup.
 - Consolidate taxonomy/filter option sources across constants, schemas, public
   filters, admin forms, and shop filters.
 - Centralize app route builders, API route builders, and auth path constants;
@@ -564,13 +584,23 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-23: Completed T-207. The rendering/data-fetching architecture doc now
   owns the public route fallback pattern, and `/project/aims` no longer uses
   generic inline loading copy for the desktop image Suspense boundary.
+- 2026-05-23: Reconciled A-022 into the findings register, R-012/R-025,
+  `docs/architecture/rendering-and-data-fetching.md`, this backlog, and planned
+  tasks T-230 through T-235. No runtime implementation was performed.
 
 ## Next Agent Action
 
-T-207 is complete; do not reassign route-local rendering fallback
-documentation unless the documented pattern or `/project/aims` source hygiene
-regresses. Broad static/ISR and route-builder work remain separate architecture
-tasks.
+Start the A-022 implementation sequence with T-230 because
+`clientServerImportBoundary.test.ts` is already red and protects the App Router
+server/client architecture. Then assign T-231 to narrow middleware matching.
+After those are green, assign T-232 as a docs-first public freshness decision
+before any ISR/cache runtime change, then T-233 as one blog/biography proof
+route.
+
+Do not reassign route-local rendering fallback documentation unless the
+documented pattern or `/project/aims` source hygiene regresses. Broad
+static/ISR and route-builder work remain separate architecture tasks outside
+T-232/T-233.
 
 Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
 adoption, and live homepage migration separate until owner review accepts the

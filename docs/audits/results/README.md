@@ -30,6 +30,7 @@ file instead of creating scattered notes.
 | A-019 | [Dependencies and supply chain](A-019-dependencies-supply-chain.md) | Completed |
 | A-020 | [Privacy, consent, and commerce compliance](A-020-privacy-consent-commerce-compliance.md) | Completed |
 | A-021 | [Observability and incident response](A-021-observability-incident-response.md) | Completed |
+| A-022 | [Next.js feature utilization](A-022-nextjs-feature-utilization.md) | Completed |
 
 ## Result Format
 

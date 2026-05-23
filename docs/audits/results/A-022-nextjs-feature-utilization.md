@@ -188,31 +188,41 @@ JavaScript from global providers and large client components.
 - Low, Code clarity: Top-level `"use server"` appears in server
   component/loader files where `server-only` would better express intent.
 
+Reconciled on 2026-05-23:
+
+- F-111: public caching/ISR and cached non-`fetch` service reads.
+- F-112: current client/server import-boundary regression.
+- F-113: middleware matcher broader than protected route prefixes.
+- F-114: implicit deploy-bound freshness for sitemap/default redirects.
+- F-115: public client-provider and client-island cost.
+- F-116: duplicate of F-080/R-019/ADR 0005 for instrumentation/web-vitals.
+- F-117: low-priority non-action top-level `"use server"` cleanup.
+
 ## Risks Updated
 
-- None. Shared risk docs were not edited because this was an audit result task
-  and the worktree already contains unrelated dirty shared documentation.
-- Candidate risk update: extend the existing rendering/cache risk to include
-  deploy-bound sitemap/default-redirect freshness and the missing public ISR
-  adoption plan.
+- 2026-05-23 reconciliation updated R-012 with the cache/ISR, sitemap/default
+  redirect freshness, and middleware matcher sequence.
+- R-025 was moved back to partially mitigated because the guard is currently
+  red again through `SignUpForm`.
+- R-019 was updated to note the still-blocked Next.js instrumentation and
+  web-vitals gap.
+- R-014 was updated to record this reconciliation.
 
 ## Workstream Updates
 
-- None. Shared workstream briefs were not edited.
-- Candidate backlog additions:
-  - Architecture refactor and code health: fix the failing client import graph,
-    narrow middleware/protected matcher coverage, and remove non-action
-    `"use server"` directives.
-  - Frontend routes and components: define first public ISR/static params
-    adoption slice, starting with blog or biography.
-  - Deployment/security/observability: decide sitemap/default redirect freshness
-    and add instrumentation/web-vitals after ADR 0005 is unblocked.
+- Updated the rendering architecture doc with the A-022 implementation order.
+- Updated the architecture, frontend, and deployment workstreams with A-022
+  facts, backlog entries, and next-agent sequencing.
+- Prepared planned task briefs T-230 through T-235.
 
 ## Next Action
 
-Fix the failing client/server import-boundary guard first because it is already
-red and directly protects the App Router/RSC architecture. Then take one narrow
-caching proof route, preferably blog or biography: add an explicit freshness
-policy, introduce cached server data access, and prove with `npm run build` that
-the route behavior changes as intended without breaking the existing dynamic
-route matrix tests.
+Implementation should proceed in this order:
+
+1. T-230 fixes the already-red client/server import-boundary guard.
+2. T-231 narrows middleware matching to protected route prefixes.
+3. T-232 defines public freshness for sitemap/default redirects and chooses the
+   first route-family cache proof.
+4. T-233 implements that one cache/ISR proof route.
+5. T-234 and T-235 remain lower-priority follow-ups for provider island scoping
+   and non-action `"use server"` cleanup.

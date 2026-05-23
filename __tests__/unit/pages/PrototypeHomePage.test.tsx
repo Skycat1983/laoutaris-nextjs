@@ -1093,7 +1093,9 @@ describe("/prototype/home page", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "Available now" })
     ).toBeInTheDocument();
-    expect(screen.getByTestId("prototype-shop-product-rail")).toHaveAttribute(
+    const desktopRail = screen.getByTestId("prototype-shop-product-rail");
+
+    expect(desktopRail).toHaveAttribute(
       "data-size-preset",
       "large"
     );
@@ -1101,13 +1103,98 @@ describe("/prototype/home page", () => {
       screen.getByRole("link", { name: /View full shop/i })
     ).toHaveAttribute("href", "/shop/products");
     expect(
-      screen.getByRole("link", { name: /Yellow Composition/i })
+      within(desktopRail).getByRole("link", { name: /Yellow Composition/i })
     ).toHaveAttribute("href", "/shop/products/yellow-composition");
-    expect(screen.getByText("€18,000")).toBeInTheDocument();
-    expect(screen.getByText("Image pending")).toBeInTheDocument();
+    expect(within(desktopRail).getByText("€18,000")).toBeInTheDocument();
+    expect(within(desktopRail).getByText("Image pending")).toBeInTheDocument();
     expect(
       screen.queryByText(/cart|checkout|shipping|refund|payment/i)
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the mobile shop mockup with category pills and accessible product controls", () => {
+    render(
+      <ShopPrototypeSection
+        products={[
+          createProduct("yellow-composition", "Yellow Composition"),
+          createProduct("orange-form", "Orange Form", {
+            productType: "print",
+            price: "6500.00",
+          }),
+          createProduct("blue-study", "Blue Study", {
+            productType: "",
+            tags: [],
+            price: "1200.00",
+          }),
+        ]}
+      />
+    );
+
+    const mobileShop = screen.getByTestId("prototype-mobile-shop");
+    const featuredCard = within(mobileShop).getByTestId(
+      "prototype-mobile-shop-featured-card"
+    );
+
+    for (const category of [
+      "Featured",
+      "Originals",
+      "Prints",
+      "Books",
+      "Editions",
+    ]) {
+      expect(mobileShop).toHaveTextContent(category);
+    }
+    expect(featuredCard).toHaveAttribute(
+      "href",
+      "/shop/products/yellow-composition"
+    );
+    expect(featuredCard).toHaveTextContent("Yellow Composition");
+    expect(featuredCard).toHaveTextContent("original");
+    expect(featuredCard).toHaveTextContent("€18,000");
+    expect(
+      within(mobileShop).getAllByTestId("prototype-mobile-shop-peek-card")
+    ).toHaveLength(2);
+    expect(
+      within(mobileShop).getByRole("button", {
+        name: "Show previous shop product",
+      })
+    ).toBeEnabled();
+    expect(
+      within(mobileShop).getByRole("button", {
+        name: "Show next shop product",
+      })
+    ).toBeEnabled();
+    expect(
+      within(mobileShop).getByTestId("prototype-mobile-shop-progress")
+    ).toHaveTextContent("Swipe to browse");
+
+    fireEvent.click(
+      within(mobileShop).getByRole("button", {
+        name: "Show next shop product",
+      })
+    );
+
+    const updatedFeaturedCard = within(mobileShop).getByTestId(
+      "prototype-mobile-shop-featured-card"
+    );
+    expect(updatedFeaturedCard).toHaveAttribute(
+      "href",
+      "/shop/products/orange-form"
+    );
+    expect(updatedFeaturedCard).toHaveTextContent("Orange Form");
+    expect(updatedFeaturedCard).toHaveTextContent("print");
+
+    fireEvent.keyDown(
+      within(mobileShop).getByTestId("prototype-mobile-shop-carousel"),
+      { key: "ArrowRight" }
+    );
+
+    expect(
+      within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
+    ).toHaveTextContent("Blue Study");
+    expect(
+      within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
+    ).toHaveTextContent("Archive product");
   });
 
   it("keeps the prototype shop section present when products are unavailable", () => {

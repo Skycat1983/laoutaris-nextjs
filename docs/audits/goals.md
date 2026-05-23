@@ -28,6 +28,7 @@ when assigning discovery work.
 | A-019 | [Dependencies and supply chain](#a-019-dependencies-and-supply-chain) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-019-dependencies-supply-chain.md) |
 | A-020 | [Privacy, consent, and commerce compliance](#a-020-privacy-consent-and-commerce-compliance) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-020-privacy-consent-commerce-compliance.md) |
 | A-021 | [Observability and incident response](#a-021-observability-and-incident-response) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-021-observability-incident-response.md) |
+| A-022 | [Next.js feature utilization](#a-022-nextjs-feature-utilization) | [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-022-nextjs-feature-utilization.md) |
 
 ## A-001 Shopify Commerce Readiness
 
@@ -338,3 +339,21 @@ Read first:
 - [Deployment runbook](../runbooks/deployment.md)
 
 Expected output: [results/A-021-observability-incident-response.md](results/A-021-observability-incident-response.md)
+
+## A-022 Next.js Feature Utilization
+
+Status: Completed
+
+Goal: audit how well the app is using Next.js App Router features, rendering
+and cache controls, middleware/proxy behavior, image/font optimization,
+metadata/discovery conventions, instrumentation hooks, and client/server
+component efficiency.
+
+Read first:
+
+- [Architecture refactor and code health workstream](../workstreams/architecture-refactor-and-code-health.md)
+- [Frontend routes and components workstream](../workstreams/frontend-routes-and-components.md)
+- [Rendering and data fetching](../architecture/rendering-and-data-fetching.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+
+Expected output: [results/A-022-nextjs-feature-utilization.md](results/A-022-nextjs-feature-utilization.md)

@@ -14,6 +14,7 @@ Next.js server/client component boundaries.
 - [A-005 Frontend routes and component boundaries](../audits/goals.md#a-005-frontend-routes-and-component-boundaries)
 - [A-017 Search, navigation, and content discovery](../audits/goals.md#a-017-search-navigation-and-content-discovery)
 - [A-010 Performance, SEO, and accessibility](../audits/goals.md#a-010-performance-seo-and-accessibility)
+- [A-022 Next.js feature utilization](../audits/goals.md#a-022-nextjs-feature-utilization)
 
 ## Blocks
 
@@ -239,6 +240,12 @@ Next.js server/client component boundaries.
   failures need visible states, mixed component barrels remain in server
   callers, the account subnav loader is not mounted in the account layout, and
   loading-state patterns need route-type documentation.
+- A-022 completed the Next.js feature-utilization audit. It found that public
+  browse/detail/shop routes are intentionally dynamic, the current
+  client/server import-boundary guard is failing through `SignUpForm`, middleware
+  matching is broader than protected route prefixes, static sitemap/default
+  redirect freshness is implicit, and global client providers/large client
+  islands are the next medium-priority RSC efficiency target.
 - T-199 defined the public detail not-found/error contract in
   `docs/architecture/rendering-and-data-fetching.md`: malformed canonical
   params and missing primary detail content should map to `notFound()`,
@@ -326,6 +333,12 @@ Next.js server/client component boundaries.
 - Define a public route rendering/cache plan that separates public layout work
   from session-only UI and moves middleware token parsing behind protected-route
   checks.
+- Use the A-022 sequence for public route efficiency work: T-230 import-boundary
+  repair, T-231 middleware matcher narrowing, T-232 freshness policy, then
+  T-233 as one blog/biography ISR/cache proof route.
+- Scope public client-provider and heavy-client-island reductions after the
+  import-boundary and first cache proof work; T-234 should decide the first
+  safe route-local provider/lazy-client slice.
 - Add route-specific metadata, canonical/social previews, and structured data
   for remaining public archive/detail pages beyond the T-103 root metadata and
   T-106/T-107 detail-page slices.
@@ -1062,6 +1075,10 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-23: Completed T-207. The rendering architecture doc now records the
   accepted public route fallback pattern, and `/project/aims` uses a route-local
   neutral desktop image fallback instead of generic inline loading copy.
+- 2026-05-23: Reconciled A-022 into F-111 through F-117 and planned tasks
+  T-230 through T-235. Frontend implementation should start with T-230 because
+  the current import-boundary guard is red, then follow T-231/T-232/T-233 before
+  client-provider island work.
 
 ## Next Agent Action
 
@@ -1073,6 +1090,11 @@ record regresses. T-207 is complete; do not reassign it unless public route
 fallback documentation or `/project/aims` fallback source hygiene regresses.
 Keep third-party consent UI, commerce-policy URL wiring, and real social target
 wiring separate until owner-supplied targets exist.
+
+For the A-022 Next.js efficiency track, assign T-230 first, then T-231. Only
+after those are green should T-232 define freshness and T-233 change one public
+route family to use explicit caching/ISR. Keep T-234 client-provider island
+work behind those higher-priority safety tasks.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

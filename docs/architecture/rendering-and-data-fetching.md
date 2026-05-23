@@ -42,6 +42,36 @@ and detail-param coverage are defined.
 | Shopify-backed public commerce | `/shop/products`, `/shop/products/[productHandle]` | `dynamic = "force-dynamic"` is explicit. Shopify product availability, metadata, and linked artwork reads remain request-time behavior. | Future commerce cache policy must define Shopify freshness, product-handle coverage, and fallback behavior. |
 | Session-aware public UI | `/`, `/artwork/[artworkId]` | `dynamic = "force-dynamic"` is explicit. The home page includes subscription session state, and artwork detail reads session user context for saved-item ownership. | Split session-only islands or define a separate personalized-data strategy before static rendering. |
 
+## Next.js Utilization Implementation Order
+
+A-022 confirmed that the app is already benefiting from App Router, direct
+server data services, route metadata, JSON-LD, `next/image`, `next/font`, and
+source-level architecture tests. The remaining high-value Next.js efficiency
+work should be sequenced so production behavior stays easy to reason about:
+
+1. Repair the current client/server import-boundary regression before adding
+   more caching. Server Component and server-only service benefits depend on
+   keeping client runtime graphs away from Mongoose, server-only modules, and
+   mixed component barrels.
+2. Narrow middleware matching to protected frontend and API prefixes. The
+   route-level public cache policy is clearer when public requests do not enter
+   auth middleware at all.
+3. Define freshness for mutable static surfaces before runtime cache changes.
+   `sitemap.ts`, `/biography`, and `/collections` currently prerender while
+   reading mutable MongoDB/Shopify-backed data, so the team must decide whether
+   those surfaces are deploy-bound, ISR-backed, or dynamic.
+4. Pilot one public route family with explicit caching/ISR after freshness is
+   accepted. Blog or biography is the preferred first proof because the route
+   data is MongoDB-backed, slug-shaped, and lower commerce risk than Shopify
+   product availability.
+5. Only after the proof route is stable, evaluate broader
+   `generateStaticParams()`, cached non-`fetch` service wrappers, cache tags,
+   and client provider splitting route by route.
+
+Do not remove the existing `force-dynamic` public route declarations or
+`publicRouteCachePolicy` invariants in a broad sweep. Each change should update
+this document, the route source, and focused tests together.
+
 ## Public Route Loading And Fallback Pattern
 
 Route loading states should preserve the route's visual structure and should be

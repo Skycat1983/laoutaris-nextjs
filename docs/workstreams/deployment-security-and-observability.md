@@ -14,6 +14,7 @@ security headers, environment documentation, and actionable operational signals.
 - [A-019 Dependencies and supply chain](../audits/goals.md#a-019-dependencies-and-supply-chain)
 - [A-020 Privacy, consent, and commerce compliance](../audits/goals.md#a-020-privacy-consent-and-commerce-compliance)
 - [A-021 Observability and incident response](../audits/goals.md#a-021-observability-and-incident-response)
+- [A-022 Next.js feature utilization](../audits/goals.md#a-022-nextjs-feature-utilization)
 
 ## Blocks
 
@@ -207,6 +208,12 @@ security headers, environment documentation, and actionable operational signals.
   public routes still build as dynamic because of global root layout and
   middleware request-time work, production metadata/discovery files are missing,
   and public accessibility gaps are not covered by lint.
+- A-022 completed the Next.js feature-utilization audit. It confirmed remaining
+  deployment-relevant gaps around broad middleware matching, implicit
+  deploy-bound freshness for static sitemap/default redirects, lack of Next.js
+  instrumentation/web-vitals, and the need to keep the future `proxy.ts` rename
+  in the Next major migration track instead of the current Next 14 middleware
+  matcher slice.
 - T-103 added production-safe root archive metadata plus baseline
   `robots.ts`/`sitemap.ts` discovery files using a fixed public site URL
   helper. Route-specific metadata, JSON-LD, and deployment smoke assertions for
@@ -369,6 +376,14 @@ security headers, environment documentation, and actionable operational signals.
   should prove static or ISR behavior for public archive/shop routes.
 - Add deployment smoke or build-output checks for the T-103 discovery endpoints
   and future route-specific metadata once those route contracts are assigned.
+- Narrow middleware matching to protected route prefixes through T-231 before
+  broad public cache work. Keep the future `proxy.ts` rename in the Next major
+  migration track.
+- Define sitemap/default redirect freshness through T-232 before any runtime
+  ISR/static-param changes affect deployment expectations.
+- Keep instrumentation and web-vitals implementation blocked by ADR 0005 until
+  the owner approves a monitoring provider or explicit no-provider launch
+  posture.
 
 ## Acceptance Criteria
 
@@ -1017,6 +1032,10 @@ npm run lint
   social URLs, launch jurisdiction/audience assumptions, or explicit opt-in
   decisions for self-service privacy and comment moderation/reporting
   workflows.
+- 2026-05-23: Reconciled A-022 deployment-adjacent findings into F-113,
+  F-114, and duplicate F-116. T-231 owns middleware matcher narrowing, T-232
+  owns sitemap/default redirect freshness decisions, and ADR 0005 continues to
+  block provider-backed instrumentation/web-vitals implementation.
 
 ## Next Agent Action
 
@@ -1033,6 +1052,11 @@ for Shopify policy URLs, real social URLs, jurisdiction/audience-specific legal
 claims, self-service privacy workflows, or comment moderation/reporting
 workflows. Monitoring implementation remains blocked by ADR 0005 until a
 provider, no-provider launch posture, or launch-blocking decision is approved.
+
+For the A-022 deployment-adjacent work, T-231 may run after T-230 or in a
+non-overlapping implementation slot that owns only `src/middleware.ts` and its
+focused tests. T-232 should follow before any cache/ISR runtime proof so
+sitemap/default redirect freshness and build-output expectations are explicit.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad
