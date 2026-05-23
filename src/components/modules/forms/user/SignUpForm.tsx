@@ -12,7 +12,7 @@ import {
 import {
   ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_NAME,
   ACCOUNT_PRIVACY_ACKNOWLEDGEMENT_FIELD_VALUE,
-} from "@/lib/constants";
+} from "@/lib/constants/accountPrivacyAcknowledgement";
 import Link from "next/link";
 
 // TODO: redo this form with shadcn/ui

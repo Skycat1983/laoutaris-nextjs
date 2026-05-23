@@ -1,6 +1,6 @@
 # T-231 Narrow Protected Middleware Matcher
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -79,4 +79,17 @@ npm run build
 
 - Finding: F-113.
 - Risk: R-012.
-- Next task after this passes: T-232 public cache/freshness policy.
+- Completed 2026-05-23: `src/middleware.ts` now matches only `/account`,
+  `/admin`, `/api/v2/admin`, and `/api/v2/user` prefixes.
+- `isProtectedRoute()` now uses exact-or-nested semantics for protected
+  prefixes, so public prefix lookalikes such as `/accounting` and
+  `/api/v2/userland` are not treated as protected.
+- Focused matcher coverage proves public pages, public APIs, and `/api/auth/*`
+  are outside the middleware matcher contract while protected auth behavior is
+  preserved.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/middleware.test.ts __tests__/unit/utils/routeUtils.test.ts __tests__/unit/security/publicShellAuthBoundaries.test.ts`
+  and `npm run build`. The first build attempt hit a transient Next page-data
+  collection `PageNotFoundError` for an existing admin preview route; an
+  immediate rerun passed.
+- Next task: T-232 public cache/freshness policy.

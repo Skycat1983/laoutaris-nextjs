@@ -66,6 +66,11 @@ describe("routeUtils", () => {
         description: "matches nested account route",
       },
       {
+        path: `${PROTECTED_FRONTEND_ROUTES.ACCOUNT}/`,
+        expected: true,
+        description: "matches account route with trailing slash",
+      },
+      {
         path: PROTECTED_FRONTEND_ROUTES.ADMIN,
         expected: true,
         description: "matches exact admin route",
@@ -80,6 +85,11 @@ describe("routeUtils", () => {
         path: `${PROTECTED_API_ROUTES.USER_API}/profile`,
         expected: true,
         description: "matches nested user API route",
+      },
+      {
+        path: `${PROTECTED_API_ROUTES.USER_API}/`,
+        expected: true,
+        description: "matches user API route with trailing slash",
       },
       // Public routes
       {
@@ -96,6 +106,21 @@ describe("routeUtils", () => {
         path: retiredProtectedRoute,
         expected: false,
         description: "does not retain retired protected test route",
+      },
+      {
+        path: `${PROTECTED_API_ROUTES.AUTH_API}/signin`,
+        expected: false,
+        description: "does not treat NextAuth routes as protected routes",
+      },
+      {
+        path: "/accounting",
+        expected: false,
+        description: "does not match account-like frontend routes",
+      },
+      {
+        path: "/api/v2/userland",
+        expected: false,
+        description: "does not match user API-like routes",
       },
     ];
 

@@ -191,8 +191,9 @@ JavaScript from global providers and large client components.
 Reconciled on 2026-05-23:
 
 - F-111: public caching/ISR and cached non-`fetch` service reads.
-- F-112: current client/server import-boundary regression.
-- F-113: middleware matcher broader than protected route prefixes.
+- F-112: current client/server import-boundary regression. Resolved by T-230.
+- F-113: middleware matcher broader than protected route prefixes. Resolved by
+  T-231.
 - F-114: implicit deploy-bound freshness for sitemap/default redirects.
 - F-115: public client-provider and client-island cost.
 - F-116: duplicate of F-080/R-019/ADR 0005 for instrumentation/web-vitals.
@@ -202,8 +203,8 @@ Reconciled on 2026-05-23:
 
 - 2026-05-23 reconciliation updated R-012 with the cache/ISR, sitemap/default
   redirect freshness, and middleware matcher sequence.
-- R-025 was moved back to partially mitigated because the guard is currently
-  red again through `SignUpForm`.
+- R-025 was moved back to partially mitigated during reconciliation because the
+  guard was red again through `SignUpForm`; T-230 later mitigated it again.
 - R-019 was updated to note the still-blocked Next.js instrumentation and
   web-vitals gap.
 - R-014 was updated to record this reconciliation.
@@ -214,15 +215,14 @@ Reconciled on 2026-05-23:
 - Updated the architecture, frontend, and deployment workstreams with A-022
   facts, backlog entries, and next-agent sequencing.
 - Prepared planned task briefs T-230 through T-235.
+- T-230 and T-231 are now complete; T-232 is the next A-022 task.
 
 ## Next Action
 
-Implementation should proceed in this order:
+Implementation should proceed with the remaining sequence:
 
-1. T-230 fixes the already-red client/server import-boundary guard.
-2. T-231 narrows middleware matching to protected route prefixes.
-3. T-232 defines public freshness for sitemap/default redirects and chooses the
+1. T-232 defines public freshness for sitemap/default redirects and chooses the
    first route-family cache proof.
-4. T-233 implements that one cache/ISR proof route.
-5. T-234 and T-235 remain lower-priority follow-ups for provider island scoping
+2. T-233 implements that one cache/ISR proof route.
+3. T-234 and T-235 remain lower-priority follow-ups for provider island scoping
    and non-action `"use server"` cleanup.

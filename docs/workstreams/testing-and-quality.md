@@ -1624,8 +1624,23 @@ npm run lint
   `__tests__/unit/publicRouteFallbackPatterns.test.ts` to guard the rendering
   architecture fallback-pattern section and prevent the `/project/aims` generic
   inline loading fallback from returning.
+- 2026-05-23: Completed T-230. The existing recursive
+  `clientServerImportBoundary` guard now passes after the `SignUpForm` constants
+  import was narrowed, and the focused sign-up privacy acknowledgement test
+  still passes.
+- 2026-05-23: Completed T-231. `middleware.test.ts` now covers the narrowed
+  protected matcher contract, preserved protected auth outcomes, public page/API
+  exclusion, `/api/auth/*` exclusion, and protected prefix lookalikes.
+  `routeUtils.test.ts` covers exact-or-nested protected route semantics.
 
 ## Next Agent Action
+
+T-230 import-boundary repair coverage is complete; do not reassign it unless
+the client import-boundary guard or `SignUpForm` direct constants import
+regresses. T-231 middleware matcher narrowing coverage is complete; do not
+reassign it unless the matcher contract or exact protected prefix semantics
+regress. The next A-022 implementation verification slice is T-232 public
+cache/freshness policy.
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,

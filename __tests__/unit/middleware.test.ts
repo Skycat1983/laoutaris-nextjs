@@ -1,4 +1,4 @@
-import { middleware } from "@/middleware";
+import { config, middleware } from "@/middleware";
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -37,6 +37,17 @@ const createRequest = (path: string): NextRequest =>
     },
     url: `https://example.com${path}`,
   } as unknown as NextRequest);
+
+const matchesConfiguredMiddleware = (path: string): boolean => {
+  return config.matcher.some((matcher) => {
+    const suffix = "/:path*";
+    const basePath = matcher.endsWith(suffix)
+      ? matcher.slice(0, -suffix.length)
+      : matcher;
+
+    return path === basePath || path.startsWith(`${basePath}/`);
+  });
+};
 
 describe("middleware", () => {
   const originalSecret = process.env.NEXTAUTH_SECRET;
@@ -142,6 +153,41 @@ describe("middleware", () => {
       expect(mockGetToken).not.toHaveBeenCalled();
     }
   );
+
+  it("matches only protected frontend and API prefixes", () => {
+    expect(config.matcher).toEqual([
+      "/account/:path*",
+      "/admin/:path*",
+      "/api/v2/admin/:path*",
+      "/api/v2/user/:path*",
+    ]);
+
+    [
+      "/account",
+      "/account/settings",
+      "/admin",
+      "/admin/dashboard",
+      "/api/v2/admin/article/read",
+      "/api/v2/user/navigation",
+    ].forEach((path) => {
+      expect(matchesConfiguredMiddleware(path)).toBe(true);
+    });
+
+    [
+      "/",
+      "/artwork",
+      "/blog/post-1",
+      "/api/auth/signin",
+      "/api/v2/public/artwork",
+      "/api/v2/public/search",
+      "/accounting",
+      "/administrator",
+      "/api/v2/administer",
+      "/api/v2/userland",
+    ].forEach((path) => {
+      expect(matchesConfiguredMiddleware(path)).toBe(false);
+    });
+  });
 
   it("allows authenticated protected requests through", async () => {
     mockGetToken.mockResolvedValue({ id: "admin-user-id", role: "admin" });

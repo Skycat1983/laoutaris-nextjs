@@ -3,35 +3,34 @@ import {
   PROTECTED_FRONTEND_ROUTES,
 } from "@/lib/constants/routeConstants";
 
+const isExactOrNestedRoute = (path: string, basePath: string): boolean => {
+  return (
+    path === basePath ||
+    path === `${basePath}/` ||
+    path.startsWith(`${basePath}/`)
+  );
+};
+
+const PROTECTED_ROUTE_PREFIXES = [
+  PROTECTED_FRONTEND_ROUTES.ACCOUNT,
+  PROTECTED_FRONTEND_ROUTES.ADMIN,
+  PROTECTED_API_ROUTES.ADMIN_API,
+  PROTECTED_API_ROUTES.USER_API,
+];
+
 export const isApiRoute = (path: string): boolean => {
   return path === "/api" || path.startsWith("/api/");
 };
 
-// Helper function to check if a path starts with any of the protected routes
 export const isProtectedRoute = (path: string): boolean => {
-  return (
-    // Check frontend routes
-    Object.values(PROTECTED_FRONTEND_ROUTES).some((route) =>
-      path.startsWith(route)
-    ) ||
-    // Check API routes
-    Object.values(PROTECTED_API_ROUTES).some((route) => path.startsWith(route))
+  return PROTECTED_ROUTE_PREFIXES.some((route) =>
+    isExactOrNestedRoute(path, route)
   );
 };
 
-// Helper function to check if a path is an admin route
 export const isAdminRoute = (path: string): boolean => {
-  // Helper to check if a path is exactly equal to a base path or is a nested route
-  const isExactOrNestedRoute = (basePath: string): boolean => {
-    return (
-      path === basePath || // Exact match
-      path === `${basePath}/` || // Match with trailing slash
-      path.startsWith(basePath + "/")
-    ); // Nested route
-  };
-
   return (
-    isExactOrNestedRoute(PROTECTED_FRONTEND_ROUTES.ADMIN) ||
-    isExactOrNestedRoute(PROTECTED_API_ROUTES.ADMIN_API)
+    isExactOrNestedRoute(path, PROTECTED_FRONTEND_ROUTES.ADMIN) ||
+    isExactOrNestedRoute(path, PROTECTED_API_ROUTES.ADMIN_API)
   );
 };

@@ -376,9 +376,6 @@ security headers, environment documentation, and actionable operational signals.
   should prove static or ISR behavior for public archive/shop routes.
 - Add deployment smoke or build-output checks for the T-103 discovery endpoints
   and future route-specific metadata once those route contracts are assigned.
-- Narrow middleware matching to protected route prefixes through T-231 before
-  broad public cache work. Keep the future `proxy.ts` rename in the Next major
-  migration track.
 - Define sitemap/default redirect freshness through T-232 before any runtime
   ISR/static-param changes affect deployment expectations.
 - Keep instrumentation and web-vitals implementation blocked by ADR 0005 until
@@ -1033,9 +1030,15 @@ npm run lint
   decisions for self-service privacy and comment moderation/reporting
   workflows.
 - 2026-05-23: Reconciled A-022 deployment-adjacent findings into F-113,
-  F-114, and duplicate F-116. T-231 owns middleware matcher narrowing, T-232
-  owns sitemap/default redirect freshness decisions, and ADR 0005 continues to
-  block provider-backed instrumentation/web-vitals implementation.
+  F-114, and duplicate F-116. T-231 has resolved middleware matcher narrowing,
+  T-232 owns sitemap/default redirect freshness decisions, and ADR 0005
+  continues to block provider-backed instrumentation/web-vitals implementation.
+- 2026-05-23: Completed T-231. Middleware matching is limited to protected
+  frontend/API prefixes (`/account`, `/admin`, `/api/v2/admin`, and
+  `/api/v2/user`), with focused coverage proving public pages, public APIs,
+  `/api/auth/*`, and prefix lookalikes are outside the protected matcher
+  contract. The future `proxy.ts` rename remains in the Next major migration
+  track.
 
 ## Next Agent Action
 
@@ -1053,10 +1056,10 @@ claims, self-service privacy workflows, or comment moderation/reporting
 workflows. Monitoring implementation remains blocked by ADR 0005 until a
 provider, no-provider launch posture, or launch-blocking decision is approved.
 
-For the A-022 deployment-adjacent work, T-231 may run after T-230 or in a
-non-overlapping implementation slot that owns only `src/middleware.ts` and its
-focused tests. T-232 should follow before any cache/ISR runtime proof so
-sitemap/default redirect freshness and build-output expectations are explicit.
+For the A-022 deployment-adjacent work, T-232 should follow before any
+cache/ISR runtime proof so sitemap/default redirect freshness and build-output
+expectations are explicit. Do not reassign T-231 unless the protected
+middleware matcher contract regresses.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad

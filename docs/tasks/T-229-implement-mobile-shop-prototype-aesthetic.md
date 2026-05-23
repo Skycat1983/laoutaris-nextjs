@@ -192,3 +192,11 @@ update only this task handoff.
   phone-viewport browser screenshot was not captured because repo-local browser
   automation is not installed (`playwright` resolves as unavailable). No
   browser automation dependency was added.
+- Follow-up correction on 2026-05-23 after owner feedback: replaced the
+  collection-like absolute mobile shop deck with a shop-specific horizontal
+  snap rail. The mobile shop now uses real inline product cards with scroll
+  padding for side-card peeks and keeps state only for previous/next controls
+  and progress. Added source coverage to keep the mobile shop carousel distinct
+  from the collections deck. Verification passed again with
+  `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm run lint`, and `git diff --check`.

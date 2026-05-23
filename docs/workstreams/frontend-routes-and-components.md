@@ -241,8 +241,8 @@ Next.js server/client component boundaries.
   callers, the account subnav loader is not mounted in the account layout, and
   loading-state patterns need route-type documentation.
 - A-022 completed the Next.js feature-utilization audit. It found that public
-  browse/detail/shop routes are intentionally dynamic, the current
-  client/server import-boundary guard is failing through `SignUpForm`, middleware
+  browse/detail/shop routes are intentionally dynamic, the then-current
+  client/server import-boundary guard was failing through `SignUpForm`, middleware
   matching is broader than protected route prefixes, static sitemap/default
   redirect freshness is implicit, and global client providers/large client
   islands are the next medium-priority RSC efficiency target.
@@ -1076,9 +1076,17 @@ Use browser checks for layout-sensitive changes.
   accepted public route fallback pattern, and `/project/aims` uses a route-local
   neutral desktop image fallback instead of generic inline loading copy.
 - 2026-05-23: Reconciled A-022 into F-111 through F-117 and planned tasks
-  T-230 through T-235. Frontend implementation should start with T-230 because
-  the current import-boundary guard is red, then follow T-231/T-232/T-233 before
-  client-provider island work.
+  T-230 through T-235. T-230 then resolved the import-boundary guard regression,
+  and T-231 narrowed middleware matching to protected route prefixes only. The
+  next A-022 implementation task is T-232 before any T-233 cache runtime proof
+  and later client-provider island work.
+- 2026-05-23: Completed T-230. `SignUpForm` now avoids the broad
+  `@/lib/constants` barrel at runtime by importing the account privacy
+  acknowledgement field constants from the narrow client-safe constants module,
+  while preserving the rendered privacy/terms acknowledgement behavior.
+- 2026-05-23: Completed T-231. Middleware matching now covers only protected
+  frontend/API prefixes, and protected route utility matching no longer treats
+  public prefix lookalikes as protected.
 
 ## Next Agent Action
 
@@ -1091,10 +1099,10 @@ fallback documentation or `/project/aims` fallback source hygiene regresses.
 Keep third-party consent UI, commerce-policy URL wiring, and real social target
 wiring separate until owner-supplied targets exist.
 
-For the A-022 Next.js efficiency track, assign T-230 first, then T-231. Only
-after those are green should T-232 define freshness and T-233 change one public
-route family to use explicit caching/ISR. Keep T-234 client-provider island
-work behind those higher-priority safety tasks.
+For the A-022 Next.js efficiency track, assign T-232 next to define freshness
+before any runtime cache or ISR change. Only after T-232 is accepted should
+T-233 change one public route family to use explicit caching/ISR. Keep T-234
+client-provider island work behind those higher-priority safety tasks.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify
@@ -1139,6 +1147,8 @@ opened. Do not reassign T-130 unless the scoped public browsing client
 source-hygiene or existing failure-state behavior regresses. Do not reassign
 T-204 unless public browsing client retry/error states regress. Do not reassign
 T-205 unless scoped mixed-barrel import hygiene regresses. Do not reassign
+T-230 unless the client import-boundary guard or `SignUpForm` direct constants
+import regresses. Do not reassign
 T-206 unless the account layout subnav mount regresses. Do not reassign
 T-131 unless scoped account/user client source-hygiene or existing
 failure-state behavior regresses. Do not reassign T-132 unless scoped shared

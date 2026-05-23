@@ -91,18 +91,6 @@ const getProductTags = (product: SimpleProduct) =>
     .slice(0, 2)
     .join(" / ");
 
-const getProductAtOffset = (
-  products: SimpleProduct[],
-  activeIndex: number,
-  offset: number
-) => {
-  if (products.length === 0) return null;
-
-  const wrappedIndex =
-    (activeIndex + offset + products.length) % products.length;
-  return products[wrappedIndex];
-};
-
 function ShopProductImage({
   product,
   sizes,
@@ -166,69 +154,50 @@ function ShopProductCardDetails({
   );
 }
 
-function MobileShopPeekCard({
-  product,
-  side,
-}: {
-  product: SimpleProduct | null;
-  side: "left" | "right";
-}) {
-  if (!product) return null;
-
-  return (
-    <div
-      className={`absolute top-10 z-0 h-[390px] w-[min(47vw,190px)] overflow-hidden rounded-[14px] bg-white shadow-[0_18px_34px_rgba(47,38,28,0.14)] ${
-        side === "left"
-          ? "right-[calc(50%_+_118px)]"
-          : "left-[calc(50%_+_118px)]"
-      }`}
-      aria-hidden="true"
-      data-testid="prototype-mobile-shop-peek-card"
-    >
-      <div className="relative h-[260px] bg-[#ebe6dc]">
-        <ShopProductImage
-          product={product}
-          sizes="190px"
-          className="object-cover"
-        />
-      </div>
-      <div className="flex h-[130px] flex-col justify-between p-5">
-        <div>
-          <p className="prototype-home-accent-text truncate font-archivo text-[10px] uppercase tracking-[0.18em]">
-            {getProductMeta(product)}
-          </p>
-          <p className="mt-3 line-clamp-2 font-cormorant text-xl font-semibold leading-tight text-slate">
-            {product.title}
-          </p>
-        </div>
-        <div className="flex items-center justify-between border-t border-slate/10 pt-3 font-archivo text-[11px] uppercase tracking-[0.12em] text-slate/55">
-          <span>{formatProductPrice(product)}</span>
-          <span>Details</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
+  const railRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeProduct = products[activeIndex] ?? products[0];
-  const previousProduct = getProductAtOffset(products, activeIndex, -1);
-  const nextProduct = getProductAtOffset(products, activeIndex, 1);
   const progress =
     products.length > 0 ? ((activeIndex + 1) / products.length) * 100 : 0;
 
-  const showPrevious = () => {
-    setActiveIndex((currentIndex) =>
-      currentIndex === 0 ? products.length - 1 : currentIndex - 1
+  const focusProduct = (nextIndex: number) => {
+    setActiveIndex(nextIndex);
+    cardRefs.current[nextIndex]?.scrollIntoView?.({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  };
+
+  const updateActiveFromScroll = () => {
+    const rail = railRef.current;
+    if (!rail) return;
+
+    const railCenter = rail.scrollLeft + rail.clientWidth / 2;
+    const closestIndex = cardRefs.current.reduce(
+      (closest, card, index) => {
+        if (!card) return closest;
+
+        const cardCenter = card.offsetLeft + card.clientWidth / 2;
+        const distance = Math.abs(cardCenter - railCenter);
+        return distance < closest.distance ? { distance, index } : closest;
+      },
+      { distance: Number.POSITIVE_INFINITY, index: activeIndex }
     );
+
+    if (closestIndex.index !== activeIndex) {
+      setActiveIndex(closestIndex.index);
+    }
+  };
+
+  const showPrevious = () => {
+    focusProduct(activeIndex === 0 ? products.length - 1 : activeIndex - 1);
   };
 
   const showNext = () => {
-    setActiveIndex((currentIndex) => (currentIndex + 1) % products.length);
+    focusProduct((activeIndex + 1) % products.length);
   };
-
-  if (!activeProduct) return null;
 
   return (
     <div className="md:hidden" data-testid="prototype-mobile-shop">
@@ -247,7 +216,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
       </div>
 
       <div
-        className="relative -mx-4 mt-8 h-[590px] overflow-hidden px-4"
+        className="relative -mx-4 mt-8 overflow-hidden"
         aria-label="Mobile shop product carousel"
         data-testid="prototype-mobile-shop-carousel"
         onKeyDown={(event) => {
@@ -255,20 +224,13 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           if (event.key === "ArrowRight") showNext();
         }}
       >
-        {products.length > 1 && (
-          <>
-            <MobileShopPeekCard product={previousProduct} side="left" />
-            <MobileShopPeekCard product={nextProduct} side="right" />
-          </>
-        )}
-
         <button
           type="button"
           aria-label="Show previous shop product"
           title="Show previous shop product"
           disabled={products.length < 2}
           onClick={showPrevious}
-          className="absolute left-[calc(50%_-_176px)] top-[255px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
+          className="absolute left-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ArrowLeft aria-hidden="true" className="h-6 w-6" />
         </button>
@@ -278,26 +240,52 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           title="Show next shop product"
           disabled={products.length < 2}
           onClick={showNext}
-          className="absolute right-[calc(50%_-_176px)] top-[255px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
+          className="absolute right-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ArrowRight aria-hidden="true" className="h-6 w-6" />
         </button>
 
-        <Link
-          href={`/shop/products/${activeProduct.handle}`}
-          className="group absolute left-1/2 top-0 z-20 flex h-[540px] w-[min(72vw,310px)] -translate-x-1/2 flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_22px_44px_rgba(47,38,28,0.18)] transition-shadow hover:shadow-[0_24px_52px_rgba(47,38,28,0.2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
-          data-testid="prototype-mobile-shop-featured-card"
+        <div
+          ref={railRef}
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth px-[14vw] pb-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          onScroll={updateActiveFromScroll}
+          data-testid="prototype-mobile-shop-rail"
         >
-          <article className="flex h-full flex-col">
-            <div className="relative h-[330px] bg-[#ebe6dc]">
-              <ShopProductImage
-                product={activeProduct}
-                sizes="(max-width: 768px) 72vw, 310px"
-              />
-            </div>
-            <ShopProductCardDetails product={activeProduct} showTags={false} />
-          </article>
-        </Link>
+          {products.map((product, index) => {
+            const isActive = index === activeIndex;
+
+            return (
+              <Link
+                key={product.id}
+                ref={(card) => {
+                  cardRefs.current[index] = card;
+                }}
+                href={`/shop/products/${product.handle}`}
+                className={`group flex h-[540px] w-[72vw] min-w-[270px] max-w-[310px] shrink-0 snap-center flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_22px_44px_rgba(47,38,28,0.16)] transition-[box-shadow,opacity,transform] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
+                  isActive
+                    ? "opacity-100"
+                    : "opacity-90 hover:opacity-100 focus-visible:opacity-100"
+                }`}
+                aria-current={isActive ? "true" : undefined}
+                data-testid={
+                  isActive
+                    ? "prototype-mobile-shop-featured-card"
+                    : "prototype-mobile-shop-card"
+                }
+              >
+                <article className="flex h-full flex-col">
+                  <div className="relative h-[330px] bg-[#ebe6dc]">
+                    <ShopProductImage
+                      product={product}
+                      sizes="(max-width: 768px) 72vw, 310px"
+                    />
+                  </div>
+                  <ShopProductCardDetails product={product} showTags={false} />
+                </article>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       <div

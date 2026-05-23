@@ -49,9 +49,9 @@ or inconsistent code forward.
 - A-022 is complete and reconciled. It confirmed the app is using App Router,
   server loaders, direct server data services, metadata conventions, image/font
   optimization, and source guards well, but needs a staged Next.js efficiency
-  sequence: repair the current client import-boundary regression, narrow
-  middleware matching, define public data freshness, then pilot ISR/cached
-  public reads.
+  sequence: repair the client import-boundary regression, narrow middleware
+  matching, define public data freshness, then pilot ISR/cached public reads.
+  T-230 completed the import-boundary repair.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
   server loaders, API routes, and server actions should share direct
   server-only data-access services instead of same-app HTTP fetches.
@@ -198,18 +198,14 @@ or inconsistent code forward.
   remaining route-critical loaders off same-app HTTP in small slices and retire
   `serverApi` usage from server loaders/actions.
 - Maintain the T-137 client/server import-boundary guard when new client
-  components, barrels, or data-service modules are added. T-230 is the next
-  repair because A-022 found the guard currently fails through
-  `SignUpForm` -> `@/lib/constants`.
+  components, barrels, or data-service modules are added. T-230 restored the
+  guard after the A-022 `SignUpForm` -> `@/lib/constants` regression.
 - Plan scoped adoption of the T-170 semantic style map only after owner review
   accepts the expanded homepage prototype direction.
 - Ensure every MongoDB-backed API route and server action reaches the database
   only through a service or shared wrapper that calls `dbConnect()`.
 - Move route-neutral DB/session work out of the root layout so dynamic rendering
   and cache policy can be owned by the routes that need them.
-- Narrow middleware matching to protected frontend/API prefixes through T-231
-  before broad public route cache work, while leaving the future
-  `middleware.ts` -> `proxy.ts` rename for the accepted Next major migration.
 - Document route-specific cache/revalidation policy for public archive,
   authenticated, admin, and Shopify data. T-232 owns the next docs-first
   public freshness decision for sitemap/default redirects and the first cache
@@ -587,15 +583,22 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-23: Reconciled A-022 into the findings register, R-012/R-025,
   `docs/architecture/rendering-and-data-fetching.md`, this backlog, and planned
   tasks T-230 through T-235. No runtime implementation was performed.
+- 2026-05-23: Completed T-230. `SignUpForm` now imports account privacy
+  acknowledgement field constants directly from
+  `src/lib/constants/accountPrivacyAcknowledgement.ts`, restoring the
+  recursive client/server import-boundary guard without changing the broad
+  constants barrel or registration behavior.
+- 2026-05-23: Completed T-231. `src/middleware.ts` now matches only protected
+  frontend/API prefixes, and route protection utilities use exact-or-nested
+  prefix semantics so public prefix lookalikes do not enter protected route
+  behavior. The future `middleware.ts` -> `proxy.ts` rename remains in the
+  Next major migration track.
 
 ## Next Agent Action
 
-Start the A-022 implementation sequence with T-230 because
-`clientServerImportBoundary.test.ts` is already red and protects the App Router
-server/client architecture. Then assign T-231 to narrow middleware matching.
-After those are green, assign T-232 as a docs-first public freshness decision
-before any ISR/cache runtime change, then T-233 as one blog/biography proof
-route.
+Continue the A-022 implementation sequence with T-232 as a docs-first public
+freshness decision before any ISR/cache runtime change, then T-233 as one
+blog/biography proof route.
 
 Do not reassign route-local rendering fallback documentation unless the
 documented pattern or `/project/aims` source hygiene regresses. Broad
@@ -611,8 +614,8 @@ Keep broad static/ISR migration separate until a dedicated cache-freshness and
 route-param task is assigned.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
-T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, or T-205 unless a
-regression is opened.
+T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, T-205, T-230, or
+T-231 unless a regression is opened.
 
 Keep client API wrappers, route-specific fetcher factories, the MongoDB driver
 `serverApi` option, DB connection semantics, broad route-builder centralization,

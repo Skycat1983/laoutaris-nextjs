@@ -1,6 +1,6 @@
 # T-230 Fix Client Import Boundary Regression
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -86,4 +86,10 @@ npm run build
 
 - Finding: F-112.
 - Risk: R-025.
-- Next task after this passes: T-231 middleware matcher narrowing.
+- Completed 2026-05-23: `SignUpForm` now imports the account privacy
+  acknowledgement field constants directly from the narrow client-safe constants
+  module instead of the broad `@/lib/constants` barrel.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts __tests__/unit/forms/SignUpFormPrivacy.test.tsx`
+  and `npm run build`.
+- Next task: T-231 middleware matcher narrowing.

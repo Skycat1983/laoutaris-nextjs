@@ -1151,9 +1151,13 @@ describe("/prototype/home page", () => {
     expect(featuredCard).toHaveTextContent("Yellow Composition");
     expect(featuredCard).toHaveTextContent("original");
     expect(featuredCard).toHaveTextContent("€18,000");
+    expect(featuredCard).toHaveClass("snap-center");
     expect(
-      within(mobileShop).getAllByTestId("prototype-mobile-shop-peek-card")
+      within(mobileShop).getAllByTestId("prototype-mobile-shop-card")
     ).toHaveLength(2);
+    expect(
+      within(mobileShop).getByTestId("prototype-mobile-shop-rail")
+    ).toHaveClass("snap-x", "overflow-x-auto", "px-[14vw]");
     expect(
       within(mobileShop).getByRole("button", {
         name: "Show previous shop product",
@@ -1195,6 +1199,23 @@ describe("/prototype/home page", () => {
     expect(
       within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
     ).toHaveTextContent("Archive product");
+  });
+
+  it("keeps the mobile shop carousel visually distinct from the collection deck", () => {
+    const sectionSource = readRepoFile(
+      "src/components/prototypes/home/ShopPrototypeSection.tsx"
+    );
+    const mobileShopSource =
+      sectionSource.match(
+        /function MobileShopDeck[\s\S]*?export function ShopPrototypeSection/
+      )?.[0] ?? "";
+
+    expect(mobileShopSource).toContain("overflow-x-auto");
+    expect(mobileShopSource).toContain("snap-center");
+    expect(mobileShopSource).toContain("px-[14vw]");
+    expect(mobileShopSource).not.toContain("MobileShopPeekCard");
+    expect(mobileShopSource).not.toContain("absolute left-1/2 top-0");
+    expect(mobileShopSource).not.toContain("h-[590px]");
   });
 
   it("keeps the prototype shop section present when products are unavailable", () => {
