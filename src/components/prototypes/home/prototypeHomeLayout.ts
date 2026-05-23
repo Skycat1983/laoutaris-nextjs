@@ -4,7 +4,7 @@ export const prototypeSectionFrameClassName =
   "mx-auto w-full max-w-[var(--prototype-home-frame-max,1920px)] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16";
 
 export const prototypeSectionEyebrowClassName =
-  "font-archivo text-sm uppercase tracking-[0.14em] text-[#9a713d]";
+  "prototype-home-accent-text font-archivo text-sm uppercase tracking-[0.14em]";
 
 export const prototypeSectionMutedEyebrowClassName =
   "font-archivo text-sm uppercase tracking-[0.14em] opacity-70";

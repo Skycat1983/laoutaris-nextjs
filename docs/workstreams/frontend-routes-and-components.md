@@ -358,9 +358,8 @@ Next.js server/client component boundaries.
 - Centralize taxonomy value+label options for public filters and admin forms.
 - Coordinate footer placeholder social links, current-year/copyright text, and
   assurance copy with A-020 owner/legal-approved requirements.
-- Document route loading/empty/error fallback patterns by route type and replace
-  generic inline loading copy such as `/project/aims` with accepted fallback
-  components.
+- Keep the documented public route loading/empty/error fallback pattern current
+  when new route families or Suspense boundary types are added.
 
 ## Acceptance Criteria
 
@@ -388,6 +387,25 @@ Use browser checks for layout-sensitive changes.
   biography prototype order-index map for normalized runtime slug/title
   lookups. `npm run build` now passes; local static generation still reports
   existing structured MongoDB timeout logs when the database is unavailable.
+- 2026-05-23: Refined `/prototype/home` section styling after owner feedback.
+  Collections now uses the route-local alternate section background instead of
+  its previous hard-coded tint, biography timeline dots are filled above the
+  timeline rule, the shop header duplicate copy/link was removed, and the
+  fixed control rail now includes eight alternate section background presets
+  plus eight neutral/brown alternate text-accent presets. Verification:
+  `npx tsc --noEmit`, `npm run lint`, `npm run build`, and
+  `curl -I http://localhost:3001/prototype/home` passed.
+- 2026-05-23: Updated `/prototype/home` alternate background defaults after
+  owner review. Alternate-background sections now default to chalk stone with
+  walnut accent text, primary whitish sections use charcoal accent text, the
+  artwork teaser placeholder slot was removed, and the alt-background control
+  now offers warm near-white/beige options without blue-leaning presets. A
+  follow-up tightened every non-chalk shade closer to the fixed whitish base so
+  the presets differ more subtly.
+  Verification: `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx`
+  and `npm run lint` passed. A lightweight live-route `curl` check could not be
+  completed because `localhost:3000` refused the connection and the existing
+  `localhost:3001` dev server request did not return within 30 seconds.
 - 2026-05-14: Reconciled A-001, A-013, A-014, and A-015 frontend findings into
   `docs/audits/findings-register.md`, production risks, and this backlog.
 - 2026-05-14: Reconciled A-002 public list/search semantics into F-049 and this
@@ -1031,19 +1049,30 @@ Use browser checks for layout-sensitive changes.
   render the shared privacy/retention notice with `/privacy` and `/terms`
   links plus the manual privacy/legal handoff to hlaoutaris@gmail.com, while
   preserving existing enquiry form behavior.
+- 2026-05-23: Completed T-218. The footer no longer renders dead
+  Facebook/Twitter/Instagram `href="#"` placeholders, contact and legal links
+  remain intact, and the copyright text is current-year based instead of fixed
+  at 2024.
+- 2026-05-23: Completed T-219 as a docs-only compliance blocker record. The
+  remaining R-018 runtime work now waits for owner-supplied Shopify policy
+  URLs, real social URLs, launch scope, or explicit opt-in decisions.
+- 2026-05-23: Reactivated T-207 as the next unblocked frontend cleanup task.
+  It should document route fallback patterns and replace only the generic
+  `/project/aims` inline `Loading...` fallback.
+- 2026-05-23: Completed T-207. The rendering architecture doc now records the
+  accepted public route fallback pattern, and `/project/aims` uses a route-local
+  neutral desktop image fallback instead of generic inline loading copy.
 
 ## Next Agent Action
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
-it is complete. T-215 is complete; do not reassign it unless account
-acknowledgement/manual request UI regresses. Assign
-[T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md)
-for the next footer cleanup slice. T-216 and T-217 are complete; do not
-reassign them unless comment or contact/enquiry notice behavior regresses. Keep
-third-party consent UI, commerce-policy URL wiring, and real social target
-wiring separate until owner-supplied targets exist. Keep T-207 fallback
-patterns deferred as polish unless explicitly prioritized.
+it is complete. T-215 through T-219 are complete; do not reassign them unless
+account/comment/contact/footer compliance behavior or the owner-input blocker
+record regresses. T-207 is complete; do not reassign it unless public route
+fallback documentation or `/project/aims` fallback source hygiene regresses.
+Keep third-party consent UI, commerce-policy URL wiring, and real social target
+wiring separate until owner-supplied targets exist.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

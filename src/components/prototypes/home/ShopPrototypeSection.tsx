@@ -106,13 +106,13 @@ export function ShopPrototypeSection({
     <section
       id="shop"
       aria-labelledby="prototype-shop-heading"
-      className="w-full bg-[#f8f7f3] text-slate"
+      className="prototype-home-alt-bg w-full text-slate"
       data-testid="prototype-shop-section"
     >
       <div
         className={`${prototypeSectionFrameClassName} flex flex-col gap-10 py-16 sm:py-20 lg:py-24 2xl:gap-12 2xl:py-28`}
       >
-        <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.52fr)_minmax(280px,0.34fr)_auto] lg:items-end 2xl:grid-cols-[minmax(420px,0.48fr)_minmax(360px,0.36fr)_auto] 2xl:gap-12">
+        <div className="grid gap-8 lg:grid-cols-[minmax(320px,0.72fr)_auto] lg:items-end 2xl:grid-cols-[minmax(420px,0.76fr)_auto] 2xl:gap-12">
           <div className="max-w-4xl">
             <p className={`mb-5 ${prototypeSectionEyebrowClassName}`}>Shop</p>
             <h2
@@ -122,26 +122,16 @@ export function ShopPrototypeSection({
             >
               Available now
             </h2>
-          </div>
-
-          <div className="max-w-xl lg:pb-1">
-            <p className="mt-7 max-w-xl font-archivo text-base leading-7 text-slate/70 sm:text-lg lg:mt-0">
+            <p className="mt-7 max-w-xl font-archivo text-base leading-7 text-slate/70 sm:text-lg">
               A curated selection of original works, prints, and publications
               from the Joseph Laoutaris archive.
             </p>
-            <Link
-              href={SHOP_ROUTE}
-              className="mt-8 inline-flex items-center gap-3 border-b border-[#9a713d] pb-2 font-archivo text-sm uppercase text-[#9a713d] transition-colors hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
-            >
-              Explore the shop
-              <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </Link>
           </div>
 
           <div className="flex flex-wrap items-center gap-5 lg:flex-col lg:items-end lg:gap-9 lg:justify-end">
             <Link
               href={SHOP_ROUTE}
-              className="border-b border-[#9a713d] pb-2 font-archivo text-sm uppercase text-[#9a713d] transition-colors hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
+              className="prototype-home-accent-link border-b pb-2 font-archivo text-sm uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
             >
               View full shop
             </Link>
@@ -155,7 +145,7 @@ export function ShopPrototypeSection({
                 title="Scroll shop products backward"
                 disabled={!hasProducts}
                 onClick={() => scrollProducts(-1)}
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-[#9a713d] text-[#9a713d] transition-colors hover:border-slate hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-40"
+                className="prototype-home-accent-border prototype-home-accent-text flex h-12 w-12 items-center justify-center rounded-full border transition-colors hover:border-slate hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowLeft aria-hidden="true" className="h-5 w-5" />
               </button>
@@ -165,7 +155,7 @@ export function ShopPrototypeSection({
                 title="Scroll shop products forward"
                 disabled={!hasProducts}
                 onClick={() => scrollProducts(1)}
-                className="flex h-12 w-12 items-center justify-center rounded-full border border-[#9a713d] text-[#9a713d] transition-colors hover:border-slate hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-40"
+                className="prototype-home-accent-border prototype-home-accent-text flex h-12 w-12 items-center justify-center rounded-full border transition-colors hover:border-slate hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowRight aria-hidden="true" className="h-5 w-5" />
               </button>
@@ -173,7 +163,7 @@ export function ShopPrototypeSection({
           </div>
         </div>
 
-        <div className="border-t border-[#d8c8ad]" />
+        <div className="prototype-home-accent-divider-border border-t" />
 
         {hasProducts ? (
           <div className="relative">
@@ -212,7 +202,7 @@ export function ShopPrototypeSection({
 
                       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
                         <div>
-                          <p className="line-clamp-2 break-words font-archivo text-xs uppercase text-[#9a713d]">
+                          <p className="prototype-home-accent-text line-clamp-2 break-words font-archivo text-xs uppercase">
                             {getProductMeta(product)}
                           </p>
                           <h3 className="mt-2 line-clamp-2 break-words font-cormorant text-2xl font-semibold leading-tight text-slate">
@@ -227,7 +217,7 @@ export function ShopPrototypeSection({
                         )}
 
                         <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate/10 pt-4">
-                          <span className="font-archivo text-sm text-[#9a713d]">
+                          <span className="prototype-home-accent-text font-archivo text-sm">
                             {formatProductPrice(product)}
                           </span>
                           <span className="inline-flex items-center gap-1 font-archivo text-xs uppercase text-slate/60">
@@ -247,7 +237,7 @@ export function ShopPrototypeSection({
           </div>
         ) : (
           <div
-            className="border-y border-[#d8c8ad] px-4 py-14 text-center"
+            className="prototype-home-accent-divider-border border-y px-4 py-14 text-center"
             data-testid="prototype-shop-empty-state"
           >
             <h3 className="font-cormorant text-3xl font-semibold text-slate">
@@ -262,7 +252,7 @@ export function ShopPrototypeSection({
             </p>
             <Link
               href={SHOP_ROUTE}
-              className="mt-7 inline-flex items-center gap-3 border-b border-[#9a713d] pb-2 font-archivo text-sm uppercase text-[#9a713d] transition-colors hover:text-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
+              className="prototype-home-accent-link mt-7 inline-flex items-center gap-3 border-b pb-2 font-archivo text-sm uppercase transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
             >
               View shop page
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -271,9 +261,9 @@ export function ShopPrototypeSection({
         )}
 
         <div className="flex items-center gap-5" aria-hidden="true">
-          <div className="h-px flex-1 bg-[#d8c8ad]" />
-          <div className="h-3 w-3 rotate-45 border border-[#b9915a]" />
-          <div className="h-px flex-1 bg-[#d8c8ad]" />
+          <div className="prototype-home-accent-divider h-px flex-1" />
+          <div className="prototype-home-accent-border h-3 w-3 rotate-45 border" />
+          <div className="prototype-home-accent-divider h-px flex-1" />
         </div>
       </div>
     </section>

@@ -853,6 +853,11 @@ npm run lint
   installation, `instrumentation.ts`, alert automation, CI/scheduled smoke,
   owner-approved incident matrix completion, and lower-level service/client
   logging policy remain separate.
+- 2026-05-23: Completed T-139 as a blocked monitoring decision record. ADR 0005
+  now records that no provider and no explicit no-provider interim launch
+  policy are approved; provider SDKs, `instrumentation.ts`, provider variables,
+  source-map/release tracking, dashboards, uptime checks, and alert routing
+  remain blocked until owner/platform approval.
 - 2026-05-18: Prepared T-124 as the next F-083/R-028 smoke automation slice.
   It should add a GitHub Actions workflow for unauthenticated public smoke that
   can run manually with a supplied base URL and on a schedule after the owner
@@ -1004,6 +1009,14 @@ npm run lint
   include public-safe privacy/retention notice copy, policy links, and the
   manual privacy/legal handoff to hlaoutaris@gmail.com without adding stored
   notice fields, operator workflow promises, or retention automation.
+- 2026-05-23: Completed T-218. Footer placeholder social links and stale
+  copyright copy are cleaned up without inventing real social URLs or adding
+  Shopify policy targets.
+- 2026-05-23: Completed T-219 as a docs-only owner-input record. Remaining
+  R-018 runtime work is blocked on owner-supplied Shopify policy URLs, real
+  social URLs, launch jurisdiction/audience assumptions, or explicit opt-in
+  decisions for self-service privacy and comment moderation/reporting
+  workflows.
 
 ## Next Agent Action
 
@@ -1011,14 +1024,15 @@ Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
 it is complete. T-215 is complete; do not reassign it unless app-owned sign-in
 notice, account acknowledgement, or manual request handoff behavior regresses.
-Assign
-[T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md)
-as the next R-018/F-104 cleanup task. T-216 and T-217 are complete; do not
-reassign them unless comment or contact/enquiry notice/manual handoff behavior
-regresses. Keep Shopify policy URLs, real social URLs, and
-jurisdiction/audience-specific legal claims separate.
-Use the T-123 monitoring architecture plan only after an owner/platform
-provider decision or explicit no-provider interim policy exists.
+T-216, T-217, T-218, and T-219 are complete; do not reassign them unless
+comment, contact/enquiry, footer cleanup behavior, or owner-input blocker
+documentation regresses. T-207 and T-139 are complete; do not reassign them
+unless route fallback source hygiene regresses or the owner/platform monitoring
+decision changes. More R-018 runtime work is blocked until owner input exists
+for Shopify policy URLs, real social URLs, jurisdiction/audience-specific legal
+claims, self-service privacy workflows, or comment moderation/reporting
+workflows. Monitoring implementation remains blocked by ADR 0005 until a
+provider, no-provider launch posture, or launch-blocking decision is approved.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad

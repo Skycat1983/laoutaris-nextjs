@@ -10,6 +10,10 @@ agent handoffs.
 - [0003 - Use Shopify handles for product routes](0003-shopify-product-handles.md)
 - [0004 - Server data access ownership](0004-server-data-access-ownership.md)
 
+## Blocked Decisions
+
+- [0005 - Monitoring provider decision](0005-monitoring-provider-decision.md)
+
 ## Proposed Decisions
 
 None.

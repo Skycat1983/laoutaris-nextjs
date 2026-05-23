@@ -19,9 +19,9 @@ type PrototypeSectionPlaceholderProps = {
 
 const toneClasses: Record<PrototypeSectionTone, string> = {
   hero: "bg-slate text-whitish",
-  light: "bg-whitish text-slate",
-  muted: "bg-[#ececea] text-slate",
-  dark: "bg-[#171717] text-whitish",
+  light: "prototype-home-primary-bg text-slate",
+  muted: "prototype-home-alt-bg text-slate",
+  dark: "prototype-home-primary-bg text-slate",
 };
 
 export function PrototypeSectionPlaceholder({

@@ -1,6 +1,6 @@
 # Current Orchestration State
 
-Last updated: 2026-05-22
+Last updated: 2026-05-23
 
 ## Current Priority
 
@@ -57,13 +57,14 @@ slice. F-105 is resolved. T-203 resolved F-106 home section fallback states,
 and T-204 resolved F-107 public browsing client fetch error states. R-032 is
 mitigated for the reconciled A-005 fallback scope. T-205 resolved F-108 and
 mitigated R-033 for scoped mixed component barrel cleanup in server
-routes/loaders. T-206 resolved F-109 account subnav mounting. T-207 exists for
-F-110 route loading/fallback polish, but it is deferred behind higher-value
-production work. T-208 completed the R-001 Shopify-hosted purchase handoff
-slice, and T-209 resolved the visible shared-banner commerce assurance copy
-slice for F-078/R-018. T-210 completed the first F-098/R-016 public search
-discovery slice by adding MongoDB-backed artwork results to `/search`. T-211
-completed the remaining Shopify product search slice, resolving F-098. T-212
+routes/loaders. T-206 resolved F-109 account subnav mounting. T-207 resolved
+F-110 by documenting the public route loading/fallback pattern and replacing
+the `/project/aims` generic inline loading fallback with a route-local neutral
+fallback. T-208 completed the R-001 Shopify-hosted purchase handoff slice, and
+T-209 resolved the visible shared-banner commerce assurance copy slice for
+F-078/R-018. T-210 completed the first F-098/R-016 public search discovery
+slice by adding MongoDB-backed artwork results to `/search`. T-211 completed
+the remaining Shopify product search slice, resolving F-098. T-212
 prepared the R-018 owner/legal compliance decision packet and now records
 Heron Laoutaris / hlaoutaris@gmail.com as the approved owner/privacy contact,
 with recommendations approved for implementation scoping. T-213 completed the
@@ -75,12 +76,11 @@ request handoff for delete/export/correction requests. T-216 completed public
 comment posting notice, privacy/terms links, and manual moderation/removal/
 correction request handoff. T-217 completed contact/product and artwork
 enquiry privacy/retention notice and manual privacy/legal handoff. T-218 is
-prepared next for footer placeholder social-link cleanup and stale copyright
-text.
-
-Hold [T-139 Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md)
-until the owner/platform decision is available, unless the assignment is only
-to record an explicit no-decision blocker.
+complete for footer placeholder social-link cleanup and stale copyright text.
+T-219 completed the docs-only owner-input packet for remaining R-018 blockers.
+T-139 completed the blocked monitoring decision record in ADR 0005: no provider
+and no explicit no-provider interim launch policy are approved, so monitoring
+implementation remains blocked until owner/platform approval.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
@@ -401,10 +401,13 @@ workflow uses Node `22.14.0`, `npm ci`, and optional non-secret `SMOKE_*` route
 input variables without adding credentials, provider alerting, Vercel log
 access, or committed production URLs.
 
-The next observability blocker remains owner/platform approval of a monitoring
-provider or explicit no-provider interim policy before any SDK,
-`instrumentation.ts`, alert automation, or provider environment variables are
-added.
+T-139 is complete:
+[Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md).
+It added [ADR 0005](../decisions/0005-monitoring-provider-decision.md), which
+records the current blocked state: no monitoring provider and no explicit
+no-provider interim launch policy are approved. SDKs, `instrumentation.ts`,
+provider variables, source-map/release tracking, dashboards, uptime checks, and
+alert routing remain blocked until owner/platform approval.
 
 T-123 is complete:
 [Define monitoring provider plan](../tasks/T-123-define-monitoring-provider-plan.md).
@@ -412,10 +415,8 @@ It added the provider-neutral
 [monitoring and error-reporting architecture plan](../architecture/monitoring-and-error-reporting.md)
 with required capture surfaces, T-099 request ID/logging integration points,
 provider decision questions, environment-variable classification rules, and the
-post-approval implementation contract. The next observability blocker is owner
-or platform approval of a provider or explicit no-provider interim policy
-before any SDK, `instrumentation.ts`, alert automation, or provider environment
-variables are added.
+post-approval implementation contract. T-139 later recorded the blocked
+decision state in ADR 0005.
 
 T-122 is complete. It added a recursive static guard for current and future
 `src/app/api/v2` route handler files so direct route-level `console.error()`
@@ -764,11 +765,12 @@ Use this section as the first operational handoff for a new orchestrator.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
 - Immediate handoff: assign
-  [T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md):
-  `/task effort: high details: docs/tasks/T-218-remove-footer-placeholder-social-links.md`.
-- Recent orchestration wave: T-206 restored the account subnav mount; T-207 was
-  prepared for route fallback polish but deferred; T-208 completed the
-  Shopify-hosted purchase handoff for available products with valid
+  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md):
+  `/task effort: high details: docs/tasks/T-194-review-framed-print-preview-visual-qa.md`.
+- Recent orchestration wave: T-206 restored the account subnav mount; T-207
+  completed route fallback documentation and `/project/aims` fallback cleanup;
+  T-139 recorded the blocked monitoring provider/no-provider decision; T-208
+  completed the Shopify-hosted purchase handoff for available products with valid
   `onlineStoreUrl`; T-209 removed unsupported commerce assurance claims from
   shared security banners and matching security translation files; T-210 added
   MongoDB-backed artwork results to public search; T-211 added Shopify product
@@ -781,7 +783,10 @@ Use this section as the first operational handoff for a new orchestrator.
   handoff; T-216 added public comment posting notice, privacy/terms links, and
   manual moderation/removal/correction handoff; T-217 added contact/product
   and artwork enquiry privacy/retention notice and manual privacy/legal
-  handoff.
+  handoff; T-218 removed footer social placeholders and stale copyright text;
+  T-219 recorded the remaining R-018 owner-input blockers; T-207 documented
+  the public route fallback pattern and replaced the `/project/aims` generic
+  inline loading fallback.
 - Public search direction: staged site-wide widening is now selected for
   T-143 and completed by T-210/T-211. Public search now covers articles, blogs,
   collections, artworks, and Shopify products. Checkout/cart, product detail
@@ -790,9 +795,9 @@ Use this section as the first operational handoff for a new orchestrator.
   F-078 is resolved for the visible shared-banner assurance-copy scope; R-018
   still tracks policy, consent, retention, third-party disclosure, and legal
   page work. F-074 is partially mitigated by T-215, F-075 is partially
-  mitigated by T-216, F-076 is resolved by T-100/T-217, and T-218 is prepared
-  for footer placeholder social-link/current-year cleanup; F-073 and F-077 are
-  resolved, F-072 is partially mitigated,
+  mitigated by T-216, F-076 is resolved by T-100/T-217, and F-104 is resolved
+  by T-209/T-213/T-218. T-219 records that remaining R-018 runtime work is
+  blocked on owner inputs; F-073 and F-077 are resolved, F-072 is partially mitigated,
   F-098 is resolved after T-210/T-211, and R-016 no longer tracks Shopify
   product search as an open discovery gap.
 - T-131 is complete: scoped account/user client console-error output is removed
@@ -1458,12 +1463,12 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-218 Remove footer placeholder social links](../tasks/T-218-remove-footer-placeholder-social-links.md):
-  `/task effort: high details: docs/tasks/T-218-remove-footer-placeholder-social-links.md`.
-- If framed print preview implementation continues, run T-194 targeted visual
-  QA and owner review for `/prototype/frame`. Keep that review separate from
-  Shopify option mapping, checkout/cart work, enquiry mutation, and physical
-  dimension migration.
+  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md):
+  `/task effort: high details: docs/tasks/T-194-review-framed-print-preview-visual-qa.md`.
+  Keep this as targeted prototype QA and owner-decision capture for
+  `/prototype/frame`; do not start Shopify option mapping, checkout/cart work,
+  enquiry mutation, physical-dimension migration, product-page rail adoption,
+  or real texture asset creation.
 - If quality gating is preferred, prepare a separate task to decide whether and
   how strict TypeScript `noEmit` should enter CI or release verification now
   that T-198 has made the command pass.
@@ -1491,15 +1496,20 @@ are in place. T-215 is complete: account privacy/terms acknowledgement and
 manual privacy request handoff are in place. T-216 is complete: public comment
 posting notice and manual moderation/removal request handoff are in place.
 T-217 is complete: contact/product and artwork enquiry privacy and retention
-notice is in place. T-218 should only remove or hide footer placeholder social
-links and refresh stale copyright text. Keep Shopify policy URL, real social
-URL wiring, jurisdiction/audience-specific legal work, future self-service
-privacy workflows, and future comment moderation/reporting workflows separate.
+notice is in place. T-218 is complete: footer placeholder social links are
+removed and stale copyright text is refreshed. T-219 is complete: remaining
+owner-input blockers are recorded before any more R-018 runtime work. T-207 is
+complete: public route fallback patterns are documented and `/project/aims`
+uses a route-local neutral fallback. Keep Shopify policy URL wiring, real
+social URL wiring, jurisdiction/audience-specific legal work, future
+self-service privacy workflows, and future comment moderation/reporting
+workflows separate until those decisions exist.
 
-Assign T-139 only after owner/platform approval exists for a monitoring
-provider or explicit no-provider interim policy. Owner-approved incident roles
-and backups remain a separate owner/orchestrator decision after T-134's blocked
-handoff.
+T-139 is complete as ADR 0005. Do not reassign monitoring decision work unless
+the owner/platform decision changes; implementation remains blocked until a
+provider, no-provider launch posture, or launch-blocking decision is approved.
+Owner-approved incident roles and backups remain a separate owner/orchestrator
+decision after T-134's blocked handoff.
 
 T-059, T-066, T-067, T-068, T-069, T-070, T-071, T-072, T-073, T-074, T-075,
 T-076, T-077, T-078, T-079, T-080, T-081, T-082, T-083, T-084, T-085, T-086,
@@ -1510,15 +1520,15 @@ complete and should not be reassigned unless a regression is opened. T-095,
 T-096, T-097, T-098, T-099, T-100, T-101, T-102, T-103, T-104, T-105, T-106,
 T-107, T-108, T-109, T-110, T-111, T-112, T-113, T-114, T-115, T-116, T-117,
 T-118, T-119, T-120, T-121, T-122, T-123, T-124, T-125, T-126, T-127, T-128,
-T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-140,
+T-129, T-130, T-131, T-132, T-133, T-134, T-135, T-136, T-137, T-138, T-139, T-140,
 T-141, T-142, T-144, T-145, T-146, T-147, T-148, T-149, T-150, T-151, T-152,
 T-153, T-154, T-155, T-156, T-157, T-158, T-159, T-160, T-161, T-162, T-163,
 T-164, T-165, T-166, T-167, T-168, T-169, T-170, T-171, T-172, T-173, T-174,
 T-175, T-176, T-177, T-178, T-179, T-180, T-181, T-182, T-183, T-184, T-185,
 T-186, T-197, T-198, T-199, T-200, T-201, T-202, T-203, T-204, T-205, T-206,
-T-208, T-209, T-210, T-211, T-212, T-213, T-214, T-215, T-216, and T-217 are complete and
-should not be reassigned unless a regression is opened. T-207 is deferred;
-T-218 is planned next.
+T-207, T-208, T-209, T-210, T-211, T-212, T-213, T-214, T-215, T-216, T-217,
+T-218, and T-219 are complete and should not be reassigned unless a regression
+is opened.
 
 Keep automatic data mutation, persistence-time Shopify API validation,
 checkout/cart ownership, Cloudinary runtime deletion, signed folder params,

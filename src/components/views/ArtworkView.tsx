@@ -1,6 +1,5 @@
 import { Search } from "lucide-react";
-import { ArtworkInfoCard } from "../modules/cards/ArtworkInfoCard";
-import { TimelineCard } from "../modules/cards/ArtworkInfoCardVariations";
+import { ArtworkArchiveInfoCard } from "../modules/cards/ArtworkArchiveInfoCard";
 import ArtworkShopSection from "../modules/cards/ArtworkShopSection";
 import { MagnifierImage } from "../modules/MagnifierImage";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
@@ -11,33 +10,17 @@ type ArtworkViewProps = ArtworkFrontend & {
 };
 
 const ArtworkView = ({ shopProducts, ...artwork }: ArtworkViewProps) => {
-  const Card = () => {
-    // TODO: maybe have ArtworkInfoCard for when art and card are in a row, then ArtworkMagazineCard for when art and card are in a column?
-    return (
-      <>
-        <ArtworkInfoCard {...artwork} />
-        {/* <TimelineCard artwork={artwork} isLoggedIn={false} /> */}
-        {/* <ArtworkMagazineCard artwork={artwork} isLoggedIn={false} /> */}
-        {/* <ArtworkMagazineCard2 artwork={artwork} isLoggedIn={false} /> */}
-        {/* <ClassicMuseumCard artwork={artwork} isLoggedIn={false} /> */}
-        {/* <ContemporaryGridCard artwork={artwork} isLoggedIn={false} /> */}
-      </>
-    );
-  };
   return (
     <>
       <div
-        className="
-      grid 
-      grid-rows-[minmax(0,max-content),minmax(0,1fr)] 
-      gap-10
-      lg:grid-cols-[1fr,1fr]
-      lg:gap-4
-
-    "
+        className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 py-8 lg:grid-cols-[minmax(20rem,34rem),minmax(0,1fr)] lg:items-start lg:gap-16 xl:gap-24"
       >
-        <span className="m-4 justify-center lg:justify-self-end flex flex-col justify-end  max-w-2xl">
-          <span className="m-4 max-h-[70vh] justify-center lg:justify-self-end flex justify-end  max-w-2xl">
+        <div className="flex justify-center lg:justify-start">
+          <ArtworkArchiveInfoCard {...artwork} />
+        </div>
+
+        <figure className="flex min-w-0 flex-col items-center justify-start gap-5 lg:items-start">
+          <div className="flex max-h-[70vh] w-full max-w-3xl justify-center lg:justify-start">
             {artwork && (
               <MagnifierImage
                 src={artwork.image.secure_url}
@@ -48,16 +31,12 @@ const ArtworkView = ({ shopProducts, ...artwork }: ArtworkViewProps) => {
                 magnificationLevel={8}
               />
             )}
-          </span>
-          <div className="w-full flex justify-center items-center">
+          </div>
+          <figcaption className="flex w-full items-center justify-center gap-2 text-sm lg:justify-start">
             <p className="text-neutral-400 px-2">Hover for magnified view:</p>
             <Search className="text-neutral-400" />
-          </div>
-        </span>
-
-        <div className=" h-auto max-h-[70vh] flex flex-row justify-center items-center">
-          <Card />
-        </div>
+          </figcaption>
+        </figure>
       </div>
 
       {/* Shop Section - Only shows if artwork has Shopify products */}

@@ -550,6 +550,10 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-22: Completed T-213. Local `/privacy` and `/terms` pages now include
   factual Shopify-hosted handoff boundary copy, but Shopify policy target URLs
   remain unsupplied and separate.
+- 2026-05-23: Completed T-219 as a docs-only owner-input record. Shopify
+  policy target URL wiring remains blocked until real Shopify-hosted policy
+  URLs are supplied; do not add placeholder sale, shipping, return, refund, tax,
+  or cancellation policy links.
 
 ## Next Agent Action
 
@@ -560,7 +564,8 @@ or
 both are complete.
 
 T-213 completed local privacy/terms pages and footer legal links with factual
-Shopify-hosted handoff boundary copy. Keep Shopify policy URL wiring,
+Shopify-hosted handoff boundary copy. T-219 records that Shopify policy URL
+wiring is blocked until real Shopify-hosted policy URLs are supplied. Keep
 app-owned checkout/cart, real pagination, server-side sorting, broader
 product-detail redesign, product-link data migration, automatic mutation, and
 persistence-time Shopify API validation separate. No product-ID cleanup or

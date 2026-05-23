@@ -158,3 +158,13 @@ Candidate shared-tracker updates for orchestration:
   commerce targets blocked on supplied URLs or owner/legal input.
 - `docs/workstreams/testing-and-quality.md`: record the expanded
   `PolicyPages.test.tsx` footer source/render coverage.
+
+Orchestrator reconciliation:
+
+- Reconciled on 2026-05-23 after completion. Shared trackers now mark T-218
+  complete, F-104 resolved for the footer placeholder/current-year scope, and
+  R-018 open only for owner-input-dependent Shopify policy URLs, real social
+  URLs, launch jurisdiction/audience assumptions, and future self-service
+  privacy or comment moderation/reporting workflow decisions.
+- Prepared T-219 as a docs-only owner-input packet for the remaining R-018
+  blockers before any more runtime compliance work is assigned.

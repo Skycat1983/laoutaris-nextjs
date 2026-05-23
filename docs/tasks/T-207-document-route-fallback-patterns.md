@@ -1,6 +1,6 @@
 # T-207 Document Route Fallback Patterns
 
-Status: Deferred
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),
@@ -102,8 +102,13 @@ npm run lint
 git diff --check
 ```
 
-Add any new focused fallback-pattern test path to the Jest command before
-handoff. The `rg` command should return no matches for the retired fallback in
+Completed focused Jest command:
+
+```bash
+npm test -- --runTestsByPath __tests__/unit/publicRouteFallbackPatterns.test.ts __tests__/unit/publicLandmarksHeadings.test.ts __tests__/unit/publicRouteCachePolicy.test.ts
+```
+
+The `rg` command should return no matches for the retired fallback in
 `src/app/project/aims/page.tsx`.
 
 ## Agent Prompt
@@ -127,3 +132,31 @@ with candidate tracker updates.
   low-value polish/documentation task compared with open commerce, search,
   compliance, monitoring, and asset-lifecycle work. Do not assign unless route
   fallback polish is explicitly prioritized.
+- Reactivated by the orchestrator on 2026-05-23 after T-219 recorded the
+  remaining R-018 compliance work as blocked on owner inputs. T-207 is now the
+  next unblocked decision-light cleanup task.
+- Completed on 2026-05-23. Added
+  `docs/architecture/rendering-and-data-fetching.md#public-route-loading-and-fallback-pattern`
+  covering route-level `loading.tsx`, visible public-detail fallbacks, layout
+  navigation/pagination fallbacks, intentional invisible JSON-LD
+  `fallback={null}` boundaries, and client follow-up loading states.
+- Replaced the `/project/aims` desktop image `Suspense` fallback with the
+  route-local neutral `AimsDesktopImageFallback`, preserving the desktop image
+  column without generic user-facing loading copy.
+- Added `__tests__/unit/publicRouteFallbackPatterns.test.ts` to guard the
+  documentation section and the `/project/aims` fallback cleanup.
+- Verification:
+  - `rg -n 'bg-blue-500|Loading\\.\\.\\.' src/app/project/aims/page.tsx`
+    returned no matches.
+  - `npm test -- --runTestsByPath __tests__/unit/publicRouteFallbackPatterns.test.ts __tests__/unit/publicLandmarksHeadings.test.ts __tests__/unit/publicRouteCachePolicy.test.ts`
+    passed with the existing Node `punycode` deprecation warning.
+  - `npm run lint` passed.
+  - `git diff --check` passed.
+- Candidate shared tracker updates for the orchestrator:
+  - Mark F-110 resolved in `docs/audits/findings-register.md`.
+  - Add a T-207 completion fact to the frontend and testing workstreams.
+  - Update `docs/tasks/README.md` from Planned to Completed for T-207.
+- Orchestrator reconciled the shared trackers on 2026-05-23: F-110 is resolved,
+  R-032 mentions the T-207 fallback-pattern mitigation, T-207 is completed in
+  the task index, and frontend/testing/architecture workstream next actions no
+  longer assign this task.

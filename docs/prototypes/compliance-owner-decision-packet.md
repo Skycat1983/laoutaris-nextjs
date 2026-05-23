@@ -50,6 +50,8 @@ Implementation should wait until the owner/legal reviewer confirms:
   copy with `/privacy` and `/terms` links plus a manual privacy/legal handoff.
   Enquiry schema changes, stored notice metadata, operator workflow changes,
   and retention automation are not implemented.
+- T-218 removed footer social placeholders instead of inventing social URLs and
+  replaced stale fixed 2024 copyright text with current-year text.
   Public sale, refund, return, shipping, and account privacy self-service pages
   or flows are not implemented.
 - T-100 now preserves normalized Shopify product handles in contact enquiries
@@ -239,7 +241,7 @@ acknowledgement metadata.
 | Contact/enquiry notice and retention | Implemented by T-217 for visible notice and manual privacy/legal handoff; stored notice metadata, operator workflow changes, and retention automation remain separate | Heron Laoutaris, hlaoutaris@gmail.com | `/privacy` and `/terms` links from contact/enquiry forms | Contact/product and artwork enquiry forms | Owner-approved factual use/retention/response notice | No new stored fields in T-217; existing product handle context remains preserved from T-100; notice version/source and retention fields only if a future workflow is implemented | Heron Laoutaris | 2026-05-22 / owner approval v1 | Complete for current contact/enquiry notice slice |
 | Comments/moderation/deletion | Implemented by T-216 for posting notice and manual moderation/removal/correction handoff; future moderation/reporting workflow remains separate | Heron Laoutaris, hlaoutaris@gmail.com | `/privacy` and `/terms` links from comment surfaces | Comment posting surfaces | Owner-approved posting notice covering public username/comment display and manual moderation/removal/correction requests | No new stored fields in T-216; notice version/source or request fields only if a future workflow is implemented | Heron Laoutaris | 2026-05-22 / owner approval v1 | Complete for current manual comments notice slice |
 | Account signup/OAuth/privacy requests | Implemented by T-215 for acknowledgement metadata and manual request handoff; future self-service delete/export/correction remains separate | Heron Laoutaris, hlaoutaris@gmail.com | `/privacy` and `/terms`; manual privacy requests to hlaoutaris@gmail.com | Signup, OAuth entry, account settings, and replaced delete-account control | Owner-approved privacy/terms acknowledgement and manual request copy | Privacy version, terms version, acceptedAt, acceptedBy, provider/source; request category/status only if a future workflow is implemented | Heron Laoutaris | 2026-05-22 / owner approval v1 | Complete for current manual account privacy request slice |
-| Footer legal/social cleanup | Approved for legal links; social URLs still not supplied | Heron Laoutaris, hlaoutaris@gmail.com | `/privacy`, `/terms`; social target URLs pending | Footer | Owner-approved legal labels; remove or hide placeholder social targets until real URLs are supplied | None | Heron Laoutaris | 2026-05-22 / owner approval v1 | Partial: legal links allowed; social target wiring waits for URLs |
+| Footer legal/social cleanup | Implemented by T-213 for legal links and T-218 for placeholder removal/current-year cleanup; social URLs still not supplied | Heron Laoutaris, hlaoutaris@gmail.com | `/privacy`, `/terms`; social target URLs pending | Footer | Owner-approved legal labels; placeholder social targets removed until real URLs are supplied | None | Heron Laoutaris | 2026-05-22 / owner approval v1 | Complete for current footer cleanup; social target wiring waits for URLs |
 
 Before implementation starts, each approved row should also identify:
 
@@ -265,6 +267,20 @@ Before implementation starts, each approved row should also identify:
   approved Shopify-hosted handoff and sale-policy boundaries.
 - Clean up footer legal targets and placeholder social links once route targets
   and owner-managed social accounts are confirmed.
+
+## Remaining Owner Inputs
+
+These items are not implementation-ready. Keep the current app behavior until
+the owner supplies the missing values or explicitly opts into the future
+workflow.
+
+| Remaining input | Recommendation | Implementation implication |
+| --- | --- | --- |
+| Shopify policy target URLs | Keep Shopify policy links absent until real Shopify-hosted policy URLs exist. | The app can keep factual Shopify-hosted handoff copy, but must not link to placeholder sale, shipping, return, refund, tax, or cancellation policy pages. |
+| Real social URLs | Keep footer social links hidden until owner-managed account URLs are supplied. | T-218's no-placeholder footer state remains correct. Adding social links later should be a small footer-only task once URLs are known. |
+| Launch jurisdiction and audience assumptions | Keep policy copy jurisdiction-neutral until the owner or legal counsel supplies specific launch scope. | Do not add GDPR, CCPA, consumer-law labels, age-gated audience claims, tax/sale terms, or region-specific rights language yet. |
+| Account self-service privacy workflows | Keep the current manual hlaoutaris@gmail.com request path until the owner explicitly approves self-service delete/export/correction scope, retention rules, identity verification, and fulfilment process. | Do not assign account deletion/export automation, request queue, or admin fulfilment workflow work yet. |
+| Comment moderation/reporting workflows | Keep the current manual hlaoutaris@gmail.com moderation handoff until the owner explicitly approves report buttons, moderation states, admin queue ownership, retention behavior, and response process. | Do not assign report UI, moderation-state schema, admin workflow, or request-persistence work yet. |
 
 ## Implementation Guardrails
 

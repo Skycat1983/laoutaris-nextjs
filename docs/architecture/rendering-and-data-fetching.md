@@ -42,6 +42,27 @@ and detail-param coverage are defined.
 | Shopify-backed public commerce | `/shop/products`, `/shop/products/[productHandle]` | `dynamic = "force-dynamic"` is explicit. Shopify product availability, metadata, and linked artwork reads remain request-time behavior. | Future commerce cache policy must define Shopify freshness, product-handle coverage, and fallback behavior. |
 | Session-aware public UI | `/`, `/artwork/[artworkId]` | `dynamic = "force-dynamic"` is explicit. The home page includes subscription session state, and artwork detail reads session user context for saved-item ownership. | Split session-only islands or define a separate personalized-data strategy before static rendering. |
 
+## Public Route Loading And Fallback Pattern
+
+Route loading states should preserve the route's visual structure and should be
+owned as close as practical to the async boundary they represent. Generic
+user-facing loading copy is not the accepted pattern for public archive routes;
+use existing skeletons or small neutral placeholders that keep the surrounding
+layout stable.
+
+| Route type | Accepted fallback pattern | Current examples |
+| --- | --- | --- |
+| App Router route-level `loading.tsx` files | Use only where the whole route segment or parallel route needs a framework-level pending state. The fallback should be a stable route shell or skeleton, not route-specific content claims. Do not add broad public `loading.tsx` files until the route family needs segment-wide behavior. | Root `src/app/loading.tsx` delegates to `PageLoading`; admin feed `src/app/admin/dashboard/@feed/loading.tsx` renders `FeedSkeleton`. |
+| Public detail primary-content `Suspense` boundaries | Use route-local or shared content skeletons that match the detail view's shape and are visible while primary content is pending. These are distinct from not-found and error handling: missing primary content still follows the public detail `notFound()` contract, and upstream failures throw to the App Router error boundary. | `ArtworkViewSkeleton`, `BlogDetailSkeleton`, and `ArticleViewSkeleton` around artwork, collection artwork, blog, biography, and project article loaders. |
+| Route layout navigation and pagination `Suspense` boundaries | Keep the fallback local to the navigational region being loaded. Use navigation or pagination skeletons that preserve spacing so the route body does not shift when links arrive. | `SubnavSkeleton` in biography, collections, and account layouts; `PaginationSkeleton` in collection and saved-artwork layouts. |
+| Invisible JSON-LD and metadata `Suspense` boundaries | `fallback={null}` is intentional only for invisible script/metadata output. Do not use `fallback={null}` for visible route content that would otherwise collapse or appear blank while loading. | Detail routes wrap structured data/JSON-LD emitters with `fallback={null}` before the visible detail-content boundary. |
+| Client follow-up loading states | Keep loading, retry, and unavailable states visible and local to the client interaction that triggered them. These states are not route-loading placeholders and should preserve already-rendered server content when practical. | Artwork filters/load-more, shop product filtering, blog continuous loading, forms, and account actions. |
+
+For static project shells that only suspend a visual asset, use a small
+route-local neutral placeholder when no shared skeleton matches the asset shape.
+`/project/aims` uses this pattern for its desktop image boundary so the image
+column keeps its dimensions without exposing generic loading text.
+
 ## Accepted Server Data Pattern
 
 [ADR 0004](../decisions/0004-server-data-access-ownership.md) accepts direct

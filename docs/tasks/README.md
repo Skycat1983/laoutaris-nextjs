@@ -153,7 +153,7 @@ Planning and prompt packs:
 | [T-136 Centralize Cloudinary delivery transformations](T-136-centralize-cloudinary-delivery-transformations.md) | Completed | Centralized app-authored Cloudinary delivery transformations behind a shared helper with source-hygiene coverage. |
 | [T-137 Add client server import boundary guard](T-137-add-client-server-import-boundary-guard.md) | Completed | Added a recursive static guard and cleanup for client imports of server-only data, DB, model, and mixed-barrel modules. |
 | [T-138 Document admin bootstrap and recovery](T-138-document-admin-bootstrap-recovery.md) | Completed | Documented repeatable admin bootstrap, promotion, lockout recovery, evidence, rollback, and verification steps. |
-| [T-139 Record monitoring provider decision](T-139-record-monitoring-provider-decision.md) | Planned | Record the owner/platform monitoring provider or no-provider decision before any SDK or instrumentation task. |
+| [T-139 Record monitoring provider decision](T-139-record-monitoring-provider-decision.md) | Completed | Recorded the blocked monitoring decision state in ADR 0005 without approving a provider, no-provider launch posture, SDK, or instrumentation. |
 | [T-140 Reconcile admin discovery taxonomy findings](T-140-reconcile-admin-discovery-taxonomy-findings.md) | Completed | Reconciled remaining A-011, A-017, and A-018 candidate findings into shared trackers and prepared the next implementation briefs. |
 | [T-141 Protect admin user deletion](T-141-protect-admin-user-deletion.md) | Completed | Added current-admin and last-admin lockout protections to admin user deletion. |
 | [T-142 Verify admin artwork relationships](T-142-verify-admin-artwork-relationships.md) | Completed | Rejected admin article and collection relationship writes that reference missing artworks. |
@@ -208,6 +208,7 @@ Planning and prompt packs:
 | [T-191 Wire framed preview launcher to product pages](T-191-wire-framed-preview-launcher-to-product-pages.md) | Completed | Wired the preview modal into eligible print product pages only, keeping frame selection preview-only and preserving enquiry behavior. |
 | [T-192 Improve frame preview material rendering](T-192-improve-frame-preview-material-rendering.md) | Completed | Added prototype-only rail, bevel, mitred corner, material texture, and mat margin controls while keeping commerce behavior unchanged. |
 | [T-193 Replace frame stripe textures with material panels](T-193-replace-frame-stripe-textures-with-material-panels.md) | Completed | Replaced regular stripe texture layers with non-repeating material panel fills in the prototype rail renderer. |
+| [T-194 Review framed print preview visual QA](T-194-review-framed-print-preview-visual-qa.md) | Planned | Run targeted visual QA and owner-review decision capture for `/prototype/frame` before product-page rail adoption, texture assets, Shopify option mapping, or physical-dimension work. |
 | [T-197 Sync orchestration trackers after T-186](T-197-sync-orchestration-trackers-after-t186.md) | Completed | Synced shared trackers so T-186 was completed and the remaining noEmit cleanup was routed to T-198. |
 | [T-198 Clear remaining test noEmit diagnostics](T-198-clear-remaining-test-noemit-diagnostics.md) | Completed | Cleared the remaining test-only strict TypeScript diagnostics after T-186; strict noEmit now passes without adding a CI gate. |
 | [T-199 Define public detail not-found contract](T-199-define-public-detail-not-found-contract.md) | Completed | Defined the public detail route not-found/error contract before runtime route changes. |
@@ -218,7 +219,7 @@ Planning and prompt packs:
 | [T-204 Add public browsing client fetch error states](T-204-add-public-browsing-client-fetch-error-states.md) | Completed | Added visible retry/error states for artwork browse, shop filtering, and blog continuous-loading client fetch failures. |
 | [T-205 Replace mixed component barrel imports](T-205-replace-mixed-component-barrel-imports.md) | Completed | Replaced remaining mixed component barrel value imports in server routes/loaders with direct file imports and source-hygiene coverage. |
 | [T-206 Restore account subnav mount](T-206-restore-account-subnav-mount.md) | Completed | Restored the tested account subnavigation loader in the account layout with layout-level coverage. |
-| [T-207 Document route fallback patterns](T-207-document-route-fallback-patterns.md) | Deferred | Document route loading/fallback patterns and replace the `/project/aims` generic inline loading copy; parked behind higher-value commerce/search/compliance work. |
+| [T-207 Document route fallback patterns](T-207-document-route-fallback-patterns.md) | Completed | Documented route loading/fallback patterns and replaced the `/project/aims` generic inline loading copy with a route-local neutral fallback. |
 | [T-208 Implement Shopify-hosted purchase handoff](T-208-implement-shopify-hosted-purchase-handoff.md) | Completed | Replaced enquiry-only product detail purchase flow with a Shopify-hosted purchase handoff when Shopify exposes a public product URL. |
 | [T-209 Align commerce assurance copy](T-209-align-commerce-assurance-copy.md) | Completed | Removed unsupported payment, shipping, refund, guarantee, and buyer-protection claims from shared public assurance copy. |
 | [T-210 Add artwork results to public search](T-210-add-artwork-results-to-public-search.md) | Completed | Expanded public search to include MongoDB-backed artwork results as the first staged site-wide search slice. |
@@ -229,7 +230,8 @@ Planning and prompt packs:
 | [T-215 Add account privacy acknowledgement and manual request handoff](T-215-add-account-privacy-acknowledgement-manual-request.md) | Completed | Added owner-approved credentials/OAuth account terms/privacy acknowledgement metadata, app-owned sign-in notices, and a manual privacy request handoff. |
 | [T-216 Add comment posting notice and moderation handoff](T-216-add-comment-posting-notice-moderation-handoff.md) | Completed | Added owner-approved public comment posting notice, privacy/terms links, and manual moderation/removal/correction request handoff. |
 | [T-217 Add contact enquiry privacy notice](T-217-add-contact-enquiry-privacy-notice.md) | Completed | Added owner-approved contact/product and artwork enquiry privacy notice with policy links and manual privacy/legal handoff. |
-| [T-218 Remove footer placeholder social links](T-218-remove-footer-placeholder-social-links.md) | Planned | Remove footer `href="#"` social placeholders and refresh stale copyright text without inventing real social URLs. |
+| [T-218 Remove footer placeholder social links](T-218-remove-footer-placeholder-social-links.md) | Completed | Removed footer `href="#"` social placeholders and refreshed stale copyright text without inventing real social URLs. |
+| [T-219 Record remaining compliance owner inputs](T-219-record-remaining-compliance-owner-inputs.md) | Completed | Recorded remaining R-018 owner-input blockers and recommendations before Shopify policy, social URL, jurisdiction, self-service privacy, or moderation work. |
 
 ## Rules
 

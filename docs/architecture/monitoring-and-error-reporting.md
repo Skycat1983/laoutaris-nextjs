@@ -19,6 +19,8 @@ be added until the owner/platform decision is recorded.
   evidence, rollback, and `TBD` owner/escalation matrix placeholders.
 - Deployment smoke remains evidence-based and manual/scripted through
   `npm run smoke:public`; it is not continuous monitoring.
+- [ADR 0005](../decisions/0005-monitoring-provider-decision.md) records that no
+  provider or no-provider interim launch policy is approved as of 2026-05-23.
 
 ## Required Capture Surfaces
 
@@ -117,9 +119,10 @@ Provider variables must also follow the existing environment rules:
 
 ## Implementation Contract After Approval
 
-The provider implementation task can proceed after the owner/platform decision
-records the approved provider or no-provider policy and environment contract.
-That task should:
+The provider implementation task can proceed only after
+[ADR 0005](../decisions/0005-monitoring-provider-decision.md) is replaced or
+superseded by an accepted owner/platform decision that records the approved
+provider or no-provider policy and environment contract. That task should:
 
 1. Add the approved SDK or integration with the smallest runtime surface that
    satisfies the decision.

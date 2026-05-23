@@ -3,6 +3,13 @@ import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import Image from "next/image";
 import { Suspense } from "react";
 
+const AimsDesktopImageFallback = () => (
+  <div
+    aria-hidden="true"
+    className="my-bg h-full min-h-[560px] w-full animate-pulse bg-slate-100 shadow-lg"
+  />
+);
+
 export default function About() {
   const article = {
     title: "Aims",
@@ -102,9 +109,7 @@ export default function About() {
           </div>
           <div className="col-start-1 col-end-5 row-start-1 row-end-1 h-full place-start z-negative">
             <div className="flex flex-col h-full justify-start items-start align-start">
-              <Suspense
-                fallback={<div className="bg-blue-500">Loading...</div>}
-              >
+              <Suspense fallback={<AimsDesktopImageFallback />}>
                 <Image
                   src={article.imageUrl}
                   alt={article.title}

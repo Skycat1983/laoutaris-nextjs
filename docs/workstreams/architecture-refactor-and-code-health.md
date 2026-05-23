@@ -561,12 +561,16 @@ Use targeted import/reference searches for pruning tasks.
   `docs/architecture/rendering-and-data-fetching.md` and replace the
   `/project/aims` generic inline loading fallback without changing broader
   cache, not-found, or route-builder policy.
+- 2026-05-23: Completed T-207. The rendering/data-fetching architecture doc now
+  owns the public route fallback pattern, and `/project/aims` no longer uses
+  generic inline loading copy for the desktop image Suspense boundary.
 
 ## Next Agent Action
 
-If route-local rendering documentation is prioritized, assign
-[T-207 Document route fallback patterns](../tasks/T-207-document-route-fallback-patterns.md)
-before broad static/ISR or route-builder work.
+T-207 is complete; do not reassign route-local rendering fallback
+documentation unless the documented pattern or `/project/aims` source hygiene
+regresses. Broad static/ISR and route-builder work remain separate architecture
+tasks.
 
 Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
 adoption, and live homepage migration separate until owner review accepts the

@@ -1,6 +1,6 @@
 # T-139 Record Monitoring Provider Decision
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Deployment Security And Observability](../workstreams/deployment-security-and-observability.md),
@@ -113,3 +113,21 @@ not.
   is available or when the assignment is explicitly to record a blocked
   no-decision state.
 - Provider-specific implementation remains a later task.
+- Completed 2026-05-23 as a blocked decision-state record. Added
+  [ADR 0005 - Monitoring provider decision](../decisions/0005-monitoring-provider-decision.md),
+  which records that no provider and no explicit no-provider interim launch
+  policy are approved, and that monitoring SDKs, `instrumentation.ts`, provider
+  variables, source-map upload, release tracking, dashboards, uptime checks, and
+  alert routing remain blocked until owner/platform approval.
+- No provider variables were added to the environment runbook because no
+  provider is approved. Future provider approval must classify variable names
+  before or with implementation and must not expose secret values.
+- Candidate tracker update for orchestrator reconciliation: R-019/F-080 remain
+  open, but T-139 no longer needs reassignment unless the owner/platform
+  decision changes; the next step is owner/orchestrator approval of a provider,
+  an explicit no-provider interim policy with expiry/review date, or a launch
+  block until monitoring is selected.
+- Orchestrator reconciled the shared trackers on 2026-05-23: T-139 is complete
+  in the task index, F-080 and R-019 link ADR 0005 while remaining open, the
+  deployment/testing workstreams no longer assign T-139, and the next prepared
+  task is T-194 framed print preview visual QA.

@@ -27,6 +27,20 @@ jest.mock("next/image", () => ({
   }) => <img src={src} alt={alt} className={className} />,
 }));
 
+const mockEmblaApi = {
+  selectedScrollSnap: jest.fn(() => 0),
+  on: jest.fn(),
+  off: jest.fn(),
+  scrollPrev: jest.fn(),
+  scrollNext: jest.fn(),
+  scrollTo: jest.fn(),
+};
+
+jest.mock("embla-carousel-react", () => ({
+  __esModule: true,
+  default: jest.fn(() => [jest.fn(), mockEmblaApi]),
+}));
+
 jest.mock("@/components/prototypes/home/BlogPrototypeLoader", () => ({
   getBlogPrototypeEntries: jest.fn(),
 }));
@@ -65,13 +79,19 @@ const mockGetCollectionPrototypeEntries =
     typeof getCollectionPrototypeEntries
   >;
 
-const createBlog = (slug: string, title: string, subtitle?: string) =>
+const createBlog = (
+  slug: string,
+  title: string,
+  subtitle?: string,
+  displayDate: Date | string = "2023-04-14T00:00:00.000Z"
+) =>
   ({
     slug,
     title,
     subtitle: subtitle ?? "",
     summary: `${title} archive summary`,
     imageUrl: `https://res.cloudinary.com/dzncmfirr/image/upload/${slug}.jpg`,
+    displayDate,
   }) as never;
 
 const createBiographyArticle = (
@@ -131,6 +151,7 @@ const createProduct = (
 describe("/prototype/home page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEmblaApi.selectedScrollSnap.mockReturnValue(0);
     mockGetBiographyPrototypeArticles.mockResolvedValue([
       createBiographyArticle(
         "early-years",
@@ -195,7 +216,6 @@ describe("/prototype/home page", () => {
 
     for (const section of [
       "hero",
-      "artwork",
       "collections",
       "biography",
       "blog",
@@ -206,6 +226,9 @@ describe("/prototype/home page", () => {
         screen.getByTestId(`prototype-${section}-section`)
       ).toBeInTheDocument();
     }
+    expect(
+      screen.queryByTestId("prototype-artwork-section")
+    ).not.toBeInTheDocument();
   });
 
   it("renders fixed bottom dropdown controls for frame, headings, and shop item size", () => {
@@ -219,13 +242,22 @@ describe("/prototype/home page", () => {
     );
 
     const prototype = screen.getByTestId("prototype-home");
+    const controlRail = screen.getByTestId("prototype-home-controls");
     const productRail = screen.getByTestId("prototype-shop-product-rail");
-    expect(screen.getByTestId("prototype-home-controls")).toBeInTheDocument();
+    expect(controlRail).toBeInTheDocument();
+    expect(controlRail).toHaveClass("hidden", "lg:block");
+    expect(prototype).toHaveClass("lg:pb-28");
+    expect(prototype).not.toHaveClass("pb-48", "sm:pb-36");
     expect(prototype).toHaveAttribute("data-frame-preset", "wide");
     expect(prototype).toHaveAttribute("data-font-preset", "smaller");
+    expect(prototype).toHaveAttribute(
+      "data-alternate-background-preset",
+      "stone"
+    );
     expect(prototype).toHaveStyle({
       "--prototype-home-frame-max": "1920px",
       "--prototype-home-heading-scale": "0.9",
+      "--prototype-home-alt-bg": "#eeece6",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
 
@@ -238,12 +270,20 @@ describe("/prototype/home page", () => {
     fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
       target: { value: "large" },
     });
+    fireEvent.change(screen.getByRole("combobox", { name: "Alt bg" }), {
+      target: { value: "ivory" },
+    });
 
     expect(prototype).toHaveAttribute("data-frame-preset", "inset");
     expect(prototype).toHaveAttribute("data-font-preset", "compact");
+    expect(prototype).toHaveAttribute(
+      "data-alternate-background-preset",
+      "ivory"
+    );
     expect(prototype).toHaveStyle({
       "--prototype-home-frame-max": "1180px",
       "--prototype-home-heading-scale": "0.82",
+      "--prototype-home-alt-bg": "#f6f5f1",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "large");
 
@@ -255,28 +295,54 @@ describe("/prototype/home page", () => {
 
     expect(prototype).toHaveAttribute("data-frame-preset", "wide");
     expect(prototype).toHaveAttribute("data-font-preset", "smaller");
+    expect(prototype).toHaveAttribute(
+      "data-alternate-background-preset",
+      "stone"
+    );
     expect(prototype).toHaveStyle({
       "--prototype-home-frame-max": "1920px",
       "--prototype-home-heading-scale": "0.9",
+      "--prototype-home-alt-bg": "#eeece6",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
   });
 
-  it("adds the documentary video to the project prototype placeholder with live-page copy", () => {
+  it("adds the mobile documentary prototype while preserving the desktop project video", () => {
     render(<HomePrototype />);
 
     const projectSection = screen.getByTestId("prototype-project-section");
+    const mobileProject = within(projectSection).getByTestId(
+      "prototype-mobile-project"
+    );
+    const desktopProject = within(projectSection).getByTestId(
+      "prototype-desktop-project"
+    );
     const projectVideo = within(projectSection).getByTestId(
       "prototype-project-video"
     );
+    const mobileProjectVideo = within(projectSection).getByTestId(
+      "prototype-mobile-project-video"
+    );
     const iframe = within(projectVideo).getByTitle("YouTube video player");
+    const mobileIframe =
+      within(mobileProjectVideo).getByTitle("YouTube video player");
 
     expect(iframe).toHaveAttribute(
       "src",
       "https://www.youtube.com/embed/6ynF2gO-J30?rel=0"
     );
+    expect(mobileIframe).toHaveAttribute(
+      "src",
+      "https://www.youtube.com/embed/6ynF2gO-J30?rel=0"
+    );
+    expect(mobileProject).toHaveClass("md:hidden");
+    expect(desktopProject).toHaveClass("hidden", "md:block");
     expect(projectSection).toHaveTextContent("Project:");
+    expect(projectSection).toHaveTextContent("Project");
     expect(projectSection).toHaveTextContent("Watch the documentary");
+    expect(projectSection).toHaveTextContent(
+      "A short film exploring the life, ethos, and regrets of Joseph Laoutaris."
+    );
     expect(projectSection).toHaveTextContent(
       "The life, ethos & regrets of Joseph Laoutaris"
     );
@@ -284,6 +350,11 @@ describe("/prototype/home page", () => {
       "A short film about my grandfather"
     );
     expect(projectSection).toHaveTextContent("By Heron Laoutaris");
+    expect(
+      within(mobileProject).getByRole("link", {
+        name: /Watch on film page/i,
+      })
+    ).toHaveAttribute("href", "/project/film");
   });
 
   it("uses the route-local wider prototype frame instead of the earlier bounded section caps", () => {
@@ -308,13 +379,19 @@ describe("/prototype/home page", () => {
     expect(layoutSource).toContain("prototypeSectionEyebrowClassName");
     expect(homeSource).toContain("1180px");
     expect(homeSource).toContain("prototype-home-section-heading");
+    expect(homeSource).toContain(
+      "--prototype-home-primary-accent-color: #262626"
+    );
+    expect(homeSource).toContain(
+      "--prototype-home-alt-accent-color: #5b4a3b"
+    );
     expect(sectionSource).not.toContain("max-w-[1440px]");
     expect(sectionSource).not.toContain("max-w-[1536px]");
     expect(sectionSource).not.toContain("prototype-home-heading");
     expect(
       sectionSource.split("className={`${prototypeSectionFrameClassName}")
         .length - 1
-    ).toBe(5);
+    ).toBe(6);
   });
 
   it("keeps prototype section labels visually consistent", () => {
@@ -335,7 +412,7 @@ describe("/prototype/home page", () => {
       "text-sm",
       "uppercase",
       "tracking-[0.14em]",
-      "text-[#9a713d]"
+      "prototype-home-accent-text"
     );
     expect(screen.queryByText("Biography:")).not.toBeInTheDocument();
     expect(sectionSource).not.toContain(
@@ -385,21 +462,21 @@ describe("/prototype/home page", () => {
       "href",
       "/biography"
     );
+    const desktopBiography = screen.getByTestId("prototype-desktop-biography");
     expect(
-      screen.getByTestId("prototype-biography-featured-card")
+      within(desktopBiography).getByTestId("prototype-biography-featured-card")
     ).toHaveTextContent("Early Years");
     expect(
-      screen
+      within(desktopBiography)
         .getAllByTestId("prototype-biography-card")
         .map(
           (card) =>
             within(card).getByRole("heading", { level: 3 }).textContent
         )
     ).toEqual(["Meeting Beryl", "Ethos", "Later Years", "Obituary"]);
-    expect(screen.getByRole("link", { name: /Early Years/i })).toHaveAttribute(
-      "href",
-      "/biography/early-years"
-    );
+    expect(
+      within(desktopBiography).getByRole("link", { name: /Early Years/i })
+    ).toHaveAttribute("href", "/biography/early-years");
     expect(
       screen.getByRole("link", { name: /Meeting Beryl/i })
     ).toHaveAttribute("href", "/biography/meeting-beryl");
@@ -408,6 +485,114 @@ describe("/prototype/home page", () => {
       "/biography/ethos"
     );
     expect(screen.getAllByText("03").length).toBeGreaterThan(0);
+  });
+
+  it("renders the mobile biography mockup with accessible story selection", () => {
+    render(
+      <BiographyPrototypeSection
+        articles={[
+          createBiographyArticle(
+            "obituary",
+            "Obituary",
+            "Final archive remembrance"
+          ),
+          createBiographyArticle(
+            "later-years",
+            "Later Years",
+            "Resignation and Disappointment"
+          ),
+          createBiographyArticle("ethos", "Ethos", "A way of working"),
+          createBiographyArticle(
+            "meeting-beryl",
+            "Meeting Beryl",
+            "Legacy of Love and Loss"
+          ),
+          createBiographyArticle(
+            "early-years",
+            "Early Years",
+            "First Encounters with Art"
+          ),
+        ]}
+      />
+    );
+
+    const mobileBiography = screen.getByTestId("prototype-mobile-biography");
+    const activeCard = within(mobileBiography).getByTestId(
+      "prototype-mobile-biography-featured-card"
+    );
+    const thumbnailGrid = within(mobileBiography).getByTestId(
+      "prototype-mobile-biography-thumbnail-grid"
+    );
+
+    expect(activeCard).toHaveTextContent("Early Years");
+    expect(activeCard).toHaveTextContent("First Encounters with Art");
+    expect(activeCard).toHaveAttribute("href", "/biography/early-years");
+    expect(within(activeCard).getByAltText("Early Years")).toHaveClass(
+      "object-cover"
+    );
+    expect(thumbnailGrid).toHaveClass("grid-cols-5");
+    expect(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Early Years biography story",
+      })
+    ).toHaveAttribute("aria-current", "true");
+    expect(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Early Years biography story",
+      })
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(mobileBiography).getByRole("link", {
+        name: /Read the full story/i,
+      })
+    ).toHaveAttribute("href", "/biography");
+    expect(
+      within(mobileBiography).getAllByTestId(
+        "prototype-mobile-biography-thumbnail"
+      )
+    ).toHaveLength(5);
+    expect(
+      within(mobileBiography).getAllByTestId("prototype-mobile-biography-dot")
+    ).toHaveLength(5);
+
+    fireEvent.click(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Meeting Beryl biography story",
+      })
+    );
+
+    expect(
+      within(mobileBiography).getByTestId(
+        "prototype-mobile-biography-featured-card"
+      )
+    ).toHaveTextContent("Meeting Beryl");
+    expect(
+      within(mobileBiography).getByTestId(
+        "prototype-mobile-biography-featured-card"
+      )
+    ).toHaveAttribute("href", "/biography/meeting-beryl");
+    expect(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Meeting Beryl biography story",
+      })
+    ).toHaveAttribute("aria-current", "true");
+    expect(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Early Years biography story",
+      })
+    ).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(
+      within(mobileBiography).getByRole("button", {
+        name: "Show Ethos",
+      })
+    );
+
+    expect(
+      within(mobileBiography).getByTestId(
+        "prototype-mobile-biography-featured-card"
+      )
+    ).toHaveTextContent("Ethos");
   });
 
   it("centers the biography timeline and read-more dividers behind their markers", () => {
@@ -456,6 +641,9 @@ describe("/prototype/home page", () => {
       "href",
       "/biography"
     );
+    expect(
+      screen.getByRole("link", { name: /Read the full story/i })
+    ).toHaveAttribute("href", "/biography");
   });
 
   it("renders the prototype blog section with real blog links and guide text excluded", () => {
@@ -469,24 +657,109 @@ describe("/prototype/home page", () => {
       />
     );
 
+    const desktopBlog = screen.getByTestId("prototype-desktop-blog");
+
     expect(
-      screen.getByRole("heading", { level: 2, name: "Lead Story" })
+      within(desktopBlog).getByRole("heading", {
+        level: 2,
+        name: "Lead Story",
+      })
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Read more/i })).toHaveAttribute(
+    expect(
+      within(desktopBlog).getByRole("link", { name: /Read more/i })
+    ).toHaveAttribute(
       "href",
       "/blog"
     );
-    expect(screen.getByRole("link", { name: /Lead Story/i })).toHaveAttribute(
+    expect(
+      within(desktopBlog).getByRole("link", { name: /Lead Story/i })
+    ).toHaveAttribute(
       "href",
       "/blog/lead-story"
     );
-    expect(screen.getByRole("link", { name: /Studio Note/i })).toHaveAttribute(
+    expect(
+      within(desktopBlog).getByRole("link", { name: /Studio Note/i })
+    ).toHaveAttribute(
       "href",
       "/blog/studio-note"
     );
     expect(
       screen.queryByText(/grandfather's story/i)
     ).not.toBeInTheDocument();
+  });
+
+  it("renders the mobile blog mockup as a journal archive backed by real posts", () => {
+    render(
+      <BlogPrototypeSection
+        blogs={[
+          createBlog(
+            "lead-story",
+            "Lead Story",
+            "Lead blog subtitle",
+            "2023-04-14T00:00:00.000Z"
+          ),
+          createBlog(
+            "studio-note",
+            "Studio Note",
+            "First update for a while.",
+            "2023-03-03T00:00:00.000Z"
+          ),
+          createBlog(
+            "archive-note",
+            "Archive Note",
+            "Project seems to have died.",
+            "2023-01-19T00:00:00.000Z"
+          ),
+          createBlog(
+            "gallery-visit",
+            "Gallery Visit",
+            "A moment from the archive.",
+            "2022-12-02T00:00:00.000Z"
+          ),
+        ]}
+      />
+    );
+
+    const mobileBlog = screen.getByTestId("prototype-mobile-blog");
+    const featured = within(mobileBlog).getByTestId(
+      "prototype-mobile-blog-featured"
+    );
+    const archive = within(mobileBlog).getByTestId(
+      "prototype-mobile-blog-archive"
+    );
+
+    expect(mobileBlog).toHaveTextContent("Journal");
+    expect(
+      within(mobileBlog).getByRole("heading", {
+        level: 2,
+        name: "Notes from the Studio",
+      })
+    ).toBeInTheDocument();
+    expect(mobileBlog).toHaveTextContent(
+      "Reflections, updates, and stories from the life and work of Joseph Laoutaris."
+    );
+    expect(featured).toHaveTextContent("Featured memorial story");
+    expect(featured).toHaveTextContent("Lead Story");
+    expect(featured).toHaveTextContent("Lead blog subtitle");
+    expect(featured).toHaveTextContent("APR 14, 2023");
+    expect(within(featured).getByAltText("Lead Story")).toHaveClass(
+      "object-cover"
+    );
+    expect(
+      within(featured).getByRole("link", { name: /Read the full story/i })
+    ).toHaveAttribute("href", "/blog/lead-story");
+    expect(within(archive).getAllByRole("listitem")).toHaveLength(3);
+    expect(
+      within(archive).getByRole("link", { name: /Studio Note/i })
+    ).toHaveAttribute("href", "/blog/studio-note");
+    expect(archive).toHaveTextContent("MAR 3, 2023");
+    expect(archive).toHaveTextContent("JAN 19, 2023");
+    expect(archive).toHaveTextContent("DEC 2, 2022");
+    expect(
+      within(mobileBlog).getByRole("link", {
+        name: /Browse all journal entries/i,
+      })
+    ).toHaveAttribute("href", "/blog");
   });
 
   it("keeps the prototype blog section present when blog data is unavailable", () => {
@@ -499,6 +772,12 @@ describe("/prototype/home page", () => {
     expect(screen.getByRole("link", { name: /Read more/i })).toHaveAttribute(
       "href",
       "/blog"
+    );
+    expect(
+      screen.getByRole("link", { name: /Browse all journal entries/i })
+    ).toHaveAttribute("href", "/blog");
+    expect(screen.getByTestId("prototype-mobile-blog-empty")).toHaveTextContent(
+      "Blog entries will appear here when archive posts are available."
     );
   });
 
@@ -520,10 +799,15 @@ describe("/prototype/home page", () => {
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /^Explore the collections/i })
-    ).toHaveAttribute("href", "/collections");
+      screen
+        .getAllByRole("link", { name: /^Explore the collections/i })
+        .every((link) => link.getAttribute("href") === "/collections")
+    ).toBe(true);
+    const desktopCollections = screen.getByTestId(
+      "prototype-desktop-collections"
+    );
     expect(
-      screen.getByRole("link", { name: /Extra Large/i })
+      within(desktopCollections).getByRole("link", { name: /Extra Large/i })
     ).toHaveAttribute("href", "/collections/extra-large/art-1");
     expect(
       screen.getByTestId("prototype-collection-featured-card")
@@ -591,6 +875,160 @@ describe("/prototype/home page", () => {
     ).toHaveAttribute("href", "/collections/family-favourites");
   });
 
+  it("renders the mobile collections mockup deck with accessible selection controls", () => {
+    render(
+      <CollectionPrototypeSection
+        collections={[
+          createCollection("extra-large", "Extra Large", "art-1"),
+          createCollection("portraits-of-beryl", "Portraits of Beryl", "art-2"),
+          createCollection("family-favourites", "Family Favourites", null),
+          createCollection("semi-abstract", "Semi-Abstract", "art-4"),
+        ]}
+      />
+    );
+
+    const mobileDeck = screen.getByTestId("prototype-mobile-collections");
+    const activeCard = within(mobileDeck).getByTestId(
+      "prototype-mobile-collection-featured-card"
+    );
+
+    expect(activeCard).toHaveTextContent("Extra Large");
+    expect(activeCard).toHaveTextContent("Extra Large subtitle");
+    expect(activeCard).toHaveClass(
+      "rounded-[14px]",
+      "absolute",
+      "left-1/2",
+      "h-[430px]",
+      "w-[min(74vw,330px)]",
+      "-translate-x-1/2",
+      "z-40",
+      "transition-[opacity,transform]"
+    );
+    expect(
+      within(mobileDeck).getAllByTestId("prototype-mobile-collection-card")[0]
+    ).toHaveClass("z-20", "right-[4.5vw]", "h-[350px]");
+    expect(
+      within(mobileDeck).getAllByTestId("prototype-mobile-collection-card")[1]
+    ).toHaveClass("z-10", "right-[-9vw]", "h-[315px]");
+    expect(within(mobileDeck).getAllByText("01").length).toBeGreaterThan(0);
+    expect(
+      within(mobileDeck).getByRole("link", {
+        name: "Open Extra Large collection",
+      })
+    ).toHaveAttribute("href", "/collections/extra-large/art-1");
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Select Extra Large mobile collection card",
+      })
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Show Extra Large",
+      })
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Show Portraits of Beryl",
+      })
+    ).toHaveAttribute("aria-pressed", "false");
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Show previous collection",
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Show next collection",
+      })
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      within(mobileDeck).getByRole("button", {
+        name: "Show next collection",
+      })
+    );
+
+    const updatedActiveCard = within(mobileDeck).getByTestId(
+      "prototype-mobile-collection-featured-card"
+    );
+    expect(updatedActiveCard).toHaveTextContent("Portraits of Beryl");
+    expect(
+      within(mobileDeck).getByRole("button", {
+        name: "Show Portraits of Beryl",
+      })
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      within(mobileDeck).getByRole("link", {
+        name: "Open Portraits of Beryl collection",
+      })
+    ).toHaveAttribute("href", "/collections/portraits-of-beryl/art-2");
+    expect(mockEmblaApi.scrollNext).toHaveBeenCalled();
+
+    fireEvent.click(
+      within(mobileDeck).getByRole("button", {
+        name: "Show previous collection",
+      })
+    );
+
+    expect(
+      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+    ).toHaveTextContent("Extra Large");
+    expect(mockEmblaApi.scrollPrev).toHaveBeenCalled();
+
+    fireEvent.click(
+      within(mobileDeck).getByRole("button", {
+        name: "Show Family Favourites",
+      })
+    );
+
+    expect(
+      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+    ).toHaveTextContent("Family Favourites");
+    expect(mockEmblaApi.scrollTo).toHaveBeenCalledWith(2);
+
+    fireEvent.keyDown(mobileDeck, { key: "ArrowRight" });
+
+    expect(
+      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+    ).toHaveTextContent("Semi-Abstract");
+  });
+
+  it("keeps the mobile collections carousel Embla-based with transform-only card transitions", () => {
+    const sectionSource = readRepoFile(
+      "src/components/prototypes/home/CollectionPrototypeSection.tsx"
+    );
+    const mobileDeckSource =
+      sectionSource.match(
+        /function MobileCollectionDeck[\s\S]*?function CollectionPrototypeEmptyState/
+      )?.[0] ?? "";
+
+    expect(mobileDeckSource).toContain("useEmblaCarousel");
+    expect(mobileDeckSource).toContain("emblaApi?.scrollPrev()");
+    expect(mobileDeckSource).toContain("emblaApi?.scrollNext()");
+    expect(mobileDeckSource).toContain("emblaApi?.scrollTo(index)");
+    expect(mobileDeckSource).toContain("sr-only");
+    expect(mobileDeckSource).toContain("h-[470px]");
+    expect(sectionSource).toContain("w-[min(74vw,330px)]");
+    expect(sectionSource).toContain("w-[min(45vw,205px)]");
+    expect(sectionSource).not.toContain("basis-[66vw]");
+    expect(sectionSource).not.toContain("translate-x-[22%]");
+    expect(sectionSource).not.toContain("-translate-x-[22%]");
+    expect(mobileDeckSource).toContain("transition-[opacity,transform]");
+    expect(mobileDeckSource).not.toContain("onTouchStart");
+    expect(mobileDeckSource).not.toContain("onTouchEnd");
+    expect(mobileDeckSource).not.toContain("touchStart");
+    expect(mobileDeckSource).not.toContain("transition-[opacity,transform,width,height]");
+    const mobileTransitions =
+      mobileDeckSource.match(/transition-\[[^\]]+\]/g) ?? [];
+    expect(mobileTransitions).not.toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(
+          /width|height|top|left|right|bottom|margin|flex|min-height|max-height/
+        ),
+      ])
+    );
+  });
+
   it("keeps the prototype collections section present when collection data is unavailable", () => {
     render(<CollectionPrototypeSection collections={[]} />);
 
@@ -601,8 +1039,10 @@ describe("/prototype/home page", () => {
       "Collection rooms are unavailable."
     );
     expect(
-      screen.getByRole("link", { name: /^Explore the collections/i })
-    ).toHaveAttribute("href", "/collections");
+      screen
+        .getAllByRole("link", { name: /^Explore the collections/i })
+        .every((link) => link.getAttribute("href") === "/collections")
+    ).toBe(true);
   });
 
   it("lets the fixed bottom shop dropdown resize the shop rail", () => {

@@ -26,6 +26,38 @@ const sectionHeadingStyle = prototypeHeadingStyle({
   lg: "4.5rem",
 });
 
+const mobileArchiveLimit = 4;
+
+type BlogDateInput =
+  | BlogEntryFrontend["displayDate"]
+  | string
+  | number
+  | null
+  | undefined;
+
+const blogDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+
+const getBlogDisplayDate = (dateInput: BlogDateInput) => {
+  if (!dateInput) {
+    return null;
+  }
+
+  const date = new Date(dateInput);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return {
+    dateTime: date.toISOString(),
+    label: blogDateFormatter.format(date).toUpperCase(),
+  };
+};
+
 function BlogImage({
   blog,
   variant,
@@ -59,6 +91,177 @@ function BlogImage({
       priority={priority}
       className={className}
     />
+  );
+}
+
+function MobileBlogArchiveRow({ blog }: { blog: BlogEntryFrontend }) {
+  const summary = getBlogSummary(blog);
+  const displayDate = getBlogDisplayDate(blog.displayDate);
+
+  return (
+    <li className="border-t border-slate/10">
+      <Link
+        href={getBlogHref(blog.slug)}
+        className="group grid min-w-0 grid-cols-[88px_minmax(0,1fr)_1.5rem] items-center gap-4 py-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:grid-cols-[132px_minmax(0,1fr)_minmax(92px,auto)_1.5rem] sm:gap-7 sm:py-7"
+      >
+        <div className="relative aspect-[1.55/1] w-full overflow-hidden bg-[#e5e2dc]">
+          <BlogImage
+            blog={blog}
+            variant="blogGridCard"
+            sizes="(min-width: 640px) 132px, 88px"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          />
+        </div>
+        <div className="min-w-0">
+          <h3 className="break-words font-cormorant text-2xl font-semibold leading-[1.05] text-slate sm:text-[2rem]">
+            {blog.title}
+          </h3>
+          {summary ? (
+            <p className="mt-2 line-clamp-2 break-words font-archivo text-sm leading-6 text-slate/70">
+              {summary}
+            </p>
+          ) : null}
+          {displayDate ? (
+            <time
+              dateTime={displayDate.dateTime}
+              className="mt-3 block font-archivo text-[0.68rem] uppercase tracking-[0.12em] text-slate/60 sm:hidden"
+            >
+              {displayDate.label}
+            </time>
+          ) : null}
+        </div>
+        {displayDate ? (
+          <time
+            dateTime={displayDate.dateTime}
+            className="hidden justify-self-end whitespace-nowrap font-archivo text-[0.68rem] uppercase tracking-[0.12em] text-slate/60 sm:block"
+          >
+            {displayDate.label}
+          </time>
+        ) : (
+          <span aria-hidden="true" className="hidden sm:block" />
+        )}
+        <ArrowRight
+          aria-hidden="true"
+          className="h-5 w-5 justify-self-end text-slate/70 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-slate"
+          strokeWidth={1.5}
+        />
+      </Link>
+    </li>
+  );
+}
+
+function MobileBlogSection({
+  leadBlog,
+  archiveBlogs,
+}: {
+  leadBlog?: BlogEntryFrontend;
+  archiveBlogs: BlogEntryFrontend[];
+}) {
+  const leadSummary = leadBlog ? getBlogSummary(leadBlog) : "";
+  const leadDisplayDate = leadBlog
+    ? getBlogDisplayDate(leadBlog.displayDate)
+    : null;
+
+  return (
+    <div
+      className={`${prototypeSectionFrameClassName} flex flex-col gap-9 py-14 md:hidden`}
+      data-testid="prototype-mobile-blog"
+    >
+      <div className="flex min-w-0 flex-col gap-6">
+        <p className="prototype-home-accent-text font-archivo text-xs uppercase tracking-[0.28em]">
+          Journal
+        </p>
+        <h2 className="max-w-[12ch] break-words font-cormorant text-[3.35rem] font-semibold leading-[0.96] text-slate sm:max-w-none sm:text-[4rem]">
+          Notes from the Studio
+        </h2>
+        <p className="max-w-[34rem] break-words font-archivo text-base leading-7 text-slate/70 sm:text-lg">
+          Reflections, updates, and stories from the life and work of Joseph
+          Laoutaris.
+        </p>
+      </div>
+
+      <div className="prototype-home-accent-divider h-px w-full" />
+
+      {leadBlog ? (
+        <article
+          className="flex min-w-0 flex-col gap-6"
+          data-testid="prototype-mobile-blog-featured"
+        >
+          <p className="prototype-home-accent-text font-archivo text-xs uppercase tracking-[0.28em]">
+            Featured memorial story
+          </p>
+          <div className="grid min-w-0 gap-7 sm:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] sm:items-center">
+            <div className="relative aspect-[1.08/1] w-full overflow-hidden bg-[#e5e2dc]">
+              <BlogImage
+                blog={leadBlog}
+                variant="blogHero"
+                sizes="(min-width: 640px) 45vw, 100vw"
+                priority
+                className="object-cover"
+              />
+            </div>
+            <div className="flex min-w-0 flex-col items-start gap-5">
+              <h3 className="break-words font-cormorant text-[2.65rem] font-semibold leading-[0.98] text-slate sm:text-[3rem]">
+                {leadBlog.title}
+              </h3>
+              <div
+                className="prototype-home-accent-divider h-px w-14"
+                aria-hidden="true"
+              />
+              {leadDisplayDate ? (
+                <time
+                  dateTime={leadDisplayDate.dateTime}
+                  className="font-archivo text-sm uppercase tracking-[0.08em] text-slate/65"
+                >
+                  {leadDisplayDate.label}
+                </time>
+              ) : null}
+              {leadSummary ? (
+                <p className="max-w-[22rem] break-words font-archivo text-base leading-7 text-slate/70">
+                  {leadSummary}
+                </p>
+              ) : null}
+              <Link
+                href={getBlogHref(leadBlog.slug)}
+                className="inline-flex min-h-11 items-center gap-4 font-archivo text-base text-slate transition-colors hover:text-slate/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
+              >
+                Read the full story
+                <ArrowRight aria-hidden="true" className="h-5 w-5" />
+              </Link>
+            </div>
+          </div>
+        </article>
+      ) : (
+        <div
+          className="border-y border-slate/10 py-10 font-archivo text-base leading-7 text-slate/65"
+          data-testid="prototype-mobile-blog-empty"
+        >
+          Blog entries will appear here when archive posts are available.
+        </div>
+      )}
+
+      {archiveBlogs.length > 0 ? (
+        <div className="flex min-w-0 flex-col gap-5">
+          <div className="prototype-home-accent-divider h-px w-full" />
+          <p className="prototype-home-accent-text font-archivo text-xs uppercase tracking-[0.28em]">
+            Journal archive
+          </p>
+          <ul className="min-w-0" data-testid="prototype-mobile-blog-archive">
+            {archiveBlogs.map((blog) => (
+              <MobileBlogArchiveRow key={blog.slug} blog={blog} />
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <Link
+        href="/blog"
+        className="prototype-home-accent-border mt-2 flex min-h-[64px] w-full items-center justify-between border px-5 font-archivo text-base text-slate transition-colors hover:bg-slate hover:text-whitish focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:px-7"
+      >
+        <span className="min-w-0 break-words">Browse all journal entries</span>
+        <ArrowRight aria-hidden="true" className="ml-4 h-5 w-5 shrink-0" />
+      </Link>
+    </div>
   );
 }
 
@@ -102,16 +305,23 @@ function BlogPrototypeCard({ blog }: { blog: BlogEntryFrontend }) {
 export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
   const [leadBlog, ...secondaryBlogs] = blogs;
   const cardBlogs = secondaryBlogs.slice(0, 4);
+  const mobileArchiveBlogs = secondaryBlogs.slice(0, mobileArchiveLimit);
   const leadSummary = leadBlog ? getBlogSummary(leadBlog) : "";
 
   return (
     <section
-      aria-labelledby={sectionHeadingId}
-      className="w-full border-t border-slate/10 bg-whitish text-slate"
+      aria-label="Journal"
+      className="prototype-home-alt-bg w-full border-t border-slate/10 text-slate"
       data-testid="prototype-blog-section"
     >
+      <MobileBlogSection
+        leadBlog={leadBlog}
+        archiveBlogs={mobileArchiveBlogs}
+      />
+
       <div
-        className={`${prototypeSectionFrameClassName} flex flex-col gap-14 py-16 sm:py-20 lg:gap-16 lg:py-24 2xl:gap-20 2xl:py-28`}
+        className={`${prototypeSectionFrameClassName} hidden flex-col gap-14 py-16 md:flex md:py-20 lg:gap-16 lg:py-24 2xl:gap-20 2xl:py-28`}
+        data-testid="prototype-desktop-blog"
       >
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(320px,0.62fr)_minmax(0,1.38fr)] lg:gap-14 xl:gap-16 2xl:grid-cols-[minmax(380px,0.56fr)_minmax(0,1.44fr)] 2xl:gap-24">
           <div className="flex min-w-0 flex-col items-start gap-7 2xl:gap-8">
@@ -125,7 +335,10 @@ export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
                 {leadBlog?.title ?? "Latest blog posts"}
               </h2>
             </div>
-            <div className="h-px w-16 bg-[#b9915a]" aria-hidden="true" />
+            <div
+              className="prototype-home-accent-divider h-px w-16"
+              aria-hidden="true"
+            />
             {leadSummary ? (
               <p className="max-w-xl break-words font-archivo text-base leading-7 text-slate/80 sm:text-lg 2xl:max-w-[700px]">
                 {leadSummary}

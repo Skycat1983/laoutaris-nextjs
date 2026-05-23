@@ -1610,6 +1610,20 @@ npm run lint
   product/artwork context wording, and preserved contact/artwork submit
   payloads. Adjacent product-context and account-user error-state tests also
   passed.
+- 2026-05-23: Completed T-218. `PolicyPages.test.tsx` now covers preserved
+  footer contact/legal links, absence of `href="#"` social placeholders,
+  absence of Facebook/Twitter/Instagram placeholder links, current-year
+  copyright rendering, stale 2024-only copyright removal, and source hygiene
+  against placeholder social links.
+- 2026-05-23: Completed T-219 as a docs-only owner-input blocker record. No
+  runtime tests were added because no runtime behavior changed.
+- 2026-05-23: Reactivated T-207 as the next unblocked fallback-pattern cleanup
+  task. It should add focused documentation/source coverage for the accepted
+  route fallback pattern and `/project/aims` generic loading fallback removal.
+- 2026-05-23: Completed T-207. Added
+  `__tests__/unit/publicRouteFallbackPatterns.test.ts` to guard the rendering
+  architecture fallback-pattern section and prevent the `/project/aims` generic
+  inline loading fallback from returning.
 
 ## Next Agent Action
 
@@ -1618,15 +1632,16 @@ T-209's commerce assurance copy coverage is complete. The focused
 refund, guarantee, or buyer-protection claims return to shared security banners
 or matching security translation files. T-210's public search artwork coverage
 is complete. T-211's Shopify product public-search coverage is complete. T-207
-fallback pattern coverage remains deferred as polish. T-212's compliance owner
+fallback pattern coverage is complete. T-212's compliance owner
 decision packet is complete; T-213 policy route/footer coverage is complete.
 T-214 newsletter consent/unsubscribe coverage is complete. T-215 account
 privacy/terms acknowledgement metadata and manual privacy request handoff
 coverage is complete. T-216 comment posting notice and manual
 moderation/removal handoff coverage is complete. T-217 contact/product and
-artwork enquiry notice coverage is complete. T-218 should add focused footer
-placeholder social-link/current-year coverage. Later runtime compliance tests
-for Shopify policy URLs and real social URLs remain separate.
+artwork enquiry notice coverage is complete. T-218 footer placeholder
+social-link/current-year coverage is complete. T-219 is complete as docs-only
+owner-input blocker coverage. Later runtime compliance tests for Shopify policy
+URLs and real social URLs remain separate.
 The current strict TypeScript `noEmit` backlog is clear after T-198 and the
 2026-05-22 ArticleLoader follow-up. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision
@@ -1634,8 +1649,10 @@ task is prepared and assigned. T-157 through T-198 are complete and should not
 be reassigned unless one of their recorded prototype, audit handoff, admin
 read-list, strict TypeScript cleanup, or framed-preview contracts regresses.
 T-143 now records staged public-search widening: T-210 completed artworks, and
-T-211 completed Shopify product results. Keep monitoring provider smoke coverage
-blocked until the owner/platform provider decision is available.
+T-211 completed Shopify product results. T-139 recorded the monitoring
+provider/no-provider decision as blocked in ADR 0005; keep monitoring provider
+smoke coverage blocked until an owner/platform provider or no-provider launch
+posture is approved.
 T-141 through T-168 are complete; do not reassign their
 focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb/
 audit/prototype coverage unless it regresses.

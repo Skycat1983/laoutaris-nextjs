@@ -513,6 +513,10 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   moderation/removal/correction handoff are in place, while existing owner-only
   comment edit/delete controls were preserved and no moderation/admin workflow
   was added.
+- 2026-05-23: Completed T-219 as a docs-only owner-input record. Future
+  account self-service privacy workflows remain blocked until the owner
+  approves deletion/export/correction scope, retention rules, identity
+  verification, and fulfilment process.
 
 ## Next Agent Action
 
@@ -533,7 +537,8 @@ T-141 is complete; do not reassign it unless current-admin or last-admin
 deletion protection regresses. T-215 is complete; do not reassign it unless
 credentials/OAuth acknowledgement metadata, app-owned sign-in notice, or the
 manual privacy request handoff regresses. Keep future account privacy
-self-service, owner/legal retention decisions, public contact/enquiry notices,
-and broader destructive admin cascade previews separate. T-216 is complete; do
-not reassign it unless comment notice or manual moderation handoff behavior
-regresses.
+self-service blocked until owner-approved deletion/export/correction scope,
+retention rules, identity verification, and fulfilment ownership exist. Keep
+owner/legal retention decisions, public contact/enquiry notices, and broader
+destructive admin cascade previews separate. T-216 is complete; do not reassign
+it unless comment notice or manual moderation handoff behavior regresses.

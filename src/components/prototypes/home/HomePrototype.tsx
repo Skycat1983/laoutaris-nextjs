@@ -2,11 +2,11 @@
 
 import { useMemo, useState, type CSSProperties } from "react";
 import { RotateCcw } from "lucide-react";
-import YoutubeEmbedding from "@/components/elements/misc/YoutubeEmbedding";
 import { PrototypeSectionPlaceholder } from "./PrototypeSectionPlaceholder";
 import { BlogPrototypeSection } from "./BlogPrototypeSection";
 import { BiographyPrototypeSection } from "./BiographyPrototypeSection";
 import { CollectionPrototypeSection } from "./CollectionPrototypeSection";
+import { ProjectPrototypeSection } from "./ProjectPrototypeSection";
 import {
   shopProductSizePresets,
   ShopPrototypeSection,
@@ -27,14 +27,6 @@ const prototypeSections = [
       "Reserved for the redesigned homepage opening section without changing the live archive homepage.",
     tone: "hero" as const,
     className: "min-h-[70vh]",
-  },
-  {
-    id: "artwork",
-    label: "Artwork",
-    title: "Artwork teaser slot",
-    description:
-      "Placeholder for the artwork navigation category while the homepage section system is explored.",
-    tone: "light" as const,
   },
   {
     id: "collections",
@@ -66,7 +58,7 @@ const prototypeSections = [
     title: "Watch the documentary",
     description: "The life, ethos & regrets of Joseph Laoutaris",
     details: ["A short film about my grandfather", "By Heron Laoutaris"],
-    tone: "muted" as const,
+    tone: "light" as const,
   },
   {
     id: "shop",
@@ -79,6 +71,51 @@ const prototypeSections = [
 ];
 
 const prototypeHomeTypographyCss = `
+  .prototype-home-shell {
+    --prototype-home-primary-bg: #f5f5f5;
+    --prototype-home-primary-accent-color: #262626;
+    --prototype-home-alt-accent-color: #5b4a3b;
+  }
+
+  .prototype-home-primary-bg {
+    --prototype-home-section-accent-color: var(--prototype-home-primary-accent-color);
+    --prototype-home-accent-muted: color-mix(in srgb, var(--prototype-home-section-accent-color) 34%, transparent);
+    --prototype-home-accent-soft: color-mix(in srgb, var(--prototype-home-section-accent-color) 72%, transparent);
+    background-color: var(--prototype-home-primary-bg);
+  }
+
+  .prototype-home-alt-bg {
+    --prototype-home-section-accent-color: var(--prototype-home-alt-accent-color);
+    --prototype-home-accent-muted: color-mix(in srgb, var(--prototype-home-section-accent-color) 34%, transparent);
+    --prototype-home-accent-soft: color-mix(in srgb, var(--prototype-home-section-accent-color) 72%, transparent);
+    background-color: var(--prototype-home-alt-bg);
+  }
+
+  .prototype-home-accent-text {
+    color: var(--prototype-home-section-accent-color);
+  }
+
+  .prototype-home-accent-link {
+    border-color: var(--prototype-home-section-accent-color);
+    color: var(--prototype-home-section-accent-color);
+  }
+
+  .prototype-home-accent-link:hover {
+    color: #262626;
+  }
+
+  .prototype-home-accent-border {
+    border-color: var(--prototype-home-section-accent-color);
+  }
+
+  .prototype-home-accent-divider-border {
+    border-color: var(--prototype-home-accent-muted);
+  }
+
+  .prototype-home-accent-divider {
+    background-color: var(--prototype-home-accent-soft);
+  }
+
   .prototype-home-shell .prototype-home-section-heading {
     font-size: calc(var(--prototype-heading-base) * var(--prototype-home-heading-scale, 1));
   }
@@ -125,16 +162,30 @@ const fontScale = {
   compact: "0.82",
 } as const;
 
+const alternateBackgroundOptions = {
+  stone: { label: "Chalk stone", value: "#eeece6" },
+  plaster: { label: "Soft plaster", value: "#f5f4f1" },
+  ivory: { label: "Warm ivory", value: "#f6f5f1" },
+  ricePaper: { label: "Rice paper", value: "#f7f6f2" },
+  bone: { label: "Bone white", value: "#f5f4f0" },
+  oatMilk: { label: "Oat milk", value: "#f6f4ef" },
+  porcelain: { label: "Porcelain white", value: "#f8f7f4" },
+  linenWhite: { label: "Linen white", value: "#f7f5f1" },
+} as const;
+
 type PrototypeFramePreset = keyof typeof frameWidth;
 type PrototypeFontPreset = keyof typeof fontScale;
+type AlternateBackgroundPreset = keyof typeof alternateBackgroundOptions;
 
 const DEFAULT_FRAME_PRESET: PrototypeFramePreset = "wide";
 const DEFAULT_FONT_PRESET: PrototypeFontPreset = "smaller";
 const DEFAULT_PRODUCT_SIZE_PRESET: ProductSizePreset = "feature";
+const DEFAULT_ALTERNATE_BACKGROUND_PRESET: AlternateBackgroundPreset = "stone";
 
 type PrototypeHomeStyle = CSSProperties & {
   "--prototype-home-frame-max": string;
   "--prototype-home-heading-scale": string;
+  "--prototype-home-alt-bg": string;
 };
 
 const fontPresetOptions: Array<{
@@ -146,38 +197,36 @@ const fontPresetOptions: Array<{
   { id: "compact", label: "Compact type" },
 ];
 
-function ProjectPrototypeVideo() {
-  return (
-    <div
-      className="w-full overflow-hidden border border-current/15 bg-black shadow-sm"
-      data-testid="prototype-project-video"
-    >
-      <YoutubeEmbedding videoId="6ynF2gO-J30" />
-    </div>
-  );
-}
-
 function PrototypeHomeControlRail({
   framePreset,
   fontPreset,
   productSizePreset,
+  alternateBackgroundPreset,
   onFramePresetChange,
   onFontPresetChange,
   onProductSizePresetChange,
+  onAlternateBackgroundPresetChange,
   onReset,
 }: {
   framePreset: PrototypeFramePreset;
   fontPreset: PrototypeFontPreset;
   productSizePreset: ProductSizePreset;
+  alternateBackgroundPreset: AlternateBackgroundPreset;
   onFramePresetChange: (preset: PrototypeFramePreset) => void;
   onFontPresetChange: (preset: PrototypeFontPreset) => void;
   onProductSizePresetChange: (preset: ProductSizePreset) => void;
+  onAlternateBackgroundPresetChange: (
+    preset: AlternateBackgroundPreset
+  ) => void;
   onReset: () => void;
 }) {
+  const activeAlternateBackground =
+    alternateBackgroundOptions[alternateBackgroundPreset];
+
   return (
     <section
       aria-label="Prototype layout controls"
-      className="fixed bottom-0 left-0 right-0 z-50 w-full border-t border-black/15 bg-[#f7f5f1]/95 text-slate shadow-[0_-12px_30px_rgba(0,0,0,0.08)] backdrop-blur"
+      className="fixed bottom-0 left-0 right-0 z-50 hidden w-full border-t border-black/15 bg-[#f7f5f1]/95 text-slate shadow-[0_-12px_30px_rgba(0,0,0,0.08)] backdrop-blur lg:block"
       data-testid="prototype-home-controls"
     >
       <div
@@ -233,6 +282,34 @@ function PrototypeHomeControlRail({
           </select>
         </label>
 
+        <label className="flex min-w-[150px] flex-1 flex-col gap-1 font-archivo text-[11px] uppercase tracking-[0.14em] text-slate/70 sm:max-w-[210px]">
+          Alt bg
+          <span className="relative block">
+            <span
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 border border-slate/20"
+              style={{ backgroundColor: activeAlternateBackground.value }}
+              aria-hidden="true"
+            />
+            <select
+              value={alternateBackgroundPreset}
+              onChange={(event) =>
+                onAlternateBackgroundPresetChange(
+                  event.target.value as AlternateBackgroundPreset
+                )
+              }
+              className="h-10 w-full appearance-none border border-slate/25 bg-white px-3 pl-9 font-archivo text-sm normal-case tracking-normal text-slate shadow-sm focus:outline-none focus:ring-2 focus:ring-slate"
+            >
+              {Object.entries(alternateBackgroundOptions).map(
+                ([preset, option]) => (
+                  <option key={preset} value={preset}>
+                    {option.label}
+                  </option>
+                )
+              )}
+            </select>
+          </span>
+        </label>
+
         <button
           type="button"
           title="Reset prototype layout controls"
@@ -268,26 +345,32 @@ export function HomePrototype({
     useState<PrototypeFontPreset>(DEFAULT_FONT_PRESET);
   const [productSizePreset, setProductSizePreset] =
     useState<ProductSizePreset>(DEFAULT_PRODUCT_SIZE_PRESET);
+  const [alternateBackgroundPreset, setAlternateBackgroundPreset] =
+    useState<AlternateBackgroundPreset>(DEFAULT_ALTERNATE_BACKGROUND_PRESET);
 
   const prototypeStyle = useMemo(
     (): PrototypeHomeStyle => ({
       "--prototype-home-frame-max": frameWidth[framePreset],
       "--prototype-home-heading-scale": fontScale[fontPreset],
+      "--prototype-home-alt-bg":
+        alternateBackgroundOptions[alternateBackgroundPreset].value,
     }),
-    [fontPreset, framePreset]
+    [alternateBackgroundPreset, fontPreset, framePreset]
   );
 
   const resetControls = () => {
     setFramePreset(DEFAULT_FRAME_PRESET);
     setFontPreset(DEFAULT_FONT_PRESET);
     setProductSizePreset(DEFAULT_PRODUCT_SIZE_PRESET);
+    setAlternateBackgroundPreset(DEFAULT_ALTERNATE_BACKGROUND_PRESET);
   };
 
   return (
     <div
-      className="prototype-home-shell w-full bg-whitish pb-36 text-slate sm:pb-24"
+      className="prototype-home-shell prototype-home-primary-bg w-full text-slate lg:pb-28"
       data-font-preset={fontPreset}
       data-frame-preset={framePreset}
+      data-alternate-background-preset={alternateBackgroundPreset}
       data-testid="prototype-home"
       style={prototypeStyle}
     >
@@ -296,9 +379,11 @@ export function HomePrototype({
         framePreset={framePreset}
         fontPreset={fontPreset}
         productSizePreset={productSizePreset}
+        alternateBackgroundPreset={alternateBackgroundPreset}
         onFramePresetChange={setFramePreset}
         onFontPresetChange={setFontPreset}
         onProductSizePresetChange={setProductSizePreset}
+        onAlternateBackgroundPresetChange={setAlternateBackgroundPreset}
         onReset={resetControls}
       />
       {prototypeSections.map((section) => {
@@ -336,18 +421,7 @@ export function HomePrototype({
         }
 
         if (section.id === "project") {
-          return (
-            <PrototypeSectionPlaceholder
-              key={section.id}
-              id={section.id}
-              label={section.label}
-              title={section.title}
-              description={section.description}
-              details={"details" in section ? section.details : undefined}
-              tone={section.tone}
-              media={<ProjectPrototypeVideo />}
-            />
-          );
+          return <ProjectPrototypeSection key={section.id} />;
         }
 
         return (
