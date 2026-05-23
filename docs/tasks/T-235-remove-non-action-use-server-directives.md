@@ -1,6 +1,6 @@
 # T-235 Remove Non-Action Use-Server Directives
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -22,7 +22,17 @@ loader, and layout files where no server function export is intended.
   The directive should be reserved for server functions/actions that may be
   imported by clients.
 - This is lower priority than the current import-boundary failure and the
-  public cache/middleware sequence.
+  public cache/middleware/client-island sequence. T-230 through T-234 and
+  T-236 are now complete or scoped, so this is the remaining A-022 cleanup.
+- A pre-assignment source inventory still finds top-level `"use server"` in
+  ordinary route/layout/loader/component files such as
+  `src/app/biography/layout.tsx`,
+  `src/app/collections/[slug]/layout.tsx`,
+  `src/components/loaders/viewLoaders/BlogListLoader.tsx`,
+  `src/components/views/Home.tsx`, `src/components/modules/navigation/header/Header.tsx`,
+  and `src/components/modules/navigation/mainNav/MainNav.tsx`.
+- The same inventory also finds likely keepers under `src/lib/actions` and
+  session helper modules. Classify each hit before removing directives.
 
 ## Scope
 
@@ -46,9 +56,8 @@ Out of scope:
 
 ## Concurrency
 
-Run after higher-priority T-230 through T-233 unless there is a small,
-non-overlapping implementation slot. Do not run in parallel with work editing
-the same loaders/pages/components.
+Run after higher-priority T-230 through T-234 and T-236. Do not run in
+parallel with work editing the same loaders/pages/components.
 
 Owned files:
 
@@ -77,4 +86,17 @@ npm run build
 ## Handoff Notes
 
 - Finding: F-117.
-- Priority: low, after the A-022 safety and cache proof sequence.
+- Completed 2026-05-23: removed top-level `"use server"` from ordinary
+  App Router layouts/pages, server component loaders, navigation components,
+  public views, and prototype loader helper modules under `src/app` and
+  `src/components`.
+- Kept the remaining directives in `src/lib/actions` and `src/lib/session`,
+  where they were classified as action/session helper boundaries rather than
+  ordinary Server Component markers. Removed the stale directive from
+  `src/lib/utils/debugUtils.ts`.
+- Added focused `clientServerImportBoundary` coverage proving non-action
+  modules stay free of top-level `"use server"` directives.
+- Verification passed:
+  `rg -n "^[\"']use server[\"'];?" src/app src/components src/lib`;
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteCachePolicy.test.ts __tests__/unit/security/clientServerImportBoundary.test.ts`;
+  `npm run build`.

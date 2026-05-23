@@ -52,8 +52,9 @@ or inconsistent code forward.
   sequence: repair the client import-boundary regression, narrow middleware
   matching, define public data freshness, then pilot ISR/cached public reads.
   T-230 completed the import-boundary repair, T-231 narrowed middleware
-  matching, T-232 defined public freshness, and T-233 completed the biography
-  cached-service proof.
+  matching, T-232 defined public freshness, T-233 completed the biography
+  cached-service proof, T-238 completed the collections redirect/navigation
+  proof, and T-239 made `/sitemap.xml` one-hour ISR source-owned.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
   server loaders, API routes, and server actions should share direct
   server-only data-access services instead of same-app HTTP fetches.
@@ -610,18 +611,46 @@ Use targeted import/reference searches for pruning tasks.
   `initialRevalidateSeconds: 600` while unrelated stable shells stayed
   deploy-bound; `MainNavLoader` remains on the direct navigation service to
   avoid root-header cache propagation across unrelated static routes.
-- 2026-05-23: Scoped T-234. Provider movement remains deferred because
-  `SessionProvider` and modal state are cross-cutting; T-236 is the next
-  runtime proof and should defer only the public mobile search/navigation
+- 2026-05-23: Scoped T-234. Provider movement remained deferred because
+  `SessionProvider` and modal state are cross-cutting; T-236 was selected as
+  the first runtime proof to defer only the public mobile search/navigation
   drawer implementations from the initial header path.
+- 2026-05-23: Completed T-236. Public mobile search and navigation drawer
+  bodies now lazy-load after first open intent while the labelled header
+  triggers stay in the initial path. Root providers were not moved. Build
+  evidence showed the root layout client chunk dropped from the T-234
+  `35,174` byte baseline to `27,772` bytes, with separate `1,273` byte search
+  and `7,433` byte mobile navigation drawer chunks.
+- 2026-05-23: Completed T-235. Top-level `"use server"` directives were removed
+  from ordinary App Router layouts/pages and server component/loader/navigation
+  modules under `src/app` and `src/components`; actual action/session helper
+  directives remain under `src/lib`.
+- 2026-05-23: Completed T-237 as a docs-only scoping pass. Remaining F-111 and
+  F-115 options were compared against source, docs, and current build output;
+  T-238 was selected as the next safe route-family cache proof for
+  `/collections` default redirect ISR and route-local collection navigation
+  caching.
+- 2026-05-24: Completed T-238. `/collections` now uses a 10-minute cached
+  collection navigation wrapper plus matching route-level ISR for the default
+  redirect, and `CollectionsSubnavLoader` uses the same cached wrapper for
+  route-local navigation. Collection detail routes remain explicitly dynamic
+  with no generated params, and `MainNavLoader` remains on the direct
+  collection navigation service.
+- 2026-05-24: Completed T-239. `/sitemap.xml` now exports
+  `SITEMAP_REVALIDATE_SECONDS = 3600` plus matching route-level ISR, focused
+  tests guard route-level `revalidate` drift outside `/biography`,
+  `/collections`, and `/sitemap.xml`, and build/prerender-manifest evidence
+  records `/sitemap.xml` as static with `initialRevalidateSeconds: 3600`.
 
 ## Next Agent Action
 
-Continue the A-022 implementation sequence after the completed T-233 proof.
-T-234 has scoped the client-island opportunity; next priority is T-236, which
-should lazy-load public mobile search/navigation drawers before any root
-provider move. Keep broader ISR/static migration separate until a new
-route-family cache task is assigned.
+T-239 is complete. Do not reassign T-239 unless `/sitemap.xml` loses its
+source-owned one-hour ISR policy, sitemap discovery output changes
+unintentionally, or route-level `revalidate` drift appears outside
+`/biography`, `/collections`, and `/sitemap.xml`. Keep root providers,
+collection `generateStaticParams()`, collection detail/session caching,
+Shopify fetch policy, and broader ISR for blog, search, shop, account, admin,
+or detail routes separate unless a new task scopes one of those paths.
 
 Do not reassign route-local rendering fallback documentation unless the
 documented pattern or `/project/aims` source hygiene regresses. Broad
@@ -633,9 +662,6 @@ adoption, and live homepage migration separate until owner review accepts the
 expanded prototype direction and a visual-parity migration task is prepared.
 Other architecture slices remain broad route-builder work, staged
 source-pruning work, and remaining route-local rendering follow-ups.
-Keep broad static/ISR migration separate until a dedicated cache-freshness and
-route-param task is assigned.
-
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, T-205, T-230, or
 T-231 unless a regression is opened.

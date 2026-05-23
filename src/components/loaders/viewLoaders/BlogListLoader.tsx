@@ -1,5 +1,3 @@
-"use server";
-
 import { BlogListView } from "@/components/views/BlogListView";
 import { transformToPaginationLinks } from "@/lib/transforms/utils/paginationTransforms";
 import type { PaginationMetadata } from "@/lib/data/types/apiTypes";

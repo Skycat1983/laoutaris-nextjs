@@ -1,5 +1,3 @@
-"use server";
-
 import { Logo } from "@/components/elements/icons";
 import Link from "next/link";
 

@@ -1,5 +1,3 @@
-"use server";
-
 import { MobileNavLayout } from "@/components/modules/navigation/mainNav/MobileNavLayout";
 import { TabletNavLayout } from "@/components/modules/navigation/mainNav/TabletNavLayout";
 import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/DesktopNavLayout";

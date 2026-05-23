@@ -196,6 +196,11 @@ const mixedComponentBarrelSpecifiers = new Set([
 const hasServerOnlyImport = (relativePath: string) =>
   /^\s*import\s+["']server-only["']/.test(readRepoFile(relativePath));
 
+const allowedUseServerDirectivePatterns = [
+  /^src\/lib\/actions\//,
+  /^src\/lib\/session\//,
+];
+
 const importsRuntimeValues = (importClause: ts.ImportClause | undefined) => {
   if (!importClause) {
     return true;
@@ -262,6 +267,18 @@ const formatImportChain = (
 };
 
 describe("client/server import boundary", () => {
+  it("keeps non-action modules free of top-level use-server directives", () => {
+    const violations = listRepoSourceFiles("src").filter(
+      (sourceFile) =>
+        hasDirective(sourceFile, "use server") &&
+        !allowedUseServerDirectivePatterns.some((pattern) =>
+          pattern.test(sourceFile)
+        )
+    );
+
+    expect(violations).toEqual([]);
+  });
+
   it("keeps client runtime imports away from server-only code and mixed barrels", () => {
     const { clientEntries, parentByFile, visited } = buildClientRuntimeGraph();
 

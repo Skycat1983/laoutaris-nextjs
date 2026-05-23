@@ -237,8 +237,11 @@ Planning and prompt packs:
 | [T-232 Define public cache freshness policy](T-232-define-public-cache-freshness-policy.md) | Completed | Decided sitemap/default redirect/public route freshness before runtime ISR, static params, or cache wrapper changes. |
 | [T-233 Pilot biography cache proof](T-233-pilot-biography-cache-proof.md) | Completed | Implemented the approved biography cached-service proof with a 10-minute stale window and `/biography` redirect ISR. |
 | [T-234 Scope public client provider islands](T-234-scope-public-client-provider-islands.md) | Scoped | Measured public provider/client-island cost and selected lazy-loading public mobile drawers as the first runtime proof. |
-| [T-236 Lazy-load public mobile navigation drawers](T-236-lazy-load-public-mobile-navigation-drawers.md) | Planned | Defer mobile search/navigation drawer implementations from the initial public header path before root provider moves. |
-| [T-235 Remove non-action use-server directives](T-235-remove-non-action-use-server-directives.md) | Planned | Remove misleading top-level `"use server"` directives from server components/loaders where no server function export is intended. |
+| [T-236 Lazy-load public mobile navigation drawers](T-236-lazy-load-public-mobile-navigation-drawers.md) | Completed | Deferred mobile search/navigation drawer implementations from the initial public header path before root provider moves. |
+| [T-235 Remove non-action use-server directives](T-235-remove-non-action-use-server-directives.md) | Completed | Removed misleading top-level `"use server"` directives from ordinary app/component files while keeping actual action/session helper directives. |
+| [T-237 Scope next Next.js efficiency wave](T-237-scope-next-nextjs-efficiency-wave.md) | Completed | Compared remaining F-111/F-115 cache/static and provider options and selected collections redirect caching as the next slice. |
+| [T-238 Pilot collections redirect cache proof](T-238-pilot-collections-redirect-cache-proof.md) | Completed | Extended the biography cache proof pattern to the collections default redirect and route-local collection navigation reads. |
+| [T-239 Codify sitemap ISR freshness](T-239-codify-sitemap-isr-freshness.md) | Completed | Made `/sitemap.xml` one-hour ISR freshness explicit in source and guarded it without changing sitemap content. |
 
 ## Rules
 

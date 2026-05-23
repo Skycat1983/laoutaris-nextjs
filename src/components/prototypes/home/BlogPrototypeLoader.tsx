@@ -1,5 +1,3 @@
-"use server";
-
 import { getBlogList } from "@/lib/data/services/getBlogList";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { isNextError } from "@/lib/helpers/isNextError";

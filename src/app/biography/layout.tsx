@@ -1,4 +1,3 @@
-"use server";
 import React, { Suspense } from "react";
 import { BiographySubnavLoader } from "../../components/loaders/componentLoaders/BiographySubnavLoader";
 import { SubnavSkeleton } from "@/components/modules/navigation/subnav/Subnav";

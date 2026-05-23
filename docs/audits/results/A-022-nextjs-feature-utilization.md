@@ -191,16 +191,19 @@ JavaScript from global providers and large client components.
 Reconciled on 2026-05-23:
 
 - F-111: public caching/ISR and cached non-`fetch` service reads. Partially
-  mitigated by T-232/T-233 for the biography proof route.
+  mitigated by T-232/T-233 for the biography proof route, T-238 for the
+  collections redirect/navigation proof, and planned T-239 for explicit sitemap
+  ISR ownership.
 - F-112: current client/server import-boundary regression. Resolved by T-230.
 - F-113: middleware matcher broader than protected route prefixes. Resolved by
   T-231.
 - F-114: implicit deploy-bound freshness for sitemap/default redirects.
   Resolved by T-232.
-- F-115: public client-provider and client-island cost. Scoped by T-234; first
-  runtime proof is T-236.
+- F-115: public client-provider and client-island cost. Partially mitigated by
+  T-234/T-236; broader provider/modal ownership remains separate.
 - F-116: duplicate of F-080/R-019/ADR 0005 for instrumentation/web-vitals.
-- F-117: low-priority non-action top-level `"use server"` cleanup.
+- F-117: low-priority non-action top-level `"use server"` cleanup. Resolved
+  by T-235.
 
 ## Risks Updated
 
@@ -219,14 +222,16 @@ Reconciled on 2026-05-23:
   facts, backlog entries, and next-agent sequencing.
 - Prepared planned task briefs T-230 through T-235; T-236 was added after the
   T-234 scoping pass.
-- T-230, T-231, T-232, and T-233 are now complete. T-234 scoped the
-  client-provider/client-island work; T-236 is the next A-022 runtime task.
+- T-230, T-231, T-232, T-233, T-235, and T-236 are now complete. T-234 scoped
+  the client-provider/client-island work.
+- T-237 scoped the next A-022 efficiency wave, T-238 completed the collections
+  redirect/navigation cache proof, and T-239 is planned to make the current
+  one-hour `/sitemap.xml` manifest revalidation explicit in source.
 
 ## Next Action
 
-Implementation should proceed with the remaining sequence:
-
-1. T-236 lazy-loads the public mobile search/navigation drawer implementations
-   from the initial header path before any root provider move.
-2. T-235 remains a lower-priority follow-up for non-action `"use server"`
-   cleanup.
+The first A-022 implementation sequence and the T-238 collections proof are
+complete. Assign T-239 next if continuing the Next.js efficiency track; keep it
+limited to explicit sitemap ISR ownership. Further broad static/ISR,
+provider/modal, monitoring instrumentation, generated params, blog caching, or
+route-family cache work should be scoped as separate tasks.

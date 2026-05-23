@@ -1,7 +1,11 @@
 import { readFileSync } from "fs";
 import path from "path";
 import robots from "@/app/robots";
-import sitemap, { stablePublicSitemapRoutes } from "@/app/sitemap";
+import sitemap, {
+  revalidate as sitemapRevalidate,
+  SITEMAP_REVALIDATE_SECONDS,
+  stablePublicSitemapRoutes,
+} from "@/app/sitemap";
 import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 
 jest.mock("server-only", () => ({}), { virtual: true });
@@ -86,5 +90,10 @@ describe("public metadata and discovery files", () => {
       expect(entry.changeFrequency).toEqual(expect.any(String));
       expect(entry.priority).toEqual(expect.any(Number));
     }
+  });
+
+  it("makes sitemap freshness source-owned without changing discovery contents", () => {
+    expect(SITEMAP_REVALIDATE_SECONDS).toBe(3600);
+    expect(sitemapRevalidate).toBe(SITEMAP_REVALIDATE_SECONDS);
   });
 });

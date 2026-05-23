@@ -1,5 +1,3 @@
-"use server";
-
 import dbConnect from "@/lib/db/mongodb";
 import { Suspense } from "react";
 import { PaginationSkeleton } from "@/components/modules/pagination/CollectionViewPagination";

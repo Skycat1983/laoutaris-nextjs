@@ -1,5 +1,3 @@
-"use server";
-
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
 import type { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 import { isNextError } from "@/lib/helpers/isNextError";

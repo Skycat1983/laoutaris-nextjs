@@ -245,7 +245,9 @@ Next.js server/client component boundaries.
   client/server import-boundary guard was failing through `SignUpForm`, middleware
   matching is broader than protected route prefixes, static sitemap/default
   redirect freshness is implicit, and global client providers/large client
-  islands are the next medium-priority RSC efficiency target.
+  islands are the next medium-priority RSC efficiency target. T-239 completed
+  the sitemap freshness piece by making `/sitemap.xml` own a one-hour ISR route
+  export without changing sitemap content or public route rendering.
 - T-199 defined the public detail not-found/error contract in
   `docs/architecture/rendering-and-data-fetching.md`: malformed canonical
   params and missing primary detail content should map to `notFound()`,
@@ -1101,6 +1103,27 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-23: Scoped T-234. The current root layout client chunk still carries
   cross-cutting session, modal, search drawer, and mobile navigation drawer
   code, so T-236 is the first approved runtime proof before provider moves.
+- 2026-05-23: Completed T-236. `SearchDrawer` and `MobileNavDrawer` now keep
+  labelled trigger/controller code in the public mobile header and lazy-load
+  colocated body modules after first open intent. The drawer bodies preserve
+  the existing search form, close controls, public nav links, and
+  session-dependent account links while desktop/tablet navigation and root
+  provider ownership remain unchanged.
+- 2026-05-23: Completed T-235. Ordinary server-rendered public/account
+  layouts/pages, loaders, views, navigation modules, and prototype loader
+  helpers no longer use top-level `"use server"` as a Server Component marker.
+- 2026-05-23: Completed T-237 as a docs-only Next.js efficiency scoping pass.
+  Provider/modal work remains deferred after the T-236 drawer proof, and T-238
+  is the next selected runtime slice for the route-local collections redirect
+  cache proof.
+- 2026-05-24: Completed T-238. The collections default redirect and
+  route-local collections subnav now use a 10-minute cached collection
+  navigation wrapper, `/collections` exports the matching ISR window, and
+  collection detail routes plus root header navigation keep their direct dynamic
+  behavior.
+- 2026-05-24: Completed T-239. `/sitemap.xml` now owns one-hour ISR freshness
+  in `src/app/sitemap.ts`; sitemap content, public route rendering, provider
+  ownership, and Shopify behavior were preserved.
 
 ## Next Agent Action
 
@@ -1113,10 +1136,13 @@ fallback documentation or `/project/aims` fallback source hygiene regresses.
 Keep third-party consent UI, commerce-policy URL wiring, and real social target
 wiring separate until owner-supplied targets exist.
 
-For the A-022 Next.js efficiency track, T-234 has scoped the first
-client-island runtime proof. Assign T-236 next to lazy-load the public mobile
-search/navigation drawers before any root provider move. Keep broader
-static/ISR migration behind a separate route-family cache task.
+For the A-022 Next.js efficiency track, T-236 completed the first
+client-island runtime proof by lazy-loading the public mobile search/navigation
+drawer bodies, and T-238 completed the next route-family cache slice for
+collections redirect/navigation. T-239 explicit `/sitemap.xml` ISR ownership is
+also complete. Keep root provider/modal ownership, blog cache splitting,
+generated params, and broader static/ISR migration separate unless a new task
+scopes one of those paths.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

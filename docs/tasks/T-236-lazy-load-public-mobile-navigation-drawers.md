@@ -1,6 +1,6 @@
 # T-236 Lazy-Load Public Mobile Navigation Drawers
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -125,3 +125,33 @@ and the relevant public route first-load rows.
 - Finding: F-115.
 - Depends on: T-234.
 - T-234 selected this as the first runtime proof before any root provider move.
+- 2026-05-23: Completed. `SearchDrawer` and `MobileNavDrawer` now keep only
+  labelled trigger/controller code in the public header path and lazy-load
+  colocated body modules after first open intent. The body modules retain the
+  existing search form, close controls, public nav links, and session-dependent
+  account links. Root providers, route cache policy, desktop/tablet navigation,
+  account/admin routes, and global feature/session provider ownership were not
+  moved.
+- Build comparison against T-234:
+  - Shared first-load JavaScript: `87.6 kB` versus T-234 `87.5 kB`.
+  - Stable static shells such as `/biography`, `/collections`, `/project`,
+    `/project/film`, and `/shop`: `87.8 kB` versus T-234 `87.7 kB`.
+  - Public browse/form routes stayed effectively flat against T-234:
+    `/artwork` `177 kB`, `/blog` `183 kB`, `/shop/products` `142 kB`, and
+    `/project/contact` `149 kB`.
+  - Root layout client chunk:
+    `.next/static/chunks/app/layout-400efb798bcf3f61.js` is `27,772` bytes
+    uncompressed versus T-234 `35,174` bytes.
+  - Next emitted separate lazy drawer chunks:
+    `.next/static/chunks/1590.33b0cb6def221761.js` (`1,273` bytes) for the
+    search drawer body and `.next/static/chunks/963.4d2fe44e20b0046b.js`
+    (`7,433` bytes) for the mobile navigation drawer body.
+  - The root layout chunk still contains dynamic-wrapper references to the
+    lazy export names, but the full body content/close-control implementation
+    is in the lazy chunks.
+- Verification:
+  - `npm test -- --runTestsByPath __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/navigationRelativeUrls.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`
+    passed with 3 suites and 10 tests. Existing `punycode` deprecation warnings
+    appeared.
+  - `npm run build` passed.
+  - `git diff --check` passed.

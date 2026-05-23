@@ -1,5 +1,3 @@
-"use server";
-
 import { CollectionSection } from "@/components/sections/CollectionSection";
 import { HomeSectionFallback } from "@/components/sections/HomeSectionFallback";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";

@@ -1,5 +1,3 @@
-"use server";
-
 import { BlogSection } from "@/components/sections/BlogSection";
 import { HomeSectionFallback } from "@/components/sections/HomeSectionFallback";
 import { getBlogList } from "@/lib/data/services/getBlogList";

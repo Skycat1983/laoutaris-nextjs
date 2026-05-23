@@ -1,5 +1,3 @@
-"use server";
-
 //! unused
 
 import React from "react";

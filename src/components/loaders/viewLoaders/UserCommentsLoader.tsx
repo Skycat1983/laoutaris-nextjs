@@ -1,5 +1,3 @@
-"use server";
-
 import React from "react";
 import { UserCommentsView } from "@/components/views/UserCommentsView";
 import { getOwnUserComments } from "@/lib/data/services/getOwnUserComments";

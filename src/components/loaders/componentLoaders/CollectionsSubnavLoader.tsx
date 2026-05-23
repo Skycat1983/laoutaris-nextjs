@@ -1,7 +1,5 @@
-"use server";
-
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import { getCachedCollectionNavigationList } from "@/lib/data/services/getCachedCollectionNavigationData";
 import { createSubnavLink } from "@/lib/helpers/createSubnavLink";
 
 interface CollectionsSubnavLoaderProps {
@@ -11,7 +9,7 @@ interface CollectionsSubnavLoaderProps {
 export async function CollectionsSubnavLoader({
   section: _section,
 }: CollectionsSubnavLoaderProps) {
-  const result = await getCollectionNavigationList();
+  const result = await getCachedCollectionNavigationList();
 
   if (!result) {
     throw new Error("No collections found");

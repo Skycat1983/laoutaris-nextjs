@@ -87,9 +87,17 @@ feature-utilization findings: controlled public caching/ISR and sitemap/default
 redirect freshness, the T-230-resolved client import-boundary regression, broad
 middleware matching, global public client-provider cost, duplicate monitoring
 instrumentation blocker, and low-priority non-action `"use server"` cleanup.
-T-230, T-231, T-232, and T-233 are complete, and T-234 has scoped the first
-client-island proof. Continue with T-236 to lazy-load public mobile
-search/navigation drawers, then lower-priority T-235.
+T-230, T-231, T-232, T-233, T-235, and T-236 are complete, and T-234 scoped
+the first client-island proof. The A-022 implementation sequence is complete;
+future broad static/ISR or provider/modal work should be newly scoped. T-237
+completed that docs-only scoping pass and selected T-238 as the next safe
+route-family cache proof: `/collections` default redirect ISR plus cached
+route-local collection navigation reads, while keeping collection detail routes
+dynamic and root header navigation direct. T-238 is now complete. T-239 is
+planned as the next narrow efficiency slice: codify the current one-hour
+`/sitemap.xml` ISR behavior in `src/app/sitemap.ts`, because build evidence
+already records `initialRevalidateSeconds: 3600` through indirect Shopify fetch
+revalidation rather than an explicit sitemap-owned route export.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,

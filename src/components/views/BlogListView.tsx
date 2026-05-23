@@ -1,5 +1,3 @@
-"use server";
-
 import type { SortedBlogData } from "../loaders/viewLoaders/BlogListLoader";
 import { BlogsViewLayout } from "../layouts/public/BlogsViewLayout";
 import { BlogsViewCardSkeleton } from "../modules/cards/BlogsViewCard";

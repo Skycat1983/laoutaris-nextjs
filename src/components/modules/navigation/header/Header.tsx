@@ -1,5 +1,3 @@
-"use server";
-
 import Breadcrumbs from "@/components/modules/navigation/breadcrumbs/Breadcrumbs";
 import Searchbar from "@/components/elements/inputs/Searchbar";
 import { Suspense } from "react";

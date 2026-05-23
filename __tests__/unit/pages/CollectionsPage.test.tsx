@@ -1,5 +1,5 @@
 import CollectionsPage from "@/app/collections/page";
-import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import { getCachedCollectionNavigationList } from "@/lib/data/services/getCachedCollectionNavigationData";
 import type {
   CollectionNavDataFrontend,
   ListResult,
@@ -7,8 +7,9 @@ import type {
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
-jest.mock("@/lib/data/services/getCollectionNavigationList", () => ({
-  getCollectionNavigationList: jest.fn(),
+jest.mock("@/lib/data/services/getCachedCollectionNavigationData", () => ({
+  COLLECTION_NAVIGATION_CACHE_REVALIDATE_SECONDS: 600,
+  getCachedCollectionNavigationList: jest.fn(),
 }));
 
 jest.mock("@/lib/helpers/isNextError", () => ({
@@ -19,9 +20,9 @@ jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
-const mockGetCollectionNavigationList =
-  getCollectionNavigationList as jest.MockedFunction<
-    typeof getCollectionNavigationList
+const mockGetCachedCollectionNavigationList =
+  getCachedCollectionNavigationList as jest.MockedFunction<
+    typeof getCachedCollectionNavigationList
   >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 const mockRedirect = redirect as unknown as jest.MockedFunction<
@@ -69,7 +70,7 @@ describe("/collections page", () => {
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
     mockIsNextError.mockReturnValue(false);
-    mockGetCollectionNavigationList.mockResolvedValue(
+    mockGetCachedCollectionNavigationList.mockResolvedValue(
       createCollectionNavResult([
         createCollectionNavItem({
           title: "Paintings",
@@ -89,7 +90,7 @@ describe("/collections page", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("redirects to the first collection artwork through the server data service", async () => {
+  it("redirects to the first collection artwork through the cached server data service", async () => {
     const redirectError = new Error("NEXT_REDIRECT");
     mockRedirect.mockImplementation(() => {
       throw redirectError;
@@ -98,7 +99,7 @@ describe("/collections page", () => {
 
     await expect(CollectionsPage()).rejects.toThrow(redirectError);
 
-    expect(mockGetCollectionNavigationList).toHaveBeenCalledWith();
+    expect(mockGetCachedCollectionNavigationList).toHaveBeenCalledWith();
     expect(mockRedirect).toHaveBeenCalledWith(
       "/collections/paintings/artwork-1"
     );
@@ -112,7 +113,7 @@ describe("/collections page", () => {
       throw redirectError;
     });
     mockIsNextError.mockImplementation((error) => error === redirectError);
-    mockGetCollectionNavigationList.mockResolvedValue(
+    mockGetCachedCollectionNavigationList.mockResolvedValue(
       createCollectionNavResult([
         createCollectionNavItem({
           title: "Drawings",
@@ -129,7 +130,7 @@ describe("/collections page", () => {
   });
 
   it("throws the existing no-results error when no collections exist", async () => {
-    mockGetCollectionNavigationList.mockResolvedValue(null);
+    mockGetCachedCollectionNavigationList.mockResolvedValue(null);
 
     await expect(CollectionsPage()).rejects.toThrow("No collections found");
 
@@ -150,7 +151,7 @@ describe("/collections page", () => {
 
   it("logs a structured error when collection loading fails", async () => {
     const error = new Error("navigation failed");
-    mockGetCollectionNavigationList.mockRejectedValue(error);
+    mockGetCachedCollectionNavigationList.mockRejectedValue(error);
 
     await expect(CollectionsPage()).rejects.toThrow(error);
 

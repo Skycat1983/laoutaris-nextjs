@@ -1,8 +1,13 @@
-import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import {
+  COLLECTION_NAVIGATION_CACHE_REVALIDATE_SECONDS,
+  getCachedCollectionNavigationList,
+} from "@/lib/data/services/getCachedCollectionNavigationData";
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
+export const revalidate = COLLECTION_NAVIGATION_CACHE_REVALIDATE_SECONDS;
 
 const logger = createServerLogger({
   route: "/collections",
@@ -12,7 +17,7 @@ const logger = createServerLogger({
 
 export default async function Collections() {
   try {
-    const result = await getCollectionNavigationList();
+    const result = await getCachedCollectionNavigationList();
 
     if (!result || !result.data.length) {
       throw new Error("No collections found");

@@ -1,5 +1,3 @@
-"use server";
-
 import { getShopProductList } from "@/lib/data/services/getShopProductList";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { isNextError } from "@/lib/helpers/isNextError";

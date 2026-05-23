@@ -1,5 +1,3 @@
-"use server";
-
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
 import {

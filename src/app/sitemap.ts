@@ -5,6 +5,9 @@ import {
   type PublicSitemapEntry,
 } from "@/lib/metadata/publicDynamicSitemap";
 
+export const SITEMAP_REVALIDATE_SECONDS = 3600;
+export const revalidate = SITEMAP_REVALIDATE_SECONDS;
+
 export const stablePublicSitemapRoutes = [
   { path: "/", changeFrequency: "monthly", priority: 1 },
   { path: "/artwork", changeFrequency: "weekly", priority: 0.9 },

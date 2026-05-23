@@ -1,5 +1,3 @@
-"use server";
-
 import { getArticleList } from "@/lib/data/services/getArticleList";
 import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
 import { isNextError } from "@/lib/helpers/isNextError";

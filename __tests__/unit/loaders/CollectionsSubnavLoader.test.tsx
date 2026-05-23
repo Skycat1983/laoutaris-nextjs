@@ -1,23 +1,23 @@
 import type { ReactElement } from "react";
 import { CollectionsSubnavLoader } from "@/components/loaders/componentLoaders/CollectionsSubnavLoader";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { getCollectionNavigationList } from "@/lib/data/services/getCollectionNavigationList";
+import { getCachedCollectionNavigationList } from "@/lib/data/services/getCachedCollectionNavigationData";
 import type {
   CollectionNavDataFrontend,
   ListResult,
 } from "@/lib/data/types";
 
-jest.mock("@/lib/data/services/getCollectionNavigationList", () => ({
-  getCollectionNavigationList: jest.fn(),
+jest.mock("@/lib/data/services/getCachedCollectionNavigationData", () => ({
+  getCachedCollectionNavigationList: jest.fn(),
 }));
 
 jest.mock("@/components/modules/navigation/subnav/Subnav", () => ({
   Subnav: jest.fn(() => null),
 }));
 
-const mockGetCollectionNavigationList =
-  getCollectionNavigationList as jest.MockedFunction<
-    typeof getCollectionNavigationList
+const mockGetCachedCollectionNavigationList =
+  getCachedCollectionNavigationList as jest.MockedFunction<
+    typeof getCachedCollectionNavigationList
   >;
 
 const createCollectionNavItem = ({
@@ -55,7 +55,7 @@ const createCollectionNavResult = (
 describe("CollectionsSubnavLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetCollectionNavigationList.mockResolvedValue(
+    mockGetCachedCollectionNavigationList.mockResolvedValue(
       createCollectionNavResult([
         createCollectionNavItem({
           title: "Paintings",
@@ -71,7 +71,7 @@ describe("CollectionsSubnavLoader", () => {
     );
   });
 
-  it("loads collection links through the server data service without same-app fetches", async () => {
+  it("loads collection links through the cached server data service without same-app fetches", async () => {
     const element = (await CollectionsSubnavLoader({
       section: "collections",
     })) as ReactElement<{
@@ -83,7 +83,7 @@ describe("CollectionsSubnavLoader", () => {
       }>;
     }>;
 
-    expect(mockGetCollectionNavigationList).toHaveBeenCalledWith();
+    expect(mockGetCachedCollectionNavigationList).toHaveBeenCalledWith();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(Subnav);
     expect(element.props.links).toEqual([
@@ -103,7 +103,7 @@ describe("CollectionsSubnavLoader", () => {
   });
 
   it("throws the existing no-results error when the service returns null", async () => {
-    mockGetCollectionNavigationList.mockResolvedValue(null);
+    mockGetCachedCollectionNavigationList.mockResolvedValue(null);
 
     await expect(
       CollectionsSubnavLoader({ section: "collections" })

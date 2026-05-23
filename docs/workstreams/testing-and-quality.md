@@ -1642,6 +1642,32 @@ npm run lint
 - 2026-05-23: Scoped T-234. Build evidence captured the public route
   first-load JavaScript baseline and root layout chunk contents before the
   planned T-236 lazy mobile drawer proof.
+- 2026-05-23: Completed T-236. Focused source coverage now guards the lazy
+  mobile drawer split, labelled trigger/close controls, relative account links,
+  and client/server import boundary. Verification passed with the targeted
+  Jest run, `npm run build`, and `git diff --check`; Jest still reported the
+  existing `punycode` deprecation warnings.
+- 2026-05-23: Completed T-235. `clientServerImportBoundary.test.ts` now guards
+  `src/app` and `src/components` against non-action top-level `"use server"`
+  directives. Verification passed with the required directive inventory,
+  targeted Jest run, and `npm run build`; targeted Jest still reported the
+  existing `punycode` deprecation warnings.
+- 2026-05-23: Completed T-237 as a docs-only scoping pass. `npm run build`
+  passed and supplied the current route-size evidence for selecting T-238 as
+  the next collections redirect cache proof.
+- 2026-05-24: Completed T-238. Added
+  `getCachedCollectionNavigationData.test.ts`, updated public route policy,
+  collections page, and collections subnav coverage for the 10-minute cached
+  wrapper contract, and reran the focused collection/main-nav route policy
+  suite. `npm run build` passed and the prerender manifest recorded
+  `/collections` `initialRevalidateSeconds: 600` while collection detail routes
+  stayed out of prerender entries.
+- 2026-05-24: Completed T-239. `publicRouteCachePolicy.test.ts` now guards
+  route-level `revalidate` drift outside `/biography`, `/collections`, and
+  `/sitemap.xml`; metadata/dynamic sitemap/smoke tests preserve discovery
+  output and fallback behavior. Verification passed with the focused Jest
+  suite, `npm run build`, prerender-manifest evidence for `/sitemap.xml`
+  `initialRevalidateSeconds: 3600`, and `git diff --check`.
 
 ## Next Agent Action
 
@@ -1651,8 +1677,12 @@ regresses. T-231 middleware matcher narrowing coverage is complete; do not
 reassign it unless the matcher contract or exact protected prefix semantics
 regress. T-232 public cache/freshness policy coverage is complete, and T-233
 biography cache proof coverage is complete. T-234 planning/build evidence is
-complete. The next A-022 verification slice should follow T-236 lazy-loaded
-mobile drawer implementation or a later route-family cache task.
+complete, T-236 lazy mobile drawer coverage is complete, T-235 non-action
+`"use server"` cleanup coverage is complete, T-237 scoping/build evidence is
+complete, T-238 collections redirect cache-proof coverage is complete, and
+T-239 sitemap ISR ownership coverage is complete. Future A-022 verification
+slices should be scoped separately before expanding blog caching, static params,
+provider ownership, or broader ISR behavior.
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,
