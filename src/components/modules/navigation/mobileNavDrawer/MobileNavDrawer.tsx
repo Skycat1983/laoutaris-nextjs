@@ -1,54 +1,41 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
-import React from "react";
+import dynamic from "next/dynamic";
+import { Menu } from "lucide-react";
+import { useState } from "react";
 
 import {
   Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/shadcn/drawer";
-import Link from "next/link";
-import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
-import { Logo } from "@/components/elements/icons";
 import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
-import { useSession } from "next-auth/react";
+
+const MobileNavDrawerBody = dynamic(
+  () =>
+    import(
+      "@/components/modules/navigation/mobileNavDrawer/MobileNavDrawerBody"
+    ).then((module) => module.MobileNavDrawerBody),
+  { ssr: false }
+);
 
 interface NavMenuProps {
   navLinks: NavBarLink[];
 }
 
 export function MobileNavDrawer({ navLinks }: NavMenuProps) {
-  const session = useSession();
+  const [open, setOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
 
-  const isLoggedIn = session.status === "authenticated";
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setHasOpened(true);
+    }
 
-  const accountNavLinks = [
-    {
-      label: "Account",
-      path: "/account",
-      disabled: !isLoggedIn,
-    },
-    {
-      label: "Sign Up",
-      path: "/sign-in?mode=signup",
-      disabled: isLoggedIn,
-    },
-    {
-      label: "Log In",
-      path: "/sign-in",
-      disabled: isLoggedIn,
-    },
-    { label: "Logout", path: "/sign-out", disabled: !isLoggedIn },
-  ];
+    setOpen(nextOpen);
+  };
 
   return (
-    <Drawer direction="right">
+    <Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
       <DrawerTrigger asChild>
         <button
           type="button"
@@ -58,84 +45,7 @@ export function MobileNavDrawer({ navLinks }: NavMenuProps) {
           <Menu aria-hidden="true" />
         </button>
       </DrawerTrigger>
-
-      <DrawerContent className="max-w-full">
-        <div className="mx-auto h-[98vh] w-full max-w-full">
-          <DrawerFooter className="w-full flex flex-row justify-between items-center bg-slate-800/10">
-            <DrawerTitle className="">
-              <Logo />
-            </DrawerTitle>
-            <DrawerClose asChild>
-              <button
-                type="button"
-                aria-label="Close navigation menu"
-                className="inline-flex cursor-pointer items-center justify-center"
-              >
-                <X aria-hidden="true" />
-              </button>
-            </DrawerClose>
-          </DrawerFooter>
-          <DrawerHeader>
-            {/* <HorizontalDivider /> */}
-
-            <DrawerDescription className="hidden">
-              Site navigation.
-            </DrawerDescription>
-          </DrawerHeader>
-
-          {navLinks.map((link, index) => (
-            <div key={index} className="md:flex flex-row items-center px-4">
-              {!link.disabled ? (
-                <Link href={link.path}>
-                  <DrawerClose asChild>
-                    <h2 className="font-face-default subheading text-primary">
-                      {link.label}
-                    </h2>
-                  </DrawerClose>
-                </Link>
-              ) : (
-                <DrawerClose asChild>
-                  <h2 className="font-face-default subheading text-gray-400">
-                    {link.label}
-                  </h2>
-                </DrawerClose>
-              )}
-              {index < navLinks.length - 1 && (
-                <div className="py-6">{/* <HorizontalDivider /> */}</div>
-              )}
-            </div>
-          ))}
-
-          <div className="py-8 px-2">
-            <HorizontalDivider />
-          </div>
-
-          {accountNavLinks.map((link, index) => (
-            <div key={index} className="md:flex flex-row items-center px-4">
-              {!link.disabled ? (
-                <Link href={link.path}>
-                  <DrawerClose asChild>
-                    <h2 className="font-face-default subheading text-primary">
-                      {link.label}
-                    </h2>
-                  </DrawerClose>
-                </Link>
-              ) : (
-                <DrawerClose asChild>
-                  <h2 className="font-face-default subheading text-gray-400">
-                    {link.label}
-                  </h2>
-                </DrawerClose>
-              )}
-              {index < accountNavLinks.length - 1 && (
-                <div className="py-6">{/* <HorizontalDivider /> */}</div>
-              )}
-            </div>
-          ))}
-
-          {/* <HorizontalDivider /> */}
-        </div>
-      </DrawerContent>
+      {hasOpened ? <MobileNavDrawerBody navLinks={navLinks} /> : null}
     </Drawer>
   );
 }

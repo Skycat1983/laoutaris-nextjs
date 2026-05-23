@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import ArticleViewSkeleton from "@/components/elements/skeletons/ArticleViewSkeleton";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import { BiographyArticleStructuredData } from "@/components/metadata/PublicDetailJsonLd";
-import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
+import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBiographyArticleData";
 import {
   buildArticleDetailMetadata,
   buildMissingPublicDetailMetadata,
@@ -20,7 +20,7 @@ export async function generateMetadata({
   params,
 }: BiographySlugPageProps): Promise<Metadata> {
   try {
-    const article = await getArticleBySlugPopulated(params.slug);
+    const article = await getCachedBiographyArticleBySlug(params.slug);
 
     if (!article) {
       return buildMissingPublicDetailMetadata("Article");

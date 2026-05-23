@@ -19,13 +19,8 @@ type ShopPrototypeSectionProps = {
 
 const SHOP_ROUTE = "/shop/products";
 
-const shopCategoryPills = [
-  "Featured",
-  "Originals",
-  "Prints",
-  "Books",
-  "Editions",
-] as const;
+const shopCategoryPills = ["Originals", "Prints", "Books"] as const;
+type ShopCategory = (typeof shopCategoryPills)[number];
 
 const sectionHeadingStyle = prototypeHeadingStyle({
   base: "2.75rem",
@@ -91,6 +86,18 @@ const getProductTags = (product: SimpleProduct) =>
     .slice(0, 2)
     .join(" / ");
 
+const productMatchesCategory = (
+  product: SimpleProduct,
+  category: ShopCategory
+) => {
+  const categoryToken = category.toLowerCase().replace(/s$/, "");
+  const productTerms = [product.productType, ...product.tags]
+    .map((term) => term.trim().toLowerCase())
+    .filter(Boolean);
+
+  return productTerms.some((term) => term.includes(categoryToken));
+};
+
 function ShopProductImage({
   product,
   sizes,
@@ -118,19 +125,31 @@ function ShopProductImage({
 function ShopProductCardDetails({
   product,
   showTags = true,
+  compact = false,
 }: {
   product: SimpleProduct;
   showTags?: boolean;
+  compact?: boolean;
 }) {
   const tags = getProductTags(product);
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
+    <div
+      className={
+        compact
+          ? "flex flex-col p-5"
+          : "flex flex-1 flex-col gap-4 p-4 sm:p-5"
+      }
+    >
       <div>
         <p className="prototype-home-accent-text line-clamp-2 break-words font-archivo text-xs uppercase tracking-[0.16em]">
           {getProductMeta(product)}
         </p>
-        <h3 className="mt-2 line-clamp-2 break-words font-cormorant text-2xl font-semibold leading-tight text-slate">
+        <h3
+          className={`line-clamp-2 break-words font-cormorant text-2xl font-semibold leading-tight text-slate ${
+            compact ? "mt-1" : "mt-2"
+          }`}
+        >
           {product.title}
         </h3>
       </div>
@@ -141,7 +160,11 @@ function ShopProductCardDetails({
         </p>
       )}
 
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate/10 pt-4">
+      <div
+        className={`flex items-center justify-between gap-3 border-t border-slate/10 ${
+          compact ? "mt-5 pt-3" : "mt-auto pt-4"
+        }`}
+      >
         <span className="prototype-home-accent-text font-archivo text-sm">
           {formatProductPrice(product)}
         </span>
@@ -158,10 +181,26 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
   const railRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] =
+    useState<ShopCategory>("Originals");
+  const displayedProducts = products.filter((product) =>
+    productMatchesCategory(product, selectedCategory)
+  );
   const progress =
-    products.length > 0 ? ((activeIndex + 1) / products.length) * 100 : 0;
+    displayedProducts.length > 0
+      ? ((activeIndex + 1) / displayedProducts.length) * 100
+      : 0;
+
+  const selectCategory = (category: ShopCategory) => {
+    setSelectedCategory(category);
+    setActiveIndex(0);
+    cardRefs.current = [];
+    railRef.current?.scrollTo?.({ left: 0, behavior: "smooth" });
+  };
 
   const focusProduct = (nextIndex: number) => {
+    if (displayedProducts.length === 0) return;
+
     setActiveIndex(nextIndex);
     cardRefs.current[nextIndex]?.scrollIntoView?.({
       behavior: "smooth",
@@ -192,31 +231,55 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
   };
 
   const showPrevious = () => {
-    focusProduct(activeIndex === 0 ? products.length - 1 : activeIndex - 1);
+    if (displayedProducts.length === 0) return;
+
+    focusProduct(
+      activeIndex === 0 ? displayedProducts.length - 1 : activeIndex - 1
+    );
   };
 
   const showNext = () => {
-    focusProduct((activeIndex + 1) % products.length);
+    if (displayedProducts.length === 0) return;
+
+    focusProduct((activeIndex + 1) % displayedProducts.length);
   };
 
   return (
     <div className="md:hidden" data-testid="prototype-mobile-shop">
       <div
-        className="mt-10 flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="mt-3 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         aria-label="Shop product categories"
+        role="tablist"
       >
-        {shopCategoryPills.map((category) => (
-          <span
-            key={category}
-            className="prototype-home-accent-border shrink-0 rounded-full border bg-[#f6f2ea]/60 px-7 py-3 text-center font-cormorant text-lg font-semibold leading-none text-[#5b4a3b]"
-          >
-            {category}
-          </span>
-        ))}
+        {shopCategoryPills.map((category) => {
+          const isSelected = category === selectedCategory;
+
+          return (
+            <button
+              key={category}
+              id={`prototype-mobile-shop-tab-${category.toLowerCase()}`}
+              type="button"
+              role="tab"
+              aria-selected={isSelected}
+              aria-controls="prototype-mobile-shop-panel"
+              onClick={() => selectCategory(category)}
+              className={`shrink-0 rounded-full px-7 py-3 text-center font-cormorant text-lg font-semibold leading-none shadow-[inset_0_0_0_1px_#b9aa98] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
+                isSelected
+                  ? "bg-[#5b4a3b] text-[#f8f5ef] shadow-[inset_0_0_0_1px_#5b4a3b]"
+                  : "bg-[#f6f2ea]/60 text-[#5b4a3b] hover:bg-white"
+              }`}
+            >
+              {category}
+            </button>
+          );
+        })}
       </div>
 
       <div
-        className="relative -mx-4 mt-8 overflow-hidden"
+        id="prototype-mobile-shop-panel"
+        role="tabpanel"
+        aria-labelledby={`prototype-mobile-shop-tab-${selectedCategory.toLowerCase()}`}
+        className="relative -mx-4 mt-5 overflow-hidden"
         aria-label="Mobile shop product carousel"
         data-testid="prototype-mobile-shop-carousel"
         onKeyDown={(event) => {
@@ -228,7 +291,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           type="button"
           aria-label="Show previous shop product"
           title="Show previous shop product"
-          disabled={products.length < 2}
+          disabled={displayedProducts.length < 2}
           onClick={showPrevious}
           className="absolute left-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
@@ -238,7 +301,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           type="button"
           aria-label="Show next shop product"
           title="Show next shop product"
-          disabled={products.length < 2}
+          disabled={displayedProducts.length < 2}
           onClick={showNext}
           className="absolute right-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
@@ -251,40 +314,54 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           onScroll={updateActiveFromScroll}
           data-testid="prototype-mobile-shop-rail"
         >
-          {products.map((product, index) => {
-            const isActive = index === activeIndex;
+          {displayedProducts.length > 0 ? (
+            displayedProducts.map((product, index) => {
+              const isActive = index === activeIndex;
 
-            return (
-              <Link
-                key={product.id}
-                ref={(card) => {
-                  cardRefs.current[index] = card;
-                }}
-                href={`/shop/products/${product.handle}`}
-                className={`group flex h-[540px] w-[72vw] min-w-[270px] max-w-[310px] shrink-0 snap-center flex-col overflow-hidden rounded-[14px] bg-white shadow-[0_22px_44px_rgba(47,38,28,0.16)] transition-[box-shadow,opacity,transform] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
-                  isActive
-                    ? "opacity-100"
-                    : "opacity-90 hover:opacity-100 focus-visible:opacity-100"
-                }`}
-                aria-current={isActive ? "true" : undefined}
-                data-testid={
-                  isActive
-                    ? "prototype-mobile-shop-featured-card"
-                    : "prototype-mobile-shop-card"
-                }
-              >
-                <article className="flex h-full flex-col">
-                  <div className="relative h-[330px] bg-[#ebe6dc]">
-                    <ShopProductImage
+              return (
+                <Link
+                  key={product.id}
+                  ref={(card) => {
+                    cardRefs.current[index] = card;
+                  }}
+                  href={`/shop/products/${product.handle}`}
+                  className={`group flex w-[72vw] min-w-[270px] max-w-[310px] shrink-0 snap-center flex-col overflow-hidden bg-white shadow-[0_22px_44px_rgba(47,38,28,0.16)] transition-[box-shadow,opacity,transform] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
+                    isActive
+                      ? "opacity-100"
+                      : "opacity-90 hover:opacity-100 focus-visible:opacity-100"
+                  }`}
+                  aria-current={isActive ? "true" : undefined}
+                  data-testid={
+                    isActive
+                      ? "prototype-mobile-shop-featured-card"
+                      : "prototype-mobile-shop-card"
+                  }
+                >
+                  <article className="flex h-full flex-col">
+                    <div className="relative h-[330px] bg-[#ebe6dc]">
+                      <ShopProductImage
+                        product={product}
+                        sizes="(max-width: 768px) 72vw, 310px"
+                      />
+                    </div>
+                    <ShopProductCardDetails
                       product={product}
-                      sizes="(max-width: 768px) 72vw, 310px"
+                      showTags={false}
+                      compact
                     />
-                  </div>
-                  <ShopProductCardDetails product={product} showTags={false} />
-                </article>
-              </Link>
-            );
-          })}
+                  </article>
+                </Link>
+              );
+            })
+          ) : (
+            <div
+              className="flex min-h-[300px] w-full shrink-0 snap-center items-center justify-center px-10 text-center font-archivo text-sm leading-6 text-slate/60"
+              data-testid="prototype-mobile-shop-category-empty"
+            >
+              No {selectedCategory.toLowerCase()} are available in this
+              prototype selection.
+            </div>
+          )}
         </div>
       </div>
 
@@ -333,7 +410,7 @@ export function ShopPrototypeSection({
       data-testid="prototype-shop-section"
     >
       <div
-        className={`${prototypeSectionFrameClassName} flex flex-col gap-10 py-16 sm:py-20 lg:py-24 2xl:gap-12 2xl:py-28`}
+        className={`${prototypeSectionFrameClassName} flex flex-col gap-6 py-16 sm:py-20 md:gap-10 lg:py-24 2xl:gap-12 2xl:py-28`}
       >
         <div className="grid gap-8 md:grid-cols-[minmax(320px,0.72fr)_auto] md:items-end 2xl:grid-cols-[minmax(420px,0.76fr)_auto] 2xl:gap-12">
           <div className="max-w-4xl">

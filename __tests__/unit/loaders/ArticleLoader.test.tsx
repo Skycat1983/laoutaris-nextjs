@@ -3,6 +3,10 @@ import path from "path";
 import type { ReactElement } from "react";
 import { ArticleLoader } from "@/components/loaders/viewLoaders/ArticleLoader";
 import { ArticleView } from "@/components/views/ArticleView";
+import {
+  getCachedBiographyArticleBySlug,
+  getCachedBiographyNavigationList,
+} from "@/lib/data/services/getCachedBiographyArticleData";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
 import type {
@@ -15,6 +19,11 @@ jest.mock("next/navigation", () => ({
   notFound: jest.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
   }),
+}));
+
+jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
+  getCachedBiographyArticleBySlug: jest.fn(),
+  getCachedBiographyNavigationList: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getArticleBySlugPopulated", () => ({
@@ -32,6 +41,14 @@ jest.mock("@/components/views/ArticleView", () => ({
 const mockGetArticleBySlugPopulated =
   getArticleBySlugPopulated as jest.MockedFunction<
     typeof getArticleBySlugPopulated
+  >;
+const mockGetCachedBiographyArticleBySlug =
+  getCachedBiographyArticleBySlug as jest.MockedFunction<
+    typeof getCachedBiographyArticleBySlug
+  >;
+const mockGetCachedBiographyNavigationList =
+  getCachedBiographyNavigationList as jest.MockedFunction<
+    typeof getCachedBiographyNavigationList
   >;
 const mockGetArticleNavigationList =
   getArticleNavigationList as jest.MockedFunction<
@@ -73,7 +90,15 @@ describe("ArticleLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetArticleBySlugPopulated.mockResolvedValue(article);
+    mockGetCachedBiographyArticleBySlug.mockResolvedValue(article);
     mockGetArticleNavigationList.mockResolvedValue(
+      createArticleNavResult([
+        createArticleNavItem("previous", "Previous"),
+        createArticleNavItem("current", "Current"),
+        createArticleNavItem("next", "Next"),
+      ])
+    );
+    mockGetCachedBiographyNavigationList.mockResolvedValue(
       createArticleNavResult([
         createArticleNavItem("previous", "Previous"),
         createArticleNavItem("current", "Current"),
@@ -89,7 +114,7 @@ describe("ArticleLoader", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("builds previous and next links from the server navigation service without same-app navigation fetches", async () => {
+  it("builds biography previous and next links from cached server services without same-app navigation fetches", async () => {
     const form = <form aria-label="Contact form" />;
     const element = (await ArticleLoader({
       slug: "current",
@@ -104,8 +129,10 @@ describe("ArticleLoader", () => {
       form: typeof form;
     }>;
 
-    expect(mockGetArticleBySlugPopulated).toHaveBeenCalledWith("current");
-    expect(mockGetArticleNavigationList).toHaveBeenCalledWith("biography");
+    expect(mockGetCachedBiographyArticleBySlug).toHaveBeenCalledWith("current");
+    expect(mockGetCachedBiographyNavigationList).toHaveBeenCalledWith();
+    expect(mockGetArticleBySlugPopulated).not.toHaveBeenCalled();
+    expect(mockGetArticleNavigationList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(ArticleView);
     expect(element.props).toEqual({
@@ -137,11 +164,15 @@ describe("ArticleLoader", () => {
       prev: null,
       next: null,
     });
+    expect(mockGetArticleBySlugPopulated).toHaveBeenCalledWith("only");
+    expect(mockGetArticleNavigationList).toHaveBeenCalledWith("project");
+    expect(mockGetCachedBiographyArticleBySlug).not.toHaveBeenCalled();
+    expect(mockGetCachedBiographyNavigationList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("renders a found article with empty navigation when navigation has no articles", async () => {
-    mockGetArticleNavigationList.mockResolvedValue(null);
+    mockGetCachedBiographyNavigationList.mockResolvedValue(null);
 
     const element = (await ArticleLoader({
       slug: "current",
@@ -171,20 +202,20 @@ describe("ArticleLoader", () => {
   });
 
   it("calls notFound when the detail service returns null", async () => {
-    mockGetArticleBySlugPopulated.mockResolvedValue(null);
+    mockGetCachedBiographyArticleBySlug.mockResolvedValue(null);
 
     await expect(
       ArticleLoader({ slug: "missing", section: "biography" })
     ).rejects.toThrow("NEXT_NOT_FOUND");
 
     expect(mockNotFound).toHaveBeenCalledTimes(1);
-    expect(mockGetArticleNavigationList).not.toHaveBeenCalled();
+    expect(mockGetCachedBiographyNavigationList).not.toHaveBeenCalled();
     expect(ArticleView).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("converts article detail service errors to the existing message", async () => {
-    mockGetArticleBySlugPopulated.mockRejectedValue(
+    mockGetCachedBiographyArticleBySlug.mockRejectedValue(
       new Error("private article failure")
     );
 
@@ -197,7 +228,7 @@ describe("ArticleLoader", () => {
   });
 
   it("renders a found article with empty navigation when navigation loading fails", async () => {
-    mockGetArticleNavigationList.mockRejectedValue(
+    mockGetCachedBiographyNavigationList.mockRejectedValue(
       new Error("private navigation failure")
     );
 
@@ -211,7 +242,7 @@ describe("ArticleLoader", () => {
       };
     }>;
 
-    expect(mockGetArticleBySlugPopulated).toHaveBeenCalledWith("current");
+    expect(mockGetCachedBiographyArticleBySlug).toHaveBeenCalledWith("current");
     expect(element.props.navigation).toEqual({
       prev: null,
       next: null,

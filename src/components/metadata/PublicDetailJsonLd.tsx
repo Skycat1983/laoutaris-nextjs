@@ -1,4 +1,4 @@
-import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
+import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBiographyArticleData";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
@@ -52,7 +52,7 @@ function PublicStructuredDataScripts({
 
 export async function BiographyArticleJsonLd({ slug }: { slug: string }) {
   try {
-    const article = await getArticleBySlugPopulated(slug);
+    const article = await getCachedBiographyArticleBySlug(slug);
 
     if (!article) {
       return null;
@@ -75,7 +75,7 @@ export async function BiographyArticleStructuredData({
   slug: string;
 }) {
   try {
-    const article = await getArticleBySlugPopulated(slug);
+    const article = await getCachedBiographyArticleBySlug(slug);
 
     if (!article) {
       return null;

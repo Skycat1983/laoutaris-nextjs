@@ -2,11 +2,11 @@ import {
   Subnav,
   SubnavLink,
 } from "@/components/modules/navigation/subnav/Subnav";
-import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import { getCachedBiographyNavigationList } from "@/lib/data/services/getCachedBiographyArticleData";
 import { buildUrl } from "@/lib/utils/urlUtils";
 
 export async function BiographySubnavLoader() {
-  const result = await getArticleNavigationList("biography");
+  const result = await getCachedBiographyNavigationList();
 
   if (!result) {
     throw new Error("No articles found");

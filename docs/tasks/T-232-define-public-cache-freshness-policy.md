@@ -1,6 +1,6 @@
 # T-232 Define Public Cache Freshness Policy
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -88,4 +88,24 @@ git diff --check
 
 - Findings: F-111 and F-114.
 - Risk: R-012.
+- Completed 2026-05-23: `docs/architecture/rendering-and-data-fetching.md`
+  now has an accepted public freshness matrix for sitemap, default biography
+  redirect, default collections redirect, blog list/detail, biography article
+  list/detail, artwork browse/detail, search, shop listing/detail, and
+  session-aware UI.
+- Current runtime remains unchanged: public route `revalidate`,
+  `generateStaticParams()`, and segment config source were not edited.
+- T-233 first proof route is biography. It should start with cached
+  non-`fetch` service wrappers for biography article detail and biography
+  navigation, target a short 10-minute stale window, and avoid
+  `generateStaticParams()` in the first proof. Route-level `revalidate` should
+  be limited to the `/biography` default redirect only if that subset is
+  included and verified.
+- Sitemap, `/biography`, and `/collections` deploy-bound behavior is now
+  explicit for current runtime; later runtime tasks may move sitemap to
+  approximately 1-hour ISR and default redirects to approximately 10-minute ISR
+  after the biography proof.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteCachePolicy.test.ts __tests__/unit/deployment/publicDynamicSitemap.test.ts __tests__/unit/deployment/publicMetadataDiscovery.test.ts`
+  and `git diff --check`.
 - Next task after this is accepted: T-233 runtime proof route.

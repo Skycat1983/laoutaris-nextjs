@@ -190,12 +190,15 @@ JavaScript from global providers and large client components.
 
 Reconciled on 2026-05-23:
 
-- F-111: public caching/ISR and cached non-`fetch` service reads.
+- F-111: public caching/ISR and cached non-`fetch` service reads. Partially
+  mitigated by T-232/T-233 for the biography proof route.
 - F-112: current client/server import-boundary regression. Resolved by T-230.
 - F-113: middleware matcher broader than protected route prefixes. Resolved by
   T-231.
 - F-114: implicit deploy-bound freshness for sitemap/default redirects.
-- F-115: public client-provider and client-island cost.
+  Resolved by T-232.
+- F-115: public client-provider and client-island cost. Scoped by T-234; first
+  runtime proof is T-236.
 - F-116: duplicate of F-080/R-019/ADR 0005 for instrumentation/web-vitals.
 - F-117: low-priority non-action top-level `"use server"` cleanup.
 
@@ -214,15 +217,16 @@ Reconciled on 2026-05-23:
 - Updated the rendering architecture doc with the A-022 implementation order.
 - Updated the architecture, frontend, and deployment workstreams with A-022
   facts, backlog entries, and next-agent sequencing.
-- Prepared planned task briefs T-230 through T-235.
-- T-230 and T-231 are now complete; T-232 is the next A-022 task.
+- Prepared planned task briefs T-230 through T-235; T-236 was added after the
+  T-234 scoping pass.
+- T-230, T-231, T-232, and T-233 are now complete. T-234 scoped the
+  client-provider/client-island work; T-236 is the next A-022 runtime task.
 
 ## Next Action
 
 Implementation should proceed with the remaining sequence:
 
-1. T-232 defines public freshness for sitemap/default redirects and chooses the
-   first route-family cache proof.
-2. T-233 implements that one cache/ISR proof route.
-3. T-234 and T-235 remain lower-priority follow-ups for provider island scoping
-   and non-action `"use server"` cleanup.
+1. T-236 lazy-loads the public mobile search/navigation drawer implementations
+   from the initial header path before any root provider move.
+2. T-235 remains a lower-priority follow-up for non-action `"use server"`
+   cleanup.

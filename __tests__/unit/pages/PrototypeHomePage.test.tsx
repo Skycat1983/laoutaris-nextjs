@@ -1117,13 +1117,13 @@ describe("/prototype/home page", () => {
       <ShopPrototypeSection
         products={[
           createProduct("yellow-composition", "Yellow Composition"),
+          createProduct("red-form", "Red Form"),
           createProduct("orange-form", "Orange Form", {
             productType: "print",
             price: "6500.00",
           }),
           createProduct("blue-study", "Blue Study", {
-            productType: "",
-            tags: [],
+            productType: "book",
             price: "1200.00",
           }),
         ]}
@@ -1135,15 +1135,17 @@ describe("/prototype/home page", () => {
       "prototype-mobile-shop-featured-card"
     );
 
-    for (const category of [
-      "Featured",
-      "Originals",
-      "Prints",
-      "Books",
-      "Editions",
-    ]) {
-      expect(mobileShop).toHaveTextContent(category);
-    }
+    expect(
+      within(mobileShop).getByRole("tab", { name: "Originals" })
+    ).toHaveAttribute("aria-selected", "true");
+    expect(
+      within(mobileShop).getByRole("tab", { name: "Prints" })
+    ).toHaveAttribute("aria-selected", "false");
+    expect(
+      within(mobileShop).getByRole("tab", { name: "Books" })
+    ).toHaveAttribute("aria-selected", "false");
+    expect(mobileShop).not.toHaveTextContent("Featured");
+    expect(mobileShop).not.toHaveTextContent("Editions");
     expect(featuredCard).toHaveAttribute(
       "href",
       "/shop/products/yellow-composition"
@@ -1152,9 +1154,12 @@ describe("/prototype/home page", () => {
     expect(featuredCard).toHaveTextContent("original");
     expect(featuredCard).toHaveTextContent("€18,000");
     expect(featuredCard).toHaveClass("snap-center");
+    expect(featuredCard).not.toHaveClass("rounded-[14px]");
     expect(
       within(mobileShop).getAllByTestId("prototype-mobile-shop-card")
-    ).toHaveLength(2);
+    ).toHaveLength(1);
+    expect(mobileShop).not.toHaveTextContent("Orange Form");
+    expect(mobileShop).not.toHaveTextContent("Blue Study");
     expect(
       within(mobileShop).getByTestId("prototype-mobile-shop-rail")
     ).toHaveClass("snap-x", "overflow-x-auto", "px-[14vw]");
@@ -1183,22 +1188,35 @@ describe("/prototype/home page", () => {
     );
     expect(updatedFeaturedCard).toHaveAttribute(
       "href",
-      "/shop/products/orange-form"
+      "/shop/products/red-form"
     );
-    expect(updatedFeaturedCard).toHaveTextContent("Orange Form");
-    expect(updatedFeaturedCard).toHaveTextContent("print");
+    expect(updatedFeaturedCard).toHaveTextContent("Red Form");
+    expect(updatedFeaturedCard).toHaveTextContent("original");
 
-    fireEvent.keyDown(
-      within(mobileShop).getByTestId("prototype-mobile-shop-carousel"),
-      { key: "ArrowRight" }
+    fireEvent.click(
+      within(mobileShop).getByRole("tab", { name: "Prints" })
     );
 
+    expect(
+      within(mobileShop).getByRole("tab", { name: "Prints" })
+    ).toHaveAttribute("aria-selected", "true");
+    expect(
+      within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
+    ).toHaveTextContent("Orange Form");
+    expect(mobileShop).not.toHaveTextContent("Yellow Composition");
+    expect(mobileShop).not.toHaveTextContent("Blue Study");
+
+    fireEvent.click(
+      within(mobileShop).getByRole("tab", { name: "Books" })
+    );
+
+    expect(
+      within(mobileShop).getByRole("tab", { name: "Books" })
+    ).toHaveAttribute("aria-selected", "true");
     expect(
       within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
     ).toHaveTextContent("Blue Study");
-    expect(
-      within(mobileShop).getByTestId("prototype-mobile-shop-featured-card")
-    ).toHaveTextContent("Archive product");
+    expect(mobileShop).not.toHaveTextContent("Orange Form");
   });
 
   it("keeps the mobile shop carousel visually distinct from the collection deck", () => {

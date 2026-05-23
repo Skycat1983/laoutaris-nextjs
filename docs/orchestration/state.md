@@ -87,8 +87,9 @@ feature-utilization findings: controlled public caching/ISR and sitemap/default
 redirect freshness, the T-230-resolved client import-boundary regression, broad
 middleware matching, global public client-provider cost, duplicate monitoring
 instrumentation blocker, and low-priority non-action `"use server"` cleanup.
-T-230 and T-231 are complete. Continue with T-232, then T-233, and
-lower-priority T-234/T-235.
+T-230, T-231, T-232, and T-233 are complete, and T-234 has scoped the first
+client-island proof. Continue with T-236 to lazy-load public mobile
+search/navigation drawers, then lower-priority T-235.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,

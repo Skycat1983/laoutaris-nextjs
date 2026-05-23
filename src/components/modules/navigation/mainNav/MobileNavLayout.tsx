@@ -1,11 +1,8 @@
 import Link from "next/link";
-import React from "react";
 import { Logo } from "@/components/elements/icons";
 import { MobileNavDrawer } from "../mobileNavDrawer/MobileNavDrawer";
 import { SearchDrawer } from "@/components/modules/search/SearchDrawer";
 import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
-import { AccountNav } from "../accountNav/AccountNav";
-import { Search } from "lucide-react";
 
 interface MobileNavLayoutProps {
   navLinks: NavBarLink[];
@@ -22,7 +19,6 @@ export function MobileNavLayout({ navLinks }: MobileNavLayoutProps) {
         </div>
         <div className="block flex gap-4 my-auto items-center px-4 pr-6 sm:hidden md:block lg:hidden">
           <SearchDrawer />
-          {/* <AccountNav /> */}
 
           <MobileNavDrawer navLinks={navLinks} />
         </div>

@@ -51,7 +51,9 @@ or inconsistent code forward.
   optimization, and source guards well, but needs a staged Next.js efficiency
   sequence: repair the client import-boundary regression, narrow middleware
   matching, define public data freshness, then pilot ISR/cached public reads.
-  T-230 completed the import-boundary repair.
+  T-230 completed the import-boundary repair, T-231 narrowed middleware
+  matching, T-232 defined public freshness, and T-233 completed the biography
+  cached-service proof.
 - [ADR 0004](../decisions/0004-server-data-access-ownership.md) is accepted:
   server loaders, API routes, and server actions should share direct
   server-only data-access services instead of same-app HTTP fetches.
@@ -207,13 +209,14 @@ or inconsistent code forward.
 - Move route-neutral DB/session work out of the root layout so dynamic rendering
   and cache policy can be owned by the routes that need them.
 - Document route-specific cache/revalidation policy for public archive,
-  authenticated, admin, and Shopify data. T-232 owns the next docs-first
-  public freshness decision for sitemap/default redirects and the first cache
-  proof route; T-233 owns the first runtime ISR/cache proof after that policy is
-  accepted.
+  authenticated, admin, and Shopify data. T-232 completed the docs-first
+  public freshness decision for sitemap/default redirects and selected
+  biography as the first cache proof route; T-233 completed that first runtime
+  ISR/cache proof with cached biography wrappers and `/biography` redirect ISR.
 - Scope public client-provider/client-island reductions after the import-boundary
-  and cache policy work. T-234 should measure and plan route-local provider or
-  lazy-client slices before runtime changes.
+  and cache policy work. T-234 measured the current root provider/client island
+  cost and scoped T-236 as the first runtime proof: lazy-load public mobile
+  search/navigation drawers before root provider moves.
 - Remove non-action top-level `"use server"` directives in a low-risk cleanup
   slice after higher-priority boundary/cache work. T-235 owns that cleanup.
 - Consolidate taxonomy/filter option sources across constants, schemas, public
@@ -593,12 +596,32 @@ Use targeted import/reference searches for pruning tasks.
   prefix semantics so public prefix lookalikes do not enter protected route
   behavior. The future `middleware.ts` -> `proxy.ts` rename remains in the
   Next major migration track.
+- 2026-05-23: Completed T-232. The rendering/data-fetching architecture doc
+  now defines explicit current and target freshness for sitemap, default
+  redirects, public browse/detail/search/shop surfaces, and session-aware UI.
+  T-233 should use biography as the first staged cached non-`fetch` service
+  proof before generated params or broad route ISR.
+- 2026-05-23: Completed T-233. Biography route-local detail, metadata,
+  structured data, subnav, default redirect, and previous/next navigation now
+  use cached non-`fetch` wrappers with a 10-minute stale window. `/biography`
+  is the only route-level redirect ISR export added in the proof, and
+  `/biography/[slug]` remains explicitly dynamic with no
+  `generateStaticParams()`. Build verification recorded `/biography`
+  `initialRevalidateSeconds: 600` while unrelated stable shells stayed
+  deploy-bound; `MainNavLoader` remains on the direct navigation service to
+  avoid root-header cache propagation across unrelated static routes.
+- 2026-05-23: Scoped T-234. Provider movement remains deferred because
+  `SessionProvider` and modal state are cross-cutting; T-236 is the next
+  runtime proof and should defer only the public mobile search/navigation
+  drawer implementations from the initial header path.
 
 ## Next Agent Action
 
-Continue the A-022 implementation sequence with T-232 as a docs-first public
-freshness decision before any ISR/cache runtime change, then T-233 as one
-blog/biography proof route.
+Continue the A-022 implementation sequence after the completed T-233 proof.
+T-234 has scoped the client-island opportunity; next priority is T-236, which
+should lazy-load public mobile search/navigation drawers before any root
+provider move. Keep broader ISR/static migration separate until a new
+route-family cache task is assigned.
 
 Do not reassign route-local rendering fallback documentation unless the
 documented pattern or `/project/aims` source hygiene regresses. Broad

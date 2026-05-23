@@ -335,10 +335,11 @@ Next.js server/client component boundaries.
   checks.
 - Use the A-022 sequence for public route efficiency work: T-230 import-boundary
   repair, T-231 middleware matcher narrowing, T-232 freshness policy, then
-  T-233 as one blog/biography ISR/cache proof route.
+  T-233 as the first biography ISR/cache proof route. T-233 is complete.
 - Scope public client-provider and heavy-client-island reductions after the
-  import-boundary and first cache proof work; T-234 should decide the first
-  safe route-local provider/lazy-client slice.
+  import-boundary and first cache proof work. T-234 scoped T-236 as the first
+  safe runtime proof: lazy-load public mobile search/navigation drawers before
+  root provider moves.
 - Add route-specific metadata, canonical/social previews, and structured data
   for remaining public archive/detail pages beyond the T-103 root metadata and
   T-106/T-107 detail-page slices.
@@ -1077,9 +1078,9 @@ Use browser checks for layout-sensitive changes.
   neutral desktop image fallback instead of generic inline loading copy.
 - 2026-05-23: Reconciled A-022 into F-111 through F-117 and planned tasks
   T-230 through T-235. T-230 then resolved the import-boundary guard regression,
-  and T-231 narrowed middleware matching to protected route prefixes only. The
-  next A-022 implementation task is T-232 before any T-233 cache runtime proof
-  and later client-provider island work.
+  T-231 narrowed middleware matching to protected route prefixes only, T-232
+  completed the docs-first freshness policy, and T-233 completed the biography
+  runtime cache proof before later client-provider island work.
 - 2026-05-23: Completed T-230. `SignUpForm` now avoids the broad
   `@/lib/constants` barrel at runtime by importing the account privacy
   acknowledgement field constants from the narrow client-safe constants module,
@@ -1087,6 +1088,19 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-23: Completed T-231. Middleware matching now covers only protected
   frontend/API prefixes, and protected route utility matching no longer treats
   public prefix lookalikes as protected.
+- 2026-05-23: Completed T-232. Public sitemap/default redirect freshness is
+  now explicit in the rendering architecture doc, and biography is selected as
+  the first cached non-`fetch` service proof before generated params or broader
+  route ISR.
+- 2026-05-23: Completed T-233. Route-local biography detail, metadata,
+  structured data, subnav, default redirect, and previous/next navigation now
+  use 10-minute cached non-`fetch` service wrappers. `/biography` is the only
+  route-level redirect ISR export added, `/biography/[slug]` remains dynamic,
+  and `MainNavLoader` stays on the direct service to avoid root-header cache
+  propagation into unrelated static shells.
+- 2026-05-23: Scoped T-234. The current root layout client chunk still carries
+  cross-cutting session, modal, search drawer, and mobile navigation drawer
+  code, so T-236 is the first approved runtime proof before provider moves.
 
 ## Next Agent Action
 
@@ -1099,10 +1113,10 @@ fallback documentation or `/project/aims` fallback source hygiene regresses.
 Keep third-party consent UI, commerce-policy URL wiring, and real social target
 wiring separate until owner-supplied targets exist.
 
-For the A-022 Next.js efficiency track, assign T-232 next to define freshness
-before any runtime cache or ISR change. Only after T-232 is accepted should
-T-233 change one public route family to use explicit caching/ISR. Keep T-234
-client-provider island work behind those higher-priority safety tasks.
+For the A-022 Next.js efficiency track, T-234 has scoped the first
+client-island runtime proof. Assign T-236 next to lazy-load the public mobile
+search/navigation drawers before any root provider move. Keep broader
+static/ISR migration behind a separate route-family cache task.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

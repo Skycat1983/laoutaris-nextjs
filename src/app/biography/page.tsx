@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import {
+  BIOGRAPHY_CACHE_REVALIDATE_SECONDS,
+  getCachedBiographyNavigationList,
+} from "@/lib/data/services/getCachedBiographyArticleData";
 import { createServerLogger } from "@/lib/observability/logger";
 import { buildUrl } from "@/lib/utils/urlUtils";
+
+export const revalidate = BIOGRAPHY_CACHE_REVALIDATE_SECONDS;
 
 const logger = createServerLogger({
   route: "/biography",
@@ -12,7 +17,7 @@ const logger = createServerLogger({
 
 export default async function BiographyPage() {
   try {
-    const result = await getArticleNavigationList("biography");
+    const result = await getCachedBiographyNavigationList();
 
     if (!result || !result.data.length) {
       throw new Error("No biography articles found");

@@ -1,23 +1,23 @@
 import type { ReactElement } from "react";
 import { BiographySubnavLoader } from "@/components/loaders/componentLoaders/BiographySubnavLoader";
 import { Subnav } from "@/components/modules/navigation/subnav/Subnav";
-import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import { getCachedBiographyNavigationList } from "@/lib/data/services/getCachedBiographyArticleData";
 import type {
   ArticleNavDataFrontend,
   ListResult,
 } from "@/lib/data/types";
 
-jest.mock("@/lib/data/services/getArticleNavigationList", () => ({
-  getArticleNavigationList: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
+  getCachedBiographyNavigationList: jest.fn(),
 }));
 
 jest.mock("@/components/modules/navigation/subnav/Subnav", () => ({
   Subnav: jest.fn(() => null),
 }));
 
-const mockGetArticleNavigationList =
-  getArticleNavigationList as jest.MockedFunction<
-    typeof getArticleNavigationList
+const mockGetCachedBiographyNavigationList =
+  getCachedBiographyNavigationList as jest.MockedFunction<
+    typeof getCachedBiographyNavigationList
   >;
 
 const createArticleNavItem = (
@@ -45,7 +45,7 @@ const createArticleNavResult = (
 describe("BiographySubnavLoader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetArticleNavigationList.mockResolvedValue(
+    mockGetCachedBiographyNavigationList.mockResolvedValue(
       createArticleNavResult([
         createArticleNavItem("early-life", "Early Life"),
         createArticleNavItem("studio-years", "Studio Years"),
@@ -53,7 +53,7 @@ describe("BiographySubnavLoader", () => {
     );
   });
 
-  it("loads biography links through the server data service without same-app fetches", async () => {
+  it("loads biography links through the cached server data service without same-app fetches", async () => {
     const element = (await BiographySubnavLoader()) as ReactElement<{
       links: Array<{
         label: string;
@@ -63,7 +63,7 @@ describe("BiographySubnavLoader", () => {
       }>;
     }>;
 
-    expect(mockGetArticleNavigationList).toHaveBeenCalledWith("biography");
+    expect(mockGetCachedBiographyNavigationList).toHaveBeenCalledWith();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(Subnav);
     expect(element.props.links).toEqual([
@@ -83,7 +83,7 @@ describe("BiographySubnavLoader", () => {
   });
 
   it("throws the existing no-results error when the service returns null", async () => {
-    mockGetArticleNavigationList.mockResolvedValue(null);
+    mockGetCachedBiographyNavigationList.mockResolvedValue(null);
 
     await expect(BiographySubnavLoader()).rejects.toThrow("No articles found");
 

@@ -69,6 +69,7 @@ describe("relative navigation URLs", () => {
     const touchedSources = [
       "src/components/modules/forms/user/LogoutForm.tsx",
       "src/components/modules/navigation/mobileNavDrawer/MobileNavDrawer.tsx",
+      "src/components/modules/navigation/mobileNavDrawer/MobileNavDrawerBody.tsx",
       "src/app/project/page.tsx",
     ].map(readSource);
 
@@ -78,6 +79,6 @@ describe("relative navigation URLs", () => {
       expect(source).not.toContain("process.env.VERCEL_URL");
     }
 
-    expect(touchedSources[1]).toContain('path: "/sign-in"');
+    expect(touchedSources[2]).toContain('path: "/sign-in"');
   });
 });

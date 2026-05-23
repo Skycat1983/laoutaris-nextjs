@@ -2,9 +2,12 @@
 
 import { buildUrl } from "@/lib/utils/urlUtils";
 import { ArticleView } from "@/components/views/ArticleView";
+import {
+  getCachedBiographyArticleBySlug,
+  getCachedBiographyNavigationList,
+} from "@/lib/data/services/getCachedBiographyArticleData";
 import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
 import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
-import type { ArticleNavDataFrontend } from "@/lib/data/types";
 import { ArticleSection } from "@/lib/constants";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
@@ -40,7 +43,10 @@ const buildArticleNavigation = async ({
   section: ArticleSection;
 }): Promise<ArticleNavigation> => {
   try {
-    const result = await getArticleNavigationList(section);
+    const result =
+      section === "biography"
+        ? await getCachedBiographyNavigationList()
+        : await getArticleNavigationList(section);
 
     if (!result?.success) {
       logger.error("loader.public.article_navigation.failed", {
@@ -105,7 +111,10 @@ export async function ArticleLoader({
   let article: Awaited<ReturnType<typeof getArticleBySlugPopulated>>;
 
   try {
-    article = await getArticleBySlugPopulated(slug);
+    article =
+      section === "biography"
+        ? await getCachedBiographyArticleBySlug(slug)
+        : await getArticleBySlugPopulated(slug);
   } catch (error) {
     if (isNextError(error)) {
       throw error;

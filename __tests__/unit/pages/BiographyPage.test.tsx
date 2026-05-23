@@ -1,5 +1,5 @@
 import BiographyPage from "@/app/biography/page";
-import { getArticleNavigationList } from "@/lib/data/services/getArticleNavigationList";
+import { getCachedBiographyNavigationList } from "@/lib/data/services/getCachedBiographyArticleData";
 import type {
   ArticleNavDataFrontend,
   ListResult,
@@ -7,8 +7,9 @@ import type {
 import { isNextError } from "@/lib/helpers/isNextError";
 import { redirect } from "next/navigation";
 
-jest.mock("@/lib/data/services/getArticleNavigationList", () => ({
-  getArticleNavigationList: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
+  BIOGRAPHY_CACHE_REVALIDATE_SECONDS: 600,
+  getCachedBiographyNavigationList: jest.fn(),
 }));
 
 jest.mock("@/lib/helpers/isNextError", () => ({
@@ -19,9 +20,9 @@ jest.mock("next/navigation", () => ({
   redirect: jest.fn(),
 }));
 
-const mockGetArticleNavigationList =
-  getArticleNavigationList as jest.MockedFunction<
-    typeof getArticleNavigationList
+const mockGetCachedBiographyNavigationList =
+  getCachedBiographyNavigationList as jest.MockedFunction<
+    typeof getCachedBiographyNavigationList
   >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
 const mockRedirect = redirect as unknown as jest.MockedFunction<
@@ -59,7 +60,7 @@ describe("/biography page", () => {
       .spyOn(console, "error")
       .mockImplementation(() => undefined);
     mockIsNextError.mockReturnValue(false);
-    mockGetArticleNavigationList.mockResolvedValue(
+    mockGetCachedBiographyNavigationList.mockResolvedValue(
       createArticleNavResult([
         createArticleNavItem("early-life", "Early Life"),
         createArticleNavItem("studio-years", "Studio Years"),
@@ -71,7 +72,7 @@ describe("/biography page", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("redirects to the first biography article through the server data service", async () => {
+  it("redirects to the first biography article through the cached server data service", async () => {
     const redirectError = new Error("NEXT_REDIRECT");
     mockRedirect.mockImplementation(() => {
       throw redirectError;
@@ -80,14 +81,14 @@ describe("/biography page", () => {
 
     await expect(BiographyPage()).rejects.toThrow(redirectError);
 
-    expect(mockGetArticleNavigationList).toHaveBeenCalledWith("biography");
+    expect(mockGetCachedBiographyNavigationList).toHaveBeenCalledWith();
     expect(mockRedirect).toHaveBeenCalledWith("/biography/early-life");
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it("throws the existing no-results error when no biography articles exist", async () => {
-    mockGetArticleNavigationList.mockResolvedValue(null);
+    mockGetCachedBiographyNavigationList.mockResolvedValue(null);
 
     await expect(BiographyPage()).rejects.toThrow(
       "No biography articles found"
@@ -110,7 +111,7 @@ describe("/biography page", () => {
 
   it("logs a structured error when navigation loading fails", async () => {
     const error = new Error("navigation failed");
-    mockGetArticleNavigationList.mockRejectedValue(error);
+    mockGetCachedBiographyNavigationList.mockRejectedValue(error);
 
     await expect(BiographyPage()).rejects.toThrow(error);
 

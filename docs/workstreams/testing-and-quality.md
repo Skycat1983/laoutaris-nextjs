@@ -1632,6 +1632,16 @@ npm run lint
   protected matcher contract, preserved protected auth outcomes, public page/API
   exclusion, `/api/auth/*` exclusion, and protected prefix lookalikes.
   `routeUtils.test.ts` covers exact-or-nested protected route semantics.
+- 2026-05-23: Completed T-233. Added
+  `getCachedBiographyArticleData.test.ts` for the 10-minute `unstable_cache`
+  wrapper contract and updated public route policy, biography page, biography
+  loader, subnav, metadata, and structured-data coverage. Focused Jest and
+  `npm run build` passed; build manifest evidence recorded `/biography`
+  `initialRevalidateSeconds: 600` while unrelated stable shells stayed
+  deploy-bound.
+- 2026-05-23: Scoped T-234. Build evidence captured the public route
+  first-load JavaScript baseline and root layout chunk contents before the
+  planned T-236 lazy mobile drawer proof.
 
 ## Next Agent Action
 
@@ -1639,8 +1649,10 @@ T-230 import-boundary repair coverage is complete; do not reassign it unless
 the client import-boundary guard or `SignUpForm` direct constants import
 regresses. T-231 middleware matcher narrowing coverage is complete; do not
 reassign it unless the matcher contract or exact protected prefix semantics
-regress. The next A-022 implementation verification slice is T-232 public
-cache/freshness policy.
+regress. T-232 public cache/freshness policy coverage is complete, and T-233
+biography cache proof coverage is complete. T-234 planning/build evidence is
+complete. The next A-022 verification slice should follow T-236 lazy-loaded
+mobile drawer implementation or a later route-family cache task.
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,

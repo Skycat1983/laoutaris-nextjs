@@ -18,8 +18,8 @@ jest.mock("@/lib/data/services/getArtworkById", () => ({
   getArtworkById: jest.fn(),
 }));
 
-jest.mock("@/lib/data/services/getArticleBySlugPopulated", () => ({
-  getArticleBySlugPopulated: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
+  getCachedBiographyArticleBySlug: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({

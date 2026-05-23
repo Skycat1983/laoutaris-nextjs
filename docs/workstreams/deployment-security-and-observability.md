@@ -1031,7 +1031,7 @@ npm run lint
   workflows.
 - 2026-05-23: Reconciled A-022 deployment-adjacent findings into F-113,
   F-114, and duplicate F-116. T-231 has resolved middleware matcher narrowing,
-  T-232 owns sitemap/default redirect freshness decisions, and ADR 0005
+  T-232 resolved sitemap/default redirect freshness decisions, and ADR 0005
   continues to block provider-backed instrumentation/web-vitals implementation.
 - 2026-05-23: Completed T-231. Middleware matching is limited to protected
   frontend/API prefixes (`/account`, `/admin`, `/api/v2/admin`, and
@@ -1039,6 +1039,9 @@ npm run lint
   `/api/auth/*`, and prefix lookalikes are outside the protected matcher
   contract. The future `proxy.ts` rename remains in the Next major migration
   track.
+- 2026-05-23: Completed T-232. Sitemap and default redirect freshness are now
+  explicit: current behavior remains deploy-bound, while later target windows
+  are documented before runtime cache changes.
 
 ## Next Agent Action
 
@@ -1056,10 +1059,11 @@ claims, self-service privacy workflows, or comment moderation/reporting
 workflows. Monitoring implementation remains blocked by ADR 0005 until a
 provider, no-provider launch posture, or launch-blocking decision is approved.
 
-For the A-022 deployment-adjacent work, T-232 should follow before any
-cache/ISR runtime proof so sitemap/default redirect freshness and build-output
-expectations are explicit. Do not reassign T-231 unless the protected
-middleware matcher contract regresses.
+For the A-022 deployment-adjacent work, T-232 and T-233 are complete: sitemap
+and default redirect freshness are explicit, and `/biography` is the only
+route-level redirect ISR export added by the biography proof. Do not reassign
+T-231 or T-233 unless the protected middleware matcher contract or biography
+cache policy regresses.
 
 Keep credential/admin smoke, Vercel log inspection, rollback automation,
 owner approval to replace the T-134 blocked incident owner rows, and broad

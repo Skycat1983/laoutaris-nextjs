@@ -7,12 +7,12 @@ import {
   BiographyArticleJsonLd,
   BlogPostJsonLd,
 } from "@/components/metadata/PublicDetailJsonLd";
-import { getArticleBySlugPopulated } from "@/lib/data/services/getArticleBySlugPopulated";
+import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBiographyArticleData";
 import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
 import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 
-jest.mock("@/lib/data/services/getArticleBySlugPopulated", () => ({
-  getArticleBySlugPopulated: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
+  getCachedBiographyArticleBySlug: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
@@ -47,9 +47,9 @@ jest.mock("@/components/elements/skeletons/ArticleViewSkeleton", () =>
   jest.fn(() => null)
 );
 
-const mockGetArticleBySlugPopulated =
-  getArticleBySlugPopulated as jest.MockedFunction<
-    typeof getArticleBySlugPopulated
+const mockGetCachedBiographyArticleBySlug =
+  getCachedBiographyArticleBySlug as jest.MockedFunction<
+    typeof getCachedBiographyArticleBySlug
   >;
 const mockGetBlogBySlugWithAuthor =
   getBlogBySlugWithAuthor as jest.MockedFunction<
@@ -94,7 +94,7 @@ const blog = {
 describe("public article and blog detail metadata", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetArticleBySlugPopulated.mockResolvedValue(article);
+    mockGetCachedBiographyArticleBySlug.mockResolvedValue(article);
     mockGetBlogBySlugWithAuthor.mockResolvedValue(blog);
   });
 
@@ -104,7 +104,9 @@ describe("public article and blog detail metadata", () => {
     });
     const canonicalUrl = getPublicSitePathUrl("/biography/studio-notes");
 
-    expect(mockGetArticleBySlugPopulated).toHaveBeenCalledWith("studio-notes");
+    expect(mockGetCachedBiographyArticleBySlug).toHaveBeenCalledWith(
+      "studio-notes"
+    );
     expect(global.fetch).not.toHaveBeenCalled();
     expect(metadata).toMatchObject({
       title: "Studio Notes",
@@ -184,7 +186,7 @@ describe("public article and blog detail metadata", () => {
   });
 
   it("returns noindex missing-content metadata instead of detail-specific claims", async () => {
-    mockGetArticleBySlugPopulated.mockResolvedValue(null);
+    mockGetCachedBiographyArticleBySlug.mockResolvedValue(null);
     mockGetBlogBySlugWithAuthor.mockResolvedValue(null);
 
     await expect(
@@ -212,7 +214,7 @@ describe("public article and blog detail metadata", () => {
   });
 
   it("keeps metadata service failures out of the visible loader error path", async () => {
-    mockGetArticleBySlugPopulated.mockRejectedValue(
+    mockGetCachedBiographyArticleBySlug.mockRejectedValue(
       new Error("private article failure")
     );
     mockGetBlogBySlugWithAuthor.mockRejectedValue(
@@ -304,7 +306,7 @@ describe("public article and blog detail metadata", () => {
   });
 
   it("does not emit JSON-LD when the source content is missing or unavailable", async () => {
-    mockGetArticleBySlugPopulated.mockResolvedValueOnce(null);
+    mockGetCachedBiographyArticleBySlug.mockResolvedValueOnce(null);
     mockGetBlogBySlugWithAuthor.mockRejectedValueOnce(
       new Error("private blog failure")
     );

@@ -104,19 +104,48 @@ describe("public search and navigation accessibility controls", () => {
     const searchDrawerSource = readSource(
       "src/components/modules/search/SearchDrawer.tsx"
     );
+    const searchDrawerBodySource = readSource(
+      "src/components/modules/search/SearchDrawerBody.tsx"
+    );
+    const mobileNavSource = readSource(
+      "src/components/modules/navigation/mobileNavDrawer/MobileNavDrawer.tsx"
+    );
+    const mobileNavBodySource = readSource(
+      "src/components/modules/navigation/mobileNavDrawer/MobileNavDrawerBody.tsx"
+    );
+
+    expect(searchDrawerSource).toContain('aria-label="Open search"');
+    expect(searchDrawerBodySource).toContain('aria-label="Close search"');
+    expect(searchDrawerSource).not.toMatch(/<DrawerTrigger asChild>\s*<Search/);
+    expect(searchDrawerBodySource).not.toMatch(/<DrawerClose asChild>\s*<X/);
+
+    expect(mobileNavSource).toContain('aria-label="Open navigation menu"');
+    expect(mobileNavBodySource).toContain(
+      'aria-label="Close navigation menu"'
+    );
+    expect(mobileNavSource).not.toMatch(/<DrawerTrigger asChild>\s*<Menu/);
+    expect(mobileNavBodySource).not.toMatch(/<DrawerClose asChild>\s*<X/);
+  });
+
+  it("keeps mobile drawer bodies out of the initial public header path", () => {
+    const mobileNavLayoutSource = readSource(
+      "src/components/modules/navigation/mainNav/MobileNavLayout.tsx"
+    );
+    const searchDrawerSource = readSource(
+      "src/components/modules/search/SearchDrawer.tsx"
+    );
     const mobileNavSource = readSource(
       "src/components/modules/navigation/mobileNavDrawer/MobileNavDrawer.tsx"
     );
 
-    expect(searchDrawerSource).toContain('aria-label="Open search"');
-    expect(searchDrawerSource).toContain('aria-label="Close search"');
-    expect(searchDrawerSource).not.toMatch(/<DrawerTrigger asChild>\s*<Search/);
-    expect(searchDrawerSource).not.toMatch(/<DrawerClose asChild>\s*<X/);
-
-    expect(mobileNavSource).toContain('aria-label="Open navigation menu"');
-    expect(mobileNavSource).toContain('aria-label="Close navigation menu"');
-    expect(mobileNavSource).not.toMatch(/<DrawerTrigger asChild>\s*<Menu/);
-    expect(mobileNavSource).not.toMatch(/<DrawerClose asChild>\s*<X/);
+    expect(searchDrawerSource).toContain('from "next/dynamic"');
+    expect(mobileNavSource).toContain('from "next/dynamic"');
+    expect(searchDrawerSource).not.toContain("useRouter");
+    expect(searchDrawerSource).not.toContain("DrawerContent");
+    expect(mobileNavSource).not.toContain("useSession");
+    expect(mobileNavSource).not.toContain("DrawerContent");
+    expect(mobileNavLayoutSource).not.toContain("SearchDrawerBody");
+    expect(mobileNavLayoutSource).not.toContain("MobileNavDrawerBody");
   });
 
   it("does not reintroduce clickable div wrappers for scoped public controls", () => {

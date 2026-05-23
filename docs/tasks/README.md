@@ -234,9 +234,10 @@ Planning and prompt packs:
 | [T-219 Record remaining compliance owner inputs](T-219-record-remaining-compliance-owner-inputs.md) | Completed | Recorded remaining R-018 owner-input blockers and recommendations before Shopify policy, social URL, jurisdiction, self-service privacy, or moderation work. |
 | [T-230 Fix client import boundary regression](T-230-fix-client-import-boundary-regression.md) | Completed | Repaired the `clientServerImportBoundary` failure caused by `SignUpForm` importing the broad constants barrel. |
 | [T-231 Narrow protected middleware matcher](T-231-narrow-protected-middleware-matcher.md) | Completed | Restricted middleware matching to protected frontend/API prefixes while preserving current protected auth behavior. |
-| [T-232 Define public cache freshness policy](T-232-define-public-cache-freshness-policy.md) | Planned | Decide sitemap/default redirect/public route freshness before runtime ISR, static params, or cache wrapper changes. |
-| [T-233 Pilot blog biography ISR cache](T-233-pilot-blog-biography-isr-cache.md) | Planned | Implement one approved public blog or biography caching/ISR proof after T-232 settles freshness. |
-| [T-234 Scope public client provider islands](T-234-scope-public-client-provider-islands.md) | Planned | Measure and plan route-local provider or lazy-client island reductions after higher-priority boundary/cache work. |
+| [T-232 Define public cache freshness policy](T-232-define-public-cache-freshness-policy.md) | Completed | Decided sitemap/default redirect/public route freshness before runtime ISR, static params, or cache wrapper changes. |
+| [T-233 Pilot biography cache proof](T-233-pilot-biography-cache-proof.md) | Completed | Implemented the approved biography cached-service proof with a 10-minute stale window and `/biography` redirect ISR. |
+| [T-234 Scope public client provider islands](T-234-scope-public-client-provider-islands.md) | Scoped | Measured public provider/client-island cost and selected lazy-loading public mobile drawers as the first runtime proof. |
+| [T-236 Lazy-load public mobile navigation drawers](T-236-lazy-load-public-mobile-navigation-drawers.md) | Planned | Defer mobile search/navigation drawer implementations from the initial public header path before root provider moves. |
 | [T-235 Remove non-action use-server directives](T-235-remove-non-action-use-server-directives.md) | Planned | Remove misleading top-level `"use server"` directives from server components/loaders where no server function export is intended. |
 
 ## Rules

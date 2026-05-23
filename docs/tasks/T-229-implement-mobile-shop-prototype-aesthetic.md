@@ -200,3 +200,18 @@ update only this task handoff.
   from the collections deck. Verification passed again with
   `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx`,
   `npm run lint`, and `git diff --check`.
+- Follow-up refinement on 2026-05-23 after owner feedback: tightened the mobile
+  spacing between `View full shop`, category controls, and the product rail;
+  reduced category controls to selectable `Originals`, `Prints`, and `Books`
+  buttons with `Originals` selected by default; removed mobile product-card
+  rounded corners; and compacted the mobile card details so the divider, price,
+  and `Details` affordance sit closer to the title. Verification passed again
+  with `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm run lint`, and `git diff --check`.
+- Follow-up refinement on 2026-05-23 after owner feedback: changed the mobile
+  category controls from visual toggles into real tabs that filter the product
+  rail by Shopify `productType` or tags for originals, prints, and books. Tab
+  changes reset the rail to the first matching product, and empty categories
+  show neutral prototype copy instead of stale cards. Verification passed again
+  with `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm run lint`, and `git diff --check`.
