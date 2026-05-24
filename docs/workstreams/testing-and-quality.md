@@ -337,6 +337,13 @@ refactoring without turning every change into a manual QA pass.
 - Evaluate Playwright only through a scoped adoption task before installing it:
   identify no more than three first browser-only journeys, the required data or
   smoke account, the command/CI posture, and strict artifact limits.
+- Add A-024 loading-state coverage as the implementation lands: source/render
+  tests for accessible loading primitives and route-shaped `/search`,
+  `/artwork`, and `/shop/products` loading shells, then one targeted delayed
+  route-transition check after the shells exist. Phase 1 completed focused
+  render coverage for the shared primitive and converted public in-page
+  loaders. Phase 2 completed focused render coverage for the `/search` and
+  `/artwork` route shells.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -1750,13 +1757,54 @@ npm run lint
   cleanup/lazy-host runtime slice, including existing modal consumer behavior
   tests, client import-boundary coverage, `npm run build`, and root layout
   chunk comparison against the T-236 `27,772` byte baseline.
+- 2026-05-24: Completed T-254. Added focused modal-provider/lazy-host coverage
+  for the modal-only provider shape, `openModal`/`closeModal`/`setModalContent`
+  behavior, language-state decoupling, SessionProvider/modal root ownership,
+  and Headless UI dialog source isolation. Verification passed with the new
+  modal test, the requested modal-consumer/import-boundary Jest slice,
+  `npm run build`, `git diff --check`, targeted source searches, and root
+  layout/lazy chunk byte checks.
+- 2026-05-24: Completed T-255 as a docs-only post-modal efficiency scoping
+  pass. It selected T-256 and defined focused verification for the account-nav
+  lazy-island runtime slice: account navigation behavior, provider ownership,
+  client import-boundary coverage, `npm run build`, `git diff --check`, and
+  root layout chunk comparison against the T-254 `27,498` byte baseline.
+- 2026-05-24: Completed A-024 Phase 0 reconciliation for loading-state UX.
+  Testing follow-up is scoped to focused source/render coverage for loading
+  primitives and route loading shells first, followed by one targeted delayed
+  route-transition check after the runtime shells exist. Playwright remains
+  uninstalled unless a later scoped task explicitly approves it.
+- 2026-05-24: Completed A-024 Phase 1 coverage. Added focused Jest render tests
+  for the shared loading primitive, `Spinner`, `PageLoading`, pending
+  `SubmitButton`, shop product filter loading status, artwork masonry loading
+  status, and blog follow-up loading status. Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/components/loadingStatus.test.tsx __tests__/unit/components/masonryLayoutLoadingStatus.test.tsx __tests__/unit/shopProductGallerySorting.test.tsx __tests__/unit/sections/BlogSectionContinuous.test.tsx`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed A-024 Phase 2 coverage. Added focused render tests for
+  the `/artwork` and `/search` route loading shells, including route-status
+  semantics and regression coverage against generic `Loading...` copy.
+  Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteLoadingShells.test.tsx`,
+  `git diff --check`, and `npm run lint`.
 - 2026-05-24: Added docs-only Playwright adoption guidance to the testing
   runbook and this workstream. Playwright remains uninstalled; future adoption
   must start from a scoped task or owner/orchestrator decision with named
   browser-only journeys, fixture/credential handling, and strict artifact
   limits.
+- 2026-05-24: Completed T-256 coverage. Added
+  `__tests__/unit/accountNavigationLazyIsland.test.tsx` for the public account
+  trigger shell, click/focus intent loading behavior, source split boundaries,
+  and rooted provider ownership. The focused account/navigation/import-boundary
+  Jest slice, `npm run build`, targeted source/chunk searches, and
+  `git diff --check` passed.
 
 ## Next Agent Action
+
+For A-024, add tests alongside the `/shop/products` route-shell implementation
+slice and a single targeted route-transition check only after those shells
+exist. Do not install Playwright for this work unless a separate scoped task
+approves the browser tooling, fixture plan, command posture, and artifact
+budget.
 
 T-230 import-boundary repair coverage is complete; do not reassign it unless
 the client import-boundary guard or `SignUpForm` direct constants import
@@ -1777,18 +1825,21 @@ complete, T-247 bounded sorted-page runtime coverage is complete, T-248
 next-cache-target scoping is complete, and T-249 default artwork browse cache
 coverage is complete. T-250 cache-efficiency scoping is complete, and T-251
 fixed unfiltered `mostRecent` `/artwork` pages 2-5 cache expansion coverage is
-complete. T-252 post-browse scoping and T-253 root provider/modal scoping are
-complete. T-254 should execute the next F-115 runtime slice with focused
-consumer behavior tests, client import-boundary coverage, `npm run build`, and
-root layout chunk comparison against the T-236 `27,772` byte baseline. Keep
+complete. T-252 post-browse scoping, T-253 root provider/modal scoping,
+T-254 modal-provider/lazy-host runtime coverage, T-255 post-modal scoping, and
+T-256 account-navigation lazy-island runtime coverage are complete. Do not make
+additional A-022/F-115 runtime edits without a new scoped task that names the
+specific client island/provider target, expected build evidence, and focused
+behavior/import-boundary coverage. Keep
 optional comments, page 6-plus artwork, filtered artwork variants,
 non-default artwork limits/sorts, `popular` pages beyond page 1, sorted page
 6-plus, route-level blog or artwork ISR, static params, search, shop routes,
 cache tags, mutation revalidation, and broader ISR behavior out of the
 completed cache proofs. Keep provider runtime moves beyond the modal-only
-cleanup/lazy-host slice, auth/session behavior, saved-item actions,
+cleanup/lazy-host slice unless explicitly scoped, auth/session behavior, saved-item actions,
 account/admin/comment/form behavior, shop behavior, package files, Playwright
-setup, CI workflows, and route cache policy unchanged during T-254.
+setup, CI workflows, and route cache policy unchanged unless a later task
+explicitly owns those paths.
 
 Playwright remains a consideration, not an approved dependency. Do not install
 or run broad browser automation until a scoped adoption task names the first

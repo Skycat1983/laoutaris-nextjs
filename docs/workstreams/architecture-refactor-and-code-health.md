@@ -726,18 +726,37 @@ Use targeted import/reference searches for pruning tasks.
   state from the active root modal provider path and lazy-load the modal dialog
   host while keeping `ClientContextBoundary`, `SessionProvider`, and modal
   provider ownership at the existing root boundary.
+- 2026-05-24: Completed T-254. `GlobalFeaturesProvider` is now modal-only,
+  `TranslatedContent` owns its deferred language hook directly, and the
+  root-mounted modal host lazy-loads the Headless UI dialog body only after
+  modal intent. The root layout chunk measured `27,498` bytes uncompressed
+  versus the T-236 `27,772` byte baseline; the Headless UI dialog code is in a
+  lazy chunk, so the remaining above-target root size belongs to existing
+  root/header client code outside T-254.
+- 2026-05-24: Completed T-255 as a docs-only post-modal efficiency scoping
+  pass. It selected T-256 as the next provider-preserving F-115 runtime slice:
+  lazy-load the public header account navigation menu implementation after
+  account-menu intent while keeping `ClientContextBoundary`, `SessionProvider`,
+  and modal provider ownership rooted.
+- 2026-05-24: Completed T-256. `AccountNav` now keeps a stable public header
+  trigger shell and lazy-loads the account dropdown implementation after
+  account-menu intent. `ClientContextBoundary`, `SessionProvider`, and modal
+  provider ownership remain rooted. The root layout chunk measured `22,313`
+  bytes uncompressed versus the T-254 `27,498` byte baseline, and the account
+  dropdown implementation split to lazy chunk `1833.254d53090d3e3f31.js`.
 
 ## Next Agent Action
 
-T-253 is complete. If continuing the A-022 efficiency track, assign
-[T-254 Split modal context language state and lazy host](../tasks/T-254-split-modal-context-language-state-and-lazy-host.md)
-as the next F-115 runtime slice. T-254 should keep `ClientContextBoundary`,
-`SessionProvider`, and modal provider ownership at the existing root boundary,
-remove unused language state from the active modal provider path, and lazy-load
-the modal dialog host after modal intent. Keep saved-item actions,
-auth/session behavior, account routes, admin dashboard behavior, comment UI,
-contact/enquiry forms, shop behavior, cache policy, route segment config,
-package files, Playwright setup, and CI workflows unchanged during T-254.
+T-256 is complete. Do not make additional A-022/F-115 provider, session,
+modal, or root-header runtime edits without a new scoped task that defines the
+owned files, expected bundle target, account/auth/modal blast radius, and
+focused verification. Keep `ClientContextBoundary`, `SessionProvider`, and
+modal provider ownership rooted unless a later architecture decision explicitly
+changes that contract.
+Keep saved-item actions, auth/session behavior, account routes, admin dashboard
+behavior, comment UI, contact/enquiry forms, shop behavior, cache policy, route
+segment config, package files, Playwright setup, and CI workflows unchanged
+unless a later task scopes one of those paths.
 Keep page 6-plus artwork browse variants, non-default limits, taxonomy filters,
 `filterMode: "ANY"`, `mostPopular`, `mostFeatured`, `colorProximity`, artwork
 detail routes, collection-scoped artwork detail, public artwork APIs, browser

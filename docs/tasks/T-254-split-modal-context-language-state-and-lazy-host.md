@@ -1,6 +1,6 @@
 # T-254 Split Modal Context Language State And Lazy Host
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -137,3 +137,24 @@ rows.
 - T-253 selected this as the next runtime task because it keeps session and
   modal ownership global while removing unused root-provider state and deferring
   the modal dialog implementation until user intent.
+- Completed on 2026-05-24. `GlobalFeaturesProvider` is now modal-only while
+  preserving the `useGlobalFeatures()` compatibility hook and existing
+  `openModal(content, onClose)`, `closeModal()`, and `setModalContent(...)`
+  behavior.
+- `TranslatedContent` now owns its deferred `useLanguage()` state directly, so
+  the active root modal provider path no longer carries unused language state.
+- The root-mounted `Modal` is now a small intent-gated host. It lazy-loads
+  `ModalDialog` through `React.lazy`/`Suspense` only after modal intent, and
+  `ModalDialog` owns the `@headlessui/react` dialog/panel/transition imports.
+- Build evidence: `.next/static/chunks/app/layout-b0c26cf58907374a.js` is
+  `27,498` bytes uncompressed versus the T-236 `27,772` byte baseline. The
+  modal dialog presentation is split to `.next/static/chunks/1053...js`, and
+  targeted search found no `@headlessui/react`, `DialogPanel`, modal transition
+  class, or modal overlay strings in the root layout chunk. The task did not
+  reach the aspirational `26,000` byte target because the remaining root layout
+  chunk is dominated by existing root/header client code outside this task's
+  ownership, not retained modal dialog code.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/modalProviderLazyHost.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/navigationRelativeUrls.test.tsx __tests__/unit/forms/SignInForm.test.tsx __tests__/unit/forms/ContactEnquiryNotice.test.tsx __tests__/unit/forms/contactFormProductContext.test.tsx __tests__/unit/commentActionAccessibility.test.tsx __tests__/unit/accountUserClientErrorStates.test.tsx __tests__/unit/publicBrowsingClientErrorStates.test.tsx __tests__/unit/adminArchiveEntryPoints.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run build`, `git diff --check`, targeted source searches, and root
+  layout/lazy chunk byte checks.

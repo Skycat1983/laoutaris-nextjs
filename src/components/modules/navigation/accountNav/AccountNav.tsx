@@ -15,33 +15,89 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/shadcn/menubar";
-import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
+import { UserIcon } from "@/components/elements/icons/UserIcon";
 import { ChevronDown, Heart, ShoppingBasket } from "lucide-react";
-import { useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { AccountNavDropdown } from "./accountNavDropdown/AccountNavDropdown";
+import { lazy, Suspense, useState } from "react";
 
-interface UserSession {
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
+const LazyAccountNavDropdown = lazy(() =>
+  import("./accountNavDropdown/AccountNavDropdown").then((module) => ({
+    default: module.AccountNavDropdown,
+  }))
+);
+
+interface AccountNavTriggerShellProps {
+  isLoading?: boolean;
+  onAccountMenuIntent: (options?: { openAfterLoad?: boolean }) => void;
+}
+
+function AccountNavTriggerShell({
+  isLoading = false,
+  onAccountMenuIntent,
+}: AccountNavTriggerShellProps) {
+  const handleOpenIntent = () => {
+    onAccountMenuIntent({ openAfterLoad: true });
+  };
+
+  const handleLoadIntent = () => {
+    onAccountMenuIntent();
+  };
+
+  return (
+    <div className="relative z-10 m-0 flex max-w-max flex-1 items-center justify-center p-0">
+      <button
+        type="button"
+        aria-label="Open account menu"
+        aria-haspopup="menu"
+        aria-busy={isLoading || undefined}
+        className="group inline-flex w-max items-center justify-center rounded-md bg-whitish px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+        onClick={handleOpenIntent}
+        onFocus={handleLoadIntent}
+        onPointerEnter={handleOpenIntent}
+      >
+        <div className="p-1 -m-1 border-2 border-whitish hover:border-slate/50 rounded-full">
+          <UserIcon />
+        </div>
+      </button>
+    </div>
+  );
 }
 
 export function AccountNav() {
-  const { data, status } = useSession();
-
-  //  the nullish coalescing operator (??)returns its right-hand side operand when its left-hand side operand is null or undefined, and otherwise returns its left-hand side operand.
-  const session: UserSession | null = data?.user ?? null;
-
-  const { openModal, setModalContent } = useGlobalFeatures();
   const [selectedLanguage, setSelectedLanguage] = useState("eng");
+  const [hasAccountMenuIntent, setHasAccountMenuIntent] = useState(false);
+  const [openAccountMenuOnLoad, setOpenAccountMenuOnLoad] = useState(false);
 
   const menubarTriggerClassname = "menubar-trigger p-2 lg:p-3";
+
+  const handleAccountMenuIntent = (
+    options: { openAfterLoad?: boolean } = {}
+  ) => {
+    if (options.openAfterLoad) {
+      setOpenAccountMenuOnLoad(true);
+    }
+
+    setHasAccountMenuIntent(true);
+  };
 
   return (
     <>
       <div className="flex flex-row bg-whitish items-center justify-center">
-        <AccountNavDropdown />
+        {hasAccountMenuIntent ? (
+          <Suspense
+            fallback={
+              <AccountNavTriggerShell
+                isLoading
+                onAccountMenuIntent={handleAccountMenuIntent}
+              />
+            }
+          >
+            <LazyAccountNavDropdown initialOpen={openAccountMenuOnLoad} />
+          </Suspense>
+        ) : (
+          <AccountNavTriggerShell
+            onAccountMenuIntent={handleAccountMenuIntent}
+          />
+        )}
 
         <Menubar className="flex flex-row w-auto gap-0 items-center bg-whitish">
           <MenubarMenu>
@@ -122,67 +178,4 @@ export function AccountNav() {
       </div>
     </>
   );
-}
-
-{
-  /* <MenubarSeparator />
-                <MenubarItem inset>Edit...</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem inset>Add Profile...</MenubarItem> */
-}
-
-{
-  /* <MenubarMenu>
-          <MenubarTrigger>
-            <User />
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem disabled={!session?.user} onSelect={() => {}}>
-              {session?.user?.name || "Profile"}
-              <MenubarShortcut>
-                <CircleUserIcon className="w-4 h-4" />
-              </MenubarShortcut>
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem
-              onSelect={() => {
-                setModalContent(<SignUpForm />);
-                openModal();
-              }}
-              disabled={!!session?.user}
-            >
-              Sign up{" "}
-              <MenubarShortcut>
-                <Mail className="w-4 h-4" />
-              </MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem
-              disabled={!!session?.user}
-              onSelect={() => {
-                setModalContent(<SignInForm />);
-                openModal();
-              }}
-            >
-              Sign in
-              <MenubarShortcut>
-                <LogIn className="w-4 h-4" />
-              </MenubarShortcut>
-            </MenubarItem>
-
-            <MenubarSeparator />
-            <MenubarItem
-              disabled={!session?.user}
-              onSelect={() => {
-                signOut();
-                setModalContent(<ModalMessage message="Sign out successful" />);
-                openModal();
-              }}
-            >
-              Sign out{" "}
-              <MenubarShortcut>
-                <LogOut className="w-4 h-4" />
-              </MenubarShortcut>
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu> */
 }

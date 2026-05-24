@@ -29,6 +29,7 @@ when assigning discovery work.
 | A-020 | [Privacy, consent, and commerce compliance](#a-020-privacy-consent-and-commerce-compliance) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-020-privacy-consent-commerce-compliance.md) |
 | A-021 | [Observability and incident response](#a-021-observability-and-incident-response) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-021-observability-incident-response.md) |
 | A-022 | [Next.js feature utilization](#a-022-nextjs-feature-utilization) | [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-022-nextjs-feature-utilization.md) |
+| A-024 | [Loading state UX coverage](#a-024-loading-state-ux-coverage) | [Frontend routes and components](../workstreams/frontend-routes-and-components.md) | [Result](results/A-024-loading-state-ux.md) |
 
 ## A-001 Shopify Commerce Readiness
 
@@ -357,3 +358,19 @@ Read first:
 - [Production-readiness risks](../risks/production-readiness.md)
 
 Expected output: [results/A-022-nextjs-feature-utilization.md](results/A-022-nextjs-feature-utilization.md)
+
+## A-024 Loading State UX Coverage
+
+Status: Completed
+
+Goal: audit initial load, route traversal, Suspense fallback, skeleton, spinner,
+and user-action loading states to identify UX gaps where navigation or async
+work appears frozen.
+
+Read first:
+
+- [Frontend routes and components workstream](../workstreams/frontend-routes-and-components.md)
+- [Architecture refactor and code health workstream](../workstreams/architecture-refactor-and-code-health.md)
+- [Rendering and data fetching](../architecture/rendering-and-data-fetching.md)
+
+Expected output: [results/A-024-loading-state-ux.md](results/A-024-loading-state-ux.md)

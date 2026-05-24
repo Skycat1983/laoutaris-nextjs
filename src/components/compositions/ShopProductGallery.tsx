@@ -5,6 +5,7 @@ import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import type { ShopFiltersState, ShopSortOption } from "@/lib/data/types/shopTypes";
 
 interface ShopProductGalleryProps {
@@ -199,10 +200,15 @@ export const ShopProductGallery = ({
       )}
 
       {/* Products Section */}
-      <div className="px-8 py-12 relative">
+      <div className="px-8 py-12 relative" aria-busy={isLoading}>
         {isLoading && (
           <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-            <div className="text-lg">Loading...</div>
+            <LoadingStatus
+              label="Updating product results"
+              visibleLabel="Updating products..."
+              size="large"
+              className="text-gray-900"
+            />
           </div>
         )}
 

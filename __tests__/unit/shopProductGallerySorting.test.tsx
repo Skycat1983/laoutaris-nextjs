@@ -171,13 +171,17 @@ describe("ShopProductGallery sorting", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "filter prints" }));
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(
+      screen.getByRole("status", { name: "Updating product results" })
+    ).toHaveTextContent("Updating products...");
     expect(global.fetch).toHaveBeenCalledWith(
       "/api/v2/public/shop/products?showOriginals=true&showPrints=false&showBooks=true"
     );
 
     await waitFor(() =>
-      expect(screen.queryByText("Loading...")).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole("status", { name: "Updating product results" })
+      ).not.toBeInTheDocument()
     );
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Unable to update product filters"

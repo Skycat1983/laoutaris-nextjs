@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,11 +23,20 @@ interface UserSession {
   image?: string | null;
 }
 
-export function AccountNavDropdown() {
+interface AccountNavDropdownProps {
+  initialOpen?: boolean;
+}
+
+export function AccountNavDropdown({
+  initialOpen = false,
+}: AccountNavDropdownProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { openModal } = useGlobalFeatures();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [menuValue, setMenuValue] = React.useState(() =>
+    initialOpen ? "account" : ""
+  );
   const { data } = useSession();
   const session: UserSession | null = data?.user ?? null;
 
@@ -36,7 +44,6 @@ export function AccountNavDropdown() {
     setIsLoading(true);
     try {
       await signOut({ redirect: false });
-      // Check if the current path starts with '/account'
       if (pathname.startsWith("/account")) {
         openModal(<ModalMessage message="Logout successful." />, () =>
           router.push("/")
@@ -53,9 +60,13 @@ export function AccountNavDropdown() {
 
   const isDisabled = !session || isLoading;
   return (
-    <NavigationMenu className="p-0 m-0 items-center">
+    <NavigationMenu
+      className="p-0 m-0 items-center"
+      value={menuValue}
+      onValueChange={setMenuValue}
+    >
       <NavigationMenuList>
-        <NavigationMenuItem>
+        <NavigationMenuItem value="account">
           <NavigationMenuTrigger>
             <div className="p-1 -m-1 border-2 border-whitish hover:border-slate/50 rounded-full">
               <UserIcon />
@@ -158,7 +169,6 @@ export function AccountNavDropdown() {
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-accent hover:text-accent-foreground"
                     }`}
-                    // href={isDisabled ? "#" : "/api/auth/logout"}
                     onClick={(e) => {
                       if (isDisabled) {
                         e.preventDefault();
@@ -166,8 +176,6 @@ export function AccountNavDropdown() {
                       if (!isDisabled) {
                         e.preventDefault();
                         handleLogout();
-                        // signOut();
-                        // await processLogout();
                       }
                     }}
                     aria-disabled={isDisabled}
@@ -189,29 +197,3 @@ export function AccountNavDropdown() {
     </NavigationMenu>
   );
 }
-
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
-    </li>
-  );
-});
-ListItem.displayName = "ListItem";

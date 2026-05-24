@@ -298,6 +298,16 @@ Next.js server/client component boundaries.
   renders `AccountSubnavLoader` inside `Suspense` with `SubnavSkeleton`
   fallback before account route content, and layout-level coverage prevents
   the mount from being replaced by a JSX comment.
+- T-207 documented the accepted public route loading/fallback pattern and
+  replaced the remaining generic `/project/aims` inline loading copy with a
+  route-local neutral visual fallback.
+- A-024 completed the loading-state UX audit and was reconciled into F-118
+  through F-122. It found that the highest-priority UX freeze risk is dynamic
+  public route traversal without route-specific loading shells for `/search`,
+  `/artwork`, and `/shop/products`; follow-up slices should then handle
+  programmatic navigation pending feedback, accessible loading primitives, the
+  admin dashboard `@main` loading skeleton, and targeted route-transition
+  coverage.
 - A-018 completed the translation/taxonomy audit. It confirmed visible
   language UI is not wired to rendered copy, public/admin taxonomy controls
   drift from canonical constants, blog pinned/tag controls were hidden, and
@@ -330,6 +340,18 @@ Next.js server/client component boundaries.
   barrels, and broad mixed client/server barrels with client-safe APIs, shared
   frontend types, or direct imports.
 - Audit loading, error, not found, and empty states on public pages.
+- Implement the A-024 loading-state sequence: shared accessible loading
+  primitive first, then route-shaped loading shells for `/search`, `/artwork`,
+  and `/shop/products`, with `/search` and `/artwork` as the first public route
+  pair. Phase 1 completed the shared primitive and low-risk public loader
+  conversions; Phase 2 completed `/search` and `/artwork` route shells. The
+  next implementation slice should add `/shop/products`.
+- Replace internal full-document or no-feedback programmatic navigation in
+  search, mobile search, artwork hero filters, and account menu links with App
+  Router navigation plus local pending feedback.
+- Add a matching admin dashboard `@main` parallel-route loading skeleton so
+  segment switches do not leave the main panel blank while `@feed` has a
+  skeleton.
 - Define loader error contracts by route type: public detail pages, section
   loaders, route-critical fetches, and empty archive views.
 - Stabilize responsive behavior for artwork, collections, shop, and search.
@@ -1216,8 +1238,48 @@ passed with network access.
   It selected T-254 to split unused language state out of the active root
   modal provider path and lazy-load the modal dialog host while preserving
   global session and modal provider ownership.
+- 2026-05-24: Completed T-254. The global features provider now carries only
+  modal state, `TranslatedContent` uses its own deferred language hook, and the
+  root modal host lazy-loads the Headless UI dialog body after modal intent.
+  Existing saved-item, blog comment, auth/contact/enquiry/logout, account,
+  admin operation, and comment-card modal behavior stayed covered by focused
+  unit tests.
+- 2026-05-24: Completed T-255 as a docs-only post-modal efficiency scoping
+  pass. It selected T-256 to lazy-load the public header account navigation
+  menu implementation after account-menu intent while preserving the existing
+  account trigger footprint and rooted session/modal provider ownership.
+- 2026-05-24: Completed A-024 Phase 0 reconciliation for loading-state UX.
+  F-118 through F-122 now route the implementation sequence: accessible shared
+  loading primitives, route-shaped loading shells for `/search`, `/artwork`,
+  and `/shop/products`, pending feedback for programmatic navigation, admin
+  dashboard `@main` loading, and focused route-transition coverage. No runtime
+  source changed in this docs-only phase.
+- 2026-05-24: Completed A-024 Phase 1. Added the shared `LoadingStatus`
+  primitive, accessible semantics for `Spinner`, `PageLoading`, and
+  `SubmitButton`, and low-risk public in-page conversions for shop product
+  filter loading, artwork masonry pagination loading, and blog pagination
+  loading. Verification passed with the focused Jest loading-state slice,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed A-024 Phase 2. Added route-local loading shells for
+  `/artwork` and `/search` with a shared public route skeleton component that
+  keeps artwork filter/masonry and search result-grid geometry visible during
+  route transitions. Verification passed with focused route-shell Jest
+  coverage, `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-256. The public desktop/tablet header now renders a
+  stable account trigger shell before account-menu interaction and defers the
+  account dropdown implementation, account menu links/icons, NextAuth
+  `useSession()`/`signOut()` calls, and logout modal callback logic to a lazy
+  account chunk after account-menu intent. Existing session and modal provider
+  ownership stayed rooted, and account dropdown behavior stayed covered by
+  focused unit tests.
 
 ## Next Agent Action
+
+For the A-024 loading-state implementation, add the `/shop/products` route
+shell. After those route shells are in place, address pending feedback in
+`Searchbar`, `SearchDrawerBody`, and the home artwork filter hero, then add the
+admin dashboard `@main` loading skeleton. Keep route cache policy, Shopify
+behavior, account/auth behavior, and broad visual redesign out of these slices.
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
@@ -1241,15 +1303,20 @@ T-244, T-245, T-246, and T-247 are complete; sorted `/blog` cache coverage is
 limited to page 1 for all supported sort modes and pages 2-5 only for `latest`,
 `oldest`, and `featured`. T-248 and T-249 are complete; default `/artwork`
 browse list caching is limited to the exact default server-rendered shape.
-T-251, T-252, and T-253 are complete. Assign
-[T-254 Split modal context language state and lazy host](../tasks/T-254-split-modal-context-language-state-and-lazy-host.md)
-before any additional A-022 runtime work. Keep `ClientContextBoundary`,
-`SessionProvider`, and modal provider ownership rooted, remove only unused
-language state from the active modal provider path, and lazy-load the modal
-dialog host after modal intent. Keep auth/session behavior, saved-item actions,
-account routes, admin dashboard behavior, comment UI, contact/enquiry forms,
-shop behavior, cache policy, route segment config, package files, Playwright
-setup, and CI workflows unchanged during T-254. Keep page 6-plus artwork browse
+T-251, T-252, T-253, T-254, T-255, and T-256 are complete. T-256 reduced the
+root layout client chunk to `22,313` bytes uncompressed from the T-254
+`27,498` byte baseline by lazy-loading the public account dropdown
+implementation after account-menu intent. Before any additional A-022/F-115
+runtime work, create a new scoped task with source/build evidence for the next
+specific target and keep desktop/tablet header layout, account trigger
+footprint, unauthenticated sign-in/sign-up/profile-disabled states,
+authenticated profile/logout states, and logout modal callback behavior
+equivalent. Keep `ClientContextBoundary`, `SessionProvider`, and modal provider
+ownership rooted.
+Keep auth/session behavior, saved-item actions, account routes, admin dashboard
+behavior, comment UI, contact/enquiry forms, shop behavior, cache policy, route
+segment config, package files, Playwright setup, and CI workflows unchanged
+unless a later task scopes them. Keep page 6-plus artwork browse
 variants, non-default limits, filtered artwork variants, `mostPopular`,
 `mostFeatured`, `colorProximity`, artwork detail, collection-scoped artwork
 detail, public artwork APIs, browser follow-up fetches, search, shop routes,

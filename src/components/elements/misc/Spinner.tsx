@@ -33,6 +33,7 @@ interface SpinnerContentProps
     VariantProps<typeof loaderVariants> {
   className?: string;
   children?: React.ReactNode;
+  label?: string;
 }
 
 export function Spinner({
@@ -40,11 +41,25 @@ export function Spinner({
   show,
   children,
   className,
+  label,
 }: SpinnerContentProps) {
+  const isVisible = show !== false;
+  const accessibleLabel =
+    label ?? (typeof children === "string" ? children : "Loading");
+
   return (
-    <span className={spinnerVariants({ show })}>
-      <Loader2 className={cn(loaderVariants({ size }), className)} />
-      {children}
+    <span
+      role={isVisible ? "status" : undefined}
+      aria-live={isVisible ? "polite" : undefined}
+      aria-label={isVisible ? accessibleLabel : undefined}
+      aria-hidden={isVisible ? undefined : true}
+      className={spinnerVariants({ show })}
+    >
+      <Loader2
+        aria-hidden="true"
+        className={cn(loaderVariants({ size }), className)}
+      />
+      {children ?? <span className="sr-only">{accessibleLabel}</span>}
     </span>
   );
 }

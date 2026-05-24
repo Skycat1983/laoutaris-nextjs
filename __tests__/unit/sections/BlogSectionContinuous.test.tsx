@@ -133,6 +133,25 @@ describe("BlogSectionContinuous", () => {
     expect(latestInfiniteScrollOptions?.hasMore).toBe(false);
   });
 
+  it("announces follow-up loading without replacing existing posts", () => {
+    mockUseInfiniteScroll.mockImplementation((options) => {
+      latestInfiniteScrollOptions = options;
+      return {
+        observerRef: { current: null },
+        isLoading: true,
+        error: null,
+        retry: jest.fn(),
+      };
+    });
+
+    render(<BlogSectionContinuous initialBlogEntries={[createBlog("first")]} />);
+
+    expect(screen.getByText("first")).toBeInTheDocument();
+    expect(
+      screen.getByRole("status", { name: "Loading more blog posts" })
+    ).toBeInTheDocument();
+  });
+
   it("renders a visible follow-up loading error without removing existing posts", () => {
     const retry = jest.fn();
     mockUseInfiniteScroll.mockImplementation((options) => {

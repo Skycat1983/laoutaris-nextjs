@@ -2,6 +2,7 @@ import type { ArtworkFrontend } from "@/lib/data/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
 interface ArtworkLayoutProps {
@@ -102,9 +103,11 @@ export const MasonryLayout = ({
 
       <div ref={observerRef} className="h-4 w-full">
         {loading && (
-          <div className="flex justify-center py-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-          </div>
+          <LoadingStatus
+            label="Loading more artworks"
+            className="flex py-4"
+            iconClassName="text-gray-900"
+          />
         )}
         {visibleError && (
           <div className="flex flex-col items-center gap-3 py-4 text-center text-red-600">

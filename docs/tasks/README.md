@@ -276,7 +276,9 @@ Planning and prompt packs:
 | [T-251 Pilot bounded artwork browse cache expansion](T-251-pilot-bounded-artwork-browse-cache-expansion.md) | Completed | Expanded the default `/artwork` browse cache only to fixed unfiltered `mostRecent` pages 2-5 while keeping broader variants, detail, APIs, search, shop, and session state direct. |
 | [T-252 Scope post-browse cache or client-island wave](T-252-scope-post-browse-cache-or-client-island-wave.md) | Completed | Paused F-111 runtime cache expansion after the fixed browse proofs and selected an F-115 provider/modal client-island scoping follow-up. |
 | [T-253 Scope root provider modal client-island split](T-253-scope-root-provider-modal-client-island-split.md) | Completed | Selected a provider-preserving modal context cleanup and lazy modal host as the next F-115 runtime slice. |
-| [T-254 Split modal context language state and lazy host](T-254-split-modal-context-language-state-and-lazy-host.md) | Planned | Remove unused language state from the active root modal provider path and lazy-load the modal dialog host without moving session or modal provider ownership. |
+| [T-254 Split modal context language state and lazy host](T-254-split-modal-context-language-state-and-lazy-host.md) | Completed | Removed unused language state from the active root modal provider path and lazy-loaded the modal dialog host without moving session or modal provider ownership. |
+| [T-255 Scope post-modal provider efficiency wave](T-255-scope-post-modal-provider-efficiency-wave.md) | Completed | Selected a provider-preserving account navigation lazy-island follow-up after T-254 left remaining root/header cost outside the modal path. |
+| [T-256 Lazy-load public account navigation island](T-256-lazy-load-public-account-navigation-island.md) | Completed | Deferred public header account menu implementation code until account-menu intent while keeping session and modal providers rooted. |
 
 ## Rules
 

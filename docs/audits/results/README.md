@@ -31,6 +31,7 @@ file instead of creating scattered notes.
 | A-020 | [Privacy, consent, and commerce compliance](A-020-privacy-consent-commerce-compliance.md) | Completed |
 | A-021 | [Observability and incident response](A-021-observability-incident-response.md) | Completed |
 | A-022 | [Next.js feature utilization](A-022-nextjs-feature-utilization.md) | Completed |
+| A-024 | [Loading state UX](A-024-loading-state-ux.md) | Completed |
 
 ## Result Format
 

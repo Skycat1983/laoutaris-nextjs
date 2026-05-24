@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/shadcn/button";
-import { Loader2 } from "lucide-react";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import { useFormStatus } from "react-dom";
 
 interface SubmitButtonProps {
@@ -17,9 +17,16 @@ interface SubmitButtonProps {
     | undefined;
   className?: string;
   size?: "full" | "default" | "icon" | "sm" | "lg" | "icon" | "default";
+  pendingLabel?: string;
 }
 
-function SubmitButton({ label, variant, className, size }: SubmitButtonProps) {
+function SubmitButton({
+  label,
+  variant,
+  className,
+  size,
+  pendingLabel = "Submitting...",
+}: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
     <Button
@@ -29,8 +36,15 @@ function SubmitButton({ label, variant, className, size }: SubmitButtonProps) {
       disabled={pending}
       className={className}
     >
-      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {pending ? "Loading..." : label}
+      {pending ? (
+        <LoadingStatus
+          label={pendingLabel}
+          visibleLabel={pendingLabel}
+          size="small"
+        />
+      ) : (
+        label
+      )}
     </Button>
   );
 }

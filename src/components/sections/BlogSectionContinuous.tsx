@@ -6,6 +6,7 @@ import type { ChevronRight } from "lucide-react";
 import { useCallback, useState } from "react";
 import { clientApi } from "@/lib/api/clientApi";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 
@@ -118,9 +119,11 @@ export const BlogSectionContinuous = ({
       {/* Observer Element */}
       <div ref={observerRef} className="h-4 w-full">
         {isLoading && (
-          <div className="flex justify-center py-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-          </div>
+          <LoadingStatus
+            label="Loading more blog posts"
+            className="flex py-4"
+            iconClassName="text-gray-900"
+          />
         )}
         {error && (
           <div
