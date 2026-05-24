@@ -641,16 +641,47 @@ Use targeted import/reference searches for pruning tasks.
   tests guard route-level `revalidate` drift outside `/biography`,
   `/collections`, and `/sitemap.xml`, and build/prerender-manifest evidence
   records `/sitemap.xml` as static with `initialRevalidateSeconds: 3600`.
+- 2026-05-24: Completed T-240 as a docs-only A-022 efficiency planning slice.
+  It selected T-241 as the first blog cache proof: cache primary blog detail
+  reads for metadata, JSON-LD, and non-comments detail rendering while keeping
+  `/blog`, `/blog/[slug]`, optional comments, list query variants, route-level
+  blog ISR, and generated params separate.
+- 2026-05-24: Completed T-241. Primary blog detail reads now use a 10-minute
+  cached non-`fetch` wrapper for `/blog/[slug]` metadata, blog JSON-LD, and
+  non-comments detail rendering. `/blog` and `/blog/[slug]` remain explicitly
+  dynamic with no route-level blog ISR or generated params, comments remain on
+  the direct comments service, and public blog API routes still use direct
+  services.
+- 2026-05-24: Completed T-242. The unfiltered `/blog` default grouped list now
+  uses fixed 10-minute cached wrappers only for featured page 1 limit 5, latest
+  page 1 limit 6, and popular page 1 limit 8. Sorted blog list rendering,
+  `BlogSectionLoader`, public blog APIs, comments, route-level blog ISR,
+  generated params, cache tags, and mutation revalidation remain direct or
+  deferred.
+- 2026-05-24: Completed T-243 as a docs-only sorted blog list scoping pass.
+  Sorted list caching is deferred until public blog list query parsing is
+  canonical and bounded. T-244 is the selected prerequisite to prevent `NaN`,
+  malformed, or oversized `page`/`limit` inputs from becoming future sorted
+  cache variants.
+- 2026-05-24: Completed T-244. `/blog` and `GET /api/v2/public/blog` now use
+  shared query parsing so page and API limit values are finite and bounded
+  before reaching `BlogListLoader` or `getBlogList()`. No cache behavior,
+  route-level blog ISR, generated params, cache tags, or mutation revalidation
+  was added.
+- 2026-05-24: Completed T-245. Sorted `/blog` first-page rendering now uses
+  fixed 10-minute cached wrappers for latest, oldest, featured, and popular
+  page 1 limit 10. Sorted pages beyond page 1, public blog APIs,
+  `BlogSectionLoader`, comments, route-level blog ISR, generated params, cache
+  tags, and mutation revalidation remain direct or deferred.
 
 ## Next Agent Action
 
-T-239 is complete. Do not reassign T-239 unless `/sitemap.xml` loses its
-source-owned one-hour ISR policy, sitemap discovery output changes
-unintentionally, or route-level `revalidate` drift appears outside
-`/biography`, `/collections`, and `/sitemap.xml`. Keep root providers,
-collection `generateStaticParams()`, collection detail/session caching,
-Shopify fetch policy, and broader ISR for blog, search, shop, account, admin,
-or detail routes separate unless a new task scopes one of those paths.
+T-245 is complete. If continuing the A-022 Next.js efficiency track, assign
+[T-246 Scope bounded sorted blog page cache expansion](../tasks/T-246-scope-bounded-sorted-blog-page-cache-expansion.md)
+before broadening blog cache behavior beyond sorted page 1. Keep route-level
+blog ISR, generated params, sorted blog pages beyond page 1, comment caching,
+provider moves, Shopify fetch changes, cache tags, mutation revalidation, and
+broader ISR separate unless a new task scopes them.
 
 Do not reassign route-local rendering fallback documentation unless the
 documented pattern or `/project/aims` source hygiene regresses. Broad

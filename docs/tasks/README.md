@@ -242,6 +242,13 @@ Planning and prompt packs:
 | [T-237 Scope next Next.js efficiency wave](T-237-scope-next-nextjs-efficiency-wave.md) | Completed | Compared remaining F-111/F-115 cache/static and provider options and selected collections redirect caching as the next slice. |
 | [T-238 Pilot collections redirect cache proof](T-238-pilot-collections-redirect-cache-proof.md) | Completed | Extended the biography cache proof pattern to the collections default redirect and route-local collection navigation reads. |
 | [T-239 Codify sitemap ISR freshness](T-239-codify-sitemap-isr-freshness.md) | Completed | Made `/sitemap.xml` one-hour ISR freshness explicit in source and guarded it without changing sitemap content. |
+| [T-240 Scope blog primary data cache split](T-240-scope-blog-primary-data-cache-split.md) | Completed | Scoped the next safe blog cache slice before runtime changes to query-driven blog list/detail/comment behavior. |
+| [T-241 Pilot blog primary detail cache proof](T-241-pilot-blog-primary-detail-cache-proof.md) | Completed | Cached primary blog detail reads for metadata, JSON-LD, and non-comments detail rendering while keeping comments and blog routes dynamic. |
+| [T-242 Pilot default blog list cache proof](T-242-pilot-default-blog-list-cache-proof.md) | Completed | Cached only the unfiltered `/blog` default grouped list reads while keeping sorted pages, APIs, comments, and route output dynamic. |
+| [T-243 Scope sorted blog list cache and query hygiene](T-243-scope-sorted-blog-list-cache-and-query-hygiene.md) | Completed | Selected public blog list query normalization and bounds as the prerequisite before any sorted-list cache implementation. |
+| [T-244 Normalize public blog list query parsing and bounds](T-244-normalize-public-blog-list-query-parsing-and-bounds.md) | Completed | Bounded and canonicalized `/blog` and public blog API list query inputs before sorted blog list cache work. |
+| [T-245 Pilot sorted blog first-page cache proof](T-245-pilot-sorted-blog-first-page-cache-proof.md) | Completed | Cached only sorted `/blog` first-page list reads after T-244 query normalization while keeping later pages and APIs direct. |
+| [T-246 Scope bounded sorted blog page cache expansion](T-246-scope-bounded-sorted-blog-page-cache-expansion.md) | Planned | Decide whether to expand sorted blog list caching beyond page 1, and define a safe bounded policy first. |
 
 ## Rules
 

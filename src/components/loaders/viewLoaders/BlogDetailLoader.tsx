@@ -4,7 +4,7 @@ import type {
   BlogEntryFrontendWithAuthor,
   BlogEntryPopulatedCommentsPopulatedFrontend,
 } from "@/lib/data/types/blogTypes";
-import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import { getBlogBySlugWithComments } from "@/lib/data/services/getBlogBySlugWithComments";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
@@ -29,7 +29,7 @@ const fetchBlogDetail = async ({
   slug,
   showComments,
 }: Required<Props>): Promise<BlogDetailLoaderResult> => {
-  const primaryBlog = await getBlogBySlugWithAuthor(slug);
+  const primaryBlog = await getCachedBlogBySlugWithAuthor(slug);
 
   if (!primaryBlog) {
     return {

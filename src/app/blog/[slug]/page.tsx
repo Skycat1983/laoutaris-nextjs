@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { BlogDetailLoader } from "@/components/loaders/viewLoaders/BlogDetailLoader";
 import { BlogPostStructuredData } from "@/components/metadata/PublicDetailJsonLd";
 import { BlogDetailSkeleton } from "@/components/views/BlogDetail";
-import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import {
   buildBlogDetailMetadata,
   buildMissingPublicDetailMetadata,
@@ -21,7 +21,7 @@ export async function generateMetadata({
   params,
 }: BlogSlugPageProps): Promise<Metadata> {
   try {
-    const blog = await getBlogBySlugWithAuthor(params.slug);
+    const blog = await getCachedBlogBySlugWithAuthor(params.slug);
 
     if (!blog) {
       return buildMissingPublicDetailMetadata("Blog post");

@@ -16,9 +16,6 @@ jest.mock("next/server", () => ({
 
 jest.mock("@/lib/data/services/getBlogList", () => ({
   getBlogList: jest.fn(),
-  isBlogListSortBy: jest.fn((sortby: string) =>
-    ["latest", "oldest", "popular", "featured"].includes(sortby)
-  ),
 }));
 
 const mockGetBlogList = getBlogList as jest.MockedFunction<typeof getBlogList>;
@@ -118,6 +115,65 @@ describe("GET /api/v2/public/blog", () => {
     expect(body.metadata).toEqual({
       page: 1,
       limit: 10,
+      total: 0,
+      totalPages: 0,
+    });
+  });
+
+  it.each([
+    [
+      "blank",
+      "https://example.com/api/v2/public/blog?page=&limit=",
+      { page: 1, limit: 10 },
+    ],
+    [
+      "malformed",
+      "https://example.com/api/v2/public/blog?page=not-a-page&limit=not-a-limit",
+      { page: 1, limit: 10 },
+    ],
+    [
+      "fractional",
+      "https://example.com/api/v2/public/blog?page=2.5&limit=4.5",
+      { page: 1, limit: 10 },
+    ],
+    [
+      "negative and zero",
+      "https://example.com/api/v2/public/blog?page=-2&limit=0",
+      { page: 1, limit: 10 },
+    ],
+    [
+      "oversized",
+      "https://example.com/api/v2/public/blog?page=1001&limit=26",
+      { page: 1000, limit: 25 },
+    ],
+  ])("normalizes %s page and limit values before calling the service", async (
+    _label,
+    url,
+    expected
+  ) => {
+    mockGetBlogList.mockResolvedValue({
+      success: true,
+      data: [],
+      metadata: {
+        page: expected.page,
+        limit: expected.limit,
+        total: 0,
+        totalPages: 0,
+      },
+    } as never);
+
+    const response = await GET_BLOG_LIST(createRequest(url));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetBlogList).toHaveBeenCalledWith({
+      sortby: "latest",
+      page: expected.page,
+      limit: expected.limit,
+    });
+    expect(body.metadata).toEqual({
+      page: expected.page,
+      limit: expected.limit,
       total: 0,
       totalPages: 0,
     });

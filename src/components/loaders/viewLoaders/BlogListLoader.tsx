@@ -6,6 +6,12 @@ import {
   getBlogList,
   type BlogListSortBy,
 } from "@/lib/data/services/getBlogList";
+import {
+  getCachedDefaultFeaturedBlogList,
+  getCachedDefaultLatestBlogList,
+  getCachedDefaultPopularBlogList,
+  getCachedSortedFirstPageBlogList,
+} from "@/lib/data/services/getCachedBlogListData";
 // Config Constants
 const BLOG_ENTRIES_CONFIG = {
   limit: 10,
@@ -32,11 +38,14 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     let blogData: SortedBlogData;
 
     if (sortby) {
-      const result = await getBlogList({
-        sortby,
-        page,
-        limit: BLOG_ENTRIES_CONFIG.limit,
-      });
+      const result =
+        page === 1
+          ? await getCachedSortedFirstPageBlogList(sortby)
+          : await getBlogList({
+              sortby,
+              page,
+              limit: BLOG_ENTRIES_CONFIG.limit,
+            });
 
       const {
         data: blogs,
@@ -57,21 +66,9 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
       };
     } else {
       const [featuredResult, latestResult, popularResult] = await Promise.all([
-        getBlogList({
-          sortby: "featured",
-          page: 1,
-          limit: 5,
-        }),
-        getBlogList({
-          sortby: "latest",
-          page: 1,
-          limit: 6,
-        }),
-        getBlogList({
-          sortby: "popular",
-          page: 1,
-          limit: 8,
-        }),
+        getCachedDefaultFeaturedBlogList(),
+        getCachedDefaultLatestBlogList(),
+        getCachedDefaultPopularBlogList(),
       ]);
 
       blogData = {

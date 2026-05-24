@@ -3,7 +3,7 @@ import path from "path";
 import type { ReactElement } from "react";
 import { BlogDetailLoader } from "@/components/loaders/viewLoaders/BlogDetailLoader";
 import { BlogDetail } from "@/components/views/BlogDetail";
-import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import { getBlogBySlugWithComments } from "@/lib/data/services/getBlogBySlugWithComments";
 import { notFound } from "next/navigation";
 
@@ -13,8 +13,8 @@ jest.mock("next/navigation", () => ({
   }),
 }));
 
-jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
-  getBlogBySlugWithAuthor: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBlogPrimaryData", () => ({
+  getCachedBlogBySlugWithAuthor: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getBlogBySlugWithComments", () => ({
@@ -25,9 +25,9 @@ jest.mock("@/components/views/BlogDetail", () => ({
   BlogDetail: jest.fn(() => null),
 }));
 
-const mockGetBlogBySlugWithAuthor =
-  getBlogBySlugWithAuthor as jest.MockedFunction<
-    typeof getBlogBySlugWithAuthor
+const mockGetCachedBlogBySlugWithAuthor =
+  getCachedBlogBySlugWithAuthor as jest.MockedFunction<
+    typeof getCachedBlogBySlugWithAuthor
   >;
 const mockGetBlogBySlugWithComments =
   getBlogBySlugWithComments as jest.MockedFunction<
@@ -52,7 +52,7 @@ describe("BlogDetailLoader", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetBlogBySlugWithAuthor.mockResolvedValue(blogWithAuthor);
+    mockGetCachedBlogBySlugWithAuthor.mockResolvedValue(blogWithAuthor);
     mockGetBlogBySlugWithComments.mockResolvedValue(blogWithComments);
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => undefined);
     consoleErrorSpy = jest
@@ -73,7 +73,9 @@ describe("BlogDetailLoader", () => {
       showComments: false;
     }>;
 
-    expect(mockGetBlogBySlugWithAuthor).toHaveBeenCalledWith("gallery-news");
+    expect(mockGetCachedBlogBySlugWithAuthor).toHaveBeenCalledWith(
+      "gallery-news"
+    );
     expect(mockGetBlogBySlugWithComments).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
@@ -93,7 +95,9 @@ describe("BlogDetailLoader", () => {
       showComments: true;
     }>;
 
-    expect(mockGetBlogBySlugWithAuthor).toHaveBeenCalledWith("gallery-news");
+    expect(mockGetCachedBlogBySlugWithAuthor).toHaveBeenCalledWith(
+      "gallery-news"
+    );
     expect(mockGetBlogBySlugWithComments).toHaveBeenCalledWith("gallery-news");
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
@@ -105,7 +109,7 @@ describe("BlogDetailLoader", () => {
   });
 
   it("calls notFound when the primary blog detail service returns null", async () => {
-    mockGetBlogBySlugWithAuthor.mockResolvedValue(null);
+    mockGetCachedBlogBySlugWithAuthor.mockResolvedValue(null);
 
     await expect(
       BlogDetailLoader({ slug: "missing-blog" })
@@ -120,7 +124,7 @@ describe("BlogDetailLoader", () => {
 
   it("preserves primary service errors while keeping same-app fetches out of the loader", async () => {
     const error = new Error("private blog failure");
-    mockGetBlogBySlugWithAuthor.mockRejectedValue(error);
+    mockGetCachedBlogBySlugWithAuthor.mockRejectedValue(error);
 
     await expect(
       BlogDetailLoader({ slug: "gallery-news", showComments: true })
@@ -157,7 +161,9 @@ describe("BlogDetailLoader", () => {
       showComments: false;
     }>;
 
-    expect(mockGetBlogBySlugWithAuthor).toHaveBeenCalledWith("gallery-news");
+    expect(mockGetCachedBlogBySlugWithAuthor).toHaveBeenCalledWith(
+      "gallery-news"
+    );
     expect(mockGetBlogBySlugWithComments).toHaveBeenCalledWith("gallery-news");
     expect(element.type).toBe(BlogDetail);
     expect(element.props).toEqual({

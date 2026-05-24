@@ -1668,6 +1668,36 @@ npm run lint
   output and fallback behavior. Verification passed with the focused Jest
   suite, `npm run build`, prerender-manifest evidence for `/sitemap.xml`
   `initialRevalidateSeconds: 3600`, and `git diff --check`.
+- 2026-05-24: Completed T-240. It identified focused coverage for T-241's blog
+  primary-detail cache proof: cached-wrapper coverage, metadata/JSON-LD use,
+  `BlogDetailLoader` optional-comment separation, and public route cache policy
+  invariants.
+- 2026-05-24: Completed T-241. Added focused cached primary blog detail wrapper
+  coverage, updated blog metadata/JSON-LD and `BlogDetailLoader` tests to use
+  the cached primary wrapper, and extended public route cache policy coverage
+  to keep `/blog` and `/blog/[slug]` dynamic with no route-level ISR or
+  generated params while public blog APIs stay on direct services. Verification
+  passed with the focused Jest suite, `npm run build`, and `git diff --check`;
+  build output kept `/blog` and `/blog/[slug]` dynamic.
+- 2026-05-24: Completed T-242. Added focused cached default blog list wrapper
+  coverage, updated `BlogListLoader` coverage for default cached wrappers
+  versus sorted direct `getBlogList()` reads, and extended public route cache
+  policy coverage so `/blog` remains dynamic while public blog APIs and
+  `BlogSectionLoader` stay direct. Verification passed with the focused Jest
+  suite, `npm run build`, and `git diff --check`; build output kept `/blog`
+  dynamic.
+- 2026-05-24: Completed T-243 as a docs-only sorted blog list cache/query
+  hygiene scoping pass. It selected T-244 to add focused query parsing and
+  bounds coverage for `/blog`, `GET /api/v2/public/blog`, and adjacent blog
+  list callers before any sorted-list cache wrapper is introduced.
+- 2026-05-24: Completed T-244. Added focused public blog list query parsing
+  coverage for page and API limit bounds, plus page/API route coverage proving
+  canonical values reach `BlogListLoader` and `getBlogList()`.
+- 2026-05-24: Completed T-245. Added focused cached sorted first-page blog
+  list wrapper coverage, `BlogListLoader` coverage for page 1 cached reads
+  versus page 2 direct reads, default grouped cache behavior, and public route
+  cache policy invariants. Verification passed with the focused Jest suite,
+  `npm run build`, and `git diff --check`; build output kept `/blog` dynamic.
 
 ## Next Agent Action
 
@@ -1680,9 +1710,17 @@ biography cache proof coverage is complete. T-234 planning/build evidence is
 complete, T-236 lazy mobile drawer coverage is complete, T-235 non-action
 `"use server"` cleanup coverage is complete, T-237 scoping/build evidence is
 complete, T-238 collections redirect cache-proof coverage is complete, and
-T-239 sitemap ISR ownership coverage is complete. Future A-022 verification
-slices should be scoped separately before expanding blog caching, static params,
-provider ownership, or broader ISR behavior.
+T-239 sitemap ISR ownership coverage is complete. T-240 blog cache scoping is
+complete, T-241 cached primary blog detail coverage is complete, and T-242
+default grouped `/blog` list cache-proof coverage is complete. T-243 sorted
+blog list cache/query-hygiene scoping is complete, and T-244 query
+normalization/bounds coverage is complete. T-245 sorted first-page cache
+wrapper and loader coverage is complete. T-246 should scope whether any sorted
+page-2-plus cache expansion needs additional wrapper, loader, route-cache, or
+freshness coverage before runtime changes. Keep optional comments, sorted blog
+pages beyond page 1, route-level blog ISR, static params, provider ownership,
+cache tags, mutation revalidation, and broader ISR behavior out of the
+completed blog cache proofs.
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,

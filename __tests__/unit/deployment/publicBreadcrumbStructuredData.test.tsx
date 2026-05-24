@@ -12,7 +12,7 @@ import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBiographyArticleData";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
-import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import {
   buildArticleBreadcrumbJsonLd,
@@ -30,8 +30,8 @@ jest.mock("@/lib/data/services/getArtworkById", () => ({
   getArtworkById: jest.fn(),
 }));
 
-jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
-  getBlogBySlugWithAuthor: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBlogPrimaryData", () => ({
+  getCachedBlogBySlugWithAuthor: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getCollectionArtwork", () => ({
@@ -49,9 +49,9 @@ const mockGetCachedBiographyArticleBySlug =
 const mockGetArtworkById = getArtworkById as jest.MockedFunction<
   typeof getArtworkById
 >;
-const mockGetBlogBySlugWithAuthor =
-  getBlogBySlugWithAuthor as jest.MockedFunction<
-    typeof getBlogBySlugWithAuthor
+const mockGetCachedBlogBySlugWithAuthor =
+  getCachedBlogBySlugWithAuthor as jest.MockedFunction<
+    typeof getCachedBlogBySlugWithAuthor
   >;
 const mockGetCollectionArtwork =
   getCollectionArtwork as jest.MockedFunction<typeof getCollectionArtwork>;
@@ -173,7 +173,7 @@ describe("public breadcrumb structured data", () => {
     jest.clearAllMocks();
     mockGetCachedBiographyArticleBySlug.mockResolvedValue(article);
     mockGetArtworkById.mockResolvedValue(artwork);
-    mockGetBlogBySlugWithAuthor.mockResolvedValue(blog);
+    mockGetCachedBlogBySlugWithAuthor.mockResolvedValue(blog);
     mockGetCollectionArtwork.mockResolvedValue({
       status: "found",
       collection,
@@ -328,7 +328,7 @@ describe("public breadcrumb structured data", () => {
 
   it("does not emit breadcrumb scripts when source lookups are missing or unavailable", async () => {
     mockGetCachedBiographyArticleBySlug.mockResolvedValueOnce(null);
-    mockGetBlogBySlugWithAuthor.mockRejectedValueOnce(
+    mockGetCachedBlogBySlugWithAuthor.mockRejectedValueOnce(
       new Error("private blog failure")
     );
     mockGetArtworkById.mockResolvedValueOnce(null);

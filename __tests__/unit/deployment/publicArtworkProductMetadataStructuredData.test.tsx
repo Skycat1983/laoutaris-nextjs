@@ -22,8 +22,8 @@ jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
   getCachedBiographyArticleBySlug: jest.fn(),
 }));
 
-jest.mock("@/lib/data/services/getBlogBySlugWithAuthor", () => ({
-  getBlogBySlugWithAuthor: jest.fn(),
+jest.mock("@/lib/data/services/getCachedBlogPrimaryData", () => ({
+  getCachedBlogBySlugWithAuthor: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getCollectionArtwork", () => ({

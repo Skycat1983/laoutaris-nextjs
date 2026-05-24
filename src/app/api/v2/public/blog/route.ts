@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { ApiBlogListResult } from "@/lib/api/public/blog/fetchers";
 import type { ApiErrorResponse, RouteResponse } from "@/lib/data/types/apiTypes";
 import {
-  getBlogList,
-  isBlogListSortBy,
-} from "@/lib/data/services/getBlogList";
+  parseBlogApiListQuery,
+  searchParamsToBlogListQueryInput,
+} from "@/lib/data/schemas/blogListQuerySchema";
+import { getBlogList } from "@/lib/data/services/getBlogList";
 import { createApiLogger } from "@/lib/observability/logger";
 import { createRequestContext } from "@/lib/observability/requestContext";
 
@@ -14,24 +15,20 @@ export const GET = async (
   const requestContext = createRequestContext(req, "/api/v2/public/blog");
   const logger = createApiLogger(requestContext);
   const { searchParams } = new URL(req.url);
+  const parsedQuery = parseBlogApiListQuery(
+    searchParamsToBlogListQueryInput(searchParams)
+  );
+
+  if (!parsedQuery.success) {
+    return NextResponse.json({
+      success: false,
+      error: "Invalid sortby parameter",
+      statusCode: 400,
+    } satisfies ApiErrorResponse);
+  }
+
   try {
-    const rawSortBy = searchParams.get("sortby") || "latest";
-    if (!isBlogListSortBy(rawSortBy)) {
-      return NextResponse.json({
-        success: false,
-        error: "Invalid sortby parameter",
-        statusCode: 400,
-      } satisfies ApiErrorResponse);
-    }
-
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-
-    const result = await getBlogList({
-      sortby: rawSortBy,
-      page,
-      limit,
-    });
+    const result = await getBlogList(parsedQuery.data);
 
     return NextResponse.json({
       success: true,

@@ -1124,6 +1124,32 @@ Use browser checks for layout-sensitive changes.
 - 2026-05-24: Completed T-239. `/sitemap.xml` now owns one-hour ISR freshness
   in `src/app/sitemap.ts`; sitemap content, public route rendering, provider
   ownership, and Shopify behavior were preserved.
+- 2026-05-24: Completed T-240 for the next A-022 efficiency step. It selected
+  T-241 to cache primary blog detail reads for `/blog/[slug]` metadata,
+  JSON-LD, and non-comments detail rendering while keeping blog route
+  rendering, comments, list sorting, and pagination behavior dynamic.
+- 2026-05-24: Completed T-241. `/blog/[slug]` metadata, blog structured data,
+  and `BlogDetailLoader` primary detail reads now use the cached primary blog
+  wrapper. Comment-mode rendering still calls the direct comments service for
+  populated comments and falls back to primary blog data when comments are
+  unavailable.
+- 2026-05-24: Completed T-242. The unfiltered `/blog` grouped list path now
+  calls fixed cached featured/latest/popular list wrappers, while sorted
+  `/blog?sortby=...&page=...` rendering still calls `getBlogList()` directly.
+  The home `BlogSectionLoader`, public blog list API route, comments, and blog
+  route segment policy were left unchanged.
+- 2026-05-24: Completed T-243. Sorted blog list caching should wait until
+  public blog list query parsing is canonical and bounded. T-244 is the next
+  selected slice for `/blog` page and public blog API query hygiene without
+  adding sorted-list cache behavior.
+- 2026-05-24: Completed T-244. `/blog` and the public blog list API now share
+  bounded canonical query parsing before values reach `BlogListLoader` or
+  `getBlogList()`, with no route output, pagination UI, or cache behavior
+  changes.
+- 2026-05-24: Completed T-245. Sorted `/blog` page 1 rendering now uses fixed
+  cached latest/oldest/featured/popular first-page wrappers, while sorted pages
+  beyond page 1, the public blog API, `BlogSectionLoader`, comments, and route
+  segment policy remain unchanged.
 
 ## Next Agent Action
 
@@ -1140,9 +1166,17 @@ For the A-022 Next.js efficiency track, T-236 completed the first
 client-island runtime proof by lazy-loading the public mobile search/navigation
 drawer bodies, and T-238 completed the next route-family cache slice for
 collections redirect/navigation. T-239 explicit `/sitemap.xml` ISR ownership is
-also complete. Keep root provider/modal ownership, blog cache splitting,
-generated params, and broader static/ISR migration separate unless a new task
-scopes one of those paths.
+also complete, T-240 scoped the blog cache split, and T-241 completed cached
+blog primary detail reads. T-242 completed the next narrow implementation task
+for only the default grouped `/blog` list reads. T-243 scoped the sorted list
+cache boundary and selected T-244 as the next prerequisite for `/blog` and
+public blog API query normalization/bounds before sorted blog list caching.
+T-244 and T-245 are complete; only sorted `/blog` first-page cache reads were
+added. T-246 is planned as the docs-only scoping task before any bounded sorted
+page-2-plus cache expansion. Keep root provider/modal ownership, generated
+params, route-level blog ISR, sorted blog pages beyond page 1, comment caching,
+cache tags, mutation revalidation, and broader static/ISR migration separate
+unless a new task scopes one of those paths.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

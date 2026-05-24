@@ -192,8 +192,11 @@ Reconciled on 2026-05-23:
 
 - F-111: public caching/ISR and cached non-`fetch` service reads. Partially
   mitigated by T-232/T-233 for the biography proof route, T-238 for the
-  collections redirect/navigation proof, and planned T-239 for explicit sitemap
-  ISR ownership.
+  collections redirect/navigation proof, and T-239 for explicit sitemap ISR
+  ownership. T-240 scoped the blog primary-data cache split, T-241 completed
+  the primary blog detail cache proof, T-242 completed the default grouped blog
+  list proof, T-243 selected query normalization/bounds as the prerequisite
+  before sorted blog list caching, and T-244 completed that prerequisite.
 - F-112: current client/server import-boundary regression. Resolved by T-230.
 - F-113: middleware matcher broader than protected route prefixes. Resolved by
   T-231.
@@ -225,13 +228,32 @@ Reconciled on 2026-05-23:
 - T-230, T-231, T-232, T-233, T-235, and T-236 are now complete. T-234 scoped
   the client-provider/client-island work.
 - T-237 scoped the next A-022 efficiency wave, T-238 completed the collections
-  redirect/navigation cache proof, and T-239 is planned to make the current
-  one-hour `/sitemap.xml` manifest revalidation explicit in source.
+  redirect/navigation cache proof, and T-239 made the current one-hour
+  `/sitemap.xml` manifest revalidation explicit in source.
+- T-240 completed as a docs-only scoping task for blog primary-data caching
+  because `/blog` and `/blog/[slug]` mix query-driven list variants, primary
+  detail reads, metadata/JSON-LD, and optional comments. It created T-241 as
+  the selected implementation slice.
+- T-241 completed the primary blog detail cache proof while keeping comments,
+  blog routes, public blog APIs, and route-level blog ISR dynamic.
+- T-242 completed the default grouped `/blog` list cache proof while keeping
+  sorted pages, public APIs, comments, and route output dynamic.
+- T-243 completed the docs-only sorted blog list cache/query-hygiene scoping
+  pass and created T-244 as the selected prerequisite implementation slice.
+- T-244 completed public blog list query normalization and bounds for `/blog`
+  and `GET /api/v2/public/blog`.
+- T-245 completed the sorted `/blog` first-page cache proof. T-246 is planned
+  to scope whether bounded page-2-plus sorted cache expansion is worthwhile.
 
 ## Next Action
 
-The first A-022 implementation sequence and the T-238 collections proof are
-complete. Assign T-239 next if continuing the Next.js efficiency track; keep it
-limited to explicit sitemap ISR ownership. Further broad static/ISR,
-provider/modal, monitoring instrumentation, generated params, blog caching, or
-route-family cache work should be scoped as separate tasks.
+The first A-022 implementation sequence, the T-238 collections proof, T-239
+sitemap ISR ownership, T-240 blog cache scoping, and T-241 primary blog detail
+cache proof, T-242 default grouped blog list proof, and T-243 sorted-list
+cache/query scoping, T-244 query-hygiene implementation, and T-245 sorted
+first-page cache proof are complete. Assign T-246 next if continuing the
+Next.js efficiency track; keep it docs-only and focused on whether any bounded
+sorted page-2-plus cache expansion is safe or worth doing. Further broad
+static/ISR, provider/modal, monitoring instrumentation, generated params,
+sorted blog later-page implementation, comment caching, or route-family cache
+work should be scoped as separate tasks.

@@ -1,6 +1,6 @@
 import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBiographyArticleData";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
-import { getBlogBySlugWithAuthor } from "@/lib/data/services/getBlogBySlugWithAuthor";
+import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
 import { getProductByHandle } from "@/lib/api/shopify/shopifyClient";
 import {
@@ -100,7 +100,7 @@ export async function BiographyArticleStructuredData({
 
 export async function BlogPostJsonLd({ slug }: { slug: string }) {
   try {
-    const blog = await getBlogBySlugWithAuthor(slug);
+    const blog = await getCachedBlogBySlugWithAuthor(slug);
 
     if (!blog) {
       return null;
@@ -116,7 +116,7 @@ export async function BlogPostJsonLd({ slug }: { slug: string }) {
 
 export async function BlogPostStructuredData({ slug }: { slug: string }) {
   try {
-    const blog = await getBlogBySlugWithAuthor(slug);
+    const blog = await getCachedBlogBySlugWithAuthor(slug);
 
     if (!blog) {
       return null;

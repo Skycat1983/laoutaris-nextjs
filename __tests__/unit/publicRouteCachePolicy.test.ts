@@ -149,6 +149,73 @@ describe("public route cache policy", () => {
     expect(source).not.toContain("getCachedCollectionNavigationList");
   });
 
+  it("keeps the blog primary-detail cache proof route-local and off route-level ISR", () => {
+    const pageSource = readRepoFile("src/app/blog/[slug]/page.tsx");
+    const loaderSource = readRepoFile(
+      "src/components/loaders/viewLoaders/BlogDetailLoader.tsx"
+    );
+    const jsonLdSource = readRepoFile(
+      "src/components/metadata/PublicDetailJsonLd.tsx"
+    );
+    const publicDetailRouteSource = readRepoFile(
+      "src/app/api/v2/public/blog/[slug]/route.ts"
+    );
+    const publicCommentsRouteSource = readRepoFile(
+      "src/app/api/v2/public/blog/[slug]/comments/route.ts"
+    );
+
+    expect(pageSource).toContain("getCachedBlogBySlugWithAuthor");
+    expect(loaderSource).toContain("getCachedBlogBySlugWithAuthor");
+    expect(jsonLdSource).toContain("getCachedBlogBySlugWithAuthor");
+    expect(loaderSource).toContain("getBlogBySlugWithComments");
+    expect(publicDetailRouteSource).toContain("getBlogBySlugWithAuthor");
+    expect(publicDetailRouteSource).not.toContain(
+      "getCachedBlogBySlugWithAuthor"
+    );
+    expect(publicCommentsRouteSource).toContain("getBlogBySlugWithComments");
+    expect(pageSource).toContain('export const dynamic = "force-dynamic";');
+    expect(pageSource).not.toMatch(/export const revalidate\b/);
+    expect(pageSource).not.toMatch(/generateStaticParams/);
+  });
+
+  it("keeps blog list cache proofs limited to default groups and sorted first pages", () => {
+    const pageSource = readRepoFile("src/app/blog/page.tsx");
+    const loaderSource = readRepoFile(
+      "src/components/loaders/viewLoaders/BlogListLoader.tsx"
+    );
+    const cachedListSource = readRepoFile(
+      "src/lib/data/services/getCachedBlogListData.ts"
+    );
+    const publicListRouteSource = readRepoFile(
+      "src/app/api/v2/public/blog/route.ts"
+    );
+    const homeSectionSource = readRepoFile(
+      "src/components/loaders/sectionLoaders/BlogSectionLoader.tsx"
+    );
+
+    expect(loaderSource).toContain("getCachedDefaultFeaturedBlogList");
+    expect(loaderSource).toContain("getCachedDefaultLatestBlogList");
+    expect(loaderSource).toContain("getCachedDefaultPopularBlogList");
+    expect(loaderSource).toContain("getCachedSortedFirstPageBlogList");
+    expect(loaderSource).toContain("page === 1");
+    expect(loaderSource).toContain("getBlogList({");
+    expect(cachedListSource).toContain("public-blog-sorted-first-page-latest");
+    expect(cachedListSource).toContain("public-blog-sorted-first-page-oldest");
+    expect(cachedListSource).toContain(
+      "public-blog-sorted-first-page-featured"
+    );
+    expect(cachedListSource).toContain("public-blog-sorted-first-page-popular");
+    expect(publicListRouteSource).toContain("getBlogList");
+    expect(publicListRouteSource).not.toContain("getCachedDefault");
+    expect(publicListRouteSource).not.toContain("getCachedSorted");
+    expect(homeSectionSource).toContain("getBlogList");
+    expect(homeSectionSource).not.toContain("getCachedDefault");
+    expect(homeSectionSource).not.toContain("getCachedSorted");
+    expect(pageSource).toContain('export const dynamic = "force-dynamic";');
+    expect(pageSource).not.toMatch(/export const revalidate\b/);
+    expect(pageSource).not.toMatch(/generateStaticParams/);
+  });
+
   it("documents the route matrix and deferred ISR ownership", () => {
     const source = readRepoFile(
       "docs/architecture/rendering-and-data-fetching.md"
@@ -163,6 +230,14 @@ describe("public route cache policy", () => {
     expect(source).toContain("| Session-aware public UI |");
     expect(source).toContain("Only `/biography`, `/collections`, and `/sitemap.xml`");
     expect(source).toContain("generateStaticParams()` is deferred");
+    expect(source).toContain("T-241");
+    expect(source).toContain("adds cached primary blog detail service reads");
+    expect(source).toContain("T-242");
+    expect(source).toContain("T-242 adds cached default");
+    expect(source).toContain("grouped `/blog` list service reads");
+    expect(source).toContain("T-245");
+    expect(source).toContain("sorted `/blog` first-page list reads");
+    expect(source).toContain("remain route-dynamic");
   });
 
   it("documents the accepted freshness policy for the current runtime proofs", () => {
@@ -182,6 +257,9 @@ describe("public route cache policy", () => {
     expect(source).toContain("T-233 first proof route: biography");
     expect(source).toContain("T-238 second proof route: collections");
     expect(source).toContain("T-239 makes sitemap one-hour ISR source-owned");
+    expect(source).toContain("T-241 first blog proof");
+    expect(source).toContain("T-242 second blog proof");
+    expect(source).toContain("T-245 third blog proof");
     expect(source).toContain("cached non-`fetch` service wrappers");
     expect(source).toContain(
       "Do not add `generateStaticParams()` in the first proof"

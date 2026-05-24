@@ -1,25 +1,19 @@
 import { BlogListLoader } from "@/components/loaders/viewLoaders/BlogListLoader";
 import { BlogsSectionFeaturedSkeleton } from "@/components/sections/BlogsSectionFeatured";
+import {
+  parseBlogPageListQuery,
+  type BlogListQueryInput,
+} from "@/lib/data/schemas/blogListQuerySchema";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
 
-const validSortOptions = ["latest", "oldest", "popular", "featured"] as const;
-type SortOption = (typeof validSortOptions)[number];
-
 interface BlogPageProps {
-  searchParams: {
-    sortby?: string;
-    page?: string;
-  };
+  searchParams: BlogListQueryInput;
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  const sortby = validSortOptions.includes(searchParams.sortby as SortOption)
-    ? (searchParams.sortby as SortOption)
-    : undefined;
-
-  const page = Math.max(1, parseInt(searchParams.page || "1", 10));
+  const { sortby, page } = parseBlogPageListQuery(searchParams);
 
   return (
     <main>

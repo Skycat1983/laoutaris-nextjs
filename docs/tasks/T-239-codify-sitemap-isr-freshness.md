@@ -139,12 +139,15 @@ URL is available.
 - `git diff --check` passed.
 - `npm run smoke:public -- --base-url=<base-url>` was not run because no
   deployed or local production base URL was provided for this task.
+- Orchestrator verification repeated 2026-05-24 with the same focused Jest
+  command, `npm run build`, the prerender-manifest check, and
+  `git diff --check`; all passed. The smoke command remained unrun because no
+  deployed or local production base URL was provided.
 
 ## Handoff Notes
 
 - Finding: F-111.
 - Risk: R-012.
 - Depends on: T-238.
-- T-239 should make the sitemap's current one-hour manifest behavior explicit
-  in source. It should not broaden into sitemap content expansion, Shopify
-  cache changes, generated params, blog caching, provider work, or monitoring.
+- Completed without broadening into sitemap content expansion, Shopify cache
+  changes, generated params, blog caching, provider work, or monitoring.

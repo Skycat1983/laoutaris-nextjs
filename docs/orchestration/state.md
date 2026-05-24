@@ -94,10 +94,22 @@ completed that docs-only scoping pass and selected T-238 as the next safe
 route-family cache proof: `/collections` default redirect ISR plus cached
 route-local collection navigation reads, while keeping collection detail routes
 dynamic and root header navigation direct. T-238 is now complete. T-239 is
-planned as the next narrow efficiency slice: codify the current one-hour
-`/sitemap.xml` ISR behavior in `src/app/sitemap.ts`, because build evidence
-already records `initialRevalidateSeconds: 3600` through indirect Shopify fetch
-revalidation rather than an explicit sitemap-owned route export.
+complete: `/sitemap.xml` now explicitly owns one-hour ISR in
+`src/app/sitemap.ts` without changing sitemap content. T-240 is complete as a
+docs-only scoping task for the blog primary-data cache split. It selected
+T-241 as the next runtime proof: cache primary blog detail reads for
+`/blog/[slug]` metadata, JSON-LD, and non-comments detail rendering while
+keeping optional comments, blog lists, route-level blog ISR, and generated
+params out of scope. T-241 is complete and verified. T-242 is also complete
+and verified: only the default grouped `/blog` list reads use fixed cached
+wrappers while sorted pages, public APIs, comments, and route output remain
+dynamic. T-243 is complete: it rejected immediate sorted-list caching and
+selected T-244 to normalize and bound `/blog` page and public blog API query
+inputs before any sorted blog list cache implementation. T-244 is complete and
+verified. T-245 is also complete and verified: only sorted `/blog` first-page
+list reads are cached while later pages, public APIs, comments, and route
+output remain dynamic. T-246 is planned as a docs-only scoping task before any
+bounded sorted page-2-plus cache expansion.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,

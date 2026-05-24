@@ -2,6 +2,11 @@ import "server-only";
 
 import type { FilterQuery } from "mongoose";
 import { BlogModel, BlogEntryDB } from "@/lib/data/models/blogModel";
+import {
+  BLOG_LIST_SORT_OPTIONS,
+  isBlogListSortBy,
+  type BlogListSortBy,
+} from "@/lib/data/schemas/blogListQuerySchema";
 import type { ListResult } from "@/lib/data/types";
 import type {
   BlogEntryFrontend,
@@ -10,14 +15,8 @@ import type {
 import dbConnect from "@/lib/db/mongodb";
 import { transformBlog } from "@/lib/transforms/blog/transformBlog";
 
-export const BLOG_LIST_SORT_OPTIONS = [
-  "latest",
-  "oldest",
-  "popular",
-  "featured",
-] as const;
-
-export type BlogListSortBy = (typeof BLOG_LIST_SORT_OPTIONS)[number];
+export { BLOG_LIST_SORT_OPTIONS, isBlogListSortBy };
+export type { BlogListSortBy };
 
 export interface GetBlogListParams {
   sortby?: BlogListSortBy;
@@ -26,9 +25,6 @@ export interface GetBlogListParams {
 }
 
 export type BlogListServiceResult = ListResult<BlogEntryFrontend>;
-
-export const isBlogListSortBy = (sortby: string): sortby is BlogListSortBy =>
-  BLOG_LIST_SORT_OPTIONS.includes(sortby as BlogListSortBy);
 
 const buildBlogListQuery = (sortby: BlogListSortBy) => {
   const filterQuery: FilterQuery<BlogEntryDB> = {};
