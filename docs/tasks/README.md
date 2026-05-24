@@ -6,6 +6,26 @@ been reconciled.
 Use task briefs when a workstream backlog item is ready to commission and the
 orchestrator needs a one-line `/task ... details:` assignment.
 
+## Task Completion Expectations
+
+An assigned task is not complete just because the code changed. Before handoff,
+the assigned agent should leave the task brief as the durable record of the
+work:
+
+- Set the task `Status` to `Completed` only after scoped work and verification
+  are done.
+- Record completion notes, out-of-scope items, and exact verification results in
+  the task brief.
+- Update `docs/tasks/README.md` when the task status changes or a follow-up task
+  is created.
+- Update workstream progress/next-action, architecture docs, runbooks,
+  decisions, risks, findings, or orchestration state only when the task brief
+  explicitly assigns those shared edits.
+- If shared tracker edits are not assigned, list candidate updates for the
+  orchestrator in the task handoff notes.
+- Preserve unrelated dirty or untracked work and mention any such files in the
+  handoff when they affect the task.
+
 Planning and prompt packs:
 
 - [Homepage prototype agent prompts](prototype-home-agent-prompts.md)
@@ -248,7 +268,12 @@ Planning and prompt packs:
 | [T-243 Scope sorted blog list cache and query hygiene](T-243-scope-sorted-blog-list-cache-and-query-hygiene.md) | Completed | Selected public blog list query normalization and bounds as the prerequisite before any sorted-list cache implementation. |
 | [T-244 Normalize public blog list query parsing and bounds](T-244-normalize-public-blog-list-query-parsing-and-bounds.md) | Completed | Bounded and canonicalized `/blog` and public blog API list query inputs before sorted blog list cache work. |
 | [T-245 Pilot sorted blog first-page cache proof](T-245-pilot-sorted-blog-first-page-cache-proof.md) | Completed | Cached only sorted `/blog` first-page list reads after T-244 query normalization while keeping later pages and APIs direct. |
-| [T-246 Scope bounded sorted blog page cache expansion](T-246-scope-bounded-sorted-blog-page-cache-expansion.md) | Planned | Decide whether to expand sorted blog list caching beyond page 1, and define a safe bounded policy first. |
+| [T-246 Scope bounded sorted blog page cache expansion](T-246-scope-bounded-sorted-blog-page-cache-expansion.md) | Completed | Selected a fixed-key cache expansion for less comment-sensitive sorted `/blog` pages 2-5 while leaving `popular` page 2+ direct. |
+| [T-247 Pilot bounded sorted blog page cache proof](T-247-pilot-bounded-sorted-blog-page-cache-proof.md) | Completed | Cached only `latest`, `oldest`, and `featured` sorted `/blog` pages 2-5 with fixed keys while keeping `popular` page 2+ and APIs direct. |
+| [T-248 Scope next public cache target](T-248-scope-next-public-cache-target.md) | Completed | Selected the default `/artwork` browse list as the next safe public cache proof after comparing artwork detail, search, shop routes, product detail, and F-115 provider work. |
+| [T-249 Pilot default artwork browse cache proof](T-249-pilot-default-artwork-browse-cache-proof.md) | Completed | Cached only the default `/artwork` browse list read with a fixed 10-minute wrapper while keeping filtered/detail/API/Shopify/session paths direct. |
+| [T-250 Scope next cache efficiency wave](T-250-scope-next-cache-efficiency-wave.md) | Completed | Selected a bounded `/artwork` browse cache expansion for unfiltered `mostRecent` pages 2-5 after rejecting detail, search, shop, and F-115 pause options for this wave. |
+| [T-251 Pilot bounded artwork browse cache expansion](T-251-pilot-bounded-artwork-browse-cache-expansion.md) | Planned | Expand the default `/artwork` browse cache only to fixed unfiltered `mostRecent` pages 2-5 while keeping broader variants, detail, APIs, search, shop, and session state direct. |
 
 ## Rules
 

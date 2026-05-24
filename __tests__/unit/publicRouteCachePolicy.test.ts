@@ -178,7 +178,7 @@ describe("public route cache policy", () => {
     expect(pageSource).not.toMatch(/generateStaticParams/);
   });
 
-  it("keeps blog list cache proofs limited to default groups and sorted first pages", () => {
+  it("keeps blog list cache proofs limited to default groups and bounded sorted pages", () => {
     const pageSource = readRepoFile("src/app/blog/page.tsx");
     const loaderSource = readRepoFile(
       "src/components/loaders/viewLoaders/BlogListLoader.tsx"
@@ -197,6 +197,7 @@ describe("public route cache policy", () => {
     expect(loaderSource).toContain("getCachedDefaultLatestBlogList");
     expect(loaderSource).toContain("getCachedDefaultPopularBlogList");
     expect(loaderSource).toContain("getCachedSortedFirstPageBlogList");
+    expect(loaderSource).toContain("getCachedBoundedSortedPageBlogList");
     expect(loaderSource).toContain("page === 1");
     expect(loaderSource).toContain("getBlogList({");
     expect(cachedListSource).toContain("public-blog-sorted-first-page-latest");
@@ -205,12 +206,91 @@ describe("public route cache policy", () => {
       "public-blog-sorted-first-page-featured"
     );
     expect(cachedListSource).toContain("public-blog-sorted-first-page-popular");
+    expect(cachedListSource).toContain(
+      "public-blog-sorted-page-latest-2-limit-10"
+    );
+    expect(cachedListSource).toContain(
+      "public-blog-sorted-page-oldest-5-limit-10"
+    );
+    expect(cachedListSource).toContain(
+      "public-blog-sorted-page-featured-5-limit-10"
+    );
+    expect(cachedListSource).toContain(
+      "getCachedBoundedSortedPageBlogList"
+    );
+    expect(cachedListSource).not.toContain(
+      "public-blog-sorted-page-popular-2-limit-10"
+    );
+    expect(cachedListSource).not.toContain(
+      "public-blog-sorted-page-latest-6-limit-10"
+    );
     expect(publicListRouteSource).toContain("getBlogList");
     expect(publicListRouteSource).not.toContain("getCachedDefault");
     expect(publicListRouteSource).not.toContain("getCachedSorted");
     expect(homeSectionSource).toContain("getBlogList");
     expect(homeSectionSource).not.toContain("getCachedDefault");
     expect(homeSectionSource).not.toContain("getCachedSorted");
+    expect(pageSource).toContain('export const dynamic = "force-dynamic";');
+    expect(pageSource).not.toMatch(/export const revalidate\b/);
+    expect(pageSource).not.toMatch(/generateStaticParams/);
+  });
+
+  it("keeps the artwork browse cache proof limited to the default server-rendered list", () => {
+    const pageSource = readRepoFile("src/app/artwork/page.tsx");
+    const loaderSource = readRepoFile(
+      "src/components/loaders/viewLoaders/ArtworkListLoader.tsx"
+    );
+    const cachedListSource = readRepoFile(
+      "src/lib/data/services/getCachedArtworkListData.ts"
+    );
+    const publicListRouteSource = readRepoFile(
+      "src/app/api/v2/public/artwork/route.ts"
+    );
+    const publicFetcherSource = readRepoFile(
+      "src/lib/api/public/artwork/fetchers.ts"
+    );
+    const detailPageSource = readRepoFile(
+      "src/app/artwork/[artworkId]/page.tsx"
+    );
+    const detailLoaderSource = readRepoFile(
+      "src/components/loaders/viewLoaders/ArtworkLoader.tsx"
+    );
+    const collectionDetailPageSource = readRepoFile(
+      "src/app/collections/[slug]/[artworkId]/page.tsx"
+    );
+    const jsonLdSource = readRepoFile(
+      "src/components/metadata/PublicDetailJsonLd.tsx"
+    );
+    const productPageSource = readRepoFile(
+      "src/app/shop/products/[productHandle]/page.tsx"
+    );
+
+    expect(loaderSource).toContain("getCachedDefaultArtworkList");
+    expect(loaderSource).toContain("shouldUseDefaultArtworkCache");
+    expect(loaderSource).toContain("getArtworkList({");
+    expect(cachedListSource).toContain(
+      "public-artwork-default-list-page-1-limit-10-most-recent"
+    );
+    expect(cachedListSource).toContain(
+      "ARTWORK_DEFAULT_LIST_CACHE_REVALIDATE_SECONDS = 10 * 60"
+    );
+    expect(cachedListSource).toContain('sortBy: "mostRecent"');
+    expect(cachedListSource).toContain("page: 1");
+    expect(cachedListSource).toContain("limit: 10");
+    expect(cachedListSource).toContain('filterMode: "ALL"');
+    expect(publicListRouteSource).toContain("getArtworkList");
+    expect(publicListRouteSource).not.toContain("getCachedDefaultArtworkList");
+    expect(publicFetcherSource).not.toContain("getCachedDefaultArtworkList");
+    expect(detailPageSource).not.toContain("getCachedDefaultArtworkList");
+    expect(detailLoaderSource).toContain("getArtworkById");
+    expect(detailLoaderSource).toContain("getArtworkShopProducts");
+    expect(detailLoaderSource).not.toContain("getCachedDefaultArtworkList");
+    expect(collectionDetailPageSource).not.toContain(
+      "getCachedDefaultArtworkList"
+    );
+    expect(jsonLdSource).toContain("getArtworkById");
+    expect(jsonLdSource).not.toContain("getCachedDefaultArtworkList");
+    expect(productPageSource).not.toContain("getCachedDefaultArtworkList");
     expect(pageSource).toContain('export const dynamic = "force-dynamic";');
     expect(pageSource).not.toMatch(/export const revalidate\b/);
     expect(pageSource).not.toMatch(/generateStaticParams/);
@@ -237,6 +317,10 @@ describe("public route cache policy", () => {
     expect(source).toContain("grouped `/blog` list service reads");
     expect(source).toContain("T-245");
     expect(source).toContain("sorted `/blog` first-page list reads");
+    expect(source).toContain("T-247");
+    expect(source).toContain("pages 2-5 for latest, oldest, and featured");
+    expect(source).toContain("T-249");
+    expect(source).toContain("default `/artwork` browse list");
     expect(source).toContain("remain route-dynamic");
   });
 
@@ -257,9 +341,11 @@ describe("public route cache policy", () => {
     expect(source).toContain("T-233 first proof route: biography");
     expect(source).toContain("T-238 second proof route: collections");
     expect(source).toContain("T-239 makes sitemap one-hour ISR source-owned");
+    expect(source).toContain("T-249 artwork proof");
     expect(source).toContain("T-241 first blog proof");
     expect(source).toContain("T-242 second blog proof");
     expect(source).toContain("T-245 third blog proof");
+    expect(source).toContain("T-247 fourth blog proof");
     expect(source).toContain("cached non-`fetch` service wrappers");
     expect(source).toContain(
       "Do not add `generateStaticParams()` in the first proof"

@@ -10,6 +10,7 @@ import {
   getCachedDefaultFeaturedBlogList,
   getCachedDefaultLatestBlogList,
   getCachedDefaultPopularBlogList,
+  getCachedBoundedSortedPageBlogList,
   getCachedSortedFirstPageBlogList,
 } from "@/lib/data/services/getCachedBlogListData";
 // Config Constants
@@ -38,14 +39,17 @@ export async function BlogListLoader({ sortby, page }: BlogEntriesLoaderProps) {
     let blogData: SortedBlogData;
 
     if (sortby) {
-      const result =
+      const cachedSortedPageResult =
         page === 1
-          ? await getCachedSortedFirstPageBlogList(sortby)
-          : await getBlogList({
-              sortby,
-              page,
-              limit: BLOG_ENTRIES_CONFIG.limit,
-            });
+          ? getCachedSortedFirstPageBlogList(sortby)
+          : getCachedBoundedSortedPageBlogList(sortby, page);
+      const result = cachedSortedPageResult
+        ? await cachedSortedPageResult
+        : await getBlogList({
+            sortby,
+            page,
+            limit: BLOG_ENTRIES_CONFIG.limit,
+          });
 
       const {
         data: blogs,

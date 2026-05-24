@@ -40,9 +40,14 @@ sections only. `/blog` and `/blog/[slug]` remain route-dynamic with no
 route-level ISR or generated params. T-244 canonicalizes and bounds public blog
 list query inputs before sorted-list cache implementation. T-245 adds cached
 sorted `/blog` first-page list reads only for latest, oldest, featured, and
-popular page 1 with fixed limit 10. Other public route families remain free of
-route-level `revalidate` until their own route-family cache task updates source
-and tests together.
+popular page 1 with fixed limit 10. T-247 adds bounded sorted pages 2-5 for
+latest, oldest, and featured with fixed limit 10 while leaving `popular` pages
+greater than 1 and sorted pages greater than 5 direct. T-249 adds a cached
+default `/artwork` browse list service read only for `mostRecent` page 1 limit
+10, `filterMode: "ALL"`, no taxonomy filters, and no `sortColor`; `/artwork`
+remains route-dynamic. Other public route families remain free of route-level
+`revalidate` until their own route-family cache task updates source and tests
+together.
 `generateStaticParams()` is deferred for content and commerce detail routes
 until owner-approved data freshness, build-time MongoDB/Shopify availability,
 and detail-param coverage are defined. T-233 implemented the first approved
@@ -52,7 +57,7 @@ non-`fetch` service wrappers before generated params.
 | Route group | Current route examples | Current cache policy | Owner/blocker |
 | --- | --- | --- | --- |
 | Stable static shell | `/biography`, `/collections`, `/project`, `/project/about`, `/project/aims`, `/project/film`, `/shop` | Leave without forced dynamic config or generated params. `/biography` and `/collections` are the only current shell routes with route-level ISR, using accepted 10-minute cache windows for their default redirects. The other shell routes remain without ISR config. | Keep root layout and middleware free of global DB/session work. Revisit if route-local loaders are added. |
-| Query-driven public browse/search | `/artwork`, `/blog`, `/search`, `/shop/products`, `/project/contact` | `dynamic = "force-dynamic"` is explicit. Query params select filters, sort, pagination, search terms, or product enquiry context and should not be silently treated as static. | A future ISR/static task must first define canonical query variants or split static shells from query results. |
+| Query-driven public browse/search | `/artwork`, `/blog`, `/search`, `/shop/products`, `/project/contact` | `dynamic = "force-dynamic"` is explicit. Query params select filters, sort, pagination, search terms, or product enquiry context and should not be silently treated as static. The only current browse-list service cache exception is the T-249 fixed default `/artwork` server-rendered list, which does not add route ISR. | A future ISR/static task must first define canonical query variants or split static shells from query results. |
 | DB-backed public detail/redirect | `/artwork/[artworkId]`, `/biography/[slug]`, `/blog/[slug]`, `/collections/[slug]`, `/collections/[slug]/[artworkId]` | `dynamic = "force-dynamic"` is explicit. These routes read owner-controlled MongoDB content at request time for detail content, redirect targets, metadata, JSON-LD, or saved-item state. | Static params and ISR are deferred until content freshness, not-found behavior, and build-time DB access are approved. |
 | Shopify-backed public commerce | `/shop/products`, `/shop/products/[productHandle]` | `dynamic = "force-dynamic"` is explicit. Shopify product availability, metadata, and linked artwork reads remain request-time behavior. | Future commerce cache policy must define Shopify freshness, product-handle coverage, and fallback behavior. |
 | Session-aware public UI | `/`, `/artwork/[artworkId]` | `dynamic = "force-dynamic"` is explicit. The home page includes subscription session state, and artwork detail reads session user context for saved-item ownership. | Split session-only islands or define a separate personalized-data strategy before static rendering. |
@@ -61,7 +66,7 @@ non-`fetch` service wrappers before generated params.
 
 This matrix defines the accepted freshness target for runtime ISR,
 `generateStaticParams()`, and cached public service-wrapper changes. "Current
-runtime" describes the source as of T-245 and must remain true until a later
+runtime" describes the source as of T-247 and must remain true until a later
 implementation task changes source and tests together.
 
 | Surface | Current runtime | Accepted freshness policy | Approved first mechanism |
@@ -69,15 +74,15 @@ implementation task changes source and tests together.
 | Sitemap | `src/app/sitemap.ts` exports `SITEMAP_REVALIDATE_SECONDS = 3600` and `revalidate = SITEMAP_REVALIDATE_SECONDS` while reading stable routes plus best-effort Article, Blog, Artwork, Collection, and Shopify product detail entries. | One-hour ISR is the accepted target. Sitemap freshness is source-owned by the metadata route while preserving best-effort per-source fallback and public-safe crawler output. Do not make sitemap fully dynamic because crawler hits should not force all MongoDB/Shopify reads per request. | T-239 makes sitemap one-hour ISR source-owned after the biography and collections redirect proofs. Preserve best-effort per-source fallback, existing sitemap content semantics, and deployed or local `/sitemap.xml` smoke coverage. |
 | Default biography redirect | `/biography` reads the cached biography navigation wrapper and exports `revalidate = 600`, so the redirect target uses the accepted 10-minute ISR/cache window. | Short ISR is accepted because owner-controlled first-article ordering may change without a deploy but does not need per-request freshness. | Implemented by T-233. Keep the current failure behavior of throwing when no biography article exists, and do not extend route-level `revalidate` beyond this redirect without a new route-family task. |
 | Default collections redirect | `/collections` reads the cached collection navigation wrapper and exports `revalidate = 600`, so the redirect target uses the accepted 10-minute ISR/cache window. | Short ISR is accepted because collection ordering and first-artwork membership can change after content edits but should not force request-time reads for every hit. | Implemented by T-238. Keep the current failure behavior when no collection exists, keep `/collections/[slug]` and `/collections/[slug]/[artworkId]` explicitly dynamic, and do not extend route-level `revalidate` beyond this redirect without a new route-family task. |
-| Blog list/detail | `/blog` and `/blog/[slug]` are explicitly dynamic. The list is query-driven by sort/page, and detail can render comment mode from search params. `/blog` now parses list queries through the shared public blog list query parser, so page values are finite and bounded before reaching `BlogListLoader`. The public blog API uses the same parser for bounded `page`/`limit` values. `/blog/[slug]` metadata, JSON-LD, and non-comments detail rendering use the cached primary blog detail wrapper with a 10-minute stale window. The unfiltered `/blog` grouped view uses fixed cached wrappers for featured page 1 limit 5, latest page 1 limit 6, and popular page 1 limit 8. Sorted `/blog` first pages use fixed cached wrappers for latest, oldest, featured, and popular page 1 limit 10. Sorted pages greater than 1 stay on direct `getBlogList()` reads. Comment-mode rendering still reads populated comments from the direct comments service and degrades to cached primary blog data if comments are unavailable. | Keep routes dynamic for now. A short stale window is accepted for primary post body, metadata, JSON-LD, server-rendered primary `commentCount`, default grouped `/blog` list cards, and sorted first-page `/blog` list cards including popular comment-derived ordering/counts. Comments, later sorted pages, broad query variants, home blog sections, and public blog APIs remain request-time/direct-service behavior. | T-241 first blog proof: primary blog detail service reads only. T-242 second blog proof: default grouped `/blog` list reads only. T-244 query hygiene: canonical finite public blog list query values before sorted-list caching. T-245 third blog proof: sorted `/blog` first-page list reads only. Do not add `generateStaticParams()`, route ISR, sorted pages beyond page 1, comment caching, cache tags, or mutation revalidation in these proofs. |
+| Blog list/detail | `/blog` and `/blog/[slug]` are explicitly dynamic. The list is query-driven by sort/page, and detail can render comment mode from search params. `/blog` now parses list queries through the shared public blog list query parser, so page values are finite and bounded before reaching `BlogListLoader`. The public blog API uses the same parser for bounded `page`/`limit` values. `/blog/[slug]` metadata, JSON-LD, and non-comments detail rendering use the cached primary blog detail wrapper with a 10-minute stale window. The unfiltered `/blog` grouped view uses fixed cached wrappers for featured page 1 limit 5, latest page 1 limit 6, and popular page 1 limit 8. Sorted `/blog` first pages use fixed cached wrappers for latest, oldest, featured, and popular page 1 limit 10. Sorted `/blog` pages 2-5 use fixed cached wrappers only for latest, oldest, and featured with limit 10. `popular` pages greater than 1 and sorted pages greater than 5 stay on direct `getBlogList()` reads. Comment-mode rendering still reads populated comments from the direct comments service and degrades to cached primary blog data if comments are unavailable. | Keep routes dynamic for now. A short stale window is accepted for primary post body, metadata, JSON-LD, server-rendered primary `commentCount`, default grouped `/blog` list cards, sorted first-page `/blog` list cards including popular comment-derived ordering/counts, and bounded owner-controlled sorted pages 2-5 for latest, oldest, and featured. Comments, `popular` pages greater than 1, sorted pages greater than 5, broad query variants, home blog sections, and public blog APIs remain request-time/direct-service behavior. | T-241 first blog proof: primary blog detail service reads only. T-242 second blog proof: default grouped `/blog` list reads only. T-244 query hygiene: canonical finite public blog list query values before sorted-list caching. T-245 third blog proof: sorted `/blog` first-page list reads only. T-247 fourth blog proof: bounded sorted `/blog` pages 2-5 for latest, oldest, and featured only. Do not add `generateStaticParams()`, route ISR, `popular` pages beyond page 1, sorted pages beyond page 5, comment caching, cache tags, or mutation revalidation in these proofs. |
 | Biography article list/detail | Route-local biography navigation, `/biography`, `/biography/[slug]`, article metadata, JSON-LD, and previous/next navigation now use cached biography service wrappers with a 10-minute stale window. `/biography/[slug]` remains explicitly dynamic, and no biography route uses `generateStaticParams()`. | A short stale window is acceptable for biography article text, metadata, JSON-LD, and previous/next navigation. Missing primary articles still map to the existing not-found/error contract, and service failures must continue to log and fail through the App Router error boundary. | T-233 first proof route: biography. Cached non-`fetch` service wrappers are implemented for biography article detail and route-local biography navigation with a 10-minute TTL. Do not add `generateStaticParams()` in the first proof. Keep route-level `revalidate` limited to `/biography` default redirect. `MainNavLoader` remains on the direct navigation service because it is rendered from the root header; using the cached wrapper there made unrelated static shells inherit the 10-minute prerender window in build output. |
 | Collections navigation/detail | Route-local collections subnav and `/collections` default redirect now use a cached collection navigation wrapper with a 10-minute stale window. `/collections/[slug]` and `/collections/[slug]/[artworkId]` remain explicitly dynamic, and no collections route uses `generateStaticParams()`. | A short stale window is acceptable for route-local collection navigation and the default redirect target. Collection detail rendering, collection artwork membership, pagination, Shopify product links, and saved-item state remain request-time behavior. | T-238 second proof route: collections. Cached non-`fetch` service wrappers are implemented only for collection navigation reads that derive redirect/subnav targets. Keep route-level `revalidate` limited to `/collections` default redirect. `MainNavLoader` remains on the direct collection navigation service to avoid root-header cache propagation into unrelated static shells. |
-| Artwork browse/detail | `/artwork`, `/artwork/[artworkId]`, and collection-scoped artwork detail are explicitly dynamic. Browse is filter/sort/page driven; standalone artwork detail reads session-aware saved-item state. | Keep dynamic. Public artwork content may later be cacheable, but saved-item personalization, large catalog coverage, ObjectId validation, Shopify link degradation, and collection membership not-found semantics must be split first. | Defer. Do not add `generateStaticParams()` for artwork until a limited hot-set or on-demand strategy is accepted. |
+| Artwork browse/detail | `/artwork`, `/artwork/[artworkId]`, and collection-scoped artwork detail are explicitly dynamic. Browse is filter/sort/page driven, but T-249 caches only the server-rendered default `/artwork` list shape: `mostRecent` page 1 limit 10, `filterMode: "ALL"`, no taxonomy filters, and no `sortColor`. Filtered browse variants, page 2-plus, non-default limits, `mostPopular`, `mostFeatured`, `colorProximity`, public artwork APIs/fetchers, browser follow-up fetches, detail reads, metadata/JSON-LD detail reads, saved-item state, and Shopify product-link reads stay direct. | Keep routes dynamic. A short stale window is accepted only for the fixed default browse list because it is owner-controlled MongoDB archive content with no selected-branch session or Shopify coupling. | T-249 artwork proof: cached non-`fetch` service wrapper for the default browse list only. Do not add route-level ISR, `generateStaticParams()`, cache tags, mutation revalidation, filtered cache variants, API caching, detail caching, saved-item caching, or Shopify product-link caching. |
 | Search | `/search` is explicitly dynamic and query-driven. | Keep dynamic. Search terms, type filters, pagination, and mixed MongoDB/Shopify result freshness should remain request-time behavior until a dedicated search cache policy exists. | Defer. No route `revalidate`, service cache, or generated params in the first proof. |
 | Shop listing/detail | `/shop/products` and `/shop/products/[productHandle]` are explicitly dynamic. Shopify fetches already use the Storefront production fetch policy, while route rendering still resolves availability, hosted product URLs, linked artwork, and product metadata at request time. | Keep dynamic. Product availability, hosted purchase URL fallback, linked artwork degradation, and future cart/checkout ownership are commerce-sensitive and should not be the first ISR proof. | Defer. Do not add route ISR or generated product handles until Shopify freshness, unavailable-product behavior, and product-handle coverage are approved. |
 | Session-aware UI | `/`, artwork saved-item controls, account entry points, and any public UI that reads or depends on session state are dynamic or client-personalized. | Keep dynamic or isolate the personalized island before static rendering. Public cache work must not cache session-derived state into shared output. | Defer. Split session-only islands or define a separate personalized-data strategy before any route-level cache change. |
 
-T-233, T-238, T-241, T-242, T-244, and T-245 verification prove the current
+T-233, T-238, T-241, T-242, T-244, T-245, T-247, and T-249 verification prove the current
 route-family cache/query proofs without weakening the current source
 invariants: route behavior stays public-safe, no broad public route gains
 `generateStaticParams()`, and unchanged dynamic routes keep their current
@@ -105,16 +110,21 @@ work should be sequenced so production behavior stays easy to reason about:
 4. Pilot route-family caching/ISR in narrow slices after freshness is accepted.
    T-233 proved biography, T-238 proved collections, T-241 proved primary
    blog detail service caching, T-242 proved default grouped blog list service
-   caching, and T-245 proved sorted first-page blog list service caching
-   without broad static params, route-level blog ISR, later sorted page
-   caching, comment caching, or root-header cache propagation.
+   caching, T-245 proved sorted first-page blog list service caching, and
+   T-247 proved bounded sorted page 2-5 caching for latest, oldest, and
+   featured without broad static params, route-level blog ISR, `popular` page
+   2-plus caching, sorted page 6-plus caching, comment caching, or root-header
+   cache propagation. T-249 proved the default `/artwork` browse list cache
+   without route-level artwork ISR, filtered browse caching, public API
+   caching, detail caching, saved-item caching, or Shopify product-link caching.
 5. Canonicalize query inputs before broad query-variant caching. T-244 bounds
    public blog list `page` and API `limit` values so future sorted-list cache
    keys cannot be created from malformed, `NaN`, or oversized inputs.
 6. Keep sorted query-variant caching fixed and narrow. T-245 caches only the
    sorted `/blog` page 1 variants for latest, oldest, featured, and popular
-   with fixed limit 10; later sorted pages, public APIs, comments, and mutation
-   paths remain dynamic/direct.
+   with fixed limit 10; T-247 adds only latest, oldest, and featured pages 2-5
+   with fixed limit 10. `popular` pages beyond page 1, sorted pages beyond page
+   5, public APIs, comments, and mutation paths remain dynamic/direct.
 7. Codify sitemap one-hour ISR explicitly after the redirect proofs. T-239 made
    `/sitemap.xml` source-owned with `SITEMAP_REVALIDATE_SECONDS = 3600` and a
    matching route `revalidate` export, guarded by route-cache policy and sitemap
@@ -165,6 +175,13 @@ Implemented proof slices:
   `ArtworkListLoader` and `GET /api/v2/public/artwork`, so the initial
   `/artwork` server render no longer self-fetches the same app for its artwork
   list.
+- `src/lib/data/services/getCachedArtworkListData.ts` wraps only the fixed
+  default `/artwork` server-rendered browse list read with a 10-minute
+  non-`fetch` cache for the T-249 proof. Filtered variants, page 2-plus,
+  non-default limits, `mostPopular`, `mostFeatured`, `colorProximity`, public
+  artwork API routes, browser follow-up fetches, artwork detail routes,
+  metadata/JSON-LD detail reads, saved-item/session-aware reads, and Shopify
+  product-link reads remain on direct services.
 - `src/lib/data/services/getPublicSearchResults.ts` is shared by
   `src/app/search/page.tsx` and `GET /api/v2/public/search`, so the initial
   `/search` server render no longer self-fetches the same app for search
@@ -205,9 +222,11 @@ Implemented proof slices:
   1 limit 8. After T-245, the same service also wraps only sorted first-page
   `/blog` reads with fixed no-argument wrappers for latest page 1 limit 10,
   oldest page 1 limit 10, featured page 1 limit 10, and popular page 1 limit
-  10. Sorted pages beyond page 1, `BlogSectionLoader`, public blog API routes,
-  comments, route-level blog ISR, generated params, cache tags, and mutation
-  revalidation remain on direct request-time services.
+  10. After T-247, it also wraps only latest, oldest, and featured sorted
+  `/blog` pages 2-5 with fixed no-argument wrappers and limit 10. `popular`
+  pages beyond page 1, sorted pages beyond page 5, `BlogSectionLoader`, public
+  blog API routes, comments, route-level blog ISR, generated params, cache
+  tags, and mutation revalidation remain on direct request-time services.
 - `src/lib/data/services/getArticleList.ts` is shared by
   `BiographySectionLoader` and `GET /api/v2/public/article`, so the home
   biography section no longer self-fetches the same app for biography article

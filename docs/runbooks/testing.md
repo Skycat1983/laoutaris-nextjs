@@ -40,6 +40,25 @@ access, Vercel log inspection, provider alerting, or rollback automation.
 Browser-style checks can be useful for layout, routing, accessibility, and smoke
 tests, but they can also produce excessive output.
 
+Playwright is not part of the current baseline. Add it only after a scoped task
+or owner/orchestrator decision names the browser behavior it must prove.
+Good candidates are behavior that Jest, route-handler tests, and `curl` smoke
+checks cannot prove, such as:
+
+- Mobile and desktop layout regressions on high-value public archive routes.
+- Real navigation, focus, history, modal, drawer, and responsive-menu behavior.
+- Credentialed sign-in/admin smoke with an approved smoke account and no secrets
+  in logs or artifacts.
+- Shopify hosted-product handoff behavior in a real browser without app-owned
+  checkout, shipping, refund, or guarantee claims.
+- Deployed runtime failures that only appear after browser loading, hydration, or
+  browser-managed redirects.
+
+Do not add Playwright for broad content discovery, full DOM inventory,
+unbounded accessibility dumps, full console/network harvesting, or exploratory
+screenshots across many routes. Those uses should be narrowed into source
+search, route tests, `npm run smoke:public`, or a small manual checklist first.
+
 When using Playwright or similar tools:
 
 - Define the exact route, interaction, selector, and expected observation before
@@ -50,12 +69,25 @@ When using Playwright or similar tools:
 - Record concise findings and file paths in the result doc; do not paste large
   raw outputs.
 
+Before any Playwright dependency or script is added, document:
+
+- The first route or journey list, ideally no more than three paths.
+- Required local or deployed `baseURL` behavior.
+- Required fixture data, test account handling, and secret redaction rules.
+- The exact command name and whether it is local-only, CI-eligible, or scheduled.
+- Artifact policy: traces and videos disabled by default; screenshots limited to
+  the named assertion or failure state; console/network capture filtered to the
+  expected signal.
+- The owning workstream, result file, or task handoff location for any findings.
+
 ## Current Test Shape
 
 - Jest is configured through `next/jest`.
 - Test environment is `jsdom`.
 - Existing tests cover utility helpers and a small home view integration test.
 - No browser end-to-end script is currently defined in `package.json`.
+- Playwright is not installed; browser automation remains decision-gated by the
+  scoped discipline above.
 - Project owner reports that testing has been attempted but is not yet
   successfully established as a reliable project practice.
 

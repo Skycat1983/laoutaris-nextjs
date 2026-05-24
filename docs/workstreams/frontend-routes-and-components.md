@@ -1150,6 +1150,38 @@ Use browser checks for layout-sensitive changes.
   cached latest/oldest/featured/popular first-page wrappers, while sorted pages
   beyond page 1, the public blog API, `BlogSectionLoader`, comments, and route
   segment policy remain unchanged.
+- 2026-05-24: Completed T-246 as a docs-only sorted page-2-plus cache scoping
+  pass. It selected T-247 to expand only the less comment-sensitive sorted
+  `/blog` route reads: `latest`, `oldest`, and `featured` pages 2-5, with
+  `popular` pages beyond page 1, public APIs, browser follow-up loading,
+  comments, and route segment policy staying direct/dynamic.
+- 2026-05-24: Completed T-247. `BlogListLoader` now keeps sorted page 1 on the
+  T-245 cached dispatcher, sends `latest`, `oldest`, and `featured` pages 2-5
+  through the bounded cached dispatcher, and leaves `popular` page 2-plus and
+  sorted page 6-plus on direct `getBlogList()` reads. Public blog APIs,
+  `BlogSectionLoader`, browser continuous-loading, comments, and route output
+  remain direct/dynamic.
+- 2026-05-24: Removed the rounded corners from `/artwork` masonry stream
+  artwork image wrappers so archive thumbnails render with square edges. Next
+  agent action unchanged. Verification not run; CSS-only presentation change.
+- 2026-05-24: Completed T-248 as a docs-only public cache target scoping pass.
+  It selected T-249 as the next runtime slice: cache only the default
+  `/artwork` browse list read with a fixed 10-minute wrapper. Filtered artwork
+  browsing, artwork detail, collection-scoped artwork detail, public artwork
+  APIs, browser follow-up loading, search, shop routes, Shopify product links,
+  saved-item/session state, cache tags, and mutation revalidation remain out of
+  scope.
+- 2026-05-24: Completed T-249. The default `/artwork` initial server render now
+  uses the fixed cached browse wrapper, while filtered variants, page 2-plus,
+  non-default limits, non-default sorts, `sortColor`, public artwork APIs,
+  browser follow-up loading, artwork detail routes, collection-scoped artwork
+  detail routes, Shopify product-link reads, and saved-item/session-aware reads
+  stay on direct services.
+- 2026-05-24: Completed T-250 as a docs-only next-cache-wave scoping pass. It
+  selected T-251 to expand `/artwork` browse caching only to fixed unfiltered
+  `mostRecent` pages 2-5 with limit 10, while continuing to reject detail,
+  search, shop, broader browse variants, session state, route-level artwork
+  ISR, generated params, cache tags, and mutation revalidation for this wave.
 
 ## Next Agent Action
 
@@ -1171,12 +1203,21 @@ blog primary detail reads. T-242 completed the next narrow implementation task
 for only the default grouped `/blog` list reads. T-243 scoped the sorted list
 cache boundary and selected T-244 as the next prerequisite for `/blog` and
 public blog API query normalization/bounds before sorted blog list caching.
-T-244 and T-245 are complete; only sorted `/blog` first-page cache reads were
-added. T-246 is planned as the docs-only scoping task before any bounded sorted
-page-2-plus cache expansion. Keep root provider/modal ownership, generated
-params, route-level blog ISR, sorted blog pages beyond page 1, comment caching,
-cache tags, mutation revalidation, and broader static/ISR migration separate
-unless a new task scopes one of those paths.
+T-244, T-245, T-246, and T-247 are complete; sorted `/blog` cache coverage is
+limited to page 1 for all supported sort modes and pages 2-5 only for `latest`,
+`oldest`, and `featured`. T-248 and T-249 are complete; default `/artwork`
+browse list caching is limited to the exact default server-rendered shape.
+T-250 is complete; assign
+[T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md)
+for the next selected F-111 runtime proof. Keep page 6-plus, non-default
+limits, filtered artwork variants, `mostPopular`, `mostFeatured`,
+`colorProximity`, artwork detail, collection-scoped artwork detail, public
+artwork APIs, browser follow-up fetches, search, shop routes, Shopify
+product-link reads, user/session state, root provider/modal ownership,
+generated params, route-level blog or artwork ISR, `popular` pages beyond page
+1, sorted page 6-plus, comment caching, cache tags, mutation revalidation, and
+broader static/ISR migration separate unless a new task scopes one of those
+paths.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

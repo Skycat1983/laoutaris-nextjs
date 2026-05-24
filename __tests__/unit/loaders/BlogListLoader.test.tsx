@@ -5,6 +5,7 @@ import {
   getCachedDefaultFeaturedBlogList,
   getCachedDefaultLatestBlogList,
   getCachedDefaultPopularBlogList,
+  getCachedBoundedSortedPageBlogList,
   getCachedSortedFirstPageBlogList,
 } from "@/lib/data/services/getCachedBlogListData";
 import { getBlogList } from "@/lib/data/services/getBlogList";
@@ -17,6 +18,7 @@ jest.mock("@/lib/data/services/getCachedBlogListData", () => ({
   getCachedDefaultFeaturedBlogList: jest.fn(),
   getCachedDefaultLatestBlogList: jest.fn(),
   getCachedDefaultPopularBlogList: jest.fn(),
+  getCachedBoundedSortedPageBlogList: jest.fn(),
   getCachedSortedFirstPageBlogList: jest.fn(),
 }));
 
@@ -36,6 +38,10 @@ const mockGetCachedDefaultLatestBlogList =
 const mockGetCachedDefaultPopularBlogList =
   getCachedDefaultPopularBlogList as jest.MockedFunction<
     typeof getCachedDefaultPopularBlogList
+  >;
+const mockGetCachedBoundedSortedPageBlogList =
+  getCachedBoundedSortedPageBlogList as jest.MockedFunction<
+    typeof getCachedBoundedSortedPageBlogList
   >;
 const mockGetCachedSortedFirstPageBlogList =
   getCachedSortedFirstPageBlogList as jest.MockedFunction<
@@ -80,6 +86,7 @@ describe("BlogListLoader", () => {
     expect(mockGetCachedSortedFirstPageBlogList).toHaveBeenCalledWith(
       "popular"
     );
+    expect(mockGetCachedBoundedSortedPageBlogList).not.toHaveBeenCalled();
     expect(mockGetBlogList).not.toHaveBeenCalled();
     expect(mockGetCachedDefaultFeaturedBlogList).not.toHaveBeenCalled();
     expect(mockGetCachedDefaultLatestBlogList).not.toHaveBeenCalled();
@@ -105,8 +112,69 @@ describe("BlogListLoader", () => {
     });
   });
 
-  it("renders later sorted pages from the direct server service without same-app fetches", async () => {
+  it.each([
+    ["latest", 2, "/blog?sortby=latest&page=1", "/blog?sortby=latest&page=3"],
+    ["oldest", 3, "/blog?sortby=oldest&page=2", "/blog?sortby=oldest&page=4"],
+    ["featured", 5, "/blog?sortby=featured&page=4", null],
+  ] as const)(
+    "renders bounded %s page %s from the fixed cached server service",
+    async (sortby, page, prev, next) => {
+      const blogs = [createBlog("one"), createBlog("two")];
+      mockGetCachedBoundedSortedPageBlogList.mockResolvedValue({
+        success: true,
+        data: blogs,
+        metadata: {
+          page,
+          limit: 10,
+          total: 50,
+          totalPages: 5,
+        },
+      });
+
+      const element = (await BlogListLoader({
+        sortby,
+        page,
+      })) as ReactElement<{
+        blogData: unknown;
+        activeSortBy?: string;
+        prev: string | null;
+        next: string | null;
+      }>;
+
+      expect(mockGetCachedBoundedSortedPageBlogList).toHaveBeenCalledWith(
+        sortby,
+        page
+      );
+      expect(mockGetCachedSortedFirstPageBlogList).not.toHaveBeenCalled();
+      expect(mockGetBlogList).not.toHaveBeenCalled();
+      expect(mockGetCachedDefaultFeaturedBlogList).not.toHaveBeenCalled();
+      expect(mockGetCachedDefaultLatestBlogList).not.toHaveBeenCalled();
+      expect(mockGetCachedDefaultPopularBlogList).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(element.type).toBe(BlogListView);
+      expect(element.props).toEqual({
+        blogData: {
+          single: {
+            type: sortby,
+            data: blogs,
+          },
+          metadata: {
+            page,
+            limit: 10,
+            total: 50,
+            totalPages: 5,
+          },
+        },
+        activeSortBy: sortby,
+        prev,
+        next,
+      });
+    }
+  );
+
+  it("keeps popular page 2 on the direct server service without same-app fetches", async () => {
     const blogs = [createBlog("one"), createBlog("two")];
+    mockGetCachedBoundedSortedPageBlogList.mockReturnValue(undefined);
     mockGetBlogList.mockResolvedValue({
       success: true,
       data: blogs,
@@ -119,7 +187,7 @@ describe("BlogListLoader", () => {
     });
 
     const element = (await BlogListLoader({
-      sortby: "latest",
+      sortby: "popular",
       page: 2,
     })) as ReactElement<{
       blogData: unknown;
@@ -128,21 +196,22 @@ describe("BlogListLoader", () => {
       next: string | null;
     }>;
 
+    expect(mockGetCachedBoundedSortedPageBlogList).toHaveBeenCalledWith(
+      "popular",
+      2
+    );
     expect(mockGetBlogList).toHaveBeenCalledWith({
-      sortby: "latest",
+      sortby: "popular",
       page: 2,
       limit: 10,
     });
     expect(mockGetCachedSortedFirstPageBlogList).not.toHaveBeenCalled();
-    expect(mockGetCachedDefaultFeaturedBlogList).not.toHaveBeenCalled();
-    expect(mockGetCachedDefaultLatestBlogList).not.toHaveBeenCalled();
-    expect(mockGetCachedDefaultPopularBlogList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(BlogListView);
     expect(element.props).toEqual({
       blogData: {
         single: {
-          type: "latest",
+          type: "popular",
           data: blogs,
         },
         metadata: {
@@ -152,9 +221,64 @@ describe("BlogListLoader", () => {
           totalPages: 3,
         },
       },
+      activeSortBy: "popular",
+      prev: "/blog?sortby=popular&page=1",
+      next: "/blog?sortby=popular&page=3",
+    });
+  });
+
+  it("keeps sorted page 6 on the direct server service without same-app fetches", async () => {
+    const blogs = [createBlog("one"), createBlog("two")];
+    mockGetCachedBoundedSortedPageBlogList.mockReturnValue(undefined);
+    mockGetBlogList.mockResolvedValue({
+      success: true,
+      data: blogs,
+      metadata: {
+        page: 6,
+        limit: 10,
+        total: 65,
+        totalPages: 7,
+      },
+    });
+
+    const element = (await BlogListLoader({
+      sortby: "latest",
+      page: 6,
+    })) as ReactElement<{
+      blogData: unknown;
+      activeSortBy?: string;
+      prev: string | null;
+      next: string | null;
+    }>;
+
+    expect(mockGetCachedBoundedSortedPageBlogList).toHaveBeenCalledWith(
+      "latest",
+      6
+    );
+    expect(mockGetBlogList).toHaveBeenCalledWith({
+      sortby: "latest",
+      page: 6,
+      limit: 10,
+    });
+    expect(mockGetCachedSortedFirstPageBlogList).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(element.type).toBe(BlogListView);
+    expect(element.props).toEqual({
+      blogData: {
+        single: {
+          type: "latest",
+          data: blogs,
+        },
+        metadata: {
+          page: 6,
+          limit: 10,
+          total: 65,
+          totalPages: 7,
+        },
+      },
       activeSortBy: "latest",
-      prev: "/blog?sortby=latest&page=1",
-      next: "/blog?sortby=latest&page=3",
+      prev: "/blog?sortby=latest&page=5",
+      next: "/blog?sortby=latest&page=7",
     });
   });
 
@@ -193,6 +317,7 @@ describe("BlogListLoader", () => {
     expect(mockGetCachedDefaultLatestBlogList).toHaveBeenCalledWith();
     expect(mockGetCachedDefaultPopularBlogList).toHaveBeenCalledWith();
     expect(mockGetCachedSortedFirstPageBlogList).not.toHaveBeenCalled();
+    expect(mockGetCachedBoundedSortedPageBlogList).not.toHaveBeenCalled();
     expect(mockGetBlogList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(BlogListView);
@@ -216,13 +341,18 @@ describe("BlogListLoader", () => {
 
   it("preserves service errors while keeping same-app fetches out of the loader", async () => {
     const error = new Error("private list failure");
-    mockGetBlogList.mockRejectedValue(error);
+    mockGetCachedBoundedSortedPageBlogList.mockRejectedValue(error);
 
     await expect(
       BlogListLoader({ sortby: "featured", page: 2 })
     ).rejects.toThrow(error);
 
+    expect(mockGetCachedBoundedSortedPageBlogList).toHaveBeenCalledWith(
+      "featured",
+      2
+    );
     expect(mockGetCachedSortedFirstPageBlogList).not.toHaveBeenCalled();
+    expect(mockGetBlogList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(BlogListView).not.toHaveBeenCalled();
   });

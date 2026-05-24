@@ -1,6 +1,6 @@
 # Current Orchestration State
 
-Last updated: 2026-05-23
+Last updated: 2026-05-24
 
 ## Current Priority
 
@@ -108,8 +108,12 @@ selected T-244 to normalize and bound `/blog` page and public blog API query
 inputs before any sorted blog list cache implementation. T-244 is complete and
 verified. T-245 is also complete and verified: only sorted `/blog` first-page
 list reads are cached while later pages, public APIs, comments, and route
-output remain dynamic. T-246 is planned as a docs-only scoping task before any
-bounded sorted page-2-plus cache expansion.
+output remain dynamic. T-246 completed the bounded sorted page-2-plus scoping
+pass, and T-247 completed the runtime proof for `latest`, `oldest`, and
+`featured` sorted `/blog` pages 2-5 while keeping `popular` page 2-plus,
+sorted page 6-plus, public APIs, comments, and route output dynamic. T-248 is
+planned as the next docs-only scoping pass before any additional public cache
+runtime work.
 
 A-011, A-017, and A-018 result files are complete and reconciled. Their
 candidate findings are now visible in the findings register, production risks,
@@ -1492,12 +1496,19 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md):
-  `/task effort: high details: docs/tasks/T-194-review-framed-print-preview-visual-qa.md`.
-  Keep this as targeted prototype QA and owner-decision capture for
-  `/prototype/frame`; do not start Shopify option mapping, checkout/cart work,
-  enquiry mutation, physical-dimension migration, product-page rail adoption,
-  or real texture asset creation.
+  [T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md):
+  `/task effort: high details: docs/tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md`.
+  It should cache only fixed unfiltered `mostRecent` `/artwork` pages 2-5
+  with limit 10 while keeping page 6-plus, non-default limits, taxonomy
+  filters, `filterMode: "ANY"`, `mostPopular`, `mostFeatured`,
+  `colorProximity`, artwork detail, public artwork APIs, browser follow-up
+  fetches, search, shop, user/session state, route-level artwork ISR,
+  generated params, cache tags, and mutation revalidation separate.
+- If framed print preview becomes the owner priority instead, assign
+  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
+  as targeted prototype QA for `/prototype/frame` before Shopify option
+  mapping, checkout/cart work, enquiry mutation, physical-dimension migration,
+  product-page rail adoption, or real texture asset creation.
 - If quality gating is preferred, prepare a separate task to decide whether and
   how strict TypeScript `noEmit` should enter CI or release verification now
   that T-198 has made the command pass.

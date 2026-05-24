@@ -45,7 +45,7 @@ export const MasonryLayout = ({
             key={artwork._id}
             className="block mb-4 break-inside-avoid group"
           >
-            <div className="relative rounded-xl overflow-hidden">
+            <div className="relative overflow-hidden">
               <Image
                 src={getCloudinaryDeliveryUrl(
                   artwork.image.secure_url,

@@ -97,7 +97,16 @@ Rules:
   goal, result file, task brief, or workstream first, then send the one-line
   pointer.
 - The details doc must include scope, read-first dependencies, write location,
-  concurrency expectations, verification, and escalation criteria.
+  concurrency expectations, verification, escalation criteria, and completion
+  expectations.
+- For `/task` assignments, the details doc must say whether the assigned agent
+  owns shared tracker edits such as `docs/tasks/README.md`, workstream
+  `Progress`/`Next Agent Action`, `docs/orchestration/state.md`, the findings
+  register, and the risk tracker. If tracker edits are not assigned, require
+  candidate tracker updates in the task handoff notes.
+- Completion means the task brief is left as a usable project record: status is
+  current, handoff notes summarize the landed work, verification commands and
+  results are recorded, and follow-up task pointers are added when created.
 - If the details doc is incomplete, update it first or do not commission the
   agent yet.
 

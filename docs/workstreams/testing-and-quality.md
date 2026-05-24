@@ -32,6 +32,9 @@ refactoring without turning every change into a manual QA pass.
 - Jest uses `next/jest` with `jsdom`.
 - Current tests are mostly utilities plus a small home view integration test.
 - No dedicated end-to-end script is present in `package.json`.
+- Playwright is not installed. The testing runbook now treats Playwright as a
+  scoped, decision-gated tool for browser-only risks, with explicit route,
+  fixture, secret-handling, and artifact limits required before adoption.
 - Project owner reports testing has been attempted but is not yet successfully
   established as a reliable production-readiness practice.
 - A-006 baseline: `npm test` passed with 9 suites and 95 tests, `npm run lint`
@@ -331,6 +334,9 @@ refactoring without turning every change into a manual QA pass.
 - Keep the GitHub Actions `Public Smoke` workflow and `npm run smoke:public`
   route inputs current as route contracts and approved smoke records change;
   it remains unauthenticated and does not cover credentialed/admin/log evidence.
+- Evaluate Playwright only through a scoped adoption task before installing it:
+  identify no more than three first browser-only journeys, the required data or
+  smoke account, the command/CI posture, and strict artifact limits.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -365,6 +371,9 @@ refactoring without turning every change into a manual QA pass.
 - Test failures are documented with owner and next action.
 - New refactors include focused tests when behavior changes.
 - Build and test commands can be run by a new agent without extra context.
+- Any browser automation added to the repo has an explicit route list,
+  fixture/credential plan, and artifact budget before the dependency or script is
+  introduced.
 
 ## Verification
 
@@ -1698,6 +1707,36 @@ npm run lint
   versus page 2 direct reads, default grouped cache behavior, and public route
   cache policy invariants. Verification passed with the focused Jest suite,
   `npm run build`, and `git diff --check`; build output kept `/blog` dynamic.
+- 2026-05-24: Completed T-247. Added focused cached bounded sorted-page
+  wrapper coverage for `latest`, `oldest`, and `featured` pages 2-5, loader
+  coverage for bounded cached reads plus direct `popular` page 2 and sorted
+  page 6 fallbacks, and public route-cache policy assertions that `/blog`
+  stays dynamic while public APIs and home section loaders stay direct.
+  Verification passed with the focused Jest suite for the touched wrapper,
+  loader, and route-cache policy tests, `git diff --check`, and
+  `npm run build`; build output kept `/blog` and `/blog/[slug]` dynamic.
+- 2026-05-24: Completed T-248 as a docs-only public cache target scoping pass.
+  It selected T-249 and defined focused verification for a default-only
+  `/artwork` browse cache proof: cached wrapper coverage, `ArtworkListLoader`
+  default cached branch versus direct non-default branches, public artwork
+  API/fetcher exclusion, and public route-cache policy invariants.
+- 2026-05-24: Completed T-249. Added focused cached artwork list wrapper
+  coverage, `ArtworkListLoader` default cached branch coverage, direct
+  non-default branch coverage for filtered/page/limit/sort/`sortColor`
+  variants, and public route-cache policy assertions that `/artwork` stays
+  dynamic while public artwork APIs, fetchers, detail reads, saved-item reads,
+  and Shopify product-link paths stay direct.
+- 2026-05-24: Completed T-250 as a docs-only cache-efficiency scoping pass. It
+  selected T-251 and defined focused verification for fixed unfiltered
+  `mostRecent` `/artwork` pages 2-5: cached wrapper/dispatcher coverage,
+  `ArtworkListLoader` cached page 2-5 branches, direct fallback branches for
+  page 6-plus and non-default variants, public API/fetcher/detail exclusions,
+  and public route-cache policy invariants.
+- 2026-05-24: Added docs-only Playwright adoption guidance to the testing
+  runbook and this workstream. Playwright remains uninstalled; future adoption
+  must start from a scoped task or owner/orchestrator decision with named
+  browser-only journeys, fixture/credential handling, and strict artifact
+  limits.
 
 ## Next Agent Action
 
@@ -1715,12 +1754,21 @@ complete, T-241 cached primary blog detail coverage is complete, and T-242
 default grouped `/blog` list cache-proof coverage is complete. T-243 sorted
 blog list cache/query-hygiene scoping is complete, and T-244 query
 normalization/bounds coverage is complete. T-245 sorted first-page cache
-wrapper and loader coverage is complete. T-246 should scope whether any sorted
-page-2-plus cache expansion needs additional wrapper, loader, route-cache, or
-freshness coverage before runtime changes. Keep optional comments, sorted blog
-pages beyond page 1, route-level blog ISR, static params, provider ownership,
-cache tags, mutation revalidation, and broader ISR behavior out of the
-completed blog cache proofs.
+wrapper and loader coverage is complete, T-246 bounded sorted-page scoping is
+complete, T-247 bounded sorted-page runtime coverage is complete, T-248
+next-cache-target scoping is complete, and T-249 default artwork browse cache
+coverage is complete. T-250 cache-efficiency scoping is complete; T-251 should
+implement and verify the selected fixed unfiltered `mostRecent` `/artwork`
+pages 2-5 cache expansion. Keep optional comments, page 6-plus artwork,
+filtered artwork variants, non-default artwork limits/sorts, `popular` pages
+beyond page 1, sorted page 6-plus, route-level blog or artwork ISR, static
+params, provider ownership, search, shop routes, cache tags, mutation
+revalidation, and broader ISR behavior out of the completed cache proofs.
+
+Playwright remains a consideration, not an approved dependency. Do not install
+or run broad browser automation until a scoped adoption task names the first
+browser-only journeys, fixture/credential plan, command/CI posture, and artifact
+budget from the testing runbook.
 
 T-209's commerce assurance copy coverage is complete. The focused
 `securityBannerCommerceCopy` test fails if unsupported payment, shipping,

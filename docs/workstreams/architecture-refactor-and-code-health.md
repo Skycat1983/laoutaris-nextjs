@@ -673,15 +673,53 @@ Use targeted import/reference searches for pruning tasks.
   page 1 limit 10. Sorted pages beyond page 1, public blog APIs,
   `BlogSectionLoader`, comments, route-level blog ISR, generated params, cache
   tags, and mutation revalidation remain direct or deferred.
+- 2026-05-24: Completed T-246 as a docs-only bounded sorted-page cache
+  scoping pass. It selected T-247 to cache only `latest`, `oldest`, and
+  `featured` sorted `/blog` pages 2-5 with fixed keys, while keeping `popular`
+  pages beyond page 1 direct because comment-derived ordering can drift across
+  page boundaries.
+- 2026-05-24: Completed T-247. Sorted `/blog` rendering now uses fixed
+  10-minute cached wrappers for `latest`, `oldest`, and `featured` pages 2-5
+  with limit 10. Sorted page 1 still uses the T-245 dispatcher, and `popular`
+  page 2-plus, sorted page 6-plus, public blog APIs, `BlogSectionLoader`,
+  comments, route-level blog ISR, generated params, cache tags, and mutation
+  revalidation remain direct or deferred.
+- 2026-05-24: Completed T-248 as a docs-only next-cache-target scoping pass.
+  It selected T-249 to cache only the default `/artwork` browse list read with
+  a fixed 10-minute wrapper, while keeping artwork detail, filtered artwork
+  browsing, public APIs, browser follow-up fetches, search, shop routes,
+  Shopify product links, user/session state, cache tags, and mutation
+  revalidation direct or deferred.
+- 2026-05-24: Completed T-249. `ArtworkListLoader` now uses a fixed
+  10-minute cached wrapper only for the default `/artwork` browse list shape:
+  `mostRecent` page 1 limit 10, `filterMode: "ALL"`, no taxonomy filters, and
+  no `sortColor`. Filtered variants, page 2-plus, non-default limits,
+  `mostPopular`, `mostFeatured`, `colorProximity`, public artwork APIs,
+  browser follow-up fetches, artwork detail, metadata/JSON-LD detail reads,
+  saved-item/session-aware reads, and Shopify product links remain direct.
+- 2026-05-24: Completed T-250 as a docs-only cache-efficiency scoping pass. It
+  selected T-251 as the next narrow F-111 runtime proof: cache only fixed
+  unfiltered `mostRecent` `/artwork` pages 2-5 with limit 10 while keeping
+  artwork detail, collection-scoped detail, broader browse variants, search,
+  shop, saved-item/session state, public APIs, browser follow-up fetches,
+  route-level ISR, generated params, cache tags, and mutation revalidation
+  deferred.
 
 ## Next Agent Action
 
-T-245 is complete. If continuing the A-022 Next.js efficiency track, assign
-[T-246 Scope bounded sorted blog page cache expansion](../tasks/T-246-scope-bounded-sorted-blog-page-cache-expansion.md)
-before broadening blog cache behavior beyond sorted page 1. Keep route-level
-blog ISR, generated params, sorted blog pages beyond page 1, comment caching,
-provider moves, Shopify fetch changes, cache tags, mutation revalidation, and
-broader ISR separate unless a new task scopes them.
+T-250 is complete. If continuing the A-022/F-111 cache-efficiency track, assign
+[T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md)
+for the selected fixed unfiltered `mostRecent` `/artwork` pages 2-5 runtime
+proof. Keep page 6-plus, non-default limits, taxonomy filters,
+`filterMode: "ANY"`, `mostPopular`, `mostFeatured`, `colorProximity`, artwork
+detail routes, collection-scoped artwork detail, public artwork APIs, browser
+follow-up fetches, metadata/JSON-LD detail reads, optional Shopify product-link
+reads, user/session state, route-level `/artwork` ISR, generated params, cache
+tags, mutation revalidation, search, and shop routes separate unless a later
+task explicitly owns one of those paths.
+Keep `popular` blog pages beyond page 1, sorted blog page 6-plus, route-level
+blog ISR, comment caching, provider moves, Shopify fetch changes, and broader
+ISR separate unless a new task scopes them.
 
 Do not reassign route-local rendering fallback documentation unless the
 documented pattern or `/project/aims` source hygiene regresses. Broad
