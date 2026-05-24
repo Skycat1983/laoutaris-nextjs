@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/shadcn/input";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import { useRouter } from "next/navigation";
 
 const Searchbar = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,12 +21,13 @@ const Searchbar = () => {
       q: query.trim(),
     });
 
-    // Navigate to search page with query
-    router.push(`/search?${searchParams.toString()}`);
+    startTransition(() => {
+      router.push(`/search?${searchParams.toString()}`);
+    });
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full">
+    <form onSubmit={handleSearch} className="w-full" aria-busy={isPending}>
       <div className="flex flex-row bg-gray-100/40 rounded-r-2xl overflow-hidden">
         <div className="flex-grow">
           <Input
@@ -32,6 +35,7 @@ const Searchbar = () => {
             placeholder="Search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            disabled={isPending}
             aria-label="Search"
             style={{ outline: "none", boxShadow: "none" }}
           />
@@ -39,9 +43,19 @@ const Searchbar = () => {
         <button
           type="submit"
           aria-label="Submit search"
-          className="flex flex-row items-center justify-center p-4 cursor-pointer"
+          disabled={isPending}
+          className="flex flex-row items-center justify-center p-4 cursor-pointer disabled:cursor-wait disabled:opacity-70"
         >
-          <Search className="text-slate-600" aria-hidden="true" />
+          {isPending ? (
+            <LoadingStatus
+              label="Opening search results"
+              size="small"
+              className="text-slate-600"
+              iconClassName="text-slate-600"
+            />
+          ) : (
+            <Search className="text-slate-600" aria-hidden="true" />
+          )}
         </button>
       </div>
     </form>

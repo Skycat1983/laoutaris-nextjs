@@ -1496,12 +1496,11 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-256 Lazy-load public account navigation island](../tasks/T-256-lazy-load-public-account-navigation-island.md):
-  `/task effort: high details: docs/tasks/T-256-lazy-load-public-account-navigation-island.md`.
-  This is the next A-022/F-115 runtime slice. It should defer public header
-  account menu/dropdown implementation code until account-menu intent while
-  keeping `ClientContextBoundary`, `SessionProvider`, and modal provider
-  ownership rooted.
+  [T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md):
+  `/task effort: high details: docs/tasks/T-260-align-account-menu-internal-navigation.md`.
+  This is the remaining F-119/A-024 follow-up. It should replace raw internal
+  account-menu anchors with App Router navigation semantics while preserving
+  the T-256 lazy account island and existing auth/logout behavior.
 - If framed print preview becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option

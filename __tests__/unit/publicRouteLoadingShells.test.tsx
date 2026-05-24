@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import ArtworkLoading from "@/app/artwork/loading";
 import SearchLoading from "@/app/search/loading";
+import ShopProductsLoading from "@/app/shop/products/loading";
 
 describe("public route loading shells", () => {
   it("renders an artwork route-shaped loading shell", () => {
@@ -28,6 +29,20 @@ describe("public route loading shells", () => {
     expect(
       within(main).getByRole("status", { name: "Loading search results" })
     ).toHaveTextContent("Loading search results");
+    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+  });
+
+  it("renders a shop products route-shaped loading shell", () => {
+    render(<ShopProductsLoading />);
+
+    const main = screen.getByRole("main", { busy: true });
+
+    expect(
+      within(main).getByRole("heading", { name: "Art for Sale" })
+    ).toBeInTheDocument();
+    expect(
+      within(main).getByRole("status", { name: "Loading shop products" })
+    ).toHaveTextContent("Loading shop products");
     expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
   });
 });

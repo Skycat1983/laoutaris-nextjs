@@ -13,6 +13,7 @@ import { CircleUserIcon, LogIn, Mail } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import ModalMessage from "@/components/elements/typography/ModalMessage";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon } from "@/components/elements/icons/UserIcon";
 import { MenubarSeparator, MenubarShortcut } from "@/components/shadcn/menubar";
@@ -25,6 +26,59 @@ interface UserSession {
 
 interface AccountNavDropdownProps {
   initialOpen?: boolean;
+}
+
+interface AccountMenuRouteItemProps {
+  disabled: boolean;
+  disabledClassName: string;
+  enabledClassName: string;
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}
+
+function AccountMenuRouteItem({
+  disabled,
+  disabledClassName,
+  enabledClassName,
+  href,
+  icon,
+  label,
+}: AccountMenuRouteItemProps) {
+  const className = `flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
+    disabled ? disabledClassName : enabledClassName
+  }`;
+
+  const content = (
+    <>
+      <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground">
+        {label}
+      </span>
+      <MenubarShortcut>{icon}</MenubarShortcut>
+    </>
+  );
+
+  if (disabled) {
+    return (
+      <button
+        type="button"
+        className={className}
+        disabled
+        aria-disabled="true"
+        tabIndex={-1}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <NavigationMenuLink asChild>
+      <Link className={className} href={href}>
+        {content}
+      </Link>
+    </NavigationMenuLink>
+  );
 }
 
 export function AccountNavDropdown({
@@ -58,7 +112,11 @@ export function AccountNavDropdown({
     }
   };
 
-  const isDisabled = !session || isLoading;
+  const isAuthenticated = Boolean(session);
+  const isProfileDisabled = !isAuthenticated || isLoading;
+  const areAuthLinksDisabled = isAuthenticated || isLoading;
+  const isLogoutDisabled = !isAuthenticated || isLoading;
+
   return (
     <NavigationMenu
       className="p-0 m-0 items-center"
@@ -76,119 +134,63 @@ export function AccountNavDropdown({
           <NavigationMenuContent className="">
             <ul className="w-[150px] md:w-[200px] lg:w-[200px]">
               <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className={`flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed bg-whitish"
-                        : "from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground bg-whitish"
-                    }`}
-                    href={isDisabled ? "#" : "/account/settings"}
-                    onClick={(e) => {
-                      if (isDisabled) {
-                        e.preventDefault();
-                      }
-                    }}
-                    aria-disabled={isDisabled}
-                    tabIndex={isDisabled ? -1 : 0}
-                  >
-                    <h1 className="relative flex items-center rounded-sm px-2 py-1.5 text-md outline-none">
-                      Profile
-                    </h1>
-                    <MenubarShortcut>
-                      <CircleUserIcon className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
+                <AccountMenuRouteItem
+                  disabled={isProfileDisabled}
+                  disabledClassName="opacity-50 cursor-not-allowed bg-whitish"
+                  enabledClassName="from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground bg-whitish"
+                  href="/account/settings"
+                  icon={<CircleUserIcon className="w-4 h-4" />}
+                  label="Profile"
+                />
               </li>
               <MenubarSeparator />
 
               {/* Sign in */}
               <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className={`flex w-full items-center select-none justify-end rounded-md p-2 no-underline outline-none focus:shadow-md ${
-                      isDisabled
-                        ? "from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
-                        : "opacity-50 cursor-not-allowed"
-                    }`}
-                    href={isDisabled ? "/sign-in" : "#"}
-                    onClick={(e) => {
-                      if (!isDisabled) {
-                        e.preventDefault();
-                      }
-                    }}
-                    aria-disabled={!isDisabled}
-                    tabIndex={!isDisabled ? -1 : 0}
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground">
-                      Sign in
-                    </h1>
-                    <MenubarShortcut>
-                      <LogIn className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
+                <AccountMenuRouteItem
+                  disabled={areAuthLinksDisabled}
+                  disabledClassName="opacity-50 cursor-not-allowed"
+                  enabledClassName="from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
+                  href="/sign-in"
+                  icon={<LogIn className="w-4 h-4" />}
+                  label="Sign in"
+                />
               </li>
 
               {/* Sign up */}
               <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className={`flex w-full items-center select-none justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md ${
-                      isDisabled
-                        ? "hover:bg-accent hover:text-accent-foreground"
-                        : "opacity-50 cursor-not-allowed"
-                    }`}
-                    href={isDisabled ? "/sign-in?mode=signup" : "#"}
-                    onClick={(e) => {
-                      if (!isDisabled) {
-                        e.preventDefault();
-                      }
-                    }}
-                    aria-disabled={!isDisabled}
-                    tabIndex={!isDisabled ? -1 : 0}
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground">
-                      Sign up
-                    </h1>
-                    <MenubarShortcut>
-                      <Mail className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
+                <AccountMenuRouteItem
+                  disabled={areAuthLinksDisabled}
+                  disabledClassName="bg-gradient-to-b from-muted/50 to-muted opacity-50 cursor-not-allowed"
+                  enabledClassName="bg-gradient-to-b from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
+                  href="/sign-in?mode=signup"
+                  icon={<Mail className="w-4 h-4" />}
+                  label="Sign up"
+                />
               </li>
               <MenubarSeparator />
 
               {/* Logout */}
               <li className="row-span-1">
-                <NavigationMenuLink asChild>
-                  <a
-                    className={`flex w-full items-center select-none justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-accent hover:text-accent-foreground"
-                    }`}
-                    onClick={(e) => {
-                      if (isDisabled) {
-                        e.preventDefault();
-                      }
-                      if (!isDisabled) {
-                        e.preventDefault();
-                        handleLogout();
-                      }
-                    }}
-                    aria-disabled={isDisabled}
-                    tabIndex={isDisabled ? -1 : 0}
-                  >
-                    <h1 className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground">
-                      Logout
-                    </h1>
-                    <MenubarShortcut>
-                      <CircleUserIcon className="w-4 h-4" />
-                    </MenubarShortcut>
-                  </a>
-                </NavigationMenuLink>
+                <button
+                  type="button"
+                  className={`flex w-full items-center select-none justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-2 no-underline outline-none focus:shadow-md ${
+                    isLogoutDisabled
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                  disabled={isLogoutDisabled}
+                  onClick={handleLogout}
+                  aria-disabled={isLogoutDisabled}
+                  tabIndex={isLogoutDisabled ? -1 : 0}
+                >
+                  <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-md outline-none focus:bg-accent focus:text-accent-foreground">
+                    Logout
+                  </span>
+                  <MenubarShortcut>
+                    <CircleUserIcon className="w-4 h-4" />
+                  </MenubarShortcut>
+                </button>
               </li>
             </ul>
           </NavigationMenuContent>

@@ -137,4 +137,15 @@ describe("public account navigation lazy island", () => {
     expect(boundarySource).toContain("GlobalFeaturesProvider");
     expect(boundarySource).toContain("<GlobalFeaturesProvider>");
   });
+
+  it("keeps account-menu internal routes on App Router Link semantics", () => {
+    const dropdownSource = readSource(
+      "src/components/modules/navigation/accountNav/accountNavDropdown/AccountNavDropdown.tsx"
+    );
+
+    expect(dropdownSource).toContain('import Link from "next/link"');
+    expect(dropdownSource).toContain("<Link");
+    expect(dropdownSource).not.toContain("<a");
+    expect(dropdownSource).not.toContain('href="#"');
+  });
 });

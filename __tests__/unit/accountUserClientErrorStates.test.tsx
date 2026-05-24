@@ -221,6 +221,35 @@ describe("account and user client error states", () => {
     });
   });
 
+  it("uses App Router links for unauthenticated sign-in actions and disables account actions", () => {
+    mockUseSession.mockReturnValue({ data: null });
+
+    render(<AccountNavDropdown />);
+
+    expect(screen.getByRole("button", { name: "Profile" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Logout" })).toBeDisabled();
+    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      "/sign-in"
+    );
+    expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute(
+      "href",
+      "/sign-in?mode=signup"
+    );
+  });
+
+  it("uses an App Router profile link for authenticated users and disables auth entry links", () => {
+    render(<AccountNavDropdown />);
+
+    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute(
+      "href",
+      "/account/settings"
+    );
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Sign up" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Logout" })).toBeEnabled();
+  });
+
   it("keeps comment-card edit failure in edit mode for retry", async () => {
     mockUpdateComment.mockRejectedValue(new Error("private update failure"));
 

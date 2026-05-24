@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { buildArtworkSearchUrl } from "@/lib/utils/urlUtils";
 import {
   Select,
@@ -7,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/shadcn/select";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 
 import {
   ARTSTYLE_OPTIONS,
@@ -87,8 +89,10 @@ const FilterSelects = ({
 );
 
 const FilterableArtworks = () => {
+  const router = useRouter();
   const PLACEHOLDER_URL =
     "https://res.cloudinary.com/dzncmfirr/image/upload/v1740842898/artwork/teywcuexka9cjcrw79x5.jpg";
+  const [isPending, startTransition] = useTransition();
   const [filters, setFilters] = useState<{
     decade: Decade | "";
     artstyle: ArtStyle | "";
@@ -104,7 +108,10 @@ const FilterableArtworks = () => {
       ...filters,
       filterMode: "ALL",
     });
-    window.location.href = searchUrl;
+
+    startTransition(() => {
+      router.push(searchUrl);
+    });
   };
 
   return (
@@ -127,9 +134,21 @@ const FilterableArtworks = () => {
             <FilterSelects filters={filters} setFilters={setFilters} />
             <button
               onClick={handleSearch}
-              className="bg-black text-white px-8 py-3 rounded-md font-archivo hover:bg-gray-800 transition-colors w-full"
+              disabled={isPending}
+              aria-busy={isPending}
+              className="bg-black text-white px-8 py-3 rounded-md font-archivo hover:bg-gray-800 transition-colors w-full disabled:cursor-wait disabled:opacity-80"
             >
-              Search Collection
+              {isPending ? (
+                <LoadingStatus
+                  label="Opening artwork results"
+                  visibleLabel="Opening collection..."
+                  size="small"
+                  className="text-white"
+                  iconClassName="text-white"
+                />
+              ) : (
+                "Search Collection"
+              )}
             </button>
           </div>
         </div>
@@ -141,8 +160,10 @@ const FilterableArtworks = () => {
 export { FilterableArtworks, FilterableArtworks2 };
 
 const FilterableArtworks2 = () => {
+  const router = useRouter();
   const PLACEHOLDER_URL =
     "https://res.cloudinary.com/dzncmfirr/image/upload/v1741018096/artwork/z0e49vzsyidp9ghjntzz.jpg";
+  const [isPending, startTransition] = useTransition();
   const [filters, setFilters] = useState<{
     decade: Decade | "";
     artstyle: ArtStyle | "";
@@ -158,7 +179,10 @@ const FilterableArtworks2 = () => {
       ...filters,
       filterMode: "ALL",
     });
-    window.location.href = searchUrl;
+
+    startTransition(() => {
+      router.push(searchUrl);
+    });
   };
 
   return (
@@ -180,9 +204,21 @@ const FilterableArtworks2 = () => {
             <FilterSelects filters={filters} setFilters={setFilters} />
             <button
               onClick={handleSearch}
-              className="bg-black text-white px-8 py-3 rounded-md font-archivo hover:bg-gray-800 transition-colors w-full"
+              disabled={isPending}
+              aria-busy={isPending}
+              className="bg-black text-white px-8 py-3 rounded-md font-archivo hover:bg-gray-800 transition-colors w-full disabled:cursor-wait disabled:opacity-80"
             >
-              Search Collection
+              {isPending ? (
+                <LoadingStatus
+                  label="Opening artwork results"
+                  visibleLabel="Opening collection..."
+                  size="small"
+                  className="text-white"
+                  iconClassName="text-white"
+                />
+              ) : (
+                "Search Collection"
+              )}
             </button>
           </div>
         </div>

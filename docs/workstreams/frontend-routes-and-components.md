@@ -340,15 +340,17 @@ Next.js server/client component boundaries.
   barrels, and broad mixed client/server barrels with client-safe APIs, shared
   frontend types, or direct imports.
 - Audit loading, error, not found, and empty states on public pages.
-- Implement the A-024 loading-state sequence: shared accessible loading
+- Completed the core A-024 loading-state sequence: shared accessible loading
   primitive first, then route-shaped loading shells for `/search`, `/artwork`,
   and `/shop/products`, with `/search` and `/artwork` as the first public route
   pair. Phase 1 completed the shared primitive and low-risk public loader
-  conversions; Phase 2 completed `/search` and `/artwork` route shells. The
-  next implementation slice should add `/shop/products`.
-- Replace internal full-document or no-feedback programmatic navigation in
-  search, mobile search, artwork hero filters, and account menu links with App
-  Router navigation plus local pending feedback.
+  conversions; Phase 2 completed `/search` and `/artwork` route shells. Phase
+  3 completed the `/shop/products` route shell. T-258 completed the admin
+  dashboard `@main` loading skeleton. T-259 completed the targeted
+  route-transition check.
+- Replace remaining account menu internal route anchors with App Router-aware
+  navigation and appropriate pending feedback after the T-256 account-menu lazy
+  island.
 - Add a matching admin dashboard `@main` parallel-route loading skeleton so
   segment switches do not leave the main panel blank while `@feed` has a
   skeleton.
@@ -1265,6 +1267,27 @@ passed with network access.
   keeps artwork filter/masonry and search result-grid geometry visible during
   route transitions. Verification passed with focused route-shell Jest
   coverage, `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed A-024 Phase 3. Added a route-local `/shop/products`
+  loading shell that keeps the sale banner, shop filters, results bar, and
+  product grid geometry visible while the Shopify product loader resolves.
+  Verification passed with focused route-shell Jest coverage,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-257 for A-024/F-119. Desktop search, mobile drawer
+  search, and the home artwork filter hero now expose pending feedback for
+  programmatic navigation, prevent duplicate submits while pending, and keep
+  internal artwork/search navigation on App Router `router.push()` paths.
+  Verification passed with the focused public search/navigation and route-shell
+  Jest slice, `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-258 for A-024/F-121. Added a route-level
+  `@main/loading.tsx` skeleton for the admin dashboard main panel and removed
+  stale generic loading imports from the `@main` default route. Verification
+  passed with focused admin loading Jest coverage, `git diff --check`, and
+  `npm run lint`.
+- 2026-05-24: Completed T-259 for A-024/F-122. Added a focused component-level
+  delayed route-transition check using the real desktop search control, the
+  route-local `/search` loading shell, and final route content replacement.
+  Verification passed with the focused route-transition/search/navigation Jest
+  slice, `git diff --check`, and `npm run lint`.
 - 2026-05-24: Completed T-256. The public desktop/tablet header now renders a
   stable account trigger shell before account-menu interaction and defers the
   account dropdown implementation, account menu links/icons, NextAuth
@@ -1275,11 +1298,11 @@ passed with network access.
 
 ## Next Agent Action
 
-For the A-024 loading-state implementation, add the `/shop/products` route
-shell. After those route shells are in place, address pending feedback in
-`Searchbar`, `SearchDrawerBody`, and the home artwork filter hero, then add the
-admin dashboard `@main` loading skeleton. Keep route cache policy, Shopify
-behavior, account/auth behavior, and broad visual redesign out of these slices.
+The core A-024 loading-state sequence is complete. Assign
+[T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md)
+for the deferred account-menu internal route semantics from F-119. Keep that
+separate from route cache policy, Shopify behavior, auth behavior, and broad
+visual redesign.
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);

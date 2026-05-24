@@ -279,6 +279,10 @@ Planning and prompt packs:
 | [T-254 Split modal context language state and lazy host](T-254-split-modal-context-language-state-and-lazy-host.md) | Completed | Removed unused language state from the active root modal provider path and lazy-loaded the modal dialog host without moving session or modal provider ownership. |
 | [T-255 Scope post-modal provider efficiency wave](T-255-scope-post-modal-provider-efficiency-wave.md) | Completed | Selected a provider-preserving account navigation lazy-island follow-up after T-254 left remaining root/header cost outside the modal path. |
 | [T-256 Lazy-load public account navigation island](T-256-lazy-load-public-account-navigation-island.md) | Completed | Deferred public header account menu implementation code until account-menu intent while keeping session and modal providers rooted. |
+| [T-257 Add programmatic navigation pending feedback](T-257-add-programmatic-navigation-pending-feedback.md) | Completed | Added pending feedback for search and home artwork filter programmatic navigations while preserving App Router client navigation. |
+| [T-258 Add admin main loading skeleton](T-258-add-admin-main-loading-skeleton.md) | Completed | Added a route-level loading skeleton for the admin dashboard `@main` parallel route. |
+| [T-259 Add targeted route transition loading check](T-259-add-targeted-route-transition-loading-check.md) | Completed | Added a focused delayed route-transition loading check for A-024. |
+| [T-260 Align account menu internal navigation](T-260-align-account-menu-internal-navigation.md) | Completed | Replaced raw internal account-menu anchors with App Router `Link` semantics while preserving disabled states, logout behavior, and the lazy account island. |
 
 ## Rules
 

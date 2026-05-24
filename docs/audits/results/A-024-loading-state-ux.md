@@ -135,9 +135,38 @@ through F-118 to F-122 and the frontend/testing workstream backlogs first.
   statuses. Verification passed with
   `npm test -- --runTestsByPath __tests__/unit/publicRouteLoadingShells.test.tsx`,
   `git diff --check`, and `npm run lint`.
+- 2026-05-24 Phase 3 completed: added `src/app/shop/products/loading.tsx`
+  and extended `PublicRouteLoadingShells` with a shop products loading shell
+  that preserves the sale banner, filter controls, results bar, and product
+  grid geometry while the Shopify product loader resolves. Focused route-shell
+  coverage has been extended. Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteLoadingShells.test.tsx`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24 T-257 completed: `Searchbar` and `SearchDrawerBody` now expose
+  transition-backed pending status UI for programmatic search navigation, and
+  the home artwork filter hero now uses App Router navigation with pending
+  feedback instead of `window.location.href`. Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/publicRouteLoadingShells.test.tsx`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24 T-258 completed: added `src/app/admin/dashboard/@main/loading.tsx`
+  and `AdminMainLoadingSkeleton` so the dashboard main parallel route has a
+  geometry-preserving loading state matching the existing feed slot coverage.
+  Removed stale generic loading imports from `@main/default.tsx`. Verification
+  passed with
+  `npm test -- --runTestsByPath __tests__/unit/adminDashboardMainLoading.test.tsx`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24 T-259 completed: added a focused component-level delayed
+  route-transition test that submits the real desktop `Searchbar`, suspends a
+  representative `/search` route, asserts the route-local search loading shell
+  appears during the delay, then resolves final route content. Verification
+  passed with
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteTransitionLoading.test.tsx __tests__/unit/publicRouteLoadingShells.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx`,
+  `git diff --check`, and `npm run lint`.
 
 ## Next Action
 
-Add the `/shop/products` route-shaped loading shell. After those shells are in
-place, make `Searchbar`, `SearchDrawerBody`, and the home artwork filter hero
-expose pending feedback while preserving App Router client navigation.
+The core A-024 loading-state implementation sequence is complete. F-119 remains
+partially mitigated only for the previously deferred account-menu internal
+route semantics follow-up. Assign
+[T-260 Align account menu internal navigation](../../tasks/T-260-align-account-menu-internal-navigation.md)
+for that final known follow-up.

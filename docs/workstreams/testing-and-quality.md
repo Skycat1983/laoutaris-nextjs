@@ -343,7 +343,12 @@ refactoring without turning every change into a manual QA pass.
   route-transition check after the shells exist. Phase 1 completed focused
   render coverage for the shared primitive and converted public in-page
   loaders. Phase 2 completed focused render coverage for the `/search` and
-  `/artwork` route shells.
+  `/artwork` route shells. Phase 3 completed focused render coverage for
+  `/shop/products`. T-257 completed focused coverage for programmatic
+  navigation pending feedback in desktop search, mobile drawer search, and the
+  home artwork filter hero. T-258 completed focused coverage for the admin
+  dashboard `@main` loading skeleton. T-259 completed the targeted delayed
+  route-transition check.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -1786,6 +1791,31 @@ npm run lint
   Verification passed with
   `npm test -- --runTestsByPath __tests__/unit/publicRouteLoadingShells.test.tsx`,
   `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed A-024 Phase 3 coverage. Extended the public route
+  loading-shell render test to cover `/shop/products`, including route-status
+  semantics and regression coverage against generic `Loading...` copy.
+  Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/publicRouteLoadingShells.test.tsx`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-257 coverage for A-024/F-119. Extended
+  `publicSearchNavigationAccessibility` coverage for desktop search, mobile
+  drawer search, App Router hero artwork navigation, pending-status source
+  guards, and `window.location.href` regression coverage. Verification passed
+  with the focused public search/navigation and route-shell Jest slice,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-258 coverage for A-024/F-121. Added
+  `adminDashboardMainLoading.test.tsx` to render the admin `@main` route
+  loading skeleton, assert accessible busy/status semantics, and guard against
+  stale generic loader imports in `@main/default.tsx`. Verification passed
+  with focused admin loading Jest coverage, `git diff --check`, and
+  `npm run lint`.
+- 2026-05-24: Completed T-259 coverage for A-024/F-122. Added
+  `publicRouteTransitionLoading.test.tsx` to submit the real desktop search
+  control, hold a representative `/search` route response in a suspended state,
+  assert the route-local search loading shell appears, then resolve final route
+  content and assert the shell is replaced. Verification passed with the
+  focused route-transition/search/navigation Jest slice, `git diff --check`,
+  and `npm run lint`.
 - 2026-05-24: Added docs-only Playwright adoption guidance to the testing
   runbook and this workstream. Playwright remains uninstalled; future adoption
   must start from a scoped task or owner/orchestrator decision with named
@@ -1800,11 +1830,12 @@ npm run lint
 
 ## Next Agent Action
 
-For A-024, add tests alongside the `/shop/products` route-shell implementation
-slice and a single targeted route-transition check only after those shells
-exist. Do not install Playwright for this work unless a separate scoped task
-approves the browser tooling, fixture plan, command posture, and artifact
-budget.
+The core A-024 loading-state coverage sequence is complete. Assign
+[T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md)
+for the remaining F-119 account-menu route semantics, with focused account-nav
+coverage only. Do not install Playwright for follow-up loading-state work unless
+a separate scoped task approves the browser tooling, fixture plan, command
+posture, and artifact budget.
 
 T-230 import-boundary repair coverage is complete; do not reassign it unless
 the client import-boundary guard or `SignUpForm` direct constants import

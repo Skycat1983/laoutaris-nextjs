@@ -1,15 +1,42 @@
 import fs from "fs";
 import path from "path";
+import type { ReactNode } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Searchbar from "@/components/elements/inputs/Searchbar";
 import { FavouritesButton } from "@/components/elements/buttons/FavouritesButton";
 import { WatchlistButton } from "@/components/elements/buttons/WatchlistButton";
+import { FilterableArtworks } from "@/components/modules/hero/slides/FilterableArtworks";
+import { SearchDrawerBody } from "@/components/modules/search/SearchDrawerBody";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
 import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 
 jest.mock("next/navigation", () => ({
   useRouter: jest.fn(),
+}));
+
+jest.mock("next/image", () => ({
+  __esModule: true,
+  default: ({
+    src,
+    alt,
+    className,
+  }: {
+    src: string;
+    alt: string;
+    className?: string;
+  }) => <img src={src} alt={alt} className={className} />,
+}));
+
+jest.mock("@/components/shadcn/drawer", () => ({
+  DrawerContent: ({
+    children,
+    className,
+  }: {
+    children: ReactNode;
+    className?: string;
+  }) => <div className={className}>{children}</div>,
+  DrawerClose: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 
 jest.mock("@/contexts/GlobalFeaturesContext", () => ({
@@ -61,6 +88,27 @@ describe("public search and navigation accessibility controls", () => {
     fireEvent.click(submit);
 
     expect(mockPush).toHaveBeenCalledWith("/search?q=red+figure");
+  });
+
+  it("submits mobile drawer search from a labelled pending-capable button", () => {
+    const setOpen = jest.fn();
+    render(<SearchDrawerBody setOpen={setOpen} />);
+
+    const input = screen.getByRole("textbox", { name: "Search" });
+    const submit = screen.getByRole("button", { name: "Submit search" });
+
+    fireEvent.change(input, { target: { value: "  blue study  " } });
+    fireEvent.click(submit);
+
+    expect(mockPush).toHaveBeenCalledWith("/search?q=blue+study");
+  });
+
+  it("routes hero collection search through the App Router", () => {
+    render(<FilterableArtworks />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Search Collection" }));
+
+    expect(mockPush).toHaveBeenCalledWith("/artwork?filterMode=ALL");
   });
 
   it("opens the existing login modal from unauthenticated saved-item buttons", () => {
@@ -116,6 +164,7 @@ describe("public search and navigation accessibility controls", () => {
 
     expect(searchDrawerSource).toContain('aria-label="Open search"');
     expect(searchDrawerBodySource).toContain('aria-label="Close search"');
+    expect(searchDrawerBodySource).toContain('aria-label="Submit search"');
     expect(searchDrawerSource).not.toMatch(/<DrawerTrigger asChild>\s*<Search/);
     expect(searchDrawerBodySource).not.toMatch(/<DrawerClose asChild>\s*<X/);
 
@@ -148,11 +197,31 @@ describe("public search and navigation accessibility controls", () => {
     expect(mobileNavLayoutSource).not.toContain("MobileNavDrawerBody");
   });
 
+  it("keeps programmatic public navigation on App Router pending paths", () => {
+    const searchbarSource = readSource(
+      "src/components/elements/inputs/Searchbar.tsx"
+    );
+    const searchDrawerBodySource = readSource(
+      "src/components/modules/search/SearchDrawerBody.tsx"
+    );
+    const heroSearchSource = readSource(
+      "src/components/modules/hero/slides/FilterableArtworks.tsx"
+    );
+
+    expect(searchbarSource).toContain("Opening search results");
+    expect(searchDrawerBodySource).toContain("Opening mobile search results");
+    expect(heroSearchSource).toContain("Opening collection...");
+
+    expect(heroSearchSource).toContain("router.push(searchUrl)");
+    expect(heroSearchSource).not.toContain("window.location.href");
+  });
+
   it("does not reintroduce clickable div wrappers for scoped public controls", () => {
     const scopedSources = [
       "src/components/elements/inputs/Searchbar.tsx",
       "src/components/elements/buttons/FavouritesButton.tsx",
       "src/components/elements/buttons/WatchlistButton.tsx",
+      "src/components/modules/hero/slides/FilterableArtworks.tsx",
     ].map(readSource);
 
     for (const source of scopedSources) {
