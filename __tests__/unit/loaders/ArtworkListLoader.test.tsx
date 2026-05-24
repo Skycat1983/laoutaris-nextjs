@@ -1,11 +1,11 @@
 import type { ReactElement } from "react";
 import { ArtworkListLoader } from "@/components/loaders/viewLoaders/ArtworkListLoader";
 import { ArtworkGallery } from "@/components/artwork/ArtworkGallery";
-import { getCachedDefaultArtworkList } from "@/lib/data/services/getCachedArtworkListData";
+import { getCachedDefaultArtworkListPage } from "@/lib/data/services/getCachedArtworkListData";
 import { getArtworkList } from "@/lib/data/services/getArtworkList";
 
 jest.mock("@/lib/data/services/getCachedArtworkListData", () => ({
-  getCachedDefaultArtworkList: jest.fn(),
+  getCachedDefaultArtworkListPage: jest.fn(),
 }));
 
 jest.mock("@/lib/data/services/getArtworkList", () => ({
@@ -19,9 +19,9 @@ jest.mock("@/components/artwork/ArtworkGallery", () => ({
 const mockGetArtworkList = getArtworkList as jest.MockedFunction<
   typeof getArtworkList
 >;
-const mockGetCachedDefaultArtworkList =
-  getCachedDefaultArtworkList as jest.MockedFunction<
-    typeof getCachedDefaultArtworkList
+const mockGetCachedDefaultArtworkListPage =
+  getCachedDefaultArtworkListPage as jest.MockedFunction<
+    typeof getCachedDefaultArtworkListPage
   >;
 
 const artwork = {
@@ -44,7 +44,7 @@ describe("ArtworkListLoader", () => {
     } as never;
 
     mockGetArtworkList.mockResolvedValue(listResult);
-    mockGetCachedDefaultArtworkList.mockResolvedValue(listResult);
+    mockGetCachedDefaultArtworkListPage.mockResolvedValue(listResult);
   });
 
   it("loads initial artworks through the server data service without same-app fetches", async () => {
@@ -73,7 +73,7 @@ describe("ArtworkListLoader", () => {
       sortBy: "colorProximity",
       sortColor: "#111111",
     });
-    expect(mockGetCachedDefaultArtworkList).not.toHaveBeenCalled();
+    expect(mockGetCachedDefaultArtworkListPage).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
     expect(element.type).toBe(ArtworkGallery);
     expect(element.props).toEqual({
@@ -86,12 +86,13 @@ describe("ArtworkListLoader", () => {
   it("uses the cached wrapper when the loader receives no filters", async () => {
     await ArtworkListLoader({});
 
-    expect(mockGetCachedDefaultArtworkList).toHaveBeenCalledTimes(1);
+    expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledTimes(1);
+    expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledWith(1);
     expect(mockGetArtworkList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("uses the cached wrapper for the exact default artwork browse shape", async () => {
+  it("uses the cached page 1 wrapper for the exact default artwork browse shape", async () => {
     await ArtworkListLoader({
       initialSort: {
         by: "mostRecent",
@@ -108,17 +109,49 @@ describe("ArtworkListLoader", () => {
       },
     });
 
-    expect(mockGetCachedDefaultArtworkList).toHaveBeenCalledTimes(1);
+    expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledTimes(1);
+    expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledWith(1);
     expect(mockGetArtworkList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it.each([
+    2,
+    3,
+    4,
+    5,
+  ])(
+    "uses the bounded cached wrapper for exact default artwork browse page %s",
+    async (page) => {
+      await ArtworkListLoader({
+        initialSort: {
+          by: "mostRecent",
+          color: undefined,
+        },
+        initialFilters: {
+          decade: [],
+          artstyle: [],
+          medium: [],
+          surface: [],
+          filterMode: "ALL",
+          page,
+          limit: 10,
+        },
+      });
+
+      expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledTimes(1);
+      expect(mockGetCachedDefaultArtworkListPage).toHaveBeenCalledWith(page);
+      expect(mockGetArtworkList).not.toHaveBeenCalled();
+      expect(global.fetch).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each([
     [
-      "page 2",
+      "page 6",
       {
         initialSort: { by: "mostRecent" as const },
-        initialFilters: { filterMode: "ALL" as const, page: 2, limit: 10 },
+        initialFilters: { filterMode: "ALL" as const, page: 6, limit: 10 },
       },
     ],
     [
@@ -184,7 +217,7 @@ describe("ArtworkListLoader", () => {
       sortBy: props.initialSort.by,
       sortColor: props.initialSort.color,
     });
-    expect(mockGetCachedDefaultArtworkList).not.toHaveBeenCalled();
+    expect(mockGetCachedDefaultArtworkListPage).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 });

@@ -1,6 +1,8 @@
 import "server-only";
 
 import { ArticleModel } from "@/lib/data/models/articleModel";
+import { ArtworkModel } from "@/lib/data/models/artworkModel";
+import { UserModel } from "@/lib/data/models/userModel";
 import type { ArtworkLean } from "@/lib/data/types/artworkTypes";
 import type {
   ArticleFrontendPopulated,
@@ -16,10 +18,11 @@ export const getArticleBySlugPopulated = async (
   await dbConnect();
 
   const articleDB = await ArticleModel.findOne({ slug })
-    .populate<{
-      author: UserLean;
-      artwork: ArtworkLean;
-    }>("author artwork")
+    .populate<{ author: UserLean }>({ path: "author", model: UserModel })
+    .populate<{ artwork: ArtworkLean }>({
+      path: "artwork",
+      model: ArtworkModel,
+    })
     .lean<ArticleLeanPopulated>();
 
   if (!articleDB) {

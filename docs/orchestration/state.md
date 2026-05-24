@@ -1496,14 +1496,12 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md):
-  `/task effort: high details: docs/tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md`.
-  It should cache only fixed unfiltered `mostRecent` `/artwork` pages 2-5
-  with limit 10 while keeping page 6-plus, non-default limits, taxonomy
-  filters, `filterMode: "ANY"`, `mostPopular`, `mostFeatured`,
-  `colorProximity`, artwork detail, public artwork APIs, browser follow-up
-  fetches, search, shop, user/session state, route-level artwork ISR,
-  generated params, cache tags, and mutation revalidation separate.
+  [T-254 Split modal context language state and lazy host](../tasks/T-254-split-modal-context-language-state-and-lazy-host.md):
+  `/task effort: high details: docs/tasks/T-254-split-modal-context-language-state-and-lazy-host.md`.
+  This is the next F-115 runtime slice. Keep `ClientContextBoundary`,
+  `SessionProvider`, and modal provider ownership rooted, remove only unused
+  language state from the active modal provider path, and lazy-load the modal
+  dialog host after modal intent.
 - If framed print preview becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option

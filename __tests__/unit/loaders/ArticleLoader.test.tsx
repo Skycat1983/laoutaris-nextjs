@@ -223,6 +223,19 @@ describe("ArticleLoader", () => {
       ArticleLoader({ slug: "current", section: "biography" })
     ).rejects.toThrow("Failed to fetch article");
 
+    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
+      expect.objectContaining({
+        event: "loader.public.article_detail.failed",
+        component: "ArticleLoader",
+        operation: "public.article.loader",
+        slug: "current",
+        section: "biography",
+        error: {
+          name: "Error",
+          message: "private article failure",
+        },
+      })
+    );
     expect(ArticleView).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
   });

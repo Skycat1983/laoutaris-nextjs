@@ -172,9 +172,10 @@ Documented constraints for a future implementation:
   `draftMode`, `params`, and `searchParams`; Next 16 removes synchronous access.
 - Caching: Next 15 changes default caching for `fetch` and `GET` route handlers.
 - Build: Next 16 uses Turbopack by default for `next dev` and `next build`.
-  A custom `webpack` function in `next.config.mjs` means the future build
-  script must either opt into `next build --webpack` temporarily or migrate the
-  dev source-map behavior away from webpack config.
+  2026-05-24 update: the former custom `webpack` function in `next.config.mjs`
+  was removed after Next.js reverted the development `devtool` override and
+  emitted the improper-devtool warning. This specific Turbopack/default-webpack
+  conflict is no longer present.
 - Lint: Next 16 removes `next lint`. The repo's `npm run lint` script and
   legacy `.eslintrc.json` setup must migrate to the ESLint CLI. Metadata for
   `eslint-config-next@16.2.6` requires `eslint >=9.0.0`; the current app has
@@ -194,7 +195,7 @@ Documented constraints for a future implementation:
 
 | Surface | Evidence | Migration risk |
 | --- | --- | --- |
-| `next.config.mjs` | Defines `images.remotePatterns`, broad `headers` config, and a custom `webpack(config, { dev })` hook. | Turbopack default will conflict with custom webpack unless the build opts into `--webpack` or the source-map behavior is removed/migrated. Image defaults and CSP/CORS behavior need smoke coverage. |
+| `next.config.mjs` | Defines `images.remotePatterns` and broad `headers` config. The former custom development `devtool` webpack hook was removed on 2026-05-24. | Image defaults and CSP/CORS behavior need smoke coverage. |
 | `src/middleware.ts` | Exports `middleware`, uses `getToken`, checks protected/admin routes, logs request/token state, and matches broad non-auth paths. | Rename to `proxy.ts`/`proxy` during Next 16 migration; verify auth redirects, admin API 403 JSON, and public route pass-through. |
 | App Router `params`/`searchParams` | Synchronous typed `params` or `searchParams` appear in dynamic pages/layouts and many route handlers, including `blog/[slug]`, `collections/[slug]`, `artwork/[artworkId]`, `shop/products/[productHandle]`, and dynamic API routes. | Convert these props/context objects to promises and await them, or use generated `PageProps`/`RouteContext` types after `next typegen`. This is the largest required code-edit surface. |
 | `next/headers` usage | `serverPublicApi`, `serverAdminApi`, and `serverUserApi` pass `headers()` synchronously into fetcher configs. | Must migrate to async `headers()` before or with Next 16. The shared fetcher type may need async header resolution. |

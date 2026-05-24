@@ -1732,6 +1732,24 @@ npm run lint
   `ArtworkListLoader` cached page 2-5 branches, direct fallback branches for
   page 6-plus and non-default variants, public API/fetcher/detail exclusions,
   and public route-cache policy invariants.
+- 2026-05-24: Completed T-251. Added focused cached artwork list wrapper and
+  dispatcher coverage for fixed unfiltered `mostRecent` pages 1-5, loader
+  coverage for cached pages 2-5 plus direct page 6/non-default fallbacks, and
+  public route-cache policy assertions that `/artwork` stays dynamic while
+  public APIs, fetchers, detail reads, saved-item reads, and Shopify
+  product-link paths stay direct. Verification passed with the focused Jest
+  command for the touched wrapper, loader, and route-cache policy tests, `git
+  diff --check`, and `npm run build`; the first non-escalated build attempt
+  failed on restricted Google Font downloads, and the escalated rerun passed.
+- 2026-05-24: Completed T-252 as a docs-only post-browse efficiency scoping
+  pass. It selected T-253 to scope the next F-115 provider/modal
+  client-island task and kept remaining F-111 runtime cache candidates
+  deferred pending separate policy decisions.
+- 2026-05-24: Completed T-253 as a docs-only root provider/modal scoping pass.
+  It selected T-254 and defined focused verification for the modal-provider
+  cleanup/lazy-host runtime slice, including existing modal consumer behavior
+  tests, client import-boundary coverage, `npm run build`, and root layout
+  chunk comparison against the T-236 `27,772` byte baseline.
 - 2026-05-24: Added docs-only Playwright adoption guidance to the testing
   runbook and this workstream. Playwright remains uninstalled; future adoption
   must start from a scoped task or owner/orchestrator decision with named
@@ -1757,13 +1775,20 @@ normalization/bounds coverage is complete. T-245 sorted first-page cache
 wrapper and loader coverage is complete, T-246 bounded sorted-page scoping is
 complete, T-247 bounded sorted-page runtime coverage is complete, T-248
 next-cache-target scoping is complete, and T-249 default artwork browse cache
-coverage is complete. T-250 cache-efficiency scoping is complete; T-251 should
-implement and verify the selected fixed unfiltered `mostRecent` `/artwork`
-pages 2-5 cache expansion. Keep optional comments, page 6-plus artwork,
-filtered artwork variants, non-default artwork limits/sorts, `popular` pages
-beyond page 1, sorted page 6-plus, route-level blog or artwork ISR, static
-params, provider ownership, search, shop routes, cache tags, mutation
-revalidation, and broader ISR behavior out of the completed cache proofs.
+coverage is complete. T-250 cache-efficiency scoping is complete, and T-251
+fixed unfiltered `mostRecent` `/artwork` pages 2-5 cache expansion coverage is
+complete. T-252 post-browse scoping and T-253 root provider/modal scoping are
+complete. T-254 should execute the next F-115 runtime slice with focused
+consumer behavior tests, client import-boundary coverage, `npm run build`, and
+root layout chunk comparison against the T-236 `27,772` byte baseline. Keep
+optional comments, page 6-plus artwork, filtered artwork variants,
+non-default artwork limits/sorts, `popular` pages beyond page 1, sorted page
+6-plus, route-level blog or artwork ISR, static params, search, shop routes,
+cache tags, mutation revalidation, and broader ISR behavior out of the
+completed cache proofs. Keep provider runtime moves beyond the modal-only
+cleanup/lazy-host slice, auth/session behavior, saved-item actions,
+account/admin/comment/form behavior, shop behavior, package files, Playwright
+setup, CI workflows, and route cache policy unchanged during T-254.
 
 Playwright remains a consideration, not an approved dependency. Do not install
 or run broad browser automation until a scoped adoption task names the first

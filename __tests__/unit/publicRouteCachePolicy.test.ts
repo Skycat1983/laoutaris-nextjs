@@ -235,7 +235,7 @@ describe("public route cache policy", () => {
     expect(pageSource).not.toMatch(/generateStaticParams/);
   });
 
-  it("keeps the artwork browse cache proof limited to the default server-rendered list", () => {
+  it("keeps the artwork browse cache proof limited to bounded default server-rendered list pages", () => {
     const pageSource = readRepoFile("src/app/artwork/page.tsx");
     const loaderSource = readRepoFile(
       "src/components/loaders/viewLoaders/ArtworkListLoader.tsx"
@@ -265,17 +265,33 @@ describe("public route cache policy", () => {
       "src/app/shop/products/[productHandle]/page.tsx"
     );
 
-    expect(loaderSource).toContain("getCachedDefaultArtworkList");
-    expect(loaderSource).toContain("shouldUseDefaultArtworkCache");
+    expect(loaderSource).toContain("getCachedDefaultArtworkListPage");
+    expect(loaderSource).toContain("shouldUseDefaultArtworkCachePage");
     expect(loaderSource).toContain("getArtworkList({");
     expect(cachedListSource).toContain(
       "public-artwork-default-list-page-1-limit-10-most-recent"
+    );
+    expect(cachedListSource).toContain(
+      "public-artwork-default-list-page-2-limit-10-most-recent"
+    );
+    expect(cachedListSource).toContain(
+      "public-artwork-default-list-page-3-limit-10-most-recent"
+    );
+    expect(cachedListSource).toContain(
+      "public-artwork-default-list-page-4-limit-10-most-recent"
+    );
+    expect(cachedListSource).toContain(
+      "public-artwork-default-list-page-5-limit-10-most-recent"
+    );
+    expect(cachedListSource).not.toContain(
+      "public-artwork-default-list-page-6-limit-10-most-recent"
     );
     expect(cachedListSource).toContain(
       "ARTWORK_DEFAULT_LIST_CACHE_REVALIDATE_SECONDS = 10 * 60"
     );
     expect(cachedListSource).toContain('sortBy: "mostRecent"');
     expect(cachedListSource).toContain("page: 1");
+    expect(cachedListSource).toContain("case 5:");
     expect(cachedListSource).toContain("limit: 10");
     expect(cachedListSource).toContain('filterMode: "ALL"');
     expect(publicListRouteSource).toContain("getArtworkList");
@@ -320,7 +336,8 @@ describe("public route cache policy", () => {
     expect(source).toContain("T-247");
     expect(source).toContain("pages 2-5 for latest, oldest, and featured");
     expect(source).toContain("T-249");
-    expect(source).toContain("default `/artwork` browse list");
+    expect(source).toContain("T-251");
+    expect(source).toContain("unfiltered `mostRecent` `/artwork`");
     expect(source).toContain("remain route-dynamic");
   });
 
@@ -342,6 +359,7 @@ describe("public route cache policy", () => {
     expect(source).toContain("T-238 second proof route: collections");
     expect(source).toContain("T-239 makes sitemap one-hour ISR source-owned");
     expect(source).toContain("T-249 artwork proof");
+    expect(source).toContain("T-251 artwork proof");
     expect(source).toContain("T-241 first blog proof");
     expect(source).toContain("T-242 second blog proof");
     expect(source).toContain("T-245 third blog proof");

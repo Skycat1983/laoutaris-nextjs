@@ -16,6 +16,14 @@ jest.mock("@/lib/data/models/articleModel", () => ({
   },
 }));
 
+jest.mock("@/lib/data/models/artworkModel", () => ({
+  ArtworkModel: { modelName: "Artwork" },
+}));
+
+jest.mock("@/lib/data/models/userModel", () => ({
+  UserModel: { modelName: "User" },
+}));
+
 jest.mock("@/lib/transforms/article/transformArticle", () => ({
   transformArticlePopulated: jest.fn(),
 }));
@@ -72,7 +80,14 @@ describe("getArticleBySlugPopulated", () => {
     expect(mockArticleFindOne).toHaveBeenCalledWith({
       slug: "studio-notes",
     });
-    expect(query.populate).toHaveBeenCalledWith("author artwork");
+    expect(query.populate).toHaveBeenCalledWith({
+      path: "author",
+      model: { modelName: "User" },
+    });
+    expect(query.populate).toHaveBeenCalledWith({
+      path: "artwork",
+      model: { modelName: "Artwork" },
+    });
     expect(mockTransformArticlePopulated).toHaveBeenCalledWith(rawArticle);
   });
 

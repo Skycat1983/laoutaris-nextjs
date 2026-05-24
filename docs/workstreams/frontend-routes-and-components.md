@@ -103,6 +103,12 @@ Next.js server/client component boundaries.
 - T-074 moved `ArticleLoader`'s populated article detail data to
   `getArticleBySlugPopulated` while preserving `ArticleView` props, optional
   form rendering, and previous/next navigation.
+- 2026-05-24: `getArticleBySlugPopulated` now imports and passes the referenced
+  `User` and `Artwork` models into article detail populate calls. This fixes
+  direct `/biography/[slug]` requests that failed with Mongoose
+  `MissingSchemaError` when the page compiled without those models registered.
+  `ArticleLoader` now logs structured article-detail failures before preserving
+  the existing generic public error.
 - T-075 moved `BlogDetailLoader` to shared server-only blog detail services
   while preserving `BlogDetail` props and `showComments` behavior.
 - T-076 moved `BlogListLoader` and `BlogSectionLoader` to a shared server-only
@@ -395,9 +401,22 @@ Use browser checks for layout-sensitive changes.
 
 2026-05-22 deployment build fix verification: `npm run build` passed.
 
+2026-05-24 biography detail fix verification:
+`curl -sS -D - http://localhost:3001/biography/early-years -o /tmp/biography-early-years-fixed.html`
+returned `200 OK` and rendered the Early Years biography content; `npm test --
+--runTestsByPath __tests__/unit/loaders/ArticleLoader.test.tsx
+__tests__/unit/data/getArticleBySlugPopulated.test.ts` passed; after removing
+stale `.next` output from an interrupted network-limited build, `npm run build`
+passed with network access.
+
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-24: Fixed direct biography article rendering by making populated
+  article detail reads register/pass their `User` and `Artwork` models
+  explicitly, and added structured loader logging for article-detail service
+  failures. Also removed the obsolete development `devtool` override from
+  `next.config.mjs`, clearing the Next.js dev-server warning.
 - 2026-05-22: Fixed the prototype deployment TypeScript failures by guarding
   the optional frame room-shadow `min` input prop and widening the homepage
   biography prototype order-index map for normalized runtime slug/title
@@ -1182,6 +1201,21 @@ Use browser checks for layout-sensitive changes.
   `mostRecent` pages 2-5 with limit 10, while continuing to reject detail,
   search, shop, broader browse variants, session state, route-level artwork
   ISR, generated params, cache tags, and mutation revalidation for this wave.
+- 2026-05-24: Completed T-251. `/artwork` initial server rendering now uses
+  fixed cached wrappers only for exact unfiltered `mostRecent` pages 1-5 with
+  limit 10, `filterMode: "ALL"`, no taxonomy filters, and no `sortColor`.
+  Page 6-plus, non-default limits, filtered variants, non-default sorts,
+  public artwork APIs, browser follow-up loading, detail routes,
+  collection-scoped detail, Shopify product-link reads, and saved-item/session
+  state stay direct/dynamic.
+- 2026-05-24: Completed T-252 as a docs-only post-browse efficiency scoping
+  pass. It rejected further immediate F-111 cache runtime work and selected
+  T-253 to scope the next F-115 root provider/modal client-island split before
+  any provider move.
+- 2026-05-24: Completed T-253 as a docs-only root provider/modal scoping pass.
+  It selected T-254 to split unused language state out of the active root
+  modal provider path and lazy-load the modal dialog host while preserving
+  global session and modal provider ownership.
 
 ## Next Agent Action
 
@@ -1207,17 +1241,22 @@ T-244, T-245, T-246, and T-247 are complete; sorted `/blog` cache coverage is
 limited to page 1 for all supported sort modes and pages 2-5 only for `latest`,
 `oldest`, and `featured`. T-248 and T-249 are complete; default `/artwork`
 browse list caching is limited to the exact default server-rendered shape.
-T-250 is complete; assign
-[T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md)
-for the next selected F-111 runtime proof. Keep page 6-plus, non-default
-limits, filtered artwork variants, `mostPopular`, `mostFeatured`,
-`colorProximity`, artwork detail, collection-scoped artwork detail, public
-artwork APIs, browser follow-up fetches, search, shop routes, Shopify
-product-link reads, user/session state, root provider/modal ownership,
-generated params, route-level blog or artwork ISR, `popular` pages beyond page
-1, sorted page 6-plus, comment caching, cache tags, mutation revalidation, and
-broader static/ISR migration separate unless a new task scopes one of those
-paths.
+T-251, T-252, and T-253 are complete. Assign
+[T-254 Split modal context language state and lazy host](../tasks/T-254-split-modal-context-language-state-and-lazy-host.md)
+before any additional A-022 runtime work. Keep `ClientContextBoundary`,
+`SessionProvider`, and modal provider ownership rooted, remove only unused
+language state from the active modal provider path, and lazy-load the modal
+dialog host after modal intent. Keep auth/session behavior, saved-item actions,
+account routes, admin dashboard behavior, comment UI, contact/enquiry forms,
+shop behavior, cache policy, route segment config, package files, Playwright
+setup, and CI workflows unchanged during T-254. Keep page 6-plus artwork browse
+variants, non-default limits, filtered artwork variants, `mostPopular`,
+`mostFeatured`, `colorProximity`, artwork detail, collection-scoped artwork
+detail, public artwork APIs, browser follow-up fetches, search, shop routes,
+Shopify product-link reads, user/session state, generated params, route-level
+blog or artwork ISR, `popular` pages beyond page 1, sorted page 6-plus, comment
+caching, cache tags, mutation revalidation, and broader static/ISR migration
+separate unless a new task scopes one of those paths.
 
 If framed print preview implementation is prioritized instead, run T-194
 targeted visual QA and owner review for `/prototype/frame` before Shopify

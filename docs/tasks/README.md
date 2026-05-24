@@ -273,7 +273,10 @@ Planning and prompt packs:
 | [T-248 Scope next public cache target](T-248-scope-next-public-cache-target.md) | Completed | Selected the default `/artwork` browse list as the next safe public cache proof after comparing artwork detail, search, shop routes, product detail, and F-115 provider work. |
 | [T-249 Pilot default artwork browse cache proof](T-249-pilot-default-artwork-browse-cache-proof.md) | Completed | Cached only the default `/artwork` browse list read with a fixed 10-minute wrapper while keeping filtered/detail/API/Shopify/session paths direct. |
 | [T-250 Scope next cache efficiency wave](T-250-scope-next-cache-efficiency-wave.md) | Completed | Selected a bounded `/artwork` browse cache expansion for unfiltered `mostRecent` pages 2-5 after rejecting detail, search, shop, and F-115 pause options for this wave. |
-| [T-251 Pilot bounded artwork browse cache expansion](T-251-pilot-bounded-artwork-browse-cache-expansion.md) | Planned | Expand the default `/artwork` browse cache only to fixed unfiltered `mostRecent` pages 2-5 while keeping broader variants, detail, APIs, search, shop, and session state direct. |
+| [T-251 Pilot bounded artwork browse cache expansion](T-251-pilot-bounded-artwork-browse-cache-expansion.md) | Completed | Expanded the default `/artwork` browse cache only to fixed unfiltered `mostRecent` pages 2-5 while keeping broader variants, detail, APIs, search, shop, and session state direct. |
+| [T-252 Scope post-browse cache or client-island wave](T-252-scope-post-browse-cache-or-client-island-wave.md) | Completed | Paused F-111 runtime cache expansion after the fixed browse proofs and selected an F-115 provider/modal client-island scoping follow-up. |
+| [T-253 Scope root provider modal client-island split](T-253-scope-root-provider-modal-client-island-split.md) | Completed | Selected a provider-preserving modal context cleanup and lazy modal host as the next F-115 runtime slice. |
+| [T-254 Split modal context language state and lazy host](T-254-split-modal-context-language-state-and-lazy-host.md) | Planned | Remove unused language state from the active root modal provider path and lazy-load the modal dialog host without moving session or modal provider ownership. |
 
 ## Rules
 

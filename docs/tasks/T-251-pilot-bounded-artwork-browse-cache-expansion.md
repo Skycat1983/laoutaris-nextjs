@@ -1,6 +1,6 @@
 # T-251 Pilot Bounded Artwork Browse Cache Expansion
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),
@@ -118,6 +118,14 @@ npm run build
 - Finding: F-111.
 - Risk: R-012.
 - Depends on: T-250.
+- Completed on 2026-05-24. `getCachedArtworkListData` now keeps the T-249
+  page 1 wrapper and adds fixed 10-minute wrappers for unfiltered `mostRecent`
+  pages 2-5 with limit 10. `ArtworkListLoader` uses the bounded cached
+  dispatcher only for pages 1-5 when `filterMode` is `ALL`, taxonomy filters
+  are empty, and `sortColor` is absent.
+- Verification passed with the focused Jest command in this task, `git diff
+  --check`, and `npm run build`. The first non-escalated build attempt failed
+  on restricted Google Font downloads; the escalated rerun passed.
 - Selected by T-250 because fixed unfiltered `mostRecent` `/artwork` pages 2-5
   are the remaining lower-risk cache expansion after T-249: MongoDB-backed,
   finite-key, non-personalized, and not coupled to Shopify.

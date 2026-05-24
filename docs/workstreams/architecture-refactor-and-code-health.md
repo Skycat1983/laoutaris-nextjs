@@ -70,7 +70,8 @@ or inconsistent code forward.
   rendering, Node runtime, and verification risks.
 - T-015 inventoried the Next 14 -> 16 code risk: synchronous App Router
   `params`/`searchParams`, synchronous `cookies()`/`headers()` usage,
-  `middleware.ts` -> `proxy.ts`, custom webpack config under Turbopack default,
+  `middleware.ts` -> `proxy.ts`, custom webpack config under Turbopack default
+  (removed on 2026-05-24 after Next.js reverted the dev `devtool` override),
   `next/image` default changes, and lint/tooling migration.
 - T-018 completed the broader `/artwork` list proof route for ADR 0004:
   `ArtworkListLoader` and `GET /api/v2/public/artwork` now share the
@@ -277,6 +278,9 @@ Use targeted import/reference searches for pruning tasks.
   clears both residual advisories yet, and documented the App Router,
   middleware/proxy, headers/cookies, image, webpack/Turbopack, lint, caching,
   and verification surfaces for the future migration.
+- 2026-05-24: Removed the obsolete `next.config.mjs` development `devtool`
+  webpack override. `next dev` no longer reports the improper-devtool warning;
+  remaining Next migration surfaces still need a scoped package-upgrade task.
 - 2026-05-14: Prepared T-018 to extract the public artwork list query into a
   shared server-only data service used by both `ArtworkListLoader` and
   `GET /api/v2/public/artwork`.
@@ -704,13 +708,37 @@ Use targeted import/reference searches for pruning tasks.
   shop, saved-item/session state, public APIs, browser follow-up fetches,
   route-level ISR, generated params, cache tags, and mutation revalidation
   deferred.
+- 2026-05-24: Completed T-251. `ArtworkListLoader` now routes exact unfiltered
+  `mostRecent` `/artwork` pages 1-5 with limit 10 through fixed 10-minute
+  cached service wrappers, with page 1 still using the T-249 wrapper. Page
+  6-plus, non-default limits, taxonomy filters, `filterMode: "ANY"`,
+  `mostPopular`, `mostFeatured`, `colorProximity`, public APIs, browser
+  follow-up fetches, detail reads, saved-item/session state, Shopify product
+  links, route-level artwork ISR, generated params, cache tags, and mutation
+  revalidation remain direct or deferred.
+- 2026-05-24: Completed T-252 as a docs-only post-browse efficiency scoping
+  pass. It paused F-111 runtime cache expansion because the remaining cache
+  candidates now carry higher personalization, query-cardinality, Shopify, or
+  mutation-revalidation risk, and selected T-253 as the next F-115
+  provider/modal client-island scoping task.
+- 2026-05-24: Completed T-253 as a docs-only root provider/modal scoping pass.
+  It selected T-254 as the next F-115 runtime task: remove unused language
+  state from the active root modal provider path and lazy-load the modal dialog
+  host while keeping `ClientContextBoundary`, `SessionProvider`, and modal
+  provider ownership at the existing root boundary.
 
 ## Next Agent Action
 
-T-250 is complete. If continuing the A-022/F-111 cache-efficiency track, assign
-[T-251 Pilot bounded artwork browse cache expansion](../tasks/T-251-pilot-bounded-artwork-browse-cache-expansion.md)
-for the selected fixed unfiltered `mostRecent` `/artwork` pages 2-5 runtime
-proof. Keep page 6-plus, non-default limits, taxonomy filters,
+T-253 is complete. If continuing the A-022 efficiency track, assign
+[T-254 Split modal context language state and lazy host](../tasks/T-254-split-modal-context-language-state-and-lazy-host.md)
+as the next F-115 runtime slice. T-254 should keep `ClientContextBoundary`,
+`SessionProvider`, and modal provider ownership at the existing root boundary,
+remove unused language state from the active modal provider path, and lazy-load
+the modal dialog host after modal intent. Keep saved-item actions,
+auth/session behavior, account routes, admin dashboard behavior, comment UI,
+contact/enquiry forms, shop behavior, cache policy, route segment config,
+package files, Playwright setup, and CI workflows unchanged during T-254.
+Keep page 6-plus artwork browse variants, non-default limits, taxonomy filters,
 `filterMode: "ANY"`, `mostPopular`, `mostFeatured`, `colorProximity`, artwork
 detail routes, collection-scoped artwork detail, public artwork APIs, browser
 follow-up fetches, metadata/JSON-LD detail reads, optional Shopify product-link

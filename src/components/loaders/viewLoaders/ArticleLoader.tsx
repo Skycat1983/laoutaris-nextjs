@@ -118,6 +118,11 @@ export async function ArticleLoader({
       throw error;
     }
 
+    logger.error("loader.public.article_detail.failed", {
+      error,
+      slug,
+      section,
+    });
     throw new Error("Failed to fetch article");
   }
 
