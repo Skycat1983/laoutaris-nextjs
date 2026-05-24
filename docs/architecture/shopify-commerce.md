@@ -95,6 +95,19 @@ contract and ownership model define variant IDs, line items, availability
 checks, and whether checkout is owned by a Shopify-hosted flow or an app-managed
 cart flow.
 
+Product detail pages render the shop-specific sale gallery from
+`src/components/shop/product-detail/ShopProductSaleGallery.tsx` as the common
+layout for prints, original artwork, books, and generic products. That surface
+uses the same hosted Shopify purchase URL or enquiry fallback described above.
+Available prints can show frame and mat dropdowns plus room previews when a
+linked archive artwork image or Shopify product image has usable dimensions.
+Original artwork products can show generated room previews without print-only
+frame/mat controls. Book products use ordered Shopify product images for cover
+and page-gallery slots instead of generated room scenes. The print controls are
+preview-only local controls: they do not select Shopify variants, alter price
+or availability, persist to the database, create cart lines, or change enquiry
+submissions.
+
 ## Product Types
 
 | Type | Meaning |
@@ -132,7 +145,7 @@ saving.
 
 ## Implementation Notes
 
-- Product availability, price, variants, image, and handle should come from
+- Product availability, price, variants, images, and handle should come from
   Shopify.
 - Public product DTOs expose Shopify's hosted product URL only through
   `SimpleProduct.onlineStoreUrl` after URL validation. Missing, empty,
@@ -143,6 +156,10 @@ saving.
   `SimpleProduct.variants`. This is contract preparation only; it does not
   choose cart ownership, checkout line-item behavior, or visible variant
   selection.
+- Public product DTOs preserve the ordered Shopify product image list in
+  `SimpleProduct.images` with URL, alt text, width, and height. Product detail
+  pages use this for book cover/page gallery slots and as a fallback preview
+  source when no linked archive artwork image is available.
 - Public product DTOs preserve Shopify `descriptionHtml`, but product detail
   pages still render the existing plain `description`. Rich description
   rendering requires a separate sanitization and design decision.

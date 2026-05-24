@@ -16,6 +16,10 @@ Implemented foundation:
 - `src/lib/framePreview/geometry.ts` calculates relative pixel-based preview
   geometry and switches to physical print scaling only when complete print
   dimensions and profile widths are available.
+- `src/lib/framePreview/roomScenes.ts` defines the shared generated room-scene
+  catalog, shop product room subset, centered hanging zone, room profile
+  scaling helpers, and deterministic room shadow styles used by the prototype
+  route and live print product pages.
 - `src/components/shop/frame-preview/FramedArtworkPreview.tsx` renders a
   standalone framed artwork preview from the geometry helper without owning
   modal state, carousel controls, product eligibility, checkout, or enquiry
@@ -32,6 +36,10 @@ Implemented foundation:
 - `src/components/shop/frame-preview/FrameMaterialControls.tsx` renders the
   modal's frame-material controls without product, Shopify, checkout, or
   enquiry behavior.
+- `src/components/shop/frame-preview/RoomFramedArtworkPreview.tsx` composites a
+  framed preview into one shared room scene using the extracted room helpers and
+  the rail renderer, without owning product state, checkout, or enquiry
+  behavior.
 - `src/app/prototype/frame/page.tsx` exposes the first noindex visual review
   route for the feature.
 - `src/components/prototypes/frame/FramePreviewPrototype.tsx` uses fixture
@@ -49,21 +57,31 @@ Implemented foundation:
   south-east corner shadows from the bottom-left and top-right frame points to
   better match
   top-left room lighting. Fixture metrics are measured from the source images
-  so the artwork box matches the visible image ratio.
+  so the artwork box matches the visible image ratio. The prototype now imports
+  shared room-scene constants and room style helpers from
+  `src/lib/framePreview/roomScenes.ts` rather than owning those production-safe
+  pieces locally.
 - `public/prototypes/frame-backgrounds/` stores the current generated
   blank-wall room scenes for `/prototype/frame` review, including regenerated
   Scandinavian white-wall and white plaster hallway scenes plus additional
-  bright white-wall candidates for owner comparison. These are prototype assets
-  and are not loaded by product pages.
+  bright white-wall candidates for owner comparison. The first four shared
+  scenes are also used by print product detail sale galleries as preview-only
+  room contexts when a usable preview image is available.
 - `src/lib/framePreview/productEligibility.ts` centralizes product metadata
   eligibility and linked-artwork preview payload normalization for product
   detail pages.
 - `src/components/shop/frame-preview/FramedPrintPreviewLauncher.tsx` provides
-  the product-page client island for the `Preview Frame Options` button and
-  modal open state.
-- `src/app/shop/products/[productHandle]/page.tsx` renders the launcher only
-  when the linked product is an available print with a valid linked archive
-  artwork image URL and positive pixel dimensions.
+  the older product-page client island for the `Preview Frame Options` button
+  and modal open state. It remains available for focused modal coverage.
+- `src/components/shop/product-detail/ShopProductSaleGallery.tsx` renders the
+  current product detail sale presentation for shop products: a shop-specific
+  sale panel, raw image preview, optional frame and mat dropdowns for available
+  prints, and optional room-context gallery items.
+- `src/app/shop/products/[productHandle]/page.tsx` renders the sale gallery as
+  the default product detail layout. It prefers linked archive artwork imagery
+  when available and falls back to Shopify product imagery with positive image
+  dimensions. Books and originals use the same sale shell without print-only
+  frame and room controls.
 
 Not yet implemented: Shopify option mapping, physical dimension persistence, or
 checkout/enquiry integration.
@@ -84,24 +102,24 @@ The first supported surface is:
 /shop/products/[productHandle]
 ```
 
-The preview should initially be available only for print products that can be
-linked back to one MongoDB artwork through the existing Shopify
-`mongodb_artwork_id` metafield path.
+The sale layout is the default product detail shell for Shopify products. Print
+room previews are available when the product can provide a usable linked
+archive artwork image or Shopify product image with positive dimensions.
 
 Initial behavior is informational. It must not imply cart, checkout, payment,
 shipping, refund, guarantee, or selected-variant behavior until Shopify variant
 or line-item ownership is explicitly implemented.
 
-Before product-page integration, use an isolated noindex prototype route for
-visual experimentation:
+Use the isolated noindex prototype route for visual experimentation before
+rolling prototype-only visual changes into live product pages:
 
 ```text
 /prototype/frame
 ```
 
 That route can render fixture artwork metrics, selected real artwork examples
-where safe, and frame/material controls without touching live shop routes,
-checkout/enquiry behavior, or public navigation.
+where safe, and frame/material controls without touching checkout/enquiry
+behavior or public navigation.
 
 ## Print Size Boundary
 
@@ -325,18 +343,35 @@ behavior, material direction, and commerce positioning first.
 
 ## Product Detail UX
 
-Recommended first UI:
+Current product detail UI:
 
-- Secondary button near the product image or enquiry panel:
-  `Preview Frame Options`.
-- Modal dialog with one large framed preview.
-- Previous and next arrow buttons to cycle frame materials.
-- Optional material swatches or compact labels below the preview.
-- Close button and Escape-key support.
+- A shop-specific sale panel on `/shop/products/[productHandle]` for print,
+  original artwork, book, and generic Shopify products.
+- Product heading, vendor, Shopify price, product type or linked-artwork
+  medium, and the existing purchase/enquiry CTA boundary. Visible print and
+  original artwork headings trim comma suffixes such as
+  `No.026, Limited Edition Print` to `No.026`; product metadata, structured
+  data, and breadcrumbs use the same cropped display title.
+- A raw gallery item first when preview imagery exists. It renders only the
+  source image and does not include frame, mat, room background, or shadow.
+- Available print products with preview imagery show frame and mat dropdowns
+  plus four room-context gallery items using the shared room-scene subset.
+  Originals can show the same generated room-context gallery with default
+  presentation but no print-only frame/mat controls.
+- Books use ordered Shopify product images in the gallery slots instead of
+  generated wall backgrounds, so book cover/page images can be selected into the
+  main viewport.
+- Selecting a lower gallery item slides the current preview out to the right
+  and the next preview in from the left. Selecting an item above the current one
+  reverses that direction. The main viewport keeps a fixed height so different
+  image dimensions do not resize the page layout.
+- Physical dimensions are shown only if normalized physical dimensions become
+  available. Pixel dimensions are not presented as customer-facing centimeter
+  dimensions.
 
-The control text should remain preview-oriented until a Shopify variant
-selection is implemented. Use "preview" language, not "choose" or "buy with",
-for the first implementation.
+The controls are preview-only until Shopify variant selection is implemented.
+Do not label them as purchasable options, and do not use app-owned cart
+language.
 
 Do not store frame selection in the URL, persist it to the database, or pass it
 to the enquiry flow in the MVP. Those behaviors become valid only when the
@@ -347,8 +382,11 @@ selection maps to a real Shopify option or an owner-approved enquiry field.
 Initial release:
 
 - Frame profiles are local preview options.
-- Selection does not mutate product state.
-- Enquiry flow remains unchanged.
+- Mat profiles are local preview options.
+- Selection does not mutate product state, persist to a database, map to
+  Shopify variants, or change the enquiry payload.
+- The product detail CTA still renders `Purchase on Shopify` when Shopify
+  exposes a valid hosted URL and `Enquire About This Product` as the fallback.
 
 Later Shopify-backed release:
 
@@ -358,7 +396,8 @@ Later Shopify-backed release:
 - The modal can become a selection surface only after the product detail page
   owns real variant selection and checkout/enquiry handoff semantics.
 
-The current app has an enquiry-led purchase handoff. Do not introduce cart or
+The current app uses Shopify-hosted product URLs when available and an enquiry
+fallback when a hosted URL is missing. Do not introduce app-owned cart or
 checkout behavior as part of the preview MVP.
 
 If the owner wants the enquiry form to mention a frame before Shopify-backed
@@ -369,24 +408,25 @@ added silently by the preview modal task.
 
 The product detail page should remain resilient:
 
-- If linked artwork cannot be loaded, hide the preview launcher.
-- If artwork image metrics are invalid, hide the preview launcher.
+- If linked artwork cannot be loaded, fall back to Shopify product imagery when
+  it has usable dimensions.
+- If no usable preview image exists, keep the sale panel and render a neutral
+  no-image preview state.
 - If one frame profile is malformed, fail tests before release rather than
   failing at runtime.
-- If the modal image fails to load in the browser, show the normal image
-  fallback state and keep close/navigation controls usable.
-- If no eligible frame profiles exist, hide the launcher.
+- If a room background image fails to load in the browser, keep the raw artwork
+  item and product purchase/enquiry boundary usable.
+- If no eligible frame profiles exist, do not render broken frame controls.
 
 ## Accessibility
 
-The modal implementation should include:
+The current product detail implementation should include:
 
-- `dialog` semantics through the existing modal/dialog pattern or shadcn
-  primitives if already present.
-- Focus management when opening and closing.
-- Close button with an accessible label.
-- Arrow buttons with accessible labels for previous and next frame material.
-- Keyboard support for Escape and, if implemented, left/right frame navigation.
+- Native labelled frame and mat dropdown controls.
+- Gallery items implemented as buttons with clear accessible labels and selected
+  state.
+- Raw artwork and room preview images with meaningful alt text in the selected
+  main preview.
 - No hover-only functionality.
 - Text and controls that fit mobile widths without overlap.
 
@@ -416,17 +456,23 @@ Component/page tests should cover:
   modal launch behavior.
 - Product eligibility helper behavior for print, book, original, and unknown
   product metadata.
-- Eligible print products render the preview button.
-- Unlinked products, books, and non-print products do not render the button.
-- Modal open, close, and frame cycling behavior.
-- The enquiry CTA remains unchanged.
+- Print, original artwork, book, and generic products render the sale gallery.
+- Unlinked print products can render print controls from Shopify product imagery
+  when image dimensions are available.
+- The raw artwork gallery item remains unframed.
+- Room thumbnail selection updates the main preview.
+- Frame and mat dropdown changes update room thumbnails and the selected room
+  preview without altering the raw artwork item.
+- Books, originals, unavailable products, and invalid image-metric cases do not
+  render print-only frame or room controls.
+- Hosted Shopify purchase and enquiry fallback CTAs remain unchanged.
 
 Manual or browser checks should cover:
 
 - One portrait print.
 - One landscape print.
 - One square print.
-- Mobile viewport modal fit.
+- Mobile viewport sale gallery fit.
 - No misleading checkout, payment, shipping, refund, or guarantee copy.
 
 ## Open Decisions

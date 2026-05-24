@@ -348,7 +348,9 @@ refactoring without turning every change into a manual QA pass.
   navigation pending feedback in desktop search, mobile drawer search, and the
   home artwork filter hero. T-258 completed focused coverage for the admin
   dashboard `@main` loading skeleton. T-259 completed the targeted delayed
-  route-transition check.
+  route-transition check. T-260 completed focused coverage for account-menu
+  internal route `Link` semantics, disabled authenticated/unauthenticated
+  states, logout behavior, and the lazy account island source boundary.
 - Add native-package/runtime smoke expectations when bcrypt, Next, auth
   configuration, or deployment tracing changes.
 - Isolate or document Google Fonts and live MongoDB dependencies for CI build
@@ -1827,15 +1829,50 @@ npm run lint
   and rooted provider ownership. The focused account/navigation/import-boundary
   Jest slice, `npm run build`, targeted source/chunk searches, and
   `git diff --check` passed.
+- 2026-05-24: Completed T-260 coverage. Extended focused account-nav tests for
+  App Router `Link` semantics on enabled account dropdown routes, disabled
+  authenticated/unauthenticated menu states, preserved logout behavior, and a
+  source guard against raw account-menu `<a>`/`href="#"` route placeholders.
+  Verification passed with
+  `npm test -- --runTestsByPath __tests__/unit/accountNavigationLazyIsland.test.tsx __tests__/unit/accountUserClientErrorStates.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `git diff --check`, and `npm run lint`.
+- 2026-05-24: Completed T-261 coverage. Extended
+  `__tests__/unit/shopProductDetailPage.test.tsx` for the print sale gallery
+  raw-artwork item, room selection, frame/mat dropdown updates, hosted Shopify
+  purchase preservation, enquiry fallback preservation, and graceful fallback
+  product states. Adjacent frame-preview and prototype tests were rerun after
+  extracting shared room helpers.
+- 2026-05-24: Extended T-261 coverage after owner clarification. Product detail
+  tests now cover an unlinked print using Shopify product image dimensions in
+  the sale gallery, linked originals and books using the same sale shell without
+  print frame controls, graceful no-image preview behavior, and Shopify image
+  dimension preservation in product transforms.
+- 2026-05-24: Extended T-261 coverage for the carousel/title follow-up. Product
+  detail tests now cover cropped visible print headings, directional gallery
+  slide state, generated room previews for originals, book page images in the
+  side gallery, and cropped featured artwork labels. Shopify transform tests now
+  cover ordered product image preservation. Structured-data tests now cover the
+  cropped print display title in product metadata, JSON-LD, and breadcrumbs.
+- 2026-05-24: Verified the T-261 main-preview collapse fix with focused product
+  detail tests, lint, build, and a headless Chrome screenshot confirming the
+  selected artwork renders in the center viewport.
+- 2026-05-24: Extended T-261 product-detail regression coverage so selected
+  room previews and vertical room thumbnails both assert the fill-and-crop
+  viewport classes used to keep wall-preview proportions consistent.
 
 ## Next Agent Action
 
-The core A-024 loading-state coverage sequence is complete. Assign
-[T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md)
-for the remaining F-119 account-menu route semantics, with focused account-nav
-coverage only. Do not install Playwright for follow-up loading-state work unless
-a separate scoped task approves the browser tooling, fixture plan, command
-posture, and artifact budget.
+The A-024 loading-state and account-navigation coverage sequence is complete;
+do not reassign F-118 through F-122 unless a regression appears. Do not install
+Playwright for follow-up loading-state work unless a separate scoped task
+approves the browser tooling, fixture plan, command posture, and artifact
+budget.
+
+T-261 shop product detail mockup coverage is complete. If a visual-QA follow-up
+is assigned, keep browser tooling scoped to named print, original artwork, and
+book product handles, targeted selectors, and minimal screenshots per the
+testing runbook; do not install or expand Playwright without a separate scoped
+task.
 
 T-230 import-boundary repair coverage is complete; do not reassign it unless
 the client import-boundary guard or `SignUpForm` direct constants import

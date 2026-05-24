@@ -19,7 +19,9 @@ import {
   buildArtworkBreadcrumbJsonLd,
   buildBlogBreadcrumbJsonLd,
   buildCollectionArtworkBreadcrumbJsonLd,
+  buildProductDetailMetadata,
   buildProductBreadcrumbJsonLd,
+  buildProductJsonLd,
 } from "@/lib/metadata/publicDetailMetadata";
 
 jest.mock("@/lib/data/services/getCachedBiographyArticleData", () => ({
@@ -274,6 +276,42 @@ describe("public breadcrumb structured data", () => {
         },
       ],
     });
+  });
+
+  it("trims product metadata and structured data titles for print products", () => {
+    const printProduct = {
+      ...product,
+      title: "No.034, Limited Edition Print",
+      image: {
+        url: "https://cdn.shopify.com/s/files/no-034.jpg",
+        altText: "No.034, Limited Edition Print",
+      },
+    } as never;
+    const metadata = buildProductDetailMetadata(printProduct);
+    const productJsonLd = buildProductJsonLd(printProduct);
+    const breadcrumbJsonLd = buildProductBreadcrumbJsonLd(printProduct);
+
+    expect(metadata).toMatchObject({
+      title: "No.034",
+      openGraph: {
+        title: "No.034",
+        images: [
+          {
+            alt: "No.034",
+          },
+        ],
+      },
+      twitter: {
+        title: "No.034",
+      },
+    });
+    expect(productJsonLd.name).toBe("No.034");
+    expect(breadcrumbJsonLd.itemListElement).toContainEqual(
+      expect.objectContaining({
+        name: "No.034",
+        item: getPublicSitePathUrl("/shop/products/blue-figure-print"),
+      })
+    );
   });
 
   it("renders one entity JSON-LD script and one breadcrumb JSON-LD script per covered detail component", async () => {

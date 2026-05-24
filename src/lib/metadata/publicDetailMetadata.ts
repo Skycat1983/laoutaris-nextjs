@@ -3,6 +3,8 @@ import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { CollectionFrontendPopulated } from "@/lib/data/types/collectionTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import { getShopProductKind } from "@/lib/shop/productClassification";
+import { getShopProductDisplayTitle } from "@/lib/shop/productDisplay";
 
 const siteName = "Joseph Laoutaris Art Archive";
 
@@ -147,13 +149,22 @@ const artworkMetadata = (
   };
 };
 
-const productDescription = (product: SimpleProduct) =>
-  truncateDescription(
+const getProductDisplayTitle = (product: SimpleProduct) => {
+  const productKind = getShopProductKind(product);
+
+  return getShopProductDisplayTitle(normalizeText(product.title), productKind);
+};
+
+const productDescription = (product: SimpleProduct) => {
+  const title = getProductDisplayTitle(product);
+
+  return truncateDescription(
     normalizeText(product.description) ||
       normalizeText(product.productType) ||
       normalizeText(product.vendor) ||
-      normalizeText(product.title)
+      title
   );
+};
 
 export const buildMissingPublicDetailMetadata = (
   contentType: PublicDetailContentType
@@ -277,16 +288,23 @@ export const buildCollectionArtworkDetailMetadata = (
 export const buildProductDetailMetadata = (
   product: SimpleProduct
 ): Metadata => {
-  const title = normalizeText(product.title);
-  const description = productDescription(product);
-  const canonicalUrl = getPublicSitePathUrl(
-    productDetailPath(product.handle)
+  const productKind = getShopProductKind(product);
+  const title = getShopProductDisplayTitle(
+    normalizeText(product.title),
+    productKind
   );
+  const description = productDescription(product);
+  const canonicalUrl = getPublicSitePathUrl(productDetailPath(product.handle));
   const images = product.image
     ? [
         {
           url: product.image.url,
-          alt: product.image.altText || title,
+          alt: product.image.altText
+            ? getShopProductDisplayTitle(
+                normalizeText(product.image.altText),
+                productKind
+              )
+            : title,
         },
       ]
     : undefined;
@@ -393,13 +411,11 @@ export const buildCollectionArtworkJsonLd = (
 };
 
 export const buildProductJsonLd = (product: SimpleProduct): JsonLdObject => {
-  const canonicalUrl = getPublicSitePathUrl(
-    productDetailPath(product.handle)
-  );
+  const canonicalUrl = getPublicSitePathUrl(productDetailPath(product.handle));
   const jsonLd: JsonLdObject = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: normalizeText(product.title),
+    name: getProductDisplayTitle(product),
     description: productDescription(product),
     url: canonicalUrl,
     mainEntityOfPage: {
@@ -494,7 +510,10 @@ export const buildProductBreadcrumbJsonLd = (
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
     { name: "Products", path: "/shop/products" },
-    { name: product.title, path: productDetailPath(product.handle) },
+    {
+      name: getProductDisplayTitle(product),
+      path: productDetailPath(product.handle),
+    },
   ]);
 
 export const serializeJsonLd = (jsonLd: JsonLdObject) =>

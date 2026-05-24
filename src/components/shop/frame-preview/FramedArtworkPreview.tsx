@@ -35,6 +35,7 @@ export type FramedArtworkPreviewProps = {
   renderMode?: FrameRenderMode;
   sizingMode?: FrameSizingMode;
   priority?: boolean;
+  unoptimized?: boolean;
   className?: string;
 };
 
@@ -238,6 +239,7 @@ type PreviewContentProps = {
   geometry: FramePreviewGeometry;
   matProfile: MatProfile;
   priority: boolean;
+  unoptimized: boolean;
 };
 
 const PreviewContent = ({
@@ -245,6 +247,7 @@ const PreviewContent = ({
   geometry,
   matProfile,
   priority,
+  unoptimized,
 }: PreviewContentProps) => {
   const matBackground =
     matProfile.id === DEFAULT_MAT_PROFILE_ID ? "transparent" : matProfile.color;
@@ -266,6 +269,7 @@ const PreviewContent = ({
         width={imageWidth}
         height={imageHeight}
         priority={priority ? true : undefined}
+        unoptimized={unoptimized ? true : undefined}
         sizes={`${renderedImageWidth}px`}
         className="block object-contain"
         style={{
@@ -283,6 +287,7 @@ type SimpleFrameRendererProps = {
   matProfile: MatProfile;
   geometry: FramePreviewGeometry;
   priority: boolean;
+  unoptimized: boolean;
 };
 
 const SimpleFrameRenderer = ({
@@ -291,6 +296,7 @@ const SimpleFrameRenderer = ({
   matProfile,
   geometry,
   priority,
+  unoptimized,
 }: SimpleFrameRendererProps) => (
   <div
     className="shadow-2xl"
@@ -305,6 +311,7 @@ const SimpleFrameRenderer = ({
       geometry={geometry}
       matProfile={matProfile}
       priority={priority}
+      unoptimized={unoptimized}
     />
   </div>
 );
@@ -317,6 +324,7 @@ const RailFrameRenderer = ({
   matProfile,
   geometry,
   priority,
+  unoptimized,
 }: RailFrameRendererProps) => {
   const frameWidthPx = geometry.frame.widthPx;
 
@@ -391,6 +399,7 @@ const RailFrameRenderer = ({
           geometry={geometry}
           matProfile={matProfile}
           priority={priority}
+          unoptimized={unoptimized}
         />
         <span
           aria-hidden="true"
@@ -433,6 +442,7 @@ export const FramedArtworkPreview = ({
   renderMode = "simple",
   sizingMode = "fitOuter",
   priority = false,
+  unoptimized = false,
   className,
 }: FramedArtworkPreviewProps) => {
   const geometryInput = {
@@ -472,6 +482,7 @@ export const FramedArtworkPreview = ({
             matProfile={matProfile}
             geometry={geometry}
             priority={priority}
+            unoptimized={unoptimized}
           />
         ) : (
           <SimpleFrameRenderer
@@ -480,6 +491,7 @@ export const FramedArtworkPreview = ({
             matProfile={matProfile}
             geometry={geometry}
             priority={priority}
+            unoptimized={unoptimized}
           />
         )}
       </div>

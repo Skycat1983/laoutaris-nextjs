@@ -503,6 +503,8 @@ describe("Shopify product transforms", () => {
         image: {
           url: "https://example.test/variant.jpg",
           altText: "Variant image",
+          width: 800,
+          height: 800,
         },
       },
       {
@@ -515,6 +517,81 @@ describe("Shopify product transforms", () => {
         },
         compareAtPrice: null,
         image: null,
+      },
+    ]);
+  });
+
+  it("preserves top-level Shopify image dimensions for product detail previews", async () => {
+    mockShopifyResponse({
+      productByHandle: createShopifyProduct({
+        images: {
+          edges: [
+            {
+              node: {
+                id: "gid://shopify/ProductImage/detail",
+                url: "https://example.test/detail.jpg",
+                altText: "Detail image",
+                width: 1600,
+                height: 1200,
+              },
+            },
+          ],
+        },
+      }),
+    });
+
+    const result = await getProductByHandle("test-product");
+
+    expect(result?.image).toEqual({
+      url: "https://example.test/detail.jpg",
+      altText: "Detail image",
+      width: 1600,
+      height: 1200,
+    });
+  });
+
+  it("preserves ordered Shopify product images for book page galleries", async () => {
+    mockShopifyResponse({
+      productByHandle: createShopifyProduct({
+        images: {
+          edges: [
+            {
+              node: {
+                id: "gid://shopify/ProductImage/cover",
+                url: "https://example.test/book-cover.jpg",
+                altText: "Book cover",
+                width: 900,
+                height: 1200,
+              },
+            },
+            {
+              node: {
+                id: "gid://shopify/ProductImage/page-2",
+                url: "https://example.test/book-page-2.jpg",
+                altText: "Book page 2",
+                width: 900,
+                height: 1200,
+              },
+            },
+          ],
+        },
+      }),
+    });
+
+    const result = await getProductByHandle("test-product");
+
+    expect(result?.images).toEqual([
+      {
+        url: "https://example.test/book-cover.jpg",
+        altText: "Book cover",
+        width: 900,
+        height: 1200,
+      },
+      {
+        url: "https://example.test/book-page-2.jpg",
+        altText: "Book page 2",
+        width: 900,
+        height: 1200,
       },
     ]);
   });

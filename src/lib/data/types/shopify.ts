@@ -74,16 +74,20 @@ export interface ShopifyMetafield {
   type: string;
 }
 
+export interface SimpleProductImage {
+  url: string;
+  altText: string | null;
+  width?: number | null;
+  height?: number | null;
+}
+
 export interface SimpleProductVariant {
   id: string;
   title: string;
   availableForSale: boolean;
   price: ShopifyMoney;
   compareAtPrice: ShopifyMoney | null;
-  image: {
-    url: string;
-    altText: string | null;
-  } | null;
+  image: SimpleProductImage | null;
 }
 
 // Simplified product type for UI display
@@ -100,10 +104,8 @@ export interface SimpleProduct {
   price: string;
   currencyCode: string;
   compareAtPrice: string | null;
-  image: {
-    url: string;
-    altText: string | null;
-  } | null;
+  image: SimpleProductImage | null;
+  images?: SimpleProductImage[];
   availableForSale: boolean;
   variants: SimpleProductVariant[];
 

@@ -108,4 +108,5 @@ the lazy import boundary or root/header chunk ownership.
   semantics, disabled states, logout behavior, and the T-256 lazy account
   island/source boundary.
 - Verification passed with
-  `npm test -- --runTestsByPath __tests__/unit/accountNavigationLazyIsland.test.tsx __tests__/unit/accountUserClientErrorStates.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`.
+  `npm test -- --runTestsByPath __tests__/unit/accountNavigationLazyIsland.test.tsx __tests__/unit/accountUserClientErrorStates.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `git diff --check`, and `npm run lint`.

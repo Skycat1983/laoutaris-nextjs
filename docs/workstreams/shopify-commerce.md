@@ -51,19 +51,28 @@ production while preserving MongoDB as the archive source of truth.
   [framed-print-preview-implementation-plan.md](../tasks/framed-print-preview-implementation-plan.md),
   and
   [framed-print-preview-owner-review-plan.md](../prototypes/framed-print-preview-owner-review-plan.md).
-  It should start as a pixel-based, preview-only modal on eligible print product
-  pages and remain separate from checkout/cart work until Shopify option
-  ownership is decided.
+  It remains pixel-based and preview-only on eligible print product pages and
+  separate from checkout/cart work until Shopify option ownership is decided.
 - The first framed print preview review surface now exists at noindex
   `/prototype/frame`. It uses fixture artwork metrics and local frame/mat
   profiles only.
-- Available print product detail pages with valid linked archive artwork image
-  metrics now render a preview-only `Preview Frame Options` launcher. Selection
-  state is not persisted, submitted to enquiries, or mapped to Shopify variants.
+- Product detail pages now render a shop-specific sale gallery as the default
+  layout for prints, original artwork, books, and generic products. Available
+  print products with usable linked artwork or Shopify product image dimensions
+  also render four shared room-context items and preview-only frame/mat
+  dropdowns. Original artwork products can render the generated room contexts
+  without print-only controls. Book products use ordered Shopify product images
+  for cover/page gallery slots. Selection state is not persisted, submitted to
+  enquiries, mapped to Shopify variants, or used to change price or
+  availability.
 - `/prototype/frame` now has a prototype-only rail renderer with mitred seams,
   bevel styling, non-repeating procedural material panel backgrounds, neutral
-  sample controls, and mat margin presets. Product-page previews still use the
-  simple renderer until visual review approves rollout.
+  sample controls, and mat margin presets. T-261 extracted the shared room-scene
+  pieces and uses the rail renderer for eligible product-page room previews
+  while leaving prototype-only controls isolated.
+- The owner-supplied shop product detail mockup has been implemented as the
+  common product detail layout without changing the existing archive info card
+  and without adding app-owned cart behavior.
 - `/prototype/frame` also includes generated blank-wall room backgrounds for
   modern gallery, townhouse study, regenerated Scandinavian white-wall and
   white plaster hallway contexts, plus five additional bright white-wall
@@ -73,7 +82,8 @@ production while preserving MongoDB as the archive source of truth.
   the framed object around the print. The room composite includes prototype-only
   controls for right/down shadow offset, edge blur, diffusion, spread, and
   darkness plus short south-east corner-shadow lines from the bottom-left and
-  top-right frame points. Product-page previews remain unchanged.
+  top-right frame points. Eligible product detail sale galleries reuse the
+  first four shared room backgrounds without prototype-only shadow controls.
 - `/prototype/frame` buffers room background changes until the requested room
   image has loaded and uses measured fixture artwork dimensions so prototype
   mat spacing does not appear uneven from asset/metric ratio drift.
@@ -554,8 +564,46 @@ Add targeted tests as shop behavior is hardened.
   policy target URL wiring remains blocked until real Shopify-hosted policy
   URLs are supplied; do not add placeholder sale, shipping, return, refund, tax,
   or cancellation policy links.
+- 2026-05-24: Prepared T-261 for the owner-requested shop product detail sale
+  gallery mockup. It scopes a new shop-specific sale panel and artwork/room
+  gallery while preserving the current Shopify-hosted purchase or enquiry
+  boundary and keeping app-owned cart behavior out of scope.
+- 2026-05-24: Completed T-261. Eligible linked print product detail pages now
+  render a shop-specific sale gallery with a raw artwork item, four shared room
+  previews, frame and mat dropdowns backed by local profile catalogs, Shopify
+  price display, and the existing hosted Shopify purchase or enquiry fallback.
+  This was later expanded the same day so books, originals, unlinked products,
+  and invalid image-metric cases use the same sale shell without broken
+  print-only controls.
+- 2026-05-24: Expanded the T-261 product detail behavior after owner
+  clarification. `/shop/products/[productHandle]` now uses the sale gallery as
+  the default layout for prints, originals, books, and generic products.
+  Available prints can use either linked archive artwork imagery or Shopify
+  product imagery for the frame/room preview controls; originals can use
+  generated room-background previews without print-only controls; books use
+  ordered Shopify product images for cover/page gallery slots.
+- 2026-05-24: Added the T-261 carousel/title follow-up. Visible print and
+  original artwork headings trim comma suffixes, the sale gallery reserves a
+  fixed main viewport and directional slide transitions, and Shopify product
+  image lists are preserved for book galleries. Product metadata, JSON-LD, and
+  breadcrumbs use the same cropped display title for print and original
+  products.
+- 2026-05-24: Fixed T-261 sale gallery preview rendering after local visual QA:
+  the desktop grid now reserves a usable center preview width, and the selected
+  raw product image fills that fixed viewport with `object-contain`.
+- 2026-05-24: Adjusted T-261 vertical room thumbnails to use the same cropped
+  wall viewport behavior as the focused room preview so wall-preview proportions
+  stay consistent across gallery states.
 
 ## Next Agent Action
+
+Prepare a narrow owner-review or visual-QA follow-up for the live T-261 sale
+gallery using one unlinked print handle, one original artwork handle, and one
+book handle. Keep the review scoped to layout, selected room backgrounds,
+print-only frame/mat presentation, and CTA wording. Do not add app-owned cart or
+checkout, Shopify option mapping, selected frame/mat persistence, sale-policy
+copy, or physical dimension migration without a separate task and owner
+decision.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)
@@ -579,9 +627,9 @@ now, or whether to add real texture assets first. Confirm buffered room
 switching, centered hanging placement, fixed-print mat behavior, and even mat
 spacing across the corrected prototype artwork samples. Tune and record the
 right/down wall shadow values that work best across the selected room
-backgrounds. Record eligible and ineligible handles, visual notes, and owner
-decisions before starting Shopify option mapping, checkout/cart work, enquiry
-mutation, or physical dimension migration.
+backgrounds. Record print, original artwork, and book handles, visual notes,
+and owner decisions before starting Shopify option mapping, checkout/cart work,
+enquiry mutation, or physical dimension migration.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

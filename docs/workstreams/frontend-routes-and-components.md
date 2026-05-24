@@ -347,10 +347,10 @@ Next.js server/client component boundaries.
   conversions; Phase 2 completed `/search` and `/artwork` route shells. Phase
   3 completed the `/shop/products` route shell. T-258 completed the admin
   dashboard `@main` loading skeleton. T-259 completed the targeted
-  route-transition check.
-- Replace remaining account menu internal route anchors with App Router-aware
-  navigation and appropriate pending feedback after the T-256 account-menu lazy
-  island.
+  route-transition check. T-260 completed the remaining account-menu internal
+  route semantics by replacing raw anchors with App Router `Link` navigation
+  while preserving disabled states, logout behavior, and the T-256 lazy
+  account island.
 - Add a matching admin dashboard `@main` parallel-route loading skeleton so
   segment switches do not leave the main panel blank while `@feed` has a
   skeleton.
@@ -1295,14 +1295,47 @@ passed with network access.
   account chunk after account-menu intent. Existing session and modal provider
   ownership stayed rooted, and account dropdown behavior stayed covered by
   focused unit tests.
+- 2026-05-24: Completed T-260 for A-024/F-119. The account dropdown now uses
+  App Router `Link` semantics for enabled internal profile, sign-in, and
+  sign-up menu routes; disabled account/auth states render as non-navigating
+  buttons; and logout remains a disabled-aware action using the existing
+  `signOut({ redirect: false })` and modal callback behavior. Focused account
+  navigation and lazy-island tests cover the route semantics and source
+  boundary.
+- 2026-05-24: Completed T-261 for the owner-requested shop product detail
+  mockup. Product detail pages now use a shop-specific client sale gallery.
+  Print products with usable preview imagery show a raw preview, four room
+  preview buttons, frame and mat dropdowns, and preserved hosted Shopify
+  purchase or enquiry CTAs.
+- 2026-05-24: Expanded T-261 after owner clarification so
+  `/shop/products/[productHandle]` uses the sale gallery as the common product
+  detail layout for prints, originals, books, and generic products. Print
+  products keep the frame/room controls when usable preview imagery exists;
+  originals can show generated room previews without print-only controls; books
+  use Shopify product images in the gallery slots.
+- 2026-05-24: Added the T-261 carousel/title follow-up. Visible print and
+  original artwork headings trim comma suffixes, the main preview has a fixed
+  height, and gallery selection animates left/right based on the clicked item's
+  position. Product detail metadata, product JSON-LD, and breadcrumbs now use
+  the same cropped display title for print and original products.
+- 2026-05-24: Fixed T-261 desktop sale gallery visual QA issue where the center
+  preview column could collapse into a narrow strip; the main product image now
+  uses a minimum-width grid track plus `fill`/`object-contain` inside the fixed
+  viewport.
+- 2026-05-24: Adjusted T-261 room thumbnails so vertical-stack wall previews use
+  the same fill-and-crop viewport behavior as the focused room preview, keeping
+  framed-artwork proportions consistent between selected and thumbnail states.
 
 ## Next Agent Action
 
-The core A-024 loading-state sequence is complete. Assign
-[T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md)
-for the deferred account-menu internal route semantics from F-119. Keep that
-separate from route cache policy, Shopify behavior, auth behavior, and broad
-visual redesign.
+The A-024 loading-state and account-navigation follow-up sequence is complete;
+do not reassign F-118 through F-122 unless a regression appears.
+
+The owner-prioritized T-261 shop product detail mockup implementation is
+complete. A reasonable next frontend slice is a narrow owner-review or visual-QA
+task for the live sale gallery with named print, original artwork, and book
+handles. Keep that separate from route cache policy, auth behavior, broad
+visual redesign, and Shopify cart/checkout work.
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);

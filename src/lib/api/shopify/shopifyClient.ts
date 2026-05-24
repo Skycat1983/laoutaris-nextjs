@@ -145,7 +145,13 @@ const shopifyFetch = async <T>({
 const transformProduct = (product: ShopifyProduct): SimpleProduct => {
   const variantEdges = product.variants.edges;
   const firstVariant = variantEdges[0]?.node;
-  const firstImage = product.images.edges[0]?.node;
+  const images = product.images.edges.map(({ node }) => ({
+    url: node.url,
+    altText: node.altText,
+    width: node.width,
+    height: node.height,
+  }));
+  const firstImage = images[0];
   const variants = variantEdges.map(({ node }) => ({
     id: node.id,
     title: node.title,
@@ -164,6 +170,8 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
       ? {
           url: node.image.url,
           altText: node.image.altText,
+          width: node.image.width,
+          height: node.image.height,
         }
       : null,
   }));
@@ -214,8 +222,11 @@ const transformProduct = (product: ShopifyProduct): SimpleProduct => {
       ? {
           url: firstImage.url,
           altText: firstImage.altText,
+          width: firstImage.width,
+          height: firstImage.height,
         }
       : null,
+    images,
     availableForSale: product.availableForSale,
     variants,
     mongodbArtworkId,

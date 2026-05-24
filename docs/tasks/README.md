@@ -283,6 +283,7 @@ Planning and prompt packs:
 | [T-258 Add admin main loading skeleton](T-258-add-admin-main-loading-skeleton.md) | Completed | Added a route-level loading skeleton for the admin dashboard `@main` parallel route. |
 | [T-259 Add targeted route transition loading check](T-259-add-targeted-route-transition-loading-check.md) | Completed | Added a focused delayed route-transition loading check for A-024. |
 | [T-260 Align account menu internal navigation](T-260-align-account-menu-internal-navigation.md) | Completed | Replaced raw internal account-menu anchors with App Router `Link` semantics while preserving disabled states, logout behavior, and the lazy account island. |
+| [T-261 Build shop product sale gallery mockup](T-261-build-shop-product-sale-gallery-mockup.md) | Completed | Built the owner-requested product sale layout for all product detail kinds, with print-specific room/frame controls and the current Shopify-hosted purchase or enquiry boundary preserved. |
 
 ## Rules
 

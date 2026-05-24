@@ -162,11 +162,18 @@ through F-118 to F-122 and the frontend/testing workstream backlogs first.
   passed with
   `npm test -- --runTestsByPath __tests__/unit/publicRouteTransitionLoading.test.tsx __tests__/unit/publicRouteLoadingShells.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx`,
   `git diff --check`, and `npm run lint`.
+- 2026-05-24 T-260 completed: `AccountNavDropdown` now uses App Router
+  `next/link` semantics for enabled internal profile, sign-in, and sign-up
+  routes, renders disabled account/auth menu states as non-navigating buttons,
+  and keeps logout as a disabled-aware action with the existing
+  `signOut({ redirect: false })` and modal callback behavior. Verification
+  passed with
+  `npm test -- --runTestsByPath __tests__/unit/accountNavigationLazyIsland.test.tsx __tests__/unit/accountUserClientErrorStates.test.tsx __tests__/unit/publicSearchNavigationAccessibility.test.tsx __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `git diff --check`, and `npm run lint`.
 
 ## Next Action
 
-The core A-024 loading-state implementation sequence is complete. F-119 remains
-partially mitigated only for the previously deferred account-menu internal
-route semantics follow-up. Assign
-[T-260 Align account menu internal navigation](../../tasks/T-260-align-account-menu-internal-navigation.md)
-for that final known follow-up.
+The core A-024 loading-state and navigation follow-up sequence is complete.
+F-118 through F-122 are resolved in the findings register. Future loading-state
+work should start from a new scoped finding or task rather than reassigning
+this A-024 sequence.

@@ -5,13 +5,20 @@ import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { ProductStructuredData } from "@/components/metadata/PublicDetailJsonLd";
-import { FramedPrintPreviewLauncher } from "@/components/shop/frame-preview/FramedPrintPreviewLauncher";
+import {
+  ShopProductSaleGallery,
+  type ShopProductGalleryImage,
+} from "@/components/shop/product-detail/ShopProductSaleGallery";
 import {
   buildMissingPublicDetailMetadata,
   buildProductDetailMetadata,
   buildUnavailablePublicDetailMetadata,
 } from "@/lib/metadata/publicDetailMetadata";
-import { buildFramedPrintPreviewArtwork } from "@/lib/framePreview/productEligibility";
+import {
+  buildFramedPrintPreviewArtwork,
+  type FramedPrintPreviewArtwork,
+} from "@/lib/framePreview/productEligibility";
+import { getShopProductKind } from "@/lib/shop/productClassification";
 import { createServerLogger } from "@/lib/observability/logger";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -93,6 +100,108 @@ const hasFeaturedArtworkIds = (
   return Array.isArray(featuredArtworkIds) && featuredArtworkIds.length > 0;
 };
 
+const isPositiveDimension = (value: unknown): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value > 0;
+
+const getArtworkDisplayTitle = (title: string): string => {
+  const trimmedTitle = title.trim();
+  const titleBeforeComma = trimmedTitle.split(",")[0]?.trim();
+
+  return titleBeforeComma || trimmedTitle || title;
+};
+
+const buildLinkedArtworkPreview = (
+  product: SimpleProduct,
+  linkedArtwork: ArtworkFrontend | null
+): FramedPrintPreviewArtwork | null => {
+  if (!linkedArtwork) return null;
+
+  const { image } = linkedArtwork;
+
+  if (
+    !image.secure_url ||
+    !isPositiveDimension(image.pixelWidth) ||
+    !isPositiveDimension(image.pixelHeight)
+  ) {
+    return null;
+  }
+
+  return {
+    src: image.secure_url,
+    alt: linkedArtwork.title.trim() || product.title,
+    metrics: {
+      pixelWidth: image.pixelWidth,
+      pixelHeight: image.pixelHeight,
+    },
+  };
+};
+
+const buildProductImagePreview = (
+  product: SimpleProduct
+): FramedPrintPreviewArtwork | null => {
+  if (
+    !product.image?.url ||
+    !isPositiveDimension(product.image.width) ||
+    !isPositiveDimension(product.image.height)
+  ) {
+    return null;
+  }
+
+  return {
+    src: product.image.url,
+    alt: product.image.altText || product.title,
+    metrics: {
+      pixelWidth: product.image.width,
+      pixelHeight: product.image.height,
+    },
+  };
+};
+
+const buildProductImagePreviews = (
+  product: SimpleProduct
+): ShopProductGalleryImage[] => {
+  const images =
+    product.images && product.images.length > 0
+      ? product.images
+      : product.image
+        ? [product.image]
+        : [];
+
+  return images.flatMap((image, index) => {
+    if (
+      !image.url ||
+      !isPositiveDimension(image.width) ||
+      !isPositiveDimension(image.height)
+    ) {
+      return [];
+    }
+
+    const alt = image.altText || product.title;
+
+    return {
+      id: `product-image-${index}`,
+      src: image.url,
+      alt,
+      label: image.altText || `product image ${index + 1}`,
+      metrics: {
+        pixelWidth: image.width,
+        pixelHeight: image.height,
+      },
+    };
+  });
+};
+
+const buildProductSalePreview = (
+  product: SimpleProduct,
+  linkedArtwork: ArtworkFrontend | null
+): FramedPrintPreviewArtwork | null => {
+  return (
+    buildFramedPrintPreviewArtwork(product, linkedArtwork) ??
+    buildLinkedArtworkPreview(product, linkedArtwork) ??
+    buildProductImagePreview(product)
+  );
+};
+
 export default async function ProductPage({ params }: PageProps) {
   const { productHandle } = params;
 
@@ -104,18 +213,27 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   // Determine product type and fetch related data
+  const productKind = getShopProductKind(product);
   const featuredArtworkIds = hasFeaturedArtworkIds(product.featuredArtworkIds)
     ? product.featuredArtworkIds
     : [];
-  const isBook = featuredArtworkIds.length > 0;
+  const isBook = productKind === "book";
   const linkedArtwork = isBook ? null : await fetchArtworkIfLinked(product);
   const bookArtworks = isBook
     ? await fetchArtworksInBook(featuredArtworkIds, product.handle)
     : [];
-  const framePreviewArtwork = buildFramedPrintPreviewArtwork(
-    product,
+  const productImagePreviews = buildProductImagePreviews(product);
+  const salePreviewArtwork = buildProductSalePreview(product, linkedArtwork);
+  const saleArtworkDetails =
     linkedArtwork
-  );
+      ? {
+          id: String(linkedArtwork._id),
+          title: linkedArtwork.title,
+          medium: linkedArtwork.medium,
+          surface: linkedArtwork.surface,
+          decade: linkedArtwork.decade,
+        }
+      : null;
   const enquiryHref = `/project/contact?product=${encodeURIComponent(
     product.handle
   )}`;
@@ -126,116 +244,26 @@ export default async function ProductPage({ params }: PageProps) {
         <ProductStructuredData productHandle={productHandle} />
       </Suspense>
       <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Product Image */}
-          <div className="relative aspect-square">
-            {product.image ? (
-              <Image
-                src={product.image.url}
-                alt={product.image.altText || product.title}
-                fill
-                className="object-contain"
-                priority
-                sizes="(max-width: 1024px) 100vw, 576px"
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                No Image
-              </div>
-            )}
-          </div>
-
-          {/* Product Details */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{product.title}</h1>
-              <p className="text-sm text-gray-500 uppercase">{product.vendor}</p>
-            </div>
-
-            <div className="text-3xl font-semibold">
-              {product.currencyCode} {product.price}
-              {product.compareAtPrice && (
-                <span className="ml-4 text-xl text-gray-400 line-through">
-                  {product.currencyCode} {product.compareAtPrice}
-                </span>
-              )}
-            </div>
-
-            {product.description && (
-              <div
-                className="prose max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            )}
-
-            {product.availableForSale ? (
-              <div className="rounded-md border border-gray-200 p-4">
-                {product.onlineStoreUrl ? (
-                  <>
-                    <a
-                      href={product.onlineStoreUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
-                    >
-                      Purchase on Shopify
-                    </a>
-                    <p className="mt-3 text-sm text-gray-600">
-                      Checkout is completed on Shopify.
-                    </p>
-                    <Link
-                      href={enquiryHref}
-                      className="mt-3 inline-flex text-sm font-medium text-gray-700 underline underline-offset-4 hover:text-black"
-                    >
-                      Contact the archive team about this product
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href={enquiryHref}
-                      className="block w-full rounded-md bg-black px-8 py-4 text-center font-semibold text-white transition-colors hover:bg-gray-800"
-                    >
-                      Enquire About This Product
-                    </Link>
-                    <p className="mt-3 text-sm text-gray-600">
-                      Contact the archive team to confirm availability and
-                      purchase details.
-                    </p>
-                  </>
-                )}
-                {framePreviewArtwork && (
-                  <FramedPrintPreviewLauncher artwork={framePreviewArtwork} />
-                )}
-              </div>
-            ) : (
-              <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
-                <p className="font-semibold text-gray-900">
-                  Currently Unavailable
-                </p>
-                <p className="mt-2 text-sm text-gray-600">
-                  This product cannot currently be purchased.
-                </p>
-              </div>
-            )}
-
-            {/* Link to Artwork Page (if single artwork) */}
-            {linkedArtwork && (
-              <div className="border-t pt-6">
-                <Link
-                  href={`/artwork/${linkedArtwork._id}`}
-                  className="text-blue-600 hover:underline flex items-center gap-2"
-                >
-                  View Full Artwork Details →
-                </Link>
-                <p className="text-sm text-gray-600 mt-2">
-                  See comprehensive information, colors, collection context, and
-                  more
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+        <ShopProductSaleGallery
+          product={{
+            availableForSale: product.availableForSale,
+            compareAtPrice: product.compareAtPrice,
+            currencyCode: product.currencyCode,
+            description: product.description,
+            handle: product.handle,
+            onlineStoreUrl: product.onlineStoreUrl,
+            price: product.price,
+            productType: product.productType,
+            tags: product.tags,
+            title: product.title,
+            vendor: product.vendor,
+          }}
+          productKind={productKind}
+          linkedArtwork={saleArtworkDetails}
+          artwork={salePreviewArtwork}
+          galleryImages={productImagePreviews}
+          enquiryHref={enquiryHref}
+        />
 
         {/* Book: Show Featured Artworks */}
         {isBook && bookArtworks.length > 0 && (
@@ -260,7 +288,7 @@ export default async function ProductPage({ params }: PageProps) {
                     />
                   </div>
                   <p className="text-sm font-medium group-hover:underline">
-                    {artwork.title}
+                    {getArtworkDisplayTitle(artwork.title)}
                   </p>
                   <p className="text-xs text-gray-500">{artwork.decade}</p>
                 </Link>

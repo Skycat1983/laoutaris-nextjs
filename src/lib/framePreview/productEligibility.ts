@@ -1,5 +1,6 @@
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import type { ArtworkDisplayMetrics } from "./types";
 
 type ProductFramePreviewMetadata = Pick<
   SimpleProduct,
@@ -15,10 +16,7 @@ type ProductFramePreviewMetadata = Pick<
 export type FramedPrintPreviewArtwork = {
   src: string;
   alt: string;
-  metrics: {
-    pixelWidth: number;
-    pixelHeight: number;
-  };
+  metrics: ArtworkDisplayMetrics;
 };
 
 const tokenizeMetadata = (value: string): string[] =>

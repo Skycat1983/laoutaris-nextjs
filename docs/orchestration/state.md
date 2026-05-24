@@ -1496,12 +1496,14 @@ implementation wave needs discovery before task scoping.
 The recommended next assignment is:
 
 - Assign
-  [T-260 Align account menu internal navigation](../tasks/T-260-align-account-menu-internal-navigation.md):
-  `/task effort: high details: docs/tasks/T-260-align-account-menu-internal-navigation.md`.
-  This is the remaining F-119/A-024 follow-up. It should replace raw internal
-  account-menu anchors with App Router navigation semantics while preserving
-  the T-256 lazy account island and existing auth/logout behavior.
-- If framed print preview becomes the owner priority instead, assign
+  [T-261 Build shop product sale gallery mockup](../tasks/T-261-build-shop-product-sale-gallery-mockup.md):
+  `/task effort: high details: docs/tasks/T-261-build-shop-product-sale-gallery-mockup.md`.
+  This is the current owner-requested product-detail mockup implementation. It
+  should create a shop-specific sale information panel and artwork/room
+  gallery for eligible products, reuse or extract the `/prototype/frame` room
+  preview pieces, and preserve the existing Shopify-hosted purchase or enquiry
+  boundary without adding app-owned cart behavior.
+- If broad framed print preview review becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option
   mapping, checkout/cart work, enquiry mutation, physical-dimension migration,
