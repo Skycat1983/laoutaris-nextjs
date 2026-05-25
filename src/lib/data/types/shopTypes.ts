@@ -16,16 +16,16 @@ export type ShopFiltersState = {
   showOriginals?: boolean;
   showPrints?: boolean;
   showBooks?: boolean;
-  sortBy?: ShopSortOption;
+  sortBy?: string;
 };
 
 export type ShopSearchParams = {
-  artstyle?: string;
-  medium?: string;
-  surface?: string;
-  decade?: string;
-  showOriginals?: string;
-  showPrints?: string;
-  showBooks?: string;
-  sortBy?: string;
+  artstyle?: string | string[];
+  medium?: string | string[];
+  surface?: string | string[];
+  decade?: string | string[];
+  showOriginals?: string | string[];
+  showPrints?: string | string[];
+  showBooks?: string | string[];
+  sortBy?: string | string[];
 };

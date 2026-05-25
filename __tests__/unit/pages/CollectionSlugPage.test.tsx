@@ -1,8 +1,10 @@
 import CollectionSlugPage from "@/app/collections/[slug]/page";
+import CollectionSlugNotFound from "@/app/collections/[slug]/not-found";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import type { CollectionNavDataFrontend } from "@/lib/data/types";
 import { isNextError } from "@/lib/helpers/isNextError";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { render, screen } from "@testing-library/react";
 
 jest.mock("@/lib/data/services/getCollectionNavigationItem", () => ({
   getCollectionNavigationItem: jest.fn(),
@@ -13,6 +15,7 @@ jest.mock("@/lib/helpers/isNextError", () => ({
 }));
 
 jest.mock("next/navigation", () => ({
+  notFound: jest.fn(),
   redirect: jest.fn(),
 }));
 
@@ -21,6 +24,7 @@ const mockGetCollectionNavigationItem =
     typeof getCollectionNavigationItem
   >;
 const mockIsNextError = isNextError as jest.MockedFunction<typeof isNextError>;
+const mockNotFound = notFound as jest.MockedFunction<typeof notFound>;
 const mockRedirect = redirect as unknown as jest.MockedFunction<
   typeof redirect
 >;
@@ -113,28 +117,40 @@ describe("/collections/[slug] page", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("throws the existing missing-collection error when the service returns null", async () => {
+  it("uses shared public presentation for the route-local collection not-found view", () => {
+    render(<CollectionSlugNotFound />);
+
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Collection not found"
+    );
+    expect(screen.getByText("Not found")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The requested collection is not available in the archive."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Browse collections" })
+    ).toHaveAttribute("href", "/collections");
+  });
+
+  it("calls notFound without logging when the service returns null", async () => {
+    const notFoundError = new Error("NEXT_NOT_FOUND");
     mockGetCollectionNavigationItem.mockResolvedValue(null);
+    mockNotFound.mockImplementation(() => {
+      throw notFoundError;
+    });
+    mockIsNextError.mockImplementation((error) => error === notFoundError);
 
     await expect(
       CollectionSlugPage({ params: { slug: "missing" } })
-    ).rejects.toThrow("Collection not found");
+    ).rejects.toThrow(notFoundError);
 
     expect(mockRedirect).not.toHaveBeenCalled();
+    expect(mockNotFound).toHaveBeenCalledTimes(1);
     expect(global.fetch).not.toHaveBeenCalled();
     expect(consoleLogSpy).not.toHaveBeenCalled();
-    expect(JSON.parse(consoleErrorSpy.mock.calls[0][0])).toEqual(
-      expect.objectContaining({
-        event: "page.public.collection_slug_redirect.failed",
-        route: "/collections/[slug]",
-        operation: "public.collection_slug.redirect",
-        slug: "missing",
-        error: {
-          name: "Error",
-          message: "Collection not found",
-        },
-      })
-    );
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it("logs a structured error when collection loading fails", async () => {

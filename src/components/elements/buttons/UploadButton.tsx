@@ -8,9 +8,15 @@ import { Button } from "../../shadcn/button";
 
 interface UploadButtonProps {
   onUploadSuccess: (result: CloudinaryUploadWidgetResults) => void;
+  label?: string;
+  loadingLabel?: string;
 }
 
-export const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
+export const UploadButton = ({
+  onUploadSuccess,
+  label = "Upload an Image",
+  loadingLabel = "Loading...",
+}: UploadButtonProps) => {
   const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
     onUploadSuccess(result);
   };
@@ -32,6 +38,7 @@ export const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
 
         return (
           <Button
+            type="button"
             variant="outline"
             size="sm"
             className="rounded-full bg-whitish"
@@ -42,7 +49,7 @@ export const UploadButton = ({ onUploadSuccess }: UploadButtonProps) => {
               }
             }}
           >
-            {isLoading ? "Loading..." : "Upload an Image"}
+            {isLoading ? loadingLabel : label}
           </Button>
         );
       }}

@@ -981,6 +981,12 @@ Add API route tests where behavior is changed.
 
 ## Next Agent Action
 
+T-264 is complete for reciprocal delete-reference data integrity, and T-266,
+T-269, and T-270 are complete for the A-028 public search/shop/collection route
+contract slices that touched data/API behavior. Do not reassign those unless
+artwork delete, collection delete, explicit shop-product search, shop `sortBy`,
+or stale collection slug not-found behavior regresses.
+
 T-174's data/API prerequisite, T-175's blog pagination pilot, T-176's
 route-backed filter contract, T-177's route-backed search pilot, and T-179's
 collection pagination/search rollout are complete. T-180's article

@@ -314,6 +314,9 @@ Next.js server/client component boundaries.
   footer/legal copy cleanup must coordinate with A-020 owner/legal decisions.
   T-153 now exposes blog pinned/tag controls and T-154 validates public
   article/collection section inputs at route boundaries.
+- T-269 aligned the public shop listing route/filter UI contract. Shop
+  `sortBy` deep links now seed server rendering and client URL updates, and
+  shop taxonomy selects render from canonical artwork constants.
 - The owner added full-width homepage section design guides under
   `to_prototype/`: `biography.png`, `blog.png`, and `shop.png`. These guide
   homepage teaser sections, not the destination pages. Prototype work should
@@ -378,8 +381,8 @@ Next.js server/client component boundaries.
 - Audit search, navigation, breadcrumbs, filters, and content discovery paths.
 - Align public empty, not-found, and search-result states with the data/API
   route contracts once A-002 empty-list and search metadata semantics are chosen.
-- Align any future shop pagination or server-side sorting UI with backed API
-  behavior before exposing new controls.
+- Align any future shop pagination UI with backed API behavior before exposing
+  new controls.
 - Define a public route rendering/cache plan that separates public layout work
   from session-only UI and moves middleware token parsing behind protected-route
   checks.
@@ -419,7 +422,9 @@ Next.js server/client component boundaries.
   products, and if not, relabel/copy the UI so scope is explicit.
 - Decide the i18n/frontend language direction before visible language controls
   or taxonomy labels depend on translated copy.
-- Centralize taxonomy value+label options for public filters and admin forms.
+- Continue centralizing taxonomy value+label options for public filters and
+  admin forms; public shop filters now use canonical artwork constants through
+  T-269.
 - Coordinate footer placeholder social links, current-year/copyright text, and
   assurance copy with A-020 owner/legal-approved requirements.
 - Keep the documented public route loading/empty/error fallback pattern current
@@ -1444,6 +1449,14 @@ client load-more state regresses. Keep broader artwork browse redesign,
 non-default cache expansion, public search, shop listing, and collection detail
 pagination separate.
 
+T-266, T-269, and T-270 are also complete for the A-028 public hotspot set:
+untyped `/search` no longer fans out through the full Shopify product list,
+shop sort/filter controls now match route/API and canonical taxonomy contracts,
+plain Shopify descriptions render as text, and stale collection redirect slugs
+use not-found behavior. Do not reopen these paths unless those contracts
+regress; keep rich product description sanitization and any broader shop/search
+redesign separately scoped.
+
 For the navbar prototype, review `/prototype/home` at desktop, tablet, and
 mobile widths and choose a logo, logo-size preset, nav-height preset, link-font
 preset, link-size preset, link-gap preset, and whether the lower
@@ -1459,6 +1472,13 @@ complete. A reasonable next frontend slice is a narrow owner-review or visual-QA
 task for the live sale gallery with named print, original artwork, and book
 handles. Keep that separate from route cache policy, auth behavior, broad
 visual redesign, and Shopify cart/checkout work.
+
+T-270 completed the A-028 public route correctness polish: the shop product sale
+gallery renders plain Shopify product descriptions as text instead of HTML, and
+missing `/collections/[slug]` redirect targets now use route-local public
+not-found behavior while preserving logged service failures as route errors.
+Sanitized rich Shopify `descriptionHtml` rendering remains a separate
+sanitizer/design decision.
 
 Do not reassign
 [T-211 Add Shopify product results to public search](../tasks/T-211-add-shopify-product-results-to-public-search.md);
@@ -1568,3 +1588,12 @@ comment mutations, profile editing, real pagination, checkout/cart, remaining
 Shopify product transform fields, visible admin product-linking UI, client
 fetcher behavior beyond scoped discovery work, test-session override logs, and
 broad route-builder centralization separate.
+
+T-269 completed the public shop sort/filter contract slice: `sortBy` is backed
+by the route, service, API, and client URL updates, and shop filter controls now
+include canonical artwork taxonomy values.
+
+T-278 completed the `/project/about` rendering-policy repair: the page remains
+MongoDB-backed project article content through `ArticleLoader`, but now declares
+`dynamic = "force-dynamic"` so the default sandbox build does not prerender it
+as static content.

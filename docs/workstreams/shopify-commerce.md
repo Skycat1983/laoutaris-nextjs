@@ -192,6 +192,12 @@ production while preserving MongoDB as the archive source of truth.
 - A-018 confirmed public shop taxonomy filters drift from canonical artwork
   constants, including missing selectable `paint`, `pastel`, and `2020s`
   values that the API schema accepts.
+- T-269 makes public shop listing sorting route-backed: `sortBy` is honored by
+  `/shop/products`, the shared product-list service, the public API, and client
+  URL updates while preserving the existing type/price/title semantics.
+- T-269 also derives public shop taxonomy filter options from canonical artwork
+  constants, so the filter UI includes accepted values such as `paint`,
+  `pastel`, and `2020s`.
 
 ## Backlog
 
@@ -208,12 +214,8 @@ production while preserving MongoDB as the archive source of truth.
   using `descriptionHtml` in product-detail UI.
 - Define the real public shop pagination contract before rendering pagination
   controls again.
-- Define any future server-side shop sorting contract before moving current
-  client-side sorting into the API.
 - Keep Shopify product search tied to the existing public product-list data path
   unless a separate search/indexing decision is made.
-- Derive shop taxonomy filter options from canonical artwork constants instead
-  of hand-maintained option arrays.
 - Implement the framed print preview plan in separate slices: frame profile and
   geometry contracts, standalone preview component, modal controls,
   `/prototype/frame`, product-page launcher wiring, targeted owner review,
@@ -597,8 +599,19 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-24: Added T-261 room-preview loading sequencing: room backgrounds now
   render through the same unoptimized asset path and the framed artwork overlay
   waits for the selected background image to load before fading in.
+- 2026-05-25: Completed T-269. Public shop `sortBy` now flows from
+  `/shop/products` query params into `ShopProductsLoader`, `getShopProductList`,
+  the public API, and client URL updates. Public shop taxonomy controls now use
+  canonical artwork constants through a shared labeled option module.
 
 ## Next Agent Action
+
+T-266 and T-269 are complete for the recalibrated public search/shop listing
+contracts: untyped public search no longer performs the full Shopify product
+fan-out, explicit `type=shop-products` search remains available, shop `sortBy`
+is route-backed, and shop filters now use canonical artwork taxonomy options.
+T-270 is complete for rendering plain Shopify descriptions as text. Keep rich
+`descriptionHtml` rendering behind a separate sanitizer/design task.
 
 Prepare a narrow owner-review or visual-QA follow-up for the live T-261 sale
 gallery using one unlinked print handle, one original artwork handle, and one

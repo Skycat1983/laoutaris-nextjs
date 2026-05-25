@@ -2,7 +2,7 @@ import { buildUrl } from "@/lib/utils/urlUtils";
 import { getCollectionNavigationItem } from "@/lib/data/services/getCollectionNavigationItem";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +21,7 @@ export default async function CollectionSlug({
     const collection = await getCollectionNavigationItem(params.slug);
 
     if (!collection) {
-      throw new Error("Collection not found");
+      notFound();
     }
 
     const redirectPath = buildUrl([

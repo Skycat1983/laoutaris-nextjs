@@ -94,7 +94,7 @@ describe("ShopProductsLoader", () => {
     }>;
 
     expect(mockGetShopProductList).toHaveBeenCalledWith({
-      sortBy: undefined,
+      sortBy: "type",
       showOriginals: true,
       showPrints: false,
       showBooks: true,
@@ -156,6 +156,28 @@ describe("ShopProductsLoader", () => {
     expect(screen.getByText("Invalid shop products query")).toBeInTheDocument();
     expect(mockGetShopProductList).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("passes a deep-linked sort option through the server service contract", async () => {
+    await ShopProductsLoader({
+      initialFilters: {
+        sortBy: "price-high",
+        showOriginals: true,
+        showPrints: true,
+        showBooks: true,
+      },
+    });
+
+    expect(mockGetShopProductList).toHaveBeenCalledWith({
+      sortBy: "price-high",
+      showOriginals: true,
+      showPrints: true,
+      showBooks: true,
+      decade: [],
+      artstyle: [],
+      medium: [],
+      surface: [],
+    });
   });
 
   it("does not import same-app HTTP dependencies, localhost fallbacks, or direct fetches", () => {

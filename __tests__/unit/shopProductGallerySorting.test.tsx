@@ -83,6 +83,7 @@ describe("ShopProductGallery sorting", () => {
 
   beforeEach(() => {
     (global.fetch as jest.Mock).mockReset();
+    window.history.replaceState(null, "", "/shop/products");
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     consoleErrorSpy = jest
       .spyOn(console, "error")
@@ -118,6 +119,7 @@ describe("ShopProductGallery sorting", () => {
     render(<ShopProductGallery initialProducts={products} />);
 
     fireEvent.click(screen.getByRole("button", { name: "price-low" }));
+    expect(window.location.search).toBe("?sortBy=price-low");
     expect(renderedProductTitles()).toEqual([
       "A Title Print",
       "C Title Original",
@@ -126,6 +128,7 @@ describe("ShopProductGallery sorting", () => {
     ]);
 
     fireEvent.click(screen.getByRole("button", { name: "price-high" }));
+    expect(window.location.search).toBe("?sortBy=price-high");
     expect(renderedProductTitles()).toEqual([
       "B Title Book",
       "Bookish Unknown",
@@ -138,6 +141,7 @@ describe("ShopProductGallery sorting", () => {
     render(<ShopProductGallery initialProducts={products} />);
 
     fireEvent.click(screen.getByRole("button", { name: "title-asc" }));
+    expect(window.location.search).toBe("?sortBy=title-asc");
     expect(renderedProductTitles()).toEqual([
       "A Title Print",
       "B Title Book",
@@ -146,11 +150,28 @@ describe("ShopProductGallery sorting", () => {
     ]);
 
     fireEvent.click(screen.getByRole("button", { name: "title-desc" }));
+    expect(window.location.search).toBe("?sortBy=title-desc");
     expect(renderedProductTitles()).toEqual([
       "C Title Original",
       "Bookish Unknown",
       "B Title Book",
       "A Title Print",
+    ]);
+  });
+
+  it("honors an initial route sort option", () => {
+    render(
+      <ShopProductGallery
+        initialProducts={products}
+        initialFilters={{ sortBy: "price-low" }}
+      />
+    );
+
+    expect(renderedProductTitles()).toEqual([
+      "A Title Print",
+      "C Title Original",
+      "Bookish Unknown",
+      "B Title Book",
     ]);
   });
 
@@ -175,8 +196,9 @@ describe("ShopProductGallery sorting", () => {
       screen.getByRole("status", { name: "Updating product results" })
     ).toHaveTextContent("Updating products...");
     expect(global.fetch).toHaveBeenCalledWith(
-      "/api/v2/public/shop/products?showOriginals=true&showPrints=false&showBooks=true"
+      "/api/v2/public/shop/products?showPrints=false"
     );
+    expect(window.location.search).toBe("?showPrints=false");
 
     await waitFor(() =>
       expect(
@@ -200,5 +222,28 @@ describe("ShopProductGallery sorting", () => {
     );
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     expect(renderedProductTitles()).toEqual(["Recovered Print"]);
+  });
+
+  it("includes the active route sort when fetching filtered products", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: [createProduct("Filtered Original", "Original Artwork", "25.00")],
+      }),
+    });
+
+    render(<ShopProductGallery initialProducts={products} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "price-high" }));
+    fireEvent.click(screen.getByRole("button", { name: "filter prints" }));
+
+    await waitFor(() =>
+      expect(screen.getByText("Filtered Original")).toBeInTheDocument()
+    );
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/v2/public/shop/products?sortBy=price-high&showPrints=false"
+    );
+    expect(window.location.search).toBe("?sortBy=price-high&showPrints=false");
   });
 });

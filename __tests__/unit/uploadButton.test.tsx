@@ -87,6 +87,22 @@ describe("UploadButton", () => {
     expect(mockRenderProps.open).toHaveBeenCalledTimes(1);
   });
 
+  it("renders as a non-submit button and supports contextual labels", () => {
+    render(
+      <form onSubmit={jest.fn()}>
+        <UploadButton
+          label="Upload replacement image"
+          onUploadSuccess={jest.fn()}
+        />
+      </form>
+    );
+
+    const button = screen.getByRole("button", {
+      name: "Upload replacement image",
+    });
+    expect(button).toHaveAttribute("type", "button");
+  });
+
   it("keeps the button disabled while the widget is loading", () => {
     mockRenderProps = {
       ...mockRenderProps,

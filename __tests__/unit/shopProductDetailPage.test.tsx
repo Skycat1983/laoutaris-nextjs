@@ -245,6 +245,33 @@ describe("/shop/products/[productHandle]", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("renders plain Shopify descriptions as escaped text", async () => {
+    mockGetProductByHandle.mockResolvedValue(
+      createProduct({
+        description:
+          'Plain <strong>description</strong>\n<script>alert("x")</script>',
+      })
+    );
+
+    const { container } = render(
+      await ProductPage({ params: { productHandle: "test-product" } })
+    );
+
+    expect(
+      screen.getByTestId("shop-sale-product-description")
+    ).toHaveTextContent(
+      'Plain <strong>description</strong> <script>alert("x")</script>'
+    );
+    expect(container.querySelector("strong")).toBeNull();
+    expect(container.querySelector("script")).toBeNull();
+    expect(container.innerHTML).toContain(
+      "&lt;strong&gt;description&lt;/strong&gt;"
+    );
+    expect(container.innerHTML).toContain(
+      '&lt;script&gt;alert("x")&lt;/script&gt;'
+    );
+  });
+
   it("renders the sale gallery with a raw artwork item before room previews for eligible print products", async () => {
     mockGetProductByHandle.mockResolvedValue(
       createProduct({

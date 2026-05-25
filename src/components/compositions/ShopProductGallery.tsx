@@ -6,40 +6,32 @@ import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
 import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
-import type { ShopFiltersState, ShopSortOption } from "@/lib/data/types/shopTypes";
+import {
+  SHOP_SORT_OPTIONS,
+  type ShopFiltersState,
+  type ShopSortOption,
+} from "@/lib/data/types/shopTypes";
+import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 
 interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
   initialFilters?: ShopFiltersState;
 }
 
-const PRODUCT_TYPE_SORT_ORDER: Record<string, number> = {
-  book: 0,
-  publication: 0,
-  original: 1,
-  "original artwork": 1,
-  print: 2,
-  "limited edition print": 2,
-};
-
-const normalizeProductType = (productType: string) =>
-  productType.trim().toLowerCase().replace(/\s+/g, " ");
-
-export const getShopProductTypeSortOrder = (product: SimpleProduct) => {
-  const normalizedType = normalizeProductType(product.productType);
-
-  return PRODUCT_TYPE_SORT_ORDER[normalizedType] ?? 3;
-};
+const isShopSortOption = (value: unknown): value is ShopSortOption =>
+  typeof value === "string" &&
+  (SHOP_SORT_OPTIONS as readonly string[]).includes(value);
 
 export const ShopProductGallery = ({
   initialProducts,
   initialFilters,
 }: ShopProductGalleryProps) => {
+  const initialSortBy = isShopSortOption(initialFilters?.sortBy)
+    ? initialFilters.sortBy
+    : "type";
   const [products, setProducts] = useState<SimpleProduct[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState<ShopSortOption>(
-    initialFilters?.sortBy || "type"
-  );
+  const [sortBy, setSortBy] = useState<ShopSortOption>(initialSortBy);
   const [filters, setFilters] = useState<ShopFiltersState>(
     initialFilters || {
       artstyle: "all-style",
@@ -49,18 +41,21 @@ export const ShopProductGallery = ({
       showOriginals: true,
       showPrints: true,
       showBooks: true,
-      sortBy: "type",
+      sortBy: initialSortBy,
     }
   );
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const fetchProductsForFilters = async (updatedFilters: ShopFiltersState) => {
-    setFetchError(null);
-
-    // Build query params
+  const queryParamsForFilters = (
+    updatedFilters: ShopFiltersState,
+    updatedSortBy: ShopSortOption
+  ) => {
     const params = new URLSearchParams();
 
-    // Add artwork filters (skip "all" values)
+    if (updatedSortBy !== "type") {
+      params.set("sortBy", updatedSortBy);
+    }
+
     if (updatedFilters.artstyle && updatedFilters.artstyle !== "all-style") {
       params.append("artstyle", updatedFilters.artstyle);
     }
@@ -74,15 +69,41 @@ export const ShopProductGallery = ({
       params.append("decade", updatedFilters.decade);
     }
 
-    // Add product type filters
-    params.append(
-      "showOriginals",
-      String(updatedFilters.showOriginals ?? true)
-    );
-    params.append("showPrints", String(updatedFilters.showPrints ?? true));
-    params.append("showBooks", String(updatedFilters.showBooks ?? true));
+    if (updatedFilters.showOriginals === false) {
+      params.set("showOriginals", "false");
+    }
+    if (updatedFilters.showPrints === false) {
+      params.set("showPrints", "false");
+    }
+    if (updatedFilters.showBooks === false) {
+      params.set("showBooks", "false");
+    }
 
-    const response = await fetch(`/api/v2/public/shop/products?${params}`);
+    return params;
+  };
+
+  const updateBrowserUrl = (
+    updatedFilters: ShopFiltersState,
+    updatedSortBy: ShopSortOption
+  ) => {
+    const params = queryParamsForFilters(updatedFilters, updatedSortBy);
+    const query = params.toString();
+    const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+
+    window.history.replaceState(null, "", nextUrl);
+  };
+
+  const fetchProductsForFilters = async (
+    updatedFilters: ShopFiltersState,
+    updatedSortBy: ShopSortOption
+  ) => {
+    setFetchError(null);
+
+    const params = queryParamsForFilters(updatedFilters, updatedSortBy);
+    const query = params.toString();
+    const requestUrl = `/api/v2/public/shop/products${query ? `?${query}` : ""}`;
+
+    const response = await fetch(requestUrl);
 
     if (!response.ok) {
       throw new Error("Failed to fetch products");
@@ -99,40 +120,27 @@ export const ShopProductGallery = ({
 
   // Sort products based on current sortBy value
   const sortedProducts = useMemo(() => {
-    const sorted = [...products];
-
-    switch (sortBy) {
-      case "price-low":
-        return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-      case "price-high":
-        return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-      case "title-asc":
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
-      case "title-desc":
-        return sorted.sort((a, b) => b.title.localeCompare(a.title));
-      case "type":
-      default:
-        // Sort by explicit Shopify product type: books, originals, prints, then unknowns.
-        return sorted.sort((a, b) => {
-          return (
-            getShopProductTypeSortOrder(a) - getShopProductTypeSortOrder(b)
-          );
-        });
-    }
+    return sortShopProducts(products, sortBy);
   }, [products, sortBy]);
 
   const handleSortChange = (newSortBy: ShopSortOption) => {
     setSortBy(newSortBy);
+    setFilters((currentFilters) => {
+      const updatedFilters = { ...currentFilters, sortBy: newSortBy };
+      updateBrowserUrl(updatedFilters, newSortBy);
+      return updatedFilters;
+    });
   };
 
   const handleFilterChange = async (newFilters: Partial<ShopFiltersState>) => {
     try {
       setIsLoading(true);
 
-      const updatedFilters = { ...filters, ...newFilters };
+      const updatedFilters = { ...filters, ...newFilters, sortBy };
       setFilters(updatedFilters);
+      updateBrowserUrl(updatedFilters, sortBy);
 
-      await fetchProductsForFilters(updatedFilters);
+      await fetchProductsForFilters(updatedFilters, sortBy);
     } catch {
       setFetchError(
         "Unable to update product filters. The current products are still shown."
@@ -145,7 +153,7 @@ export const ShopProductGallery = ({
   const retryProductFetch = async () => {
     try {
       setIsLoading(true);
-      await fetchProductsForFilters(filters);
+      await fetchProductsForFilters(filters, sortBy);
     } catch {
       setFetchError(
         "Unable to update product filters. The current products are still shown."
@@ -156,7 +164,7 @@ export const ShopProductGallery = ({
   };
 
   const clearFilters = () => {
-    setFilters({
+    const resetFilters = {
       artstyle: "all-style",
       medium: "all-medium",
       surface: "all-surface",
@@ -165,10 +173,12 @@ export const ShopProductGallery = ({
       showPrints: true,
       showBooks: true,
       sortBy: "type",
-    });
+    };
+    setFilters(resetFilters);
     setSortBy("type");
     setProducts(initialProducts);
     setFetchError(null);
+    updateBrowserUrl(resetFilters, "type");
   };
 
   return (

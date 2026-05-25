@@ -35,13 +35,15 @@ file instead of creating scattered notes.
 | A-024 | [Loading state UX](A-024-loading-state-ux.md) | Completed |
 | A-025 | [Codebase progress and trajectory recalibration](A-025-codebase-trajectory-recalibration.md) | Superseded |
 | A-026 | [Tracker alignment snapshot](A-026-tracker-alignment-snapshot.md) | Completed |
-| A-027 | [Verification gate snapshot](A-027-verification-gate-snapshot.md) | Not started |
+| A-027 | [Verification gate snapshot](A-027-verification-gate-snapshot.md) | Completed |
 | A-028 | [Public archive and Shopify runtime hotspot scan](A-028-public-shopify-hotspots.md) | Completed |
 | A-029 | [Admin, auth, and operations hotspot scan](A-029-admin-auth-ops-hotspots.md) | Superseded |
 | A-030 | [Admin delete integrity snapshot](A-030-admin-delete-integrity.md) | Completed |
 | A-031 | [Admin content controls snapshot](A-031-admin-content-controls.md) | Completed |
 | A-032 | [Auth and protected boundary snapshot](A-032-auth-protected-boundaries.md) | Completed |
 | A-033 | [Deployment, monitoring, and smoke snapshot](A-033-deployment-monitoring-smoke.md) | Completed |
+| A-034 | [Current Jest failure triage](A-034-current-jest-failure-triage.md) | Completed |
+| A-035 | [Build-time external dependency map](A-035-build-external-dependency-map.md) | Completed |
 
 ## Result Format
 

@@ -27,21 +27,25 @@ const mockGetProductById = getProductById as jest.MockedFunction<
 >;
 const mockArtworkFind = ArtworkModel.find as jest.Mock;
 
-const createProduct = (productId: string): SimpleProduct => ({
+const createProduct = (
+  productId: string,
+  overrides: Partial<SimpleProduct> = {}
+): SimpleProduct => ({
   id: `gid://shopify/Product/${productId}`,
   handle: `product-${productId}`,
-  title: `Product ${productId}`,
+  title: overrides.title ?? `Product ${productId}`,
   description: "A product used by the shop listing service test.",
   descriptionHtml: "<p>A product used by the shop listing service test.</p>",
   vendor: "Joseph Laoutaris",
-  productType: "original",
+  productType: overrides.productType ?? "original",
   tags: ["archive"],
-  price: "100.00",
+  price: overrides.price ?? "100.00",
   currencyCode: "GBP",
   compareAtPrice: null,
   image: null,
   availableForSale: true,
   variants: [],
+  ...overrides,
 });
 
 const mockArtworkQuery = (
@@ -228,6 +232,54 @@ describe("getShopProductList", () => {
       totalArtworks: 2,
       totalProducts: 2,
     });
+  });
+
+  it("applies the route-backed sort option before returning products", async () => {
+    mockArtworkQuery([
+      {
+        shopifyProducts: [
+          { productId: "501", type: "original" },
+          { productId: "502", type: "print" },
+          { productId: "503", type: "book" },
+        ],
+      },
+    ]);
+    mockGetProductById.mockImplementation((gid) => {
+      if (gid.endsWith("/501")) {
+        return Promise.resolve(
+          createProduct("501", {
+            title: "Middle Original",
+            productType: "Original Artwork",
+            price: "30.00",
+          })
+        );
+      }
+      if (gid.endsWith("/502")) {
+        return Promise.resolve(
+          createProduct("502", {
+            title: "Lowest Print",
+            productType: "Limited Edition Print",
+            price: "10.00",
+          })
+        );
+      }
+
+      return Promise.resolve(
+        createProduct("503", {
+          title: "Highest Book",
+          productType: "Book",
+          price: "50.00",
+        })
+      );
+    });
+
+    const result = await getShopProductList({ sortBy: "price-high" });
+
+    expect(result.data.map((product) => product.title)).toEqual([
+      "Highest Book",
+      "Middle Original",
+      "Lowest Print",
+    ]);
   });
 
   it("skips products that fail during Shopify fan-out", async () => {

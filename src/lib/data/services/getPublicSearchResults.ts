@@ -73,6 +73,9 @@ const DEFAULT_SEARCH_TYPES = [
   "artworks",
 ] as const satisfies readonly SearchableContentType[];
 
+const isDefaultSearchType = (candidate: SearchableContentType) =>
+  DEFAULT_SEARCH_TYPES.some((defaultType) => defaultType === candidate);
+
 const getErrorForLog = (error: unknown) =>
   error instanceof Error
     ? error
@@ -313,9 +316,11 @@ export const getPublicSearchResults = async ({
   const artworkFilter = buildArtworkSearchFilter(q);
   const skip = (page - 1) * limit;
   const shouldSearch = (candidate: SearchableContentType) =>
-    type ? type === candidate : DEFAULT_SEARCH_TYPES.includes(candidate);
+    type ? type === candidate : isDefaultSearchType(candidate);
   const searchedTypes = SEARCH_TYPES.filter(shouldSearch);
-  const shouldSearchMongoContent = DEFAULT_SEARCH_TYPES.some(shouldSearch);
+  const shouldSearchMongoContent = DEFAULT_SEARCH_TYPES.some(
+    (defaultType) => shouldSearch(defaultType)
+  );
 
   if (shouldSearchMongoContent) {
     await dbConnect();

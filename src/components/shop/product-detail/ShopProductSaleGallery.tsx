@@ -608,9 +608,11 @@ export const ShopProductSaleGallery = ({
 
         {product.description ? (
           <div
-            className="prose prose-sm mt-6 max-w-none text-gray-700"
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          />
+            className="prose prose-sm mt-6 max-w-none whitespace-pre-line text-gray-700"
+            data-testid="shop-sale-product-description"
+          >
+            {product.description}
+          </div>
         ) : null}
       </aside>
 

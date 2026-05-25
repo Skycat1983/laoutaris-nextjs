@@ -79,9 +79,11 @@ export const UpdateCollectionForm = ({
 }: UpdateCollectionFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState(collectionInfo.imageUrl);
-  const [artworkToAdd, setArtworkToAdd] = useState<ArtworkFrontend | null>(
-    null
+  const [artworkRelationshipMessage, setArtworkRelationshipMessage] = useState(
+    "No artwork relationship changes selected."
   );
+  const [artworkRelationshipMessageType, setArtworkRelationshipMessageType] =
+    useState<"neutral" | "success" | "error">("neutral");
   const [isLoadingArtwork, setIsLoadingArtwork] = useState(false);
   const artworkIdRef = useRef<HTMLInputElement>(null);
 
@@ -143,36 +145,97 @@ export const UpdateCollectionForm = ({
   };
 
   const handleRemoveArtwork = (artworkId: string) => {
+    const artwork = artworks.find((item) => item._id === artworkId);
+    const wasNewlyAdded = artworksToAdd.includes(artworkId);
+
     setArtworks((current) => current.filter((a) => a._id !== artworkId));
-    setArtworksToRemove((current) => [...current, artworkId]);
+    setArtworksToRemove((current) =>
+      wasNewlyAdded || current.includes(artworkId)
+        ? current
+        : [...current, artworkId]
+    );
     // If this was a newly added artwork, remove it from artworksToAdd
     setArtworksToAdd((current) => current.filter((id) => id !== artworkId));
+    setArtworkRelationshipMessage(
+      wasNewlyAdded
+        ? `Removed unsaved add for ${artwork?.title ?? "this artwork"}; no saved relationship change remains for that artwork.`
+        : `Ready to remove ${artwork?.title ?? "this artwork"}. Save to apply this change.`
+    );
+    setArtworkRelationshipMessageType("neutral");
   };
 
   const handleAddArtwork = async () => {
-    const artworkId = artworkIdRef.current?.value;
-    if (!artworkId) return;
+    const artworkId = artworkIdRef.current?.value.trim();
+    if (!artworkId) {
+      setArtworkRelationshipMessage("Enter an artwork ID before adding.");
+      setArtworkRelationshipMessageType("error");
+      return;
+    }
+
+    const existingArtwork = artworks.find(
+      (artwork) => artwork._id === artworkId
+    );
+    if (existingArtwork) {
+      setArtworkRelationshipMessage(
+        `${existingArtwork.title} is already in this collection; no changes were made.`
+      );
+      setArtworkRelationshipMessageType("error");
+      return;
+    }
+
+    const removedArtwork = collectionInfo.artworks.find(
+      (artwork) => artwork._id === artworkId
+    );
+    if (removedArtwork && artworksToRemove.includes(artworkId)) {
+      setArtworks((current) => [...current, removedArtwork]);
+      setArtworksToRemove((current) => current.filter((id) => id !== artworkId));
+      setArtworkRelationshipMessage(
+        `${removedArtwork.title} restored; no saved relationship change remains for that artwork.`
+      );
+      setArtworkRelationshipMessageType("neutral");
+      if (artworkIdRef.current) artworkIdRef.current.value = "";
+      return;
+    }
 
     setIsLoadingArtwork(true);
+    setArtworkRelationshipMessage(`Looking up artwork ${artworkId}...`);
+    setArtworkRelationshipMessageType("neutral");
     try {
       const result = await clientApi.admin.read.artwork(artworkId);
       if (result.success) {
         const artwork = result.data;
         // Check if artwork is already in the collection
         if (artworks.some((a) => a._id === artwork._id)) {
-          // TODO: Show error message - artwork already exists
+          setArtworkRelationshipMessage(
+            `${artwork.title} is already in this collection; no changes were made.`
+          );
+          setArtworkRelationshipMessageType("error");
           return;
         }
         setArtworks((current) => [...current, artwork]);
-        setArtworksToAdd((current) => [...current, artwork._id]);
+        setArtworksToAdd((current) =>
+          current.includes(artwork._id) ? current : [...current, artwork._id]
+        );
         setArtworksToRemove((current) =>
           current.filter((id) => id !== artwork._id)
         );
-        setArtworkToAdd(null);
+        setArtworkRelationshipMessage(
+          `Ready to add ${artwork.title}. Save to apply this change.`
+        );
+        setArtworkRelationshipMessageType("success");
         if (artworkIdRef.current) artworkIdRef.current.value = "";
+        return;
       }
+
+      setArtworkRelationshipMessage(
+        `Artwork not found for ID ${artworkId}. No artworks were added.`
+      );
+      setArtworkRelationshipMessageType("error");
     } catch {
-      return;
+      setArtworkRelationshipMessage(
+        `Artwork lookup failed for ID ${artworkId}. No artworks were added.`
+      );
+      setArtworkRelationshipMessageType("error");
     } finally {
       setIsLoadingArtwork(false);
     }
@@ -225,9 +288,8 @@ export const UpdateCollectionForm = ({
               <h3 className="font-semibold">Associated Artworks</h3>
               <div className="space-y-2">
                 <p className="text-sm text-gray-500">
-                  Current Artworks: {collectionInfo.artworks.length}
+                  Current Artworks: {artworks.length}
                 </p>
-                {/* TODO: Add list of current artworks with remove buttons */}
                 <div className="flex gap-2">
                   <Input
                     ref={artworkIdRef}
@@ -242,11 +304,22 @@ export const UpdateCollectionForm = ({
                     {isLoadingArtwork ? "Loading..." : "Add Artwork"}
                   </Button>
                 </div>
-                {artworkToAdd && (
-                  <p className="text-sm text-green-600">
-                    ✓ Ready to add: {artworkToAdd.title}
-                  </p>
-                )}
+                <p
+                  role={
+                    artworkRelationshipMessageType === "error"
+                      ? "alert"
+                      : "status"
+                  }
+                  className={`text-sm ${
+                    artworkRelationshipMessageType === "success"
+                      ? "text-green-600"
+                      : artworkRelationshipMessageType === "error"
+                      ? "font-medium text-destructive"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {artworkRelationshipMessage}
+                </p>
                 {form.formState.errors.artworksToAdd?.message && (
                   <p
                     role="alert"

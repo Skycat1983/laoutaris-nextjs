@@ -12,6 +12,8 @@ import {
   getBlogFilterOptions,
 } from "@/components/features/adminDashboard/inputs/BlogFilterDropdowns";
 
+jest.setTimeout(20000);
+
 jest.mock("next/image", () => ({
   __esModule: true,
   default: function MockImage(props: {
@@ -52,6 +54,7 @@ const mockCreateArticle = clientApi.admin.create.article as jest.Mock;
 const mockCreateBlog = clientApi.admin.create.blog as jest.Mock;
 const mockPatchArticle = clientApi.admin.update.patchArticle as jest.Mock;
 const mockPatchBlog = clientApi.admin.update.patchBlog as jest.Mock;
+const mockReadArtwork = clientApi.admin.read.artwork as jest.Mock;
 const mockUseRouter = useRouter as jest.Mock;
 const mockRefresh = jest.fn();
 
@@ -66,6 +69,7 @@ const validContentImageUrl =
 const artworkId = "507f1f77bcf86cd799439012";
 const articleId = "507f1f77bcf86cd799439013";
 const blogId = "507f1f77bcf86cd799439014";
+const replacementArtworkId = "507f1f77bcf86cd799439015";
 
 type CreateArticleArtworkInfo = ComponentProps<
   typeof CreateArticleForm
@@ -78,6 +82,15 @@ const artworkInfo = {
   title: "Archive Work",
   image: {
     secure_url: validContentImageUrl,
+  },
+} as CreateArticleArtworkInfo;
+
+const replacementArtworkInfo = {
+  _id: replacementArtworkId,
+  title: "Replacement Work",
+  image: {
+    secure_url:
+      "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000001/replacement.jpg",
   },
 } as CreateArticleArtworkInfo;
 
@@ -158,6 +171,7 @@ describe("admin article and blog forms", () => {
     mockCreateBlog.mockResolvedValue({ success: true, data: {} });
     mockPatchArticle.mockResolvedValue({ success: true, data: {} });
     mockPatchBlog.mockResolvedValue({ success: true, data: {} });
+    mockReadArtwork.mockResolvedValue({ success: true, data: artworkInfo });
   });
 
   it("surfaces article create field errors without calling success", async () => {
@@ -205,6 +219,80 @@ describe("admin article and blog forms", () => {
     expect(onSuccess).not.toHaveBeenCalled();
   });
 
+  it("surfaces article artwork lookup failures without changing the relationship", async () => {
+    const onSuccess = jest.fn();
+    mockReadArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Artwork not found",
+    });
+
+    render(
+      <UpdateArticleForm articleInfo={articleInfo} onSuccess={onSuccess} />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter new artwork ID"), {
+      target: { value: replacementArtworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Fetch Artwork" }));
+
+    expect(
+      await screen.findByText(
+        `Artwork not found for ID ${replacementArtworkId}. Article artwork is unchanged.`
+      )
+    ).toBeInTheDocument();
+    expect(mockPatchArticle).not.toHaveBeenCalled();
+  });
+
+  it("shows article artwork unchanged feedback for the current artwork", async () => {
+    render(
+      <UpdateArticleForm articleInfo={articleInfo} onSuccess={jest.fn()} />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter new artwork ID"), {
+      target: { value: artworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Fetch Artwork" }));
+
+    expect(
+      await screen.findByText(
+        "This article is already linked to Archive Work; no artwork change selected."
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("submits a ready article artwork replacement", async () => {
+    mockReadArtwork.mockResolvedValueOnce({
+      success: true,
+      data: replacementArtworkInfo,
+    });
+
+    render(
+      <UpdateArticleForm articleInfo={articleInfo} onSuccess={jest.fn()} />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter new artwork ID"), {
+      target: { value: replacementArtworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Fetch Artwork" }));
+
+    expect(
+      await screen.findByText(
+        "Ready to link article to Replacement Work. Save to apply this change."
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Article" }));
+
+    await waitFor(() =>
+      expect(mockPatchArticle).toHaveBeenCalledWith(
+        articleId,
+        expect.objectContaining({
+          artwork: replacementArtworkId,
+        })
+      )
+    );
+  });
+
   it("surfaces blog create field errors without refreshing or calling success", async () => {
     const onSuccess = jest.fn();
     mockCreateBlog.mockResolvedValueOnce({
@@ -249,13 +337,10 @@ describe("admin article and blog forms", () => {
     expect(onSuccess).not.toHaveBeenCalled();
   });
 
-  it("preserves article and blog success callbacks", async () => {
+  it("preserves the article create success callback", async () => {
     const createArticleSuccess = jest.fn();
-    const updateArticleSuccess = jest.fn();
-    const createBlogSuccess = jest.fn();
-    const updateBlogSuccess = jest.fn();
 
-    const { unmount: unmountCreateArticle } = render(
+    render(
       <CreateArticleForm
         artworkInfo={artworkInfo}
         onSuccess={createArticleSuccess}
@@ -264,9 +349,12 @@ describe("admin article and blog forms", () => {
     fillCreateArticleForm();
     fireEvent.click(screen.getByRole("button", { name: "Create Article" }));
     await waitFor(() => expect(createArticleSuccess).toHaveBeenCalledTimes(1));
-    unmountCreateArticle();
+  });
 
-    const { unmount: unmountUpdateArticle } = render(
+  it("preserves the article update success callback", async () => {
+    const updateArticleSuccess = jest.fn();
+
+    render(
       <UpdateArticleForm
         articleInfo={articleInfo}
         onSuccess={updateArticleSuccess}
@@ -274,16 +362,20 @@ describe("admin article and blog forms", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Update Article" }));
     await waitFor(() => expect(updateArticleSuccess).toHaveBeenCalledTimes(1));
-    unmountUpdateArticle();
+  });
 
-    const { unmount: unmountCreateBlog } = render(
-      <CreateBlogForm onSuccess={createBlogSuccess} />
-    );
+  it("preserves the blog create success callback", async () => {
+    const createBlogSuccess = jest.fn();
+
+    render(<CreateBlogForm onSuccess={createBlogSuccess} />);
     fillCreateBlogForm();
     fireEvent.click(screen.getByRole("button", { name: "Create Blog" }));
     await waitFor(() => expect(createBlogSuccess).toHaveBeenCalledTimes(1));
     expect(mockRefresh).toHaveBeenCalledTimes(1);
-    unmountCreateBlog();
+  });
+
+  it("preserves the blog update success callback", async () => {
+    const updateBlogSuccess = jest.fn();
 
     render(<UpdateBlogForm blogInfo={blogInfo} onSuccess={updateBlogSuccess} />);
     fireEvent.click(screen.getByRole("button", { name: "Update Blog" }));

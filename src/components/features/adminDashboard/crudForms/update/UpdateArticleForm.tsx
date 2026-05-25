@@ -64,6 +64,12 @@ export const UpdateArticleForm = ({
   const [imagePreview, setImagePreview] = useState(articleInfo.imageUrl);
   const [newArtwork, setNewArtwork] = useState<ArtworkFrontend | null>(null);
   const [isLoadingArtwork, setIsLoadingArtwork] = useState(false);
+  const [artworkLookupMessage, setArtworkLookupMessage] = useState(
+    `No replacement artwork selected; ${articleInfo.artwork.title} remains linked.`
+  );
+  const [artworkLookupMessageType, setArtworkLookupMessageType] = useState<
+    "neutral" | "success" | "error"
+  >("neutral");
   const artworkIdRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<UpdateArticleFormValues>({
@@ -81,20 +87,51 @@ export const UpdateArticleForm = ({
   });
 
   const handleFetchArtwork = async () => {
-    const artworkId = artworkIdRef.current?.value;
-    if (!artworkId) return;
+    const artworkId = artworkIdRef.current?.value.trim();
+    if (!artworkId) {
+      setArtworkLookupMessage("Enter an artwork ID before fetching.");
+      setArtworkLookupMessageType("error");
+      return;
+    }
 
     setIsLoadingArtwork(true);
+    setArtworkLookupMessage(`Looking up artwork ${artworkId}...`);
+    setArtworkLookupMessageType("neutral");
     try {
       const result = await clientApi.admin.read.artwork(artworkId);
       if (result.success) {
         const artwork = result.data;
 
+        if (artwork._id === articleInfo.artwork._id) {
+          setNewArtwork(null);
+          setImagePreview(articleInfo.imageUrl);
+          form.setValue("artwork", articleInfo.artwork._id);
+          setArtworkLookupMessage(
+            `This article is already linked to ${artwork.title}; no artwork change selected.`
+          );
+          setArtworkLookupMessageType("neutral");
+          return;
+        }
+
         setNewArtwork(artwork);
         setImagePreview(artwork.image.secure_url);
+        form.setValue("artwork", artwork._id);
+        setArtworkLookupMessage(
+          `Ready to link article to ${artwork.title}. Save to apply this change.`
+        );
+        setArtworkLookupMessageType("success");
+        return;
       }
+
+      setArtworkLookupMessage(
+        `Artwork not found for ID ${artworkId}. Article artwork is unchanged.`
+      );
+      setArtworkLookupMessageType("error");
     } catch {
-      return;
+      setArtworkLookupMessage(
+        `Artwork lookup failed for ID ${artworkId}. Article artwork is unchanged.`
+      );
+      setArtworkLookupMessageType("error");
     } finally {
       setIsLoadingArtwork(false);
     }
@@ -162,9 +199,21 @@ export const UpdateArticleForm = ({
               </div>
               {newArtwork && (
                 <p className="text-sm text-green-600">
-                  ✓ New Artwork Selected: {newArtwork.title}
+                  New Artwork Selected: {newArtwork.title}
                 </p>
               )}
+              <p
+                role={artworkLookupMessageType === "error" ? "alert" : "status"}
+                className={`text-sm ${
+                  artworkLookupMessageType === "success"
+                    ? "text-green-600"
+                    : artworkLookupMessageType === "error"
+                    ? "font-medium text-destructive"
+                    : "text-gray-500"
+                }`}
+              >
+                {artworkLookupMessage}
+              </p>
               {form.formState.errors.artwork?.message && (
                 <p role="alert" className="text-sm font-medium text-destructive">
                   {form.formState.errors.artwork.message}

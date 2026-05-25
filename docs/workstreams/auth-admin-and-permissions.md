@@ -159,6 +159,10 @@ features before production launch.
   admin-only.
 - T-138 documented the admin bootstrap, promotion, lockout recovery,
   verification, rollback, and secret-handling workflow in the auth runbook.
+- T-273 added a server-only admin frontend guard to verify the persisted
+  MongoDB role before `src/app/admin/dashboard/layout.tsx` renders the admin
+  shell. Demoted admins with stale admin JWTs now redirect before dashboard
+  content renders, while `requireApiAdmin()` remains the API boundary.
 
 ## Backlog
 
@@ -177,6 +181,8 @@ features before production launch.
   deployment smoke, use the T-025 owner-approved smoke-account handling and do
   not record usernames, passwords, cookies, or CSRF tokens.
 - Verify role persistence and role assignment behavior.
+- Preserve the T-273 admin frontend guard when changing admin layouts; stale
+  admin JWTs must not render dashboard shell content after persisted demotion.
 - Add tests for route protection utilities and high-risk auth helpers.
 - Add tests for credentials admin, credentials non-admin, OAuth user, middleware
   admin decisions, shared route guards, and representative user/admin APIs.
@@ -517,6 +523,17 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   account self-service privacy workflows remain blocked until the owner
   approves deletion/export/correction scope, retention rules, identity
   verification, and fulfilment process.
+- 2026-05-25: Completed T-273. The admin dashboard layout now awaits a
+  server-only persisted-role guard before rendering the shell, so stale admin
+  JWTs for demoted users redirect instead of seeing dashboard content. Existing
+  middleware and `requireApiAdmin()` API behavior were preserved with focused
+  guard and import-boundary coverage.
+- 2026-05-25: Completed T-278. The protected account layout is explicitly
+  dynamic and no longer calls `dbConnect()` before rendering; the account subnav
+  still owns user navigation through the existing session/service path. The
+  NextAuth MongoDB adapter promise is lazy, so importing `authOptions` for
+  account/session boundaries does not open the raw MongoDB connection during
+  build.
 
 ## Next Agent Action
 
@@ -542,3 +559,16 @@ retention rules, identity verification, and fulfilment ownership exist. Keep
 owner/legal retention decisions, public contact/enquiry notices, and broader
 destructive admin cascade previews separate. T-216 is complete; do not reassign
 it unless comment notice or manual moderation handoff behavior regresses.
+T-273 is complete; do not reassign it unless admin dashboard layout rendering
+can bypass persisted-role verification or the stale-admin-JWT redirect
+regresses.
+T-278 is complete; do not reassign it unless protected account routes again
+perform unconditional build-time MongoDB work or importing `authOptions` starts
+the raw MongoDB client connection before adapter code awaits it.
+
+The remaining A-032 auth findings are lower-priority test/code-health work:
+add a focused OAuth provider role/session propagation test if this becomes a
+quality priority, and route unused legacy session/admin helper pruning through
+the architecture source-pruning track. T-275 owns only the test mock typing
+regression introduced after T-273; it should not change production auth
+behavior.

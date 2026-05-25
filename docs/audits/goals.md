@@ -40,6 +40,8 @@ when assigning discovery work.
 | A-031 | [Admin content controls snapshot](#a-031-admin-content-controls-snapshot) | [Content, assets, and admin operations](../workstreams/content-assets-and-admin-ops.md), [Shopify commerce](../workstreams/shopify-commerce.md) | [Result](results/A-031-admin-content-controls.md) |
 | A-032 | [Auth and protected boundary snapshot](#a-032-auth-and-protected-boundary-snapshot) | [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md), [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-032-auth-protected-boundaries.md) |
 | A-033 | [Deployment, monitoring, and smoke snapshot](#a-033-deployment-monitoring-and-smoke-snapshot) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md), [Testing and quality](../workstreams/testing-and-quality.md) | [Result](results/A-033-deployment-monitoring-smoke.md) |
+| A-034 | [Current Jest failure triage](#a-034-current-jest-failure-triage) | [Testing and quality](../workstreams/testing-and-quality.md) | [Result](results/A-034-current-jest-failure-triage.md) |
+| A-035 | [Build-time external dependency map](#a-035-build-time-external-dependency-map) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md), [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-035-build-external-dependency-map.md) |
 
 ## A-001 Shopify Commerce Readiness
 
@@ -474,7 +476,7 @@ Completion expectations:
 
 ## A-027 Verification Gate Snapshot
 
-Status: Not started
+Status: Completed
 
 Goal: determine the current reliability of project verification commands and
 release gates without changing code, dependencies, or CI.
@@ -809,3 +811,100 @@ Completion expectations:
 - Set the result status to `Completed`.
 - Identify the top deployment/monitoring/smoke gaps and mark each as
   agent-actionable, owner-blocked, platform-blocked, or policy-blocked.
+
+## A-034 Current Jest Failure Triage
+
+Status: Planned
+
+Goal: classify the current full `npm test` failures under the pinned repo
+runtime into small fixable slices without changing runtime or test source.
+
+Read first:
+
+- [Testing and quality workstream](../workstreams/testing-and-quality.md)
+- [Testing runbook](../runbooks/testing.md)
+- [A-027 Verification gate snapshot](results/A-027-verification-gate-snapshot.md)
+- `package.json`
+
+Scope:
+
+- Run the minimum commands needed to identify the current failing Jest suites
+  and failure classes under Node `22.14.0` / npm `10.9.2`.
+- Separate assertion drift, timeout/performance failures, sandbox/socket
+  artifacts, and genuinely unclear failures.
+- Do not fix test code, implementation code, package scripts, or CI.
+- Do not paste full Jest logs; summarize failing suites, representative error
+  lines, and likely owners.
+
+Concurrency expectations:
+
+- This audit can run concurrently with implementation tasks that do not edit
+  broad test configuration. If another task is actively editing a failing test
+  file, record that possible race in the result.
+- The assigned agent owns only
+  [results/A-034-current-jest-failure-triage.md](results/A-034-current-jest-failure-triage.md).
+
+Verification:
+
+- Use pinned runtime via `source ~/.nvm/nvm.sh && nvm use 22.14.0`.
+- Suggested command: `npm test`, followed by targeted reruns only for failure
+  classes that need confirmation.
+- If sandbox socket restrictions affect a suite, record that class separately.
+
+Expected output: [results/A-034-current-jest-failure-triage.md](results/A-034-current-jest-failure-triage.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Produce a table of failing suites, failure class, likely owner/workstream, and
+  smallest recommended follow-up task.
+
+## A-035 Build-Time External Dependency Map
+
+Status: Planned
+
+Goal: map why `npm run build` needs external MongoDB/network access during
+static generation and identify the smallest safe mitigation or release-evidence
+policy.
+
+Read first:
+
+- [Deployment, security, and observability workstream](../workstreams/deployment-security-and-observability.md)
+- [Architecture refactor and code health workstream](../workstreams/architecture-refactor-and-code-health.md)
+- [Rendering and data fetching](../architecture/rendering-and-data-fetching.md)
+- [Deployment runbook](../runbooks/deployment.md)
+- [Environment variables runbook](../runbooks/environment.md)
+- [A-027 Verification gate snapshot](results/A-027-verification-gate-snapshot.md)
+
+Scope:
+
+- Identify the routes and data paths that perform live MongoDB/network reads
+  during `next build` static generation.
+- Distinguish intentional static/ISR generation from accidental build-time live
+  data coupling.
+- Recommend either a concrete code mitigation, a route-rendering/cache decision,
+  or a documented release-evidence policy.
+- Do not change route rendering, cache policy, data services, or deployment
+  docs in this audit.
+
+Concurrency expectations:
+
+- This audit can run concurrently with most implementation tasks, but record any
+  active edits to route rendering/data fetching files that could affect build
+  evidence.
+- The assigned agent owns only
+  [results/A-035-build-external-dependency-map.md](results/A-035-build-external-dependency-map.md).
+
+Verification:
+
+- Prefer source and build-output evidence. Do not use broad browser automation.
+- If running `npm run build`, record whether it ran with or without external
+  network access and summarize only the relevant route/error lines.
+
+Expected output: [results/A-035-build-external-dependency-map.md](results/A-035-build-external-dependency-map.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- List the build-time external dependency paths and the recommended next task or
+  release policy update.

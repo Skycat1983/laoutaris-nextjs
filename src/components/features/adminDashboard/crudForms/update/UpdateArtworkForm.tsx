@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import {
   Form,
   FormField,
@@ -27,14 +28,21 @@ import {
   updateArtworkSchema,
   type UpdateArtworkFormValues,
 } from "@/lib/data/schemas";
+import { cloudinaryImageSchema } from "@/lib/data/schemas/cloudinarySchema";
 import { clientApi } from "@/lib/api/clientApi";
 import { ShopifyProductLinksInput } from "@/components/features/adminDashboard/inputs/ShopifyProductLinksInput";
-import type { ApiErrorResponse } from "@/lib/data/types";
+import type {
+  ApiErrorResponse,
+  CloudinaryImageDB,
+  CloudinaryUploadInfo,
+} from "@/lib/data/types";
 import {
   applyApiFormErrors,
   type StructuredFormErrorResponse,
 } from "../formApiErrors";
 import type { UpdateArtworkResult } from "@/lib/api/admin/update/fetchers";
+import { UploadButton } from "@/components/elements/buttons/UploadButton";
+import { cloudinaryResponseToArtworkImageData } from "@/lib/transforms/artwork/transformCloudinary";
 
 interface UpdateArtworkFormProps {
   artworkInfo: ArtworkFrontend; // Define this type based on your data structure
@@ -51,6 +59,26 @@ const visibleArtworkFields = [
   "shopifyProducts",
 ] as const;
 
+const isCloudinaryUploadInfo = (info: unknown): info is CloudinaryUploadInfo => {
+  if (!info || typeof info !== "object") {
+    return false;
+  }
+
+  const uploadInfo = info as Partial<CloudinaryUploadInfo>;
+
+  return (
+    typeof uploadInfo.secure_url === "string" &&
+    typeof uploadInfo.public_id === "string" &&
+    typeof uploadInfo.bytes === "number" &&
+    typeof uploadInfo.height === "number" &&
+    typeof uploadInfo.width === "number" &&
+    typeof uploadInfo.format === "string" &&
+    Array.isArray(uploadInfo.colors) &&
+    Array.isArray(uploadInfo.predominant?.cloudinary) &&
+    Array.isArray(uploadInfo.predominant?.google)
+  );
+};
+
 export const UpdateArtworkForm = ({
   artworkInfo,
   onSuccess,
@@ -59,6 +87,9 @@ UpdateArtworkFormProps) => {
   const [imagePreview, setImagePreview] = useState(
     artworkInfo.image.secure_url
   );
+  const [replacementImage, setReplacementImage] =
+    useState<CloudinaryImageDB | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<UpdateArtworkFormValues>({
@@ -71,17 +102,56 @@ UpdateArtworkFormProps) => {
       surface: artworkInfo.surface,
       featured: artworkInfo.featured,
       shopifyProducts: artworkInfo.shopifyProducts ?? [],
-
-      //   imageUrl: artworkInfo.imageUrl,
     },
   });
+
+  const handleUploadSuccess = (result: CloudinaryUploadWidgetResults) => {
+    setUploadError(null);
+
+    try {
+      if (!isCloudinaryUploadInfo(result.info)) {
+        throw new Error("Invalid upload result");
+      }
+
+      const transformedImage = cloudinaryResponseToArtworkImageData(
+        result.info
+      );
+      const parsedImage = cloudinaryImageSchema.safeParse(transformedImage);
+
+      if (!parsedImage.success) {
+        throw new Error("Invalid transformed image");
+      }
+
+      form.setValue("image", parsedImage.data, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setReplacementImage(parsedImage.data);
+      setImagePreview(parsedImage.data.secure_url);
+    } catch {
+      form.setValue("image", undefined, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setReplacementImage(null);
+      setImagePreview(artworkInfo.image.secure_url);
+      setUploadError(
+        "Image upload finished, but the result could not be processed. Please try another upload."
+      );
+    }
+  };
 
   async function onSubmit(data: UpdateArtworkFormValues) {
     form.clearErrors();
     setIsSubmitting(true);
     try {
+      const { image, ...metadata } = data;
+      const updatePayload = image ? data : metadata;
       const response: UpdateArtworkResult | ApiErrorResponse =
-        await clientApi.admin.update.patchArtwork(artworkInfo._id, data);
+        await clientApi.admin.update.patchArtwork(
+          artworkInfo._id,
+          updatePayload
+        );
 
       if (!response.success) {
         applyApiFormErrors({
@@ -304,6 +374,30 @@ UpdateArtworkFormProps) => {
               errors={form.formState.errors.shopifyProducts}
               disabled={isSubmitting}
             />
+
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <FormLabel>Artwork Image</FormLabel>
+                <FormDescription>
+                  Current image remains unless a replacement is uploaded.
+                </FormDescription>
+              </div>
+              <UploadButton
+                label="Upload replacement image"
+                loadingLabel="Preparing upload..."
+                onUploadSuccess={handleUploadSuccess}
+              />
+              {replacementImage ? (
+                <p role="status" className="text-sm font-medium text-green-700">
+                  Replacement image ready
+                </p>
+              ) : null}
+              {uploadError ? (
+                <p role="alert" className="text-sm font-medium text-destructive">
+                  {uploadError}
+                </p>
+              ) : null}
+            </div>
 
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Updating..." : "Update Artwork"}

@@ -2,6 +2,12 @@ import { render, screen } from "@testing-library/react";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
 import type { ReactNode } from "react";
+import {
+  ARTSTYLE_OPTIONS,
+  DECADE_OPTIONS,
+  MEDIUM_OPTIONS,
+  SURFACE_OPTIONS,
+} from "@/lib/constants/artworkConstants";
 import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 
 jest.mock("@/components/shadcn/select", () => ({
@@ -71,7 +77,7 @@ describe("shop unsupported controls", () => {
   });
 
   it("keeps backed shop filters and product-type controls available", () => {
-    render(
+    const { container } = render(
       <ShopFilters filters={defaultShopFilters} onFilterChange={jest.fn()} />
     );
 
@@ -82,6 +88,14 @@ describe("shop unsupported controls", () => {
     expect(screen.getByLabelText("Original artworks")).toBeChecked();
     expect(screen.getByLabelText("Limited edition")).toBeChecked();
     expect(screen.getByLabelText("Books")).toBeChecked();
+    [
+      ...ARTSTYLE_OPTIONS,
+      ...MEDIUM_OPTIONS,
+      ...SURFACE_OPTIONS,
+      ...DECADE_OPTIONS,
+    ].forEach((value) => {
+      expect(container.querySelector(`[data-value="${value}"]`)).not.toBeNull();
+    });
   });
 
   it("keeps result count and sorting while removing fake pagination", () => {

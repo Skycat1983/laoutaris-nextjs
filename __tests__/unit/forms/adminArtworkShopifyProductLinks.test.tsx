@@ -11,6 +11,8 @@ import type { SimpleProduct } from "@/lib/data/types/shopify";
 
 jest.setTimeout(15000);
 
+let mockUploadResult: unknown;
+
 jest.mock("next/image", () => ({
   __esModule: true,
   default: function MockImage(props: {
@@ -22,6 +24,26 @@ jest.mock("next/image", () => ({
   }) {
     const React = require("react");
     return React.createElement("img", props);
+  },
+}));
+
+jest.mock("@/components/elements/buttons/UploadButton", () => ({
+  UploadButton: ({
+    onUploadSuccess,
+    label = "Upload an Image",
+  }: {
+    onUploadSuccess: (result: never) => void;
+    label?: string;
+  }) => {
+    const React = require("react");
+    return React.createElement(
+      "button",
+      {
+        type: "button",
+        onClick: () => onUploadSuccess(mockUploadResult as never),
+      },
+      label
+    );
   },
 }));
 
@@ -68,6 +90,40 @@ const validImage = {
     cloudinary: [{ color: "#111111", percentage: 42 }],
     google: [{ color: "#222222", percentage: 58 }],
   },
+};
+
+const replacementUploadInfo = {
+  secure_url: "https://example.com/replacement.jpg",
+  public_id: "artwork/replacement-id",
+  bytes: 654321,
+  height: 1400,
+  width: 1000,
+  format: "jpg",
+  resource_type: "image",
+  colors: [["#333333", 51]],
+  predominant: {
+    cloudinary: [["#333333", 51]],
+    google: [["#444444", 49]],
+  },
+};
+
+const replacementImage = {
+  secure_url: replacementUploadInfo.secure_url,
+  public_id: replacementUploadInfo.public_id,
+  bytes: replacementUploadInfo.bytes,
+  pixelHeight: replacementUploadInfo.height,
+  pixelWidth: replacementUploadInfo.width,
+  format: replacementUploadInfo.format,
+  hexColors: [{ color: "#333333", percentage: 51 }],
+  predominantColors: {
+    cloudinary: [{ color: "#333333", percentage: 51 }],
+    google: [{ color: "#444444", percentage: 49 }],
+  },
+};
+
+const replacementUploadResult = {
+  event: "success",
+  info: replacementUploadInfo,
 };
 
 const baseArtworkFormValues = {
@@ -173,6 +229,7 @@ describe("admin artwork Shopify product-link forms", () => {
       success: true,
       data: shopifyProduct,
     });
+    mockUploadResult = replacementUploadResult;
   });
 
   it("submits a trimmed Shopify product link from the create artwork form", async () => {
@@ -512,5 +569,77 @@ describe("admin artwork Shopify product-link forms", () => {
       await screen.findByText("Artwork update could not be saved")
     ).toBeInTheDocument();
     expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it("submits a transformed replacement image from the update artwork form", async () => {
+    const onSuccess = jest.fn();
+
+    render(
+      <UpdateArtworkForm artworkInfo={existingArtwork} onSuccess={onSuccess} />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Upload replacement image" })
+    );
+
+    expect(
+      await screen.findByText("Replacement image ready")
+    ).toBeInTheDocument();
+    expect(screen.getByAltText("Artwork image")).toHaveAttribute(
+      "src",
+      replacementImage.secure_url
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Artwork" }));
+
+    await waitFor(() => {
+      expect(mockPatchArtwork).toHaveBeenCalledWith(
+        artworkId,
+        expect.objectContaining({
+          image: replacementImage,
+          shopifyProducts: [
+            { productId: "10538938761480", type: "original" },
+            { productId: "10538937319688", type: "book" },
+          ],
+        })
+      );
+    });
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows upload processing errors and omits the replacement image payload", async () => {
+    const onSuccess = jest.fn();
+    mockUploadResult = {
+      event: "success",
+      info: {
+        secure_url: "https://example.com/broken.jpg",
+        public_id: "artwork/broken-id",
+      },
+    };
+
+    render(
+      <UpdateArtworkForm artworkInfo={existingArtwork} onSuccess={onSuccess} />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Upload replacement image" })
+    );
+
+    expect(
+      await screen.findByText(
+        "Image upload finished, but the result could not be processed. Please try another upload."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Replacement image ready")
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Artwork" }));
+
+    await waitFor(() => {
+      expect(mockPatchArtwork).toHaveBeenCalledTimes(1);
+    });
+    expect(mockPatchArtwork.mock.calls[0][1]).not.toHaveProperty("image");
+    expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 });

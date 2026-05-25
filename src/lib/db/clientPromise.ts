@@ -1,13 +1,4 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-// import dbConnect from "./mongodb";
-
-const uri = process.env.MONGO_URI as string;
-
-if (!uri) {
-  throw new Error(
-    "Please define the MONGO_URI environment variable inside .env"
-  );
-}
 
 //  specifically for Auth.js/NextAuth, using the raw MongoDB driver
 const options = {
@@ -20,10 +11,9 @@ const options = {
   connectTimeoutMS: 30000,
   socketTimeoutMS: 45000,
   serverSelectionTimeoutMS: 60000, // Increase from default 30s to 60s
-};
+} as const;
 
-let client;
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<MongoClient> | undefined;
 
 // Wrap connection in a retry function
 const connectWithRetry = async (client: MongoClient): Promise<MongoClient> => {
@@ -52,19 +42,48 @@ const connectWithRetry = async (client: MongoClient): Promise<MongoClient> => {
   throw lastError;
 };
 
-if (process.env.NODE_ENV === "development") {
-  let globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
+const createClientPromise = () => {
+  const uri = process.env.MONGO_URI as string | undefined;
 
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = connectWithRetry(client);
+  if (!uri) {
+    throw new Error(
+      "Please define the MONGO_URI environment variable inside .env"
+    );
   }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  client = new MongoClient(uri, options);
-  clientPromise = connectWithRetry(client);
-}
 
-export { clientPromise };
+  if (process.env.NODE_ENV === "development") {
+    const globalWithMongo = global as typeof globalThis & {
+      _mongoClientPromise?: Promise<MongoClient>;
+    };
+
+    if (!globalWithMongo._mongoClientPromise) {
+      const client = new MongoClient(uri, options);
+      globalWithMongo._mongoClientPromise = connectWithRetry(client);
+    }
+
+    return globalWithMongo._mongoClientPromise;
+  }
+
+  const client = new MongoClient(uri, options);
+  return connectWithRetry(client);
+};
+
+const getClientPromise = () => {
+  if (!clientPromise) {
+    clientPromise = createClientPromise();
+  }
+
+  return clientPromise;
+};
+
+const lazyClientPromise = {
+  then: (...args: Parameters<Promise<MongoClient>["then"]>) =>
+    getClientPromise().then(...args),
+  catch: (...args: Parameters<Promise<MongoClient>["catch"]>) =>
+    getClientPromise().catch(...args),
+  finally: (...args: Parameters<Promise<MongoClient>["finally"]>) =>
+    getClientPromise().finally(...args),
+  [Symbol.toStringTag]: "Promise",
+} as Promise<MongoClient>;
+
+export { lazyClientPromise as clientPromise };

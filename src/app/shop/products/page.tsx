@@ -9,14 +9,18 @@ export default async function ProductsPage({
 }: {
   searchParams: ShopSearchParams;
 }) {
+  const firstParamValue = (value: string | string[] | undefined) =>
+    Array.isArray(value) ? value[0] : value;
+
   const filters: ShopFiltersState = {
-    artstyle: searchParams.artstyle || "all-style",
-    medium: searchParams.medium || "all-medium",
-    surface: searchParams.surface || "all-surface",
-    decade: searchParams.decade || "all-epochs",
-    showOriginals: searchParams.showOriginals !== "false",
-    showPrints: searchParams.showPrints !== "false",
-    showBooks: searchParams.showBooks !== "false",
+    artstyle: firstParamValue(searchParams.artstyle) || "all-style",
+    medium: firstParamValue(searchParams.medium) || "all-medium",
+    surface: firstParamValue(searchParams.surface) || "all-surface",
+    decade: firstParamValue(searchParams.decade) || "all-epochs",
+    showOriginals: firstParamValue(searchParams.showOriginals) !== "false",
+    showPrints: firstParamValue(searchParams.showPrints) !== "false",
+    showBooks: firstParamValue(searchParams.showBooks) !== "false",
+    sortBy: firstParamValue(searchParams.sortBy) || "type",
   };
 
   return (

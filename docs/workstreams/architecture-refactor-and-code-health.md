@@ -195,6 +195,9 @@ or inconsistent code forward.
 - T-023 completed the auth import-boundary slice: root-layout/session auth
   imports no longer load credentials password verification or native bcrypt
   unless a credentials authorize flow is running.
+- T-273 added the admin dashboard frontend persisted-role guard as a server-only
+  session helper imported only by the admin dashboard server layout, preserving
+  the client/server import-boundary guard.
 
 ## Backlog
 
@@ -744,8 +747,23 @@ Use targeted import/reference searches for pruning tasks.
   provider ownership remain rooted. The root layout chunk measured `22,313`
   bytes uncompressed versus the T-254 `27,498` byte baseline, and the account
   dropdown implementation split to lazy chunk `1833.254d53090d3e3f31.js`.
+- 2026-05-25: Completed T-273. The new admin frontend persisted-role guard is
+  server-only and consumed by the admin dashboard server layout. Required
+  client/server import-boundary coverage passed, including a small repair to an
+  already-dirty shop-gallery WIP so `shopTypes` remains type-only in the client
+  import graph.
+- 2026-05-25: Completed T-278. Protected `/account*` routes no longer perform
+  layout-level MongoDB work during release builds, the NextAuth raw MongoDB
+  client promise is lazy on import, and MongoDB-backed `/project/about` now has
+  an explicit dynamic route policy. Default-sandbox `npm run build` passed with
+  `/account*` and `/project/about` rendered on demand.
 
 ## Next Agent Action
+
+T-278 is complete. Keep root header navigation build-time MongoDB reads,
+intentional external-build evidence for `/biography`, `/collections`, and
+`/sitemap.xml`, and `/prototype/home` production build policy as separate
+A-035 follow-ups unless a new task scopes those paths.
 
 T-256 is complete. Do not make additional A-022/F-115 provider, session,
 modal, or root-header runtime edits without a new scoped task that defines the

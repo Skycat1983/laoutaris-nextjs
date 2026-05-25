@@ -11,7 +11,9 @@ import {
   ArtworkDB,
 } from "@/lib/data/models/artworkModel";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import type { ShopSortOption } from "@/lib/data/types/shopTypes";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
+import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 import dbConnect from "@/lib/db/mongodb";
 import { createServerLogger } from "@/lib/observability/logger";
 
@@ -35,6 +37,7 @@ export type GetShopProductListParams = {
   showOriginals?: boolean;
   showPrints?: boolean;
   showBooks?: boolean;
+  sortBy?: ShopSortOption;
 };
 
 export type ShopProductListServiceResult = {
@@ -133,13 +136,14 @@ export const getShopProductList = async (
   const products = productResults.filter(
     (product): product is SimpleProduct => product !== null
   );
+  const sortedProducts = sortShopProducts(products, params.sortBy ?? "type");
 
   return {
     success: true,
-    data: products,
+    data: sortedProducts,
     metadata: {
       totalArtworks: artworks.length,
-      totalProducts: products.length,
+      totalProducts: sortedProducts.length,
     },
   };
 };

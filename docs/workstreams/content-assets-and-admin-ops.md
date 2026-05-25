@@ -125,6 +125,9 @@ content operations repeatable and safe.
 - T-153 exposes blog `pinned` and canonical `tags` controls in admin
   create/update forms, and admin blog read filters now derive year options from
   returned blog data instead of a stale fixed list.
+- T-271 exposes replacement-image upload in the admin artwork update form using
+  the existing signed Cloudinary upload path and preserves the current
+  no-deletion asset lifecycle policy.
 
 ## Backlog
 
@@ -446,8 +449,26 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-23: Completed T-218. The footer placeholder social anchors are gone,
   contact/legal links remain, and copyright no longer uses stale fixed 2024
   text. Real social account ownership remains pending.
+- 2026-05-25: Completed T-271. Admin artwork updates can now submit a
+  transformed replacement Cloudinary image through the existing signed upload
+  widget. Failed upload-result processing is visible and clears pending
+  replacement image state, while existing metadata and Shopify product-link
+  update behavior remain intact.
+- 2026-05-25: Completed T-272. Article artwork replacement and collection
+  artwork relationship controls now show visible not-found, duplicate, ready,
+  and unchanged/no-op feedback while preserving manual ObjectId entry and
+  existing submit contracts. A full searchable relationship picker remains a
+  separate future archive-maintenance improvement.
 
 ## Next Agent Action
+
+T-264 is complete for the A-030 reciprocal delete-reference cleanup: artwork
+deletes now clean affected user favourite/watchlist arrays, and collection
+deletes now clean affected artwork `collections` arrays through the guarded
+delete flow. T-271 and T-272 are complete for the first A-031 media and
+relationship-control slices. Remaining A-031 admin-control candidates are lower
+priority: blog/collection image picker or pre-submit image feedback, and
+comment/user search filters only if operator lookup friction becomes routine.
 
 No further F-092 implementation slice is ready after T-165/T-172/T-178, and no
 admin archive maintenance task is currently prepared after T-183. T-218 is
@@ -457,14 +478,16 @@ launch policy, broader taxonomy/i18n direction, real social URL wiring,
 Cloudinary asset deletion, and monitoring-provider work separate.
 T-141, T-142, T-144, T-148, T-149, T-150, T-152, T-153, T-156, T-163, T-164,
 T-165, T-171, T-172, T-173, T-174, T-175, T-176, T-177, T-178, T-179, T-180,
-T-181, T-182, and T-183 are complete; do not reassign them unless their route
-protections, form behavior, archive entry-point behavior, blog pinned/tag
-controls, runbook content, preview contract/UI, evidence gate, audit-event
-persistence, image URL audit, delete-receipt verification, admin read-list
-audit, query bounds, blog pagination pilot, route-backed blog filters,
-route-backed blog search, collection pagination/search, article
+T-181, T-182, T-183, T-271, and T-272 are complete; do not reassign them unless
+their route protections, form behavior, archive entry-point behavior, blog
+pinned/tag controls, runbook content, preview contract/UI, evidence gate,
+audit-event persistence, image URL audit, delete-receipt verification, admin
+read-list audit, query bounds, blog pagination pilot, route-backed blog
+filters, route-backed blog search, collection pagination/search, article
 pagination/filter/search, artwork pagination/filter/search, comment/user
-pagination, shared pagination control, or comment/user delete handoff regresses.
+pagination, shared pagination control, comment/user delete handoff, admin
+artwork replacement-image update workflow, or admin artwork relationship
+feedback regresses.
 
 For Cloudinary, keep runtime deletion, signed folder params, future image-field
 model migrations, new delivery-transform retuning, and Cloudinary account changes

@@ -93,12 +93,20 @@ describe("public image preload and sizing", () => {
     const productDetailSource = readRepoFile(
       "src/app/shop/products/[productHandle]/page.tsx"
     );
+    const productSaleGallerySource = readRepoFile(
+      "src/components/shop/product-detail/ShopProductSaleGallery.tsx"
+    );
 
     expect(productListSource).toContain(
       'sizes="(max-width: 1024px) 100vw, 640px"'
     );
-    expect(productDetailSource).toContain(
-      'sizes="(max-width: 1024px) 100vw, 576px"'
+    expect(productDetailSource).toContain("<ShopProductSaleGallery");
+    expect(productSaleGallerySource).toContain('sizes="112px"');
+    expect(productSaleGallerySource).toContain(
+      'sizes="(max-width: 1279px) 100vw, 45vw"'
+    );
+    expect(productSaleGallerySource).toContain(
+      'options.thumbnail ? "112px" : "(max-width: 1279px) 100vw, 45vw"'
     );
     expect(productDetailSource).toContain(
       'sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 288px"'

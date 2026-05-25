@@ -14,6 +14,7 @@ import { getCachedBiographyArticleBySlug } from "@/lib/data/services/getCachedBi
 import { getArtworkById } from "@/lib/data/services/getArtworkById";
 import { getCachedBlogBySlugWithAuthor } from "@/lib/data/services/getCachedBlogPrimaryData";
 import { getCollectionArtwork } from "@/lib/data/services/getCollectionArtwork";
+import type { SimpleProduct } from "@/lib/data/types/shopify";
 import {
   buildArticleBreadcrumbJsonLd,
   buildArtworkBreadcrumbJsonLd,
@@ -150,7 +151,7 @@ const collection = {
   artworks: [artwork],
 } as never;
 
-const product = {
+const product: SimpleProduct = {
   id: "gid://shopify/Product/10538938761480",
   handle: "blue-figure-print",
   title: "Blue Figure Print",
@@ -168,7 +169,7 @@ const product = {
   },
   availableForSale: true,
   variants: [],
-} as never;
+};
 
 describe("public breadcrumb structured data", () => {
   beforeEach(() => {
@@ -286,7 +287,7 @@ describe("public breadcrumb structured data", () => {
         url: "https://cdn.shopify.com/s/files/no-034.jpg",
         altText: "No.034, Limited Edition Print",
       },
-    } as never;
+    };
     const metadata = buildProductDetailMetadata(printProduct);
     const productJsonLd = buildProductJsonLd(printProduct);
     const breadcrumbJsonLd = buildProductBreadcrumbJsonLd(printProduct);

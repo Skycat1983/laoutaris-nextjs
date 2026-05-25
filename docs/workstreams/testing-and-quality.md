@@ -1866,8 +1866,34 @@ npm run lint
   `ArtworkGalleryPaginationState` tests for non-page-1 initial load-more state
   and terminal-page behavior, and extended `ArtworkListLoader` coverage for the
   pagination metadata prop handoff.
+- 2026-05-25: Completed T-268. Explicit `npx tsc --noEmit --pretty false
+  --skipLibCheck` now passes under Node `22.14.0` after clearing the four A-027
+  test-file diagnostics and one type-only public-search narrowing diagnostic.
+  Focused Jest passed for the four scoped test files and the public search data
+  service.
+- 2026-05-25: After T-273 returned, explicit `npm exec tsc -- --noEmit
+  --pretty false --skipLibCheck` regressed on
+  `__tests__/unit/auth/adminFrontendGuard.test.tsx(51,22)` because the
+  `redirect` mock is cast directly to a Jest mock type. T-275 is prepared as
+  the narrow repair.
+- 2026-05-25: Completed T-276. The deterministic A-034 source-contract drift is
+  fixed by aligning product image sizing coverage with the current product-page
+  to sale-gallery boundary and by allowing explicitly listed semantic style
+  scaffold-only leaves. Focused in-band Jest passed for
+  `publicImagePreloadSizing.test.tsx` and `semanticStyles.test.ts`.
 
 ## Next Agent Action
+
+T-275 is the current strict TypeScript repair: fix the
+`adminFrontendGuard.test.tsx` mock typing and rerun explicit `noEmit`. T-268 is
+complete and should not be reassigned. Do not add a formal typecheck package
+script or CI gate without a separate quality-gate decision task.
+
+After T-275, continue the A-034 split rather than a broad Jest cleanup: T-276
+is complete, T-277 owns admin/form full-run timeouts, and T-280 owns the
+public-smoke socket sandbox path. Do not mix those remaining failure classes
+into one task, and do not add a main CI workflow until the local gates are
+green enough or explicitly waived.
 
 T-265 focused coverage is complete; do not reassign it unless artwork browse
 pagination metadata handoff or deep-linked client load-more behavior regresses.
@@ -1939,8 +1965,9 @@ artwork enquiry notice coverage is complete. T-218 footer placeholder
 social-link/current-year coverage is complete. T-219 is complete as docs-only
 owner-input blocker coverage. Later runtime compliance tests for Shopify policy
 URLs and real social URLs remain separate.
-The current strict TypeScript `noEmit` backlog is clear after T-198 and the
-2026-05-22 ArticleLoader follow-up. Do not add
+The previous strict TypeScript `noEmit` backlog was clear after T-198, the
+2026-05-22 ArticleLoader follow-up, and T-268, but T-273 introduced the narrow
+admin frontend guard test mock typing regression now routed to T-275. Do not add
 `noEmit` to CI or release verification until a separate quality-gate decision
 task is prepared and assigned. T-157 through T-198 are complete and should not
 be reassigned unless one of their recorded prototype, audit handoff, admin
@@ -1983,3 +2010,7 @@ implementation task.
 
 T-082 focused admin product-link validation coverage was added to
 `__tests__/unit/api/adminArtworkRoute.test.ts` and passed.
+T-271 added focused admin artwork update-form replacement image coverage,
+preserved existing artwork update route replacement-image coverage, and added
+upload-button form-safety coverage. The focused form, route, and upload-button
+Jest suites passed.

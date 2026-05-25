@@ -227,7 +227,8 @@ describe("ArtworkListLoader", () => {
       ...props.initialFilters,
       filterMode: props.initialFilters.filterMode,
       sortBy: props.initialSort.by,
-      sortColor: props.initialSort.color,
+      sortColor:
+        "color" in props.initialSort ? props.initialSort.color : undefined,
     });
     expect(mockGetCachedDefaultArtworkListPage).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();

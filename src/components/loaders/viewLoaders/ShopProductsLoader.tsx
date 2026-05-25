@@ -24,6 +24,7 @@ const filterValueToQueryArray = (value: string | undefined, allValue: string) =>
 const filtersToShopProductListQueryInput = (
   initialFilters?: ShopFiltersState
 ): ShopProductListQueryInput => ({
+  sortBy: initialFilters?.sortBy,
   artstyle: filterValueToQueryArray(initialFilters?.artstyle, "all-style"),
   medium: filterValueToQueryArray(initialFilters?.medium, "all-medium"),
   surface: filterValueToQueryArray(initialFilters?.surface, "all-surface"),

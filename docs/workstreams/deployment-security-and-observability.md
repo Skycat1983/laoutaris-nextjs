@@ -1042,8 +1042,21 @@ npm run lint
 - 2026-05-23: Completed T-232. Sitemap and default redirect freshness are now
   explicit: current behavior remains deploy-bound, while later target windows
   are documented before runtime cache changes.
+- 2026-05-25: Completed T-278. The accidental default-sandbox build hard
+  failures for protected `/account*` routes and `/project/about` are removed.
+  `npm run build` under Node `22.14.0` passed in the default sandbox; the
+  remaining external-build evidence policy for `/biography`, `/collections`,
+  and `/sitemap.xml` is still owned by T-279.
 
 ## Next Agent Action
+
+T-274 is the next owner-facing production-ops task: turn the A-033 monitoring,
+incident-owner, Vercel-operator, smoke-account, and public-smoke variable
+blockers into concise owner questions without implementing providers, CI, or
+secret handling. T-279 owns the docs-only external-build evidence policy for
+intentional `/biography`, `/collections`, and `/sitemap.xml` surfaces after
+T-278 removed the accidental `/account*` and `/project/about` hard failures.
+Coordinate T-279 with T-280 if both edit testing/deployment runbooks.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);

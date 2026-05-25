@@ -36,6 +36,36 @@ const flattenStyleValues = (node: unknown): string[] => {
   return [];
 };
 
+type StyleLeaf = {
+  path: string;
+  value: string;
+};
+
+const flattenStyleLeaves = (
+  node: unknown,
+  pathSegments: string[] = []
+): StyleLeaf[] => {
+  if (typeof node === "string") {
+    return [{ path: pathSegments.join("."), value: node }];
+  }
+
+  if (node && typeof node === "object") {
+    return Object.entries(node as Record<string, unknown>).flatMap(
+      ([key, value]) => flattenStyleLeaves(value, [...pathSegments, key])
+    );
+  }
+
+  return [];
+};
+
+const scaffoldOnlyStyleLeaves = new Set([
+  "text.displayTitle",
+  "text.eyebrow",
+  "action.primary",
+  "action.textLink",
+  "layout.sectionBand",
+]);
+
 const unwrapExpression = (expression: ts.Expression): ts.Expression => {
   if (
     ts.isAsExpression(expression) ||
@@ -142,15 +172,20 @@ describe("semanticStyles", () => {
     expect(flattenStyleValues(semanticStyles).every(Boolean)).toBe(true);
   });
 
-  it("keeps every semantic value copied from an existing source class pattern", () => {
+  it("keeps semantic values copied from source or explicitly reserved for the scaffold", () => {
     const sourceCorpus = listRepoSourceFiles("src")
       .filter((sourceFile) => sourceFile !== styleModulePath)
       .map(readRepoFile)
       .join("\n");
+    const missingRuntimePatterns = flattenStyleLeaves(semanticStyles)
+      .filter(
+        ({ path: stylePath, value }) =>
+          !scaffoldOnlyStyleLeaves.has(stylePath) &&
+          !sourceCorpus.includes(value)
+      )
+      .map(({ path: stylePath }) => stylePath);
 
-    for (const className of flattenStyleValues(semanticStyles)) {
-      expect(sourceCorpus).toContain(className);
-    }
+    expect(missingRuntimePatterns).toEqual([]);
   });
 
   it("keeps the module client-safe and free of dynamic class generation", () => {

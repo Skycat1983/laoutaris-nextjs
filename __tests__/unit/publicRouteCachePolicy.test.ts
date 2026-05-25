@@ -25,6 +25,7 @@ const explicitDynamicPublicRoutes = [
   "src/app/blog/[slug]/page.tsx",
   "src/app/collections/[slug]/page.tsx",
   "src/app/collections/[slug]/[artworkId]/page.tsx",
+  "src/app/project/about/page.tsx",
   "src/app/project/contact/page.tsx",
   "src/app/search/page.tsx",
   "src/app/shop/products/page.tsx",
@@ -33,7 +34,6 @@ const explicitDynamicPublicRoutes = [
 
 const stableStaticShellRoutes = [
   "src/app/project/page.tsx",
-  "src/app/project/about/page.tsx",
   "src/app/project/aims/page.tsx",
   "src/app/project/film/page.tsx",
   "src/app/shop/page.tsx",
@@ -134,7 +134,7 @@ describe("public route cache policy", () => {
     );
 
     expect(sourcesWithRouteRevalidate.sort()).toEqual(
-      [...acceptedRevalidateSources].sort()
+      Array.from(acceptedRevalidateSources).sort()
     );
   });
 

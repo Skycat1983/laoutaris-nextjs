@@ -12,7 +12,8 @@ const readSource = (sourcePath: string) =>
 
 function ModalProbe({ onClosed }: { onClosed: () => void }) {
   const modal = useGlobalFeatures();
-  const hasLanguageState = "language" in (modal as Record<string, unknown>);
+  const hasLanguageState =
+    "language" in (modal as unknown as Record<string, unknown>);
 
   return (
     <div>

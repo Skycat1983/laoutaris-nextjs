@@ -101,7 +101,9 @@ export type CreateArtworkFormValues = z.infer<typeof createArtworkSchema>;
 
 const routeCloudinaryImageSchema = cloudinaryImageSchema.strict();
 
-export const updateArtworkSchema = artworkFormSchema;
+export const updateArtworkSchema = artworkFormSchema.extend({
+  image: cloudinaryImageSchema.optional(),
+});
 
 const artworkRouteFields = {
   title: artworkFormSchema.shape.title,

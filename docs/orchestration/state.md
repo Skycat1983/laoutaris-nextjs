@@ -4,15 +4,17 @@ Last updated: 2026-05-25
 
 ## Current Priority
 
-T-262 reconciled the recalibration trackers. A-026, A-028, A-030, A-031, A-032,
-and A-033 are now marked completed in the shared audit trackers; A-025 and
-A-029 remain superseded; A-027 is still only a stub and should not be treated as
-completed. The task index now includes the historical T-220 through T-229
-prototype/mobile work and explicitly documents the duplicate T-221 ID. T-263 is
-also completed, so the next clean verification-gate step is A-027 if an audit is
-desired; otherwise move to T-264 through T-266. Owner-blocked monitoring,
-incident-role, Vercel-operator, smoke-account, and policy decisions remain
-separate from implementation tasks.
+T-262 through T-267 are complete. T-268 through T-273 are complete. A-026
+through A-028 and A-030 through A-035 are completed in their result files; A-025
+and A-029 remain superseded. T-267 reconciled the recalibration findings into
+F-123 through F-146, R-034 through R-038, relevant workstream handoffs, and the
+task/orchestration trackers. The next wave is T-274 and T-275 through T-280:
+T-274 prepares owner decisions for production operations blockers, T-275
+restores explicit `tsc --noEmit`, T-276/T-277/T-280 split the current Jest
+failure classes, and T-278/T-279 split accidental build hard failures from
+intentional external-build evidence. Owner-blocked monitoring, incident-role,
+Vercel-operator, smoke-account, public-smoke variable, and policy decisions
+remain separate from implementation tasks.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -1440,13 +1442,10 @@ Use this section as the first operational handoff for a new orchestrator.
 
 ## Active Audits
 
-Prepared but not completed:
+Prepared but not commissioned:
 
-- [A-027 Verification gate snapshot](../audits/goals.md#a-027-verification-gate-snapshot),
-  writing to
-  [results/A-027-verification-gate-snapshot.md](../audits/results/A-027-verification-gate-snapshot.md).
-  T-263 repaired the known stale verification drift, so A-027 can run when a
-  fresh verification-gate baseline is desired.
+- None. Current follow-up work is scoped as implementation, docs, or
+  reconciliation tasks.
 
 Completed and reconciled:
 
@@ -1480,7 +1479,7 @@ Superseded recalibration goals:
 - [A-025 Codebase progress and trajectory recalibration](../audits/results/A-025-codebase-trajectory-recalibration.md)
 - [A-029 Admin, auth, and operations hotspot scan](../audits/results/A-029-admin-auth-ops-hotspots.md)
 
-Completed recalibration audits, tracker-reconciled by T-262:
+Completed recalibration audits, tracker-reconciled by T-262 and T-267:
 
 - [A-026 Tracker alignment snapshot](../audits/results/A-026-tracker-alignment-snapshot.md)
 - [A-028 Public archive and Shopify runtime hotspot scan](../audits/results/A-028-public-shopify-hotspots.md)
@@ -1488,13 +1487,17 @@ Completed recalibration audits, tracker-reconciled by T-262:
 - [A-031 Admin content controls snapshot](../audits/results/A-031-admin-content-controls.md)
 - [A-032 Auth and protected boundary snapshot](../audits/results/A-032-auth-protected-boundaries.md)
 - [A-033 Deployment, monitoring, and smoke snapshot](../audits/results/A-033-deployment-monitoring-smoke.md)
+- [A-027 Verification gate snapshot](../audits/results/A-027-verification-gate-snapshot.md)
+- [A-034 Current Jest failure triage](../audits/results/A-034-current-jest-failure-triage.md)
+- [A-035 Build-time external dependency map](../audits/results/A-035-build-external-dependency-map.md)
+- Recalibration candidate findings and completed task outcomes from A-028,
+  A-030, A-031, A-032, A-033, A-034, A-035, and T-263 through T-273 are
+  reconciled into F-123 through F-146 and R-034 through R-038.
 
 ## Recommended Next Audits
 
-No new audit needs to be assigned immediately. A-027 remains the only prepared
-recalibration audit without a completed result; T-263 has repaired the known
-stale verification drift, so assign A-027 when a fresh verification-gate
-snapshot is needed.
+No new audit is recommended before the current follow-up tasks. A-034 and A-035
+already split the verification/build questions into smaller actionable slices.
 
 ## Open Coordination Tasks
 
@@ -1510,7 +1513,7 @@ snapshot is needed.
   assigning implementation work.
 - Keep completed-audit findings linked when assigning implementation work after
   reconciliation, including A-001 through A-024 and completed recalibration
-  results A-026, A-028, and A-030 through A-033.
+  results A-026 through A-028 and A-030 through A-035.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
 - Resolve or escalate owner decisions captured in the findings register:
@@ -1527,23 +1530,33 @@ snapshot is needed.
 
 The recommended next assignments are:
 
-- If verification-gate state is the priority, assign
-  [A-027 Verification gate snapshot](../audits/goals.md#a-027-verification-gate-snapshot):
-  `/goal effort: high details: docs/audits/goals.md#a-027-verification-gate-snapshot`.
-- If implementation is the priority, the highest-value tasks can run
-  concurrently because they touch separate surfaces:
-  `/task effort: high details: docs/tasks/T-264-clean-up-admin-reciprocal-delete-references.md`,
-  `/task effort: high details: docs/tasks/T-265-fix-artwork-browse-pagination-state.md`,
-  and
-  `/task effort: high details: docs/tasks/T-266-bound-public-search-shopify-product-search.md`.
+- For owner-blocked operations decisions, assign:
+  `/task effort: high details: docs/tasks/T-274-prepare-production-ops-owner-decision-packet.md`.
+- First small quality repair:
+  `/task effort: low details: docs/tasks/T-275-restore-explicit-typecheck-after-admin-guard.md`.
+  This is currently the only explicit `noEmit` diagnostic observed after the
+  returned T-273 work.
+- The deterministic Jest repair can run after or alongside T-275:
+  `/task effort: medium details: docs/tasks/T-276-fix-deterministic-jest-assertion-drift.md`.
+- The admin Jest timeout work can start profiling in parallel, but final
+  full-suite verification should wait until T-276 lands:
+  `/task effort: high details: docs/tasks/T-277-stabilize-admin-jest-full-run-timeouts.md`.
+- The build-isolation implementation can run in parallel with Jest work:
+  `/task effort: high details: docs/tasks/T-278-isolate-account-project-build-hard-failures.md`.
+- The external-build evidence policy is docs-only but should not overlap another
+  deployment-runbook editor:
+  `/task effort: medium details: docs/tasks/T-279-document-external-build-evidence-policy.md`.
+- The public-smoke socket handling task can run in parallel if it avoids shared
+  Jest config and coordinates on runbooks:
+  `/task effort: medium details: docs/tasks/T-280-handle-public-smoke-socket-sandbox-path.md`.
 - If broad framed print preview review becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option
   mapping, checkout/cart work, enquiry mutation, physical-dimension migration,
   product-page rail adoption, or real texture asset creation.
 - If quality gating is preferred, prepare a separate task to decide whether and
-  how strict TypeScript `noEmit` should enter CI or release verification now
-  that T-198 has made the command pass.
+  how strict TypeScript `noEmit` should enter CI or release verification after
+  T-275 restores the current regression to green.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)

@@ -1,4 +1,5 @@
 import { AdminSidebar } from "@/components/layouts/admin/AdminSidebar";
+import { requireAdminFrontendAccess } from "@/lib/session/requireAdminFrontendAccess";
 
 export default async function DashboardLayout({
   children,
@@ -9,6 +10,8 @@ export default async function DashboardLayout({
   feed: React.ReactNode;
   main: React.ReactNode;
 }) {
+  await requireAdminFrontendAccess();
+
   return (
     <div className="grid grid-cols-5 flex-1 min-h-screen">
       <AdminSidebar />

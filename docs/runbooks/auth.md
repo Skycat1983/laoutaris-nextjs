@@ -30,15 +30,20 @@ documents a specific external reason.
 
 ## Admin Access
 
-Middleware checks route protection and admin access. Admin authorization depends
-on the JWT role value being `admin`.
+Middleware checks route protection and admin access. Middleware admin decisions
+depend on the JWT role value being `admin`, then admin frontend rendering and
+admin APIs verify the persisted MongoDB role before exposing admin shell content
+or guarded API behavior.
 
 The persisted user role is stored in MongoDB on the `users` collection as
 `role: "user"` or `role: "admin"`. Credentials sign-in reads that persisted
 role, copies it into the NextAuth JWT in the `jwt` callback, then exposes it on
 `session.user.role` in the `session` callback. A role change does not update an
 already-issued JWT; the affected user must sign out and sign back in before the
-new role is reflected in the session.
+new role is reflected in the session. A demoted admin with an existing admin JWT
+may still pass middleware, but `src/app/admin/dashboard/layout.tsx` now calls
+the server-only frontend guard and redirects before rendering dashboard content
+when the persisted role is no longer `admin`.
 
 ### Admin Bootstrap And Recovery
 
@@ -85,7 +90,8 @@ To verify an existing admin without changing data:
 
 If the dashboard check fails but MongoDB shows `role: "admin"` for the approved
 account, require sign-out/sign-in before treating it as a role persistence bug
-because existing JWTs can contain the prior role.
+because existing JWTs can contain the prior role and middleware still uses that
+JWT role as its first-pass frontend gate.
 
 #### First Production Admin
 
@@ -166,12 +172,13 @@ For direct API checks, capture only status, route, request time, deployment URL,
 and request ID if present. Do not capture cookies, authorization headers,
 browser storage, CSRF tokens, or raw session payloads.
 
-#### Current Runtime Gap
+#### Runtime Protections
 
-This runbook documents operational recovery only. Runtime protections against
-deleting the current admin account or deleting the last remaining admin account
-are separate implementation work and must not be treated as solved by this
-documentation.
+Admin frontend shell rendering, admin APIs, current-admin deletion, and
+last-admin deletion now have runtime protections. This runbook remains the
+operator workflow for bootstrap, promotion, demotion, and lockout recovery; it
+does not replace owner approval, backup/export handling, private account
+identifier handling, or sign-out/sign-in after role changes.
 
 ## Manual Verification
 

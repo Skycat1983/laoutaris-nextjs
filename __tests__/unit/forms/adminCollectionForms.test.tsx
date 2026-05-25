@@ -40,6 +40,7 @@ jest.mock("@/lib/api/clientApi", () => ({
 
 const mockCreateCollection = clientApi.admin.create.collection as jest.Mock;
 const mockPatchCollection = clientApi.admin.update.patchCollection as jest.Mock;
+const mockReadArtwork = clientApi.admin.read.artwork as jest.Mock;
 const mockUseRouter = useRouter as jest.Mock;
 const mockRefresh = jest.fn();
 
@@ -54,6 +55,7 @@ const validCollectionImageUrl =
 
 const collectionId = "507f1f77bcf86cd799439011";
 const artworkId = "507f1f77bcf86cd799439012";
+const replacementArtworkId = "507f1f77bcf86cd799439013";
 
 const existingCollection = {
   _id: collectionId,
@@ -75,6 +77,15 @@ const existingCollection = {
     },
   ],
 } as never;
+
+const replacementArtwork = {
+  _id: replacementArtworkId,
+  title: "Replacement Work",
+  image: {
+    secure_url:
+      "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000002/replacement.jpg",
+  },
+};
 
 const fillCreateCollectionForm = () => {
   fireEvent.change(screen.getByLabelText("Image URL"), {
@@ -104,6 +115,10 @@ describe("admin collection forms", () => {
     mockUseRouter.mockReturnValue({ refresh: mockRefresh });
     mockCreateCollection.mockResolvedValue({ success: true, data: {} });
     mockPatchCollection.mockResolvedValue({ success: true, data: {} });
+    mockReadArtwork.mockResolvedValue({
+      success: true,
+      data: replacementArtwork,
+    });
   });
 
   it("calls the create success callback after persistence, reset, and refresh", async () => {
@@ -196,6 +211,131 @@ describe("admin collection forms", () => {
       })
     );
     expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it("surfaces collection artwork lookup failures before submit", async () => {
+    mockReadArtwork.mockResolvedValueOnce({
+      success: false,
+      error: "Artwork not found",
+    });
+
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter artwork ID to add"), {
+      target: { value: replacementArtworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Add Artwork" }));
+
+    expect(
+      await screen.findByText(
+        `Artwork not found for ID ${replacementArtworkId}. No artworks were added.`
+      )
+    ).toBeInTheDocument();
+    expect(mockPatchCollection).not.toHaveBeenCalled();
+  });
+
+  it("surfaces duplicate collection artwork adds as no-op feedback", async () => {
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter artwork ID to add"), {
+      target: { value: artworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Add Artwork" }));
+
+    expect(
+      await screen.findByText(
+        "Archive Work is already in this collection; no changes were made."
+      )
+    ).toBeInTheDocument();
+    expect(mockReadArtwork).not.toHaveBeenCalled();
+  });
+
+  it("submits a ready collection artwork add", async () => {
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Enter artwork ID to add"), {
+      target: { value: replacementArtworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Add Artwork" }));
+
+    expect(
+      await screen.findByText(
+        "Ready to add Replacement Work. Save to apply this change."
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Collection" }));
+
+    await waitFor(() =>
+      expect(mockPatchCollection).toHaveBeenCalledWith(
+        collectionId,
+        expect.objectContaining({
+          artworksToAdd: [replacementArtworkId],
+          artworksToRemove: [],
+        })
+      )
+    );
+  });
+
+  it("restores a removed existing artwork as an unchanged collection relationship", async () => {
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    const artworkImagesTab = screen.getByRole("tab", {
+      name: "Artwork Images",
+    });
+    fireEvent.pointerDown(artworkImagesTab, { button: 0, ctrlKey: false });
+    fireEvent.mouseDown(artworkImagesTab, { button: 0, ctrlKey: false });
+    fireEvent.click(artworkImagesTab);
+    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
+    expect(
+      await screen.findByText(
+        "Ready to remove Archive Work. Save to apply this change."
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText("Enter artwork ID to add"), {
+      target: { value: artworkId },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Add Artwork" }));
+
+    expect(
+      await screen.findByText(
+        "Archive Work restored; no saved relationship change remains for that artwork."
+      )
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Collection" }));
+
+    await waitFor(() =>
+      expect(mockPatchCollection).toHaveBeenCalledWith(
+        collectionId,
+        expect.objectContaining({
+          artworksToAdd: [],
+          artworksToRemove: [],
+        })
+      )
+    );
+    expect(mockReadArtwork).not.toHaveBeenCalled();
   });
 
   it("surfaces rejected update submissions and restores the loading button", async () => {

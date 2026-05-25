@@ -1,15 +1,9 @@
 import { readFileSync } from "fs";
 import path from "path";
 import React, { Children, Suspense, type ReactElement } from "react";
-import AccountLayout from "@/app/account/layout";
+import AccountLayout, { dynamic } from "@/app/account/layout";
 import { AccountSubnavLoader } from "@/components/loaders/componentLoaders/AccountSubnavLoader";
 import { SubnavSkeleton } from "@/components/modules/navigation/subnav/Subnav";
-import dbConnect from "@/lib/db/mongodb";
-
-jest.mock("@/lib/db/mongodb", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
 
 jest.mock("@/components/loaders/componentLoaders/AccountSubnavLoader", () => ({
   AccountSubnavLoader: jest.fn(() => null),
@@ -18,8 +12,6 @@ jest.mock("@/components/loaders/componentLoaders/AccountSubnavLoader", () => ({
 jest.mock("@/components/modules/navigation/subnav/Subnav", () => ({
   SubnavSkeleton: jest.fn(() => null),
 }));
-
-const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 
 const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
@@ -30,7 +22,6 @@ const stripJsxComments = (source: string) =>
 describe("account layout subnav mount", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockDbConnect.mockResolvedValue(undefined as never);
   });
 
   it("renders the account subnav loader in Suspense before account content", async () => {
@@ -48,7 +39,7 @@ describe("account layout subnav mount", () => {
       (subnavBoundary.props as { children: React.ReactNode }).children
     ) as ReactElement;
 
-    expect(mockDbConnect).toHaveBeenCalledTimes(1);
+    expect(dynamic).toBe("force-dynamic");
     expect(layout.type).toBe("section");
     expect(layout.props.className).toBe("p-0 m-0");
     expect(subnavBoundary.type).toBe(Suspense);
@@ -62,6 +53,8 @@ describe("account layout subnav mount", () => {
     const source = readRepoFile("src/app/account/layout.tsx");
     const activeSource = stripJsxComments(source);
 
+    expect(activeSource).toContain('export const dynamic = "force-dynamic";');
+    expect(activeSource).not.toMatch(/\bdbConnect\b/);
     expect(activeSource).toMatch(
       /<Suspense\s+fallback=\{<SubnavSkeleton\s*\/>\}>\s*<AccountSubnavLoader\s*\/>\s*<\/Suspense>/
     );

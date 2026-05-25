@@ -10,6 +10,12 @@ import {
 } from "@/components/shadcn/select";
 import { Checkbox } from "@/components/shadcn/checkbox";
 import { Label } from "@/components/shadcn/label";
+import {
+  SHOP_ARTSTYLE_FILTER_OPTIONS,
+  SHOP_DECADE_FILTER_OPTIONS,
+  SHOP_MEDIUM_FILTER_OPTIONS,
+  SHOP_SURFACE_FILTER_OPTIONS,
+} from "@/lib/data/options/shopFilterOptions";
 import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 
 type ShopFiltersProps = {
@@ -34,10 +40,11 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
               <SelectValue placeholder="Art Style" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all-style">All Styles</SelectItem>
-              <SelectItem value="abstract">Abstract</SelectItem>
-              <SelectItem value="semi-abstract">Semi-Abstract</SelectItem>
-              <SelectItem value="figurative">Figurative</SelectItem>
+              {SHOP_ARTSTYLE_FILTER_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -50,14 +57,11 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
               <SelectValue placeholder="Medium" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all-medium">All Mediums</SelectItem>
-              <SelectItem value="oil">Oil</SelectItem>
-              <SelectItem value="acrylic">Acrylic</SelectItem>
-              <SelectItem value="watercolour">Watercolour</SelectItem>
-              <SelectItem value="ink">Ink</SelectItem>
-              <SelectItem value="sand">Sand</SelectItem>
-              <SelectItem value="charcoal">Charcoal</SelectItem>
-              <SelectItem value="pencil">Pencil</SelectItem>
+              {SHOP_MEDIUM_FILTER_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -70,11 +74,11 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
               <SelectValue placeholder="Surface" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all-surface">All Surfaces</SelectItem>
-              <SelectItem value="canvas">Canvas</SelectItem>
-              <SelectItem value="paper">Paper</SelectItem>
-              <SelectItem value="wood">Wood</SelectItem>
-              <SelectItem value="film">Film</SelectItem>
+              {SHOP_SURFACE_FILTER_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -87,14 +91,11 @@ const ShopFilters = ({ filters, onFilterChange }: ShopFiltersProps) => {
               <SelectValue placeholder="Decades" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all-epochs">All Decades</SelectItem>
-              <SelectItem value="1950s">1950s</SelectItem>
-              <SelectItem value="1960s">1960s</SelectItem>
-              <SelectItem value="1970s">1970s</SelectItem>
-              <SelectItem value="1980s">1980s</SelectItem>
-              <SelectItem value="1990s">1990s</SelectItem>
-              <SelectItem value="2000s">2000s</SelectItem>
-              <SelectItem value="2010s">2010s</SelectItem>
+              {SHOP_DECADE_FILTER_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
