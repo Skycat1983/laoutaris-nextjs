@@ -169,6 +169,48 @@ describe("credentials role propagation", () => {
       expect(session.user).toMatchObject({ id, role });
     }
   );
+
+  it("copies an OAuth provider default user role to JWT and session", async () => {
+    const id = "oauth-user-id";
+    const role = "user";
+
+    const token = await authCallbacks.jwt({
+      token: { id: "" },
+      user: {
+        id,
+        email: "oauth-user@example.com",
+        image: "https://example.com/avatar.png",
+        name: "OAuth User",
+        role,
+      },
+      account: {
+        provider: "google",
+        providerAccountId: "google-account-id",
+        type: "oauth",
+      },
+      profile: {
+        email: "oauth-user@example.com",
+        name: "OAuth User",
+      },
+      isNewUser: true,
+    });
+
+    const session = await authCallbacks.session({
+      session: {
+        user: {
+          id: "",
+          email: "oauth-user@example.com",
+          image: "https://example.com/avatar.png",
+          name: "OAuth User",
+        },
+        expires: "2099-01-01T00:00:00.000Z",
+      },
+      token,
+    });
+
+    expect(token).toMatchObject({ id, role });
+    expect(session.user).toMatchObject({ id, role });
+  });
 });
 
 describe("stable session user ownership", () => {

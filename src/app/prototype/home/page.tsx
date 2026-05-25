@@ -5,6 +5,8 @@ import { getBlogPrototypeEntries } from "@/components/prototypes/home/BlogProtot
 import { getCollectionPrototypeEntries } from "@/components/prototypes/home/CollectionPrototypeLoader";
 import { getShopPrototypeProducts } from "@/components/prototypes/home/ShopPrototypeLoader";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Homepage Prototype",
   description:

@@ -1,6 +1,6 @@
 # T-277 Stabilize Admin Jest Full-Run Timeouts
 
-Status: Planned
+Status: Completed
 
 Workstream: [Testing and quality](../workstreams/testing-and-quality.md).
 
@@ -85,3 +85,35 @@ constraint and the strongest completed substitute.
 ## Handoff Notes
 
 - Planned from A-034 admin/form timeout class.
+- 2026-05-25: Profiled the four scoped suites under default Jest workers before
+  changing code. The default-worker scoped run failed after about 46s because
+  `__tests__/unit/adminBlogReadPagination.test.tsx` exceeded Jest's 5s
+  per-test timeout; the collection, article, and form suites passed but took
+  about 16s, 19s, and 32s respectively. The same group passed in-band before
+  the edit with 32 tests green in about 27s.
+- 2026-05-25: Added `jest.setTimeout(20000)` to the three admin read-list
+  suites so they match the existing timeout policy in
+  `__tests__/unit/forms/adminArticleBlogForms.test.tsx`. No admin behavior
+  assertions were weakened, no mocks were broadened, and no global Jest worker
+  policy was changed.
+- Verification: `npm test -- --runTestsByPath
+  __tests__/unit/adminCollectionReadPagination.test.tsx
+  __tests__/unit/adminArticleReadPagination.test.tsx
+  __tests__/unit/adminBlogReadPagination.test.tsx
+  __tests__/unit/forms/adminArticleBlogForms.test.tsx` passed with 4 suites
+  and 32 tests in about 23s after the change.
+- Verification: `npm test -- --runInBand --runTestsByPath
+  __tests__/unit/adminCollectionReadPagination.test.tsx
+  __tests__/unit/adminArticleReadPagination.test.tsx
+  __tests__/unit/adminBlogReadPagination.test.tsx
+  __tests__/unit/forms/adminArticleBlogForms.test.tsx` passed with 4 suites
+  and 32 tests in about 20s after the change.
+- Full-run impact: `npm test` failed with 3 unrelated suites and 4 failed tests
+  out of 198 suites / 1,407 tests, but all T-277 admin suites passed in the
+  full concurrent run:
+  `adminBlogReadPagination.test.tsx` about 26s,
+  `adminArticleReadPagination.test.tsx` about 17s,
+  `adminCollectionReadPagination.test.tsx` about 6s, and
+  `adminArticleBlogForms.test.tsx` about 51s. Remaining failures are outside
+  this task: `clientServerImportBoundary.test.ts`,
+  `publicSmokeDiscoveryEndpoints.test.ts`, and `visibleBreadcrumbs.test.tsx`.

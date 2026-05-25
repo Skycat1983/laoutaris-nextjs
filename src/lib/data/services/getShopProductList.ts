@@ -11,7 +11,7 @@ import {
   ArtworkDB,
 } from "@/lib/data/models/artworkModel";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import type { ShopSortOption } from "@/lib/data/types/shopTypes";
+import type { ShopSortOption } from "@/lib/data/options/shopSortOptions";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
 import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 import dbConnect from "@/lib/db/mongodb";

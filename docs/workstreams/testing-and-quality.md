@@ -27,8 +27,8 @@ refactoring without turning every change into a manual QA pass.
 
 ## Current Facts
 
-- Existing scripts are `npm test`, `npm run build`, `npm run lint`, and
-  `npm run dev`.
+- Existing scripts include `npm test`, `npm run typecheck`,
+  `npm run verify:local`, `npm run build`, `npm run lint`, and `npm run dev`.
 - Jest uses `next/jest` with `jsdom`.
 - Current tests are mostly utilities plus a small home view integration test.
 - No dedicated end-to-end script is present in `package.json`.
@@ -111,8 +111,15 @@ refactoring without turning every change into a manual QA pass.
   unauthenticated public-route smoke script. Manual runs require a `base_url`;
   scheduled runs require repository variable `SMOKE_BASE_URL` and skip until it
   is configured.
+- T-280 removed the localhost socket requirement from the public smoke discovery
+  endpoint unit test. The suite still spawns the real public smoke CLI, but
+  uses a preloaded in-process `fetch` fixture instead of binding
+  `127.0.0.1`, so default-sandbox focused Jest is expected to pass without
+  escalated socket permission.
 - T-026 added focused shared route-guard tests and representative admin/user API
   auth-status tests.
+- T-289 added focused provider-shaped OAuth callback coverage proving the
+  default persisted OAuth role reaches JWT and session state.
 - T-027 added focused saved-route tests for user navigation, favourites, and
   watchlist read-route guard behavior.
 - T-028 added focused saved-item action tests for unauthenticated and invalid
@@ -368,7 +375,8 @@ refactoring without turning every change into a manual QA pass.
   low-value utility/helper slice with source-hygiene and focused fallback
   behavior coverage. T-133 completed the remaining admin dashboard client
   source-hygiene slice.
-- Add CI documentation after the chosen checks are stable.
+- Keep the GitHub Actions `Main CI` workflow current as the local gate command
+  set, expected build limitations, and expected durations stabilize.
 - Track residual production and dev-only dependency advisories after T-011 so
   future audits can distinguish accepted residual risk from newly introduced
   vulnerabilities.
@@ -392,9 +400,11 @@ refactoring without turning every change into a manual QA pass.
 ## Verification
 
 ```bash
+npm run typecheck
 npm test
 npm run build
 npm run lint
+git diff --check
 ```
 
 ## Progress
@@ -1881,19 +1891,75 @@ npm run lint
   to sale-gallery boundary and by allowing explicitly listed semantic style
   scaffold-only leaves. Focused in-band Jest passed for
   `publicImagePreloadSizing.test.tsx` and `semanticStyles.test.ts`.
+- 2026-05-25: Completed T-277. The admin collection/article/blog read-list
+  suites now use the same 20s per-test timeout policy already used by
+  `adminArticleBlogForms.test.tsx`, based on profiling that showed default
+  Jest workers can push these React admin interactions past the 5s default
+  while in-band execution stays green. The scoped default-worker and in-band
+  admin checks passed. Full `npm test` no longer reports the T-277 admin
+  timeout class, though it remains red for unrelated
+  `clientServerImportBoundary.test.ts`, `publicSmokeDiscoveryEndpoints.test.ts`,
+  and `visibleBreadcrumbs.test.tsx` failures.
+- 2026-05-25: Completed T-280. The public smoke discovery endpoint test no
+  longer starts a localhost fixture server; it spawns
+  `scripts/smoke-public-routes.mjs` with a preloaded route-map `fetch` fixture.
+  Focused default-sandbox Jest passed for
+  `__tests__/unit/deployment/publicSmokeDiscoveryEndpoints.test.ts`, so this
+  suite no longer requires escalated socket permission.
+- 2026-05-25: Completed T-281. Runtime shop sort options now live in
+  `src/lib/data/options/shopSortOptions.ts`, so `ShopProductGallery` no longer
+  imports `src/lib/data/types/shopTypes.ts` at runtime. The focused
+  import-boundary, shop gallery sorting, unsupported controls, and shop
+  products page suites passed, and `git diff --check` passed.
+- 2026-05-25: Completed T-282. Post-repair verification ran under Node
+  `22.14.0` / npm `10.9.2` after T-281, T-283, and T-284 completed. Full Jest
+  passed with 198 suites and 1405 tests; `npm run build` passed and listed
+  `/prototype/home` as dynamic; `npm run lint` passed; `git diff --check`
+  passed. Explicit `npm exec tsc -- --noEmit --pretty false --skipLibCheck`
+  failed only on
+  `__tests__/unit/db/clientPromiseLazyConnection.test.ts(9,17)` and `(19,17)`
+  because the test assigns to read-only `process.env.NODE_ENV`. T-285 is
+  prepared as the narrow follow-up.
+- 2026-05-25: Completed T-285. The lazy MongoDB client test now uses a
+  test-local mutable env helper instead of directly assigning to read-only
+  `process.env.NODE_ENV`. Focused Jest passed for
+  `__tests__/unit/db/clientPromiseLazyConnection.test.ts`, explicit
+  `npm exec tsc -- --noEmit --pretty false --skipLibCheck` passed, and
+  `git diff --check` passed under Node `22.14.0` / npm `10.9.2`.
+- 2026-05-25: Completed T-286. Added `npm run typecheck` as the repo-owned
+  explicit TypeScript `noEmit` gate and `npm run verify:local` as the aggregate
+  local handoff gate for typecheck, full Jest, build, lint, and whitespace.
+  `npm run verify:local` passed under Node `22.14.0` / npm `10.9.2`, including
+  full Jest with 198 suites and 1,405 tests. The build passed in the default
+  sandbox while still emitting expected MongoDB DNS/revalidation warnings for
+  intentional external-data surfaces. The testing runbook now names the local
+  baseline and keeps production smoke, credentialed/admin smoke, Vercel logs,
+  and main CI ownership separate under F-126.
+- 2026-05-25: Completed T-287 as a docs-only CI policy pass. The next
+  implementation should add non-secret `Main CI` on pull requests to `main`,
+  pushes to `main`, and manual dispatch. The workflow should run the
+  `verify:local` command set with an event-aware whitespace check instead of
+  invoking the local script verbatim. Release evidence, deployed public smoke,
+  credentialed/admin smoke, Vercel log checks, and monitoring remain separate.
+- 2026-05-25: Completed T-288. Added `.github/workflows/main-ci.yml` for
+  pull requests targeting `main`, pushes to `main`, and manual dispatch. The
+  workflow runs typecheck, full Jest, build, lint, and event-aware whitespace
+  checks under Node `22.14.0` / npm `10.9.2` with `npm ci`, without secrets,
+  public smoke, credentialed/admin smoke, Vercel operations, or monitoring.
+- 2026-05-25: Completed T-289. Added an OAuth/provider-shaped callback test to
+  `__tests__/unit/auth/credentialsRoleSession.test.ts` covering a Google OAuth
+  account/profile fixture and adapter-defaulted `role: "user"`. Focused auth
+  and DB helper Jest suites, explicit typecheck, and whitespace checks passed.
 
 ## Next Agent Action
 
-T-275 is the current strict TypeScript repair: fix the
-`adminFrontendGuard.test.tsx` mock typing and rerun explicit `noEmit`. T-268 is
-complete and should not be reassigned. Do not add a formal typecheck package
-script or CI gate without a separate quality-gate decision task.
-
-After T-275, continue the A-034 split rather than a broad Jest cleanup: T-276
-is complete, T-277 owns admin/form full-run timeouts, and T-280 owns the
-public-smoke socket sandbox path. Do not mix those remaining failure classes
-into one task, and do not add a main CI workflow until the local gates are
-green enough or explicitly waived.
+T-286, T-287, and T-288 completed local gate ownership, CI policy scoping, and
+the first Main CI workflow. T-289 completed the focused OAuth default-role
+callback coverage. Do not reassign T-275, T-268, T-282, T-286, T-287, T-288,
+or T-289 unless the local verification scripts, CI workflow, policy docs, or
+OAuth role propagation coverage regress. Keep owner-blocked production smoke,
+credentialed/admin smoke, Vercel log evidence, and scheduled/detail public
+smoke under F-126/operations.
 
 T-265 focused coverage is complete; do not reassign it unless artwork browse
 pagination metadata handoff or deep-linked client load-more behavior regresses.

@@ -4,6 +4,8 @@ import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
 import { clientApi } from "@/lib/api/clientApi";
 import type { ReactNode } from "react";
 
+jest.setTimeout(20000);
+
 jest.mock("next/image", () => ({
   __esModule: true,
   default: function MockImage(props: {

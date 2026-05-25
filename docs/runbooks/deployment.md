@@ -29,6 +29,56 @@ npm run build
 npm run lint
 ```
 
+`.github/workflows/main-ci.yml` is the repository-owned, non-secret local gate
+for pull requests to `main`, pushes to `main`, and manual dispatch. It proves
+typecheck, full Jest, production build, lint, and event-aware whitespace checks
+under Node `22.14.0` / npm `10.9.2` with `npm ci`.
+
+Main CI is pre-release regression evidence. It does not replace the release
+handoff fields below because it intentionally avoids production secrets,
+credentialed/admin smoke, public-smoke repository variables, Vercel log review,
+monitoring, and rollback operations.
+
+## External-Access Build Evidence
+
+`npm run build` is still part of release evidence. For every production release
+handoff, record whether the build ran with external access to MongoDB, Shopify,
+and required network resources, or whether it ran in a restricted environment.
+
+This evidence is separate from accidental build hard failures. Protected account
+routes and `/project/about` should not require build-time data access just to
+produce release artifacts. If those routes, or any other request-time surface,
+start failing the build because external services are unavailable, treat that as
+a build-isolation regression rather than satisfying this evidence policy.
+
+The intentional external-build surfaces are:
+
+- `/biography`, which uses the cached biography navigation data to choose the
+  default redirect target.
+- `/collections`, which uses cached collection navigation data to choose the
+  default redirect target.
+- `/sitemap.xml`, which uses MongoDB archive records and Shopify-backed product
+  links for dynamic sitemap coverage.
+
+Required release handoff fields:
+
+- `npm run build` result and environment: external access available, restricted
+  sandbox, or not run.
+- Build evidence source: local build, Vercel build, CI build, or other named
+  environment.
+- External services expected during build: MongoDB, Shopify Storefront API, and
+  any other relevant dependency.
+- External dependency failures seen in build logs, or `None observed`.
+- Follow-up task or incident when a build passes only by silently omitting
+  expected dynamic sitemap coverage.
+
+When dynamic sitemap archive or shop entries are expected for a release, a
+basic `200` from `/sitemap.xml` is not enough. Record at least one expected
+public dynamic URL from each applicable source that should be present:
+biography article, blog post, artwork detail, collection route, collection
+artwork detail, and Shopify product detail. If a source is intentionally empty,
+not configured, or blocked by an upstream outage, record that explicit reason.
+
 ## Environment Checklist
 
 Before deploying, use the full
@@ -77,10 +127,17 @@ Copy this template into the active task, incident note, or deployment handoff.
 - Commit SHA:
 - Runtime observed, if available:
 - Build ID, if available:
+- Build evidence:
+  - `npm run build` result:
+  - Build environment:
+  - External access during build: Available | Restricted | Unknown
+  - External dependency build failures:
 - Route/status results:
   - GET /:
   - GET /artwork:
   - GET /artwork/<smoke-artwork-id>:
+  - GET /biography:
+  - GET /biography/<smoke-biography-slug>:
   - GET /collections:
   - GET /collections/<smoke-collection-slug>/<smoke-artwork-id>:
   - GET /blog:
@@ -94,6 +151,12 @@ Copy this template into the active task, incident note, or deployment handoff.
   - GET /api/auth/signin:
   - GET /api/auth/signout:
   - GET /admin/dashboard/articles as unauthenticated:
+- Intentional external-build surface evidence:
+  - /biography redirect target:
+  - /collections redirect target:
+  - /sitemap.xml dynamic biography/blog/artwork/collection URLs present:
+  - /sitemap.xml dynamic Shopify product URLs present:
+  - Expected dynamic sitemap source omitted, with reason:
 - Credentials smoke account source, no secret values:
 - Credentials sign-in outcome:
 - Sign-out outcome:
@@ -118,6 +181,8 @@ record and note that substitution in the evidence.
 | Home | `GET /` | `200`, no root-layout or native-package crash. |
 | Artwork list | `GET /artwork` | `200`. |
 | Artwork detail | `GET /artwork/<smoke-artwork-id>` | `200` for an approved artwork ID. |
+| Biography entry | `GET /biography` | Redirects to the expected first biography article selected from cached navigation data. |
+| Biography detail | `GET /biography/<smoke-biography-slug>` | `200` for an approved biography article slug. |
 | Collections entry | `GET /collections` | `200` after the current redirect to the first collection artwork. |
 | Collection detail | `GET /collections/<smoke-collection-slug>/<smoke-artwork-id>` | `200` for an approved collection/artwork pair. |
 | Blog list | `GET /blog` | `200`. |
@@ -125,7 +190,7 @@ record and note that substitution in the evidence.
 | Search | `GET /search?q=<smoke-query>` | `200`; empty results are acceptable only if the query is expected to be empty. |
 | Shop listing | `GET /shop/products` | `200`; Shopify failures are deployment-blocking unless confirmed as an external outage. |
 | Robots discovery | `GET /robots.txt` | `200`, includes an absolute `Sitemap:` directive for `/sitemap.xml`. |
-| Sitemap discovery | `GET /sitemap.xml` | `200`, XML-like sitemap output containing stable public archive URLs and no `/admin`, `/account`, or `/api` URL paths. |
+| Sitemap discovery | `GET /sitemap.xml` | `200`, XML-like sitemap output containing stable public archive URLs and no `/admin`, `/account`, or `/api` URL paths. When dynamic archive/shop URLs are expected, confirm representative expected URLs are present rather than relying on the stable URL set alone. |
 | Product detail | `GET /shop/products/<smoke-product-handle>` | `200` for an approved product handle. |
 | Product not found | `GET /shop/products/<known-missing-product-handle>` | `404`, not `500`. |
 | Sign-in shell | `GET /api/auth/signin` | `200`, no provider/config crash. |

@@ -6,15 +6,88 @@
 node -v
 npm -v
 npm ci --dry-run --ignore-scripts
+npm run typecheck
 npm test
 npm run build
 npm run lint
+git diff --check
 ```
 
 The expected runtime baseline is Node `22.14.0` and npm `10.9.2`. Use `npm ci`
 for clean installs and `npm ci --dry-run --ignore-scripts` when verifying that
 the lockfile install path is still reproducible without running lifecycle
 scripts.
+
+`npm run typecheck` owns explicit TypeScript `noEmit` checking for local
+verification. It runs `tsc --noEmit --pretty false --skipLibCheck` without
+emitting build artifacts.
+
+For a full local handoff gate, run:
+
+```bash
+npm run verify:local
+```
+
+`npm run verify:local` runs typecheck, full Jest, production build, lint, and
+`git diff --check`. It is local evidence only; production release evidence still
+needs the external-access build notes and deployed smoke/log checks described
+below.
+
+## Main CI Local Gate
+
+`.github/workflows/main-ci.yml` is the non-secret GitHub Actions `Main CI`
+workflow for pull requests targeting `main`, pushes to `main`, and manual
+dispatch.
+
+Main CI uses Node `22.14.0`, npm `10.9.2`, `npm ci`, and npm dependency
+caching, then runs the local gate command set:
+
+```bash
+npm run typecheck
+npm test
+npm run build
+npm run lint
+```
+
+It also runs a whitespace check over the event range. Pull requests compare the
+PR base SHA to the checked-out merge SHA; pushes compare the event `before` SHA
+to the pushed SHA, with an empty-tree fallback for new refs; manual dispatch
+checks the current commit against its parent when one exists. Do not run
+`npm run verify:local` verbatim in CI for that final check: the script's
+`git diff --check` is correct for a dirty local worktree, but a clean CI
+checkout needs an event-aware commit-range check.
+
+Main CI is allowed to run without repository secrets or production variables.
+That means a restricted CI build is regression evidence, not complete release
+evidence for intentional external-build surfaces. Keep external-access build
+notes, deployed public smoke, credentialed/admin smoke, Vercel log checks, and
+monitoring/alerting evidence separate.
+
+## External-Access Build Evidence
+
+Release verification must state whether `npm run build` ran with external
+access to MongoDB, Shopify Storefront API, and required network resources. A
+restricted local or CI build can be useful regression evidence, but it is not
+complete release evidence for intentional external-build surfaces unless the
+handoff records the restriction and the follow-up deployed smoke proves the
+expected data-backed output.
+
+This policy covers only intentional static/ISR build-time surfaces:
+
+- `/biography`: record the default redirect target selected from cached
+  biography navigation data, then smoke that biography detail route.
+- `/collections`: record the default redirect target selected from cached
+  collection navigation data, then smoke that collection/artwork route.
+- `/sitemap.xml`: record a deployed or post-build sitemap check. When dynamic
+  archive or shop entries are expected, verify representative expected URLs are
+  present for the relevant biography, blog, artwork, collection, collection
+  artwork, and Shopify product sources.
+
+Do not classify accidental request-time route build failures as satisfying this
+policy. If protected account routes, `/project/about`, or another dynamic
+surface starts failing `npm run build` because external services are
+unavailable, treat it as a build-isolation regression and route it through a
+focused fix.
 
 ## Public Smoke In CI
 
@@ -34,6 +107,13 @@ Actions with Node `22.14.0` and `npm ci`.
 
 The workflow is unauthenticated. It does not cover credential sign-in, admin
 access, Vercel log inspection, provider alerting, or rollback automation.
+
+The focused unit suite
+`__tests__/unit/deployment/publicSmokeDiscoveryEndpoints.test.ts` does not bind
+a localhost socket. It spawns the real `scripts/smoke-public-routes.mjs` CLI
+with a preloaded in-process `fetch` fixture, so it is expected to pass in the
+default sandbox without escalated socket permission while still proving the
+robots and sitemap discovery output checks.
 
 ## Browser And Playwright Discipline
 

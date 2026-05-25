@@ -1,4 +1,19 @@
 describe("clientPromise lazy connection", () => {
+  type MutableNodeEnv = {
+    NODE_ENV?: string | undefined;
+  };
+
+  const setNodeEnv = (value: string | undefined) => {
+    const mutableEnv = process.env as MutableNodeEnv;
+
+    if (value === undefined) {
+      delete mutableEnv.NODE_ENV;
+      return;
+    }
+
+    mutableEnv.NODE_ENV = value;
+  };
+
   const originalMongoUri = process.env.MONGO_URI;
   const originalNodeEnv = process.env.NODE_ENV;
 
@@ -6,7 +21,7 @@ describe("clientPromise lazy connection", () => {
     jest.resetModules();
     jest.clearAllMocks();
     process.env.MONGO_URI = originalMongoUri;
-    process.env.NODE_ENV = originalNodeEnv;
+    setNodeEnv(originalNodeEnv);
   });
 
   it("does not instantiate or connect the raw MongoDB client until awaited", async () => {
@@ -16,7 +31,7 @@ describe("clientPromise lazy connection", () => {
     }));
 
     process.env.MONGO_URI = "mongodb+srv://example.test/archive";
-    process.env.NODE_ENV = "production";
+    setNodeEnv("production");
 
     jest.doMock("mongodb", () => ({
       MongoClient: mockMongoClient,

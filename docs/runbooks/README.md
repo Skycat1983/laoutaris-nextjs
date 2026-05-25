@@ -10,6 +10,7 @@ when commands, environment variables, or workflows change.
 - [Environment variables](environment.md)
 - [Deployment](deployment.md)
 - [Incident response](incident-response.md)
+- [Production ops owner decision packet](production-ops-owner-decision-packet.md)
 - [Database](database.md)
 - [Admin content operations](admin-content-operations.md)
 - [Shopify operations](shopify-operations.md)

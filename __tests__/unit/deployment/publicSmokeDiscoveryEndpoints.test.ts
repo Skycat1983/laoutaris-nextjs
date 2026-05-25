@@ -1,10 +1,40 @@
 import { spawn } from "child_process";
-import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import path from "path";
 
 const repoRoot = process.cwd();
 const scriptPath = path.join(repoRoot, "scripts/smoke-public-routes.mjs");
 const canonicalOrigin = "https://laoutaris-nextjs.vercel.app";
+const fixtureBaseUrl = "https://public-smoke-fixture.test";
+const fixtureFetchPreload = `data:text/javascript;base64,${Buffer.from(
+  `
+const routes = JSON.parse(process.env.SMOKE_FIXTURE_ROUTES ?? "{}");
+
+globalThis.fetch = async (input) => {
+  const target =
+    typeof input === "string"
+      ? input
+      : input instanceof URL
+        ? input.href
+        : input.url;
+  const url = new URL(target);
+  const key = url.pathname + url.search;
+  const route = routes[key];
+
+  if (!route) {
+    return new Response("not found", {
+      status: 404,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
+
+  return new Response(route.body ?? "", {
+    status: route.status,
+    headers: route.headers ?? {},
+  });
+};
+`,
+  "utf8"
+).toString("base64")}`;
 
 type RouteFixture = {
   body?: string;
@@ -79,50 +109,28 @@ Sitemap: ${canonicalOrigin}/sitemap.xml
   ...overrides,
 });
 
-const startFixtureServer = async (routes: Record<string, RouteFixture>) => {
-  const server = createServer(
-    (request: IncomingMessage, response: ServerResponse) => {
-      const route = routes[request.url ?? ""];
-
-      if (!route) {
-        response.writeHead(404, { "Content-Type": "text/plain" });
-        response.end("not found");
-        return;
-      }
-
-      response.writeHead(route.status, route.headers);
-      response.end(route.body ?? "");
-    }
-  );
-
-  await new Promise<void>((resolve) => {
-    server.listen(0, "127.0.0.1", resolve);
-  });
-
-  const address = server.address();
-
-  if (!address || typeof address === "string") {
-    throw new Error("Fixture server did not expose a local port.");
-  }
-
-  return {
-    baseUrl: `http://127.0.0.1:${address.port}`,
-    close: () =>
-      new Promise<void>((resolve, reject) => {
-        server.close((error) => (error ? reject(error) : resolve()));
-      }),
-  };
-};
-
-const runSmoke = async (baseUrl: string): Promise<SmokeResult> =>
+const runSmoke = async (
+  routes: Record<string, RouteFixture>
+): Promise<SmokeResult> =>
   new Promise((resolve) => {
-    const child = spawn(process.execPath, [scriptPath, "--base-url", baseUrl], {
-      cwd: repoRoot,
-      env: {
-        ...process.env,
-        SMOKE_SEARCH_QUERY: "art",
-      },
-    });
+    const child = spawn(
+      process.execPath,
+      [
+        "--import",
+        fixtureFetchPreload,
+        scriptPath,
+        "--base-url",
+        fixtureBaseUrl,
+      ],
+      {
+        cwd: repoRoot,
+        env: {
+          ...process.env,
+          SMOKE_SEARCH_QUERY: "art",
+          SMOKE_FIXTURE_ROUTES: JSON.stringify(routes),
+        },
+      }
+    );
     let stdout = "";
     let stderr = "";
 
@@ -141,23 +149,17 @@ const runSmoke = async (baseUrl: string): Promise<SmokeResult> =>
 
 describe("public smoke discovery endpoint checks", () => {
   it("passes when robots and sitemap discovery endpoints expose safe public output", async () => {
-    const fixture = await startFixtureServer(defaultRoutes());
+    const result = await runSmoke(defaultRoutes());
 
-    try {
-      const result = await runSmoke(fixture.baseUrl);
-
-      expect(result.status).toBe(0);
-      expect(result.stderr).toBe("");
-      expect(result.stdout).toContain("[PASS] Robots discovery");
-      expect(result.stdout).toContain("[PASS] Sitemap discovery");
-      expect(result.stdout).toContain("Summary: 12 passed, 0 failed, 4 skipped.");
-    } finally {
-      await fixture.close();
-    }
+    expect(result.status).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain("[PASS] Robots discovery");
+    expect(result.stdout).toContain("[PASS] Sitemap discovery");
+    expect(result.stdout).toContain("Summary: 12 passed, 0 failed, 4 skipped.");
   });
 
   it("fails without dumping robots body when the sitemap directive is missing", async () => {
-    const fixture = await startFixtureServer(
+    const result = await runSmoke(
       defaultRoutes({
         "/robots.txt": {
           status: 200,
@@ -167,23 +169,17 @@ describe("public smoke discovery endpoint checks", () => {
       })
     );
 
-    try {
-      const result = await runSmoke(fixture.baseUrl);
-
-      expect(result.status).toBe(1);
-      expect(result.stderr).toBe("");
-      expect(result.stdout).toContain("[FAIL] Robots discovery");
-      expect(result.stdout).toContain(
-        "body check failed: expected a Sitemap: directive"
-      );
-      expect(result.stdout).not.toContain("PRIVATE BODY SHOULD NOT PRINT");
-    } finally {
-      await fixture.close();
-    }
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain("[FAIL] Robots discovery");
+    expect(result.stdout).toContain(
+      "body check failed: expected a Sitemap: directive"
+    );
+    expect(result.stdout).not.toContain("PRIVATE BODY SHOULD NOT PRINT");
   });
 
   it("fails when sitemap output exposes private route paths", async () => {
-    const fixture = await startFixtureServer(
+    const result = await runSmoke(
       defaultRoutes({
         "/sitemap.xml": {
           status: 200,
@@ -193,17 +189,11 @@ describe("public smoke discovery endpoint checks", () => {
       })
     );
 
-    try {
-      const result = await runSmoke(fixture.baseUrl);
-
-      expect(result.status).toBe(1);
-      expect(result.stderr).toBe("");
-      expect(result.stdout).toContain("[FAIL] Sitemap discovery");
-      expect(result.stdout).toContain(
-        "body check failed: sitemap includes private paths: /admin/dashboard/articles"
-      );
-    } finally {
-      await fixture.close();
-    }
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain("[FAIL] Sitemap discovery");
+    expect(result.stdout).toContain(
+      "body check failed: sitemap includes private paths: /admin/dashboard/articles"
+    );
   });
 });

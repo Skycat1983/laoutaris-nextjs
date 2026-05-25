@@ -1,5 +1,5 @@
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import type { ShopSortOption } from "@/lib/data/types/shopTypes";
+import type { ShopSortOption } from "@/lib/data/options/shopSortOptions";
 
 const PRODUCT_TYPE_SORT_ORDER: Record<string, number> = {
   book: 0,

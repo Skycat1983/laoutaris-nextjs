@@ -1,6 +1,6 @@
 # T-279 Document External Build Evidence Policy
 
-Status: Planned
+Status: Completed
 
 Workstream: [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md).
 
@@ -79,3 +79,24 @@ rg -n "external-access build|sitemap|biography|collections" docs/runbooks docs/w
 ## Handoff Notes
 
 - Planned from A-035 intentional static/ISR external-build findings.
+- Completed 2026-05-25.
+- `docs/runbooks/deployment.md` now records the external-access build evidence
+  policy, smoke evidence template fields, and route expectations for
+  `/biography`, `/collections`, and `/sitemap.xml`.
+- `docs/runbooks/testing.md` now points release verification at the same
+  intentional external-build surface policy and separates it from accidental
+  build-isolation regressions.
+- `docs/workstreams/deployment-security-and-observability.md` and
+  `docs/tasks/README.md` were updated for completion.
+- No shared risk or findings-register edits were made. Candidate orchestrator
+  follow-up only: keep R-024/build-verification wording aligned with this
+  runbook policy if the risk tracker is next reconciled.
+
+## Verification Results
+
+```bash
+git diff --check
+rg -n "external-access build|sitemap|biography|collections" docs/runbooks docs/workstreams/deployment-security-and-observability.md
+```
+
+Both commands passed on 2026-05-25.

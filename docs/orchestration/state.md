@@ -4,17 +4,25 @@ Last updated: 2026-05-25
 
 ## Current Priority
 
-T-262 through T-267 are complete. T-268 through T-273 are complete. A-026
-through A-028 and A-030 through A-035 are completed in their result files; A-025
-and A-029 remain superseded. T-267 reconciled the recalibration findings into
-F-123 through F-146, R-034 through R-038, relevant workstream handoffs, and the
-task/orchestration trackers. The next wave is T-274 and T-275 through T-280:
-T-274 prepares owner decisions for production operations blockers, T-275
-restores explicit `tsc --noEmit`, T-276/T-277/T-280 split the current Jest
-failure classes, and T-278/T-279 split accidental build hard failures from
-intentional external-build evidence. Owner-blocked monitoring, incident-role,
-Vercel-operator, smoke-account, public-smoke variable, and policy decisions
-remain separate from implementation tasks.
+T-262 through T-288 are complete and T-289/T-290 are prepared. A-026 through
+A-028 and A-030 through A-035 are completed in their result files; A-025 and
+A-029 remain superseded. T-267 reconciled the recalibration findings into F-123
+through F-146, R-034 through R-038, relevant workstream handoffs, and the
+task/orchestration trackers. T-274 created the owner-facing production-ops
+decision packet, but monitoring, incident-role, Vercel-operator, smoke-account,
+public-smoke variable, and policy decisions remain owner-blocked. T-281, T-283,
+and T-284 resolved the current
+shop import-boundary regression and the remaining F-146 build-time live-read
+surfaces. T-282 then rebaselined local verification: full Jest, build, lint, and
+whitespace passed under the pinned runtime; explicit TypeScript `noEmit` failed
+only on the T-285 lazy MongoDB client test `NODE_ENV` typing regression. T-285
+fixed that final typecheck regression, and T-286 added repo-owned
+`npm run typecheck` and `npm run verify:local` commands for the local gate.
+T-287 selected a staged CI policy: add non-secret Main CI for the local gate
+next, while keeping release evidence and owner/platform-blocked smoke/ops
+separate. T-288 added that non-secret Main CI local-gate workflow for PRs to
+`main`, pushes to `main`, and manual dispatch without adding public smoke,
+secrets, Vercel operations, rollback automation, or monitoring.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -1530,33 +1538,27 @@ already split the verification/build questions into smaller actionable slices.
 
 The recommended next assignments are:
 
-- For owner-blocked operations decisions, assign:
-  `/task effort: high details: docs/tasks/T-274-prepare-production-ops-owner-decision-packet.md`.
-- First small quality repair:
-  `/task effort: low details: docs/tasks/T-275-restore-explicit-typecheck-after-admin-guard.md`.
-  This is currently the only explicit `noEmit` diagnostic observed after the
-  returned T-273 work.
-- The deterministic Jest repair can run after or alongside T-275:
-  `/task effort: medium details: docs/tasks/T-276-fix-deterministic-jest-assertion-drift.md`.
-- The admin Jest timeout work can start profiling in parallel, but final
-  full-suite verification should wait until T-276 lands:
-  `/task effort: high details: docs/tasks/T-277-stabilize-admin-jest-full-run-timeouts.md`.
-- The build-isolation implementation can run in parallel with Jest work:
-  `/task effort: high details: docs/tasks/T-278-isolate-account-project-build-hard-failures.md`.
-- The external-build evidence policy is docs-only but should not overlap another
-  deployment-runbook editor:
-  `/task effort: medium details: docs/tasks/T-279-document-external-build-evidence-policy.md`.
-- The public-smoke socket handling task can run in parallel if it avoids shared
-  Jest config and coordinates on runbooks:
-  `/task effort: medium details: docs/tasks/T-280-handle-public-smoke-socket-sandbox-path.md`.
+- T-285, T-286, and T-287 are complete. Do not reassign the local typecheck,
+  local verification ownership, or CI policy scoping tasks unless those package
+  scripts or policy docs regress.
+- T-288 is complete. Do not reassign the non-secret Main CI local-gate workflow
+  unless the workflow, local-gate commands, or CI policy docs regress.
+- The next low-risk auth/code-health tasks can run now:
+  `/task effort: medium details: docs/tasks/T-289-add-oauth-role-session-propagation-test.md`
+  and
+  `/task effort: medium details: docs/tasks/T-290-scope-legacy-session-helper-pruning.md`.
+- T-274 is complete as a docs packet. Do not assign monitoring, Vercel,
+  credentialed-smoke, scheduled-smoke, or incident-owner implementation until
+  the owner answers
+  [the production ops decision packet](../runbooks/production-ops-owner-decision-packet.md).
 - If broad framed print preview review becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option
   mapping, checkout/cart work, enquiry mutation, physical-dimension migration,
   product-page rail adoption, or real texture asset creation.
-- If quality gating is preferred, prepare a separate task to decide whether and
-  how strict TypeScript `noEmit` should enter CI or release verification after
-  T-275 restores the current regression to green.
+- Keep scheduled/detail public smoke, credentialed/admin smoke, Vercel log
+  evidence, and production ops ownership under the owner-blocked F-126/R-038
+  path.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)

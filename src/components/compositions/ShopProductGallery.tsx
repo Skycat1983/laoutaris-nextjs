@@ -6,11 +6,11 @@ import { ProductCard } from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
 import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
+import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 import {
   SHOP_SORT_OPTIONS,
-  type ShopFiltersState,
   type ShopSortOption,
-} from "@/lib/data/types/shopTypes";
+} from "@/lib/data/options/shopSortOptions";
 import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 
 interface ShopProductGalleryProps {

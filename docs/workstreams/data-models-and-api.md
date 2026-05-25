@@ -692,7 +692,9 @@ Add API route tests where behavior is changed.
 - 2026-05-16: Completed T-071; `getArticleNavigationList` now owns the article
   navigation list `dbConnect()`, query, selection, `displayDate: -1` sort,
   transform, no-results signal, and metadata, while the public route preserves
-  the existing success, `404`, and public-safe `500` envelopes.
+  the existing success, `404`, and public-safe `500` envelopes. T-283 later
+  removed `MainNavLoader` from live article navigation reads so the root header
+  no longer performs MongoDB access during static shell prerendering.
 - 2026-05-16: Prepared T-072 to reuse the completed article navigation service
   from `src/app/biography/page.tsx` and the navigation path in `ArticleLoader`
   without changing article detail data access.

@@ -93,8 +93,11 @@ Next.js server/client component boundaries.
 - T-070 moved `CollectionsSubnavLoader` to the shared server-only
   `getCollectionNavigationList` service while preserving rendered `Subnav`
   link construction.
-- T-071 moved `BiographySubnavLoader` and `MainNavLoader` to shared server-only
-  navigation services while preserving rendered `Subnav` and `MainNav` links.
+- T-071 moved `BiographySubnavLoader` and the then-dynamic `MainNavLoader` to
+  shared server-only navigation services while preserving rendered `Subnav` and
+  `MainNav` links. T-283 later made the global header nav static-safe by
+  defaulting `MainNavLoader` to stable `/biography` and `/collections`
+  route-root links.
 - T-072 moved the biography default redirect page and `ArticleLoader`
   navigation path to `getArticleNavigationList` while preserving redirect and
   previous/next link behavior.
@@ -459,6 +462,11 @@ passed with network access.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-25: Completed T-284. `/prototype/home` now exports
+  `dynamic = "force-dynamic"` so the noindex prototype route keeps live
+  owner-review data at request time while avoiding MongoDB/Shopify prototype
+  section reads during production static generation. Focused page and route
+  cache-policy coverage now guard the route policy.
 - 2026-05-24: Fixed direct biography article rendering by making populated
   article detail reads register/pass their `User` and `Artwork` models
   explicitly, and added structured loader logging for article-detail service
@@ -638,10 +646,10 @@ passed with network access.
   `BiographySubnavLoader` and `MainNavLoader` while preserving link labels,
   path formats, and existing nav component behavior.
 - 2026-05-16: Completed T-071; `BiographySubnavLoader` now calls
-  `getArticleNavigationList("biography")` directly, and `MainNavLoader` now
-  calls `getArticleNavigationList("biography")` plus
-  `getCollectionNavigationList()` directly while preserving link labels and
-  path formats.
+  `getArticleNavigationList("biography")` directly. `MainNavLoader` used the
+  direct biography and collection navigation services after T-071, while T-283
+  later moved the global header contract to static route-root links to avoid
+  build-time MongoDB reads from otherwise static shells.
 - 2026-05-16: Prepared T-072 as the next article-navigation frontend migration.
   It should remove navigation same-app HTTP from `src/app/biography/page.tsx`
   and `ArticleLoader` while preserving the default redirect and previous/next
@@ -1251,8 +1259,8 @@ passed with network access.
   structured data, subnav, default redirect, and previous/next navigation now
   use 10-minute cached non-`fetch` service wrappers. `/biography` is the only
   route-level redirect ISR export added, `/biography/[slug]` remains dynamic,
-  and `MainNavLoader` stays on the direct service to avoid root-header cache
-  propagation into unrelated static shells.
+  and `MainNavLoader` stayed on the direct service until T-283 replaced global
+  header first-item resolution with static route-root links.
 - 2026-05-23: Scoped T-234. The current root layout client chunk still carries
   cross-cutting session, modal, search drawer, and mobile navigation drawer
   code, so T-236 is the first approved runtime proof before provider moves.
@@ -1441,6 +1449,10 @@ passed with network access.
 - 2026-05-25: Completed T-265. `/artwork` browse loader metadata now reaches
   `ArtworkGallery`, so direct non-page-1 browse renders initialize client
   pagination from the server list state and terminal pages do not keep loading.
+- 2026-05-25: Completed T-283. The live global header main nav now uses static
+  route-root links for `/biography` and `/collections`, preserving visible
+  labels while avoiding root-header MongoDB navigation reads during static
+  shell prerendering.
 
 ## Next Agent Action
 
@@ -1456,6 +1468,11 @@ plain Shopify descriptions render as text, and stale collection redirect slugs
 use not-found behavior. Do not reopen these paths unless those contracts
 regress; keep rich product description sanitization and any broader shop/search
 redesign separately scoped.
+
+T-281, T-283, and T-284 are complete. Keep the `/prototype/home` dynamic
+production-build policy separate from live homepage migration and prototype
+visual review, and keep first-item biography/collection redirect behavior owned
+by the route pages rather than the global header.
 
 For the navbar prototype, review `/prototype/home` at desktop, tablet, and
 mobile widths and choose a logo, logo-size preset, nav-height preset, link-font

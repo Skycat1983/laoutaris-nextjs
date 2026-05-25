@@ -3,8 +3,8 @@ import { MainNavRouteSwitch } from "@/components/modules/navigation/mainNav/Main
 import { PrototypeMainNav } from "@/components/modules/navigation/prototypeMainNav/PrototypeMainNav";
 import { getMainNavLinks } from "@/components/loaders/componentLoaders/MainNavLoader";
 
-export async function HeaderMainNavLoader() {
-  const navLinks = await getMainNavLinks();
+export function HeaderMainNavLoader() {
+  const navLinks = getMainNavLinks();
 
   return (
     <MainNavRouteSwitch

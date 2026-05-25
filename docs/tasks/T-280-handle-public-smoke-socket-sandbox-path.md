@@ -1,6 +1,6 @@
 # T-280 Handle Public Smoke Socket Sandbox Path
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -80,4 +80,16 @@ of treating the default-sandbox failure as a product regression.
 
 ## Handoff Notes
 
-- Planned from A-034 sandbox socket failure class.
+- Completed on 2026-05-25.
+- Chosen strategy: refactored
+  `__tests__/unit/deployment/publicSmokeDiscoveryEndpoints.test.ts` to avoid
+  real localhost binding. The suite still spawns the real
+  `scripts/smoke-public-routes.mjs` CLI, but preloads an in-process `fetch`
+  fixture with the route map instead of starting `http.createServer()` on
+  `127.0.0.1`.
+- Default-sandbox verification was used; no escalated socket permission is
+  required for this focused suite.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/deployment/publicSmokeDiscoveryEndpoints.test.ts`
+  passed in the default sandbox, with the existing Node punycode deprecation
+  warning.

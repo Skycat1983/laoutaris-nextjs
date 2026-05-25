@@ -14,6 +14,8 @@
     "smoke:public": "node scripts/smoke-public-routes.mjs",
     "audit:shopify-products": "node scripts/audit-shopify-product-links.mjs",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit --pretty false --skipLibCheck",
+    "verify:local": "npm run typecheck && npm test && npm run build && npm run lint && git diff --check",
     "test": "jest",
     "test:watch": "jest --watch"
   },

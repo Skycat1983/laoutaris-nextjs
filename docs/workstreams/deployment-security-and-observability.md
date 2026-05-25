@@ -142,6 +142,14 @@ security headers, environment documentation, and actionable operational signals.
   schedule after repository variable `SMOKE_BASE_URL` is configured. This
   remains unauthenticated and does not cover credential/admin smoke, Vercel log
   inspection, rollback automation, or provider alerts.
+- T-280 removed the localhost socket requirement from the public smoke
+  discovery endpoint unit test without changing deployed smoke behavior. The
+  real `npm run smoke:public` CLI remains the deployment smoke entry point; the
+  focused Jest suite now uses an in-process `fetch` fixture and default-sandbox
+  verification.
+- T-283 removed live biography and collection navigation reads from the global
+  root header main nav. `npm run build` passed without root-header
+  `loader.public.main_nav.failed` output.
 - T-125 added the
   [logging and redaction architecture policy](../architecture/logging-and-redaction.md).
   The 2026-05-18 non-route source inventory found 86 direct
@@ -200,6 +208,17 @@ security headers, environment documentation, and actionable operational signals.
   authority boundary for incident command, Vercel rollback/logs, repository
   release approval, MongoDB, Shopify, Cloudinary, auth/OAuth, DNS/domain/TLS,
   and privacy/legal communication.
+- T-279 documented the external-access build evidence policy for intentional
+  static/ISR build-time surfaces. Release handoffs must state whether
+  `npm run build` had external access, smoke the `/biography` and
+  `/collections` redirect targets, and verify expected dynamic
+  `/sitemap.xml` archive/shop URLs when those entries are expected.
+- T-274 added the
+  [production ops owner decision packet](../runbooks/production-ops-owner-decision-packet.md)
+  for A-033 blockers. Monitoring implementation, incident owner-matrix
+  completion, Vercel log/rollback authority, credentialed smoke, and scheduled
+  public-smoke detail coverage remain blocked until the owner/orchestrator
+  supplies those answers.
 - T-138 added the admin bootstrap and recovery workflow to the
   [auth runbook](../runbooks/auth.md), including sanitized evidence rules,
   sign-out/sign-in requirements after MongoDB role changes, credential/OAuth
@@ -400,6 +419,10 @@ npm run lint
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-25: Completed T-284. `/prototype/home` is now explicitly dynamic, so
+  the noindex prototype route no longer adds live MongoDB/Shopify section reads
+  to production static generation. Build evidence for `/biography`,
+  `/collections`, and `/sitemap.xml` remains governed by T-279.
 - 2026-05-14: Reconciled A-001, A-006, A-014, and A-015 deployment/security
   findings into `docs/audits/findings-register.md`, production risks, and this
   backlog.
@@ -1044,19 +1067,51 @@ npm run lint
   are documented before runtime cache changes.
 - 2026-05-25: Completed T-278. The accidental default-sandbox build hard
   failures for protected `/account*` routes and `/project/about` are removed.
-  `npm run build` under Node `22.14.0` passed in the default sandbox; the
-  remaining external-build evidence policy for `/biography`, `/collections`,
-  and `/sitemap.xml` is still owned by T-279.
+  `npm run build` under Node `22.14.0` passed in the default sandbox; T-279
+  later documented the remaining external-build evidence policy for
+  `/biography`, `/collections`, and `/sitemap.xml`.
+- 2026-05-25: Completed T-279. The deployment and testing runbooks now require
+  release handoffs to record whether `npm run build` ran with external access,
+  separate intentional static/ISR evidence from accidental build-isolation
+  regressions, smoke `/biography` and `/collections` redirect targets, and
+  verify representative dynamic `/sitemap.xml` archive/shop URLs when expected.
+- 2026-05-25: Completed T-274. The production ops owner decision packet now
+  turns the A-033 monitoring, incident owner, Vercel operator, smoke account,
+  and public-smoke variable blockers into concrete owner questions and accepted
+  answer formats without changing providers, CI, credentials, Vercel settings,
+  or runtime behavior.
+- 2026-05-25: Completed T-280. The public smoke discovery endpoint Jest suite
+  no longer needs localhost socket permission because it preloads a route-map
+  `fetch` fixture into the spawned smoke CLI process. Deployed public smoke
+  behavior and public-smoke workflow configuration are unchanged.
+- 2026-05-25: Completed T-283. Root header navigation now renders static
+  route-root links for `/biography` and `/collections`; build verification
+  passed without the previous root-header navigation source failures.
+- 2026-05-25: Completed T-287 as a docs-only CI/release-gate policy pass. The
+  next workflow slice should add non-secret `Main CI` for the local gate on PRs
+  to `main`, pushes to `main`, and manual dispatch. External-access build
+  evidence, public smoke, credentialed/admin smoke, Vercel log checks, and
+  monitoring remain separate deployment evidence.
+- 2026-05-25: Completed T-288. Added the non-secret `Main CI` local-gate
+  workflow on PRs to `main`, pushes to `main`, and manual dispatch. It runs
+  typecheck, full Jest, build, lint, and event-aware whitespace checks under
+  Node `22.14.0` / npm `10.9.2` with `npm ci`, while leaving external-access
+  build evidence, public smoke, credentialed/admin smoke, Vercel log checks,
+  rollback, and monitoring separate.
 
 ## Next Agent Action
 
-T-274 is the next owner-facing production-ops task: turn the A-033 monitoring,
-incident-owner, Vercel-operator, smoke-account, and public-smoke variable
-blockers into concise owner questions without implementing providers, CI, or
-secret handling. T-279 owns the docs-only external-build evidence policy for
-intentional `/biography`, `/collections`, and `/sitemap.xml` surfaces after
-T-278 removed the accidental `/account*` and `/project/about` hard failures.
-Coordinate T-279 with T-280 if both edit testing/deployment runbooks.
+Use the production ops owner decision packet to collect owner/orchestrator
+answers for monitoring posture, incident owner roles, Vercel log/rollback
+authority, credentialed smoke accounts, and public-smoke repository variables.
+Do not implement monitoring providers, provider env variables, source-map
+upload, alert automation, credentialed smoke, Vercel privileged actions, or CI
+workflow changes until the matching answers exist.
+
+The first non-secret Main CI local-gate workflow is in place. Keep public
+smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
+production secrets separate unless a later owner-approved task explicitly
+changes that boundary.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);

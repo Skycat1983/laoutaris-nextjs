@@ -163,6 +163,8 @@ features before production launch.
   MongoDB role before `src/app/admin/dashboard/layout.tsx` renders the admin
   shell. Demoted admins with stale admin JWTs now redirect before dashboard
   content renders, while `requireApiAdmin()` remains the API boundary.
+- T-289 added focused OAuth/provider-shaped callback coverage proving an
+  adapter-defaulted `role: "user"` reaches JWT and session state.
 
 ## Backlog
 
@@ -534,6 +536,14 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   NextAuth MongoDB adapter promise is lazy, so importing `authOptions` for
   account/session boundaries does not open the raw MongoDB connection during
   build.
+- 2026-05-25: Completed T-289. Added provider-shaped OAuth callback coverage
+  proving the adapter-defaulted `role: "user"` flows through
+  `authCallbacks.jwt()` and `authCallbacks.session()` without changing
+  production auth behavior.
+- 2026-05-25: Completed T-290. The legacy session/admin helper inventory kept
+  active `getUserIdFromSession.ts` and `requireAdminFrontendAccess.ts`, and
+  routed unused `createUserFromSession.ts`, `getUserFromSession.ts`, and
+  `isAdmin.ts` to T-291 for deletion.
 
 ## Next Agent Action
 
@@ -566,9 +576,8 @@ T-278 is complete; do not reassign it unless protected account routes again
 perform unconditional build-time MongoDB work or importing `authOptions` starts
 the raw MongoDB client connection before adapter code awaits it.
 
-The remaining A-032 auth findings are lower-priority test/code-health work:
-add a focused OAuth provider role/session propagation test if this becomes a
-quality priority, and route unused legacy session/admin helper pruning through
-the architecture source-pruning track. T-275 owns only the test mock typing
-regression introduced after T-273; it should not change production auth
-behavior.
+The remaining A-032 source-pruning work is routed: T-291 owns the deletion of
+unused legacy session/admin helpers after T-290 completed the inventory. T-289
+is complete and should not be reassigned unless OAuth default-role callback
+coverage regresses. T-275 is complete and should not be reassigned unless its
+test mock typing regression returns.

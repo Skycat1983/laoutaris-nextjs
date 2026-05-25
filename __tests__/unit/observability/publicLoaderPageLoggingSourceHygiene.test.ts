@@ -16,6 +16,11 @@ const scopedPublicLoaderPageFiles = [
   "src/components/loaders/sectionLoaders/CollectionSectionLoader.tsx",
 ];
 
+const scopedStructuredLoggingFiles = scopedPublicLoaderPageFiles.filter(
+  (sourceFile) =>
+    sourceFile !== "src/components/loaders/componentLoaders/MainNavLoader.tsx"
+);
+
 const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
@@ -32,7 +37,7 @@ describe("public loader and page logging source hygiene", () => {
   });
 
   it("routes retained server logging through the structured logger helper", () => {
-    for (const sourceFile of scopedPublicLoaderPageFiles) {
+    for (const sourceFile of scopedStructuredLoggingFiles) {
       const source = readRepoFile(sourceFile);
 
       expect(source).toContain("createServerLogger");

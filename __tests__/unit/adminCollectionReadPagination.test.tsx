@@ -3,6 +3,8 @@ import { ReadCollectionList } from "@/components/features/adminDashboard/crudFor
 import { AdminCrudTabs } from "@/components/modules/tabs/AdminCrudTabs";
 import { clientApi } from "@/lib/api/clientApi";
 
+jest.setTimeout(20000);
+
 jest.mock("@/lib/api/clientApi", () => ({
   clientApi: {
     admin: {

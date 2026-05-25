@@ -87,10 +87,12 @@ or inconsistent code forward.
   `getCollectionNavigationList` service instead of same-app HTTP for the
   initial navigation links.
 - T-071 completed the next ADR 0004 service-adapter slice for article
-  navigation: `BiographySubnavLoader`, `MainNavLoader`, and
-  `GET /api/v2/public/navigation/articles/[section]` now share the
-  server-only `getArticleNavigationList` service, and `MainNavLoader` reuses
-  `getCollectionNavigationList` for its collection link.
+  navigation: `BiographySubnavLoader`, the then-dynamic `MainNavLoader`, and
+  `GET /api/v2/public/navigation/articles/[section]` shared the server-only
+  `getArticleNavigationList` service, and `MainNavLoader` reused
+  `getCollectionNavigationList` for its collection link. T-283 later made the
+  global header nav static-safe by moving `MainNavLoader` to route-root links
+  for `/biography` and `/collections`.
 - T-072 finished the current article-navigation cleanup by moving the biography
   default redirect page and `ArticleLoader` navigation path to
   `getArticleNavigationList` while leaving article detail fetching separate.
@@ -198,6 +200,10 @@ or inconsistent code forward.
 - T-273 added the admin dashboard frontend persisted-role guard as a server-only
   session helper imported only by the admin dashboard server layout, preserving
   the client/server import-boundary guard.
+- T-283 made the global root header main navigation static-safe by removing
+  live biography and collection navigation service reads from `MainNavLoader`.
+  The header now links to stable `/biography` and `/collections` route roots,
+  leaving first-item redirect behavior with those route pages.
 
 ## Backlog
 
@@ -260,6 +266,10 @@ Use targeted import/reference searches for pruning tasks.
 
 - Workstream created to make architecture refactor, pruning, SSR, and scalable
   patterns first-class production-readiness scope.
+- 2026-05-25: Completed T-284. `/prototype/home` now has an explicit
+  `force-dynamic` route policy, preserving live prototype data at request time
+  while removing its MongoDB/Shopify prototype loaders from production static
+  generation.
 - 2026-05-14: A-013, A-014, and A-015 findings reconciled into
   `docs/audits/findings-register.md`, production risks,
   [ADR 0004](../decisions/0004-server-data-access-ownership.md), and this
@@ -616,8 +626,8 @@ Use targeted import/reference searches for pruning tasks.
   `/biography/[slug]` remains explicitly dynamic with no
   `generateStaticParams()`. Build verification recorded `/biography`
   `initialRevalidateSeconds: 600` while unrelated stable shells stayed
-  deploy-bound; `MainNavLoader` remains on the direct navigation service to
-  avoid root-header cache propagation across unrelated static routes.
+  deploy-bound; `MainNavLoader` stayed on the direct navigation service at this
+  point to avoid root-header cache propagation across unrelated static routes.
 - 2026-05-23: Scoped T-234. Provider movement remained deferred because
   `SessionProvider` and modal state are cross-cutting; T-236 was selected as
   the first runtime proof to defer only the public mobile search/navigation
@@ -641,8 +651,8 @@ Use targeted import/reference searches for pruning tasks.
   collection navigation wrapper plus matching route-level ISR for the default
   redirect, and `CollectionsSubnavLoader` uses the same cached wrapper for
   route-local navigation. Collection detail routes remain explicitly dynamic
-  with no generated params, and `MainNavLoader` remains on the direct
-  collection navigation service.
+  with no generated params. T-283 later removed global-header collection
+  first-item resolution entirely in favor of static route-root links.
 - 2026-05-24: Completed T-239. `/sitemap.xml` now exports
   `SITEMAP_REVALIDATE_SECONDS = 3600` plus matching route-level ISR, focused
   tests guard route-level `revalidate` drift outside `/biography`,
@@ -752,18 +762,29 @@ Use targeted import/reference searches for pruning tasks.
   client/server import-boundary coverage passed, including a small repair to an
   already-dirty shop-gallery WIP so `shopTypes` remains type-only in the client
   import graph.
+- 2026-05-25: Completed T-281. Runtime public shop sort options moved from the
+  unsafe data-types directory to `src/lib/data/options/shopSortOptions.ts`, and
+  the focused client/server import-boundary suite passed.
 - 2026-05-25: Completed T-278. Protected `/account*` routes no longer perform
   layout-level MongoDB work during release builds, the NextAuth raw MongoDB
   client promise is lazy on import, and MongoDB-backed `/project/about` now has
   an explicit dynamic route policy. Default-sandbox `npm run build` passed with
   `/account*` and `/project/about` rendered on demand.
+- 2026-05-25: Completed T-283. `MainNavLoader` now builds the global header
+  links from static route roots instead of reading biography and collection
+  navigation services during root header rendering. `npm run build` passed
+  without `loader.public.main_nav.failed` output.
+- 2026-05-25: Completed T-290. The `src/lib/session` helper inventory
+  classified `getUserIdFromSession.ts` and `requireAdminFrontendAccess.ts` as
+  active, and routed unused `createUserFromSession.ts`,
+  `getUserFromSession.ts`, and `isAdmin.ts` deletion to T-291.
 
 ## Next Agent Action
 
-T-278 is complete. Keep root header navigation build-time MongoDB reads,
-intentional external-build evidence for `/biography`, `/collections`, and
-`/sitemap.xml`, and `/prototype/home` production build policy as separate
-A-035 follow-ups unless a new task scopes those paths.
+T-278, T-279, T-283, and T-284 are complete. Keep `/biography`,
+`/collections`, and `/sitemap.xml` on the T-279 external-build evidence policy
+unless a new route-rendering task explicitly changes those paths. Use T-282 to
+rebaseline local verification after the build-coupling repairs.
 
 T-256 is complete. Do not make additional A-022/F-115 provider, session,
 modal, or root-header runtime edits without a new scoped task that defines the
@@ -795,7 +816,8 @@ Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
 adoption, and live homepage migration separate until owner review accepts the
 expanded prototype direction and a visual-parity migration task is prepared.
 Other architecture slices remain broad route-builder work, staged
-source-pruning work, and remaining route-local rendering follow-ups.
+source-pruning work, and remaining route-local rendering follow-ups. T-291 is
+the scoped legacy `src/lib/session` helper pruning task after T-290 inventory.
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, T-205, T-230, or
 T-231 unless a regression is opened.

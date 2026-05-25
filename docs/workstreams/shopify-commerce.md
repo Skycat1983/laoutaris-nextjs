@@ -198,6 +198,10 @@ production while preserving MongoDB as the archive source of truth.
 - T-269 also derives public shop taxonomy filter options from canonical artwork
   constants, so the filter UI includes accepted values such as `paint`,
   `pastel`, and `2020s`.
+- T-281 moved the runtime public shop sort option list to
+  `src/lib/data/options/shopSortOptions.ts`, preserving the T-269 `sortBy`
+  values while keeping shop client components out of runtime imports from
+  `src/lib/data/types`.
 
 ## Backlog
 
@@ -606,12 +610,13 @@ Add targeted tests as shop behavior is hardened.
 
 ## Next Agent Action
 
-T-266 and T-269 are complete for the recalibrated public search/shop listing
-contracts: untyped public search no longer performs the full Shopify product
-fan-out, explicit `type=shop-products` search remains available, shop `sortBy`
-is route-backed, and shop filters now use canonical artwork taxonomy options.
-T-270 is complete for rendering plain Shopify descriptions as text. Keep rich
-`descriptionHtml` rendering behind a separate sanitizer/design task.
+T-266, T-269, and T-281 are complete for the recalibrated public search/shop
+listing contracts: untyped public search no longer performs the full Shopify
+product fan-out, explicit `type=shop-products` search remains available, shop
+`sortBy` is route-backed from a client-safe option source, and shop filters now
+use canonical artwork taxonomy options. T-270 is complete for rendering plain
+Shopify descriptions as text. Keep rich `descriptionHtml` rendering behind a
+separate sanitizer/design task.
 
 Prepare a narrow owner-review or visual-QA follow-up for the live T-261 sale
 gallery using one unlinked print handle, one original artwork handle, and one

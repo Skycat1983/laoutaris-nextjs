@@ -27,6 +27,7 @@ const explicitDynamicPublicRoutes = [
   "src/app/collections/[slug]/[artworkId]/page.tsx",
   "src/app/project/about/page.tsx",
   "src/app/project/contact/page.tsx",
+  "src/app/prototype/home/page.tsx",
   "src/app/search/page.tsx",
   "src/app/shop/products/page.tsx",
   "src/app/shop/products/[productHandle]/page.tsx",
@@ -138,13 +139,15 @@ describe("public route cache policy", () => {
     );
   });
 
-  it("keeps the global main navigation out of route-family cache proofs", () => {
+  it("keeps the global main navigation static-safe and out of route-family cache proofs", () => {
     const source = readRepoFile(
       "src/components/loaders/componentLoaders/MainNavLoader.tsx"
     );
 
-    expect(source).toContain("getArticleNavigationList");
-    expect(source).toContain("getCollectionNavigationList");
+    expect(source).toContain('path: BIOGRAPHY_PATH');
+    expect(source).toContain('path: COLLECTIONS_PATH');
+    expect(source).not.toContain("getArticleNavigationList");
+    expect(source).not.toContain("getCollectionNavigationList");
     expect(source).not.toContain("getCachedBiographyNavigationList");
     expect(source).not.toContain("getCachedCollectionNavigationList");
   });

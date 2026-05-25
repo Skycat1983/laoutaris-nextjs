@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import type { ShopSortOption } from "@/lib/data/types/shopTypes";
+import type { ShopSortOption } from "@/lib/data/options/shopSortOptions";
 
 jest.mock("@/components/modules/cards/ProductCard", () => ({
   ProductCard: ({ product }: { product: SimpleProduct }) => (

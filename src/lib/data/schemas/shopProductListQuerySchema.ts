@@ -5,7 +5,7 @@ import {
   MEDIUM_OPTIONS,
   SURFACE_OPTIONS,
 } from "@/lib/constants/artworkConstants";
-import { SHOP_SORT_OPTIONS } from "@/lib/data/types/shopTypes";
+import { SHOP_SORT_OPTIONS } from "@/lib/data/options/shopSortOptions";
 
 export type ShopProductListQueryInput = {
   sortBy?: string | string[] | null;

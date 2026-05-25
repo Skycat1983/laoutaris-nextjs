@@ -2,7 +2,10 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import PrototypeHomePage, { metadata } from "@/app/prototype/home/page";
+import PrototypeHomePage, {
+  dynamic,
+  metadata,
+} from "@/app/prototype/home/page";
 import { HomePrototype } from "@/components/prototypes/home/HomePrototype";
 import { BiographyPrototypeSection } from "@/components/prototypes/home/BiographyPrototypeSection";
 import { getBiographyPrototypeArticles } from "@/components/prototypes/home/BiographyPrototypeLoader";
@@ -186,6 +189,15 @@ describe("/prototype/home page", () => {
         nocache: true,
       },
     });
+  });
+
+  it("keeps live prototype data out of production static generation", () => {
+    const source = readRepoFile("src/app/prototype/home/page.tsx");
+
+    expect(dynamic).toBe("force-dynamic");
+    expect(source).toContain('export const dynamic = "force-dynamic";');
+    expect(source).not.toMatch(/export const revalidate\b/);
+    expect(source).not.toMatch(/generateStaticParams/);
   });
 
   it("renders an isolated page shell with a single route-owned main landmark", async () => {
