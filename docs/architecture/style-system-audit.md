@@ -47,7 +47,7 @@ changed for this audit.
 
 | Area | Current owners | Notes |
 | --- | --- | --- |
-| Font loading | `src/lib/styles/fonts.ts`, `src/app/layout.tsx` | Five Google font families are loaded through `next/font/google` and attached to `<html>` as CSS variables. This is also part of the known environment-sensitive build surface. |
+| Font loading | `src/lib/styles/fonts.ts`, `src/app/layout.tsx` | The core Google font families are loaded through `next/font/google` and attached to `<html>` as CSS variables. The `/prototype/home` navbar font selector also exposes regular-weight local/system font stacks for review without adding more Google font downloads to the build. The core `next/font/google` usage remains part of the known environment-sensitive build surface. |
 | Font family tokens | `tailwind.config.ts`, `src/app/globals.css` | Tailwind exposes `font-archivo`, `font-archivoBlack`, `font-cormorant`, `font-cinzelDecorative`, and `font-crimson` style classes. Global utilities also expose `fontface-*` classes. |
 | Color and radius tokens | `tailwind.config.ts`, `src/app/globals.css` | shadcn variables define `background`, `foreground`, `primary`, `muted`, `accent`, `border`, `ring`, and radius tokens. App-specific `slate`, `whitish`, and `greyish` tokens sit beside many route-local `gray-*`, `black`, `white`, and hex colors. |
 | Base CSS | `src/app/globals.css` | Global reset applies margin, padding, `box-border`, borders, body colors, scroll behavior, animation utilities, drop caps, scrollbar hiding, and color picker classes. |

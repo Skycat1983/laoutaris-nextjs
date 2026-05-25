@@ -14,22 +14,30 @@ import { useRouter } from "next/navigation";
 import type { FilterMode } from "@/lib/constants/artworkConstants";
 import { ArtworkSortAndFilter } from "./filters/ArtworkSortAndFilter";
 import { isValidValue } from "@/lib/helpers/validation";
+import type { PaginationMetadata } from "@/lib/data/types/apiTypes";
+
 interface ArtworkGalleryProps {
   startingArtworks: ArtworkFrontend[];
+  paginationMetadata?: Required<PaginationMetadata>;
   sortDefaults?: ArtworkSortConfig;
   filterDefaults?: ArtworkFilterParams;
 }
 
 export const ArtworkGallery = ({
   startingArtworks,
+  paginationMetadata,
   sortDefaults,
   filterDefaults,
 }: ArtworkGalleryProps) => {
   const router = useRouter();
+  const initialPage = paginationMetadata?.page ?? filterDefaults?.page ?? 1;
+  const initialHasMore = paginationMetadata
+    ? paginationMetadata.page < paginationMetadata.totalPages
+    : true;
   const [artworks, setArtworks] = useState(startingArtworks);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [page, setPage] = useState(initialPage);
   const [filters, setFilters] = useState<ArtworkFilterParams>(
     filterDefaults || {
       filterMode: "ALL",
@@ -49,8 +57,8 @@ export const ArtworkGallery = ({
 
     if (Object.keys(cleanFilters).length === 0) {
       setArtworks(startingArtworks);
-      setPage(1);
-      setHasMore(true);
+      setPage(initialPage);
+      setHasMore(initialHasMore);
       return;
     }
 
@@ -134,15 +142,15 @@ export const ArtworkGallery = ({
       filterMode: "ALL",
     });
     setArtworks(startingArtworks);
-    setPage(1);
-    setHasMore(true);
+    setPage(initialPage);
+    setHasMore(initialHasMore);
     setFilterError(null);
     setLoadMoreError(null);
     setLastFilterRequest(null);
   };
 
   const loadMoreArtworks = async () => {
-    if (isLoading) return;
+    if (isLoading || !hasMore) return;
 
     setIsLoading(true);
     setLoadMoreError(null);
@@ -157,26 +165,24 @@ export const ArtworkGallery = ({
       if (!newArtworks.success) {
         throw new Error("Failed to fetch artworks");
       }
-      const { data: artworks, metadata } = newArtworks;
+      const { data: nextArtworks, metadata } = newArtworks;
 
-      if (artworks.length === 0) {
+      if (nextArtworks.length === 0) {
         setHasMore(false);
       } else {
-        // addnew artworks abd preventing duplicates
-        setArtworks((prev) => {
-          const existingIds = new Set(prev.map((artwork) => artwork._id));
-          const uniqueNewArtworks = artworks.filter(
-            (artwork) => !existingIds.has(artwork._id)
-          );
+        const existingIds = new Set(artworks.map((artwork) => artwork._id));
+        const uniqueNewArtworks = nextArtworks.filter(
+          (artwork) => !existingIds.has(artwork._id)
+        );
 
-          if (uniqueNewArtworks.length === 0) {
-            setHasMore(false);
-            return prev;
-          }
+        if (uniqueNewArtworks.length === 0) {
+          setHasMore(false);
+          return;
+        }
 
-          return [...prev, ...uniqueNewArtworks];
-        });
+        setArtworks((prev) => [...prev, ...uniqueNewArtworks]);
         setPage(nextPage);
+        setHasMore(metadata ? metadata.page < metadata.totalPages : true);
       }
     } catch {
       setLoadMoreError(

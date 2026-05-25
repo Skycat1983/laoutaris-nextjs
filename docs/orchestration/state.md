@@ -1,8 +1,18 @@
 # Current Orchestration State
 
-Last updated: 2026-05-24
+Last updated: 2026-05-25
 
 ## Current Priority
+
+T-262 reconciled the recalibration trackers. A-026, A-028, A-030, A-031, A-032,
+and A-033 are now marked completed in the shared audit trackers; A-025 and
+A-029 remain superseded; A-027 is still only a stub and should not be treated as
+completed. The task index now includes the historical T-220 through T-229
+prototype/mobile work and explicitly documents the duplicate T-221 ID. T-263 is
+also completed, so the next clean verification-gate step is A-027 if an audit is
+desired; otherwise move to T-264 through T-266. Owner-blocked monitoring,
+incident-role, Vercel-operator, smoke-account, and policy decisions remain
+separate from implementation tasks.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -1430,39 +1440,61 @@ Use this section as the first operational handoff for a new orchestrator.
 
 ## Active Audits
 
-None currently active.
+Prepared but not completed:
+
+- [A-027 Verification gate snapshot](../audits/goals.md#a-027-verification-gate-snapshot),
+  writing to
+  [results/A-027-verification-gate-snapshot.md](../audits/results/A-027-verification-gate-snapshot.md).
+  T-263 repaired the known stale verification drift, so A-027 can run when a
+  fresh verification-gate baseline is desired.
 
 Completed and reconciled:
 
 - [A-001 Shopify commerce readiness](../audits/results/A-001-shopify-commerce.md)
+- [A-002 Public, user, and admin API contracts](../audits/results/A-002-api-contracts.md)
+- [A-003 Data models, schemas, and transforms](../audits/results/A-003-data-models-transforms.md)
+- [A-004 Auth, admin, and permission boundaries](../audits/results/A-004-auth-admin-permissions.md)
+- [A-005 Frontend routes and component boundaries](../audits/results/A-005-frontend-routes-components.md)
 - [A-006 Testing and quality baseline](../audits/results/A-006-testing-quality-baseline.md)
+- [A-007 Deployment and environment readiness](../audits/results/A-007-deployment-environment.md)
+- [A-008 Security headers, CORS, and logging](../audits/results/A-008-security-headers-cors-logging.md)
+- [A-009 Cloudinary and asset operations](../audits/results/A-009-cloudinary-assets.md)
+- [A-010 Performance, SEO, and accessibility](../audits/results/A-010-performance-seo-accessibility.md)
+- [A-011 Admin content operations](../audits/results/A-011-admin-content-operations.md)
 - [A-012 Documentation and handoff quality](../audits/results/A-012-documentation-knowledge-base.md)
 - [A-013 Architecture refactor scope](../audits/results/A-013-architecture-refactor-scope.md)
 - [A-014 Unused code and dependency pruning](../audits/results/A-014-unused-code-dependency-pruning.md)
 - [A-015 SSR and data-fetching strategy](../audits/results/A-015-ssr-data-fetching.md)
-- [A-002 Public, user, and admin API contracts](../audits/results/A-002-api-contracts.md)
-- [A-003 Data models, schemas, and transforms](../audits/results/A-003-data-models-transforms.md)
-- [A-004 Auth, admin, and permission boundaries](../audits/results/A-004-auth-admin-permissions.md)
-- [A-007 Deployment and environment readiness](../audits/results/A-007-deployment-environment.md)
-- [A-008 Security headers, CORS, and logging](../audits/results/A-008-security-headers-cors-logging.md)
 - [A-016 Forms, validation, and user input](../audits/results/A-016-forms-validation-inputs.md)
-- [A-019 Dependencies and supply chain](../audits/results/A-019-dependencies-supply-chain.md)
-- [A-009 Cloudinary and asset operations](../audits/results/A-009-cloudinary-assets.md)
-- [A-010 Performance, SEO, and accessibility](../audits/results/A-010-performance-seo-accessibility.md)
-- [A-020 Privacy, consent, and commerce compliance](../audits/results/A-020-privacy-consent-commerce-compliance.md)
-- [A-021 Observability and incident response](../audits/results/A-021-observability-incident-response.md)
-- [A-011 Admin content operations](../audits/results/A-011-admin-content-operations.md)
 - [A-017 Search, navigation, and content discovery](../audits/results/A-017-search-navigation-discovery.md)
 - [A-018 Translations, copy, and content taxonomy](../audits/results/A-018-translations-content-taxonomy.md)
+- [A-019 Dependencies and supply chain](../audits/results/A-019-dependencies-supply-chain.md)
+- [A-020 Privacy, consent, and commerce compliance](../audits/results/A-020-privacy-consent-commerce-compliance.md)
+- [A-021 Observability and incident response](../audits/results/A-021-observability-incident-response.md)
+- [A-022 Next.js feature utilization](../audits/results/A-022-nextjs-feature-utilization.md)
+- [A-023 Playwright adoption priorities](../audits/results/A-023-playwright-adoption-priorities.md)
+- [A-024 Loading state UX](../audits/results/A-024-loading-state-ux.md)
 
-Completed, pending reconciliation:
+Superseded recalibration goals:
 
-- None.
+- [A-025 Codebase progress and trajectory recalibration](../audits/results/A-025-codebase-trajectory-recalibration.md)
+- [A-029 Admin, auth, and operations hotspot scan](../audits/results/A-029-admin-auth-ops-hotspots.md)
+
+Completed recalibration audits, tracker-reconciled by T-262:
+
+- [A-026 Tracker alignment snapshot](../audits/results/A-026-tracker-alignment-snapshot.md)
+- [A-028 Public archive and Shopify runtime hotspot scan](../audits/results/A-028-public-shopify-hotspots.md)
+- [A-030 Admin delete integrity snapshot](../audits/results/A-030-admin-delete-integrity.md)
+- [A-031 Admin content controls snapshot](../audits/results/A-031-admin-content-controls.md)
+- [A-032 Auth and protected boundary snapshot](../audits/results/A-032-auth-protected-boundaries.md)
+- [A-033 Deployment, monitoring, and smoke snapshot](../audits/results/A-033-deployment-monitoring-smoke.md)
 
 ## Recommended Next Audits
 
-All planned audits are complete. Start new audits only when a new risk or
-implementation wave needs discovery before task scoping.
+No new audit needs to be assigned immediately. A-027 remains the only prepared
+recalibration audit without a completed result; T-263 has repaired the known
+stale verification drift, so assign A-027 when a fresh verification-gate
+snapshot is needed.
 
 ## Open Coordination Tasks
 
@@ -1476,9 +1508,9 @@ implementation wave needs discovery before task scoping.
   future completed audit results.
 - Convert future completed audit findings into workstream backlog items before
   assigning implementation work.
-- Keep A-002, A-003, A-004, A-005, A-007, A-008, A-009, A-010, A-011, A-016, A-017,
-  A-018, A-019, A-020, and A-021 findings linked when assigning implementation
-  work after reconciliation.
+- Keep completed-audit findings linked when assigning implementation work after
+  reconciliation, including A-001 through A-024 and completed recalibration
+  results A-026, A-028, and A-030 through A-033.
 - Add ADRs when architecture or process decisions become settled.
 - Keep High severity risks visible and linked to active work.
 - Resolve or escalate owner decisions captured in the findings register:
@@ -1493,16 +1525,17 @@ implementation wave needs discovery before task scoping.
 
 ## Next Orchestrator Action
 
-The recommended next assignment is:
+The recommended next assignments are:
 
-- Assign
-  [T-261 Build shop product sale gallery mockup](../tasks/T-261-build-shop-product-sale-gallery-mockup.md):
-  `/task effort: high details: docs/tasks/T-261-build-shop-product-sale-gallery-mockup.md`.
-  This is the current owner-requested product-detail mockup implementation. It
-  should create a shop-specific sale information panel and artwork/room
-  gallery for eligible products, reuse or extract the `/prototype/frame` room
-  preview pieces, and preserve the existing Shopify-hosted purchase or enquiry
-  boundary without adding app-owned cart behavior.
+- If verification-gate state is the priority, assign
+  [A-027 Verification gate snapshot](../audits/goals.md#a-027-verification-gate-snapshot):
+  `/goal effort: high details: docs/audits/goals.md#a-027-verification-gate-snapshot`.
+- If implementation is the priority, the highest-value tasks can run
+  concurrently because they touch separate surfaces:
+  `/task effort: high details: docs/tasks/T-264-clean-up-admin-reciprocal-delete-references.md`,
+  `/task effort: high details: docs/tasks/T-265-fix-artwork-browse-pagination-state.md`,
+  and
+  `/task effort: high details: docs/tasks/T-266-bound-public-search-shopify-product-search.md`.
 - If broad framed print preview review becomes the owner priority instead, assign
   [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
   as targeted prototype QA for `/prototype/frame` before Shopify option

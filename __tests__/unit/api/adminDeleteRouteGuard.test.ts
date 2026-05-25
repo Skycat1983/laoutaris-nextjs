@@ -67,6 +67,7 @@ jest.mock("@/lib/data/models", () => ({
     findOne: jest.fn(),
   },
   ArtworkModel: {
+    find: jest.fn(),
     findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     updateMany: jest.fn(),
@@ -195,6 +196,7 @@ const mockArticleFindById = ArticleModel.findById as jest.Mock;
 const mockArticleFindByIdAndDelete =
   ArticleModel.findByIdAndDelete as jest.Mock;
 const mockArticleFindOne = ArticleModel.findOne as jest.Mock;
+const mockArtworkFind = ArtworkModel.find as jest.Mock;
 const mockArtworkFindById = ArtworkModel.findById as jest.Mock;
 const mockArtworkFindByIdAndDelete =
   ArtworkModel.findByIdAndDelete as jest.Mock;
@@ -290,6 +292,7 @@ const setNonAdminSession = () => {
 
 const expectNoDestructiveModelWork = () => {
   expect(mockArticleFindOne).not.toHaveBeenCalled();
+  expect(mockArtworkFind).not.toHaveBeenCalled();
   expect(mockArticleFindByIdAndDelete).not.toHaveBeenCalled();
   expect(mockArtworkFindByIdAndDelete).not.toHaveBeenCalled();
   expect(mockArtworkUpdateMany).not.toHaveBeenCalled();
@@ -347,6 +350,7 @@ describe("admin delete route shared guard migration", () => {
     mockUserFindById.mockResolvedValue({ role: "admin" });
     mockArticleFind.mockResolvedValue([]);
     mockArticleFindById.mockResolvedValue({ _id: articleId });
+    mockArtworkFind.mockResolvedValue([]);
     mockArtworkFindById.mockResolvedValue({ _id: artworkId });
     mockCollectionFind.mockResolvedValue([]);
     mockCollectionFindById.mockResolvedValue({ _id: collectionId });
@@ -586,7 +590,7 @@ describe("admin delete route shared guard migration", () => {
   });
 
   it("preserves collection not-found behavior", async () => {
-    mockCollectionFindByIdAndDelete.mockResolvedValue(null);
+    mockCollectionFindByIdAndDelete.mockReturnValue(createSessionQuery(null));
 
     const response = await DELETE_COLLECTION(createRequest() as never, {
       params: { id: collectionId },
@@ -607,6 +611,12 @@ describe("admin delete route shared guard migration", () => {
       })
     );
     expect(mockCollectionFindByIdAndDelete).toHaveBeenCalledWith(collectionId);
+    expect(mockArtworkUpdateMany).not.toHaveBeenCalled();
+    expect(mockStartSession).toHaveBeenCalledTimes(1);
+    expect(mongoSession.startTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.abortTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.commitTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
     expectAuditOutcome("not_found", 404, "not_found");
     expect(consoleLogSpy).not.toHaveBeenCalled();
   });
@@ -634,6 +644,7 @@ describe("admin delete route shared guard migration", () => {
     expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
     expect(mockArtworkFindByIdAndDelete).not.toHaveBeenCalled();
     expect(mockCollectionUpdateMany).not.toHaveBeenCalled();
+    expect(mockUserUpdateMany).not.toHaveBeenCalled();
     expect(mockAdminDeleteAuditCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         resource: "artwork",
@@ -647,7 +658,7 @@ describe("admin delete route shared guard migration", () => {
     expectAuditOutcome("blocked", 409, "artwork_referenced_by_article");
   });
 
-  it("deletes artwork and removes it from collections", async () => {
+  it("deletes artwork and removes it from collections and user saved artwork arrays", async () => {
     mockArticleFindOne.mockResolvedValue(null);
     mockArtworkFindByIdAndDelete.mockReturnValue(
       createSessionQuery({ _id: artworkId })
@@ -655,6 +666,7 @@ describe("admin delete route shared guard migration", () => {
     mockCollectionUpdateMany.mockReturnValue(
       createSessionQuery({ modifiedCount: 2 })
     );
+    mockUserUpdateMany.mockReturnValue(createSessionQuery({ modifiedCount: 3 }));
 
     const response = await DELETE_ARTWORK(createRequest() as never, {
       params: { id: artworkId },
@@ -668,13 +680,47 @@ describe("admin delete route shared guard migration", () => {
       { artworks: artworkId },
       { $pull: { artworks: artworkId } }
     );
+    expect(mockUserUpdateMany).toHaveBeenCalledWith(
+      { $or: [{ watchlist: artworkId }, { favourites: artworkId }] },
+      { $pull: { watchlist: artworkId, favourites: artworkId } }
+    );
     expect(mongoSession.commitTransaction).toHaveBeenCalledTimes(1);
     expect(mongoSession.abortTransaction).not.toHaveBeenCalled();
     expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
     expect(body).toEqual({
       success: true,
-      message: "Artwork deleted and removed from collections successfully",
+      message:
+        "Artwork deleted and removed from collections and saved artwork successfully",
       data: null,
+    });
+  });
+
+  it("deletes a collection and removes it from artwork collection arrays", async () => {
+    mockCollectionFindByIdAndDelete.mockReturnValue(
+      createSessionQuery({ _id: collectionId })
+    );
+    mockArtworkUpdateMany.mockReturnValue(
+      createSessionQuery({ modifiedCount: 2 })
+    );
+
+    const response = await DELETE_COLLECTION(createRequest() as never, {
+      params: { id: collectionId },
+    });
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockCollectionFindByIdAndDelete).toHaveBeenCalledWith(collectionId);
+    expect(mockArtworkUpdateMany).toHaveBeenCalledWith(
+      { collections: collectionId },
+      { $pull: { collections: collectionId } }
+    );
+    expect(mongoSession.commitTransaction).toHaveBeenCalledTimes(1);
+    expect(mongoSession.abortTransaction).not.toHaveBeenCalled();
+    expect(mongoSession.endSession).toHaveBeenCalledTimes(1);
+    expect(body).toEqual({
+      success: true,
+      data: null,
+      message: "Collection deleted and removed from artwork successfully",
     });
   });
 

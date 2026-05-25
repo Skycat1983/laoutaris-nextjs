@@ -1,6 +1,6 @@
 # T-024 Verify Vercel Bcrypt Redeploy Smoke
 
-Status: Completed.
+Status: Completed
 
 Workstreams:
 [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md),

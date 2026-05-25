@@ -1,6 +1,6 @@
 # T-226 Build Alternate Artwork Detail Info Card
 
-Status: Done
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),

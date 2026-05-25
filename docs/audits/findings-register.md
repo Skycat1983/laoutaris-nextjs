@@ -5,6 +5,14 @@ This register tracks cross-audit findings through review and reconciliation.
 Do not use this as a replacement for detailed audit results. Use it to dedupe,
 prioritize, and route actionable findings.
 
+## Status Values
+
+Use `Candidate` for proposed rows not yet accepted into routing, `Converted`
+for findings moved into a risk/backlog/task destination, `Partially mitigated`
+when a scoped task reduced but did not close the finding, `Resolved` when no
+further action remains in the tracked scope, and `Duplicate` when another
+finding/risk owns the issue.
+
 ## Register
 
 | Finding ID | Source Audit | Severity | Status | Finding | Evidence | Destination | Reviewer |

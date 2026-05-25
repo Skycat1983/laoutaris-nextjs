@@ -1,6 +1,6 @@
 # T-061 Use Explicit Shop Product Type Sorting
 
-Status: Complete
+Status: Completed
 
 Workstreams:
 [Shopify commerce](../workstreams/shopify-commerce.md),

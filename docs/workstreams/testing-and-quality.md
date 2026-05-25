@@ -1859,8 +1859,18 @@ npm run lint
 - 2026-05-24: Extended T-261 product-detail regression coverage so selected
   room previews and vertical room thumbnails both assert the fill-and-crop
   viewport classes used to keep wall-preview proportions consistent.
+- 2026-05-24: Added T-261 frame-preview coverage for background-first room
+  preview loading. The direct room-preview test asserts the framed overlay is
+  hidden until the room background image load event marks it ready.
+- 2026-05-25: Completed T-265 coverage. Added focused
+  `ArtworkGalleryPaginationState` tests for non-page-1 initial load-more state
+  and terminal-page behavior, and extended `ArtworkListLoader` coverage for the
+  pagination metadata prop handoff.
 
 ## Next Agent Action
+
+T-265 focused coverage is complete; do not reassign it unless artwork browse
+pagination metadata handoff or deep-linked client load-more behavior regresses.
 
 The A-024 loading-state and account-navigation coverage sequence is complete;
 do not reassign F-118 through F-122 unless a regression appears. Do not install

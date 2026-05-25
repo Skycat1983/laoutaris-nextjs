@@ -1,6 +1,6 @@
 # A-014 Unused Code And Dependency Pruning Result
 
-Status: Complete
+Status: Completed
 
 Audit goal: [A-014 Unused code and dependency pruning](../goals.md#a-014-unused-code-and-dependency-pruning)
 

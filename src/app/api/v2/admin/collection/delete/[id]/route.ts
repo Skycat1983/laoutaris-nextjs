@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
-import { CollectionModel } from "@/lib/data/models";
+import mongoose from "mongoose";
+import { ArtworkModel, CollectionModel } from "@/lib/data/models";
 import { requireApiAdmin } from "@/lib/api/requireApiAdmin";
 import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
@@ -48,6 +49,7 @@ export async function DELETE(
   );
   const logger = createApiLogger(requestContext);
   const operation = "admin.collection.delete";
+  let session: Awaited<ReturnType<typeof mongoose.startSession>> | undefined;
   let auditEvent: AdminDeleteAuditEventHandle | null = null;
 
   try {
@@ -67,9 +69,14 @@ export async function DELETE(
     }
     auditEvent = auditResult.auditEvent;
 
-    const deletedCollection = await CollectionModel.findByIdAndDelete(id);
+    session = await mongoose.startSession();
+    session.startTransaction();
+
+    const deletedCollection =
+      await CollectionModel.findByIdAndDelete(id).session(session);
 
     if (!deletedCollection) {
+      await session.abortTransaction();
       await updateAdminDeleteAuditEventOutcome({
         auditEvent,
         outcome: "not_found",
@@ -85,6 +92,12 @@ export async function DELETE(
       });
     }
 
+    await ArtworkModel.updateMany(
+      { collections: id },
+      { $pull: { collections: id } }
+    ).session(session);
+
+    await session.commitTransaction();
     await updateAdminDeleteAuditEventOutcome({
       auditEvent,
       outcome: "succeeded",
@@ -94,13 +107,15 @@ export async function DELETE(
     });
 
     return apiSuccessResponse(null, {
-      message: "Collection deleted successfully",
+      message: "Collection deleted and removed from artwork successfully",
     });
   } catch (error) {
     if (isNextError(error)) {
+      await session?.abortTransaction();
       throw error;
     }
 
+    await session?.abortTransaction();
     logger.error("api.admin.collection_delete.failed", {
       operation,
       error,
@@ -119,5 +134,7 @@ export async function DELETE(
       status: 500,
       requestId: requestContext.requestId,
     });
+  } finally {
+    session?.endSession();
   }
 }

@@ -1,6 +1,6 @@
 # A-006 Testing And Quality Baseline Result
 
-Status: Complete
+Status: Completed
 
 Audit goal: [A-006 Testing and quality baseline](../goals.md#a-006-testing-and-quality-baseline)
 

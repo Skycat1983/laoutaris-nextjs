@@ -331,6 +331,24 @@ Next.js server/client component boundaries.
   artwork preview sizes. The project placeholder also embeds the existing
   documentary YouTube player to the right of the live homepage film copy on
   wider screens.
+- `/prototype/home` now also pilots a route-scoped main navbar variant. The
+  live `MainNav` layout files remain unchanged, the lower breadcrumb/search row
+  is unchanged, desktop primary links use equal side grid columns so the center
+  link group stays visually centered despite unequal logo/icon widths, and the
+  prototype control rail can switch among the four `prototype_logos/` images
+  plus main-nav height, coupled logo height/width size presets, Y-axis
+  padding, X-axis padding, expanded link spacing, link font presets, link-size
+  presets, and a temporary nav-tint diagnostic for isolating the top nav from
+  the unchanged lower breadcrumb/search row. The central links are uppercase
+  without separators. The prototype top nav defaults to no horizontal padding,
+  while the dock can restore/tune it through `X pad`; the fixed dock wraps its
+  controls and becomes vertically scrollable when space is tight. The link-font
+  selector now exposes 34 regular-weight options, including additional
+  local/system font stacks for prototype review rather than bold variants. The
+  previous frame, heading-size, shop-item, and
+  alternate-background dock controls were removed while preserving their
+  defaults: wide frame, smaller headings, feature shop cards, and the stone
+  alternate background.
 
 ## Backlog
 
@@ -441,6 +459,93 @@ passed with network access.
   explicitly, and added structured loader logging for article-detail service
   failures. Also removed the obsolete development `devtool` override from
   `next.config.mjs`, clearing the Next.js dev-server warning.
+- 2026-05-25: Added the `/prototype/home` main-navbar pilot. The header now
+  routes only `/prototype/home` through the prototype main nav while all other
+  routes receive the existing `MainNav`; the existing desktop/tablet/mobile
+  layout files remain unchanged and are documented in
+  `docs/prototypes/current-navbar-reference.md`. The prototype nav defaults to
+  `prototype_logos/joseph_laoutaris_logo_variation_1.png`, exposes all three
+  prototype logos through the bottom control rail, and adds nav-height presets
+  without changing the lower breadcrumb/search row. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/loaders/MainNavLoader.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 3 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Fixed the prototype navbar logo hydration path by moving logo
+  visibility rules out of the server-rendered inline `<style>` and into stable
+  global CSS. At that stage the dock focused on navbar review controls: logo,
+  logo size, nav height, Y-axis padding, link gap, and separators, plus the
+  existing alternate-background control. The removed frame, heading-size, and
+  shop-card controls retain their defaults in code. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 3 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Consolidated the prototype navbar's separate top/bottom padding
+  controls into one Y-axis padding control. The apparent extra bottom area is
+  expected to come from the unchanged lower breadcrumb/search row sharing the
+  same background beneath the main nav; the first two logo PNGs do not contain
+  extra bottom whitespace, while `new_logo.png` contains substantial internal
+  vertical whitespace. The tablet prototype row no longer adds a separate
+  bottom-only `pb-6`, and the dock includes a nav-tint diagnostic to verify the
+  main-nav boundary against the unchanged lower row. The logo-size presets now
+  adjust both slot height and width because the previous fixed width cap let
+  `object-contain` limit the visible oversized logo change. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 3 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Updated the `/prototype/home` navbar pilot after owner feedback:
+  added `prototype_logos/jl_logo_tight_crop.png` as the selectable default
+  logo, removed central-link separators, normalized the central labels to
+  capitalized text, replaced the separator control with ten link-font presets,
+  and expanded link-gap presets up to 120px for broader spacing review.
+  Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 10 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Refined the `/prototype/home` navbar dock again: removed the
+  alternate-background control while preserving its stone default, added
+  central-link size presets, forced central nav labels to uppercase, and applied
+  multiply blending to prototype logo images. Screenshot
+  `Screenshot 2026-05-25 at 14.55.03.png` shows the top-nav tint from roughly
+  rows 0-187, then the unchanged lower breadcrumb/search row below the divider;
+  pixel checks also confirmed all prototype logo PNGs are fully opaque
+  white-background images. The perceived extra space below the logo comes from
+  the visible opaque logo canvas plus the unchanged lower row reading as a
+  continuation beneath the logo, not from asymmetric top-nav Y padding.
+  Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 10 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Removed hidden horizontal padding from the route-scoped
+  `/prototype/home` top nav by replacing the previous fixed desktop/tablet/
+  mobile `px-*` classes with the `--prototype-main-nav-padding-x` CSS variable.
+  The new dock `X pad` control defaults to `None` and can restore/tune horizontal
+  padding for review; the fixed bottom dock now wraps controls and scrolls
+  vertically when it needs more space. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 10 http://localhost:3000/prototype/home` passed.
+- 2026-05-25: Expanded the `/prototype/home` navbar link-font selector from
+  the previous small mixed-weight set to 34 regular-weight options. The bold
+  and semibold prototype font choices were removed from the selector, the
+  default is now Archivo Regular, and the additional experiments use local/
+  system font stacks instead of new Google font downloads so prototype builds
+  stay stable. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
+  `npm run lint`, `npm run build`, `git diff --check`, and
+  `curl -I --max-time 10 http://localhost:3000/prototype/home` passed.
+  `npm run build` was attempted first with extra `next/font/google` families
+  and failed on Google font fetch timeouts, which is why the final
+  implementation uses system stacks instead. A broader
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx __tests__/unit/auth/authOptionsImportBoundary.test.tsx`
+  run still showed the pre-existing `authOptionsImportBoundary` root-layout
+  assertion drift: current `RootLayout` does not call the mocked DB/session
+  path expected by that test.
 - 2026-05-22: Fixed the prototype deployment TypeScript failures by guarding
   the optional frame room-shadow `min` input prop and widening the homepage
   biography prototype order-index map for normalized runtime slug/title
@@ -1325,8 +1430,26 @@ passed with network access.
 - 2026-05-24: Adjusted T-261 room thumbnails so vertical-stack wall previews use
   the same fill-and-crop viewport behavior as the focused room preview, keeping
   framed-artwork proportions consistent between selected and thumbnail states.
+- 2026-05-24: Added a background-first render gate for T-261 room previews so
+  the framed artwork fades in only after the selected wall background image has
+  loaded, avoiding foreground/background load races during gallery transitions.
+- 2026-05-25: Completed T-265. `/artwork` browse loader metadata now reaches
+  `ArtworkGallery`, so direct non-page-1 browse renders initialize client
+  pagination from the server list state and terminal pages do not keep loading.
 
 ## Next Agent Action
+
+T-265 is complete; do not reassign it unless deep-linked `/artwork?page=...`
+client load-more state regresses. Keep broader artwork browse redesign,
+non-default cache expansion, public search, shop listing, and collection detail
+pagination separate.
+
+For the navbar prototype, review `/prototype/home` at desktop, tablet, and
+mobile widths and choose a logo, logo-size preset, nav-height preset, link-font
+preset, link-size preset, link-gap preset, and whether the lower
+breadcrumb/search row should remain visually merged or become separated in a
+later slice. Keep any lower-row changes separate from the current main-nav
+pilot.
 
 The A-024 loading-state and account-navigation follow-up sequence is complete;
 do not reassign F-118 through F-122 unless a regression appears.

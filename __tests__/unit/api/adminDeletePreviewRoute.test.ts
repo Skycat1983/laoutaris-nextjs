@@ -49,6 +49,7 @@ jest.mock("@/lib/data/models", () => ({
     findOne: jest.fn(),
   },
   ArtworkModel: {
+    find: jest.fn(),
     findById: jest.fn(),
     findByIdAndDelete: jest.fn(),
     updateMany: jest.fn(),
@@ -138,6 +139,7 @@ const mockArticleFindById = ArticleModel.findById as jest.Mock;
 const mockArticleFindByIdAndDelete =
   ArticleModel.findByIdAndDelete as jest.Mock;
 const mockArticleFindOne = ArticleModel.findOne as jest.Mock;
+const mockArtworkFind = ArtworkModel.find as jest.Mock;
 const mockArtworkFindById = ArtworkModel.findById as jest.Mock;
 const mockArtworkFindByIdAndDelete =
   ArtworkModel.findByIdAndDelete as jest.Mock;
@@ -235,6 +237,7 @@ const expectNoPreviewReadWork = () => {
   expect(mockArticleFind).not.toHaveBeenCalled();
   expect(mockArticleFindById).not.toHaveBeenCalled();
   expect(mockArticleFindOne).not.toHaveBeenCalled();
+  expect(mockArtworkFind).not.toHaveBeenCalled();
   expect(mockArtworkFindById).not.toHaveBeenCalled();
   expect(mockBlogFindById).not.toHaveBeenCalled();
   expect(mockCollectionFind).not.toHaveBeenCalled();
@@ -322,6 +325,7 @@ describe("admin delete cascade preview routes", () => {
         format: "jpg",
       },
     });
+    mockArtworkFind.mockResolvedValue([]);
 
     mockBlogFindById.mockResolvedValue({
       _id: blogId,
@@ -466,7 +470,7 @@ describe("admin delete cascade preview routes", () => {
     expectNoMutationWork();
   });
 
-  it("previews artwork deletion with collection detaches, preserved user references, and preserved image asset", async () => {
+  it("previews artwork deletion with collection detaches, user saved-reference updates, and preserved image asset", async () => {
     mockCollectionFind.mockResolvedValue([
       { _id: collectionId, title: "Early Work", slug: "early-work" },
       { _id: secondCollectionId, title: "Late Work", slug: "late-work" },
@@ -501,17 +505,17 @@ describe("admin delete cascade preview routes", () => {
         resource: "collection",
         count: 2,
       }),
+      expect.objectContaining({
+        action: "update",
+        resource: "user",
+        count: 2,
+      }),
     ]);
     expect(preview.preserved).toEqual([
       expect.objectContaining({
         action: "preserve",
         resource: "cloudinaryAsset",
         count: 1,
-      }),
-      expect.objectContaining({
-        action: "preserve",
-        resource: "user",
-        count: 2,
       }),
     ]);
     expectNoMutationWork();
@@ -604,7 +608,7 @@ describe("admin delete cascade preview routes", () => {
     expectNoMutationWork();
   });
 
-  it("previews collection deletion while preserving artwork records and image assets", async () => {
+  it("previews collection deletion with artwork collection-reference updates and preserved image assets", async () => {
     mockCollectionFindById.mockResolvedValue({
       _id: collectionId,
       title: "Early Work",
@@ -613,6 +617,10 @@ describe("admin delete cascade preview routes", () => {
       imageUrl:
         "https://res.cloudinary.com/demo/image/upload/v1/collection-cover.jpg",
     });
+    mockArtworkFind.mockResolvedValue([
+      { _id: artworkId, title: "Study in Blue" },
+      { _id: favouriteArtworkId, title: "Study in Red" },
+    ]);
 
     const response = await GET_COLLECTION_PREVIEW(createRequest() as never, {
       params: { id: collectionId },
@@ -621,6 +629,7 @@ describe("admin delete cascade preview routes", () => {
 
     expect(response.status).toBe(200);
     expect(mockCollectionFindById).toHaveBeenCalledWith(collectionId);
+    expect(mockArtworkFind).toHaveBeenCalledWith({ collections: collectionId });
     expect(preview.wouldDelete).toEqual([
       expect.objectContaining({
         action: "delete",
@@ -628,13 +637,14 @@ describe("admin delete cascade preview routes", () => {
         count: 1,
       }),
     ]);
-    expect(preview.wouldDetachOrUpdate).toEqual([]);
-    expect(preview.preserved).toEqual([
+    expect(preview.wouldDetachOrUpdate).toEqual([
       expect.objectContaining({
-        action: "preserve",
+        action: "update",
         resource: "artwork",
         count: 2,
       }),
+    ]);
+    expect(preview.preserved).toEqual([
       expect.objectContaining({
         action: "preserve",
         resource: "cloudinaryAsset",

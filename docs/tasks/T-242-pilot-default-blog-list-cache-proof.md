@@ -1,6 +1,6 @@
 # T-242 Pilot Default Blog List Cache Proof
 
-Status: Complete
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),

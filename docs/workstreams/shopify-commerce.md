@@ -594,6 +594,9 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-24: Adjusted T-261 vertical room thumbnails to use the same cropped
   wall viewport behavior as the focused room preview so wall-preview proportions
   stay consistent across gallery states.
+- 2026-05-24: Added T-261 room-preview loading sequencing: room backgrounds now
+  render through the same unoptimized asset path and the framed artwork overlay
+  waits for the selected background image to load before fading in.
 
 ## Next Agent Action
 

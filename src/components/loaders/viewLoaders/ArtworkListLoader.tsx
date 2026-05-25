@@ -48,7 +48,7 @@ export const ArtworkListLoader = async ({
     cachedPage === undefined
       ? undefined
       : await getCachedDefaultArtworkListPage(cachedPage);
-  const { data: artworks } =
+  const { data: artworks, metadata: paginationMetadata } =
     cachedArtworkList ??
     (await getArtworkList({
       ...initialFilters,
@@ -60,6 +60,7 @@ export const ArtworkListLoader = async ({
   return (
     <ArtworkGallery
       startingArtworks={artworks}
+      paginationMetadata={paginationMetadata}
       sortDefaults={initialSort}
       filterDefaults={initialFilters}
     />

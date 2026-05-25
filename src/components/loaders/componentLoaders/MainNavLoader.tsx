@@ -52,7 +52,7 @@ const logRejectedNavigationResult = (
   logger.error("loader.public.main_nav.failed", { source, error });
 };
 
-export const MainNavLoader = async () => {
+export const getMainNavLinks = async (): Promise<NavBarLink[]> => {
   const [articleNavigationResult, collectionNavigationResult] =
     await Promise.allSettled([
       getArticleNavigationList("biography"),
@@ -82,7 +82,7 @@ export const MainNavLoader = async () => {
     );
   }
 
-  const navLinks: NavBarLink[] = [
+  return [
     {
       label: "Artwork",
       path: buildUrl(["artwork"]),
@@ -99,6 +99,10 @@ export const MainNavLoader = async () => {
     { label: "Project", path: buildUrl(["project", "about"]) },
     { label: "Shop", path: buildUrl(["shop"]) },
   ];
+};
+
+export const MainNavLoader = async () => {
+  const navLinks = await getMainNavLinks();
 
   return <MainNav navLinks={navLinks} />;
 };

@@ -262,10 +262,10 @@ production records.
 
 | Resource | Current route behavior |
 | --- | --- |
-| Artwork | Blocks deletion when an article references the artwork. Otherwise deletes the artwork and removes it from collection `artworks` arrays. Cloudinary assets are preserved. |
+| Artwork | Blocks deletion when an article references the artwork. Otherwise deletes the artwork, removes it from collection `artworks` arrays, and removes it from user `favourites` and `watchlist` arrays. Cloudinary assets are preserved. |
 | Article | Deletes the article record. Linked artwork is preserved. |
 | Blog | Deletes the blog and deletes associated comments, then removes those comment IDs from users. Cloudinary assets are preserved. |
-| Collection | Deletes the collection record. Artwork records are preserved. |
+| Collection | Deletes the collection record and removes the collection ID from affected artwork `collections` arrays. Artwork records are preserved. |
 | Comment | Deletes the comment and removes its ID from the related user and blog. |
 | User | Blocks current-admin and last-admin deletion. Otherwise deletes the user, deletes the user's comments, removes comment IDs from blogs, and removes the user from artwork favourites and watchlists. |
 

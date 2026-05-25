@@ -227,6 +227,45 @@ describe("/search page", () => {
     });
   });
 
+  it("renders explicit shop product search failures as unavailable", async () => {
+    mockGetPublicSearchResults.mockResolvedValue({
+      success: true,
+      data: {
+        "shop-products": [],
+        metadata: {
+          ...createMetadata({
+            total: 0,
+            totalPages: 0,
+            searchedTypes: ["shop-products"],
+            type: "shop-products",
+          }),
+          unavailableTypes: ["shop-products"],
+        },
+      },
+    });
+
+    const element = (await SearchPage({
+      searchParams: {
+        q: "blue",
+        type: "shop-products",
+      },
+    })) as ReactElement;
+    const resultsGrid = element.props.children[1] as ReactElement;
+    const resultsFragment = resultsGrid.props.children as ReactElement;
+    const resultsSection = resultsFragment.props.children[0] as ReactElement;
+
+    expect(resultsSection.type).toBe(SearchResultsSection);
+    expect(resultsSection.props).toEqual({
+      title: "Shop Products",
+      items: [],
+      type: "shop-products",
+      resultLabel: "shop products",
+      total: 0,
+      emptyMessage:
+        "Shop product search is currently unavailable. Please try again later.",
+    });
+  });
+
   it("renders artwork sections in all-type search results", async () => {
     mockGetPublicSearchResults.mockResolvedValue({
       success: true,
@@ -298,7 +337,7 @@ describe("/search page", () => {
     );
   });
 
-  it("renders shop product sections in all-type search results", async () => {
+  it("does not render shop product sections in all-type search results", async () => {
     mockGetPublicSearchResults.mockResolvedValue({
       success: true,
       data: {
@@ -370,17 +409,15 @@ describe("/search page", () => {
         q: "blue",
       },
     })) as ReactElement;
-    renderToStaticMarkup(element);
+    const markup = renderToStaticMarkup(element);
 
-    expect(SearchResultsSection).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: "Shop Products",
-        items: [shopProductItem],
-        type: "shop-products",
-        resultLabel: "shop products",
-        total: 1,
-      }),
-      {}
+    expect(SearchResultsSection).not.toHaveBeenCalledWith(
+      expect.objectContaining({ type: "shop-products" }),
+      expect.anything()
+    );
+    expect(markup).toContain("Shop products are searched separately.");
+    expect(markup).toContain(
+      "/search?q=blue&amp;type=shop-products&amp;page=1&amp;limit=10"
     );
   });
 
@@ -394,13 +431,7 @@ describe("/search page", () => {
         metadata: {
           page: 1,
           limit: 10,
-          searchedTypes: [
-            "articles",
-            "blogs",
-            "collections",
-            "artworks",
-            "shop-products",
-          ],
+          searchedTypes: ["articles", "blogs", "collections", "artworks"],
           total: 0,
           hasMore: false,
           types: {
@@ -436,14 +467,6 @@ describe("/search page", () => {
               hasMore: false,
               hasPreviousPage: false,
             },
-            "shop-products": {
-              page: 1,
-              limit: 10,
-              total: 0,
-              totalPages: 0,
-              hasMore: false,
-              hasPreviousPage: false,
-            },
           },
         },
       },
@@ -457,7 +480,10 @@ describe("/search page", () => {
     const markup = renderToStaticMarkup(element);
 
     expect(markup).toContain(
-      'No articles, blogs, collections, artworks, or shop products matched &quot;missing&quot;.'
+      'No articles, blogs, collections, or artworks matched &quot;missing&quot;.'
+    );
+    expect(markup).toContain(
+      "/search?q=missing&amp;type=shop-products&amp;page=1&amp;limit=10"
     );
     expect(markup).not.toContain("search pagination");
   });

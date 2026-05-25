@@ -132,6 +132,31 @@ const shopProductSuccessResult = {
   },
 } as never;
 
+const shopProductUnavailableResult = {
+  success: true,
+  data: {
+    "shop-products": [],
+    metadata: {
+      page: 1,
+      limit: 10,
+      searchedTypes: ["shop-products"],
+      total: 0,
+      hasMore: false,
+      unavailableTypes: ["shop-products"],
+      types: {
+        "shop-products": {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+          hasMore: false,
+          hasPreviousPage: false,
+        },
+      },
+    },
+  },
+} as never;
+
 describe("GET /api/v2/public/search", () => {
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -203,6 +228,26 @@ describe("GET /api/v2/public/search", () => {
       limit: 10,
     });
     expect(body).toBe(shopProductSuccessResult);
+  });
+
+  it("returns explicit shop product unavailable metadata from the service", async () => {
+    mockGetPublicSearchResults.mockResolvedValue(shopProductUnavailableResult);
+
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/search?q=blue&type=shop-products"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetPublicSearchResults).toHaveBeenCalledWith({
+      q: "blue",
+      type: "shop-products",
+      page: 1,
+      limit: 10,
+    });
+    expect(body).toBe(shopProductUnavailableResult);
   });
 
   it("returns 400 when q is missing and avoids database work", async () => {

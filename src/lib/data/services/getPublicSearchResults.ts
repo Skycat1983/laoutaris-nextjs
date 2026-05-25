@@ -5,6 +5,7 @@ import { ArtworkModel } from "@/lib/data/models/artworkModel";
 import { BlogModel } from "@/lib/data/models/blogModel";
 import { CollectionModel } from "@/lib/data/models/collectionModel";
 import { getShopProductList } from "@/lib/data/services/getShopProductList";
+import { createServerLogger } from "@/lib/observability/logger";
 import {
   ARTSTYLE_OPTIONS,
   DECADE_OPTIONS,
@@ -45,6 +46,11 @@ type ArtworkSearchFilter = {
 
 export type PublicSearchServiceResult = SingleResult<SearchResponse>;
 
+const publicSearchLogger = createServerLogger({
+  surface: "data_service",
+  operation: "public_search",
+});
+
 const SEARCH_FIELDS = ["title", "subtitle", "summary", "text"] as const;
 const SEARCH_RESULT_FIELDS = [
   "title",
@@ -60,6 +66,17 @@ const SEARCH_TYPES = [
   "artworks",
   "shop-products",
 ] as const;
+const DEFAULT_SEARCH_TYPES = [
+  "articles",
+  "blogs",
+  "collections",
+  "artworks",
+] as const satisfies readonly SearchableContentType[];
+
+const getErrorForLog = (error: unknown) =>
+  error instanceof Error
+    ? error
+    : new Error("Unknown public search product error");
 
 const escapeRegexLiteral = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -231,6 +248,44 @@ const searchArtworks = (
 const countArtworks = async (filter: ArtworkSearchFilter) =>
   ArtworkModel.countDocuments(filter);
 
+type ShopProductSearchResult = {
+  products: SimpleProduct[];
+  total: number;
+  unavailable: boolean;
+};
+
+const searchShopProducts = async (
+  query: string,
+  skip: number,
+  limit: number
+): Promise<ShopProductSearchResult> => {
+  try {
+    const shopProductsResult = await getShopProductList();
+    const matchingShopProducts = shopProductsResult.data.filter((product) =>
+      productMatchesQuery(product, query)
+    );
+
+    return {
+      products: matchingShopProducts.slice(skip, skip + limit),
+      total: matchingShopProducts.length,
+      unavailable: false,
+    };
+  } catch (error) {
+    publicSearchLogger.error("service.public_search.shop_products.failed", {
+      provider: "shopify",
+      shopifyOperation: "getShopProductList",
+      statusCategory: "shop_product_search_unavailable",
+      error: getErrorForLog(error),
+    });
+
+    return {
+      products: [],
+      total: 0,
+      unavailable: true,
+    };
+  }
+};
+
 const buildTypeMetadata = (
   total: number,
   page: number,
@@ -254,14 +309,17 @@ export const getPublicSearchResults = async ({
   page,
   limit,
 }: PublicSearchQuery): Promise<PublicSearchServiceResult> => {
-  await dbConnect();
-
   const filter = buildSearchFilter(q);
   const artworkFilter = buildArtworkSearchFilter(q);
   const skip = (page - 1) * limit;
   const shouldSearch = (candidate: SearchableContentType) =>
-    !type || type === candidate;
+    type ? type === candidate : DEFAULT_SEARCH_TYPES.includes(candidate);
   const searchedTypes = SEARCH_TYPES.filter(shouldSearch);
+  const shouldSearchMongoContent = DEFAULT_SEARCH_TYPES.some(shouldSearch);
+
+  if (shouldSearchMongoContent) {
+    await dbConnect();
+  }
 
   const [
     articles,
@@ -272,7 +330,7 @@ export const getPublicSearchResults = async ({
     collectionTotal,
     artworks,
     artworkTotal,
-    shopProductsResult,
+    shopProductSearchResult,
   ] = await Promise.all([
     shouldSearch("articles")
       ? searchArticles(filter, skip, limit)
@@ -291,15 +349,13 @@ export const getPublicSearchResults = async ({
       : Promise.resolve([]),
     shouldSearch("artworks") ? countArtworks(artworkFilter) : Promise.resolve(0),
     shouldSearch("shop-products")
-      ? getShopProductList()
-      : Promise.resolve(null),
+      ? searchShopProducts(q, skip, limit)
+      : Promise.resolve<ShopProductSearchResult>({
+          products: [],
+          total: 0,
+          unavailable: false,
+        }),
   ]);
-
-  const matchingShopProducts =
-    shopProductsResult?.data.filter((product) => productMatchesQuery(product, q)) ??
-    [];
-  const shopProducts = matchingShopProducts.slice(skip, skip + limit);
-  const shopProductTotal = matchingShopProducts.length;
 
   const metadata: SearchResponse["metadata"] = {
     page,
@@ -338,12 +394,18 @@ export const getPublicSearchResults = async ({
   }
 
   if (shouldSearch("shop-products")) {
-    data["shop-products"] = shopProducts.map(toShopProductSearchResultItem);
+    data["shop-products"] = shopProductSearchResult.products.map(
+      toShopProductSearchResultItem
+    );
     metadata.types["shop-products"] = buildTypeMetadata(
-      shopProductTotal,
+      shopProductSearchResult.total,
       page,
       limit
     );
+
+    if (shopProductSearchResult.unavailable) {
+      metadata.unavailableTypes = ["shop-products"];
+    }
   }
 
   metadata.total = searchedTypes.reduce(

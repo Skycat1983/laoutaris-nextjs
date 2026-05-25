@@ -1,6 +1,6 @@
 # T-229 Implement Mobile Shop Prototype Aesthetic
 
-Status: Ready
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),

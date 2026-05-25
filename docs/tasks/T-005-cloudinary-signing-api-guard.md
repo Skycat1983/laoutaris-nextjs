@@ -1,6 +1,6 @@
 # T-005 Harden Cloudinary Signing API Guard
 
-Status: Completed 2026-05-14
+Status: Completed
 
 Workstreams:
 [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md),
@@ -126,6 +126,7 @@ image transform cleanup.
 
 ## Completion Notes
 
+- Completed on 2026-05-14.
 - Added `requireApiAdmin()` for API route handlers that need stable session ID,
   session role, and persisted database role verification with JSON 401/403
   responses.

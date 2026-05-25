@@ -1,6 +1,6 @@
 # T-241 Pilot Blog Primary Detail Cache Proof
 
-Status: Complete
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),

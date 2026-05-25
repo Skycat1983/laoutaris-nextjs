@@ -63,6 +63,12 @@ describe("ArtworkListLoader", () => {
       initialFilters,
     })) as ReactElement<{
       startingArtworks: typeof artwork[];
+      paginationMetadata: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
       sortDefaults: typeof initialSort;
       filterDefaults: typeof initialFilters;
     }>;
@@ -78,6 +84,12 @@ describe("ArtworkListLoader", () => {
     expect(element.type).toBe(ArtworkGallery);
     expect(element.props).toEqual({
       startingArtworks: [artwork],
+      paginationMetadata: {
+        page: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+      },
       sortDefaults: initialSort,
       filterDefaults: initialFilters,
     });

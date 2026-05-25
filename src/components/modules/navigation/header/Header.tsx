@@ -1,7 +1,7 @@
 import Breadcrumbs from "@/components/modules/navigation/breadcrumbs/Breadcrumbs";
 import Searchbar from "@/components/elements/inputs/Searchbar";
 import { Suspense } from "react";
-import { MainNavLoader } from "@/components/loaders/componentLoaders/MainNavLoader";
+import { HeaderMainNavLoader } from "@/components/loaders/componentLoaders/HeaderMainNavLoader";
 import { MainNavSkeleton } from "../mainNav/MainNav";
 
 export async function Header({ className }: { className?: string }) {
@@ -9,7 +9,7 @@ export async function Header({ className }: { className?: string }) {
     <>
       <header className={`fixed top-0 z-10 w-full bg-whitish ${className}`}>
         <Suspense fallback={<MainNavSkeleton />}>
-          <MainNavLoader />
+          <HeaderMainNavLoader />
         </Suspense>
 
         <div className="flex flex-col w-full bg-whitish px-4 py-0 lg:py-0">

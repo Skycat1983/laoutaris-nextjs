@@ -35,13 +35,12 @@ const SEARCH_TYPE_RESULT_LABELS: Record<SearchableContentType, string> = {
   "shop-products": "shop products",
 };
 
-const SEARCH_TYPES = [
+const DEFAULT_SEARCH_TYPES = [
   "articles",
   "blogs",
   "collections",
   "artworks",
-  "shop-products",
-] as const;
+] as const satisfies readonly SearchableContentType[];
 
 const firstErrorMessage = (
   fieldErrors: PublicSearchQueryFieldErrors,
@@ -90,8 +89,49 @@ const buildSelectedTypePageHref = ({
   return `/search?${params.toString()}`;
 };
 
+const buildShopProductSearchHref = ({
+  query,
+  limit,
+}: {
+  query: string;
+  limit: number;
+}) => {
+  const params = new URLSearchParams({
+    q: query,
+    type: "shop-products",
+    page: "1",
+    limit: String(limit),
+  });
+
+  return `/search?${params.toString()}`;
+};
+
 const SearchEmptyState = ({ message }: { message: string }) => (
   <p className="text-sm text-gray-600">{message}</p>
+);
+
+const getUnavailableMessage = (type: SearchableContentType) =>
+  type === "shop-products"
+    ? "Shop product search is currently unavailable. Please try again later."
+    : `${SEARCH_TYPE_TITLES[type]} search is currently unavailable. Please try again later.`;
+
+const ShopProductSearchPrompt = ({
+  query,
+  limit,
+}: {
+  query: string;
+  limit: number;
+}) => (
+  <p className="text-sm text-gray-600">
+    Shop products are searched separately.{" "}
+    <Link
+      href={buildShopProductSearchHref({ query, limit })}
+      className="font-medium underline underline-offset-4 hover:text-gray-900"
+    >
+      Search shop products for &quot;{query}&quot;
+    </Link>
+    .
+  </p>
 );
 
 const SearchPagination = ({
@@ -201,18 +241,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
 
   const selectedTypeMetadata = type ? searchData.metadata.types[type] : undefined;
-  const hasRenderedItems = SEARCH_TYPES.some(
+  const selectedTypeUnavailable = type
+    ? searchData.metadata.unavailableTypes?.includes(type) ?? false
+    : false;
+  const hasRenderedItems = DEFAULT_SEARCH_TYPES.some(
     (searchType) => (searchData[searchType]?.length ?? 0) > 0
   );
   const selectedEmptyMessage = type
-    ? selectedTypeMetadata?.total === 0
+    ? selectedTypeUnavailable
+      ? getUnavailableMessage(type)
+      : selectedTypeMetadata?.total === 0
       ? `No ${SEARCH_TYPE_RESULT_LABELS[type]} matched "${query}".`
       : "No results are available on this page for the selected search type."
     : undefined;
   const allTypesEmptyMessage =
     searchData.metadata.total === 0
-      ? `No articles, blogs, collections, artworks, or shop products matched "${query}".`
-      : "No results are available on this page for articles, blogs, collections, artworks, or shop products.";
+      ? `No articles, blogs, collections, or artworks matched "${query}".`
+      : "No results are available on this page for articles, blogs, collections, or artworks.";
 
   return (
     <main className="container mx-auto p-4">
@@ -284,16 +329,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 total={searchData.metadata.types.artworks?.total}
               />
             )}
-            {searchData["shop-products"] &&
-              searchData["shop-products"].length > 0 && (
-                <SearchResultsSection
-                  title="Shop Products"
-                  items={searchData["shop-products"]}
-                  type="shop-products"
-                  resultLabel={SEARCH_TYPE_RESULT_LABELS["shop-products"]}
-                  total={searchData.metadata.types["shop-products"]?.total}
-                />
-              )}
+            <ShopProductSearchPrompt
+              query={query}
+              limit={searchData.metadata.limit}
+            />
           </>
         )}
       </div>

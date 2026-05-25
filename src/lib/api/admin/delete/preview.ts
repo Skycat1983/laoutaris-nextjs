@@ -352,16 +352,28 @@ export const getArtworkDeletePreview = async (
     [
       impact("delete", "artwork", [target], "Delete the target artwork record."),
     ],
-    collectionRecords.length > 0
-      ? [
-          impact(
-            "detach",
-            "collection",
-            collectionRecords,
-            "Pull the artwork ID from matching collection artworks arrays."
-          ),
-        ]
-      : [],
+    [
+      ...(collectionRecords.length > 0
+        ? [
+            impact(
+              "detach",
+              "collection",
+              collectionRecords,
+              "Pull the artwork ID from matching collection artworks arrays."
+            ),
+          ]
+        : []),
+      ...(userRecords.length > 0
+        ? [
+            impact(
+              "update",
+              "user",
+              userRecords,
+              "Pull the artwork ID from affected user favourites and watchlist arrays."
+            ),
+          ]
+        : []),
+    ],
     [
       ...(preservedAssets.length > 0
         ? [
@@ -370,16 +382,6 @@ export const getArtworkDeletePreview = async (
               "cloudinaryAsset",
               preservedAssets,
               "Current artwork deletion preserves the Cloudinary image asset."
-            ),
-          ]
-        : []),
-      ...(userRecords.length > 0
-        ? [
-            impact(
-              "preserve",
-              "user",
-              userRecords,
-              "Current artwork deletion does not update user favourite or watchlist records."
             ),
           ]
         : []),
@@ -456,12 +458,20 @@ export const getBlogDeletePreview = async (
 export const getCollectionDeletePreview = async (
   id: string
 ): Promise<AdminDeletePreview | null> => {
-  const collection = toDocument(await CollectionModel.findById(id));
+  const [collectionResult, affectedArtwork] = await Promise.all([
+    CollectionModel.findById(id),
+    ArtworkModel.find({ collections: id }),
+  ]);
+  const collection = toDocument(collectionResult);
   if (!collection) {
     return null;
   }
 
-  const artworkRecords = recordsFromIds("artwork", fieldIds(collection.artworks));
+  const artworkRecords = recordsFromDocuments(
+    "artwork",
+    toDocuments(affectedArtwork),
+    { field: "collections" }
+  );
   const target = targetRecord("collection", collection, id);
   const preservedAssets = compactRecords([
     cloudinaryUrlRecord(collection.imageUrl, "imageUrl"),
@@ -479,18 +489,17 @@ export const getCollectionDeletePreview = async (
         "Delete the target collection record."
       ),
     ],
-    [],
+    artworkRecords.length > 0
+      ? [
+          impact(
+            "update",
+            "artwork",
+            artworkRecords,
+            "Pull the collection ID from affected artwork collections arrays."
+          ),
+        ]
+      : [],
     [
-      ...(artworkRecords.length > 0
-        ? [
-            impact(
-              "preserve",
-              "artwork",
-              artworkRecords,
-              "Current collection deletion preserves artwork records and does not pull collection references from artwork records."
-            ),
-          ]
-        : []),
       ...(preservedAssets.length > 0
         ? [
             impact(

@@ -29,7 +29,17 @@ when assigning discovery work.
 | A-020 | [Privacy, consent, and commerce compliance](#a-020-privacy-consent-and-commerce-compliance) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-020-privacy-consent-commerce-compliance.md) |
 | A-021 | [Observability and incident response](#a-021-observability-and-incident-response) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-021-observability-incident-response.md) |
 | A-022 | [Next.js feature utilization](#a-022-nextjs-feature-utilization) | [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-022-nextjs-feature-utilization.md) |
+| A-023 | [Playwright adoption priorities](#a-023-playwright-adoption-priorities) | [Testing and quality](../workstreams/testing-and-quality.md) | [Result](results/A-023-playwright-adoption-priorities.md) |
 | A-024 | [Loading state UX coverage](#a-024-loading-state-ux-coverage) | [Frontend routes and components](../workstreams/frontend-routes-and-components.md) | [Result](results/A-024-loading-state-ux.md) |
+| A-025 | [Codebase progress and trajectory recalibration](#a-025-codebase-progress-and-trajectory-recalibration) | [All workstreams](../workstreams/README.md) | [Result](results/A-025-codebase-trajectory-recalibration.md) |
+| A-026 | [Tracker alignment snapshot](#a-026-tracker-alignment-snapshot) | [All workstreams](../workstreams/README.md) | [Result](results/A-026-tracker-alignment-snapshot.md) |
+| A-027 | [Verification gate snapshot](#a-027-verification-gate-snapshot) | [Testing and quality](../workstreams/testing-and-quality.md) | [Result](results/A-027-verification-gate-snapshot.md) |
+| A-028 | [Public archive and Shopify runtime hotspot scan](#a-028-public-archive-and-shopify-runtime-hotspot-scan) | [Frontend routes and components](../workstreams/frontend-routes-and-components.md), [Shopify commerce](../workstreams/shopify-commerce.md) | [Result](results/A-028-public-shopify-hotspots.md) |
+| A-029 | [Admin, auth, and operations hotspot scan](#a-029-admin-auth-and-operations-hotspot-scan) | [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md), [Content, assets, and admin operations](../workstreams/content-assets-and-admin-ops.md), [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md) | [Result](results/A-029-admin-auth-ops-hotspots.md) |
+| A-030 | [Admin delete integrity snapshot](#a-030-admin-delete-integrity-snapshot) | [Content, assets, and admin operations](../workstreams/content-assets-and-admin-ops.md), [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md) | [Result](results/A-030-admin-delete-integrity.md) |
+| A-031 | [Admin content controls snapshot](#a-031-admin-content-controls-snapshot) | [Content, assets, and admin operations](../workstreams/content-assets-and-admin-ops.md), [Shopify commerce](../workstreams/shopify-commerce.md) | [Result](results/A-031-admin-content-controls.md) |
+| A-032 | [Auth and protected boundary snapshot](#a-032-auth-and-protected-boundary-snapshot) | [Auth, admin, and permissions](../workstreams/auth-admin-and-permissions.md), [Architecture refactor and code health](../workstreams/architecture-refactor-and-code-health.md) | [Result](results/A-032-auth-protected-boundaries.md) |
+| A-033 | [Deployment, monitoring, and smoke snapshot](#a-033-deployment-monitoring-and-smoke-snapshot) | [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md), [Testing and quality](../workstreams/testing-and-quality.md) | [Result](results/A-033-deployment-monitoring-smoke.md) |
 
 ## A-001 Shopify Commerce Readiness
 
@@ -359,6 +369,23 @@ Read first:
 
 Expected output: [results/A-022-nextjs-feature-utilization.md](results/A-022-nextjs-feature-utilization.md)
 
+## A-023 Playwright Adoption Priorities
+
+Status: Completed
+
+Goal: identify where this project would most benefit from Playwright and
+prioritize candidate browser checks without adding the dependency.
+
+Read first:
+
+- [Testing and quality workstream](../workstreams/testing-and-quality.md)
+- [Frontend routes and components workstream](../workstreams/frontend-routes-and-components.md)
+- [Auth, admin, and permissions workstream](../workstreams/auth-admin-and-permissions.md)
+- [Shopify commerce workstream](../workstreams/shopify-commerce.md)
+- [Deployment, security, and observability workstream](../workstreams/deployment-security-and-observability.md)
+
+Expected output: [results/A-023-playwright-adoption-priorities.md](results/A-023-playwright-adoption-priorities.md)
+
 ## A-024 Loading State UX Coverage
 
 Status: Completed
@@ -374,3 +401,411 @@ Read first:
 - [Rendering and data fetching](../architecture/rendering-and-data-fetching.md)
 
 Expected output: [results/A-024-loading-state-ux.md](results/A-024-loading-state-ux.md)
+
+## A-025 Codebase Progress And Trajectory Recalibration
+
+Status: Superseded
+
+Goal: superseded umbrella audit for recalibrating codebase progress and
+trajectory. Do not assign this goal directly.
+
+Why superseded: the original cross-workstream scope was too large for a single
+agent context. Use the smaller follow-up audits instead:
+
+- [A-026 Tracker alignment snapshot](#a-026-tracker-alignment-snapshot)
+- [A-027 Verification gate snapshot](#a-027-verification-gate-snapshot)
+- [A-028 Public archive and Shopify runtime hotspot scan](#a-028-public-archive-and-shopify-runtime-hotspot-scan)
+- [A-030 Admin delete integrity snapshot](#a-030-admin-delete-integrity-snapshot)
+- [A-031 Admin content controls snapshot](#a-031-admin-content-controls-snapshot)
+- [A-032 Auth and protected boundary snapshot](#a-032-auth-and-protected-boundary-snapshot)
+- [A-033 Deployment, monitoring, and smoke snapshot](#a-033-deployment-monitoring-and-smoke-snapshot)
+
+Expected output: [results/A-025-codebase-trajectory-recalibration.md](results/A-025-codebase-trajectory-recalibration.md)
+
+## A-026 Tracker Alignment Snapshot
+
+Status: Completed
+
+Goal: create a compact docs-only snapshot of whether orchestration state,
+audit indexes, result statuses, findings, risks, workstreams, and task pointers
+agree on what is active, complete, blocked, and next.
+
+Read first:
+
+- [Current orchestration state](../orchestration/state.md)
+- [Orchestrator guide](../orchestration/orchestrator-guide.md)
+- [Audit results index](results/README.md)
+- [Findings register](findings-register.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+- [Workstreams index](../workstreams/README.md)
+- [Tasks index](../tasks/README.md)
+
+Scope:
+
+- Audit documentation consistency only. Do not deep-read runtime source unless a
+  tracker claim cannot be interpreted without one targeted file read.
+- Identify stale next-action pointers, missing result/index entries, completed
+  tasks still listed as active, active risks without an owner/blocker note, and
+  findings that appear unreconciled or duplicated.
+- Produce candidate tracker edits for the orchestrator rather than editing
+  shared trackers.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-027, A-028, and A-030 through A-033.
+- The assigned agent owns only
+  [results/A-026-tracker-alignment-snapshot.md](results/A-026-tracker-alignment-snapshot.md).
+- Do not edit `findings-register.md`, risk docs, workstream briefs, task briefs,
+  or orchestration state unless the orchestrator explicitly assigns a follow-up
+  reconciliation task.
+
+Verification:
+
+- Use `git status --short`, `rg`, `find`, and targeted doc reads.
+- Do not run full test/build commands; that belongs to A-027.
+
+Expected output: [results/A-026-tracker-alignment-snapshot.md](results/A-026-tracker-alignment-snapshot.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- List the top tracker mismatches and candidate edits needed.
+- Recommend the single next orchestration cleanup action, if any.
+
+## A-027 Verification Gate Snapshot
+
+Status: Not started
+
+Goal: determine the current reliability of project verification commands and
+release gates without changing code, dependencies, or CI.
+
+Read first:
+
+- [Testing and quality workstream](../workstreams/testing-and-quality.md)
+- [Testing runbook](../runbooks/testing.md)
+- [Deployment runbook](../runbooks/deployment.md)
+- [Environment variables runbook](../runbooks/environment.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+- `package.json`
+- `.github/workflows/`
+
+Scope:
+
+- Inspect package scripts, CI workflows, smoke scripts, TypeScript gate status,
+  lint/build/test expectations, and release-verification docs.
+- Run only the commands needed to establish a current baseline, summarizing
+  failures by class instead of pasting long logs.
+- Identify missing gates, flaky or environment-coupled gates, and places where a
+  passing local command is not yet part of CI or release discipline.
+- Do not fix tests, add CI jobs, change dependencies, or update package scripts.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-026, A-028, and A-030 through A-033.
+- The assigned agent owns only
+  [results/A-027-verification-gate-snapshot.md](results/A-027-verification-gate-snapshot.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Suggested commands: `git status --short`, `npm test`, `npm run lint`,
+  `npm run build`, `npx tsc --noEmit --pretty false --skipLibCheck`, and any
+  existing env/smoke command that is clearly local and non-destructive.
+- If a command is skipped or fails for environment reasons, record the reason
+  and impact on confidence.
+- Do not use browser automation, traces, screenshots, or full log dumps.
+
+Expected output: [results/A-027-verification-gate-snapshot.md](results/A-027-verification-gate-snapshot.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Provide a concise pass/fail/blocked table for verification commands.
+- Recommend the next one or two quality-gate tasks only if evidence supports
+  them.
+
+## A-028 Public Archive And Shopify Runtime Hotspot Scan
+
+Status: Completed
+
+Goal: inspect the current public archive, search/browse, shop listing, Shopify
+product detail, product enquiry, and product-detail mockup trajectory to identify
+the most important owner-facing runtime gaps.
+
+Read first:
+
+- [Frontend routes and components workstream](../workstreams/frontend-routes-and-components.md)
+- [Shopify commerce workstream](../workstreams/shopify-commerce.md)
+- [Shopify commerce architecture](../architecture/shopify-commerce.md)
+- [Rendering and data fetching](../architecture/rendering-and-data-fetching.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+- [T-261 Build shop product sale gallery mockup](../tasks/T-261-build-shop-product-sale-gallery-mockup.md)
+
+Scope:
+
+- Inspect representative source and tests for public artwork browsing/detail,
+  search, blog or collection discovery only where it affects archive browsing,
+  shop products, Shopify hosted purchase handoff, product enquiry context, and
+  the current product-detail mockup path.
+- Identify owner-facing defects, stale task assumptions, missing tests, commerce
+  boundary risks, and unclear next implementation choices.
+- Do not inspect admin/auth/ops broadly; those belong to A-030 through A-033.
+- Do not implement UI changes, add tests, run checkout, or use browser
+  automation unless a single targeted source claim cannot be resolved otherwise.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-026, A-027, and A-030 through A-033.
+- The assigned agent owns only
+  [results/A-028-public-shopify-hotspots.md](results/A-028-public-shopify-hotspots.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Use `git status --short`, `rg`, targeted file reads, and narrow tests only if
+  a specific hotspot needs confirmation.
+- Prefer source/test evidence over broad runtime exploration.
+- Do not collect screenshots, traces, full DOM dumps, or large browser logs.
+
+Expected output: [results/A-028-public-shopify-hotspots.md](results/A-028-public-shopify-hotspots.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Identify the top public/shop runtime gaps and the smallest coherent follow-up
+  tasks.
+- State whether T-261 still appears to be the right next implementation target,
+  should be narrowed, or should wait behind a prerequisite.
+
+## A-029 Admin, Auth, And Operations Hotspot Scan
+
+Status: Superseded
+
+Goal: superseded hotspot scan for admin, auth, and operations. Do not assign
+this goal directly.
+
+Why superseded: an attempted A-029 run exceeded available context before
+writing the result file. The final output suggests the scan expanded across
+delete integrity, admin dashboard operations, auth boundaries, Cloudinary
+controls, and deployment/monitoring. Use smaller follow-up audits instead:
+
+- [A-030 Admin delete integrity snapshot](#a-030-admin-delete-integrity-snapshot)
+- [A-031 Admin content controls snapshot](#a-031-admin-content-controls-snapshot)
+- [A-032 Auth and protected boundary snapshot](#a-032-auth-and-protected-boundary-snapshot)
+- [A-033 Deployment, monitoring, and smoke snapshot](#a-033-deployment-monitoring-and-smoke-snapshot)
+
+Recovered context from the aborted run: the agent reported a possible delete
+path hotspot where artwork deletion previews explicitly preserve affected user
+favourite/watchlist records, while the destructive route removes artwork from
+collections but not from users. A-030 should verify whether this is harmless
+preserved history or an operator-facing data integrity gap.
+
+Expected output: [results/A-029-admin-auth-ops-hotspots.md](results/A-029-admin-auth-ops-hotspots.md)
+
+## A-030 Admin Delete Integrity Snapshot
+
+Status: Completed
+
+Goal: verify the admin destructive delete path for articles, artwork, blogs,
+collections, comments, and users, with special focus on whether artwork delete
+correctly handles affected user favourite/watchlist references.
+
+Read first:
+
+- [Content, assets, and admin operations workstream](../workstreams/content-assets-and-admin-ops.md)
+- [Auth, admin, and permissions workstream](../workstreams/auth-admin-and-permissions.md)
+- [Admin content operations runbook](../runbooks/admin-content-operations.md)
+- [Database runbook](../runbooks/database.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+
+Scope:
+
+- Inspect admin delete preview routes, destructive delete routes, cascade/audit
+  helpers, delete confirmation UI only where it affects route contract, user
+  saved-artwork loaders/actions, and focused tests for delete behavior.
+- Confirm whether preserved user favourites/watchlist references after artwork
+  deletion are intentional, harmless, surfaced to users safely, or a data
+  integrity gap requiring cleanup or UI handling.
+- Do not inspect general admin form controls, auth boundaries, Cloudinary
+  upload, deployment, or monitoring; those belong to A-031 through A-033.
+- Do not run destructive operations or modify runtime code.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-031, A-032, and A-033.
+- The assigned agent owns only
+  [results/A-030-admin-delete-integrity.md](results/A-030-admin-delete-integrity.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Use `git status --short`, `rg`, targeted source/test/doc reads, and narrow
+  non-destructive tests only if needed to confirm route/loader behavior.
+- Do not use browser automation, screenshots, traces, broad logs, or production
+  data mutation.
+
+Expected output: [results/A-030-admin-delete-integrity.md](results/A-030-admin-delete-integrity.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- State whether the saved-artwork preservation behavior is accepted, unclear, or
+  a concrete data integrity issue.
+- Recommend one coherent follow-up task if a fix or documented decision is
+  needed.
+
+## A-031 Admin Content Controls Snapshot
+
+Status: Completed
+
+Goal: inspect admin dashboard content-operation controls for articles, artwork,
+blogs, collections, users, comments, Shopify product links, and Cloudinary
+uploads to identify focused operator-facing gaps.
+
+Read first:
+
+- [Content, assets, and admin operations workstream](../workstreams/content-assets-and-admin-ops.md)
+- [Shopify commerce workstream](../workstreams/shopify-commerce.md)
+- [Admin content operations runbook](../runbooks/admin-content-operations.md)
+- [Cloudinary runbook](../runbooks/cloudinary.md)
+- [Shopify commerce architecture](../architecture/shopify-commerce.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+
+Scope:
+
+- Inspect admin dashboard segment config, CRUD tabs, document reader/read-list
+  handoff, create/update/delete form controls, Shopify product-link controls,
+  Cloudinary upload/signing controls, and focused tests.
+- Identify operator-facing UI/control gaps, stale assumptions, missing
+  validation/error-surface coverage, and unclear next implementation choices.
+- Do not inspect destructive delete cascade integrity beyond UI control
+  handoff; that belongs to A-030.
+- Do not inspect auth/session boundaries or deployment/monitoring; those belong
+  to A-032 and A-033.
+- Do not implement UI changes or upload/delete assets.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-030, A-032, and A-033.
+- The assigned agent owns only
+  [results/A-031-admin-content-controls.md](results/A-031-admin-content-controls.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Use `git status --short`, `rg`, targeted source/test/doc reads, and narrow
+  component/source tests only if needed.
+- Do not use browser automation, screenshots, full DOM dumps, uploads, or
+  destructive operations.
+
+Expected output: [results/A-031-admin-content-controls.md](results/A-031-admin-content-controls.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Identify the top admin control gaps and the smallest coherent follow-up task,
+  if any.
+
+## A-032 Auth And Protected Boundary Snapshot
+
+Status: Completed
+
+Goal: inspect auth/session, middleware, protected API/admin route guards, role
+boundaries, and client/server import-boundary checks to identify focused
+security or architecture gaps.
+
+Read first:
+
+- [Auth, admin, and permissions workstream](../workstreams/auth-admin-and-permissions.md)
+- [Architecture refactor and code health workstream](../workstreams/architecture-refactor-and-code-health.md)
+- [Auth runbook](../runbooks/auth.md)
+- [Routes and API architecture](../architecture/routes-and-api.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+
+Scope:
+
+- Inspect NextAuth configuration/import boundaries, middleware matcher behavior,
+  protected API guard inventory, admin/user route guard patterns, role/session
+  tests, and client/server import-boundary tests.
+- Identify guard drift, uncovered role behavior, import-boundary regressions, or
+  unclear auth runbook gaps.
+- Do not inspect admin UI controls, delete cascade behavior, Cloudinary uploads,
+  or deployment monitoring unless directly necessary to understand an auth
+  boundary.
+- Do not change auth code, rotate credentials, or collect secrets/tokens.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-030, A-031, and A-033.
+- The assigned agent owns only
+  [results/A-032-auth-protected-boundaries.md](results/A-032-auth-protected-boundaries.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Use `git status --short`, `rg`, targeted source/test/doc reads, and narrow
+  non-secret tests only if needed.
+- Do not use browser automation, cookies, tokens, screenshots, or broad logs.
+
+Expected output: [results/A-032-auth-protected-boundaries.md](results/A-032-auth-protected-boundaries.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Identify the top auth/protected-boundary gaps and whether each is
+  agent-actionable or owner/platform-blocked.
+
+## A-033 Deployment, Monitoring, And Smoke Snapshot
+
+Status: Completed
+
+Goal: inspect deployment, monitoring/error-reporting, logging posture, public
+smoke automation, credentialed smoke requirements, and incident ownership gaps
+without changing runtime code or CI.
+
+Read first:
+
+- [Deployment, security, and observability workstream](../workstreams/deployment-security-and-observability.md)
+- [Testing and quality workstream](../workstreams/testing-and-quality.md)
+- [Deployment runbook](../runbooks/deployment.md)
+- [Environment variables runbook](../runbooks/environment.md)
+- [Incident response runbook](../runbooks/incident-response.md)
+- [Monitoring and error reporting architecture](../architecture/monitoring-and-error-reporting.md)
+- [ADR 0005 monitoring decision](../decisions/0005-monitoring-provider-decision.md)
+- [Production-readiness risks](../risks/production-readiness.md)
+- `package.json`
+- `.github/workflows/`
+
+Scope:
+
+- Inspect monitoring/instrumentation status, logging/source-map posture,
+  smoke scripts/workflows, deployment runbook requirements, environment variable
+  ownership, incident role blockers, and related tests.
+- Identify which gaps are agent-actionable and which are blocked on owner,
+  platform, provider, credential, or policy decisions.
+- Do not inspect admin UI, delete integrity, or auth guard internals except for
+  smoke/deployment requirements.
+- Do not add monitoring providers, edit workflows, collect logs, expose secrets,
+  or run credentialed smoke.
+
+Concurrency expectations:
+
+- This audit can run concurrently with A-030, A-031, and A-032.
+- The assigned agent owns only
+  [results/A-033-deployment-monitoring-smoke.md](results/A-033-deployment-monitoring-smoke.md).
+- Candidate findings and workstream updates stay in the result file.
+
+Verification:
+
+- Use `git status --short`, `rg`, targeted source/test/doc reads, package script
+  inspection, and non-secret local commands only if needed.
+- Do not use browser automation, screenshots, traces, full logs, cookies,
+  tokens, or secret values.
+
+Expected output: [results/A-033-deployment-monitoring-smoke.md](results/A-033-deployment-monitoring-smoke.md)
+
+Completion expectations:
+
+- Set the result status to `Completed`.
+- Identify the top deployment/monitoring/smoke gaps and mark each as
+  agent-actionable, owner-blocked, platform-blocked, or policy-blocked.

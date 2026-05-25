@@ -39,8 +39,6 @@ At minimum, confirm production values exist for:
 - NextAuth secret and provider credentials.
 - Shopify store domain and Storefront token.
 - Cloudinary upload and delivery configuration.
-- Public/platform URL configuration while same-app HTTP fetches remain:
-  `NEXT_PUBLIC_BASE_URL`, `VERCEL_ENV`, and `VERCEL_URL`.
 
 Server-only secrets must be configured in the deployment environment and must
 not be exposed through `next.config.mjs` `env` or `NEXT_PUBLIC_*` variables.
@@ -48,9 +46,11 @@ not be exposed through `next.config.mjs` `env` or `NEXT_PUBLIC_*` variables.
 server-only secret names from being exposed through Next config.
 
 Legacy or unused candidates such as `JWT_SECRET`, `AUTH_SECRET`, and
-`NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` are documented in the environment
-runbook. Do not add or keep them in production settings without an owner
-decision.
+`NEXT_PUBLIC_BASE_URL`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`, `VERCEL_ENV`,
+and `VERCEL_URL` are documented in the environment runbook. Do not add, require,
+or keep them as app-managed production settings without an owner decision.
+`VERCEL_ENV` and `VERCEL_URL` may still be platform-provided by Vercel, but they
+are not current app runtime requirements.
 
 ## Smoke Checks After Deploy
 

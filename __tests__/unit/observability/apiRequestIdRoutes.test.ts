@@ -230,8 +230,8 @@ describe("API request IDs on migrated route failures", () => {
     expect(response.headers.get(REQUEST_ID_HEADER)).toBe(requestId);
     expect(body).toEqual({
       success: false,
-      message: "Failed to fetch article(s)",
-      error: "Failed to fetch article(s)",
+      message: "Failed to fetch collections",
+      error: "Failed to fetch collections",
       requestId,
     });
     expect(logPayload).toEqual(

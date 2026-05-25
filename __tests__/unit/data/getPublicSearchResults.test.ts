@@ -206,6 +206,7 @@ describe("getPublicSearchResults", () => {
     expect(artworkTitleRegex.source).toContain("\\(draft\\)\\.\\*");
     expect(articleChain.skip).toHaveBeenCalledWith(10);
     expect(articleChain.limit).toHaveBeenCalledWith(5);
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
     expect(result).toEqual({
       success: true,
       data: {
@@ -249,18 +250,11 @@ describe("getPublicSearchResults", () => {
             linkTo: "/artwork/artwork-123",
           },
         ],
-        "shop-products": [],
         metadata: {
           page: 3,
           limit: 5,
-          searchedTypes: [
-            "articles",
-            "blogs",
-            "collections",
-            "artworks",
-            "shop-products",
-          ],
-          total: 5,
+          searchedTypes: ["articles", "blogs", "collections", "artworks"],
+          total: 4,
           hasMore: false,
           types: {
             articles: {
@@ -288,14 +282,6 @@ describe("getPublicSearchResults", () => {
               hasPreviousPage: true,
             },
             artworks: {
-              page: 3,
-              limit: 5,
-              total: 1,
-              totalPages: 1,
-              hasMore: false,
-              hasPreviousPage: true,
-            },
-            "shop-products": {
               page: 3,
               limit: 5,
               total: 1,
@@ -476,38 +462,87 @@ describe("getPublicSearchResults", () => {
     });
   });
 
-  it("includes matched shop products in all-type searches", async () => {
+  it("keeps shop products behind explicit type filtering for all-type searches", async () => {
     const result = await getPublicSearchResults({
       q: "blue-figure",
       page: 1,
       limit: 10,
     });
 
-    expect(mockGetShopProductList).toHaveBeenCalledWith();
-    expect(result.data["shop-products"]).toEqual([
-      {
-        title: "Joseph (draft).* print",
-        subtitle: "Print, Joseph Laoutaris",
-        summary: "Blue Figure, Archive",
-        imageUrl: "https://cdn.shopify.com/s/files/blue-figure-print.jpg",
-        linkTo: "/shop/products/blue-figure-print",
-      },
-    ]);
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
+    expect(result.data["shop-products"]).toBeUndefined();
     expect(result.data.metadata.searchedTypes).toEqual([
       "articles",
       "blogs",
       "collections",
       "artworks",
-      "shop-products",
     ]);
-    expect(result.data.metadata.types["shop-products"]).toEqual({
+    expect(result.data.metadata.types["shop-products"]).toBeUndefined();
+    expect(result.data.metadata.total).toBe(4);
+  });
+
+  it("marks explicit shop product searches unavailable when product lookup fails", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    mockGetShopProductList.mockRejectedValue(
+      new Error("private Shopify outage")
+    );
+
+    const result = await getPublicSearchResults({
+      q: "blue-figure",
+      type: "shop-products",
       page: 1,
       limit: 10,
-      total: 1,
-      totalPages: 1,
-      hasMore: false,
-      hasPreviousPage: false,
     });
+
+    expect(mockArticleFind).not.toHaveBeenCalled();
+    expect(mockBlogFind).not.toHaveBeenCalled();
+    expect(mockCollectionFind).not.toHaveBeenCalled();
+    expect(mockArtworkFind).not.toHaveBeenCalled();
+    expect(mockGetShopProductList).toHaveBeenCalledWith();
+    expect(result).toEqual({
+      success: true,
+      data: {
+        "shop-products": [],
+        metadata: {
+          page: 1,
+          limit: 10,
+          searchedTypes: ["shop-products"],
+          total: 0,
+          hasMore: false,
+          unavailableTypes: ["shop-products"],
+          types: {
+            "shop-products": {
+              page: 1,
+              limit: 10,
+              total: 0,
+              totalPages: 0,
+              hasMore: false,
+              hasPreviousPage: false,
+            },
+          },
+        },
+      },
+    });
+
+    const logPayload = JSON.parse(consoleErrorSpy.mock.calls[0][0]);
+    expect(logPayload).toEqual(
+      expect.objectContaining({
+        level: "error",
+        event: "service.public_search.shop_products.failed",
+        surface: "data_service",
+        operation: "public_search",
+        provider: "shopify",
+        shopifyOperation: "getShopProductList",
+        statusCategory: "shop_product_search_unavailable",
+        error: {
+          name: "Error",
+          message: "private Shopify outage",
+        },
+      })
+    );
+    consoleErrorSpy.mockRestore();
   });
 
   it("returns selected-type zero-result metadata without querying other types", async () => {

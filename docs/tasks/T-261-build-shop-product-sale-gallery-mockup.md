@@ -224,6 +224,10 @@ failure and why it is not a product behavior failure.
   the vertical stack now fill their square thumbnail viewport with the same
   cropped-wall behavior as the focused room preview so the framed artwork reads
   at matching wall proportions.
+- Follow-up on 2026-05-24 after slide loading review: room previews now gate
+  the framed artwork overlay until the room background image has loaded, and
+  room backgrounds use the same unoptimized asset path as thumbnails so cached
+  background assets can be reused between stack and focused preview states.
 - The live local route
   `/shop/products/joseph-laoutaris-fine-art-print-no-139` was verified to
   return `200` and render `shop-product-sale-gallery` using the Shopify product
@@ -293,6 +297,12 @@ failure and why it is not a product behavior failure.
   - `npm run build` passed after stopping stale dev server processes and
     clearing `.next`. It emitted existing non-failing Google Fonts retry,
     `punycode`, and Browserslist notices.
+- Background-first loading follow-up verification:
+  - `npm test -- --runTestsByPath __tests__/unit/components/FramedArtworkPreview.test.tsx __tests__/unit/shopProductDetailPage.test.tsx`
+    passed with 22 tests.
+  - `npm run lint` passed with no warnings or errors.
+  - `npm run build` passed. It emitted the existing non-failing Browserslist
+    notice.
 - Pre-existing dirty/untracked files at start of task included
   `docs/audits/results/A-024-loading-state-ux.md`,
   `docs/orchestration/state.md`, `docs/tasks/README.md`,

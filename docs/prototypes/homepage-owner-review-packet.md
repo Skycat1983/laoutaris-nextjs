@@ -21,6 +21,24 @@ the public navigation, and it is marked so search engines should not index it.
   posts, collections, and shop products.
 - The wider version was rebalanced so desktop cards, images, rails, and text do
   not simply stretch across the screen.
+- The prototype route now pilots a main-navbar variant with centered primary
+  links, right-aligned icon controls, selectable prototype logos, and adjustable
+  logo sizing, main-nav height, vertical padding, horizontal padding, expanded
+  link spacing, 34 regular-weight link font presets, link-size presets, and a
+  temporary nav-tint diagnostic while leaving the lower breadcrumb/search row
+  unchanged. The font selector includes additional local/system font stacks
+  that are not otherwise part of the app typography set, avoiding new Google
+  font downloads during rapid prototype review. The tight-crop logo is now the
+  default, the central links are uppercase without separators, and the logo
+  images blend away their opaque white bitmap canvas so nav tint review does
+  not make the image bounds read as padding. The logo-size presets adjust both
+  the logo slot height and width so the oversized option is visually comparable.
+  The top nav's horizontal padding now defaults to none and can be restored
+  through the `X pad` dock control; the dock wraps controls and scrolls
+  vertically when it runs out of review space. The earlier frame, heading-size,
+  shop-item, and alternate-background controls were removed from the dock, but
+  their defaults remain wide, smaller headings, feature shop cards, and the
+  stone alternate background.
 - A focused desktop and mobile QA pass found no page-level horizontal scrolling.
 
 ## What To Review
@@ -31,6 +49,14 @@ production behavior.
 Focus on these areas:
 
 - Overall width: whether the homepage should feel this broad and full-screen.
+- Header direction: whether the centered main-nav layout, selected logo, and
+  nav height feel right before any production navbar migration.
+- Header spacing: the nav-tint control can isolate the prototype main-nav
+  background from the unchanged breadcrumb/search row below it, which helps
+  judge whether perceived lower spacing belongs to the new top row or the
+  existing lower header row. The `X pad` control starts at `None`, so the
+  prototype top nav has no hidden left/right padding unless it is intentionally
+  added during review.
 - Collections: whether the animated room accordion, first expanded room, narrow
   image panels, and collection order match the archive direction.
 - Biography: whether the story order and featured first card are correct.

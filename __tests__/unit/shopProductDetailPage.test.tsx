@@ -22,15 +22,21 @@ jest.mock("@/lib/data/services/getArtworkById", () => ({
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: ({
-    src,
-    alt,
-    fill: _fill,
-    priority: _priority,
-    ...props
-  }: Record<string, unknown>) => (
-    <img src={String(src)} alt={String(alt)} {...props} />
-  ),
+  default: (
+    jest.requireActual("react") as typeof import("react")
+  ).forwardRef<HTMLImageElement, Record<string, unknown>>(function MockImage(
+    {
+      src,
+      alt,
+      fill: _fill,
+      priority: _priority,
+      unoptimized: _unoptimized,
+      ...props
+    },
+    ref
+  ) {
+    return <img ref={ref} src={String(src)} alt={String(alt)} {...props} />;
+  }),
 }));
 
 jest.mock("next/navigation", () => ({

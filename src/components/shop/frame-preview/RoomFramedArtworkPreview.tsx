@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FramedArtworkPreview } from "./FramedArtworkPreview";
 import { cn } from "@/lib/utils";
@@ -56,6 +59,17 @@ export const RoomFramedArtworkPreview = ({
   const roomFrameProfile = scaleFrameProfileForRoom(frameProfile, profileScale);
   const roomMatProfile = scaleMatProfileForRoom(matProfile, profileScale);
   const roomShadowStyles = getRoomShadowStyle(shadowSettings);
+  const [loadedRoomSrc, setLoadedRoomSrc] = useState<string | null>(null);
+  const backgroundImageRef = useRef<HTMLImageElement | null>(null);
+  const roomBackgroundReady = loadedRoomSrc === roomScene.imageSrc;
+
+  useEffect(() => {
+    const backgroundImage = backgroundImageRef.current;
+
+    if (backgroundImage?.complete && backgroundImage.naturalWidth > 0) {
+      setLoadedRoomSrc(roomScene.imageSrc);
+    }
+  }, [roomScene.imageSrc]);
 
   return (
     <div
@@ -66,15 +80,22 @@ export const RoomFramedArtworkPreview = ({
       data-testid={testId}
     >
       <Image
+        ref={backgroundImageRef}
         src={roomScene.imageSrc}
         alt={roomScene.imageAlt}
         fill
         priority={priority ? true : undefined}
         sizes={imageSizes}
+        unoptimized={unoptimized ? true : undefined}
+        onLoad={() => setLoadedRoomSrc(roomScene.imageSrc)}
         className="object-cover"
       />
       <div
-        className="absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+        className={cn(
+          "absolute z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center transition-opacity duration-150",
+          roomBackgroundReady ? "opacity-100" : "opacity-0"
+        )}
+        data-background-ready={roomBackgroundReady ? "true" : "false"}
         data-testid="room-framed-preview-hanging-zone"
         style={{
           left: `${ROOM_HANGING_ZONE.leftPercent}%`,

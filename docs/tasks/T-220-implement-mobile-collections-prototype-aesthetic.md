@@ -1,6 +1,6 @@
 # T-220 Implement Mobile Collections Prototype Aesthetic
 
-Status: Ready
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),

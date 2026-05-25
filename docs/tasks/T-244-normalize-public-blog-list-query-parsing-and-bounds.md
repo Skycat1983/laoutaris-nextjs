@@ -1,6 +1,6 @@
 # T-244 Normalize Public Blog List Query Parsing And Bounds
 
-Status: Complete
+Status: Completed
 
 Workstream:
 [Architecture Refactor And Code Health](../workstreams/architecture-refactor-and-code-health.md),

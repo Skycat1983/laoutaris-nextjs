@@ -1,6 +1,6 @@
 # T-227 Implement Mobile Blog Prototype Aesthetic
 
-Status: Complete
+Status: Completed
 
 Workstream:
 [Frontend Routes And Components](../workstreams/frontend-routes-and-components.md),

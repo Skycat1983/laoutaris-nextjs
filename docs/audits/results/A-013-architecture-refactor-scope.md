@@ -1,6 +1,6 @@
 # A-013 Architecture Refactor Scope Result
 
-Status: Complete
+Status: Completed
 
 Audit goal: [A-013 Architecture refactor scope](../goals.md#a-013-architecture-refactor-scope)
 

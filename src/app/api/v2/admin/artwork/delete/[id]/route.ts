@@ -1,4 +1,9 @@
-import { ArtworkModel, ArticleModel, CollectionModel } from "@/lib/data/models";
+import {
+  ArtworkModel,
+  ArticleModel,
+  CollectionModel,
+  UserModel,
+} from "@/lib/data/models";
 import mongoose from "mongoose";
 import type { RouteResponse } from "@/lib/data/types/apiTypes";
 import type { DeleteDocumentResult } from "@/lib/api/admin/delete/fetchers";
@@ -100,6 +105,12 @@ export async function DELETE(
         { artworks: id },
         { $pull: { artworks: id } }
       ).session(session),
+
+      // Remove artwork from users' saved artwork arrays
+      UserModel.updateMany(
+        { $or: [{ watchlist: id }, { favourites: id }] },
+        { $pull: { watchlist: id, favourites: id } }
+      ).session(session),
     ]);
 
     if (!deletedArtwork) {
@@ -127,7 +138,8 @@ export async function DELETE(
       logger,
     });
     return apiSuccessResponse(null, {
-      message: "Artwork deleted and removed from collections successfully",
+      message:
+        "Artwork deleted and removed from collections and saved artwork successfully",
     });
   } catch (error) {
     if (isNextError(error)) {

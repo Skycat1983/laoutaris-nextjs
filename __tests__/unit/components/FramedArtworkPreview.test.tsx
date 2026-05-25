@@ -1,16 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 import { readFileSync } from "fs";
 import path from "path";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { FramedArtworkPreview } from "@/components/shop/frame-preview/FramedArtworkPreview";
+import { RoomFramedArtworkPreview } from "@/components/shop/frame-preview/RoomFramedArtworkPreview";
 import { FRAME_PROFILES } from "@/lib/framePreview/frameProfiles";
 import { MAT_PROFILES } from "@/lib/framePreview/matProfiles";
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt, ...props }: Record<string, unknown>) => (
-    <img src={String(src)} alt={String(alt)} {...props} />
-  ),
+  default: (
+    jest.requireActual("react") as typeof import("react")
+  ).forwardRef<HTMLImageElement, Record<string, unknown>>(function MockImage(
+    {
+      src,
+      alt,
+      fill: _fill,
+      priority: _priority,
+      unoptimized: _unoptimized,
+      ...props
+    },
+    ref
+  ) {
+    return <img ref={ref} src={String(src)} alt={String(alt)} {...props} />;
+  }),
 }));
 
 const artwork = {
@@ -173,5 +186,42 @@ describe("FramedArtworkPreview", () => {
     expect(source).not.toMatch(/@\/lib\/data\/models|@\/lib\/db/);
     expect(source).not.toMatch(/project\/contact|checkout|cart/i);
     expect(source).not.toMatch(/FramedPrintPreviewModal|prototype\/frame/);
+  });
+});
+
+describe("RoomFramedArtworkPreview", () => {
+  it("keeps the framed artwork hidden until the room background has loaded", () => {
+    render(
+      <RoomFramedArtworkPreview
+        artwork={artwork}
+        roomScene={{
+          id: "test-room",
+          label: "Test room",
+          imageSrc: "/test-room.jpg",
+          imageAlt: "Test room background",
+        }}
+        frameProfile={FRAME_PROFILES[0]}
+        matProfile={MAT_PROFILES[1]}
+        bounds={{ maxWidthPx: 220, maxHeightPx: 170 }}
+        unoptimized
+      />
+    );
+
+    const hangingZone = screen.getByTestId(
+      "room-framed-preview-hanging-zone"
+    );
+
+    expect(hangingZone).toHaveAttribute("data-background-ready", "false");
+    expect(hangingZone).toHaveClass("opacity-0");
+    expect(screen.getByRole("img", { name: "Test room background" }))
+      .toHaveAttribute("src", "/test-room.jpg");
+
+    fireEvent.load(screen.getByRole("img", { name: "Test room background" }));
+
+    expect(hangingZone).toHaveAttribute("data-background-ready", "true");
+    expect(hangingZone).toHaveClass("opacity-100");
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toBeInTheDocument();
   });
 });

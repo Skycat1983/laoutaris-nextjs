@@ -70,14 +70,27 @@ const mockRootLayoutDependencies = (
   mockDbConnect: jest.Mock,
   mockGetServerSession: jest.Mock
 ) => {
-  jest.doMock("next-auth", () => ({
-    getServerSession: mockGetServerSession,
-  }));
+  const moduleLoadState = {
+    dbModuleLoaded: false,
+    sessionModuleLoaded: false,
+  };
 
-  jest.doMock("@/lib/db/mongodb", () => ({
-    __esModule: true,
-    default: mockDbConnect,
-  }));
+  jest.doMock("next-auth", () => {
+    moduleLoadState.sessionModuleLoaded = true;
+
+    return {
+      getServerSession: mockGetServerSession,
+    };
+  });
+
+  jest.doMock("@/lib/db/mongodb", () => {
+    moduleLoadState.dbModuleLoaded = true;
+
+    return {
+      __esModule: true,
+      default: mockDbConnect,
+    };
+  });
 
   jest.doMock("@/lib/styles/fonts", () => ({
     archivo: { variable: "font-archivo" },
@@ -124,6 +137,8 @@ const mockRootLayoutDependencies = (
       );
     },
   }));
+
+  return moduleLoadState;
 };
 
 describe("authOptions import boundary", () => {
@@ -197,14 +212,17 @@ describe("authOptions import boundary", () => {
     );
   });
 
-  it("renders the root layout public shell without requiring bcrypt", async () => {
+  it("renders the root layout public shell without bcrypt or global DB/session work", async () => {
     mockAuthDb();
     const bcryptState = mockBcryptFailure();
     const mockDbConnect = jest.fn().mockResolvedValue(undefined);
     const mockGetServerSession = jest.fn().mockResolvedValue(null);
     const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
 
-    mockRootLayoutDependencies(mockDbConnect, mockGetServerSession);
+    const moduleLoadState = mockRootLayoutDependencies(
+      mockDbConnect,
+      mockGetServerSession
+    );
 
     try {
       const { default: RootLayout } = await import("@/app/layout");
@@ -213,12 +231,10 @@ describe("authOptions import boundary", () => {
       });
 
       expect(renderToStaticMarkup(element)).toContain("Public route content");
-      expect(mockDbConnect).toHaveBeenCalledTimes(1);
-      expect(mockGetServerSession).toHaveBeenCalledWith(
-        expect.objectContaining({
-          providers: expect.any(Array),
-        })
-      );
+      expect(moduleLoadState.dbModuleLoaded).toBe(false);
+      expect(moduleLoadState.sessionModuleLoaded).toBe(false);
+      expect(mockDbConnect).not.toHaveBeenCalled();
+      expect(mockGetServerSession).not.toHaveBeenCalled();
       expect(bcryptState.helperLoaded).toBe(false);
       expect(bcryptState.nativePackageLoaded).toBe(false);
     } finally {

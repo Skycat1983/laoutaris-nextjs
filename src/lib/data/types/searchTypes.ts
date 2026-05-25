@@ -70,6 +70,7 @@ export type SearchResponseMetadata = {
   searchedTypes: SearchableContentType[];
   total: number;
   hasMore: boolean;
+  unavailableTypes?: SearchableContentType[];
   types: Partial<Record<SearchableContentType, SearchResultTypeMetadata>>;
 };
 

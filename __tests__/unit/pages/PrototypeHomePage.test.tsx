@@ -231,7 +231,7 @@ describe("/prototype/home page", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders fixed bottom dropdown controls for frame, headings, and shop item size", () => {
+  it("renders fixed bottom navbar controls while preserving hidden prototype defaults", () => {
     render(
       <HomePrototype
         shopProducts={[
@@ -248,6 +248,18 @@ describe("/prototype/home page", () => {
     expect(controlRail).toHaveClass("hidden", "lg:block");
     expect(prototype).toHaveClass("lg:pb-28");
     expect(prototype).not.toHaveClass("pb-48", "sm:pb-36");
+    expect(
+      screen.queryByRole("combobox", { name: "Frame" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: "Headings" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: "Shop items" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: "Alt bg" })
+    ).not.toBeInTheDocument();
     expect(prototype).toHaveAttribute("data-frame-preset", "wide");
     expect(prototype).toHaveAttribute("data-font-preset", "smaller");
     expect(prototype).toHaveAttribute(
@@ -260,32 +272,35 @@ describe("/prototype/home page", () => {
       "--prototype-home-alt-bg": "#eeece6",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
+    expect(screen.getByRole("combobox", { name: "Nav height" })).toHaveValue(
+      "standard"
+    );
+    expect(screen.getByRole("combobox", { name: "X pad" })).toHaveValue(
+      "none"
+    );
+    expect(screen.getByRole("combobox", { name: "Link size" })).toHaveValue(
+      "standard"
+    );
+    expect(screen.getByRole("combobox", { name: "Link font" })).toHaveValue(
+      "archivo-regular"
+    );
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Frame" }), {
-      target: { value: "inset" },
-    });
-    fireEvent.change(screen.getByRole("combobox", { name: "Headings" }), {
-      target: { value: "compact" },
-    });
-    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: "Link size" }), {
       target: { value: "large" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: "Alt bg" }), {
-      target: { value: "ivory" },
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("20px");
+    fireEvent.change(screen.getByRole("combobox", { name: "X pad" }), {
+      target: { value: "wide" },
     });
-
-    expect(prototype).toHaveAttribute("data-frame-preset", "inset");
-    expect(prototype).toHaveAttribute("data-font-preset", "compact");
-    expect(prototype).toHaveAttribute(
-      "data-alternate-background-preset",
-      "ivory"
-    );
-    expect(prototype).toHaveStyle({
-      "--prototype-home-frame-max": "1180px",
-      "--prototype-home-heading-scale": "0.82",
-      "--prototype-home-alt-bg": "#f6f5f1",
-    });
-    expect(productRail).toHaveAttribute("data-size-preset", "large");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-padding-x"
+      )
+    ).toBe("24px");
 
     fireEvent.click(
       screen.getByRole("button", {
@@ -305,6 +320,16 @@ describe("/prototype/home page", () => {
       "--prototype-home-alt-bg": "#eeece6",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("16px");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-padding-x"
+      )
+    ).toBe("0px");
   });
 
   it("adds the mobile documentary prototype while preserving the desktop project video", () => {
@@ -1045,7 +1070,7 @@ describe("/prototype/home page", () => {
     ).toBe(true);
   });
 
-  it("lets the fixed bottom shop dropdown resize the shop rail", () => {
+  it("keeps the removed shop dropdown at the retained feature default", () => {
     render(
       <HomePrototype
         shopProducts={[
@@ -1063,17 +1088,10 @@ describe("/prototype/home page", () => {
     expect(
       screen.queryByTestId("prototype-shop-size-rail")
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: "Shop items" })
+    ).not.toBeInTheDocument();
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
-
-    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
-      target: { value: "larger" },
-    });
-    expect(productRail).toHaveAttribute("data-size-preset", "larger");
-
-    fireEvent.change(screen.getByRole("combobox", { name: "Shop items" }), {
-      target: { value: "large" },
-    });
-    expect(productRail).toHaveAttribute("data-size-preset", "large");
   });
 
   it("renders the prototype shop section with product links and enquiry-safe copy", () => {

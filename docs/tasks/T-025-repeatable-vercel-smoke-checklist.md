@@ -1,6 +1,6 @@
 # T-025 Make Vercel Smoke Checks Repeatable
 
-Status: Completed.
+Status: Completed
 
 Workstreams:
 [Deployment, security, and observability](../workstreams/deployment-security-and-observability.md),

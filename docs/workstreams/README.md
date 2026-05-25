@@ -16,10 +16,10 @@ should start from the relevant workstream brief.
 | [Architecture refactor and code health](architecture-refactor-and-code-health.md) | Active | Scope structural refactors, dead-code pruning, SSR/data-fetching patterns, and scalable conventions. |
 | [Data models and API](data-models-and-api.md) | Active | Harden schemas, transforms, API contracts, and error handling. |
 | [Auth, admin, and permissions](auth-admin-and-permissions.md) | Active | Secure user, admin, and protected route behavior. |
-| [Frontend routes and components](frontend-routes-and-components.md) | Planned | Stabilize public route UX, component boundaries, and client/server imports. |
+| [Frontend routes and components](frontend-routes-and-components.md) | Active | Stabilize public route UX, component boundaries, and client/server imports. |
 | [Testing and quality](testing-and-quality.md) | Active | Establish reliable automated checks for refactoring. |
 | [Deployment, security, and observability](deployment-security-and-observability.md) | Active | Prepare environment, headers, logs, monitoring, and deployment checks. |
-| [Content, assets, and admin operations](content-assets-and-admin-ops.md) | Planned | Make content, image, and admin data operations repeatable. |
+| [Content, assets, and admin operations](content-assets-and-admin-ops.md) | Active | Make content, image, and admin data operations repeatable. |
 
 ## Updating A Workstream
 

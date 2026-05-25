@@ -33,6 +33,10 @@ Planning and prompt packs:
 
 ## Active Tasks
 
+Historical note: two completed 2026-05-23 briefs share the `T-221` ID. Both
+remain indexed by title and path to avoid breaking existing references; future
+tasks must not reuse `T-221`.
+
 | Task | Status | Purpose |
 | --- | --- | --- |
 | [T-001 Remove MONGO_URI from Next config](T-001-remove-mongo-uri-next-config.md) | Completed | Stopped exposing a server-only MongoDB secret through `next.config.mjs` and updated deployment docs. |
@@ -252,6 +256,17 @@ Planning and prompt packs:
 | [T-217 Add contact enquiry privacy notice](T-217-add-contact-enquiry-privacy-notice.md) | Completed | Added owner-approved contact/product and artwork enquiry privacy notice with policy links and manual privacy/legal handoff. |
 | [T-218 Remove footer placeholder social links](T-218-remove-footer-placeholder-social-links.md) | Completed | Removed footer `href="#"` social placeholders and refreshed stale copyright text without inventing real social URLs. |
 | [T-219 Record remaining compliance owner inputs](T-219-record-remaining-compliance-owner-inputs.md) | Completed | Recorded remaining R-018 owner-input blockers and recommendations before Shopify policy, social URL, jurisdiction, self-service privacy, or moderation work. |
+| [T-220 Implement mobile collections prototype aesthetic](T-220-implement-mobile-collections-prototype-aesthetic.md) | Completed | Added the first mobile-specific `/prototype/home` collections mockup slice with staged cards, accessible controls, and preserved desktop behavior. |
+| [T-221 Assess carousel performance foundation](T-221-assess-carousel-performance-foundation.md) | Completed | Produced the carousel performance assessment and recommended an Embla-backed mobile collections foundation. |
+| [T-221 Implement mobile biography prototype aesthetic](T-221-implement-mobile-biography-prototype-aesthetic.md) | Completed | Added the mobile-specific `/prototype/home` biography mockup slice while preserving existing data, links, and wider layouts. |
+| [T-222 Migrate mobile collections carousel to Embla](T-222-migrate-mobile-collections-carousel-to-embla.md) | Completed | Replaced the custom mobile collections swipe path with prototype-local Embla controls and stable transform/opacity card transitions. |
+| [T-223 Review mobile collections Embla QA](T-223-review-mobile-collections-embla-qa.md) | Completed | Recorded production-mode QA for the Embla mobile collections carousel with the remaining manual phone-check caveat. |
+| [T-224 Restore mobile collections staged Embla aesthetic](T-224-restore-mobile-collections-staged-embla-aesthetic.md) | Completed | Tried to restore the staged collections look while keeping Embla controls, then handed off further owner-requested correction. |
+| [T-225 Recreate original mobile collections deck with controls](T-225-recreate-original-mobile-collections-deck-with-controls.md) | Completed | Recreated the original mobile collections staged deck with retained controls and documented the unrelated build cache failure. |
+| [T-226 Build alternate artwork detail info card](T-226-build-alternate-artwork-detail-info-card.md) | Completed | Added a rollback-safe alternate artwork detail info card and wired shared artwork detail routes to it. |
+| [T-227 Implement mobile blog prototype aesthetic](T-227-implement-mobile-blog-prototype-aesthetic.md) | Completed | Added the mobile-specific `/prototype/home` blog/journal mockup slice with focused prototype coverage. |
+| [T-228 Implement mobile project prototype aesthetic](T-228-implement-mobile-project-prototype-aesthetic.md) | Completed | Added the mobile-specific `/prototype/home` project/documentary mockup slice and recorded the unrelated prototype test drift. |
+| [T-229 Implement mobile shop prototype aesthetic](T-229-implement-mobile-shop-prototype-aesthetic.md) | Completed | Added and refined the mobile-specific `/prototype/home` shop mockup slice with real product data and category tabs. |
 | [T-230 Fix client import boundary regression](T-230-fix-client-import-boundary-regression.md) | Completed | Repaired the `clientServerImportBoundary` failure caused by `SignUpForm` importing the broad constants barrel. |
 | [T-231 Narrow protected middleware matcher](T-231-narrow-protected-middleware-matcher.md) | Completed | Restricted middleware matching to protected frontend/API prefixes while preserving current protected auth behavior. |
 | [T-232 Define public cache freshness policy](T-232-define-public-cache-freshness-policy.md) | Completed | Decided sitemap/default redirect/public route freshness before runtime ISR, static params, or cache wrapper changes. |
@@ -284,6 +299,11 @@ Planning and prompt packs:
 | [T-259 Add targeted route transition loading check](T-259-add-targeted-route-transition-loading-check.md) | Completed | Added a focused delayed route-transition loading check for A-024. |
 | [T-260 Align account menu internal navigation](T-260-align-account-menu-internal-navigation.md) | Completed | Replaced raw internal account-menu anchors with App Router `Link` semantics while preserving disabled states, logout behavior, and the lazy account island. |
 | [T-261 Build shop product sale gallery mockup](T-261-build-shop-product-sale-gallery-mockup.md) | Completed | Built the owner-requested product sale layout for all product detail kinds, with print-specific room/frame controls and the current Shopify-hosted purchase or enquiry boundary preserved. |
+| [T-262 Reconcile recalibration trackers](T-262-reconcile-recalibration-trackers.md) | Completed | Reconciled shared audit, task, workstream, and orchestration trackers after the smaller recalibration audits. |
+| [T-263 Repair immediate verification drift](T-263-repair-immediate-verification-drift.md) | Completed | Fixed stale auth/observability test expectations and deployment runbook URL-variable drift before rerunning verification-gate work. |
+| [T-264 Clean up admin reciprocal delete references](T-264-clean-up-admin-reciprocal-delete-references.md) | Completed | Cleaned stale reciprocal references when admin artwork and collection deletes remove records. |
+| [T-265 Fix artwork browse pagination state](T-265-fix-artwork-browse-pagination-state.md) | Completed | Threaded server list metadata into the client artwork gallery so deep-linked browse pages load the correct next page and terminal pages stop loading. |
+| [T-266 Bound public search Shopify product search](T-266-bound-public-search-shopify-product-search.md) | Completed | Removed unbounded Shopify product-list fan-out from untyped public search while preserving explicit shop product search behavior. |
 
 ## Rules
 
