@@ -239,15 +239,11 @@
   }
 
   .prototype-main-nav-link-label h2 {
-    font-family: var(
-      --prototype-main-nav-link-font-family,
-      var(--font-archivo),
-      sans-serif
-    );
-    font-size: var(--prototype-main-nav-link-font-size, 16px);
-    font-style: var(--prototype-main-nav-link-font-style, normal);
-    font-weight: var(--prototype-main-nav-link-font-weight, 400);
-    letter-spacing: var(--prototype-main-nav-link-letter-spacing, 0);
+    font-family: var(--prototype-main-nav-effective-link-font-family);
+    font-size: var(--prototype-main-nav-effective-link-font-size);
+    font-style: var(--prototype-main-nav-effective-link-font-style);
+    font-weight: var(--prototype-main-nav-effective-link-font-weight);
+    letter-spacing: var(--prototype-main-nav-effective-link-letter-spacing);
     line-height: 1.1;
     text-transform: uppercase;
   }

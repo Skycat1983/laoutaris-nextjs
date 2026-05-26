@@ -288,13 +288,13 @@ describe("/prototype/home page", () => {
       "standard"
     );
     expect(screen.getByRole("combobox", { name: "X pad" })).toHaveValue(
-      "none"
+      "wide"
     );
     expect(screen.getByRole("combobox", { name: "Link size" })).toHaveValue(
-      "standard"
+      "gallery"
     );
     expect(screen.getByRole("combobox", { name: "Link font" })).toHaveValue(
-      "archivo-regular"
+      "avenir-next"
     );
 
     fireEvent.change(screen.getByRole("combobox", { name: "Link size" }), {
@@ -336,12 +336,12 @@ describe("/prototype/home page", () => {
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
       )
-    ).toBe("16px");
+    ).toBe("18px");
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-padding-x"
       )
-    ).toBe("0px");
+    ).toBe("24px");
   });
 
   it("adds the mobile documentary prototype while preserving the desktop project video", () => {

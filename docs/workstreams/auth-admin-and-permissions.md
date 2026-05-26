@@ -544,6 +544,10 @@ Add targeted tests for `routeUtils` and session helpers when changed.
   active `getUserIdFromSession.ts` and `requireAdminFrontendAccess.ts`, and
   routed unused `createUserFromSession.ts`, `getUserFromSession.ts`, and
   `isAdmin.ts` to T-291 for deletion.
+- 2026-05-26: Completed T-291. Deleted the unused legacy
+  `createUserFromSession.ts`, `getUserFromSession.ts`, and `isAdmin.ts`
+  helpers and their stale test-only references while preserving active session
+  ID and admin dashboard guard coverage.
 
 ## Next Agent Action
 
@@ -576,8 +580,8 @@ T-278 is complete; do not reassign it unless protected account routes again
 perform unconditional build-time MongoDB work or importing `authOptions` starts
 the raw MongoDB client connection before adapter code awaits it.
 
-The remaining A-032 source-pruning work is routed: T-291 owns the deletion of
-unused legacy session/admin helpers after T-290 completed the inventory. T-289
+The remaining A-032 legacy session/admin helper source-pruning work is complete
+through T-291. T-289
 is complete and should not be reassigned unless OAuth default-role callback
 coverage regresses. T-275 is complete and should not be reassigned unless its
 test mock typing regression returns.

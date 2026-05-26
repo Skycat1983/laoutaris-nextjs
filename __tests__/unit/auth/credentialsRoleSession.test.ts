@@ -8,7 +8,6 @@ import dbConnect from "@/lib/db/mongodb";
 import { UserModel } from "@/lib/data/models";
 import { verifyPassword } from "@/lib/helpers/bcrypt";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
-import { createUserFromSession } from "@/lib/session/createUserFromSession";
 import { getServerSession } from "next-auth";
 
 jest.mock("@/lib/config/authOptions", () => ({
@@ -34,17 +33,11 @@ jest.mock("@/lib/helpers/bcrypt", () => ({
   verifyPassword: jest.fn(),
 }));
 
-jest.mock("@/lib/session/createUserFromSession", () => ({
-  createUserFromSession: jest.fn(),
-}));
-
 const mockDbConnect = dbConnect as jest.MockedFunction<typeof dbConnect>;
 const mockFindOne = UserModel.findOne as jest.Mock;
 const mockVerifyPassword = verifyPassword as jest.MockedFunction<
   typeof verifyPassword
 >;
-const mockCreateUserFromSession =
-  createUserFromSession as jest.MockedFunction<typeof createUserFromSession>;
 const mockGetServerSession = getServerSession as jest.MockedFunction<
   typeof getServerSession
 >;
@@ -231,7 +224,6 @@ describe("stable session user ownership", () => {
     await expect(getUserIdFromSession()).resolves.toBe("stable-user-id");
     expect(mockGetServerSession).toHaveBeenCalledWith(authOptions);
     expect(mockFindOne).not.toHaveBeenCalled();
-    expect(mockCreateUserFromSession).not.toHaveBeenCalled();
   });
 
   it("returns null when there is no session", async () => {
@@ -239,7 +231,6 @@ describe("stable session user ownership", () => {
 
     await expect(getUserIdFromSession()).resolves.toBeNull();
     expect(mockFindOne).not.toHaveBeenCalled();
-    expect(mockCreateUserFromSession).not.toHaveBeenCalled();
   });
 
   it("returns null when the session has no stable user ID", async () => {
@@ -253,6 +244,5 @@ describe("stable session user ownership", () => {
 
     await expect(getUserIdFromSession()).resolves.toBeNull();
     expect(mockFindOne).not.toHaveBeenCalled();
-    expect(mockCreateUserFromSession).not.toHaveBeenCalled();
   });
 });

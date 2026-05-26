@@ -778,6 +778,11 @@ Use targeted import/reference searches for pruning tasks.
   classified `getUserIdFromSession.ts` and `requireAdminFrontendAccess.ts` as
   active, and routed unused `createUserFromSession.ts`,
   `getUserFromSession.ts`, and `isAdmin.ts` deletion to T-291.
+- 2026-05-26: Completed T-291. The unused legacy
+  `createUserFromSession.ts`, `getUserFromSession.ts`, and `isAdmin.ts`
+  helpers were deleted with stale test-only references removed. Active
+  `getUserIdFromSession.ts`, `requireAdminFrontendAccess.ts`, and protected API
+  guard inventory coverage remained in place.
 
 ## Next Agent Action
 
@@ -816,8 +821,9 @@ Keep global CSS, Tailwind config, shadcn primitives, prototype runtime
 adoption, and live homepage migration separate until owner review accepts the
 expanded prototype direction and a visual-parity migration task is prepared.
 Other architecture slices remain broad route-builder work, staged
-source-pruning work, and remaining route-local rendering follow-ups. T-291 is
-the scoped legacy `src/lib/session` helper pruning task after T-290 inventory.
+source-pruning work, and remaining route-local rendering follow-ups. T-291
+completed the scoped legacy `src/lib/session` helper pruning after T-290
+inventory.
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, T-095, T-137, T-205, T-230, or
 T-231 unless a regression is opened.

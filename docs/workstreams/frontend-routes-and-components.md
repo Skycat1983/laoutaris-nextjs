@@ -346,15 +346,18 @@ Next.js server/client component boundaries.
   padding, X-axis padding, expanded link spacing, link font presets, link-size
   presets, and a temporary nav-tint diagnostic for isolating the top nav from
   the unchanged lower breadcrumb/search row. The central links are uppercase
-  without separators. The prototype top nav defaults to no horizontal padding,
-  while the dock can restore/tune it through `X pad`; the fixed dock wraps its
-  controls and becomes vertically scrollable when space is tight. The link-font
-  selector now exposes 34 regular-weight options, including additional
-  local/system font stacks for prototype review rather than bold variants. The
-  previous frame, heading-size, shop-item, and
+  without separators. The prototype top nav defaults to the tight-crop logo,
+  standard logo size, wide X padding, open link spacing, gallery link type, and
+  Avenir Next link font; the fixed dock wraps its controls and becomes
+  vertically scrollable when space is tight. The link-font selector now exposes
+  34 regular-weight options, including additional local/system font stacks for
+  prototype review rather than bold variants. The previous frame, heading-size,
+  shop-item, and
   alternate-background dock controls were removed while preserving their
   defaults: wide frame, smaller headings, feature shop cards, and the stone
-  alternate background.
+  alternate background. The prototype navbar control defaults now feed both
+  the first-render header CSS fallbacks and the hydrated control state from a
+  shared constants module.
 
 ## Backlog
 
@@ -462,6 +465,21 @@ passed with network access.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-26: Cropped `prototype_logos/jl_logo_tight_crop.png` vertically so
+  the tight-crop prototype navbar logo canvas now starts and ends with the
+  vertical divider while preserving the existing width and navbar selection
+  behavior. Verification: image dimensions and divider pixel bounds checked.
+- 2026-05-26: Fixed `/prototype/home` navbar defaults applying only after
+  hydration by moving the prototype nav preset values into a shared constants
+  module and making `PrototypeMainNav` use those values for first-render CSS
+  fallbacks before the control rail effect runs. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,
+  `npm run lint`, `git diff --check`, and `npm run build` passed.
+- 2026-05-25: Updated the `/prototype/home` dock defaults after owner review.
+  The top-nav prototype now starts with the tight-crop logo, standard logo
+  size, wide X padding, open link spacing, gallery link type, and Avenir Next
+  link font while preserving the existing dock controls and reset behavior.
+  Verification: focused prototype navbar tests passed.
 - 2026-05-25: Completed T-284. `/prototype/home` now exports
   `dynamic = "force-dynamic"` so the noindex prototype route keeps live
   owner-review data at request time while avoiding MongoDB/Shopify prototype
@@ -535,9 +553,9 @@ passed with network access.
 - 2026-05-25: Removed hidden horizontal padding from the route-scoped
   `/prototype/home` top nav by replacing the previous fixed desktop/tablet/
   mobile `px-*` classes with the `--prototype-main-nav-padding-x` CSS variable.
-  The new dock `X pad` control defaults to `None` and can restore/tune horizontal
-  padding for review; the fixed bottom dock now wraps controls and scrolls
-  vertically when it needs more space. Verification:
+  The new dock `X pad` control originally defaulted to `None` and can restore/
+  tune horizontal padding for review; the fixed bottom dock now wraps controls
+  and scrolls vertically when it needs more space. Verification:
   `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,
   `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`,
   `npm run lint`, `npm run build`, `git diff --check`, and
@@ -545,7 +563,7 @@ passed with network access.
 - 2026-05-25: Expanded the `/prototype/home` navbar link-font selector from
   the previous small mixed-weight set to 34 regular-weight options. The bold
   and semibold prototype font choices were removed from the selector, the
-  default is now Archivo Regular, and the additional experiments use local/
+  default was Archivo Regular, and the additional experiments use local/
   system font stacks instead of new Google font downloads so prototype builds
   stay stable. Verification:
   `npm test -- --runTestsByPath __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/prototypes/PrototypeHomeNavbarControls.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`,

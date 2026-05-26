@@ -328,7 +328,7 @@ tasks must not reuse `T-221`.
 | [T-288 Add main CI local gate workflow](T-288-add-main-ci-local-gate-workflow.md) | Completed | Added the GitHub Actions Main CI workflow for typecheck, Jest, build, lint, and event-aware whitespace checks without secrets or production smoke. |
 | [T-289 Add OAuth role session propagation test](T-289-add-oauth-role-session-propagation-test.md) | Completed | Added focused OAuth/provider-shaped callback coverage for default user role propagation into JWT/session state. |
 | [T-290 Scope legacy session helper pruning](T-290-scope-legacy-session-helper-pruning.md) | Completed | Classified every current `src/lib/session` helper and routed unused legacy helper deletion to T-291. |
-| [T-291 Prune unused legacy session helpers](T-291-prune-unused-legacy-session-helpers.md) | Planned | Delete the unused `createUserFromSession`, `getUserFromSession`, and `isAdmin` helper files plus stale test-only references while preserving active session/admin guards. |
+| [T-291 Prune unused legacy session helpers](T-291-prune-unused-legacy-session-helpers.md) | Completed | Deleted the unused `createUserFromSession`, `getUserFromSession`, and `isAdmin` helper files plus stale test-only references while preserving active session/admin guards. |
 
 ## Rules
 

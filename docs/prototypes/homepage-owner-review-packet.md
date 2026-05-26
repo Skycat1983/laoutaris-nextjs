@@ -31,14 +31,14 @@ the public navigation, and it is marked so search engines should not index it.
   font downloads during rapid prototype review. The tight-crop logo is now the
   default, the central links are uppercase without separators, and the logo
   images blend away their opaque white bitmap canvas so nav tint review does
-  not make the image bounds read as padding. The logo-size presets adjust both
-  the logo slot height and width so the oversized option is visually comparable.
-  The top nav's horizontal padding now defaults to none and can be restored
-  through the `X pad` dock control; the dock wraps controls and scrolls
-  vertically when it runs out of review space. The earlier frame, heading-size,
-  shop-item, and alternate-background controls were removed from the dock, but
-  their defaults remain wide, smaller headings, feature shop cards, and the
-  stone alternate background.
+  not make the image bounds read as padding. The dock now starts with standard
+  logo size, wide X padding, open link spacing, gallery link type, and Avenir
+  Next for the link font. The logo-size presets adjust both the logo slot
+  height and width so the oversized option is visually comparable. The dock
+  wraps controls and scrolls vertically when it runs out of review space. The
+  earlier frame, heading-size, shop-item, and alternate-background controls
+  were removed from the dock, but their defaults remain wide, smaller headings,
+  feature shop cards, and the stone alternate background.
 - A focused desktop and mobile QA pass found no page-level horizontal scrolling.
 
 ## What To Review
@@ -54,9 +54,8 @@ Focus on these areas:
 - Header spacing: the nav-tint control can isolate the prototype main-nav
   background from the unchanged breadcrumb/search row below it, which helps
   judge whether perceived lower spacing belongs to the new top row or the
-  existing lower header row. The `X pad` control starts at `None`, so the
-  prototype top nav has no hidden left/right padding unless it is intentionally
-  added during review.
+  existing lower header row. The dock starts with `X pad` set to `Wide` for
+  review while still allowing the padding to be reduced or expanded.
 - Collections: whether the animated room accordion, first expanded room, narrow
   image panels, and collection order match the archive direction.
 - Biography: whether the story order and featured first card are correct.

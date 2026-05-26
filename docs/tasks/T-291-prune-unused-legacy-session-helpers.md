@@ -1,6 +1,6 @@
 # T-291 Prune Unused Legacy Session Helpers
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -103,3 +103,20 @@ git diff --check
 ## Handoff Notes
 
 - Planned by T-290 on 2026-05-25 from F-142 inventory evidence.
+- Completed on 2026-05-26 by deleting
+  `src/lib/session/createUserFromSession.ts`,
+  `src/lib/session/getUserFromSession.ts`, and
+  `src/lib/session/isAdmin.ts`.
+- Removed the stale `createUserFromSession` mock/assertions from
+  `credentialsRoleSession`, deleted the test-header-only
+  `sessionTestHeaders` coverage, and removed the deleted session helper from
+  the T-128 source-hygiene inventory.
+- Verification:
+  - `rg -n "createUserFromSession|getUserFromSession|isUserAdmin|from [\"']@/lib/session/isAdmin|isAdmin\\(" src __tests__`:
+    no matches.
+  - `rg -n "getUserIdFromSession|requireAdminFrontendAccess" src __tests__`:
+    confirmed active helper source, active callers, and focused tests remain.
+  - `npm test -- --runTestsByPath __tests__/unit/auth/credentialsRoleSession.test.ts __tests__/unit/auth/adminFrontendGuard.test.tsx __tests__/unit/observability/serverActionSessionLoggingSourceHygiene.test.ts __tests__/unit/api/protectedApiGuardInventory.test.ts`:
+    passed, 4 suites and 21 tests.
+  - `npm run lint`: passed with no ESLint warnings or errors.
+  - `git diff --check`: passed.

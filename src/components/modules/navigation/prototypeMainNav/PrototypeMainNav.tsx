@@ -10,38 +10,76 @@ import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
 import { NAV_LINK_BORDER_COLOURS } from "@/lib/constants/navigationLinks";
 import {
   DEFAULT_PROTOTYPE_NAV_LOGO_ID,
+  getPrototypeMainNavCssValues,
   prototypeNavLogoOptions,
-} from "@/components/modules/navigation/prototypeMainNav/prototypeNavLogoOptions";
+} from "@/components/modules/navigation/prototypeMainNav/prototypeMainNavControls";
+
+const defaultMainNavCssValues = getPrototypeMainNavCssValues();
+
+type PrototypeMainNavRootStyle = CSSProperties & {
+  "--prototype-main-nav-effective-height": string;
+  "--prototype-main-nav-effective-logo-height": string;
+  "--prototype-main-nav-effective-logo-width": string;
+  "--prototype-main-nav-effective-mobile-logo-height": string;
+  "--prototype-main-nav-effective-mobile-logo-width": string;
+  "--prototype-main-nav-effective-padding-y": string;
+  "--prototype-main-nav-effective-padding-x": string;
+  "--prototype-main-nav-effective-link-gap": string;
+  "--prototype-main-nav-effective-link-font-size": string;
+  "--prototype-main-nav-effective-link-font-family": string;
+  "--prototype-main-nav-effective-link-font-weight": string;
+  "--prototype-main-nav-effective-link-font-style": string;
+  "--prototype-main-nav-effective-link-letter-spacing": string;
+  "--prototype-main-nav-effective-bg": string;
+};
+
+const prototypeMainNavRootStyle: PrototypeMainNavRootStyle = {
+  "--prototype-main-nav-effective-height": `var(--prototype-main-nav-height, ${defaultMainNavCssValues.height})`,
+  "--prototype-main-nav-effective-logo-height": `var(--prototype-main-nav-logo-height, ${defaultMainNavCssValues.logoHeight})`,
+  "--prototype-main-nav-effective-logo-width": `var(--prototype-main-nav-logo-width, ${defaultMainNavCssValues.logoWidth})`,
+  "--prototype-main-nav-effective-mobile-logo-height": `var(--prototype-main-nav-mobile-logo-height, ${defaultMainNavCssValues.mobileLogoHeight})`,
+  "--prototype-main-nav-effective-mobile-logo-width": `var(--prototype-main-nav-mobile-logo-width, ${defaultMainNavCssValues.mobileLogoWidth})`,
+  "--prototype-main-nav-effective-padding-y": `var(--prototype-main-nav-padding-y, ${defaultMainNavCssValues.paddingY})`,
+  "--prototype-main-nav-effective-padding-x": `var(--prototype-main-nav-padding-x, ${defaultMainNavCssValues.paddingX})`,
+  "--prototype-main-nav-effective-link-gap": `var(--prototype-main-nav-link-gap, ${defaultMainNavCssValues.linkGap})`,
+  "--prototype-main-nav-effective-link-font-size": `var(--prototype-main-nav-link-font-size, ${defaultMainNavCssValues.linkFontSize})`,
+  "--prototype-main-nav-effective-link-font-family": `var(--prototype-main-nav-link-font-family, ${defaultMainNavCssValues.linkFontFamily})`,
+  "--prototype-main-nav-effective-link-font-weight": `var(--prototype-main-nav-link-font-weight, ${defaultMainNavCssValues.linkFontWeight})`,
+  "--prototype-main-nav-effective-link-font-style": `var(--prototype-main-nav-link-font-style, ${defaultMainNavCssValues.linkFontStyle})`,
+  "--prototype-main-nav-effective-link-letter-spacing": `var(--prototype-main-nav-link-letter-spacing, ${defaultMainNavCssValues.linkLetterSpacing})`,
+  "--prototype-main-nav-effective-bg": `var(--prototype-main-nav-bg, ${defaultMainNavCssValues.background})`,
+  backgroundColor: "var(--prototype-main-nav-effective-bg)",
+};
 
 const prototypeMainNavHeightStyle: CSSProperties = {
-  minHeight: "var(--prototype-main-nav-height, 96px)",
-  paddingTop: "var(--prototype-main-nav-padding-y, 12px)",
-  paddingBottom: "var(--prototype-main-nav-padding-y, 12px)",
-  paddingLeft: "var(--prototype-main-nav-padding-x, 0px)",
-  paddingRight: "var(--prototype-main-nav-padding-x, 0px)",
-  backgroundColor: "var(--prototype-main-nav-bg, #f5f5f5)",
+  minHeight: "var(--prototype-main-nav-effective-height)",
+  paddingTop: "var(--prototype-main-nav-effective-padding-y)",
+  paddingBottom: "var(--prototype-main-nav-effective-padding-y)",
+  paddingLeft: "var(--prototype-main-nav-effective-padding-x)",
+  paddingRight: "var(--prototype-main-nav-effective-padding-x)",
+  backgroundColor: "var(--prototype-main-nav-effective-bg)",
 };
 
 const prototypeMainNavBackgroundStyle: CSSProperties = {
-  backgroundColor: "var(--prototype-main-nav-bg, #f5f5f5)",
+  backgroundColor: "var(--prototype-main-nav-effective-bg)",
 };
 
 const prototypeMainNavPaddingYStyle: CSSProperties = {
-  paddingTop: "var(--prototype-main-nav-padding-y, 12px)",
-  paddingBottom: "var(--prototype-main-nav-padding-y, 12px)",
-  paddingLeft: "var(--prototype-main-nav-padding-x, 0px)",
-  paddingRight: "var(--prototype-main-nav-padding-x, 0px)",
-  backgroundColor: "var(--prototype-main-nav-bg, #f5f5f5)",
+  paddingTop: "var(--prototype-main-nav-effective-padding-y)",
+  paddingBottom: "var(--prototype-main-nav-effective-padding-y)",
+  paddingLeft: "var(--prototype-main-nav-effective-padding-x)",
+  paddingRight: "var(--prototype-main-nav-effective-padding-x)",
+  backgroundColor: "var(--prototype-main-nav-effective-bg)",
 };
 
 const prototypeLogoMarkStyle: CSSProperties = {
-  height: "var(--prototype-main-nav-logo-height, 74px)",
-  width: "min(40vw, var(--prototype-main-nav-logo-width, 340px))",
+  height: "var(--prototype-main-nav-effective-logo-height)",
+  width: "min(40vw, var(--prototype-main-nav-effective-logo-width))",
 };
 
 const mobilePrototypeLogoMarkStyle: CSSProperties = {
-  height: "var(--prototype-main-nav-mobile-logo-height, 50px)",
-  width: "min(62vw, var(--prototype-main-nav-mobile-logo-width, 250px))",
+  height: "var(--prototype-main-nav-effective-mobile-logo-height)",
+  width: "min(62vw, var(--prototype-main-nav-effective-mobile-logo-width))",
 };
 
 const prototypeNavItemClassName =
@@ -93,7 +131,7 @@ function PrototypePrimaryLinks({ navLinks }: { navLinks: NavBarLink[] }) {
     <nav
       aria-label="Primary navigation"
       className="flex min-w-0 flex-row flex-wrap items-center justify-center gap-y-3"
-      style={{ columnGap: "var(--prototype-main-nav-link-gap, 20px)" }}
+      style={{ columnGap: "var(--prototype-main-nav-effective-link-gap)" }}
     >
       {navLinks.map((link, index) => {
         const label = formatPrototypeNavLabel(link.label);
@@ -191,7 +229,7 @@ export function PrototypeMainNav({ navLinks }: { navLinks: NavBarLink[] }) {
   return (
     <nav
       className="bg-whitish"
-      style={prototypeMainNavBackgroundStyle}
+      style={prototypeMainNavRootStyle}
       data-testid="prototype-main-nav"
     >
       <PrototypeMobileNav navLinks={navLinks} />

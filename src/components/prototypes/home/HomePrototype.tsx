@@ -13,10 +13,35 @@ import {
 } from "./ShopPrototypeSection";
 import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
 import {
+  DEFAULT_PROTOTYPE_NAV_HEIGHT_PRESET,
+  DEFAULT_PROTOTYPE_NAV_LINK_FONT_PRESET,
+  DEFAULT_PROTOTYPE_NAV_LINK_SIZE_PRESET,
+  DEFAULT_PROTOTYPE_NAV_LINK_SPACING_PRESET,
   DEFAULT_PROTOTYPE_NAV_LOGO_ID,
+  DEFAULT_PROTOTYPE_NAV_LOGO_SIZE_PRESET,
+  DEFAULT_PROTOTYPE_NAV_PADDING_PRESET,
+  DEFAULT_PROTOTYPE_NAV_PADDING_X_PRESET,
+  DEFAULT_PROTOTYPE_NAV_TINT_PRESET,
+  getPrototypeMainNavCssValues,
+  prototypeNavHeightOptions,
+  prototypeNavLinkFontOptions,
+  prototypeNavLinkSizeOptions,
+  prototypeNavLinkSpacingOptions,
   prototypeNavLogoOptions,
+  prototypeNavLogoSizeOptions,
+  prototypeNavPaddingOptions,
+  prototypeNavPaddingXOptions,
+  prototypeNavTintOptions,
+  type PrototypeNavHeightPreset,
+  type PrototypeNavLinkFontPreset,
+  type PrototypeNavLinkSizePreset,
+  type PrototypeNavLinkSpacingPreset,
   type PrototypeNavLogoId,
-} from "@/components/modules/navigation/prototypeMainNav/prototypeNavLogoOptions";
+  type PrototypeNavLogoSizePreset,
+  type PrototypeNavPaddingPreset,
+  type PrototypeNavPaddingXPreset,
+  type PrototypeNavTintPreset,
+} from "@/components/modules/navigation/prototypeMainNav/prototypeMainNavControls";
 import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import type { CollectionFrontend } from "@/lib/data/types/collectionTypes";
@@ -185,227 +210,6 @@ const DEFAULT_FRAME_PRESET: PrototypeFramePreset = "wide";
 const DEFAULT_FONT_PRESET: PrototypeFontPreset = "smaller";
 const DEFAULT_PRODUCT_SIZE_PRESET: ProductSizePreset = "feature";
 const DEFAULT_ALTERNATE_BACKGROUND_PRESET: AlternateBackgroundPreset = "stone";
-
-const prototypeNavHeightOptions = {
-  compact: { label: "Compact nav", value: "80px" },
-  standard: { label: "Standard nav", value: "96px" },
-  gallery: { label: "Gallery nav", value: "112px" },
-  tall: { label: "Tall nav", value: "128px" },
-} as const;
-
-type PrototypeNavHeightPreset = keyof typeof prototypeNavHeightOptions;
-
-const DEFAULT_PROTOTYPE_NAV_HEIGHT_PRESET: PrototypeNavHeightPreset =
-  "standard";
-
-const prototypeNavLogoSizeOptions = {
-  standard: {
-    label: "Standard logo",
-    height: "56px",
-    width: "260px",
-    mobileHeight: "46px",
-    mobileWidth: "220px",
-  },
-  large: {
-    label: "Large logo",
-    height: "74px",
-    width: "340px",
-    mobileHeight: "50px",
-    mobileWidth: "250px",
-  },
-  oversized: {
-    label: "Oversized logo",
-    height: "88px",
-    width: "420px",
-    mobileHeight: "56px",
-    mobileWidth: "280px",
-  },
-} as const;
-
-const prototypeNavPaddingOptions = {
-  none: { label: "None", value: "0px" },
-  tight: { label: "Tight", value: "6px" },
-  standard: { label: "Standard", value: "12px" },
-  airy: { label: "Airy", value: "18px" },
-} as const;
-
-const prototypeNavPaddingXOptions = {
-  none: { label: "None", value: "0px" },
-  tight: { label: "Tight", value: "8px" },
-  standard: { label: "Standard", value: "16px" },
-  wide: { label: "Wide", value: "24px" },
-  gallery: { label: "Gallery", value: "32px" },
-  edge: { label: "Edge", value: "40px" },
-} as const;
-
-const prototypeNavLinkSpacingOptions = {
-  tight: { label: "Tight links", value: "12px" },
-  standard: { label: "Standard links", value: "20px" },
-  wide: { label: "Wide links", value: "28px" },
-  airy: { label: "Airy links", value: "36px" },
-  open: { label: "Open links", value: "48px" },
-  gallery: { label: "Gallery links", value: "60px" },
-  broad: { label: "Broad links", value: "72px" },
-  grand: { label: "Grand links", value: "88px" },
-  pavilion: { label: "Pavilion links", value: "104px" },
-  maximum: { label: "Maximum links", value: "120px" },
-} as const;
-
-const prototypeNavLinkSizeOptions = {
-  small: { label: "Small type", value: "14px" },
-  standard: { label: "Standard type", value: "16px" },
-  gallery: { label: "Gallery type", value: "18px" },
-  large: { label: "Large type", value: "20px" },
-  oversized: { label: "Oversized type", value: "22px" },
-} as const;
-
-const regularPrototypeNavFont = (label: string, family: string) => ({
-  label,
-  family,
-  weight: "400",
-  style: "normal",
-  letterSpacing: "0",
-});
-
-const prototypeNavLinkFontOptions = {
-  "archivo-regular": regularPrototypeNavFont(
-    "Archivo Regular",
-    "var(--font-archivo), sans-serif"
-  ),
-  cormorant: regularPrototypeNavFont(
-    "Cormorant",
-    "var(--font-cormorant), Georgia, serif"
-  ),
-  crimson: regularPrototypeNavFont(
-    "Crimson Text",
-    "var(--font-crimson), Georgia, serif"
-  ),
-  cinzel: regularPrototypeNavFont(
-    "Cinzel Decorative",
-    "var(--font-cinzel-decorative), Georgia, serif"
-  ),
-  baskerville: regularPrototypeNavFont(
-    "Baskerville",
-    'Baskerville, "Baskerville Old Face", "Times New Roman", serif'
-  ),
-  didot: regularPrototypeNavFont("Didot", 'Didot, "Times New Roman", serif'),
-  "bodoni-72": regularPrototypeNavFont(
-    "Bodoni 72",
-    '"Bodoni 72", "Bodoni 72 Oldstyle", Didot, serif'
-  ),
-  "big-caslon": regularPrototypeNavFont(
-    "Big Caslon",
-    '"Big Caslon", "Book Antiqua", Georgia, serif'
-  ),
-  "hoefler-text": regularPrototypeNavFont(
-    "Hoefler Text",
-    '"Hoefler Text", Garamond, Georgia, serif'
-  ),
-  palatino: regularPrototypeNavFont(
-    "Palatino",
-    'Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif'
-  ),
-  garamond: regularPrototypeNavFont(
-    "Garamond",
-    'Garamond, "Times New Roman", serif'
-  ),
-  "iowan-old-style": regularPrototypeNavFont(
-    "Iowan Old Style",
-    '"Iowan Old Style", Georgia, serif'
-  ),
-  charter: regularPrototypeNavFont(
-    "Charter",
-    'Charter, "Bitstream Charter", Georgia, serif'
-  ),
-  cochin: regularPrototypeNavFont("Cochin", "Cochin, Georgia, serif"),
-  athelas: regularPrototypeNavFont("Athelas", "Athelas, Georgia, serif"),
-  "new-york": regularPrototypeNavFont(
-    "New York",
-    '"New York", Georgia, serif'
-  ),
-  georgia: regularPrototypeNavFont("Georgia", "Georgia, serif"),
-  times: regularPrototypeNavFont(
-    "Times",
-    '"Times New Roman", Times, serif'
-  ),
-  "american-typewriter": regularPrototypeNavFont(
-    "American Typewriter",
-    '"American Typewriter", Georgia, serif'
-  ),
-  copperplate: regularPrototypeNavFont(
-    "Copperplate",
-    'Copperplate, "Copperplate Gothic Light", Georgia, serif'
-  ),
-  optima: regularPrototypeNavFont("Optima", "Optima, sans-serif"),
-  avenir: regularPrototypeNavFont("Avenir", "Avenir, sans-serif"),
-  "avenir-next": regularPrototypeNavFont(
-    "Avenir Next",
-    '"Avenir Next", Avenir, sans-serif'
-  ),
-  "helvetica-neue": regularPrototypeNavFont(
-    "Helvetica Neue",
-    '"Helvetica Neue", Helvetica, Arial, sans-serif'
-  ),
-  "gill-sans": regularPrototypeNavFont(
-    "Gill Sans",
-    '"Gill Sans", "Gill Sans MT", Calibri, sans-serif'
-  ),
-  futura: regularPrototypeNavFont("Futura", "Futura, sans-serif"),
-  "trebuchet-ms": regularPrototypeNavFont(
-    "Trebuchet MS",
-    '"Trebuchet MS", sans-serif'
-  ),
-  verdana: regularPrototypeNavFont("Verdana", "Verdana, sans-serif"),
-  "lucida-grande": regularPrototypeNavFont(
-    "Lucida Grande",
-    '"Lucida Grande", "Lucida Sans Unicode", sans-serif'
-  ),
-  geneva: regularPrototypeNavFont("Geneva", "Geneva, sans-serif"),
-  "century-gothic": regularPrototypeNavFont(
-    "Century Gothic",
-    '"Century Gothic", AppleGothic, sans-serif'
-  ),
-  "system-sans": regularPrototypeNavFont(
-    "System Sans",
-    'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
-  ),
-  "system-serif": regularPrototypeNavFont(
-    "System Serif",
-    'ui-serif, "New York", Georgia, serif'
-  ),
-  menlo: regularPrototypeNavFont(
-    "Menlo",
-    'Menlo, Monaco, Consolas, "Liberation Mono", monospace'
-  ),
-} as const;
-
-const prototypeNavTintOptions = {
-  off: { label: "Tint off", value: "#f5f5f5" },
-  warm: { label: "Warm tint", value: "#efe3d4" },
-  cool: { label: "Cool tint", value: "#e8edf0" },
-} as const;
-
-type PrototypeNavLogoSizePreset = keyof typeof prototypeNavLogoSizeOptions;
-type PrototypeNavPaddingPreset = keyof typeof prototypeNavPaddingOptions;
-type PrototypeNavPaddingXPreset = keyof typeof prototypeNavPaddingXOptions;
-type PrototypeNavLinkSpacingPreset = keyof typeof prototypeNavLinkSpacingOptions;
-type PrototypeNavLinkSizePreset = keyof typeof prototypeNavLinkSizeOptions;
-type PrototypeNavLinkFontPreset = keyof typeof prototypeNavLinkFontOptions;
-type PrototypeNavTintPreset = keyof typeof prototypeNavTintOptions;
-
-const DEFAULT_PROTOTYPE_NAV_LOGO_SIZE_PRESET: PrototypeNavLogoSizePreset =
-  "large";
-const DEFAULT_PROTOTYPE_NAV_PADDING_PRESET: PrototypeNavPaddingPreset =
-  "standard";
-const DEFAULT_PROTOTYPE_NAV_PADDING_X_PRESET: PrototypeNavPaddingXPreset =
-  "none";
-const DEFAULT_PROTOTYPE_NAV_LINK_SPACING_PRESET: PrototypeNavLinkSpacingPreset =
-  "standard";
-const DEFAULT_PROTOTYPE_NAV_LINK_SIZE_PRESET: PrototypeNavLinkSizePreset =
-  "standard";
-const DEFAULT_PROTOTYPE_NAV_LINK_FONT_PRESET: PrototypeNavLinkFontPreset =
-  "archivo-regular";
-const DEFAULT_PROTOTYPE_NAV_TINT_PRESET: PrototypeNavTintPreset = "off";
 
 type PrototypeHomeStyle = CSSProperties & {
   "--prototype-home-frame-max": string;
@@ -748,63 +552,72 @@ export function HomePrototype({
 
   useEffect(() => {
     const root = document.documentElement;
-    const linkFont = prototypeNavLinkFontOptions[prototypeNavLinkFontPreset];
+    const navCssValues = getPrototypeMainNavCssValues({
+      heightPreset: prototypeNavHeightPreset,
+      logoSizePreset: prototypeNavLogoSizePreset,
+      paddingPreset: prototypeNavPaddingPreset,
+      paddingXPreset: prototypeNavPaddingXPreset,
+      linkSpacingPreset: prototypeNavLinkSpacingPreset,
+      linkSizePreset: prototypeNavLinkSizePreset,
+      linkFontPreset: prototypeNavLinkFontPreset,
+      tintPreset: prototypeNavTintPreset,
+    });
 
     root.style.setProperty(
       "--prototype-main-nav-height",
-      prototypeNavHeightOptions[prototypeNavHeightPreset].value
+      navCssValues.height
     );
     root.style.setProperty(
       "--prototype-main-nav-logo-height",
-      prototypeNavLogoSizeOptions[prototypeNavLogoSizePreset].height
+      navCssValues.logoHeight
     );
     root.style.setProperty(
       "--prototype-main-nav-logo-width",
-      prototypeNavLogoSizeOptions[prototypeNavLogoSizePreset].width
+      navCssValues.logoWidth
     );
     root.style.setProperty(
       "--prototype-main-nav-mobile-logo-height",
-      prototypeNavLogoSizeOptions[prototypeNavLogoSizePreset].mobileHeight
+      navCssValues.mobileLogoHeight
     );
     root.style.setProperty(
       "--prototype-main-nav-mobile-logo-width",
-      prototypeNavLogoSizeOptions[prototypeNavLogoSizePreset].mobileWidth
+      navCssValues.mobileLogoWidth
     );
     root.style.setProperty(
       "--prototype-main-nav-padding-y",
-      prototypeNavPaddingOptions[prototypeNavPaddingPreset].value
+      navCssValues.paddingY
     );
     root.style.setProperty(
       "--prototype-main-nav-padding-x",
-      prototypeNavPaddingXOptions[prototypeNavPaddingXPreset].value
+      navCssValues.paddingX
     );
     root.style.setProperty(
       "--prototype-main-nav-link-gap",
-      prototypeNavLinkSpacingOptions[prototypeNavLinkSpacingPreset].value
+      navCssValues.linkGap
     );
     root.style.setProperty(
       "--prototype-main-nav-link-font-size",
-      prototypeNavLinkSizeOptions[prototypeNavLinkSizePreset].value
+      navCssValues.linkFontSize
     );
     root.style.setProperty(
       "--prototype-main-nav-link-font-family",
-      linkFont.family
+      navCssValues.linkFontFamily
     );
     root.style.setProperty(
       "--prototype-main-nav-link-font-weight",
-      linkFont.weight
+      navCssValues.linkFontWeight
     );
     root.style.setProperty(
       "--prototype-main-nav-link-font-style",
-      linkFont.style
+      navCssValues.linkFontStyle
     );
     root.style.setProperty(
       "--prototype-main-nav-link-letter-spacing",
-      linkFont.letterSpacing
+      navCssValues.linkLetterSpacing
     );
     root.style.setProperty(
       "--prototype-main-nav-bg",
-      prototypeNavTintOptions[prototypeNavTintPreset].value
+      navCssValues.background
     );
     root.dataset.prototypeMainNavLogo = prototypeNavLogoId;
 

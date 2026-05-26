@@ -4,6 +4,10 @@ import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
 import { usePathname } from "next/navigation";
 import { MainNavRouteSwitch } from "@/components/modules/navigation/mainNav/MainNavRouteSwitch";
+import {
+  defaultPrototypeMainNavControlPresets,
+  getPrototypeMainNavCssValues,
+} from "@/components/modules/navigation/prototypeMainNav/prototypeMainNavControls";
 
 jest.mock("next/navigation", () => ({
   usePathname: jest.fn(),
@@ -65,6 +69,9 @@ describe("prototype home main navigation layout", () => {
     const logoOptionsSource = readSource(
       "src/components/modules/navigation/prototypeMainNav/prototypeNavLogoOptions.ts"
     );
+    const controlsSource = readSource(
+      "src/components/modules/navigation/prototypeMainNav/prototypeMainNavControls.ts"
+    );
     const headerSource = readSource(
       "src/components/modules/navigation/header/Header.tsx"
     );
@@ -83,9 +90,11 @@ describe("prototype home main navigation layout", () => {
     expect(logoOptionsSource).toContain('id: "tight-crop"');
     expect(globalCssSource).toContain("prototype-main-nav-link-label");
     expect(globalCssSource).toContain(
-      "--prototype-main-nav-link-font-family"
+      "--prototype-main-nav-effective-link-font-family"
     );
-    expect(globalCssSource).toContain("--prototype-main-nav-link-font-size");
+    expect(globalCssSource).toContain(
+      "--prototype-main-nav-effective-link-font-size"
+    );
     expect(globalCssSource).toContain("text-transform: uppercase");
     expect(globalCssSource).toContain("mix-blend-mode: multiply");
     expect(prototypeNavSource).not.toContain("prototype-main-nav-separator");
@@ -102,6 +111,11 @@ describe("prototype home main navigation layout", () => {
     expect(prototypeNavSource).not.toContain("md:px-6");
     expect(prototypeNavSource).not.toContain("xl:px-10");
     expect(prototypeNavSource).toContain("--prototype-main-nav-link-gap");
+    expect(prototypeNavSource).toContain(
+      "--prototype-main-nav-effective-link-gap"
+    );
+    expect(prototypeNavSource).toContain("getPrototypeMainNavCssValues");
+    expect(prototypeNavSource).toContain("defaultMainNavCssValues.paddingX");
     expect(prototypeNavSource).toContain("--prototype-main-nav-bg");
     expect(prototypeNavSource).toContain("formatPrototypeNavLabel");
     expect(prototypeNavSource).toContain("toUpperCase");
@@ -109,11 +123,11 @@ describe("prototype home main navigation layout", () => {
     expect(homePrototypeSource).toContain("X pad");
     expect(homePrototypeSource).toContain("max-h-[46vh]");
     expect(homePrototypeSource).toContain("overflow-y-auto");
-    expect(homePrototypeSource).toContain("baskerville");
-    expect(homePrototypeSource).toContain("system-sans");
-    expect(homePrototypeSource).not.toContain("archivo-semibold");
-    expect(homePrototypeSource).not.toContain("archivo-bold");
-    expect(homePrototypeSource).not.toContain("archivo-black");
+    expect(controlsSource).toContain("baskerville");
+    expect(controlsSource).toContain("system-sans");
+    expect(controlsSource).not.toContain("archivo-semibold");
+    expect(controlsSource).not.toContain("archivo-bold");
+    expect(controlsSource).not.toContain("archivo-black");
     expect(fontsSource).toContain("Archivo_Black");
     expect(fontsSource).not.toContain("Bodoni_Moda");
     expect(fontsSource).not.toContain("Work_Sans");
@@ -121,6 +135,26 @@ describe("prototype home main navigation layout", () => {
     expect(headerSource).toContain("HeaderMainNavLoader");
     expect(headerSource).toContain("<Breadcrumbs />");
     expect(headerSource).toContain("<Searchbar />");
+  });
+
+  it("keeps first-render prototype nav values aligned with control defaults", () => {
+    expect(defaultPrototypeMainNavControlPresets).toMatchObject({
+      logoSizePreset: "standard",
+      paddingXPreset: "wide",
+      linkSpacingPreset: "open",
+      linkSizePreset: "gallery",
+      linkFontPreset: "avenir-next",
+    });
+    expect(getPrototypeMainNavCssValues()).toMatchObject({
+      logoHeight: "56px",
+      logoWidth: "260px",
+      mobileLogoHeight: "46px",
+      mobileLogoWidth: "220px",
+      paddingX: "24px",
+      linkGap: "48px",
+      linkFontSize: "18px",
+      linkFontFamily: '"Avenir Next", Avenir, sans-serif',
+    });
   });
 
   it("keeps the live nav layouts unchanged and records a navbar reference", () => {
