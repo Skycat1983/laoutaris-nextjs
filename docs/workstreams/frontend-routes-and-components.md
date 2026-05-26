@@ -1482,6 +1482,40 @@ passed with network access.
   the `390x844` room and modal fit.
 - 2026-05-26: Prepared T-293 as the narrow live sale-gallery visual QA pass for
   named print, original artwork, and book product handles.
+- 2026-05-26: Completed T-293. The unlinked print route is scoped
+  owner-review-ready, the original route needs a later stable recheck, and the
+  book candidate exposed a product-kind classification issue caused by generic
+  fallback `artwork` wording.
+- 2026-05-26: Prepared T-294 to harden sale-gallery product-kind
+  classification before any repeat book/original visual QA.
+- 2026-05-26: Completed T-294. Untyped sale-gallery products with only generic
+  fallback `artwork` wording now render as generic products instead of original
+  artworks; strong original signals and explicit Shopify metadata remain
+  supported.
+- 2026-05-26: Prepared T-295 as the narrow original sale-gallery visual recheck
+  for the T-293 route that still needs raw-image and room-selection sign-off.
+- 2026-05-26: Completed T-295. The named original sale-gallery route is scoped
+  owner-review-ready for raw image visibility, generated room-gallery
+  interaction, absence of print controls, factual enquiry fallback, and
+  desktop/mobile layout.
+- 2026-05-26: Prepared T-296 as the Shopify book metadata readiness docs task
+  before any repeat book visual QA.
+- 2026-05-26: Completed T-296. Book sale-gallery owner review remains blocked
+  on Shopify data until Storefront reads expose a durable book marker through
+  `productType`, Shopify tags, or `custom.featured_artwork_ids`; runtime
+  frontend behavior was not changed.
+- 2026-05-26: Prepared T-297 as an owner-facing sale-gallery review packet
+  before any further live product-detail visual or commerce implementation.
+- 2026-05-26: Completed T-297. The owner-facing packet now records the scoped
+  ready print/original sale-gallery routes, the blocked book metadata path, and
+  the owner decisions needed before product-page rail adoption, room/material
+  changes, Shopify option mapping, physical dimensions, or repeat book QA.
+- 2026-05-26: Prepared T-298 to reconcile shared trackers after the completed
+  sale-gallery follow-up chain so completed visual QA is not reassigned before
+  owner decisions.
+- 2026-05-26: Completed T-298. Shared trackers now distinguish the scoped
+  print/original owner-review-ready routes from the blocked book metadata path
+  and owner-gated visual/commerce decisions.
 
 ## Next Agent Action
 
@@ -1514,12 +1548,25 @@ The A-024 loading-state and account-navigation follow-up sequence is complete;
 do not reassign F-118 through F-122 unless a regression appears.
 
 The owner-prioritized T-261 shop product detail mockup implementation is
-complete. Run
-[T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md)
-as the narrow owner-review/visual-QA pass for the live sale gallery with named
-print, original artwork, and book handles. Keep that separate from route cache
-policy, auth behavior, broad visual redesign, product-page rail adoption, and
-Shopify cart/checkout work.
+complete, T-293 completed the first narrow live sale-gallery visual QA pass,
+T-294 fixed the generic `artwork` fallback misclassification, T-295 signed off
+the named original route, and T-296 documented the book metadata readiness gate.
+Do not repeat book owner review until Storefront reads confirm durable Shopify
+book metadata for the candidate handle; keep that future visual QA separate
+from runtime source changes, route cache policy, auth behavior, broad visual
+redesign, product-page rail adoption, and Shopify cart/checkout work.
+
+T-297 is complete. Use
+[sale-gallery-owner-review-packet.md](../prototypes/sale-gallery-owner-review-packet.md)
+as the owner review guide for the ready print/original routes, blocked book
+metadata path, and remaining visual/commerce decisions. Do not change runtime
+source or broaden into production visual migration until an owner-approved
+follow-up task scopes the specific change.
+
+T-298 is complete. Do not reassign the completed sale-gallery tracker
+reconciliation unless F-131, R-037, workstream handoffs, or orchestration state
+drift again. Future sale-gallery frontend work should be a separately scoped
+owner-approved implementation or repeat book-QA task.
 
 T-270 completed the A-028 public route correctness polish: the shop product sale
 gallery renders plain Shopify product descriptions as text instead of HTML, and

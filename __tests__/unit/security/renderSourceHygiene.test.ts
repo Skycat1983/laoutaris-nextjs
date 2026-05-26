@@ -71,7 +71,6 @@ const sharedFetcherUtilityErrorWarnSourceFiles = [
   "src/lib/helpers/copy_id.ts",
   "src/components/modules/cards/ArtworkFeedCard.tsx",
   "src/components/elements/icons/TailwindColorIcon.tsx",
-  "src/components/modules/sidebar/BlogSidebar.tsx",
 ];
 
 const adminDashboardClientSourceFiles = listRepoSourceFiles(

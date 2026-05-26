@@ -517,6 +517,53 @@ describe("/shop/products/[productHandle]", () => {
     ).toBeInTheDocument();
   });
 
+  it("does not render an untyped artwork-titled product as original artwork", async () => {
+    mockGetProductByHandle.mockResolvedValue(
+      createProduct({
+        handle: "the-complete-artwork-of-joseph-laoutaris",
+        title: "The Complete Artwork of Joseph Laoutaris",
+        description: "The complete artwork of Joseph Laoutaris.",
+        productType: "",
+        tags: [],
+        mongodbArtworkId: undefined,
+        featuredArtworkIds: undefined,
+        image: {
+          url: "https://example.com/book-candidate.jpg",
+          altText: "Book candidate cover",
+          width: 900,
+          height: 1200,
+        },
+      })
+    );
+
+    render(
+      await ProductPage({
+        params: {
+          productHandle: "the-complete-artwork-of-joseph-laoutaris",
+        },
+      })
+    );
+
+    expect(screen.getByTestId("shop-product-sale-gallery")).toBeInTheDocument();
+    expect(mockGetArtworkById).not.toHaveBeenCalled();
+    expect(screen.getByText("Product")).toBeInTheDocument();
+    expect(screen.queryByText("Original Artwork")).not.toBeInTheDocument();
+    expect(screen.queryByText("Original artwork")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Frame")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "Show Modern Gallery room preview for Book candidate cover",
+      })
+    ).not.toBeInTheDocument();
+
+    expect(
+      within(screen.getByTestId("shop-sale-main-raw-preview")).getByRole(
+        "img",
+        { name: "Book candidate cover" }
+      )
+    ).toHaveAttribute("src", "https://example.com/book-candidate.jpg");
+  });
+
   it("uses the sale gallery for linked original products with room previews but no print frame controls", async () => {
     mockGetProductByHandle.mockResolvedValue(
       createProduct({

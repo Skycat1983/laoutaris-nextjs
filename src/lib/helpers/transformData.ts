@@ -7,13 +7,3 @@ export const replaceMongoId = <T extends { _id: any }>(
     ...rest,
   };
 };
-
-export const filterWatchlerlist = <T extends { watcherlist: string[] }>(
-  watcherlist: T,
-  userId: string
-): T => {
-  return {
-    ...watcherlist,
-    watcherlist: watcherlist.watcherlist.filter((id) => id !== userId),
-  };
-};

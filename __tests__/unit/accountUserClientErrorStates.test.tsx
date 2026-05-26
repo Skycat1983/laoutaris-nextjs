@@ -3,7 +3,6 @@ import ContactForm from "@/components/modules/forms/user/ContactForm";
 import CommentForm from "@/components/modules/forms/user/CommentForm";
 import LogoutForm from "@/components/modules/forms/user/LogoutForm";
 import { CommentCard } from "@/components/modules/cards/CommentCard";
-import { ErrorBoundary } from "@/components/modules/error/ErrorBoundary";
 import { AccountNavDropdown } from "@/components/modules/navigation/accountNav/accountNavDropdown/AccountNavDropdown";
 import { clientApi } from "@/lib/api/clientApi";
 import { useGlobalFeatures } from "@/contexts/GlobalFeaturesContext";
@@ -289,18 +288,4 @@ describe("account and user client error states", () => {
     ).toBeEnabled();
   });
 
-  it("keeps error-boundary fallback behavior for window error events", async () => {
-    render(
-      <ErrorBoundary fallback={<div>Fallback rendered</div>}>
-        <div>Child content</div>
-      </ErrorBoundary>
-    );
-
-    fireEvent(window, new ErrorEvent("error"));
-
-    await waitFor(() =>
-      expect(screen.getByText("Fallback rendered")).toBeInTheDocument()
-    );
-    expect(screen.queryByText("Child content")).not.toBeInTheDocument();
-  });
 });

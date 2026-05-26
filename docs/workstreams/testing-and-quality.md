@@ -1950,6 +1950,53 @@ git diff --check
   `__tests__/unit/auth/credentialsRoleSession.test.ts` covering a Google OAuth
   account/profile fixture and adapter-defaulted `role: "user"`. Focused auth
   and DB helper Jest suites, explicit typecheck, and whitespace checks passed.
+- 2026-05-26: Completed T-294 coverage. Added focused
+  `__tests__/unit/shopProductClassification.test.ts` for T-293
+  book-candidate fallback behavior, untyped `original-artwork`, explicit
+  Shopify metadata, and book/catalog signals; extended
+  `__tests__/unit/shopProductDetailPage.test.tsx` so the T-293 book-candidate
+  shape renders as a generic product instead of original artwork.
+- 2026-05-26: Completed T-296 as a docs-only Shopify book metadata readiness
+  pass. No runtime source or tests changed; verification is limited to
+  `git diff --check`.
+- 2026-05-26: Prepared T-297 as a docs-only owner review packet for the
+  sale-gallery follow-up chain. Verification should remain `git diff --check`.
+- 2026-05-26: Completed T-297 as a docs-only owner review packet. No runtime
+  source or tests changed; verification is limited to `git diff --check`.
+- 2026-05-26: Prepared T-298 as a docs-only tracker reconciliation after the
+  sale-gallery owner-review packet. Verification should remain `git diff
+  --check`.
+- 2026-05-26: Completed T-298 as docs-only tracker reconciliation. No runtime
+  source, tests, product data, or Shopify metadata changed; verification is
+  limited to `git diff --check`.
+- 2026-05-26: Prepared T-299 as the first A-014 source pruning pass. Because it
+  deletes source files and assets, verification should include targeted
+  reference checks, `npm run lint`, `npm test`, `npm run build`, and
+  `git diff --check`.
+- 2026-05-26: Completed T-299. Targeted pre/post reference checks found no live
+  importers for the deleted candidates. `npm run lint` passed. The first full
+  `npm test` run failed once in `visibleBreadcrumbs.test.tsx`; the focused
+  breadcrumb rerun passed, and a second full `npm test` passed with 198 suites /
+  1405 tests. `npm run build` passed with the existing Browserslist
+  `caniuse-lite is outdated` advisory, and `git diff --check` passed.
+- 2026-05-26: Prepared T-300 as the remaining F-031 utility/import cleanup.
+  Verification should include targeted reference checks, `npm run lint`,
+  `npm run typecheck`, `npm run build`, and `git diff --check`; run the
+  saved-item action suite too if saved-item actions change.
+- 2026-05-26: Completed T-300. Targeted pre/post reference checks confirmed
+  `filterWatchlerlist` had no live source references, collection layout
+  comment/import leftovers were removed, and saved-item action imports remain
+  live. `npm run lint`, `npm run typecheck`, `npm run build`, and
+  `git diff --check` passed; the build emitted the existing Browserslist
+  `caniuse-lite is outdated` advisory. Saved-item action files were unchanged,
+  so the focused saved-item action suite was not required.
+- 2026-05-26: Completed T-301/T-302/T-303 as docs-only scoping tasks. Their
+  verification was limited to result/task documentation consistency and
+  whitespace checks; no runtime source or test behavior changed.
+- 2026-05-26: Prepared T-304/T-305/T-306 as parallel implementation tasks with
+  focused verification: security-header tests/build for report-only CSP, route
+  import-boundary/focused route tests for public route builders, and admin form
+  plus URL-validation tests for content-image feedback.
 
 ## Next Agent Action
 
@@ -1970,11 +2017,41 @@ Playwright for follow-up loading-state work unless a separate scoped task
 approves the browser tooling, fixture plan, command posture, and artifact
 budget.
 
-T-261 shop product detail mockup coverage is complete. T-293 is prepared as the
-live sale-gallery visual-QA follow-up; keep browser tooling scoped to named
-print, original artwork, and book product handles, targeted selectors, and
-minimal screenshots per the testing runbook. Do not install or expand
-Playwright without a separate scoped task.
+T-261 shop product detail mockup coverage is complete, T-293 completed the
+first live sale-gallery visual-QA follow-up, T-294 completed the focused
+classifier/product-detail regression for the T-293 book-candidate
+misclassification, T-295 signed off the named original route, and T-296
+documented the book metadata readiness gate. Do not install or expand
+Playwright for remaining book follow-up unless a separate scoped task approves
+the browser tooling, fixture plan, command posture, and artifact budget. The
+next book visual QA pass should wait until Shopify metadata is applied and
+Storefront reads confirm a durable book marker.
+
+T-297 is complete as a docs-only owner review packet. Keep any next
+sale-gallery decision-packet edits to `git diff --check`; broaden verification
+only when a follow-up task changes runtime source, tests, or browser-reviewed
+behavior.
+
+T-298 is complete. Keep any future owner-packet or tracker-only sale-gallery
+updates to `git diff --check`; broaden verification only when a follow-up task
+changes runtime source, tests, product data, Shopify metadata, or
+browser-reviewed behavior.
+
+T-299 and T-300 are complete. Do not reassign the A-014 high-confidence
+source-leaf, starter-asset, or utility/import pruning sequence unless those
+exact deleted paths/helpers or stale collection layout comment/import leftovers
+reappear. Do not broaden related cleanup into auth/session, i18n, package
+dependencies, commerce, route behavior, CI, or owner-decision work without a
+new scoped task. If saved-item action files change in a future task, rerun
+`npm test -- --runTestsByPath __tests__/unit/actions/savedItemActions.test.ts`.
+
+T-304, T-305, and T-306 are the next parallel implementation tasks. T-304
+should verify with the focused security-header Jest suite, build, and
+`git diff --check`; T-305 should verify route-builder consumers with lint,
+client/server import-boundary coverage, focused touched tests, and
+`git diff --check`; T-306 should verify admin blog/collection form tests,
+content-image URL validation tests, and `git diff --check`. Broaden only if a
+task touches shared behavior beyond its brief.
 
 T-194 `/prototype/frame` visual QA is complete and T-292 fixed the two
 narrow/mobile cropping blockers. T-292 verification used focused Jest suites,

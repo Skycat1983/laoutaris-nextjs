@@ -30,11 +30,11 @@ export const getShopProductKind = (
     ...product.tags.flatMap(tokenizeMetadata),
   ];
   const fallbackTokens = [
-    ...explicitTokens,
     ...tokenizeMetadata(product.handle),
     ...tokenizeMetadata(product.title),
     ...tokenizeMetadata(product.description),
   ];
+  const allTokens = [...explicitTokens, ...fallbackTokens];
 
   if (
     Array.isArray(product.featuredArtworkIds) &&
@@ -44,7 +44,7 @@ export const getShopProductKind = (
   }
 
   if (
-    hasAnyToken(fallbackTokens, [
+    hasAnyToken(allTokens, [
       "book",
       "books",
       "catalog",
@@ -56,13 +56,26 @@ export const getShopProductKind = (
     return "book";
   }
 
-  if (hasAnyToken(fallbackTokens, ["print", "prints", "giclee"])) {
+  if (hasAnyToken(allTokens, ["print", "prints", "giclee"])) {
     return "print";
   }
 
   if (
-    hasAnyToken(fallbackTokens, [
+    hasAnyToken(explicitTokens, [
       "artwork",
+      "original",
+      "painting",
+      "paintings",
+      "drawing",
+      "drawings",
+      "canvas",
+    ])
+  ) {
+    return "original";
+  }
+
+  if (
+    hasAnyToken(fallbackTokens, [
       "original",
       "painting",
       "paintings",

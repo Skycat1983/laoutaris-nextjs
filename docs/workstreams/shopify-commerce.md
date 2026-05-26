@@ -620,6 +620,55 @@ Add targeted tests as shop behavior is hardened.
   rail adoption remains paused.
 - 2026-05-26: Prepared T-293 as the narrow live T-261 sale-gallery visual QA
   pass using named print, original artwork, and book product handles.
+- 2026-05-26: Completed T-293. The unlinked print sale-gallery route is scoped
+  owner-review-ready. The original route needs a stable recheck for raw image
+  visibility and room-gallery selection. The book candidate is blocked because
+  Storefront data lacks durable book markers and the current classifier treats
+  generic fallback `artwork` wording as original artwork.
+- 2026-05-26: Prepared T-294 to harden sale-gallery product-kind
+  classification so untyped products are not misrepresented as originals solely
+  because generic fallback text contains `artwork`.
+- 2026-05-26: Completed T-294. Product-kind classification now treats fallback
+  `artwork` wording alone as generic `product` while preserving explicit
+  Shopify metadata, strong original fallback signals, print signals, and
+  book/catalog/publication signals. The T-293 book candidate is no longer
+  misrepresented as an original, but book owner review still requires durable
+  Shopify book metadata.
+- 2026-05-26: Prepared T-295 as a review-only recheck of the named original
+  sale-gallery route after T-294. It exists to confirm raw image visibility and
+  room-gallery selection, not to change commerce behavior or product data.
+- 2026-05-26: Completed T-295. The original route
+  `/shop/products/joseph-laoutaris-original-artwork-no-043` is scoped
+  owner-review-ready for raw image visibility, generated room-gallery
+  selection, absence of print controls, enquiry fallback copy, and
+  desktop/mobile fit. Residual intermittent Storefront fetch failures during
+  local probes are noted as a separate reliability concern.
+- 2026-05-26: Prepared T-296 to document the Shopify book metadata readiness
+  path before another book sale-gallery owner-review pass.
+- 2026-05-26: Completed T-296. The Shopify operations runbook now defines the
+  book sale-gallery readiness checklist: Storefront data must expose a durable
+  book marker through `productType`, Shopify tags, or
+  `custom.featured_artwork_ids`; ordered Shopify images can drive the book
+  cover/page gallery once classified; `custom.featured_artwork_ids` is required
+  only when featured archive artwork sections are expected.
+- 2026-05-26: Prepared T-297 as the owner-facing sale-gallery review packet so
+  the owner can review ready print/original routes, understand the book metadata
+  blocker, and decide whether product-page rail adoption, material assets,
+  Shopify option mapping, physical dimensions, or further commerce behavior
+  should proceed.
+- 2026-05-26: Completed T-297. The sale-gallery owner review packet now lives
+  at
+  [sale-gallery-owner-review-packet.md](../prototypes/sale-gallery-owner-review-packet.md)
+  and records the ready print/original routes, blocked book metadata path, and
+  owner decisions required before rail adoption, material assets, Shopify
+  option mapping, physical dimensions, or repeat book QA.
+- 2026-05-26: Prepared T-298 to reconcile F-131, R-037, workstreams, and
+  orchestration state after the T-293 through T-297 sale-gallery follow-up
+  chain.
+- 2026-05-26: Completed T-298. F-131, R-037, the sale-gallery workstream
+  handoffs, task index, and orchestration state now reflect that print/original
+  scoped review is complete, book review is blocked on durable Shopify
+  metadata, and further commerce/design implementation is owner-packet-gated.
 
 ## Next Agent Action
 
@@ -631,15 +680,31 @@ use canonical artwork taxonomy options. T-270 is complete for rendering plain
 Shopify descriptions as text. Keep rich `descriptionHtml` rendering behind a
 separate sanitizer/design task.
 
-Run
-[T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md)
-for the live T-261 sale gallery using one unlinked print handle, one original
-artwork handle, and one book handle. Keep the review scoped to layout, selected
-room backgrounds, raw image/gallery selection, print-only frame/mat
-presentation, book gallery behavior, and CTA wording. Do not add app-owned cart
-or checkout, Shopify option mapping, selected frame/mat persistence, sale-policy
-copy, enquiry mutation, physical dimension migration, product-page rail
-adoption, or room-background changes without a separate task and owner decision.
+T-294, T-295, and T-296 are complete for the current sale-gallery follow-up
+chain. The named original route is scoped owner-review-ready, and the remaining
+book blocker is now explicit owner/Shopify metadata setup. Do not repeat book
+sale-gallery QA for
+`/shop/products/the-complete-artwork-of-joseph-laoutaris` until Storefront data
+confirms a durable book marker through `productType`, Shopify tags, or
+`custom.featured_artwork_ids`. Once that evidence exists, assign a narrow repeat
+book sale-gallery visual QA task. Do not mutate Shopify data, change runtime
+source, re-review print/original behavior, or broaden into cart, checkout,
+option mapping, rail rendering, physical dimensions, or room background work
+without a separate task.
+
+T-297 is complete. Use
+[sale-gallery-owner-review-packet.md](../prototypes/sale-gallery-owner-review-packet.md)
+for owner review of the ready print/original routes, blocked book metadata
+path, and remaining commerce/design decisions. Do not start product-page rail
+adoption, material asset work, Shopify option mapping, physical dimension
+migration, or repeat book sale-gallery QA until those owner decisions are
+answered and scoped in separate tasks.
+
+T-298 is complete. F-131 and R-037 now reflect the completed T-293 through
+T-297 sale-gallery outcomes. Next sale-gallery work should start only after the
+owner review packet decisions are answered or Shopify Storefront data confirms
+durable book metadata for the candidate handle. Keep tracker-only cleanup,
+runtime commerce changes, visual implementation, and browser QA separate.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

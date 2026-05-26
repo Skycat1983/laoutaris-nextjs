@@ -17,14 +17,47 @@ For a book:
 
 1. Create the Shopify product.
 2. Add product price, images, variants, and availability in Shopify.
-3. Add metafield `featured_artwork_ids` with a JSON array of MongoDB artwork
-   IDs.
-4. Add the book product link to each related MongoDB artwork when the artwork
+3. Set durable book-identifying metadata before visual owner review. Use at
+   least one of:
+   - Shopify `productType` with a clear book/publication value such as `Book`,
+     `Catalog`, `Catalogue`, or `Publication`;
+   - a durable Shopify tag such as `book`, `catalog`, `catalogue`, or
+     `publication`;
+   - metafield `custom.featured_artwork_ids` when the book should also connect
+     to featured archive artworks.
+4. Add metafield `custom.featured_artwork_ids` with a JSON array of MongoDB
+   artwork IDs when the product detail page should render featured artwork
+   sections for the book.
+5. Add the book product link to each related MongoDB artwork when the artwork
    should surface that book.
 
 Books may appear on multiple artwork records when the publication legitimately
 features those artworks. Cross-artwork duplicate product IDs are expected for
 that book case and should be reviewed for intent, not rejected globally.
+
+## Book Sale-Gallery Readiness
+
+Before assigning or repeating a book sale-gallery owner-review pass, verify
+that Shopify Storefront reads expose durable book metadata for the candidate
+product. A book product is ready for meaningful sale-gallery review when:
+
+- Storefront product data includes a clear book/publication marker in
+  `productType`, Shopify `tags`, or `custom.featured_artwork_ids`.
+- Shopify product images are ordered as the intended cover/page gallery slots.
+  A book can render this ordered image gallery without `featured_artwork_ids`
+  when `productType` or tags classify it as a book.
+- `custom.featured_artwork_ids` is present and contains the intended MongoDB
+  artwork IDs when the product page should render featured artwork sections.
+- The verification note records the product handle, the observed
+  `productType`, relevant tags, whether `custom.featured_artwork_ids` was
+  present, and whether ordered Shopify images were present.
+
+The current book candidate
+`/shop/products/the-complete-artwork-of-joseph-laoutaris` must not be treated
+as book owner-review-ready until Shopify data is updated and a Storefront read
+confirms one of the durable book markers above. Do not add hard-coded handles,
+title heuristics, or source-side overrides to make this product appear as a
+book; fix the Shopify metadata instead.
 
 ## MongoDB Link Shape
 

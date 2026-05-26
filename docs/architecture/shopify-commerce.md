@@ -116,6 +116,14 @@ submissions.
 | `print` | A print or edition derived from an artwork |
 | `book` | A book or publication that may feature multiple artworks |
 
+Product detail rendering classifies books from durable Shopify-backed metadata:
+`productType`, Shopify tags, or non-empty `featuredArtworkIds` transformed from
+the `custom.featured_artwork_ids` metafield. The metafield is relationship
+metadata, not the only classification path: a book with clear `productType` or
+tag metadata and ordered Shopify images can render the book cover/page gallery
+without featured archive artwork sections. Add `custom.featured_artwork_ids`
+when the product page must also fetch and render related MongoDB artworks.
+
 ## Admin Product-Link Workflow
 
 Admin artwork create and update forms expose `shopifyProducts` as repeatable

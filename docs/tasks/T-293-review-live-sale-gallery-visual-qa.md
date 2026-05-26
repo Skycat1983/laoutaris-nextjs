@@ -1,6 +1,6 @@
 # T-293 Review Live Sale Gallery Visual QA
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -147,3 +147,77 @@ shared trackers. Run `git diff --check`.
   owner-review-ready for the scoped frame, room, and modal review. The live
   T-261 sale gallery still needs a narrow owner-review/visual-QA pass with
   named print, original artwork, and book product handles.
+- Completed on 2026-05-26 with a scoped live sale-gallery visual QA pass at
+  desktop `1440x1000` and narrow/mobile `390x844` viewports. Reviewed routes:
+  `/shop/products/joseph-laoutaris-fine-art-print-no-034`,
+  `/shop/products/joseph-laoutaris-original-artwork-no-043`, and book-candidate
+  `/shop/products/the-complete-artwork-of-joseph-laoutaris`.
+- Current Shopify Storefront product data was queried to discover handles. The
+  reviewed print and original products have empty `productType`, mostly empty
+  `tags`, no `mongodbArtworkId`, no hosted `onlineStoreUrl`, and one Shopify
+  product image each. The book-candidate product
+  `the-complete-artwork-of-joseph-laoutaris` has five Shopify images, but also
+  has empty `productType`, empty `tags`, no `featuredArtworkIds`, and no
+  explicit book/catalog/publication marker in Storefront data.
+- Print route result: owner-review-ready for the scoped unlinked-print
+  behavior. The route returned `200`, rendered `shop-product-sale-gallery`,
+  used the raw Shopify product image as the first gallery item, exposed five
+  gallery buttons (`raw artwork` plus four room previews), showed print-only
+  frame and mat selects, switched to the Modern Gallery room preview in the
+  browser click check, hid archive-record linking because linked archive data
+  was absent, and used truthful enquiry fallback copy: `Enquire About This
+  Product` plus `Contact the archive team to confirm availability and purchase
+  details.` No horizontal document overflow was detected at either viewport.
+- Original route result: needs visual refinement or a second owner-review pass
+  before sign-off. The route returned `200`, rendered the sale shell, showed
+  `Original Artwork`/`Original artwork`, omitted print-only frame and mat
+  controls, showed five gallery buttons for raw plus generated room previews,
+  hid archive-record linking because linked archive data was absent, and used
+  the truthful enquiry fallback. However, the desktop screenshot showed the raw
+  original preview/first thumbnail reading as a mostly blank white area even
+  though the resolved image URL was a Shopify product image, and a follow-up
+  room-selection click check was not repeatable after intermittent Shopify
+  fetch failures in the local dev server. Treat the original route as not yet
+  owner-review-ready until the raw image visibility and room-selection behavior
+  are rechecked with stable product fetches.
+- Book route result: blocked by missing/misleading product-kind metadata, not
+  owner-review-ready for book behavior. The best current book candidate,
+  `/shop/products/the-complete-artwork-of-joseph-laoutaris`, returned `200` and
+  rendered the sale gallery, but the live route classified it as `Original
+  Artwork`/`Original artwork` because Storefront metadata lacks book markers
+  and the title/handle contain `artwork`. As a result, the route rendered
+  generated room-preview gallery labels instead of the expected ordered
+  Shopify book image/page gallery behavior. The candidate still omitted
+  print-only frame and mat controls and used the truthful enquiry fallback.
+- Targeted browser evidence was intentionally limited to selector facts,
+  bounding boxes, route statuses, and six viewport screenshots saved in
+  `/private/tmp`: `t293-print-desktop.png`, `t293-print-mobile.png`,
+  `t293-original-desktop.png`, `t293-original-mobile.png`,
+  `t293-book-desktop.png`, and `t293-book-mobile.png`. No traces, videos, full
+  DOM dumps, full browser logs, or broad screenshot sets were collected.
+- Candidate tracker updates for the orchestrator: add a commerce/data cleanup
+  task to mark book products with durable Shopify metadata such as
+  `productType`, tags, or featured artwork IDs before relying on product-detail
+  book behavior; add a focused frontend follow-up to recheck original artwork
+  raw image visibility and room-gallery selection with stable Shopify fetches;
+  consider recording that current Storefront test products lack
+  `onlineStoreUrl`, so scoped live product CTAs currently exercise enquiry
+  fallback rather than hosted Shopify purchase.
+- Intentionally out of scope and not changed: runtime source, app-owned cart or
+  checkout, checkout line items, Shopify option mapping, frame/mat persistence,
+  sale-policy copy, enquiry mutation, physical dimension migration, rail
+  renderer adoption, product data migration, route cache policy, shop listing
+  redesign, shared trackers, and workstream briefs.
+- Verification:
+  - Storefront product-discovery query via local `.env` completed and printed
+    only product IDs, handles, titles, taxonomy fields, image counts, image
+    dimensions, and relevant metafield presence.
+  - Scoped Chrome DevTools Protocol visual pass completed against
+    `http://localhost:3003` for the three named product routes at `1440x1000`
+    and `390x844`.
+  - Local dev-server checks required escalated network permission and still
+    logged intermittent `getProductByHandle` Shopify `fetch failed` errors
+    during some repeated navigations; the completed selector/screenshot pass
+    above used successful `200` route responses, but the original-room
+    follow-up was not stable enough for sign-off.
+  - `git diff --check` passed.

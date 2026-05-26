@@ -35,7 +35,6 @@ const renderBiographyEmptyFallback = () => (
   />
 );
 
-// import { HeroLayout as BiographySection } from "@/components/sections/BiographySectionVariations";
 export async function BiographySectionLoader() {
   try {
     const result = await getArticleList({

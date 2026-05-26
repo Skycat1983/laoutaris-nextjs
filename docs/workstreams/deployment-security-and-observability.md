@@ -1098,6 +1098,14 @@ npm run lint
   Node `22.14.0` / npm `10.9.2` with `npm ci`, while leaving external-access
   build evidence, public smoke, credentialed/admin smoke, Vercel log checks,
   rollback, and monitoring separate.
+- 2026-05-26: Prepared T-301 as a parallel-safe CSP/header allowlist scoping
+  task. It should inventory current source requirements and produce a tightening
+  plan without editing runtime headers or shared trackers during the parallel
+  run.
+- 2026-05-26: Completed T-301. The CSP allowlist result scopes a report-only
+  tightening step before enforcement; no runtime headers changed.
+- 2026-05-26: Prepared T-304 as the report-only CSP implementation/test slice.
+  It can run in parallel with T-305/T-306 and should not edit shared trackers.
 
 ## Next Agent Action
 
@@ -1112,6 +1120,12 @@ The first non-secret Main CI local-gate workflow is in place. Keep public
 smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
 production secrets separate unless a later owner-approved task explicitly
 changes that boundary.
+
+T-304 is ready to run in parallel with T-305 and T-306. It should add a
+report-only CSP allowlist and focused security-header test coverage while
+preserving the current enforced CSP. Do not enforce the tightened policy, add
+HSTS, change CORS, add a CSP report endpoint/provider, add monitoring, change
+environment variables, or edit shared trackers during the parallel run.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);

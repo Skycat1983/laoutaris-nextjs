@@ -10,7 +10,6 @@ const accountUserClientFiles = [
   "src/components/modules/forms/user/LogoutForm.tsx",
   "src/components/modules/navigation/accountNav/accountNavDropdown/AccountNavDropdown.tsx",
   "src/components/modules/cards/CommentCard.tsx",
-  "src/components/modules/error/ErrorBoundary.tsx",
 ];
 
 describe("account and user client logging source hygiene", () => {
@@ -26,7 +25,7 @@ describe("account and user client logging source hygiene", () => {
     const combinedSource = accountUserClientFiles.map(readRepoFile).join("\n");
 
     expect(combinedSource).not.toMatch(
-      /Submission error:|Error submitting comment:|Logout failed:|Failed to update comment:|Failed to delete comment:|Error caught by boundary:/
+      /Submission error:|Error submitting comment:|Logout failed:|Failed to update comment:|Failed to delete comment:/
     );
   });
 });

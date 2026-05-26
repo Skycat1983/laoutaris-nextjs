@@ -236,9 +236,6 @@ or inconsistent code forward.
   remove hard-coded localhost/same-app absolute routes.
 - Document whether admin action-segment API routes are canonical, or open an ADR
   for migration to resource-oriented routes before mixing conventions.
-- Create a staged pruning task for A-014 high-confidence unused leaf files, WIP
-  variants, unused barrels, starter assets, and import cleanup, with
-  verification before deletion.
 - Use T-015's inventory before any future Next major package edit; especially
   convert async request APIs, middleware/proxy, and fetch/cache behavior in a
   package-owner implementation task after the owner accepts a stable target.
@@ -783,6 +780,35 @@ Use targeted import/reference searches for pruning tasks.
   helpers were deleted with stale test-only references removed. Active
   `getUserIdFromSession.ts`, `requireAdminFrontendAccess.ts`, and protected API
   guard inventory coverage remained in place.
+- 2026-05-26: Prepared T-299 as the first A-014 source pruning pass. It should
+  re-verify and delete only high-confidence unused source leaves, unused
+  barrels, and starter assets while keeping auth/session, i18n, dependency,
+  route, commerce, and owner-decision cleanup separate.
+- 2026-05-26: Completed T-299. The first A-014 source pruning pass deleted the
+  scoped high-confidence unused source leaves, WIP/variant files, unused
+  barrels, and starter assets after fresh reference checks. Auth/session, i18n,
+  dependency, commerce, route, and owner-decision areas were left out of scope.
+- 2026-05-26: Prepared T-300 as the remaining F-031 utility/import cleanup
+  after T-299. It should re-check `filterWatchlerlist`, collection layout
+  comment/import leftovers, and saved-item action import candidates while
+  keeping auth/session, i18n, packages, root Shopify notes, route behavior,
+  commerce, and owner decisions out of scope.
+- 2026-05-26: Completed T-300. The remaining F-031 utility/import cleanup
+  removed the unreferenced `filterWatchlerlist` helper and the stale collection
+  slug layout comment/import leftovers after fresh reference checks. Saved-item
+  action imports were left unchanged because `revalidatePath` and saved-button
+  state type imports remain live.
+- 2026-05-26: Prepared T-302 as a parallel-safe route-builder centralization
+  scoping task. It should inventory current app/API/auth route construction and
+  propose a narrow first implementation slice without editing runtime source or
+  shared trackers during the parallel run.
+- 2026-05-26: Completed T-302. The source-backed route-builder result selected
+  public app route builders as the first implementation slice and deferred
+  auth/protected routes, API route IDs/builders, admin action route
+  conventions, smoke route constants, and cache policy.
+- 2026-05-26: Prepared T-305 as the public app route-builder implementation
+  slice. It can run in parallel with T-304/T-306 and should not edit shared
+  trackers.
 
 ## Next Agent Action
 
@@ -837,9 +863,18 @@ completed T-126, T-127, T-128, and T-129 scopes separate
 unless explicitly scoped.
 
 Keep broader root-layout session/cache refactors separate from the completed
-T-023 import-boundary mitigation. Prepare a later A-014 source pruning task for
-unused leaf files, WIP variants, barrels, and starter assets. If Next dependency
-work takes priority, wait for owner/orchestrator acceptance of a Next target,
-then use
+T-023 import-boundary mitigation. T-299 and T-300 resolved the scoped F-031
+A-014 high-confidence source and utility/import pruning sequence. Do not
+reassign that cleanup unless the deleted files/helpers or stale collection
+layout comment/import leftovers reappear. Keep auth/session, i18n, package,
+root Shopify note, route behavior, commerce, and owner-decision cleanup
+separate. If Next dependency work takes priority, wait for
+owner/orchestrator acceptance of a Next target, then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.
+
+T-305 is ready to run in parallel with T-304 and T-306. It should add the first
+client-safe public app route-builder slice and migrate only the selected public
+route consumers. Do not touch auth/protected routes, API route IDs/builders,
+admin action route conventions, smoke route constants, cache policy,
+redirects, or shared trackers during the parallel run.

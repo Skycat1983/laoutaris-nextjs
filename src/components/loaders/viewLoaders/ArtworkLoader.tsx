@@ -62,7 +62,6 @@ const ArtworkLoader = async ({ params }: { params: { id: string } }) => {
       <div className="py-16">
         <ArtworkView {...data} shopProducts={shopProducts} />
       </div>
-      {/* <CollectionInfoLayout /> */}
       <div className="pt-16">
         <SubscribeSection isLoggedIn={false} />
       </div>

@@ -4,7 +4,7 @@ Last updated: 2026-05-26
 
 ## Current Priority
 
-T-262 through T-292 are complete. A-026 through A-028 and A-030 through A-035
+T-262 through T-303 are complete. A-026 through A-028 and A-030 through A-035
 are completed in their result files; A-025 and A-029 remain superseded. T-267
 reconciled the recalibration findings into F-123 through F-146, R-034 through
 R-038, relevant workstream handoffs, and the task/orchestration trackers. T-274
@@ -30,8 +30,35 @@ room/material/modal direction usable for internal review, but narrow/mobile room
 and modal previews cropped the framed object. T-292 fixed those responsive
 blockers, making `/prototype/frame` owner-review-ready for the scoped frame,
 room, and modal review while product-page rail adoption remains paused. T-293
-is the next prepared agent-actionable task: a narrow live sale-gallery visual
-QA pass for T-261 using named print, original artwork, and book handles.
+completed the narrow live sale-gallery QA pass: the unlinked print route is
+scoped owner-review-ready, the original route needs a stable recheck, and the
+book candidate is blocked by weak Shopify product-kind metadata. T-294 hardened
+sale-gallery product-kind classification so generic `artwork` fallback wording
+does not misrepresent untyped products as originals. T-295 rechecked the named
+original route and found it scoped owner-review-ready for raw image visibility,
+room-gallery selection, enquiry copy, and desktop/mobile fit. T-296 documented
+the Shopify book metadata readiness checklist before repeat book sale-gallery
+review. T-297 created the owner-facing sale-gallery review packet for the ready
+print/original routes, blocked book metadata path, and owner-gated
+commerce/design decisions. T-298 reconciled F-131, R-037, the workstreams, task
+index, and orchestration state so the shared trackers reflect the post-T-297
+sale-gallery state: scoped print/original review is complete, book review is
+blocked on durable Shopify metadata, and implementation remains owner-gated.
+T-299 is complete: it re-verified and pruned the scoped A-014 high-confidence
+unused source leaves, unused barrels, and starter assets while leaving auth,
+i18n, dependency, route, commerce, and owner-decision cleanup out of scope.
+T-300 is also complete: it resolved the remaining F-031 utility/import cleanup
+by removing the unreferenced `filterWatchlerlist` helper and collection layout
+comment/import leftovers after fresh checks, while leaving live saved-item
+action imports unchanged.
+T-301, T-302, and T-303 are complete. T-301 scoped report-only CSP allowlist
+tightening before enforcement; T-302 scoped route-builder centralization and
+selected public app route builders as the first implementation slice; T-303
+scoped admin blog/collection image URL feedback. T-304, T-305, and T-306 are
+the next prepared parallel-safe implementation tasks. T-304 owns report-only CSP
+header/test work, T-305 owns public app route-builder source/test work, and
+T-306 owns admin content-image URL feedback source/test work. Shared tracker
+updates remain orchestrator-owned after those agents return.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -829,9 +856,16 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- Immediate handoff: assign
-  [T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md):
-  `/task effort: high details: docs/tasks/T-293-review-live-sale-gallery-visual-qa.md`.
+- Immediate handoff: assign these parallel-safe implementation tasks together:
+  - [T-304 Add report-only CSP allowlist](../tasks/T-304-add-report-only-csp-allowlist.md):
+    `/task effort: medium details: docs/tasks/T-304-add-report-only-csp-allowlist.md`.
+  - [T-305 Add public app route builders](../tasks/T-305-add-public-app-route-builders.md):
+    `/task effort: medium details: docs/tasks/T-305-add-public-app-route-builders.md`.
+  - [T-306 Add admin content image URL feedback](../tasks/T-306-add-admin-content-image-url-feedback.md):
+    `/task effort: medium details: docs/tasks/T-306-add-admin-content-image-url-feedback.md`.
+  These tasks should not edit shared trackers or indexes while running in
+  parallel; each owns separate source/test areas and should list candidate
+  shared updates in its handoff.
 - `/prototype/frame` is owner-review-ready for the T-194/T-292 scoped frame,
   room, and modal review. Product-page rail adoption remains paused until a
   later task or owner decision explicitly scopes it.
@@ -1565,8 +1599,38 @@ The recommended next assignments are:
   unless those deleted helpers or stale test references return.
 - T-194 and T-292 are complete. Do not reassign the framed-preview visual QA or
   responsive scaling fix unless `/prototype/frame` room/modal fit regresses.
-- The next prepared assignment is:
-  `/task effort: high details: docs/tasks/T-293-review-live-sale-gallery-visual-qa.md`.
+- T-293 is complete. Do not reassign the live sale-gallery visual QA pass unless
+  product-kind classification and product-data blockers have first been handled.
+- T-294 is complete. Do not reassign product-kind classification hardening
+  unless ambiguous untyped products again render as originals solely from
+  generic fallback `artwork` wording.
+- T-295 is complete. Do not reassign the original sale-gallery visual recheck
+  unless that route regresses.
+- T-296 is complete. Do not reassign book metadata readiness documentation
+  unless the Shopify book setup contract changes.
+- T-297 is complete. Do not reassign the owner-facing sale-gallery review
+  packet unless owner-review packet content itself needs correction.
+- T-298 is complete. Do not reassign the sale-gallery tracker reconciliation
+  unless F-131, R-037, workstream handoffs, task index, or orchestration state
+  drift again.
+- T-299 and T-300 are complete. Do not reassign the A-014 high-confidence
+  source-leaf, starter-asset, or utility/import pruning sequence unless the
+  deleted paths/helpers or stale collection layout comment/import leftovers
+  reappear. Keep auth/session, i18n, dependency, route, commerce, root Shopify
+  notes, and owner-decision cleanup out of that completed sequence unless a new
+  task explicitly scopes one of those paths.
+- T-301, T-302, and T-303 are complete. Do not reassign the CSP allowlist,
+  route-builder centralization, or admin image-control feedback scoping tasks
+  unless their result artifacts drift from current source.
+- The next prepared assignments can run in parallel because their write scopes
+  do not overlap:
+  - `/task effort: medium details: docs/tasks/T-304-add-report-only-csp-allowlist.md`
+  - `/task effort: medium details: docs/tasks/T-305-add-public-app-route-builders.md`
+  - `/task effort: medium details: docs/tasks/T-306-add-admin-content-image-url-feedback.md`
+  T-304 owns report-only CSP header/test work, T-305 owns public app
+  route-builder source/test work, and T-306 owns admin blog/collection
+  content-image URL feedback source/test work. Do not let these parallel tasks
+  edit shared trackers; reconcile their candidate updates after they return.
 - T-274 is complete as a docs packet. Do not assign monitoring, Vercel,
   credentialed-smoke, scheduled-smoke, or incident-owner implementation until
   the owner answers
@@ -1574,7 +1638,8 @@ The recommended next assignments are:
 - Keep product-page rail adoption, Shopify option mapping, checkout/cart work,
   enquiry mutation, physical-dimension migration, real texture asset creation,
   and room-background selection paused until scoped owner decisions or later
-  tasks. T-293 should only review the current live sale gallery.
+  tasks. Book owner review remains blocked until durable Shopify book metadata
+  exists and Storefront reads verify it for the candidate handle.
 - Keep scheduled/detail public smoke, credentialed/admin smoke, Vercel log
   evidence, and production ops ownership under the owner-blocked F-126/R-038
   path.
