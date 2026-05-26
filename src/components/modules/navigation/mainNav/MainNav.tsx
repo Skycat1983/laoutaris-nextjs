@@ -2,6 +2,7 @@ import { MobileNavLayout } from "@/components/modules/navigation/mainNav/MobileN
 import { TabletNavLayout } from "@/components/modules/navigation/mainNav/TabletNavLayout";
 import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/DesktopNavLayout";
 import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
+import { publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 export async function MainNav({ navLinks }: { navLinks: NavBarLink[] }) {
   return (
@@ -23,32 +24,32 @@ export const MainNavSkeleton = () => {
   const allLinksDisabled = [
     {
       label: "Artwork",
-      path: "/artwork",
+      path: publicAppRoutes.artwork,
       disabled: true,
     },
     {
       label: "Biography",
-      path: "/biography",
+      path: publicAppRoutes.biography,
       disabled: true,
     },
     {
       label: "Collections",
-      path: "/collections",
+      path: publicAppRoutes.collections,
       disabled: true,
     },
     {
       label: "Blog",
-      path: "/blog",
+      path: publicAppRoutes.blog,
       disabled: true,
     },
     {
       label: "Project",
-      path: "/project",
+      path: publicAppRoutes.project,
       disabled: true,
     },
     {
       label: "Shop",
-      path: "/shop",
+      path: publicAppRoutes.shop,
       disabled: true,
     },
   ];

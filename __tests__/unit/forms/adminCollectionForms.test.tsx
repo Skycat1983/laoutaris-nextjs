@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { CreateCollectionForm } from "@/components/features/adminDashboard/crudForms/create/CreateCollectionForm";
 import { UpdateCollectionForm } from "@/components/features/adminDashboard/crudForms/update/UpdateCollectionForm";
 import { clientApi } from "@/lib/api/clientApi";
+import { CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR } from "@/lib/validation/contentImageUrl";
+import { CONTENT_IMAGE_URL_INVALID_URL_ERROR } from "@/components/features/adminDashboard/crudForms/contentImageUrlFeedback";
 
 jest.mock("next/image", () => ({
   __esModule: true,
@@ -52,6 +54,10 @@ class ResizeObserverMock {
 
 const validCollectionImageUrl =
   "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000000/collection.jpg";
+const validFlaticonImageUrl =
+  "https://cdn-icons-png.flaticon.com/512/1000/1000000.png";
+const unsupportedCollectionImageUrl = "https://example.com/collection.jpg";
+const malformedCollectionImageUrl = "not-a-url";
 
 const collectionId = "507f1f77bcf86cd799439011";
 const artworkId = "507f1f77bcf86cd799439012";
@@ -178,6 +184,81 @@ describe("admin collection forms", () => {
     ).toBeInTheDocument();
     expect(onSuccess).not.toHaveBeenCalled();
     expect(mockRefresh).not.toHaveBeenCalled();
+  });
+
+  it("shows pre-submit collection create feedback for unsupported image hosts without rendering a preview", async () => {
+    render(<CreateCollectionForm onSuccess={jest.fn()} />);
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: unsupportedCollectionImageUrl },
+    });
+
+    expect(
+      await screen.findByText(CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR)
+    ).toBeInTheDocument();
+    expect(screen.queryByAltText("Collection preview")).not.toBeInTheDocument();
+  });
+
+  it("renders allowed collection create previews before submit", async () => {
+    render(<CreateCollectionForm onSuccess={jest.fn()} />);
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: validFlaticonImageUrl },
+    });
+
+    expect(await screen.findByAltText("Collection preview")).toHaveAttribute(
+      "src",
+      validFlaticonImageUrl
+    );
+  });
+
+  it("shows pre-submit collection update feedback for malformed image URLs without replacing the current preview", async () => {
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    expect(screen.getByAltText("Collection preview")).toHaveAttribute(
+      "src",
+      validCollectionImageUrl
+    );
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: malformedCollectionImageUrl },
+    });
+
+    expect(
+      await screen.findByText(CONTENT_IMAGE_URL_INVALID_URL_ERROR)
+    ).toBeInTheDocument();
+    expect(screen.getByAltText("Collection preview")).toHaveAttribute(
+      "src",
+      validCollectionImageUrl
+    );
+  });
+
+  it("renders allowed collection update previews before submit", async () => {
+    render(
+      <UpdateCollectionForm
+        collectionInfo={existingCollection}
+        onSuccess={jest.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: validCollectionImageUrl },
+    });
+
+    await waitFor(() =>
+      expect(screen.getByAltText("Collection preview")).toHaveAttribute(
+        "src",
+        validCollectionImageUrl
+      )
+    );
+    expect(
+      screen.queryByText(CONTENT_IMAGE_URL_INVALID_URL_ERROR)
+    ).not.toBeInTheDocument();
   });
 
   it("surfaces update route relationship validation failures to the operator", async () => {

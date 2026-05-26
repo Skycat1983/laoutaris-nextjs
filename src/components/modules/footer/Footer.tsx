@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SecurityBannerGrey } from "../banners/SecurityBanners";
+import { publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -31,10 +32,10 @@ function Footer() {
               aria-label="Legal"
               className="mb-3 flex justify-center gap-4 text-sm text-whitish"
             >
-              <Link className="hover:underline" href="/privacy">
+              <Link className="hover:underline" href={publicAppRoutes.privacy}>
                 Privacy
               </Link>
-              <Link className="hover:underline" href="/terms">
+              <Link className="hover:underline" href={publicAppRoutes.terms}>
                 Terms
               </Link>
             </nav>

@@ -8,6 +8,7 @@ import { Button } from "@/components/shadcn/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +33,7 @@ import {
   updateCollectionSchema,
 } from "@/lib/data/schemas/collectionSchema";
 import { clientApi } from "@/lib/api/clientApi";
+import { getContentImageUrlFeedback } from "../contentImageUrlFeedback";
 
 type CollectionUpdateFieldName = keyof UpdateCollectionFormValues;
 
@@ -106,6 +108,26 @@ export const UpdateCollectionForm = ({
       artworksToRemove: [],
     },
   });
+
+  const handleImageUrlChange = (url: string) => {
+    const feedback = getContentImageUrlFeedback(url);
+
+    if (feedback.status === "valid") {
+      form.clearErrors("imageUrl");
+      setImagePreview(feedback.previewUrl);
+      return;
+    }
+
+    if (feedback.status === "invalid") {
+      form.setError("imageUrl", {
+        type: "validate",
+        message: feedback.message,
+      });
+      return;
+    }
+
+    form.clearErrors("imageUrl");
+  };
 
   const applyApiErrors = (response: CollectionFormErrorResponse) => {
     let appliedFieldError = false;
@@ -344,10 +366,17 @@ export const UpdateCollectionForm = ({
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
-                        setImagePreview(e.target.value);
+                        handleImageUrlChange(e.target.value);
+                      }}
+                      onBlur={(e) => {
+                        field.onBlur();
+                        handleImageUrlChange(e.target.value);
                       }}
                     />
                   </FormControl>
+                  <FormDescription>
+                    URL of the image to represent this collection
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

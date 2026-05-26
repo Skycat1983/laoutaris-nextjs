@@ -33,6 +33,7 @@ import {
   type StructuredFormErrorResponse,
 } from "../formApiErrors";
 import type { CreateBlogResult } from "@/lib/api/admin/create/fetchers";
+import { getContentImageUrlFeedback } from "../contentImageUrlFeedback";
 
 interface CreateBlogFormProps {
   onSuccess?: () => void;
@@ -101,10 +102,24 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
     }
   }
 
-  const handleImageUrlBlur = (url: string) => {
-    if (url && url.match(/^https?:\/\/.+/)) {
-      setImagePreview(url);
+  const handleImageUrlChange = (url: string) => {
+    const feedback = getContentImageUrlFeedback(url);
+
+    if (feedback.status === "valid") {
+      form.clearErrors("imageUrl");
+      setImagePreview(feedback.previewUrl);
+      return;
     }
+
+    if (feedback.status === "invalid") {
+      form.setError("imageUrl", {
+        type: "validate",
+        message: feedback.message,
+      });
+      return;
+    }
+
+    form.clearErrors("imageUrl");
   };
 
   return (
@@ -180,9 +195,13 @@ export function CreateBlogForm({ onSuccess }: CreateBlogFormProps) {
                     <Input
                       placeholder="Enter image URL"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        handleImageUrlChange(e.target.value);
+                      }}
                       onBlur={(e) => {
                         field.onBlur();
-                        handleImageUrlBlur(e.target.value);
+                        handleImageUrlChange(e.target.value);
                       }}
                     />
                   </FormControl>

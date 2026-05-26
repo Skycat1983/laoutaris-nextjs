@@ -14,7 +14,7 @@ import {
   collectionArtworkPath,
   collectionDetailPath,
   productDetailPath,
-} from "@/lib/metadata/publicDetailMetadata";
+} from "@/lib/routes/publicAppRoutes";
 
 export type PublicSitemapEntry = {
   path: string;

@@ -28,6 +28,7 @@ import {
   type StructuredFormErrorResponse,
 } from "../formApiErrors";
 import type { UpdateBlogResult } from "@/lib/api/admin/update/fetchers";
+import { getContentImageUrlFeedback } from "../contentImageUrlFeedback";
 
 const visibleBlogUpdateFields = [
   "displayDate",
@@ -70,8 +71,24 @@ export const UpdateBlogForm = ({
     },
   });
 
-  const handleImageUrlBlur = (url: string) => {
-    setImagePreview(url);
+  const handleImageUrlChange = (url: string) => {
+    const feedback = getContentImageUrlFeedback(url);
+
+    if (feedback.status === "valid") {
+      form.clearErrors("imageUrl");
+      setImagePreview(feedback.previewUrl);
+      return;
+    }
+
+    if (feedback.status === "invalid") {
+      form.setError("imageUrl", {
+        type: "validate",
+        message: feedback.message,
+      });
+      return;
+    }
+
+    form.clearErrors("imageUrl");
   };
 
   async function onSubmit(data: UpdateBlogFormValues) {
@@ -180,9 +197,13 @@ export const UpdateBlogForm = ({
                     <Input
                       placeholder="Enter image URL"
                       {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        handleImageUrlChange(e.target.value);
+                      }}
                       onBlur={(e) => {
                         field.onBlur();
-                        handleImageUrlBlur(e.target.value);
+                        handleImageUrlChange(e.target.value);
                       }}
                     />
                   </FormControl>

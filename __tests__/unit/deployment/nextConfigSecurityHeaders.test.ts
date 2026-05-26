@@ -21,6 +21,36 @@ type NextConfigSnapshot = {
   remotePatterns: RemotePattern[];
 };
 
+const CURRENT_ENFORCED_CSP = [
+  "default-src 'self' https: data: blob:",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "style-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "img-src 'self' data: https: blob:",
+  "font-src 'self' data: https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "connect-src 'self' data: https: blob:",
+  "media-src 'self' data: https: blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+].join("; ");
+
+const REPORT_ONLY_CSP = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "img-src 'self' data: blob: https://res.cloudinary.com https://cdn-icons-png.flaticon.com https://cdn.shopify.com",
+  "font-src 'self' data: https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "connect-src 'self' https://api.cloudinary.com https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "style-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com",
+  "script-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com https://www.youtube.com https://www.youtube-nocookie.com",
+  "media-src 'self' blob: https://res.cloudinary.com",
+].join("; ");
+
 const repoRoot = process.cwd();
 
 const readNextConfig = () => {
@@ -45,6 +75,14 @@ const readNextConfig = () => {
 
 const getHeaderMap = (headers: NextHeader[]) =>
   new Map(headers.map(({ key, value }) => [key.toLowerCase(), value]));
+
+const getDirectives = (csp: string | undefined) =>
+  new Map(
+    (csp ?? "").split("; ").map((directive) => {
+      const [name, ...sources] = directive.split(" ");
+      return [name, sources];
+    })
+  );
 
 describe("Next security headers", () => {
   const nextConfig = readNextConfig();
@@ -99,11 +137,11 @@ describe("Next security headers", () => {
     expect(csp).toContain("frame-ancestors 'self'");
   });
 
-  it("preserves current external resource allowances", () => {
+  it("preserves the current enforced CSP during report-only observation", () => {
     const headers = getHeaderMap(globalHeaderRule?.headers ?? []);
     const csp = headers.get("content-security-policy");
 
-    expect(csp).toEqual(expect.any(String));
+    expect(csp).toBe(CURRENT_ENFORCED_CSP);
     expect(csp).toContain("https://widget.cloudinary.com");
     expect(csp).toContain("https://upload-widget.cloudinary.com");
     expect(csp).toContain("https://www.youtube.com");
@@ -125,6 +163,59 @@ describe("Next security headers", () => {
           pathname: "/**",
         }),
       ])
+    );
+  });
+
+  it("adds a narrowed report-only CSP allowlist", () => {
+    const headers = getHeaderMap(globalHeaderRule?.headers ?? []);
+    const reportOnlyCsp = headers.get("content-security-policy-report-only");
+
+    expect(reportOnlyCsp).toBe(REPORT_ONLY_CSP);
+
+    const directives = getDirectives(reportOnlyCsp);
+
+    expect(directives.get("default-src")).toEqual(["'self'"]);
+    expect(directives.get("script-src")).not.toContain("'unsafe-eval'");
+    expect(directives.get("script-src")).toEqual(
+      expect.arrayContaining([
+        "'self'",
+        "'unsafe-inline'",
+        "https://widget.cloudinary.com",
+        "https://upload-widget.cloudinary.com",
+        "https://www.youtube.com",
+        "https://www.youtube-nocookie.com",
+      ])
+    );
+
+    expect(directives.get("img-src")).not.toContain("https:");
+    expect(directives.get("img-src")).toEqual(
+      expect.arrayContaining([
+        "'self'",
+        "data:",
+        "blob:",
+        "https://res.cloudinary.com",
+        "https://cdn-icons-png.flaticon.com",
+        "https://cdn.shopify.com",
+      ])
+    );
+
+    expect(directives.get("connect-src")).toEqual([
+      "'self'",
+      "https://api.cloudinary.com",
+      "https://widget.cloudinary.com",
+      "https://upload-widget.cloudinary.com",
+    ]);
+    expect(directives.get("connect-src")).not.toEqual(
+      expect.arrayContaining(["data:", "https:", "blob:"])
+    );
+
+    expect(directives.get("media-src")).toEqual([
+      "'self'",
+      "blob:",
+      "https://res.cloudinary.com",
+    ]);
+    expect(directives.get("media-src")).not.toEqual(
+      expect.arrayContaining(["data:", "https:"])
     );
   });
 });

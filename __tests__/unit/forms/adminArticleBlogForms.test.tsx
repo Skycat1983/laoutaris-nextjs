@@ -11,6 +11,8 @@ import {
   deriveBlogYearOptions,
   getBlogFilterOptions,
 } from "@/components/features/adminDashboard/inputs/BlogFilterDropdowns";
+import { CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR } from "@/lib/validation/contentImageUrl";
+import { CONTENT_IMAGE_URL_INVALID_URL_ERROR } from "@/components/features/adminDashboard/crudForms/contentImageUrlFeedback";
 
 jest.setTimeout(20000);
 
@@ -66,6 +68,10 @@ class ResizeObserverMock {
 
 const validContentImageUrl =
   "https://res.cloudinary.com/dzncmfirr/image/upload/v1730000000/content.jpg";
+const validShopifyImageUrl =
+  "https://cdn.shopify.com/s/files/1/0000/0001/products/product.jpg?v=1";
+const unsupportedContentImageUrl = "https://example.com/content.jpg";
+const malformedContentImageUrl = "not-a-url";
 const artworkId = "507f1f77bcf86cd799439012";
 const articleId = "507f1f77bcf86cd799439013";
 const blogId = "507f1f77bcf86cd799439014";
@@ -314,6 +320,58 @@ describe("admin article and blog forms", () => {
     ).toBeInTheDocument();
     expect(onSuccess).not.toHaveBeenCalled();
     expect(mockRefresh).not.toHaveBeenCalled();
+  });
+
+  it("shows pre-submit blog create feedback for malformed image URLs without rendering a preview", async () => {
+    render(<CreateBlogForm />);
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: malformedContentImageUrl },
+    });
+
+    expect(
+      await screen.findByText(CONTENT_IMAGE_URL_INVALID_URL_ERROR)
+    ).toBeInTheDocument();
+    expect(screen.queryByAltText("Blog post image")).not.toBeInTheDocument();
+  });
+
+  it("shows pre-submit blog update feedback for unsupported image hosts without replacing the current preview", async () => {
+    render(<UpdateBlogForm blogInfo={blogInfo} onSuccess={jest.fn()} />);
+
+    expect(screen.getByAltText("Blog post image")).toHaveAttribute(
+      "src",
+      validContentImageUrl
+    );
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: unsupportedContentImageUrl },
+    });
+
+    expect(
+      await screen.findByText(CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR)
+    ).toBeInTheDocument();
+    expect(screen.getByAltText("Blog post image")).toHaveAttribute(
+      "src",
+      validContentImageUrl
+    );
+  });
+
+  it("renders allowed blog image previews before submit", async () => {
+    render(<UpdateBlogForm blogInfo={blogInfo} onSuccess={jest.fn()} />);
+
+    fireEvent.change(screen.getByLabelText("Image URL"), {
+      target: { value: validShopifyImageUrl },
+    });
+
+    await waitFor(() =>
+      expect(screen.getByAltText("Blog post image")).toHaveAttribute(
+        "src",
+        validShopifyImageUrl
+      )
+    );
+    expect(
+      screen.queryByText(CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR)
+    ).not.toBeInTheDocument();
   });
 
   it("surfaces blog update field errors without calling success", async () => {

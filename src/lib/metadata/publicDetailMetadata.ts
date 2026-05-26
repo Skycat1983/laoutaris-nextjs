@@ -3,8 +3,26 @@ import { getPublicSitePathUrl } from "@/lib/config/publicSiteUrl";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { CollectionFrontendPopulated } from "@/lib/data/types/collectionTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import {
+  articleDetailPath,
+  artworkDetailPath,
+  blogDetailPath,
+  collectionArtworkPath,
+  collectionDetailPath,
+  productDetailPath,
+  publicAppRoutes,
+} from "@/lib/routes/publicAppRoutes";
 import { getShopProductKind } from "@/lib/shop/productClassification";
 import { getShopProductDisplayTitle } from "@/lib/shop/productDisplay";
+
+export {
+  articleDetailPath,
+  artworkDetailPath,
+  blogDetailPath,
+  collectionArtworkPath,
+  collectionDetailPath,
+  productDetailPath,
+} from "@/lib/routes/publicAppRoutes";
 
 const siteName = "Joseph Laoutaris Art Archive";
 
@@ -54,32 +72,6 @@ const getDescription = (content: PublicDetailContent) =>
       normalizeText(content.subtitle) ||
       normalizeText(content.title)
   );
-
-const detailPath = (
-  basePath: "/artwork" | "/biography" | "/blog" | "/shop/products",
-  slug: string
-) => `${basePath}/${encodeURIComponent(slug)}`;
-
-export const articleDetailPath = (slug: string) => detailPath("/biography", slug);
-
-export const blogDetailPath = (slug: string) => detailPath("/blog", slug);
-
-export const artworkDetailPath = (artworkId: string) =>
-  detailPath("/artwork", artworkId);
-
-export const productDetailPath = (productHandle: string) =>
-  detailPath("/shop/products", productHandle);
-
-export const collectionDetailPath = (collectionSlug: string) =>
-  `/collections/${encodeURIComponent(collectionSlug)}`;
-
-export const collectionArtworkPath = (
-  collectionSlug: string,
-  artworkId: string
-) =>
-  `/collections/${encodeURIComponent(collectionSlug)}/${encodeURIComponent(
-    artworkId
-  )}`;
 
 const artworkImageUrl = (artwork: ArtworkFrontend) => artwork.image.secure_url;
 
@@ -464,8 +456,8 @@ export const buildArticleBreadcrumbJsonLd = (
   article: PublicDetailContent
 ): JsonLdObject =>
   buildBreadcrumbListJsonLd([
-    { name: "Home", path: "/" },
-    { name: "Biography", path: "/biography" },
+    { name: "Home", path: publicAppRoutes.home },
+    { name: "Biography", path: publicAppRoutes.biography },
     { name: article.title, path: articleDetailPath(article.slug) },
   ]);
 
@@ -473,8 +465,8 @@ export const buildBlogBreadcrumbJsonLd = (
   blog: PublicBlogDetailContent
 ): JsonLdObject =>
   buildBreadcrumbListJsonLd([
-    { name: "Home", path: "/" },
-    { name: "Blog", path: "/blog" },
+    { name: "Home", path: publicAppRoutes.home },
+    { name: "Blog", path: publicAppRoutes.blog },
     { name: blog.title, path: blogDetailPath(blog.slug) },
   ]);
 
@@ -482,8 +474,8 @@ export const buildArtworkBreadcrumbJsonLd = (
   artwork: ArtworkFrontend
 ): JsonLdObject =>
   buildBreadcrumbListJsonLd([
-    { name: "Home", path: "/" },
-    { name: "Artwork", path: "/artwork" },
+    { name: "Home", path: publicAppRoutes.home },
+    { name: "Artwork", path: publicAppRoutes.artwork },
     { name: artwork.title, path: artworkDetailPath(artwork._id) },
   ]);
 
@@ -493,8 +485,8 @@ export const buildCollectionArtworkBreadcrumbJsonLd = (
   const artwork = collection.artworks[0];
 
   return buildBreadcrumbListJsonLd([
-    { name: "Home", path: "/" },
-    { name: "Collections", path: "/collections" },
+    { name: "Home", path: publicAppRoutes.home },
+    { name: "Collections", path: publicAppRoutes.collections },
     { name: collection.title, path: collectionDetailPath(collection.slug) },
     {
       name: artwork.title,
@@ -507,9 +499,9 @@ export const buildProductBreadcrumbJsonLd = (
   product: SimpleProduct
 ): JsonLdObject =>
   buildBreadcrumbListJsonLd([
-    { name: "Home", path: "/" },
-    { name: "Shop", path: "/shop" },
-    { name: "Products", path: "/shop/products" },
+    { name: "Home", path: publicAppRoutes.home },
+    { name: "Shop", path: publicAppRoutes.shop },
+    { name: "Products", path: publicAppRoutes.shopProducts },
     {
       name: getProductDisplayTitle(product),
       path: productDetailPath(product.handle),

@@ -60,6 +60,8 @@ describe("MainNavLoader", () => {
       "src/components/loaders/componentLoaders/MainNavLoader.tsx"
     );
 
+    expect(source).toContain("@/lib/routes/publicAppRoutes");
+    expect(source).not.toContain("@/lib/utils/urlUtils");
     expect(source).not.toContain("getArticleNavigationList");
     expect(source).not.toContain("getCollectionNavigationList");
     expect(source).not.toMatch(/createServerLogger|dbConnect|mongoose|fetch\(/);

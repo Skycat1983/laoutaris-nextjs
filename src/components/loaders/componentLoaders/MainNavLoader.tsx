@@ -1,26 +1,23 @@
 import { MainNav } from "@/components/modules/navigation/mainNav/MainNav";
-import { buildUrl } from "@/lib/utils/urlUtils";
 import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
-
-const BIOGRAPHY_PATH = buildUrl(["biography"]);
-const COLLECTIONS_PATH = buildUrl(["collections"]);
+import { publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 const MAIN_NAV_LINKS: NavBarLink[] = [
   {
     label: "Artwork",
-    path: buildUrl(["artwork"]),
+    path: publicAppRoutes.artwork,
   },
   {
     label: "Biography",
-    path: BIOGRAPHY_PATH,
+    path: publicAppRoutes.biography,
   },
   {
     label: "Collections",
-    path: COLLECTIONS_PATH,
+    path: publicAppRoutes.collections,
   },
-  { label: "Blog", path: buildUrl(["blog"]) },
-  { label: "Project", path: buildUrl(["project", "about"]) },
-  { label: "Shop", path: buildUrl(["shop"]) },
+  { label: "Blog", path: publicAppRoutes.blog },
+  { label: "Project", path: `${publicAppRoutes.project}/about` },
+  { label: "Shop", path: publicAppRoutes.shop },
 ];
 
 export const getMainNavLinks = (): NavBarLink[] =>
