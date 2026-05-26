@@ -136,31 +136,50 @@ const railBoxShadow = (
 
 type RailEdge = "top" | "right" | "bottom" | "left";
 
-const railClipPath = (edge: RailEdge, frameWidthPx: number): string => {
-  const frameWidth = `${frameWidthPx}px`;
+const getPercent = (value: number, total: number): number => {
+  if (total <= 0) {
+    return 0;
+  }
+
+  return (value / total) * 100;
+};
+
+const railClipPath = (
+  edge: RailEdge,
+  frameWidthPercentX: number,
+  frameWidthPercentY: number
+): string => {
+  const frameWidthX = `${frameWidthPercentX}%`;
+  const frameWidthY = `${frameWidthPercentY}%`;
 
   if (edge === "top") {
-    return `polygon(0 0, 100% 0, calc(100% - ${frameWidth}) 100%, ${frameWidth} 100%)`;
+    return `polygon(0 0, 100% 0, calc(100% - ${frameWidthX}) 100%, ${frameWidthX} 100%)`;
   }
 
   if (edge === "bottom") {
-    return `polygon(${frameWidth} 0, calc(100% - ${frameWidth}) 0, 100% 100%, 0 100%)`;
+    return `polygon(${frameWidthX} 0, calc(100% - ${frameWidthX}) 0, 100% 100%, 0 100%)`;
   }
 
   if (edge === "left") {
-    return `polygon(0 0, 100% ${frameWidth}, 100% calc(100% - ${frameWidth}), 0 100%)`;
+    return `polygon(0 0, 100% ${frameWidthY}, 100% calc(100% - ${frameWidthY}), 0 100%)`;
   }
 
-  return `polygon(0 ${frameWidth}, 100% 0, 100% 100%, 0 calc(100% - ${frameWidth}))`;
+  return `polygon(0 ${frameWidthY}, 100% 0, 100% 100%, 0 calc(100% - ${frameWidthY}))`;
 };
 
 type FrameRailProps = {
   edge: RailEdge;
   frameProfile: FrameProfile;
-  frameWidthPx: number;
+  frameWidthPercentX: number;
+  frameWidthPercentY: number;
 };
 
-const FrameRail = ({ edge, frameProfile, frameWidthPx }: FrameRailProps) => {
+const FrameRail = ({
+  edge,
+  frameProfile,
+  frameWidthPercentX,
+  frameWidthPercentY,
+}: FrameRailProps) => {
   const isHorizontal = edge === "top" || edge === "bottom";
 
   return (
@@ -175,9 +194,13 @@ const FrameRail = ({ edge, frameProfile, frameWidthPx }: FrameRailProps) => {
         right: edge === "left" ? undefined : 0,
         bottom: edge === "top" ? undefined : 0,
         left: edge === "right" ? undefined : 0,
-        width: isHorizontal ? "100%" : frameWidthPx,
-        height: isHorizontal ? frameWidthPx : "100%",
-        clipPath: railClipPath(edge, frameWidthPx),
+        width: isHorizontal ? "100%" : `${frameWidthPercentX}%`,
+        height: isHorizontal ? `${frameWidthPercentY}%` : "100%",
+        clipPath: railClipPath(
+          edge,
+          frameWidthPercentX,
+          frameWidthPercentY
+        ),
         backgroundImage: railMaterialPanelBackground(
           frameProfile,
           isHorizontal ? "horizontal" : "vertical"
@@ -194,6 +217,7 @@ type MiterSeamProps = {
   corner: "top-left" | "top-right" | "bottom-right" | "bottom-left";
   frameProfile: FrameProfile;
   frameWidthPx: number;
+  outerWidthPx: number;
 };
 
 const miterRotation = {
@@ -207,6 +231,7 @@ const MiterSeam = ({
   corner,
   frameProfile,
   frameWidthPx,
+  outerWidthPx,
 }: MiterSeamProps) => {
   const seamColor = frameProfile.previewStyle.seamColor ?? "rgba(0,0,0,0.24)";
   const seamLength = frameWidthPx * 1.42;
@@ -221,7 +246,7 @@ const MiterSeam = ({
         right: corner.endsWith("right") ? 0 : undefined,
         bottom: corner.startsWith("bottom") ? 0 : undefined,
         left: corner.endsWith("left") ? 0 : undefined,
-        width: seamLength,
+        width: `${getPercent(seamLength, outerWidthPx)}%`,
         height: Math.max(1, frameWidthPx * 0.035),
         backgroundColor: seamColor,
         opacity: 0.72,
@@ -240,6 +265,7 @@ type PreviewContentProps = {
   matProfile: MatProfile;
   priority: boolean;
   unoptimized: boolean;
+  frameContentWidthPx: number;
 };
 
 const PreviewContent = ({
@@ -248,18 +274,29 @@ const PreviewContent = ({
   matProfile,
   priority,
   unoptimized,
+  frameContentWidthPx,
 }: PreviewContentProps) => {
   const matBackground =
     matProfile.id === DEFAULT_MAT_PROFILE_ID ? "transparent" : matProfile.color;
   const imageWidth = Math.max(1, Math.round(artwork.metrics.pixelWidth));
   const imageHeight = Math.max(1, Math.round(artwork.metrics.pixelHeight));
   const renderedImageWidth = Math.max(1, Math.ceil(geometry.artwork.widthPx));
+  const matPaddingPercent = getPercent(
+    geometry.mat.widthPx,
+    frameContentWidthPx
+  );
 
   return (
     <div
       data-testid="framed-preview-mat"
+      data-rendered-artwork-width-px={geometry.artwork.widthPx}
+      data-rendered-artwork-height-px={geometry.artwork.heightPx}
       style={{
-        padding: geometry.mat.widthPx,
+        boxSizing: "border-box",
+        display: "flex",
+        width: "100%",
+        height: "100%",
+        padding: `${matPaddingPercent}%`,
         backgroundColor: matBackground,
       }}
     >
@@ -273,8 +310,8 @@ const PreviewContent = ({
         sizes={`${renderedImageWidth}px`}
         className="block object-contain"
         style={{
-          width: geometry.artwork.widthPx,
-          height: geometry.artwork.heightPx,
+          width: "100%",
+          height: "100%",
         }}
       />
     </div>
@@ -302,7 +339,13 @@ const SimpleFrameRenderer = ({
     className="shadow-2xl"
     data-testid="framed-preview-frame"
     style={{
-      padding: geometry.frame.widthPx,
+      boxSizing: "border-box",
+      width: "100%",
+      height: "100%",
+      padding: `${getPercent(
+        geometry.frame.widthPx,
+        geometry.outer.widthPx
+      )}%`,
       background: frameBackground(frameProfile),
     }}
   >
@@ -312,6 +355,7 @@ const SimpleFrameRenderer = ({
       matProfile={matProfile}
       priority={priority}
       unoptimized={unoptimized}
+      frameContentWidthPx={geometry.outer.widthPx - geometry.frame.widthPx * 2}
     />
   </div>
 );
@@ -327,6 +371,9 @@ const RailFrameRenderer = ({
   unoptimized,
 }: RailFrameRendererProps) => {
   const frameWidthPx = geometry.frame.widthPx;
+  const frameWidthPercentX = getPercent(frameWidthPx, geometry.outer.widthPx);
+  const frameWidthPercentY = getPercent(frameWidthPx, geometry.outer.heightPx);
+  const frameContentWidthPx = geometry.outer.widthPx - frameWidthPx * 2;
 
   return (
     <div
@@ -335,8 +382,8 @@ const RailFrameRenderer = ({
       data-frame-renderer="rails"
       style={{
         position: "relative",
-        width: geometry.outer.widthPx,
-        height: geometry.outer.heightPx,
+        width: "100%",
+        height: "100%",
         backgroundColor: frameProfile.previewStyle.outerColor,
         overflow: "hidden",
       }}
@@ -344,51 +391,59 @@ const RailFrameRenderer = ({
       <FrameRail
         edge="top"
         frameProfile={frameProfile}
-        frameWidthPx={frameWidthPx}
+        frameWidthPercentX={frameWidthPercentX}
+        frameWidthPercentY={frameWidthPercentY}
       />
       <FrameRail
         edge="right"
         frameProfile={frameProfile}
-        frameWidthPx={frameWidthPx}
+        frameWidthPercentX={frameWidthPercentX}
+        frameWidthPercentY={frameWidthPercentY}
       />
       <FrameRail
         edge="bottom"
         frameProfile={frameProfile}
-        frameWidthPx={frameWidthPx}
+        frameWidthPercentX={frameWidthPercentX}
+        frameWidthPercentY={frameWidthPercentY}
       />
       <FrameRail
         edge="left"
         frameProfile={frameProfile}
-        frameWidthPx={frameWidthPx}
+        frameWidthPercentX={frameWidthPercentX}
+        frameWidthPercentY={frameWidthPercentY}
       />
       <MiterSeam
         corner="top-left"
         frameProfile={frameProfile}
         frameWidthPx={frameWidthPx}
+        outerWidthPx={geometry.outer.widthPx}
       />
       <MiterSeam
         corner="top-right"
         frameProfile={frameProfile}
         frameWidthPx={frameWidthPx}
+        outerWidthPx={geometry.outer.widthPx}
       />
       <MiterSeam
         corner="bottom-right"
         frameProfile={frameProfile}
         frameWidthPx={frameWidthPx}
+        outerWidthPx={geometry.outer.widthPx}
       />
       <MiterSeam
         corner="bottom-left"
         frameProfile={frameProfile}
         frameWidthPx={frameWidthPx}
+        outerWidthPx={geometry.outer.widthPx}
       />
       <div
         data-testid="framed-preview-rail-content"
         style={{
           position: "absolute",
-          top: frameWidthPx,
-          left: frameWidthPx,
-          width: geometry.outer.widthPx - frameWidthPx * 2,
-          height: geometry.outer.heightPx - frameWidthPx * 2,
+          top: `${frameWidthPercentY}%`,
+          left: `${frameWidthPercentX}%`,
+          width: `${100 - frameWidthPercentX * 2}%`,
+          height: `${100 - frameWidthPercentY * 2}%`,
           boxShadow: `inset 0 0 18px ${
             frameProfile.previewStyle.shadowColor ?? "rgba(0,0,0,0.32)"
           }`,
@@ -400,6 +455,7 @@ const RailFrameRenderer = ({
           matProfile={matProfile}
           priority={priority}
           unoptimized={unoptimized}
+          frameContentWidthPx={frameContentWidthPx}
         />
         <span
           aria-hidden="true"
@@ -460,6 +516,10 @@ export const FramedArtworkPreview = ({
     <figure
       aria-label={`Framed preview of ${artwork.alt}`}
       className={className}
+      style={{
+        width: geometry.outer.widthPx,
+        maxWidth: "100%",
+      }}
       data-frame-profile-id={frameProfile.id}
       data-mat-profile-id={matProfile.id}
       data-render-mode={renderMode}
@@ -469,9 +529,10 @@ export const FramedArtworkPreview = ({
       <div
         className="inline-flex items-center justify-center"
         data-testid="framed-preview-outer"
+        data-frame-outer-aspect-ratio={`${geometry.outer.widthPx}/${geometry.outer.heightPx}`}
         style={{
-          width: geometry.outer.widthPx,
-          height: geometry.outer.heightPx,
+          width: "100%",
+          aspectRatio: `${geometry.outer.widthPx} / ${geometry.outer.heightPx}`,
           maxWidth: "100%",
         }}
       >

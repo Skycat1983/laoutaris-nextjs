@@ -57,8 +57,13 @@ describe("FramedArtworkPreview", () => {
       "/test-artwork.jpg"
     );
     expect(screen.getByTestId("framed-preview-outer")).toHaveStyle({
+      width: "100%",
       maxWidth: "100%",
     });
+    expect(screen.getByTestId("framed-preview-outer")).toHaveAttribute(
+      "data-frame-outer-aspect-ratio",
+      expect.stringContaining("/")
+    );
     expect(screen.getByTestId("framed-preview-frame")).toHaveStyle({
       background:
         "linear-gradient(135deg, #c99b5b 0%, #d8b579 42%, #9f743f 51%, #d8b579 60%, #c99b5b 100%)",
@@ -132,6 +137,36 @@ describe("FramedArtworkPreview", () => {
     expect(screen.getAllByTestId("framed-preview-miter-seam")).toHaveLength(4);
     expect(screen.getByTestId("framed-preview-inner-bevel")).toBeInTheDocument();
     expect(screen.getByTestId("framed-preview-glass-sheen")).toBeInTheDocument();
+  });
+
+  it("keeps the calculated frame fluid inside constrained containers", () => {
+    render(
+      <div style={{ width: 320 }}>
+        <FramedArtworkPreview
+          artwork={artwork}
+          frameProfile={FRAME_PROFILES[3]}
+          matProfile={MAT_PROFILES[1]}
+          bounds={{ maxWidthPx: 760, maxHeightPx: 560 }}
+          renderMode="rails"
+        />
+      </div>
+    );
+
+    expect(
+      screen.getByRole("figure", { name: "Framed preview of Test artwork" })
+    ).toHaveStyle({
+      maxWidth: "100%",
+    });
+    expect(screen.getByTestId("framed-preview-outer")).toHaveStyle({
+      width: "100%",
+      maxWidth: "100%",
+    });
+    expect(screen.getByTestId("framed-preview-frame")).toHaveStyle({
+      width: "100%",
+      height: "100%",
+    });
+    expect(screen.getByTestId("framed-preview-rail-content").style.width)
+      .toMatch(/%$/);
   });
 
   it("surfaces physical scale mode when complete print dimensions are available", () => {
@@ -210,9 +245,11 @@ describe("RoomFramedArtworkPreview", () => {
     const hangingZone = screen.getByTestId(
       "room-framed-preview-hanging-zone"
     );
+    const shadow = screen.getByTestId("room-framed-preview-shadow");
 
     expect(hangingZone).toHaveAttribute("data-background-ready", "false");
     expect(hangingZone).toHaveClass("opacity-0");
+    expect(shadow).toHaveClass("max-w-full");
     expect(screen.getByRole("img", { name: "Test room background" }))
       .toHaveAttribute("src", "/test-room.jpg");
 

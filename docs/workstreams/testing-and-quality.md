@@ -1970,11 +1970,17 @@ Playwright for follow-up loading-state work unless a separate scoped task
 approves the browser tooling, fixture plan, command posture, and artifact
 budget.
 
-T-261 shop product detail mockup coverage is complete. If a visual-QA follow-up
-is assigned, keep browser tooling scoped to named print, original artwork, and
-book product handles, targeted selectors, and minimal screenshots per the
-testing runbook; do not install or expand Playwright without a separate scoped
-task.
+T-261 shop product detail mockup coverage is complete. T-293 is prepared as the
+live sale-gallery visual-QA follow-up; keep browser tooling scoped to named
+print, original artwork, and book product handles, targeted selectors, and
+minimal screenshots per the testing runbook. Do not install or expand
+Playwright without a separate scoped task.
+
+T-194 `/prototype/frame` visual QA is complete and T-292 fixed the two
+narrow/mobile cropping blockers. T-292 verification used focused Jest suites,
+lint, build, `git diff --check`, and targeted headless browser bounding-box
+measurements at one desktop and one `390x844` viewport without traces, videos,
+full DOM dumps, or screenshot sets.
 
 T-230 import-boundary repair coverage is complete; do not reassign it unless
 the client import-boundary guard or `SignUpForm` direct constants import

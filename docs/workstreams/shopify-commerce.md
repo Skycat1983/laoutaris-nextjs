@@ -607,6 +607,19 @@ Add targeted tests as shop behavior is hardened.
   `/shop/products` query params into `ShopProductsLoader`, `getShopProductList`,
   the public API, and client URL updates. Public shop taxonomy controls now use
   canonical artwork constants through a shared labeled option module.
+- 2026-05-26: Completed T-194 targeted `/prototype/frame` visual QA. The
+  desktop room/material/modal direction is usable for internal review, but the
+  prototype is not owner-review-ready because narrow/mobile room and modal
+  previews crop the framed object. Prepared T-292 as the responsive scaling fix
+  before owner review or product-page rail adoption.
+- 2026-05-26: Completed T-292. The shared framed preview now scales its
+  rail/mat/artwork layers fluidly inside constrained containers, and
+  `/prototype/frame` constrains the room shadow wrapper to the hanging-zone
+  width so narrow room and modal previews no longer crop. `/prototype/frame` is
+  owner-review-ready for the scoped frame, room, and modal review; product-page
+  rail adoption remains paused.
+- 2026-05-26: Prepared T-293 as the narrow live T-261 sale-gallery visual QA
+  pass using named print, original artwork, and book product handles.
 
 ## Next Agent Action
 
@@ -618,13 +631,15 @@ use canonical artwork taxonomy options. T-270 is complete for rendering plain
 Shopify descriptions as text. Keep rich `descriptionHtml` rendering behind a
 separate sanitizer/design task.
 
-Prepare a narrow owner-review or visual-QA follow-up for the live T-261 sale
-gallery using one unlinked print handle, one original artwork handle, and one
-book handle. Keep the review scoped to layout, selected room backgrounds,
-print-only frame/mat presentation, and CTA wording. Do not add app-owned cart or
-checkout, Shopify option mapping, selected frame/mat persistence, sale-policy
-copy, or physical dimension migration without a separate task and owner
-decision.
+Run
+[T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md)
+for the live T-261 sale gallery using one unlinked print handle, one original
+artwork handle, and one book handle. Keep the review scoped to layout, selected
+room backgrounds, raw image/gallery selection, print-only frame/mat
+presentation, book gallery behavior, and CTA wording. Do not add app-owned cart
+or checkout, Shopify option mapping, selected frame/mat persistence, sale-policy
+copy, enquiry mutation, physical dimension migration, product-page rail
+adoption, or room-background changes without a separate task and owner decision.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)
@@ -640,17 +655,12 @@ product-detail redesign, product-link data migration, automatic mutation, and
 persistence-time Shopify API validation separate. No product-ID cleanup or
 migration is indicated by T-059 or T-082.
 
-If framed print preview implementation continues, run T-194 targeted visual QA
-and owner review for `/prototype/frame`. Include both close-up frame materials
-and the centered bright-wall room context candidates in review. Decide which
-room backgrounds to keep, whether to apply the rail renderer to product pages
-now, or whether to add real texture assets first. Confirm buffered room
-switching, centered hanging placement, fixed-print mat behavior, and even mat
-spacing across the corrected prototype artwork samples. Tune and record the
-right/down wall shadow values that work best across the selected room
-backgrounds. Record print, original artwork, and book handles, visual notes,
-and owner decisions before starting Shopify option mapping, checkout/cart work,
-enquiry mutation, or physical dimension migration.
+T-292 fixed the `/prototype/frame` narrow/mobile room and modal preview
+cropping found by T-194, so the prototype is ready for scoped owner review of
+the frame, room, and modal direction. Keep room-background selection, real
+texture assets, product-page rail adoption, Shopify option mapping,
+checkout/cart work, enquiry mutation, and physical dimension migration paused
+until a later task explicitly scopes them.
 
 Owner confirmation on the removed Shopify value remains a separate commerce
 blocker.

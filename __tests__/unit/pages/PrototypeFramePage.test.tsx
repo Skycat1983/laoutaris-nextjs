@@ -192,6 +192,9 @@ describe("/prototype/frame page", () => {
       top: "40%",
       width: "38%",
     });
+    expect(screen.getByTestId("prototype-frame-room-shadow")).toHaveClass(
+      "max-w-full"
+    );
     expect(screen.getByTestId("prototype-frame-room-scene")).toHaveAttribute(
       "data-room-transitioning",
       "false"
@@ -313,13 +316,21 @@ describe("/prototype/frame page", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Sample D" }));
 
-    const sampleDImages = screen.getAllByRole("img", {
-      name: "Sample D artwork frame preview",
-    });
+    const sampleDMats = screen
+      .getAllByRole("figure", {
+        name: "Framed preview of Sample D artwork frame preview",
+      })
+      .map((preview) => within(preview).getByTestId("framed-preview-mat"));
 
-    for (const sampleDImage of sampleDImages) {
-      expect(Number.parseFloat(sampleDImage.style.height)).toBeGreaterThan(
-        Number.parseFloat(sampleDImage.style.width)
+    for (const sampleDMat of sampleDMats) {
+      expect(
+        Number.parseFloat(
+          sampleDMat.getAttribute("data-rendered-artwork-height-px") ?? "0"
+        )
+      ).toBeGreaterThan(
+        Number.parseFloat(
+          sampleDMat.getAttribute("data-rendered-artwork-width-px") ?? "0"
+        )
       );
     }
   });

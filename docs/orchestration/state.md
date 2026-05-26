@@ -4,11 +4,11 @@ Last updated: 2026-05-26
 
 ## Current Priority
 
-T-262 through T-290 are complete and T-291 is the next prepared
-agent-actionable task. A-026 through A-028 and A-030 through A-035 are completed
-in their result files; A-025 and A-029 remain superseded. T-267 reconciled the
-recalibration findings into F-123 through F-146, R-034 through R-038, relevant
-workstream handoffs, and the task/orchestration trackers. T-274 created the
+T-262 through T-292 are complete. A-026 through A-028 and A-030 through A-035
+are completed in their result files; A-025 and A-029 remain superseded. T-267
+reconciled the recalibration findings into F-123 through F-146, R-034 through
+R-038, relevant workstream handoffs, and the task/orchestration trackers. T-274
+created the
 owner-facing production-ops decision packet, but monitoring, incident-role,
 Vercel-operator, smoke-account, public-smoke variable, and policy decisions
 remain owner-blocked. T-281, T-283, and T-284 resolved the current shop
@@ -23,7 +23,15 @@ local-gate workflow for PRs to `main`, pushes to `main`, and manual dispatch
 without adding public smoke, secrets, Vercel operations, rollback automation, or
 monitoring. T-289 resolved F-141 with focused OAuth/provider-shaped role/session
 callback coverage. T-290 completed the `src/lib/session` helper inventory and
-routed unused legacy helper deletion to T-291.
+T-291 resolved F-142 by deleting the unused legacy session/admin helpers and
+stale test-only references while preserving the active session/admin guards.
+T-194 completed targeted `/prototype/frame` visual QA and found the desktop
+room/material/modal direction usable for internal review, but narrow/mobile room
+and modal previews cropped the framed object. T-292 fixed those responsive
+blockers, making `/prototype/frame` owner-review-ready for the scoped frame,
+room, and modal review while product-page rail adoption remains paused. T-293
+is the next prepared agent-actionable task: a narrow live sale-gallery visual
+QA pass for T-261 using named print, original artwork, and book handles.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -62,10 +70,13 @@ orchestration trackers after that cleanup, and T-198 cleared the remaining
 test-only strict TypeScript diagnostics. `npx tsc --noEmit --pretty false
 --skipLibCheck` now passes, but no CI or release gate was added.
 
-T-187 through T-193 completed the framed print preview track through the
-prototype material-panel renderer. If that track continues, run T-194 targeted
-visual QA and owner review for `/prototype/frame` before Shopify option
-mapping, checkout/cart work, enquiry mutation, or physical dimension migration.
+T-187 through T-194 completed the framed print preview track through targeted
+visual QA, and T-292 fixed the narrow/mobile room and modal crop found by
+T-194. `/prototype/frame` is owner-review-ready for the scoped frame, room, and
+modal review. Keep product-page rail adoption, Shopify option mapping,
+checkout/cart work, enquiry mutation, physical dimension migration, real
+texture assets, and room-background selection paused until later scoped tasks
+or owner decisions.
 
 A-005 is complete and reconciled. F-105 through F-110 now track frontend
 route/component-boundary follow-ups, R-032 records the mitigated public
@@ -819,11 +830,11 @@ Use this section as the first operational handoff for a new orchestrator.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
 - Immediate handoff: assign
-  [T-291 Prune unused legacy session helpers](../tasks/T-291-prune-unused-legacy-session-helpers.md):
-  `/task effort: medium details: docs/tasks/T-291-prune-unused-legacy-session-helpers.md`.
-- Secondary optional handoff if owner visual review is the priority: assign
-  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md):
-  `/task effort: high details: docs/tasks/T-194-review-framed-print-preview-visual-qa.md`.
+  [T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md):
+  `/task effort: high details: docs/tasks/T-293-review-live-sale-gallery-visual-qa.md`.
+- `/prototype/frame` is owner-review-ready for the T-194/T-292 scoped frame,
+  room, and modal review. Product-page rail adoption remains paused until a
+  later task or owner decision explicitly scopes it.
 - Recent orchestration wave: T-206 restored the account subnav mount; T-207
   completed route fallback documentation and `/project/aims` fallback cleanup;
   T-139 recorded the blocked monitoring provider/no-provider decision; T-208
@@ -1550,17 +1561,20 @@ The recommended next assignments are:
 - T-289 and T-290 are complete. Do not reassign the OAuth role/session
   propagation coverage or legacy session-helper inventory unless those
   contracts regress.
-- The next low-risk auth/code-health task can run now:
-  `/task effort: medium details: docs/tasks/T-291-prune-unused-legacy-session-helpers.md`.
+- T-291 is complete. Do not reassign the legacy session-helper pruning task
+  unless those deleted helpers or stale test references return.
+- T-194 and T-292 are complete. Do not reassign the framed-preview visual QA or
+  responsive scaling fix unless `/prototype/frame` room/modal fit regresses.
+- The next prepared assignment is:
+  `/task effort: high details: docs/tasks/T-293-review-live-sale-gallery-visual-qa.md`.
 - T-274 is complete as a docs packet. Do not assign monitoring, Vercel,
   credentialed-smoke, scheduled-smoke, or incident-owner implementation until
   the owner answers
   [the production ops decision packet](../runbooks/production-ops-owner-decision-packet.md).
-- If broad framed print preview review becomes the owner priority instead, assign
-  [T-194 Review framed print preview visual QA](../tasks/T-194-review-framed-print-preview-visual-qa.md)
-  as targeted prototype QA for `/prototype/frame` before Shopify option
-  mapping, checkout/cart work, enquiry mutation, physical-dimension migration,
-  product-page rail adoption, or real texture asset creation.
+- Keep product-page rail adoption, Shopify option mapping, checkout/cart work,
+  enquiry mutation, physical-dimension migration, real texture asset creation,
+  and room-background selection paused until scoped owner decisions or later
+  tasks. T-293 should only review the current live sale gallery.
 - Keep scheduled/detail public smoke, credentialed/admin smoke, Vercel log
   evidence, and production ops ownership under the owner-blocked F-126/R-038
   path.

@@ -1471,6 +1471,17 @@ passed with network access.
   route-root links for `/biography` and `/collections`, preserving visible
   labels while avoiding root-header MongoDB navigation reads during static
   shell prerendering.
+- 2026-05-26: Completed T-194 for `/prototype/frame` visual QA. Desktop
+  room/material/modal behavior is usable for internal review, but narrow/mobile
+  room and modal previews crop the framed object. Prepared T-292 to fix the
+  responsive scaling before owner review or product-page rail adoption.
+- 2026-05-26: Completed T-292. The framed preview renderer now preserves its
+  desktop geometry as the max size while using fluid rail, mat, and artwork
+  layers, and the prototype/shared room preview shadow wrapper no longer
+  overflows the hanging zone at narrow widths. Browser measurements confirmed
+  the `390x844` room and modal fit.
+- 2026-05-26: Prepared T-293 as the narrow live sale-gallery visual QA pass for
+  named print, original artwork, and book product handles.
 
 ## Next Agent Action
 
@@ -1503,10 +1514,12 @@ The A-024 loading-state and account-navigation follow-up sequence is complete;
 do not reassign F-118 through F-122 unless a regression appears.
 
 The owner-prioritized T-261 shop product detail mockup implementation is
-complete. A reasonable next frontend slice is a narrow owner-review or visual-QA
-task for the live sale gallery with named print, original artwork, and book
-handles. Keep that separate from route cache policy, auth behavior, broad
-visual redesign, and Shopify cart/checkout work.
+complete. Run
+[T-293 Review live sale gallery visual QA](../tasks/T-293-review-live-sale-gallery-visual-qa.md)
+as the narrow owner-review/visual-QA pass for the live sale gallery with named
+print, original artwork, and book handles. Keep that separate from route cache
+policy, auth behavior, broad visual redesign, product-page rail adoption, and
+Shopify cart/checkout work.
 
 T-270 completed the A-028 public route correctness polish: the shop product sale
 gallery renders plain Shopify product descriptions as text instead of HTML, and
@@ -1559,10 +1572,11 @@ blog or artwork ISR, `popular` pages beyond page 1, sorted page 6-plus, comment
 caching, cache tags, mutation revalidation, and broader static/ISR migration
 separate unless a new task scopes one of those paths.
 
-If framed print preview implementation is prioritized instead, run T-194
-targeted visual QA and owner review for `/prototype/frame` before Shopify
-option mapping, checkout/cart work, enquiry mutation, or physical-dimension
-migration.
+T-292 fixed the `/prototype/frame` responsive room and modal crop found by
+T-194. The prototype can proceed to scoped owner review for the frame, room, and
+modal direction. Keep live shop sale-gallery behavior, Shopify option mapping,
+checkout/cart work, enquiry mutation, physical-dimension migration, real
+texture assets, and product-page rail adoption separate.
 
 For the homepage redesign track, keep production migration blocked until owner
 review accepts the expanded prototype direction using the T-169 packet, now

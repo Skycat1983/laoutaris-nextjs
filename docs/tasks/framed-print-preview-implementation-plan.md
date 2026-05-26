@@ -395,10 +395,13 @@ implementation:
 7. `T-193 Replace frame stripe textures with material panels`: replace the
    regular stripe texture layers with non-repeating panel fills in the
    prototype rail renderer.
-8. `T-194 Review framed print preview visual QA`: run M6 and record decisions.
-9. `T-195 Connect preview profiles to Shopify options`: implement M7 after
+8. `T-194 Review framed print preview visual QA`: completed M6 and found a
+   narrow/mobile responsive fit blocker.
+9. `T-292 Fix framed preview responsive scaling`: completed the narrow/mobile
+   room and modal crop fix before owner review or product-page rail adoption.
+10. `T-195 Connect preview profiles to Shopify options`: implement M7 after
    commerce ownership is decided.
-10. `T-196 Add physical dimension fields and scaling`: implement M8 after data
+11. `T-196 Add physical dimension fields and scaling`: implement M8 after data
    ownership is decided.
 
 Do not combine modal rendering, product-page wiring, Shopify option mapping,
@@ -493,7 +496,14 @@ fallback. Run the listed verification and update the task handoff.
   stripe texture layers with non-repeating full-rail material panel backgrounds
   while preserving bevels, mitred seams, rail geometry, mat controls, and modal
   behavior.
-- Next framed-preview step: T-194 targeted visual QA and owner review for
-  `/prototype/frame`; then decide whether to apply the rail renderer to product
-  pages or add real texture assets first. Do not begin Shopify option mapping
-  or physical-dimension migration before those review decisions are recorded.
+- 2026-05-26 completed T-194 targeted visual QA. Desktop room/material/modal
+  behavior is usable for internal review, but `/prototype/frame` is not
+  owner-review-ready because narrow/mobile room and modal previews crop the
+  framed object.
+- 2026-05-26 completed T-292. The framed preview renderer now scales inside
+  constrained room and modal containers without cropping, and `/prototype/frame`
+  is owner-review-ready for the scoped frame, room, and modal review.
+- Next framed-preview step: owner review for `/prototype/frame`; then decide
+  whether to apply the rail renderer to product pages or add real texture assets
+  first. Do not begin Shopify option mapping or physical-dimension migration
+  before those review decisions are recorded.

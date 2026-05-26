@@ -28,7 +28,10 @@ Implemented foundation:
   panel backgrounds, mitred seam overlays, inner bevel, and subtle glass sheen.
   The default sizing mode fits the full framed object within bounds; the
   prototype wall scene can opt into fixed-artwork sizing so mat margin grows the
-  frame around a constant-size print.
+  frame around a constant-size print. The renderer keeps the calculated
+  geometry as its maximum size while rendering the rail, mat, and artwork
+  layers fluidly, so constrained containers scale the full framed object
+  instead of cropping fixed-pixel children.
 - `src/components/shop/frame-preview/FramedPrintPreviewModal.tsx` wraps the
   standalone preview in a controlled modal shell with close, Escape, backdrop,
   previous/next, direct frame-material swatch selection, and optional renderer

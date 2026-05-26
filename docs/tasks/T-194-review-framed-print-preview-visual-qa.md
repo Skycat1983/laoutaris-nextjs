@@ -1,6 +1,6 @@
 # T-194 Review Framed Print Preview Visual QA
 
-Status: Planned
+Status: Completed
 
 Workstream:
 [Shopify Commerce](../workstreams/shopify-commerce.md),
@@ -132,3 +132,90 @@ migration. Run `git diff --check`.
 
 - Prepared 2026-05-23 after T-139 recorded the monitoring decision blocker and
   no other planned task brief remained open.
+- Completed targeted visual QA on 2026-05-26 against local
+  `http://localhost:3005/prototype/frame`.
+- Outcome: `/prototype/frame` is not ready for owner review as-is. The desktop
+  room and close-up direction is usable for internal review, but a targeted
+  responsive refinement should run before owner signoff because narrow/mobile
+  room and modal previews crop the framed object.
+- Evidence scope was intentionally small: one desktop room/material pass, one
+  desktop modal pass, one desktop bright-room switch pass, one narrow route
+  pass, one narrow modal pass, and DOM/style measurements. No traces, videos,
+  full DOM dumps, or large screenshot sets were collected or committed.
+- Desktop findings:
+  - Default `Modern Gallery` room context rendered with centered hanging
+    placement and credible scale. The framed print stayed in the centered
+    hanging zone, and the selected room label matched the loaded room.
+  - Buffered room switching behaved as intended in DOM state: selecting `White
+    Plaster Hallway` first left `data-room-transitioning="true"` while the
+    previous room remained visible, then settled to
+    `data-room-transitioning="false"` with the new room label after load.
+  - Frame rails use non-repeating panel backgrounds across all five materials.
+    DOM checks for `Black Wood`, `White Wood`, `Natural Oak`, `Walnut`, and
+    `Brushed Metal` reported `backgroundRepeat: no-repeat` for every rail and
+    no `repeating-linear-gradient` rail background.
+  - Mat spacing was even on the inspected close-up states. The default warm
+    mat measured equal top/right/bottom/left padding, and material changes kept
+    mat padding balanced.
+  - Mitred rail geometry, bevels, inner bevel, and the glass-sheen overlay were
+    visible in the desktop modal. Natural Oak was the strongest reviewed
+    material; Black Wood also reads cleanly in room context. Procedural material
+    panels still look like a good prototype direction rather than final texture
+    assets.
+  - Desktop modal opened, fit within the viewport, rendered the artwork after
+    image load, supported material swatches/previous/next controls, and closed
+    with Escape.
+- Narrow/mobile findings:
+  - The route stacks controls correctly and keeps inputs/buttons usable at
+    `390x844`.
+  - The room-scale framed object overflows the room scene vertically on narrow
+    width. Captured geometry: room scene `358x224`; room frame `169x220` with
+    frame top at `y=151` while the scene begins at `y=172`, so the frame starts
+    above the scene crop.
+  - The mobile modal dialog fits the viewport, but the framed preview is too
+    wide for the dialog and crops horizontally. Captured geometry: dialog
+    `358x776`; frame `430x560` with frame `x=-20`.
+  - These two narrow-width issues are the blocking refinement before owner
+    review or product-page rail adoption.
+- Room-context notes:
+  - `Modern Gallery` is the strongest currently observed room for desktop
+    review because furniture, wall tone, and cast shadow read naturally.
+  - Bright white candidates remain useful for owner comparison, but they should
+    be reviewed after the narrow room scaling fix. The owner still needs to
+    choose which generated rooms should remain in the product-page subset.
+- Shadow notes:
+  - The verified default shadow values were right offset `6`, bottom offset
+    `6`, edge blur `6`, diffusion `10`, spread `-1`, darkness `28`.
+  - Those defaults read acceptable in the desktop `Modern Gallery` context.
+    Do not hard-code alternate preferred values yet; ask the owner to choose
+    shadow values after the room subset is selected and the mobile scale issue
+    is fixed.
+- Sample/product notes:
+  - Prototype sample states reviewed: `Sample A` default, Natural Oak material,
+    `White Plaster Hallway`, `Bright Loft`, desktop modal, mobile route, and
+    mobile modal.
+  - No live product handles were reviewed in this task because T-194 scopes
+    owner review to `/prototype/frame` only.
+- Owner decisions needed before the next implementation slice:
+  - Which room backgrounds to keep for owner/product-page review, especially
+    whether the current first four shared scenes are still preferred over the
+    newer bright white-wall candidates.
+  - Whether product pages should receive the rail renderer only after the
+    mobile room/modal overflow fix.
+  - Whether procedural material panels are acceptable for first product-page
+    rollout, or whether a separate real texture-asset slice should happen
+    first.
+  - Whether the default wall shadow values above are acceptable for selected
+    rooms, or whether the owner wants per-room shadow tuning.
+  - Whether Shopify option mapping should remain paused until real frame
+    material/availability ownership is decided. Recommendation from this
+    review: keep Shopify option mapping and physical-dimension work paused.
+- Candidate tracker updates for the orchestrator:
+  - Mark T-194 complete in the task index.
+  - Add a follow-up task for narrow/mobile framed preview scaling before owner
+    review or product-page rail adoption.
+  - Keep shared workstreams unchanged until that follow-up is assigned.
+- Verification:
+  - `curl -I http://localhost:3005/prototype/frame`: returned `200 OK`.
+  - Targeted headless Chrome checks at `1440x1000` and `390x844`: completed
+    with the observations above.

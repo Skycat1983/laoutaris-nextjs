@@ -55,6 +55,15 @@ describe("FramedPrintPreviewModal", () => {
       screen.getByRole("figure", { name: "Framed preview of Modal artwork" })
     ).toHaveAttribute("data-frame-profile-id", "natural-oak-medium");
     expect(
+      screen.getByRole("figure", { name: "Framed preview of Modal artwork" })
+    ).toHaveStyle({
+      maxWidth: "100%",
+    });
+    expect(screen.getByTestId("framed-preview-outer")).toHaveStyle({
+      width: "100%",
+      maxWidth: "100%",
+    });
+    expect(
       screen.getByRole("button", { name: "Preview Natural Oak frame" })
     ).toHaveAttribute("aria-pressed", "true");
 

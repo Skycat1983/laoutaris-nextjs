@@ -104,7 +104,7 @@ export const RoomFramedArtworkPreview = ({
         }}
       >
         <div
-          className="relative inline-flex items-center justify-center"
+          className="relative inline-flex max-w-full items-center justify-center"
           data-testid="room-framed-preview-shadow"
           style={roomShadowStyles.frameShadow}
         >

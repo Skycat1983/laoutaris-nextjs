@@ -63,6 +63,14 @@ shadow controls for offset, edge blur, diffusion, spread, and darkness near the
 room preview, plus short south-east diagonal corner shadows from the frame.
 These generated backgrounds are prototype review assets only.
 
+Responsive review status on 2026-05-26: targeted T-194 QA found the desktop
+room/material/modal direction usable for internal review, and T-292 fixed the
+narrow/mobile room and modal cropping blockers. `/prototype/frame` is now
+owner-review-ready for the scoped frame, room, and modal review. Product-page
+rail adoption, real texture assets, Shopify option mapping, checkout/cart,
+enquiry mutation, and physical dimension work remain paused until separate
+owner decisions or task briefs scope them.
+
 ## Review Gates
 
 Review can happen in stages:

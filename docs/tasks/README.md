@@ -232,7 +232,7 @@ tasks must not reuse `T-221`.
 | [T-191 Wire framed preview launcher to product pages](T-191-wire-framed-preview-launcher-to-product-pages.md) | Completed | Wired the preview modal into eligible print product pages only, keeping frame selection preview-only and preserving enquiry behavior. |
 | [T-192 Improve frame preview material rendering](T-192-improve-frame-preview-material-rendering.md) | Completed | Added prototype-only rail, bevel, mitred corner, material texture, and mat margin controls while keeping commerce behavior unchanged. |
 | [T-193 Replace frame stripe textures with material panels](T-193-replace-frame-stripe-textures-with-material-panels.md) | Completed | Replaced regular stripe texture layers with non-repeating material panel fills in the prototype rail renderer. |
-| [T-194 Review framed print preview visual QA](T-194-review-framed-print-preview-visual-qa.md) | Planned | Run targeted visual QA and owner-review decision capture for `/prototype/frame` before product-page rail adoption, texture assets, Shopify option mapping, or physical-dimension work. |
+| [T-194 Review framed print preview visual QA](T-194-review-framed-print-preview-visual-qa.md) | Completed | Found `/prototype/frame` is not owner-review-ready because narrow/mobile room and modal previews crop the framed object; routed the responsive refinement to T-292. |
 | [T-197 Sync orchestration trackers after T-186](T-197-sync-orchestration-trackers-after-t186.md) | Completed | Synced shared trackers so T-186 was completed and the remaining noEmit cleanup was routed to T-198. |
 | [T-198 Clear remaining test noEmit diagnostics](T-198-clear-remaining-test-noemit-diagnostics.md) | Completed | Cleared the remaining test-only strict TypeScript diagnostics after T-186; strict noEmit now passes without adding a CI gate. |
 | [T-199 Define public detail not-found contract](T-199-define-public-detail-not-found-contract.md) | Completed | Defined the public detail route not-found/error contract before runtime route changes. |
@@ -329,6 +329,8 @@ tasks must not reuse `T-221`.
 | [T-289 Add OAuth role session propagation test](T-289-add-oauth-role-session-propagation-test.md) | Completed | Added focused OAuth/provider-shaped callback coverage for default user role propagation into JWT/session state. |
 | [T-290 Scope legacy session helper pruning](T-290-scope-legacy-session-helper-pruning.md) | Completed | Classified every current `src/lib/session` helper and routed unused legacy helper deletion to T-291. |
 | [T-291 Prune unused legacy session helpers](T-291-prune-unused-legacy-session-helpers.md) | Completed | Deleted the unused `createUserFromSession`, `getUserFromSession`, and `isAdmin` helper files plus stale test-only references while preserving active session/admin guards. |
+| [T-292 Fix framed preview responsive scaling](T-292-fix-framed-preview-responsive-scaling.md) | Completed | Fixed narrow/mobile `/prototype/frame` room and modal preview cropping before owner review; product-page rail adoption remains paused. |
+| [T-293 Review live sale gallery visual QA](T-293-review-live-sale-gallery-visual-qa.md) | Planned | Run a narrow owner-review/visual-QA pass on the live T-261 sale gallery using named print, original artwork, and book product handles. |
 
 ## Rules
 

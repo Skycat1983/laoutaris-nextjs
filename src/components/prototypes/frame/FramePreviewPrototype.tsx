@@ -276,7 +276,7 @@ export const FramePreviewPrototype = () => {
               }}
             >
               <div
-                className="relative inline-flex items-center justify-center"
+                className="relative inline-flex max-w-full items-center justify-center"
                 data-testid="prototype-frame-room-shadow"
                 style={roomShadowStyles.frameShadow}
               >
