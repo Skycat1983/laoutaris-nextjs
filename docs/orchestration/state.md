@@ -61,8 +61,8 @@ route-builder slice, and T-306 added pre-submit image URL feedback plus preview
 gating for blog/collection admin forms. Owner clarified that work should
 continue on tasks that do not require Shopify dashboard changes; Shopify
 metadata, product policy URLs, option mapping, and dashboard-only decisions
-remain deferred. T-307, T-308, T-309, T-311, T-312, T-314, T-315, T-316, and
-T-317 are complete and
+remain deferred. T-307, T-308, T-309, T-311, T-312, T-314, T-315, T-316,
+T-317, T-318, and T-319 are complete and
 reconciled: T-307 expanded public route-builder consumers across low-risk
 public UI surfaces, T-308 scoped the first auth/protected route constants
 implementation, T-311 completed that runtime slice, T-309 scoped the first API
@@ -70,7 +70,9 @@ path-builder implementation to admin delete client fetcher URLs, and T-312
 completed that runtime slice. T-314 added admin read API path builders, and
 T-315 scoped account/admin route-builder ownership to account UI route builders
 as the next implementation slice. T-316 completed account UI route builders,
-and T-317 scoped the next API family to admin update paths. Owner also approved Sentry as the monitoring
+T-317 scoped the next API family to admin update paths, T-318 completed admin
+update API path builders, and T-319 completed admin dashboard UI route
+builders. Owner also approved Sentry as the monitoring
 provider on 2026-05-27. ADR 0005 is now accepted and T-310 completed the first
 Sentry baseline with SDK/runtime initialization, App Router error capture,
 redacted structured logger forwarding, and environment documentation. T-313
@@ -880,14 +882,14 @@ Use this section as the first operational handoff for a new orchestrator.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
 - Immediate handoff: continue with non-Shopify-dashboard work. T-304 through
-  T-317 are complete and reconciled; do not reassign them unless their behavior
+  T-319 are complete and reconciled; do not reassign them unless their behavior
   or scoped result artifacts regress. Next assignments should avoid Shopify
   dashboard metadata/policy/option changes and focus on route-builder,
   security-header, admin-ops, verification, observability, or architecture tasks
   that can be completed from source.
 - Prepared route assignments:
-  - `/task effort: medium details: docs/tasks/T-318-add-admin-update-api-path-builders.md`
-  - `/task effort: medium details: docs/tasks/T-319-add-admin-dashboard-ui-route-builders.md`
+  - `/task effort: medium details: docs/tasks/T-320-add-admin-create-api-path-builders.md`
+  - `/task effort: medium details: docs/tasks/T-321-scope-release-fixture-auth-callback-route-ownership.md`
 - Sentry baseline T-310 is complete. Keep source-map upload, alert automation,
   replay, profiling, broad tracing, uptime checks, credentialed smoke, public
   smoke variables, Vercel privileged actions, and CI workflow changes separate.
@@ -1650,10 +1652,10 @@ The recommended next assignments are:
 - T-301, T-302, and T-303 are complete. Do not reassign the CSP allowlist,
   route-builder centralization, or admin image-control feedback scoping tasks
   unless their result artifacts drift from current source.
-- T-304 through T-317 are complete. The next prepared non-Shopify-dashboard
+- T-304 through T-319 are complete. The next prepared non-Shopify-dashboard
   route tasks are:
-  - `/task effort: medium details: docs/tasks/T-318-add-admin-update-api-path-builders.md`
-  - `/task effort: medium details: docs/tasks/T-319-add-admin-dashboard-ui-route-builders.md`
+  - `/task effort: medium details: docs/tasks/T-320-add-admin-create-api-path-builders.md`
+  - `/task effort: medium details: docs/tasks/T-321-scope-release-fixture-auth-callback-route-ownership.md`
 - T-274 is complete as a docs packet. Sentry provider choice is answered and
   routed to T-310. Do not assign Vercel privileged actions, credentialed-smoke,
   scheduled-smoke, source-map upload, alert automation, replay/profiling/tracing,

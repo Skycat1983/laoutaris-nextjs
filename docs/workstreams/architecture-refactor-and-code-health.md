@@ -912,8 +912,7 @@ account dropdown/mobile links, saved-artwork account UI path builders, and
 provider sign-in fallback defaults without changing auth policy, admin routes,
 cache revalidation, smoke/sitemap fixtures, callbacks, or Shopify behavior.
 T-317 is complete and scoped the next API route-builder family to admin update
-paths. T-318 and T-319 are prepared as the next non-Shopify route ownership
-tasks.
+paths.
 T-318 is complete: admin update API fetchers now use client-safe value-only
 path builders for the explicit article, artwork, blog, and collection update
 resources while leaving route handlers, request-context route IDs, admin UI,
@@ -922,3 +921,6 @@ dashboard entry redirects and sidebar segment links now use a client-safe
 value-only route surface for the dashboard root, articles default, supported
 segments, and current segment paths without changing auth, API, dashboard
 content, smoke/sitemap, cache, route segment config, or Shopify behavior.
+T-320 and T-321 are prepared as the next non-Shopify route ownership tasks:
+admin create API path builders as the next source slice, and docs-only scoping
+for smoke/sitemap/robots, auth callback, and saved-item cache route ownership.

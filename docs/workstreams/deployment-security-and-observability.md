@@ -1158,6 +1158,9 @@ The first non-secret Main CI local-gate workflow is in place. Keep public
 smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
 production secrets separate unless a later owner-approved task explicitly
 changes that boundary.
+T-321 is prepared as a docs-only scoping task for public smoke, sitemap, and
+robots route ownership before any source changes touch those release-contract
+fixtures.
 
 T-304 is complete for the report-only CSP observation step. Do not enforce the
 tightened CSP, add HSTS, change CORS, add a CSP report endpoint/provider, add

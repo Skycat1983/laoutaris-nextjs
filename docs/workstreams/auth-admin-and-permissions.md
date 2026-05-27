@@ -599,3 +599,5 @@ route values while preserving auth policy, role checks, persisted admin
 frontend access, and dashboard destinations. Keep auth callback redirect policy,
 saved-item revalidation paths, smoke/sitemap fixtures, session behavior, OAuth
 behavior, admin dashboard access, and Shopify dashboard work unchanged.
+T-321 is prepared to scope auth callback route ownership and saved-item
+revalidation paths before any source changes touch those behaviors.

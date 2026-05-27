@@ -2081,11 +2081,12 @@ pass again. T-314 focused admin read fetcher/parity tests, lint, typecheck, and
 whitespace passed, T-315 used `git diff --check` for docs-only scoping, and
 T-316 focused account route-builder, provider, navigation, import-boundary,
 lint, and whitespace checks passed. T-317 used `git diff --check` for
-docs-only scoping. Next non-Shopify verification should follow T-318 focused
-admin update fetcher/parity tests and T-319 focused admin dashboard route/
-sidebar tests plus the import-boundary guard. Keep Playwright, production
-smoke, credentialed/admin smoke, Vercel log evidence, and Shopify
-dashboard-dependent verification separate.
+docs-only scoping. T-318 focused admin update fetcher/parity tests passed, and
+T-319 focused admin dashboard route/sidebar tests plus the import-boundary
+guard passed. Next non-Shopify verification should follow T-320 focused admin
+create fetcher/parity tests and T-321 docs-only `git diff --check`. Keep
+Playwright, production smoke, credentialed/admin smoke, Vercel log evidence,
+and Shopify dashboard-dependent verification separate.
 
 T-194 `/prototype/frame` visual QA is complete and T-292 fixed the two
 narrow/mobile cropping blockers. T-292 verification used focused Jest suites,
@@ -2215,3 +2216,5 @@ dashboard segment paths, segment-builder parity, admin entry redirects,
 sidebar hrefs, and nested-prefix active-state behavior. The focused route test
 and client/server import-boundary suite passed, along with `git diff --check`
 and `npm run lint`.
+Next non-Shopify verification should follow T-320 focused admin create
+fetcher/parity tests and T-321 docs-only `git diff --check`.
