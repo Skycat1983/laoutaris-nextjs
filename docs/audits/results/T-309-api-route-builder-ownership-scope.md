@@ -195,7 +195,7 @@ Not allowed in the first slice:
 
 ## Future Task Scope
 
-Suggested task title: `T-310 Add Admin Delete API Path Builders`.
+Suggested task title: `T-312 Add Admin Delete API Path Builders`.
 
 Owned files:
 

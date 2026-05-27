@@ -29,7 +29,9 @@ orchestrator answers these questions:
   routing still need scoped follow-up.
 - Incident authority: no approved incident commander, service operators, or
   backups for privileged production actions.
-- Vercel authority: no recorded deployment/log/rollback operator or backup.
+- Vercel authority: owner has created a local `VERCEL_TOKEN` for approved CLI
+  log/deployment inspection, but rollback, project settings, aliases/domains,
+  and backup operator authority remain unapproved.
 - Credentialed smoke: no approved non-admin/admin smoke accounts and no private
   secret delivery path.
 - Public smoke automation: no approved `SMOKE_BASE_URL` or optional non-secret
@@ -119,13 +121,19 @@ Accepted answer format:
 
 ```md
 Vercel operator role/name:
+Owner local shell with `VERCEL_TOKEN` for approved deployment/log inspection.
 Backup operator role/name:
 Access source:
+Owner local shell profile/password manager; token value must not be recorded.
 Can inspect deployment logs: Yes | No
+Yes, for approved targeted CLI/API inspection when the token is available to
+the operator shell.
 Can verify production aliases/domains: Yes | No
 Can promote rollback target: Yes | No
 Rollback approval required from:
 Redacted log excerpt delivery path for agents without Vercel access:
+Owner-provided redacted excerpts remain the fallback when `VERCEL_TOKEN` is not
+available to the agent shell.
 Notes:
 ```
 

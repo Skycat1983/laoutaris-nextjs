@@ -1031,8 +1031,13 @@ opened.
 Existing Shopify product-link data migration is not indicated by the completed
 T-059 audit and T-082 validation work.
 
-T-309 is prepared as a docs-only scope for API route builder and route-ID
-ownership. It should distinguish client fetcher paths, physical route files,
-route parity fixtures, and request-context route IDs before any runtime API
-centralization. Keep API response contracts, statuses, validation, auth/admin
-guards, DB ownership, logging behavior, and Shopify dashboard work unchanged.
+T-309 is complete and selected admin delete client fetcher URLs as the first
+API route-builder runtime slice. T-312 completed that slice by adding
+client-safe admin delete destructive/preview path builders while keeping
+physical route files, request-context route IDs, route handlers, API response
+contracts, statuses, validation, auth/admin guards, DB ownership, logging
+behavior, and Shopify dashboard work unchanged. T-314 is prepared as the next
+source-only API route-builder slice for admin read list/detail fetcher paths.
+Keep route handlers, request-context route IDs, response contracts, validation,
+guard behavior, DB ownership, logging behavior, admin UI behavior, and Shopify
+dashboard work unchanged.

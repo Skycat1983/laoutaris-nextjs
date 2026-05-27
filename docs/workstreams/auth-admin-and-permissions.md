@@ -586,8 +586,12 @@ is complete and should not be reassigned unless OAuth default-role callback
 coverage regresses. T-275 is complete and should not be reassigned unless its
 test mock typing regression returns.
 
-T-308 is prepared as a docs-only scope for auth/protected route constant
-consolidation. It should inventory route literals and tests before any runtime
-middleware, NextAuth, route-utils, or admin frontend redirect changes. Keep
-session behavior, OAuth behavior, role checks, admin dashboard access, and
-Shopify dashboard work unchanged.
+T-308 is complete and scoped the first auth/protected route constant
+implementation. T-311 completed that runtime slice by centralizing stable
+auth/protected roots, sign-in/home redirect constants, middleware matcher
+derivation, NextAuth sign-in page config, and admin frontend guard redirects.
+T-315 is prepared as a docs-only scope for the next account/admin route-builder
+slice before touching auth callback redirect policy, UI navigation links,
+admin dashboard segment links, saved-item revalidation paths, smoke/sitemap
+fixtures, or Shopify dashboard work. Keep session behavior, OAuth behavior,
+role checks, and admin dashboard access unchanged.

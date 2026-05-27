@@ -6,11 +6,15 @@ import {
   isProtectedRoute,
   isAdminRoute,
 } from "@/lib/utils/routeUtils";
+import {
+  authProtectedRoutes,
+  protectedMiddlewareMatchers,
+} from "@/lib/routes/authProtectedRoutes";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  if (path.startsWith("/api/auth")) {
+  if (path.startsWith(authProtectedRoutes.nextAuthApi)) {
     return NextResponse.next();
   }
 
@@ -28,7 +32,9 @@ export async function middleware(request: NextRequest) {
       return apiAuthError("Unauthorized", 401);
     }
 
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+    return NextResponse.redirect(
+      new URL(authProtectedRoutes.signIn, request.url)
+    );
   }
 
   if (isAdminRoute(path)) {
@@ -38,7 +44,9 @@ export async function middleware(request: NextRequest) {
       if (isApiRoute(path)) {
         return apiAuthError("Forbidden", 403);
       }
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(
+        new URL(authProtectedRoutes.home, request.url)
+      );
     }
   }
 
@@ -46,10 +54,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/account/:path*",
-    "/admin/:path*",
-    "/api/v2/admin/:path*",
-    "/api/v2/user/:path*",
-  ],
+  matcher: protectedMiddlewareMatchers,
 };

@@ -1657,12 +1657,17 @@ checkout/cart work separate unless explicitly assigned. T-153, T-154, and T-155
 are complete; do not reassign them unless blog admin controls, public taxonomy
 validation, or visible breadcrumb labels regress.
 
-T-307 is prepared as the next public route-builder frontend slice. It should
-migrate only low-risk public UI link consumers to `publicAppRoutes` while
-preserving labels, destinations, query behavior, product handling, and public
-copy. Do not touch Shopify dashboard data, checkout/cart, auth/protected
-routes, API routes, admin routes, smoke lists, redirects, cache policy, or route
-segment config.
+T-307 is complete. Public cards, blog sections, masonry/detail links, and shop
+linked-artwork links now use `publicAppRoutes` for the scoped low-risk route
+builder slice. Do not reassign T-307 unless those consumers regress. Remaining
+public-route candidates such as protected/account comment links and
+prototype-home links should wait for a separate task because they cross account
+or prototype ownership boundaries. Do not touch Shopify dashboard data,
+checkout/cart, auth/protected routes, API routes, admin routes, smoke lists,
+redirects, cache policy, or route segment config from this completed slice.
+T-315 is prepared to scope account/admin route-builder ownership before any
+frontend account links, admin dashboard segment links, saved-item paths, smoke
+fixtures, sitemap fixtures, or auth callback redirects move.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

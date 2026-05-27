@@ -2,16 +2,11 @@ import type { ApiSuccessResponse } from "@/lib/data/types";
 import type { Fetcher } from "../../core/createFetcher";
 import type { AdminDeletePreview } from "./previewTypes";
 import type { AdminDeleteEvidence } from "./evidenceTypes";
+import { adminDeletePath, adminDeletePreviewPath } from "./paths";
 
 // This is what the fetcher expects
 export type DeleteDocumentResult = ApiSuccessResponse<null>;
 export type DeletePreviewResult = ApiSuccessResponse<AdminDeletePreview>;
-
-const deletePath = (resource: string, id: string) =>
-  `/api/v2/admin/${resource}/delete/${encodeURIComponent(id)}`;
-
-const deletePreviewPath = (resource: string, id: string) =>
-  `${deletePath(resource, id)}/preview`;
 
 const deleteOptions = (evidence: AdminDeleteEvidence): RequestInit => ({
   method: "DELETE",
@@ -22,7 +17,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete artwork
   artwork: async (artworkId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("artwork", artworkId),
+      adminDeletePath("artwork", artworkId),
       deleteOptions(evidence)
     );
   },
@@ -30,7 +25,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete article
   article: async (articleId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("article", articleId),
+      adminDeletePath("article", articleId),
       deleteOptions(evidence)
     );
   },
@@ -38,7 +33,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete blog
   blog: async (blogId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("blog", blogId),
+      adminDeletePath("blog", blogId),
       deleteOptions(evidence)
     );
   },
@@ -46,7 +41,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete collection
   collection: async (collectionId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("collection", collectionId),
+      adminDeletePath("collection", collectionId),
       deleteOptions(evidence)
     );
   },
@@ -54,7 +49,7 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete user
   user: async (userId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("user", userId),
+      adminDeletePath("user", userId),
       deleteOptions(evidence)
     );
   },
@@ -62,26 +57,32 @@ export const createDeleteFetchers = (fetcher: Fetcher) => ({
   // Delete comment
   comment: async (commentId: string, evidence: AdminDeleteEvidence) => {
     return fetcher<DeleteDocumentResult>(
-      deletePath("comment", commentId),
+      adminDeletePath("comment", commentId),
       deleteOptions(evidence)
     );
   },
 
   preview: {
     article: async (articleId: string) =>
-      fetcher<DeletePreviewResult>(deletePreviewPath("article", articleId)),
+      fetcher<DeletePreviewResult>(
+        adminDeletePreviewPath("article", articleId)
+      ),
     artwork: async (artworkId: string) =>
-      fetcher<DeletePreviewResult>(deletePreviewPath("artwork", artworkId)),
+      fetcher<DeletePreviewResult>(
+        adminDeletePreviewPath("artwork", artworkId)
+      ),
     blog: async (blogId: string) =>
-      fetcher<DeletePreviewResult>(deletePreviewPath("blog", blogId)),
+      fetcher<DeletePreviewResult>(adminDeletePreviewPath("blog", blogId)),
     collection: async (collectionId: string) =>
       fetcher<DeletePreviewResult>(
-        deletePreviewPath("collection", collectionId)
+        adminDeletePreviewPath("collection", collectionId)
       ),
     comment: async (commentId: string) =>
-      fetcher<DeletePreviewResult>(deletePreviewPath("comment", commentId)),
+      fetcher<DeletePreviewResult>(
+        adminDeletePreviewPath("comment", commentId)
+      ),
     user: async (userId: string) =>
-      fetcher<DeletePreviewResult>(deletePreviewPath("user", userId)),
+      fetcher<DeletePreviewResult>(adminDeletePreviewPath("user", userId)),
   },
 });
 

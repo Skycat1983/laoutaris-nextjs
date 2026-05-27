@@ -1,4 +1,8 @@
 import { config, middleware } from "@/middleware";
+import {
+  authProtectedRoutes,
+  protectedMiddlewareMatchers,
+} from "@/lib/routes/authProtectedRoutes";
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -85,7 +89,7 @@ describe("middleware", () => {
   });
 
   it("redirects unauthenticated protected frontend requests to the app sign-in page", async () => {
-    const request = createRequest("/account/settings");
+    const request = createRequest(authProtectedRoutes.accountSettings);
     mockGetToken.mockResolvedValue(null);
 
     const response = await middleware(request);
@@ -93,10 +97,10 @@ describe("middleware", () => {
     expect(response).toEqual({
       type: "redirect",
       status: 307,
-      url: "https://example.com/sign-in",
+      url: `https://example.com${authProtectedRoutes.signIn}`,
     });
     expect(mockRedirect).toHaveBeenCalledWith(
-      new URL("https://example.com/sign-in")
+      new URL(`https://example.com${authProtectedRoutes.signIn}`)
     );
   });
 
@@ -124,13 +128,17 @@ describe("middleware", () => {
     expect(response).toEqual({
       type: "redirect",
       status: 307,
-      url: "https://example.com/",
+      url: `https://example.com${authProtectedRoutes.home}`,
     });
-    expect(mockRedirect).toHaveBeenCalledWith(new URL("https://example.com/"));
+    expect(mockRedirect).toHaveBeenCalledWith(
+      new URL(`https://example.com${authProtectedRoutes.home}`)
+    );
   });
 
   it("bypasses NextAuth API routes", async () => {
-    const response = await middleware(createRequest("/api/auth/signin"));
+    const response = await middleware(
+      createRequest(`${authProtectedRoutes.nextAuthApi}/signin`)
+    );
 
     expect(response).toEqual({
       type: "next",
@@ -155,17 +163,12 @@ describe("middleware", () => {
   );
 
   it("matches only protected frontend and API prefixes", () => {
-    expect(config.matcher).toEqual([
-      "/account/:path*",
-      "/admin/:path*",
-      "/api/v2/admin/:path*",
-      "/api/v2/user/:path*",
-    ]);
+    expect(config.matcher).toEqual(protectedMiddlewareMatchers);
 
     [
-      "/account",
-      "/account/settings",
-      "/admin",
+      authProtectedRoutes.account,
+      authProtectedRoutes.accountSettings,
+      authProtectedRoutes.admin,
       "/admin/dashboard",
       "/api/v2/admin/article/read",
       "/api/v2/user/navigation",
@@ -174,10 +177,10 @@ describe("middleware", () => {
     });
 
     [
-      "/",
+      authProtectedRoutes.home,
       "/artwork",
       "/blog/post-1",
-      "/api/auth/signin",
+      `${authProtectedRoutes.nextAuthApi}/signin`,
       "/api/v2/public/artwork",
       "/api/v2/public/search",
       "/accounting",

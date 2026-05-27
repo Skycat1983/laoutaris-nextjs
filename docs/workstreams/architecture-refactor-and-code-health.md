@@ -814,9 +814,20 @@ Use targeted import/reference searches for pruning tasks.
   dynamic-sitemap, main-nav, skeleton-route, and footer legal-link consumers
   use that module without auth, API, admin, smoke, redirect, or cache-policy
   changes.
-- 2026-05-27: Prepared the next non-Shopify-dashboard route ownership wave:
-  T-307 expands public route-builder consumers, T-308 scopes auth/protected
-  route constants, and T-309 scopes API route builder/route-ID ownership.
+- 2026-05-27: Completed the next non-Shopify-dashboard route ownership wave.
+  T-307 expanded public route-builder consumers across low-risk public cards,
+  blog sections, masonry/detail links, and shop linked-artwork links. T-308
+  scoped the first auth/protected route constants implementation to middleware,
+  route utils, NextAuth sign-in config, and admin frontend redirects. T-309
+  scoped the first API route-builder implementation to admin delete client
+  fetcher URLs while keeping physical route files and request-context route IDs
+  separate. T-312 completed that first API runtime slice by adding client-safe
+  admin delete path builders for destructive and preview fetcher URLs.
+- 2026-05-27: Completed T-313. The post-route-builder verification drift is
+  repaired without runtime architecture changes: public route-builder consumer
+  fixtures are typed, and the route cache policy now asserts `MainNavLoader`
+  uses `publicAppRoutes` route-root links while staying out of dynamic
+  biography/collection navigation services.
 
 ## Next Agent Action
 
@@ -881,10 +892,13 @@ owner/orchestrator acceptance of a Next target, then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.
 
-T-307, T-308, and T-309 are prepared as the next non-Shopify-dashboard route
-ownership wave. T-307 can implement the next low-risk public UI route-builder
-consumer migration. T-308 and T-309 are docs-only scoping tasks for
-auth/protected and API route ownership respectively. Keep Shopify dashboard
-metadata/policy work, API route IDs/builders outside T-309, admin action route
-conventions, smoke route constants, cache policy, and redirect behavior
-separate unless a later task scopes them.
+T-307, T-308, T-309, T-311, T-312, and T-313 are complete and reconciled.
+T-311 added the first stable auth/protected route constants surface for
+middleware, route utilities, NextAuth sign-in config, and admin frontend guard
+redirects without changing auth behavior. T-313 restored broad verification
+after the route-builder wave without runtime route changes. Keep Shopify
+dashboard metadata/policy work, request-context route IDs, admin action route
+conventions, smoke/sitemap route constants, cache policy, auth callbacks,
+account navigation, and redirect behavior separate unless a later task scopes
+them. T-314 and T-315 are prepared as the next non-Shopify route ownership
+tasks: admin read API path builders and account/admin route-builder scoping.

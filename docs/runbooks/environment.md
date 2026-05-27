@@ -22,6 +22,12 @@ depend on local `.env` contents.
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name used by the admin upload signing route and public Cloudinary delivery configuration. | Public Cloudinary account identifier. | Local development when admin uploads are exercised; preview; production. | Assets/deployment owner. Keep aligned with Cloudinary delivery settings and `next.config.mjs` image host policy. |
 | `NEXT_PUBLIC_CLOUDINARY_API_KEY` | Cloudinary API key used by the admin upload signing route configuration. | Public Cloudinary account identifier. | Local development when admin uploads are exercised; preview; production. | Assets/deployment owner. This is not the signing secret, but it should still be managed with the matching Cloudinary account. |
 | `CLOUDINARY_API_SECRET` | Cloudinary signing secret used by `POST /api/v2/admin/sign-cloudinary-params`. | Server-only secret. | Local development when admin uploads are exercised; preview; production. | Assets/security owner. Missing values return a public-safe configuration error. Rotate in Cloudinary if exposed or when ownership changes. |
+| `SENTRY_DSN` | Optional server/edge Sentry ingest DSN for the T-310 error-reporting baseline. Server and edge runtime use this value first when present. | Server-side provider configuration; do not treat as a browser variable. | Preview and production when server/edge Sentry reporting is enabled; optional for local development. | Observability/deployment owner. Do not expose through `next.config.mjs` `env`. Rotate or replace in Sentry if exposed or when project ownership changes. |
+| `NEXT_PUBLIC_SENTRY_DSN` | Browser Sentry ingest DSN for the T-310 client error-reporting baseline; also a server/edge fallback when `SENTRY_DSN` is absent. | Public provider identifier; environment-managed, not a secret. | Preview and production when browser Sentry reporting is enabled; optional for local development. | Observability/deployment owner. This value is intentionally public in browser bundles. Do not pair it with auth tokens, organization IDs, project IDs, or dashboard URLs in repo docs. |
+| `SENTRY_ENVIRONMENT` | Server/edge Sentry environment name for event grouping. Falls back to platform/runtime environment when absent. | Non-secret deployment metadata. | Preview and production when server/edge Sentry reporting is enabled; optional for local development. | Observability/deployment owner. Use stable names such as production or preview; do not include secrets, host-specific tokens, or personal data. |
+| `NEXT_PUBLIC_SENTRY_ENVIRONMENT` | Browser Sentry environment name for event grouping. | Public non-secret deployment metadata. | Preview and production when browser Sentry reporting is enabled; optional for local development. | Observability/deployment owner. Keep aligned with `SENTRY_ENVIRONMENT` where practical and safe to expose. |
+| `SENTRY_RELEASE` | Server/edge Sentry release identifier for grouping events by deployment. Falls back to platform commit metadata when available. | Non-secret deployment metadata. | Preview and production when release grouping is enabled; optional for local development. | Observability/deployment owner. Use a commit SHA or release label safe to record in incident evidence. Source-map upload is not enabled by T-310. |
+| `NEXT_PUBLIC_SENTRY_RELEASE` | Browser Sentry release identifier for grouping client events by deployment. | Public non-secret deployment metadata. | Preview and production when browser release grouping is enabled; optional for local development. | Observability/deployment owner. Keep values safe for browser bundles. Source-map upload remains a separate owner-approved task. |
 | `NODE_ENV` | Standard Node/Next environment mode used for development-only DB client caching, auth/test helper behavior, and Shopify cache policy. | Runtime/platform variable; non-secret. | All Node/Next commands. | Node/Next runtime. Do not use as the only production safety control for secrets or authorization. |
 
 ## Script-Only Variables
@@ -41,6 +47,16 @@ operator inputs for `npm run smoke:public` unless marked required.
 | `SMOKE_PRODUCT_HANDLE` | Optional approved Shopify product handle for smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`; required for complete production shop evidence. | Commerce/deployment tester. Use an owner-approved product handle. |
 | `SMOKE_MISSING_PRODUCT_HANDLE` | Product handle expected to return `404` in public smoke checks. | Operator-supplied non-secret route input. | Optional for `npm run smoke:public`. | Commerce/deployment tester. Keep it intentionally nonexistent and safe to record. |
 
+## Operator-Only Local Variables
+
+These variables may exist in an operator shell for CLI access. They are not app
+runtime variables and must not be configured in Vercel project environment
+settings or committed to this repo.
+
+| Variable | Purpose | Classification | Required environments | Owner/status and notes |
+| --- | --- | --- | --- | --- |
+| `VERCEL_TOKEN` | Optional Vercel CLI/API access for approved deployment metadata and targeted log inspection. | Operator-only secret. | Only local operator shells or approved secure automation, not app runtime/build. | Owner-created local token as of 2026-05-27. Do not print, paste, commit, or expose through `next.config.mjs` or `NEXT_PUBLIC_*`. Do not use for rollback, project settings, env var changes, domain changes, or deployment promotion unless a scoped incident/deployment task explicitly approves that action. |
+
 ## Legacy Or Decision Candidates
 
 These names were raised by A-007, guard policy, or commented historical source
@@ -58,6 +74,9 @@ current source search.
 | `NEXT_PUBLIC_VERCEL_ENV` | Historical public Vercel environment candidate. | Unused public candidate. | Not required by current source. | Deployment owner decision. Do not configure as an app contract unless future source uses it intentionally. |
 | `NEXT_PUBLIC_VERCEL_URL` | Historical public Vercel URL candidate. | Unused public candidate. | Not required by current source. | Deployment owner decision. Do not configure as an app contract unless future source uses it intentionally. |
 | `MONGODB_URI` | Common MongoDB alias reserved by the Next config env guard. | Guard-only server-only secret candidate. | Not required by current source; use `MONGO_URI`. | Database/deployment owner. If this alias is introduced later, document and keep it server-only before use. |
+| `SENTRY_AUTH_TOKEN` | Sentry source-map/release upload auth token candidate. | Server-only CI/deployment secret. | Not required by T-310; only needed if a later task enables source-map upload or provider release automation. | Observability/deployment owner. Do not add to browser runtime, `next.config.mjs` `env`, docs, screenshots, or chat. |
+| `SENTRY_ORG` | Sentry organization slug candidate for source-map/release upload automation. | Provider identifier; environment-managed. | Not required by T-310; only needed if a later task enables source-map upload or provider release automation. | Observability/deployment owner. Do not document concrete values in the repo. |
+| `SENTRY_PROJECT` | Sentry project slug candidate for source-map/release upload automation. | Provider identifier; environment-managed. | Not required by T-310; only needed if a later task enables source-map upload or provider release automation. | Observability/deployment owner. Do not document concrete values in the repo. |
 
 ## Rules
 

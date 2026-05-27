@@ -2,6 +2,11 @@ import { createDeleteFetchers } from "@/lib/api/admin/delete/fetchers";
 import type { Fetcher } from "@/lib/api/core/createFetcher";
 import type { AdminDeletePreview } from "@/lib/api/admin/delete/previewTypes";
 import type { AdminDeleteEvidence } from "@/lib/api/admin/delete/evidenceTypes";
+import {
+  ADMIN_DELETE_RESOURCES,
+  adminDeletePath,
+  adminDeletePreviewPath,
+} from "@/lib/api/admin/delete/paths";
 
 const preview: AdminDeletePreview = {
   resource: "article",
@@ -26,6 +31,23 @@ const evidence: AdminDeleteEvidence = {
 };
 
 describe("admin delete fetchers", () => {
+  it("builds explicit destructive and preview paths for supported resources", () => {
+    expect(ADMIN_DELETE_RESOURCES).toEqual([
+      "article",
+      "artwork",
+      "blog",
+      "collection",
+      "comment",
+      "user",
+    ]);
+    expect(adminDeletePath("article", "id with/slash?and#hash")).toBe(
+      "/api/v2/admin/article/delete/id%20with%2Fslash%3Fand%23hash"
+    );
+    expect(adminDeletePreviewPath("user", "user id")).toBe(
+      "/api/v2/admin/user/delete/user%20id/preview"
+    );
+  });
+
   it("builds client-safe preview URLs for every delete resource", async () => {
     const result = {
       success: true,

@@ -39,12 +39,20 @@ jest.mock("@/lib/images/cloudinaryDelivery", () => ({
 }));
 
 const blog = {
+  _id: "blog-1",
   slug: "studio/news",
   title: "Studio News",
   subtitle: "Archive update",
+  summary: "A studio archive update.",
+  text: "A studio archive update.",
   imageUrl: "https://example.com/blog.jpg",
-  displayDate: "2024-03-01",
-} as BlogEntryFrontend;
+  displayDate: new Date("2024-03-01T00:00:00.000Z"),
+  featured: false,
+  pinned: false,
+  tags: [],
+  readTime: 1,
+  commentCount: 0,
+} satisfies BlogEntryFrontend;
 
 const product = {
   id: "gid://shopify/Product/1",

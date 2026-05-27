@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { UserModel } from "@/lib/data/models/userModel";
 import dbConnect from "@/lib/db/mongodb";
+import { authProtectedRoutes } from "@/lib/routes/authProtectedRoutes";
 
 export type AdminFrontendAccessResult =
   | {
@@ -64,12 +65,12 @@ export async function requireAdminFrontendAccess(): Promise<void> {
   }
 
   if (access.reason === "unauthenticated") {
-    redirect("/sign-in");
+    redirect(authProtectedRoutes.signIn);
   }
 
   if (access.reason === "unverified") {
     throw new Error("Unable to verify admin access");
   }
 
-  redirect("/");
+  redirect(authProtectedRoutes.home);
 }

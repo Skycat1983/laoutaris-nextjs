@@ -4,6 +4,11 @@ import {
   PUBLIC_ROUTES,
 } from "@/lib/constants/routeConstants";
 import {
+  authProtectedRoutes,
+  protectedMiddlewareMatchers,
+  protectedRouteRoots,
+} from "@/lib/routes/authProtectedRoutes";
+import {
   isApiRoute,
   isProtectedRoute,
   isAdminRoute,
@@ -18,10 +23,41 @@ type RouteTestCase = {
 describe("routeUtils", () => {
   const retiredProtectedRoute = ["", "protected"].join("/");
 
+  it("exports the stable auth/protected route constants surface", () => {
+    expect(authProtectedRoutes).toEqual({
+      home: "/",
+      signIn: "/sign-in",
+      account: "/account",
+      accountSettings: "/account/settings",
+      admin: "/admin",
+      adminDashboardArticles: "/admin/dashboard/articles",
+      api: "/api",
+      nextAuthApi: "/api/auth",
+      adminApi: "/api/v2/admin",
+      userApi: "/api/v2/user",
+    });
+
+    expect(protectedRouteRoots).toEqual([
+      "/account",
+      "/admin",
+      "/api/v2/admin",
+      "/api/v2/user",
+    ]);
+    expect(protectedMiddlewareMatchers).toEqual([
+      "/account/:path*",
+      "/admin/:path*",
+      "/api/v2/admin/:path*",
+      "/api/v2/user/:path*",
+    ]);
+    expect(protectedMiddlewareMatchers).toEqual(
+      protectedRouteRoots.map((route) => `${route}/:path*`)
+    );
+  });
+
   describe("isApiRoute", () => {
     const apiRouteTests: RouteTestCase[] = [
       {
-        path: "/api",
+        path: authProtectedRoutes.api,
         expected: true,
         description: "matches the API root route",
       },
@@ -31,7 +67,7 @@ describe("routeUtils", () => {
         description: "matches nested protected user API routes",
       },
       {
-        path: `${PROTECTED_API_ROUTES.AUTH_API}/signin`,
+        path: `${authProtectedRoutes.nextAuthApi}/signin`,
         expected: true,
         description: "matches NextAuth API routes",
       },
@@ -61,7 +97,7 @@ describe("routeUtils", () => {
         description: "matches exact account route",
       },
       {
-        path: `${PROTECTED_FRONTEND_ROUTES.ACCOUNT}/settings`,
+        path: authProtectedRoutes.accountSettings,
         expected: true,
         description: "matches nested account route",
       },
@@ -108,14 +144,24 @@ describe("routeUtils", () => {
         description: "does not retain retired protected test route",
       },
       {
-        path: `${PROTECTED_API_ROUTES.AUTH_API}/signin`,
+        path: `${authProtectedRoutes.nextAuthApi}/signin`,
         expected: false,
         description: "does not treat NextAuth routes as protected routes",
+      },
+      {
+        path: "/api/v2/administer",
+        expected: false,
+        description: "does not match admin API-like routes",
       },
       {
         path: "/accounting",
         expected: false,
         description: "does not match account-like frontend routes",
+      },
+      {
+        path: "/administrator",
+        expected: false,
+        description: "does not match admin-like frontend routes",
       },
       {
         path: "/api/v2/userland",

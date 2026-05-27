@@ -2,21 +2,31 @@
 
 This document defines the owner decision and implementation contract for
 production monitoring and error reporting. Sentry is now the owner-approved
-provider, but implementation still needs a scoped task and current official
-Next.js setup verification before SDK, `instrumentation.ts`, source-map upload,
-alert automation, or Vercel project settings are changed.
+provider, and T-310 implemented the first scoped error-reporting baseline.
+Source-map upload, alert automation, profiling, replay, broad tracing, uptime
+checks, and Vercel project settings remain separate owner-approved tasks.
 
 ## Current State
 
 - Sentry is approved as the monitoring provider by ADR 0005 on 2026-05-27.
-- The app has no monitoring or error-reporting dependency in `package.json`.
-- There is no app-level `instrumentation.ts`.
+- T-310 added `@sentry/nextjs`, `instrumentation.ts`,
+  `instrumentation-client.ts`, `sentry.server.config.ts`, and
+  `sentry.edge.config.ts`.
+- T-310 config keeps `sendDefaultPii: false`, disables tracing with
+  `tracesSampleRate: 0`, disables Sentry source-map upload in
+  `next.config.mjs`, and does not configure replay, profiling, alerts,
+  uptime checks, Vercel project settings, or Shopify dashboard work.
 - The only OpenTelemetry-related package evidence is Next.js optional peer
   metadata in `package-lock.json`; the app does not depend on or configure
   OpenTelemetry directly.
-- The environment runbook does not define monitoring or alerting variables.
+- The environment runbook defines Sentry variable names and classifications
+  without values.
 - T-099 through T-122 established the provider-neutral API request ID and
   structured redacted logging foundation for `src/app/api/v2` route handlers.
+- T-310 routes structured logger `error` events to Sentry with already-redacted
+  payload context and request ID, route, and method tags where available.
+- `src/app/error.tsx` and `src/app/global-error.tsx` capture client/App Router
+  render-boundary errors without changing the existing visible fallback copy.
 - T-116 added the incident-response runbook, including severity, triage,
   evidence, rollback, and `TBD` owner/escalation matrix placeholders.
 - Deployment smoke remains evidence-based and manual/scripted through
@@ -32,9 +42,9 @@ these surfaces before production launch.
 | Surface | Required behavior | Current integration point |
 | --- | --- | --- |
 | API route handlers | Capture internal failures with route, method, request ID, safe status category, and redacted metadata. Public `500`/alertable upstream responses should keep returning `requestId` and `X-Request-Id` where the route uses the T-099 pattern. | `src/lib/observability/requestContext.ts`, `src/lib/observability/logger.ts`, and `src/lib/api/apiResponse.ts`. |
-| App Router server errors | Capture uncaught server render, loader, metadata, sitemap, and route segment errors without exposing raw messages to users. | Future provider task should evaluate Next.js `instrumentation.ts`, route segment error files, and server loader/service boundaries. |
-| Client error boundaries | Report browser-render failures with route, component boundary where safe, browser metadata, and a public event/request identifier when available. | `src/app/error.tsx` needs provider-neutral UX and reporting follow-up. T-299 deleted the unused `src/components/modules/error/ErrorBoundary.tsx`; reintroduce a client-only boundary only through a scoped monitoring/provider task. |
-| Unhandled client promise failures | Capture `unhandledrejection` events without dumping raw payloads, form bodies, cookies, tokens, or personal data. | Future provider client bootstrap after owner approval. |
+| App Router server errors | Capture uncaught server render, loader, metadata, sitemap, and route segment errors without exposing raw messages to users. | T-310 added Sentry server/edge initialization through `instrumentation.ts`; broader per-surface normalization and alert routing remain future tasks. |
+| Client error boundaries | Report browser-render failures with route, component boundary where safe, browser metadata, and a public event/request identifier when available. | T-310 captures `src/app/error.tsx` and `src/app/global-error.tsx` failures through Sentry. T-299 deleted the unused `src/components/modules/error/ErrorBoundary.tsx`; reintroduce a client-only boundary only through a scoped monitoring/provider task. |
+| Unhandled client promise failures | Capture `unhandledrejection` events without dumping raw payloads, form bodies, cookies, tokens, or personal data. | Sentry browser initialization is present through `instrumentation-client.ts`; dedicated unhandled-rejection UX/evidence tests remain future work. |
 | Shopify failures | Distinguish Storefront API outage, missing product, invalid stored link, rate/authorization failure, and local transform failure. Join alert evidence to request ID and product handle when safe. | Shopify clients and public shop routes. Keep token and customer data out of logs/events. |
 | MongoDB failures | Distinguish connection, query, validation, write, transaction, and data-shape failures. Join alert evidence to request ID and entity class/count only when safe. | MongoDB helpers, server-only data services, API route adapters, and admin/user mutations. |
 | Cloudinary failures | Distinguish signing, widget upload, delivery, transformation, allowlist, and missing/deleted asset failures. | `POST /api/v2/admin/sign-cloudinary-params`, upload widgets, and image delivery policy docs. |
@@ -121,25 +131,29 @@ Provider variables must also follow the existing environment rules:
   variables containing `SECRET`, `TOKEN`, `PASSWORD`, or `PRIVATE_KEY` must stay
   blocked from client exposure.
 
-## Implementation Contract After Approval
+## Completed Baseline And Remaining Contract
 
-The Sentry implementation task can proceed now that
-[ADR 0005](../decisions/0005-monitoring-provider-decision.md) records the
-approved provider. That task should:
+T-310 completed the first Sentry baseline after
+[ADR 0005](../decisions/0005-monitoring-provider-decision.md) recorded the
+approved provider:
 
-1. Add the approved SDK or integration with the smallest runtime surface that
-   satisfies the decision.
-2. Add `instrumentation.ts` only if the chosen integration needs it.
-3. Wire API route logging to the provider without breaking current request ID,
-   response header, public body, and redaction contracts.
-4. Add client and server error capture for the approved surfaces.
-5. Add provider-specific environment variables to the environment runbook.
-6. Add focused tests or source-hygiene checks for request IDs, redaction, and
-   public error behavior.
-7. Document alert routing and owner responsibilities in the incident-response
+1. Added the approved SDK and Sentry initialization files for server, edge, and
+   browser runtime.
+2. Added Next instrumentation registration and the current Sentry
+   `onRequestError` hook export.
+3. Wired structured logger `error` events to Sentry with redacted context while
+   preserving request ID, response header, public body, and redaction contracts.
+4. Added App Router client/global error boundary capture.
+5. Added provider-specific environment variables to the environment runbook.
+6. Added focused redaction, source-hygiene, and logger-to-Sentry tests.
+
+Remaining follow-ups:
+
+1. Document alert routing and owner responsibilities in the incident-response
    runbook once real owners are approved.
-8. Keep CI/scheduled smoke automation as a separate implementation task unless
-   the owner decision explicitly combines it with provider rollout.
+2. Keep source-map upload, profiling, session replay, broad tracing, uptime
+   checks, CI/scheduled smoke, and Vercel project configuration separate unless
+   a later owner-approved task scopes them.
 
 ## No-Provider Interim Policy
 

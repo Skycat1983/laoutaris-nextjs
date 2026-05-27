@@ -61,13 +61,21 @@ route-builder slice, and T-306 added pre-submit image URL feedback plus preview
 gating for blog/collection admin forms. Owner clarified that work should
 continue on tasks that do not require Shopify dashboard changes; Shopify
 metadata, product policy URLs, option mapping, and dashboard-only decisions
-remain deferred. T-307, T-308, and T-309 are prepared as the next
-non-Shopify-dashboard route ownership wave: expand public route-builder
-consumers, scope auth/protected route constants, and scope API route builder/
-route-ID ownership. Owner also approved Sentry as the monitoring provider on
-2026-05-27. ADR 0005 is now accepted and T-310 is prepared as the first Sentry
-baseline, but do not start it in parallel with active route tasks if package,
-config, instrumentation, or observability files would overlap.
+remain deferred. T-307, T-308, T-309, T-311, and T-312 are complete and
+reconciled: T-307 expanded public route-builder consumers across low-risk
+public UI surfaces, T-308 scoped the first auth/protected route constants
+implementation, T-311 completed that runtime slice, T-309 scoped the first API
+path-builder implementation to admin delete client fetcher URLs, and T-312
+completed that runtime slice. Owner also approved Sentry as the monitoring
+provider on 2026-05-27. ADR 0005 is now accepted and T-310 completed the first
+Sentry baseline with SDK/runtime initialization, App Router error capture,
+redacted structured logger forwarding, and environment documentation. T-313
+then restored broad typecheck and full-Jest verification after the route-builder
+test drift found by T-310.
+Owner also created a local `VERCEL_TOKEN` for approved Vercel CLI/API
+deployment and targeted log inspection; treat it as operator-only capacity, not
+app runtime configuration, and do not use it for rollback/project settings/
+aliases/domains without separate approval.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -148,7 +156,9 @@ complete for footer placeholder social-link cleanup and stale copyright text.
 T-219 completed the docs-only owner-input packet for remaining R-018 blockers.
 T-139 originally recorded the blocked monitoring decision in ADR 0005. On
 2026-05-27 the owner approved Sentry, so provider choice is no longer blocked;
-runtime implementation is routed to T-310.
+runtime implementation completed in T-310. Source-map upload, alerts, provider
+evidence, replay, profiling, broad tracing, and uptime checks remain separate
+follow-ups.
 
 A-022 is complete and reconciled. F-111 through F-117 now route the Next.js
 feature-utilization findings: controlled public caching/ISR and sitemap/default
@@ -865,20 +875,21 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- Immediate handoff: continue with non-Shopify-dashboard work. T-304, T-305,
-  and T-306 are complete and reconciled; do not reassign them unless their
-  behavior regresses. Next assignments should avoid Shopify dashboard
-  metadata/policy/option changes and focus on route-builder, security-header,
-  admin-ops, verification, or architecture tasks that can be completed from
-  source.
-- Prepared assignments:
-  - `/task effort: medium details: docs/tasks/T-307-expand-public-route-builder-consumers.md`
-  - `/task effort: medium details: docs/tasks/T-308-scope-auth-protected-route-constants.md`
-  - `/task effort: medium details: docs/tasks/T-309-scope-api-route-builder-ownership.md`
-- Sentry is approved and prepared separately:
-  - `/task effort: high details: docs/tasks/T-310-implement-sentry-monitoring-baseline.md`
-  Run this after the current route tasks finish or when no active task owns
-  package/config/instrumentation/observability files.
+- Immediate handoff: continue with non-Shopify-dashboard work. T-304 through
+  T-313 are complete and reconciled; do not reassign them unless their behavior
+  or scoped result artifacts regress. Next assignments should avoid Shopify
+  dashboard metadata/policy/option changes and focus on route-builder,
+  security-header, admin-ops, verification, observability, or architecture tasks
+  that can be completed from source.
+- Prepared route assignments:
+  - `/task effort: medium details: docs/tasks/T-314-add-admin-read-api-path-builders.md`
+  - `/task effort: medium details: docs/tasks/T-315-scope-account-admin-route-builder-ownership.md`
+- Sentry baseline T-310 is complete. Keep source-map upload, alert automation,
+  replay, profiling, broad tracing, uptime checks, credentialed smoke, public
+  smoke variables, Vercel privileged actions, and CI workflow changes separate.
+- Vercel log/deployment inspection capacity: owner local shell may expose
+  `VERCEL_TOKEN`. Use only for approved targeted inspection; never print or
+  record the token.
 - `/prototype/frame` is owner-review-ready for the T-194/T-292 scoped frame,
   room, and modal review. Product-page rail adoption remains paused until a
   later task or owner decision explicitly scopes it.
@@ -1635,16 +1646,19 @@ The recommended next assignments are:
 - T-301, T-302, and T-303 are complete. Do not reassign the CSP allowlist,
   route-builder centralization, or admin image-control feedback scoping tasks
   unless their result artifacts drift from current source.
-- T-304, T-305, and T-306 are complete. The next prepared wave should be
-  assigned as separate non-Shopify-dashboard tasks:
-  - `/task effort: medium details: docs/tasks/T-307-expand-public-route-builder-consumers.md`
-  - `/task effort: medium details: docs/tasks/T-308-scope-auth-protected-route-constants.md`
-  - `/task effort: medium details: docs/tasks/T-309-scope-api-route-builder-ownership.md`
+- T-304 through T-313 are complete. The next prepared non-Shopify-dashboard
+  route tasks are:
+  - `/task effort: medium details: docs/tasks/T-314-add-admin-read-api-path-builders.md`
+  - `/task effort: medium details: docs/tasks/T-315-scope-account-admin-route-builder-ownership.md`
 - T-274 is complete as a docs packet. Sentry provider choice is answered and
   routed to T-310. Do not assign Vercel privileged actions, credentialed-smoke,
   scheduled-smoke, source-map upload, alert automation, replay/profiling/tracing,
   uptime checks, or incident-owner implementation until the owner answers the
   remaining production-ops packet sections.
+- Vercel targeted deployment/log inspection is now possible when the owner
+  local `VERCEL_TOKEN` is available to the operator shell, but rollback,
+  project-setting changes, alias/domain changes, and deployment promotion still
+  require separate owner/orchestrator approval.
 - Keep product-page rail adoption, Shopify option mapping, checkout/cart work,
   enquiry mutation, physical-dimension migration, real texture asset creation,
   and room-background selection paused until scoped owner decisions or later

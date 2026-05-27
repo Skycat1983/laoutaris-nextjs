@@ -144,8 +144,11 @@ describe("public route cache policy", () => {
       "src/components/loaders/componentLoaders/MainNavLoader.tsx"
     );
 
-    expect(source).toContain('path: BIOGRAPHY_PATH');
-    expect(source).toContain('path: COLLECTIONS_PATH');
+    expect(source).toContain("@/lib/routes/publicAppRoutes");
+    expect(source).toContain("path: publicAppRoutes.biography");
+    expect(source).toContain("path: publicAppRoutes.collections");
+    expect(source).not.toContain("articleDetailPath");
+    expect(source).not.toContain("collectionDetailPath");
     expect(source).not.toContain("getArticleNavigationList");
     expect(source).not.toContain("getCollectionNavigationList");
     expect(source).not.toContain("getCachedBiographyNavigationList");

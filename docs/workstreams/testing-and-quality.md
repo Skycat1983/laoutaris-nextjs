@@ -1368,6 +1368,12 @@ git diff --check
   rules, and the post-approval implementation contract. Provider-specific SDK
   tests, smoke coverage, alert checks, and client/server instrumentation tests
   remain future work after owner/platform approval.
+- 2026-05-27: Completed T-310 focused monitoring coverage. Added Sentry
+  redaction/source-hygiene tests and extended structured logger coverage to
+  prove Sentry receives only redacted context plus safe request ID, route, and
+  method tags. Focused observability tests passed; explicit typecheck and full
+  Jest are blocked by unrelated route-builder/cache-policy test drift noted in
+  the deployment workstream handoff.
 - 2026-05-18: Prepared T-124 to make `npm run smoke:public` available through
   GitHub Actions without credentials or provider alerting. Verification should
   cover smoke help output, workflow source review, and `git diff --check`; a
@@ -2057,10 +2063,18 @@ new scoped task brief for the selected route-builder or CSP evidence target and
 should keep owner-blocked production smoke, credentialed/admin smoke, Vercel log
 evidence, and scheduled/detail public smoke under F-126/operations.
 
-T-307, T-308, and T-309 are prepared. T-307 should include focused touched
-consumer tests plus `npm run lint`, the client/server import-boundary guard, and
-`git diff --check`. T-308 and T-309 are docs-only scoping tasks and should use
-`git diff --check` unless they create additional result-file checks. Keep
+T-307, T-308, and T-309 are complete. T-307 ran focused public route-builder
+consumer tests, lint, the client/server import-boundary guard, and
+`git diff --check`; T-308 and T-309 were docs-only scoping tasks verified with
+`git diff --check`. T-312 ran the focused admin delete fetcher and
+route/fetcher parity suites, `npm run lint`, and `git diff --check`. T-311 ran
+focused route utils, middleware, admin frontend guard, client/server
+import-boundary, lint, and `git diff --check` checks. T-310 focused
+observability checks, build, lint, and whitespace passed. T-313 restored the
+broad route-builder-era verification drift: explicit typecheck, focused
+route-builder/cache-policy Jest, full Jest, lint, and whitespace checks now
+pass again. Next non-Shopify verification should follow T-314 focused admin
+read fetcher/parity tests and T-315 `git diff --check` docs-only scoping. Keep
 Playwright, production smoke, credentialed/admin smoke, Vercel log evidence,
 and Shopify dashboard-dependent verification separate.
 
@@ -2133,10 +2147,11 @@ task is prepared and assigned. T-157 through T-198 are complete and should not
 be reassigned unless one of their recorded prototype, audit handoff, admin
 read-list, strict TypeScript cleanup, or framed-preview contracts regresses.
 T-143 now records staged public-search widening: T-210 completed artworks, and
-T-211 completed Shopify product results. T-139 recorded the monitoring
-provider/no-provider decision as blocked in ADR 0005; keep monitoring provider
-smoke coverage blocked until an owner/platform provider or no-provider launch
-posture is approved.
+T-211 completed Shopify product results. T-139 recorded the previous monitoring
+provider/no-provider decision as blocked in ADR 0005; the owner later approved
+Sentry and T-310 completed the first focused monitoring baseline. Keep provider
+smoke, alert, source-map, replay, profiling, broad tracing, and uptime coverage
+separate until owner-approved follow-up tasks scope them.
 T-141 through T-168 are complete; do not reassign their
 focused route/form/query/loading/nav/runbook/archive-entry/taxonomy/breadcrumb/
 audit/prototype coverage unless it regresses.
@@ -2174,3 +2189,11 @@ T-271 added focused admin artwork update-form replacement image coverage,
 preserved existing artwork update route replacement-image coverage, and added
 upload-button form-safety coverage. The focused form, route, and upload-button
 Jest suites passed.
+T-311 added focused auth/protected route constants coverage in route utils,
+middleware, admin frontend guard, and the client/server import-boundary suite.
+The focused Jest suites, `git diff --check`, and `npm run lint` passed.
+T-313 repaired the post-route-builder verification drift by making
+`PublicRouteBuilderConsumers` use a fully typed blog fixture and updating the
+`publicRouteCachePolicy` main-nav invariant for `publicAppRoutes` route-root
+ownership. `npm run typecheck`, focused Jest, full `npm test`, `npm run lint`,
+and `git diff --check` passed.

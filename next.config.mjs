@@ -1,3 +1,5 @@
+import { withSentryConfig } from "@sentry/nextjs";
+
 const contentSecurityPolicy = [
   // Allow resources from self and data URLs
   "default-src 'self' https: data: blob:",
@@ -99,4 +101,30 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  telemetry: false,
+  sourcemaps: {
+    disable: true,
+  },
+  release: {
+    create: false,
+    finalize: false,
+  },
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeTracing: true,
+    excludeReplayIframe: true,
+    excludeReplayShadowDom: true,
+    excludeReplayWorker: true,
+  },
+  routeManifestInjection: false,
+  suppressOnRouterTransitionStartWarning: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+      removeTracing: true,
+    },
+    automaticVercelMonitors: false,
+  },
+});

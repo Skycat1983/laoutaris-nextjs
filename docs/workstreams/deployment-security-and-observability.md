@@ -398,9 +398,15 @@ security headers, environment documentation, and actionable operational signals.
 - Define sitemap/default redirect freshness through T-232 before any runtime
   ISR/static-param changes affect deployment expectations.
 - Sentry is approved as the monitoring provider in ADR 0005. Keep
-  instrumentation/web-vitals runtime implementation scoped to T-310 or later
-  tasks; source-map upload, alert routing, replay, profiling, broad tracing,
-  uptime checks, and Vercel privileged actions remain separate.
+  source-map upload, alert routing, replay, profiling, broad tracing, uptime
+  checks, and Vercel privileged actions separate from the T-310 baseline.
+- T-310 implemented the first Sentry baseline with `@sentry/nextjs`,
+  server/edge/browser initialization, Next instrumentation registration,
+  App Router error-boundary capture, structured logger error capture using
+  redacted payloads, and documented Sentry environment variables. Source-map
+  upload, alert automation, replay, profiling, broad tracing, uptime checks,
+  Vercel privileged actions, public-smoke variables, credentialed smoke, and
+  Shopify dashboard work remain separate.
 
 ## Acceptance Criteria
 
@@ -898,10 +904,14 @@ npm run lint
   Sentry in ADR 0005.
 - 2026-05-27: Owner approved Sentry as the monitoring provider. ADR 0005 is now
   accepted, the monitoring architecture and production-ops decision packet
-  record Sentry as approved, and T-310 is prepared as the first implementation
+  record Sentry as approved, and T-310 later completed the first implementation
   baseline while source-map upload, alert routing, replay, profiling, broad
   tracing, uptime checks, Vercel privileged actions, and smoke-account work
   remain separate.
+- 2026-05-27: Owner created a local `VERCEL_TOKEN` for approved Vercel CLI/API
+  deployment and targeted log inspection capacity. The token is operator-only,
+  not an app runtime variable. Rollback, project settings, alias/domain changes,
+  backup operator authority, and credentialed smoke remain separate.
 - 2026-05-18: Prepared T-124 as the next F-083/R-028 smoke automation slice.
   It should add a GitHub Actions workflow for unauthenticated public smoke that
   can run manually with a supplied base URL and on a schedule after the owner
@@ -1120,16 +1130,29 @@ npm run lint
   emitted alongside the unchanged enforced CSP, and focused security-header
   coverage locks the enforced/report-only split. CSP enforcement, HSTS,
   dynamic CORS, CSP reporting, and monitoring remain separate.
+- 2026-05-27: Completed T-310. Added the first Sentry error-reporting baseline
+  with SDK/runtime initialization, disabled PII/source-map/tracing/replay/
+  profiling scope, redacted structured logger forwarding, App Router error
+  capture, environment-variable documentation, focused observability tests, and
+  build/lint verification. Explicit `npm run typecheck` remains blocked by the
+  unrelated untracked `__tests__/unit/components/PublicRouteBuilderConsumers.test.tsx`
+  fixture error from route-builder work, and full Jest remains blocked by the
+  unrelated `__tests__/unit/publicRouteCachePolicy.test.ts` expectation drift.
 
 ## Next Agent Action
 
-Sentry is approved as the monitoring provider and T-310 is prepared as the first
-implementation task. Do not start T-310 while T-307/T-308/T-309 are actively
-running if it would overlap package/config/global observability files. Keep
-source-map upload, alert automation, credentialed smoke, Vercel privileged
-actions, public-smoke repository variables, replay, profiling, broad tracing,
-uptime checks, and CI workflow changes separate unless a later owner-approved
-task explicitly scopes them.
+T-310 is complete for the first Sentry error-reporting baseline. Next
+observability tasks should keep source-map upload, alert automation,
+credentialed smoke, Vercel privileged actions, public-smoke repository
+variables, replay, profiling, broad tracing, uptime checks, and CI workflow
+changes separate unless a later owner-approved task explicitly scopes them.
+T-313 repaired the typecheck/full-Jest drift that T-310 found outside its
+focused observability tests.
+
+`VERCEL_TOKEN` may be available in the owner/operator local shell for approved
+deployment/log inspection. Use it only after explicit task/incident approval and
+never print, document, or commit the token. If it is unavailable to the agent
+shell, request a short redacted log excerpt from the owner.
 
 The first non-secret Main CI local-gate workflow is in place. Keep public
 smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
@@ -1154,7 +1177,9 @@ decision changes. More R-018 runtime work is blocked until owner input exists
 for Shopify policy URLs, real social URLs, jurisdiction/audience-specific legal
 claims, self-service privacy workflows, or comment moderation/reporting
 workflows. Monitoring provider choice is unblocked by ADR 0005 with Sentry
-approved; runtime implementation remains pending T-310.
+approved, and T-310 completed the first runtime baseline. Alerting, source-map
+upload, replay, profiling, broad tracing, uptime checks, Vercel privileged
+actions, and provider smoke remain separate follow-ups.
 
 For the A-022 deployment-adjacent work, T-232 and T-233 are complete: sitemap
 and default redirect freshness are explicit, and `/biography` is the only

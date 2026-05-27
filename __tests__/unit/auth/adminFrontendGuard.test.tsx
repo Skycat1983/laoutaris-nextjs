@@ -2,6 +2,7 @@ jest.mock("server-only", () => ({}), { virtual: true });
 
 import React, { Children, type ReactElement } from "react";
 import DashboardLayout from "@/app/admin/dashboard/layout";
+import { authProtectedRoutes } from "@/lib/routes/authProtectedRoutes";
 import {
   getAdminFrontendAccess,
   requireAdminFrontendAccess,
@@ -107,10 +108,10 @@ describe("admin frontend persisted role guard", () => {
     });
 
     await expect(requireAdminFrontendAccess()).rejects.toMatchObject({
-      digest: "NEXT_REDIRECT;replace;/sign-in;307;",
+      digest: `NEXT_REDIRECT;replace;${authProtectedRoutes.signIn};307;`,
     });
 
-    expect(mockRedirect).toHaveBeenCalledWith("/sign-in");
+    expect(mockRedirect).toHaveBeenCalledWith(authProtectedRoutes.signIn);
     expect(mockDbConnect).not.toHaveBeenCalled();
     expect(mockFindById).not.toHaveBeenCalled();
   });
@@ -124,10 +125,10 @@ describe("admin frontend persisted role guard", () => {
     });
 
     await expect(requireAdminFrontendAccess()).rejects.toMatchObject({
-      digest: "NEXT_REDIRECT;replace;/;307;",
+      digest: `NEXT_REDIRECT;replace;${authProtectedRoutes.home};307;`,
     });
 
-    expect(mockRedirect).toHaveBeenCalledWith("/");
+    expect(mockRedirect).toHaveBeenCalledWith(authProtectedRoutes.home);
     expect(mockDbConnect).not.toHaveBeenCalled();
     expect(mockFindById).not.toHaveBeenCalled();
   });
@@ -142,10 +143,10 @@ describe("admin frontend persisted role guard", () => {
     });
 
     await expect(requireAdminFrontendAccess()).rejects.toMatchObject({
-      digest: "NEXT_REDIRECT;replace;/;307;",
+      digest: `NEXT_REDIRECT;replace;${authProtectedRoutes.home};307;`,
     });
 
-    expect(mockRedirect).toHaveBeenCalledWith("/");
+    expect(mockRedirect).toHaveBeenCalledWith(authProtectedRoutes.home);
     expect(mockDbConnect).toHaveBeenCalledTimes(2);
     expect(mockFindById).toHaveBeenCalledWith(adminUserId);
   });

@@ -39,6 +39,26 @@ handoff fields below because it intentionally avoids production secrets,
 credentialed/admin smoke, public-smoke repository variables, Vercel log review,
 monitoring, and rollback operations.
 
+## Vercel Operator Token
+
+The owner has created a local operator Vercel access token for deployment/log
+inspection capacity. This token is not an app runtime variable and must not be
+added to project `.env` files, Vercel project environment variables, source
+code, docs, or chat.
+
+Expected local shell name when an approved operator task needs CLI access:
+
+```bash
+VERCEL_TOKEN
+```
+
+Use only for approved Vercel CLI/API inspection such as deployment metadata or
+targeted logs. Do not print the token. Do not use it for rollback, project
+setting changes, environment variable changes, domain changes, or deployment
+promotion unless the incident/runbook task explicitly grants that authority.
+If `VERCEL_TOKEN` is unavailable in the agent shell, request a short redacted
+log excerpt from the owner instead of working around access controls.
+
 ## External-Access Build Evidence
 
 `npm run build` is still part of release evidence. For every production release

@@ -1,7 +1,8 @@
 import {
-  PROTECTED_API_ROUTES,
-  PROTECTED_FRONTEND_ROUTES,
-} from "@/lib/constants/routeConstants";
+  adminRouteRoots,
+  authProtectedRoutes,
+  protectedRouteRoots,
+} from "@/lib/routes/authProtectedRoutes";
 
 const isExactOrNestedRoute = (path: string, basePath: string): boolean => {
   return (
@@ -11,26 +12,17 @@ const isExactOrNestedRoute = (path: string, basePath: string): boolean => {
   );
 };
 
-const PROTECTED_ROUTE_PREFIXES = [
-  PROTECTED_FRONTEND_ROUTES.ACCOUNT,
-  PROTECTED_FRONTEND_ROUTES.ADMIN,
-  PROTECTED_API_ROUTES.ADMIN_API,
-  PROTECTED_API_ROUTES.USER_API,
-];
-
 export const isApiRoute = (path: string): boolean => {
-  return path === "/api" || path.startsWith("/api/");
+  return (
+    path === authProtectedRoutes.api ||
+    path.startsWith(`${authProtectedRoutes.api}/`)
+  );
 };
 
 export const isProtectedRoute = (path: string): boolean => {
-  return PROTECTED_ROUTE_PREFIXES.some((route) =>
-    isExactOrNestedRoute(path, route)
-  );
+  return protectedRouteRoots.some((route) => isExactOrNestedRoute(path, route));
 };
 
 export const isAdminRoute = (path: string): boolean => {
-  return (
-    isExactOrNestedRoute(path, PROTECTED_FRONTEND_ROUTES.ADMIN) ||
-    isExactOrNestedRoute(path, PROTECTED_API_ROUTES.ADMIN_API)
-  );
+  return adminRouteRoots.some((route) => isExactOrNestedRoute(path, route));
 };

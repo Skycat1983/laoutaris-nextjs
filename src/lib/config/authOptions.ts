@@ -5,6 +5,7 @@ import { Adapter } from "next-auth/adapters";
 import { DefaultSession, DefaultUser, SessionStrategy } from "next-auth";
 import { CustomMongoDBAdapter } from "@/lib/db/adapter";
 import { clientPromise } from "@/lib/db";
+import { authProtectedRoutes } from "@/lib/routes/authProtectedRoutes";
 import { authCallbacks } from "./authCallbacks";
 
 // ! important
@@ -36,7 +37,7 @@ export const authOptions = {
     strategy: "jwt" as SessionStrategy,
   },
   pages: {
-    signIn: "/sign-in",
+    signIn: authProtectedRoutes.signIn,
   },
   providers: [
     CredentialsProvider({

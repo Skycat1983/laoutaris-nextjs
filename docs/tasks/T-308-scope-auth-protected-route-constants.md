@@ -1,6 +1,6 @@
 # T-308 Scope Auth Protected Route Constants
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -68,6 +68,9 @@ git diff --check
 
 - Prepared by the orchestrator on 2026-05-27 to keep progress moving on
   non-Shopify-dashboard architecture work.
-- Candidate shared tracker updates after completion: add the result link to
-  architecture/auth/testing workstreams and prepare the implementation task if
-  the scope is clear.
+- Completed on 2026-05-27 in
+  [T-308 auth protected route constants scope](../audits/results/T-308-auth-protected-route-constants-scope.md).
+- Recommended implementation follow-up is
+  [T-311 Centralize auth protected route constants](T-311-centralize-auth-protected-route-constants.md).
+- Runtime source, tests, middleware, NextAuth config, route constants, admin
+  guards, redirects, and shared trackers were not changed by the scoping task.

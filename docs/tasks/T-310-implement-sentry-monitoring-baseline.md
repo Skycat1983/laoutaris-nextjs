@@ -1,6 +1,6 @@
 # T-310 Implement Sentry Monitoring Baseline
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -102,3 +102,28 @@ without the full suite, then run broader checks before handoff.
 - This task likely requires dependency installation and network access. If the
   sandbox blocks dependency download, request escalation for the install command
   rather than working around the approval flow.
+- Completed on 2026-05-27. Installed `@sentry/nextjs`, added server/edge/browser
+  Sentry initialization, Next instrumentation registration, App Router
+  error-boundary capture, shared redaction helpers, structured logger forwarding
+  to Sentry, and focused redaction/source-hygiene tests.
+- Current Sentry Next.js setup was checked against the official manual setup
+  docs before source edits:
+  `https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/`.
+- Baseline intentionally keeps `sendDefaultPii: false`, disables source-map
+  upload, leaves tracing at `tracesSampleRate: 0`, and does not add replay,
+  profiling, alert automation, uptime checks, Vercel project changes, CI
+  workflow changes, credentialed smoke, public-smoke variables, or Shopify
+  dashboard work.
+- Verification:
+  - `npm run env:guard` passed.
+  - `npm test -- --runTestsByPath __tests__/unit/observability/logger.test.ts __tests__/unit/observability/sentryBaseline.test.ts`
+    passed.
+  - `npm run build` passed under Node `22.14.0`.
+  - `npm run lint` passed.
+  - `git diff --check` passed.
+  - `npm run typecheck` failed only on unrelated untracked
+    `__tests__/unit/components/PublicRouteBuilderConsumers.test.tsx:41` route
+    builder fixture typing drift.
+  - Full `npm test` ran 202 suites; T-310 focused tests passed, but the suite
+    failed on unrelated `__tests__/unit/publicRouteCachePolicy.test.ts:147`
+    expectation drift around `MainNavLoader` route constants.

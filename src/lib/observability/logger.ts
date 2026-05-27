@@ -1,10 +1,14 @@
 import "server-only";
 
 import type { RequestContext } from "@/lib/observability/requestContext";
+import { captureStructuredError } from "@/lib/observability/sentryCapture";
+import {
+  type RedactionOptions,
+  type StructuredLogFields,
+  redactFields,
+} from "@/lib/observability/redaction";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
-
-type StructuredLogFields = Record<string, unknown>;
 
 type ServerLoggerContext = {
   route?: string;
@@ -12,75 +16,6 @@ type ServerLoggerContext = {
   operation?: string;
   surface?: string;
 };
-
-type LoggerOptions = {
-  includeStack?: boolean;
-  allowEmailFields?: string[];
-};
-
-const REDACTED = "[redacted]";
-const SECRET_KEY_PATTERN =
-  /(authorization|cookie|credential|password|secret|session|token|api[-_]?key)/i;
-const EMAIL_PATTERN = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi;
-
-const isPlainObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" &&
-  value !== null &&
-  !Array.isArray(value) &&
-  !(value instanceof Error);
-
-const shouldAllowEmail = (path: string, options?: LoggerOptions): boolean =>
-  options?.allowEmailFields?.includes(path) ?? false;
-
-const redactValue = (
-  value: unknown,
-  path: string,
-  options?: LoggerOptions
-): unknown => {
-  const key = path.split(".").at(-1) ?? path;
-
-  if (SECRET_KEY_PATTERN.test(key)) {
-    return REDACTED;
-  }
-
-  if (value instanceof Error) {
-    return normalizeError(value, options);
-  }
-
-  if (typeof value === "string") {
-    return shouldAllowEmail(path, options) ? value : value.replace(EMAIL_PATTERN, REDACTED);
-  }
-
-  if (Array.isArray(value)) {
-    return value.map((item, index) => redactValue(item, `${path}.${index}`, options));
-  }
-
-  if (isPlainObject(value)) {
-    return Object.fromEntries(
-      Object.entries(value).map(([nestedKey, nestedValue]) => [
-        nestedKey,
-        redactValue(nestedValue, path ? `${path}.${nestedKey}` : nestedKey, options),
-      ])
-    );
-  }
-
-  return value;
-};
-
-const normalizeError = (
-  error: Error,
-  options?: LoggerOptions
-): Record<string, unknown> => ({
-  name: error.name,
-  message: error.message.replace(EMAIL_PATTERN, REDACTED),
-  ...(options?.includeStack ? { stack: error.stack } : {}),
-});
-
-const redactFields = (
-  fields: StructuredLogFields,
-  options?: LoggerOptions
-): Record<string, unknown> =>
-  redactValue(fields, "", options) as Record<string, unknown>;
 
 const writeLog = (level: LogLevel, payload: Record<string, unknown>) => {
   const line = JSON.stringify(payload);
@@ -100,14 +35,14 @@ const writeLog = (level: LogLevel, payload: Record<string, unknown>) => {
 
 export const createApiLogger = (
   context: Pick<RequestContext, "requestId" | "method" | "route">,
-  options?: LoggerOptions
+  options?: RedactionOptions
 ) => {
   const log = (
     level: LogLevel,
     event: string,
     fields: StructuredLogFields = {}
   ) => {
-    writeLog(level, {
+    const payload = {
       level,
       event,
       requestId: context.requestId,
@@ -115,7 +50,13 @@ export const createApiLogger = (
       route: context.route,
       timestamp: new Date().toISOString(),
       ...redactFields(fields, options),
-    });
+    };
+
+    writeLog(level, payload);
+
+    if (level === "error") {
+      captureStructuredError(event, payload);
+    }
   };
 
   return {
@@ -132,20 +73,26 @@ export const createApiLogger = (
 
 export const createServerLogger = (
   context: ServerLoggerContext = {},
-  options?: LoggerOptions
+  options?: RedactionOptions
 ) => {
   const log = (
     level: LogLevel,
     event: string,
     fields: StructuredLogFields = {}
   ) => {
-    writeLog(level, {
+    const payload = {
       level,
       event,
       timestamp: new Date().toISOString(),
       ...context,
       ...redactFields(fields, options),
-    });
+    };
+
+    writeLog(level, payload);
+
+    if (level === "error") {
+      captureStructuredError(event, payload);
+    }
   };
 
   return {
