@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 
 interface ArtworkLayoutProps {
   artworks: ArtworkFrontend[];
@@ -42,7 +43,7 @@ export const MasonryLayout = ({
       <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
         {artworks.map((artwork, index) => (
           <Link
-            href={`/artwork/${artwork._id}`}
+            href={artworkDetailPath(artwork._id)}
             key={artwork._id}
             className="block mb-4 break-inside-avoid group"
           >

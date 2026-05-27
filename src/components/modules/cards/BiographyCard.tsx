@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/shadcn/skeleton";
+import { articleDetailPath } from "@/lib/routes/publicAppRoutes";
 
 type BiographyCardProps = {
   entry: {
@@ -16,7 +17,7 @@ type BiographyCardProps = {
 export const BiographyCard = ({ entry }: BiographyCardProps) => {
   const { imageUrl, title, subtitle, slug } = entry;
   return (
-    <Link href={`/biography/${slug}`}>
+    <Link href={articleDetailPath(slug)}>
       <div className="flex flex-col">
         <div className="relative h-[300px] w-full overflow-hidden">
           <Image

@@ -1030,3 +1030,9 @@ Do not reassign T-081, T-082, T-083, T-084, or T-085 unless a regression is
 opened.
 Existing Shopify product-link data migration is not indicated by the completed
 T-059 audit and T-082 validation work.
+
+T-309 is prepared as a docs-only scope for API route builder and route-ID
+ownership. It should distinguish client fetcher paths, physical route files,
+route parity fixtures, and request-context route IDs before any runtime API
+centralization. Keep API response contracts, statuses, validation, auth/admin
+guards, DB ownership, logging behavior, and Shopify dashboard work unchanged.

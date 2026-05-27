@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Calendar, ChevronRight } from "lucide-react";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath, publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -28,7 +29,7 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
           {/* Featured Article - Left Side */}
           <div className="relative lg:sticky lg:top-4 h-[calc(69vh-2rem)] mb-8 lg:mb-0">
             <Link
-              href={`/blog/${featured.slug}`}
+              href={blogDetailPath(featured.slug)}
               className="group block h-full"
             >
               <div className="relative h-full rounded-2xl overflow-hidden bg-gray-100">
@@ -60,7 +61,7 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
           <div className="relative z-10 space-y-6 bg-white/80 backdrop-blur-sm rounded-xl p-4">
             {firstFourEntries.map((blog) => (
               <Link
-                href={`/blog/${blog.slug}`}
+                href={blogDetailPath(blog.slug)}
                 key={blog.slug}
                 className="group block"
               >
@@ -98,7 +99,7 @@ export const BlogSectionSplitScreen = ({ blogEntries }: BlogLayoutProps) => {
       </div>
       <div className="container mx-auto">
         <div className="flex flex-row w-full justify-end px-8 pt-4">
-          <Link href={`/blog/?sortby=latest`}>
+          <Link href={`${publicAppRoutes.blog}/?sortby=latest`}>
             <div className="flex flex-row items-center gap-2">
               <span className="text-xl font-bold underline">VIEW ALL</span>
 

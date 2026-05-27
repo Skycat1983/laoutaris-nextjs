@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ArtworkFrontend } from "@/lib/data/types/artworkTypes";
 import type { ArtworkShopProducts } from "@/lib/data/services/getArtworkShopProducts";
 import { ShoppingCart, BookOpen, Palette } from "lucide-react";
+import { productDetailPath } from "@/lib/routes/publicAppRoutes";
 
 type ArtworkShopSectionProps = {
   artwork: ArtworkFrontend;
@@ -35,7 +36,7 @@ const ArtworkShopSection = ({
                 {originalProduct.currencyCode} {originalProduct.price}
               </p>
               <Link
-                href={`/shop/products/${originalProduct.handle}`}
+                href={productDetailPath(originalProduct.handle)}
                 className="inline-block mt-3 px-6 py-2 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors"
               >
                 View Details
@@ -60,7 +61,7 @@ const ArtworkShopSection = ({
                 {printProducts.map((print) => (
                   <Link
                     key={print.id}
-                    href={`/shop/products/${print.handle}`}
+                    href={productDetailPath(print.handle)}
                     className="px-4 py-2 border-2 border-black rounded-md font-medium hover:bg-black hover:text-white transition-colors text-sm"
                   >
                     {print.title} - {print.currencyCode} {print.price}
@@ -81,7 +82,7 @@ const ArtworkShopSection = ({
                 {bookProducts.map((book) => (
                   <Link
                     key={book.id}
-                    href={`/shop/products/${book.handle}`}
+                    href={productDetailPath(book.handle)}
                     className="block p-3 border border-gray-200 rounded-md hover:border-purple-600 hover:bg-purple-50 transition-colors"
                   >
                     <p className="font-medium">{book.title}</p>

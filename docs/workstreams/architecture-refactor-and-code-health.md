@@ -809,6 +809,14 @@ Use targeted import/reference searches for pruning tasks.
 - 2026-05-26: Prepared T-305 as the public app route-builder implementation
   slice. It can run in parallel with T-304/T-306 and should not edit shared
   trackers.
+- 2026-05-26: Completed T-305. `src/lib/routes/publicAppRoutes.ts` now owns
+  the first client-safe public route constants/builders, and metadata,
+  dynamic-sitemap, main-nav, skeleton-route, and footer legal-link consumers
+  use that module without auth, API, admin, smoke, redirect, or cache-policy
+  changes.
+- 2026-05-27: Prepared the next non-Shopify-dashboard route ownership wave:
+  T-307 expands public route-builder consumers, T-308 scopes auth/protected
+  route constants, and T-309 scopes API route builder/route-ID ownership.
 
 ## Next Agent Action
 
@@ -873,8 +881,10 @@ owner/orchestrator acceptance of a Next target, then use
 [T-015 Audit Next Major Migration Preflight](../tasks/T-015-next-major-migration-preflight.md)
 as the migration inventory for the package implementation task.
 
-T-305 is ready to run in parallel with T-304 and T-306. It should add the first
-client-safe public app route-builder slice and migrate only the selected public
-route consumers. Do not touch auth/protected routes, API route IDs/builders,
-admin action route conventions, smoke route constants, cache policy,
-redirects, or shared trackers during the parallel run.
+T-307, T-308, and T-309 are prepared as the next non-Shopify-dashboard route
+ownership wave. T-307 can implement the next low-risk public UI route-builder
+consumer migration. T-308 and T-309 are docs-only scoping tasks for
+auth/protected and API route ownership respectively. Keep Shopify dashboard
+metadata/policy work, API route IDs/builders outside T-309, admin action route
+conventions, smoke route constants, cache policy, and redirect behavior
+separate unless a later task scopes them.

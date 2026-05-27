@@ -16,6 +16,7 @@ import type { FramedPrintPreviewArtwork } from "@/lib/framePreview/productEligib
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopProductKind } from "@/lib/shop/productClassification";
 import { getShopProductDisplayTitle } from "@/lib/shop/productDisplay";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 
 type SaleProduct = Pick<
   SimpleProduct,
@@ -599,7 +600,7 @@ export const ShopProductSaleGallery = ({
 
         {linkedArtwork ? (
           <Link
-            href={`/artwork/${linkedArtwork.id}`}
+            href={artworkDetailPath(linkedArtwork.id)}
             className="mt-6 inline-flex font-archivo text-sm font-medium text-gray-700 underline underline-offset-4 hover:text-black"
           >
             View archive record

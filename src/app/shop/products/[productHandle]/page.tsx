@@ -23,6 +23,7 @@ import { createServerLogger } from "@/lib/observability/logger";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 
 export const dynamic = "force-dynamic";
 
@@ -275,7 +276,7 @@ export default async function ProductPage({ params }: PageProps) {
               {bookArtworks.map((artwork) => (
                 <Link
                   key={artwork._id}
-                  href={`/artwork/${artwork._id}`}
+                  href={artworkDetailPath(artwork._id)}
                   className="group"
                 >
                   <div className="relative aspect-square mb-2 overflow-hidden rounded-md">

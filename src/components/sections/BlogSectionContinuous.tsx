@@ -9,6 +9,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath } from "@/lib/routes/publicAppRoutes";
 
 type BlogSectionSortBy = "latest" | "oldest" | "popular" | "featured";
 
@@ -61,7 +62,10 @@ export const BlogSectionContinuous = ({
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 lg:grid-cols-34 gap-12">
         <div className="lg:col-span-2">
-          <Link href={`/blog/${blogEntries[0]?.slug}`} className="group block">
+          <Link
+            href={blogDetailPath(String(blogEntries[0]?.slug))}
+            className="group block"
+          >
             <article className="relative rounded-3xl overflow-hidden">
               <Image
                 src={getCloudinaryDeliveryUrl(
@@ -91,7 +95,11 @@ export const BlogSectionContinuous = ({
 
         {/* Secondary Articles */}
         {blogEntries.slice(1).map((blog) => (
-          <Link href={`/blog/${blog.slug}`} key={blog.slug} className="group">
+          <Link
+            href={blogDetailPath(blog.slug)}
+            key={blog.slug}
+            className="group"
+          >
             <article className="flex flex-col gap-4">
               <div className="aspect-[16/10] relative rounded-2xl overflow-hidden">
                 <Image

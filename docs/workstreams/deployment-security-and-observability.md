@@ -397,9 +397,10 @@ security headers, environment documentation, and actionable operational signals.
   and future route-specific metadata once those route contracts are assigned.
 - Define sitemap/default redirect freshness through T-232 before any runtime
   ISR/static-param changes affect deployment expectations.
-- Keep instrumentation and web-vitals implementation blocked by ADR 0005 until
-  the owner approves a monitoring provider or explicit no-provider launch
-  posture.
+- Sentry is approved as the monitoring provider in ADR 0005. Keep
+  instrumentation/web-vitals runtime implementation scoped to T-310 or later
+  tasks; source-map upload, alert routing, replay, profiling, broad tracing,
+  uptime checks, and Vercel privileged actions remain separate.
 
 ## Acceptance Criteria
 
@@ -893,6 +894,14 @@ npm run lint
   policy are approved; provider SDKs, `instrumentation.ts`, provider variables,
   source-map/release tracking, dashboards, uptime checks, and alert routing
   remain blocked until owner/platform approval.
+- This T-139 blocked state was superseded on 2026-05-27 when the owner approved
+  Sentry in ADR 0005.
+- 2026-05-27: Owner approved Sentry as the monitoring provider. ADR 0005 is now
+  accepted, the monitoring architecture and production-ops decision packet
+  record Sentry as approved, and T-310 is prepared as the first implementation
+  baseline while source-map upload, alert routing, replay, profiling, broad
+  tracing, uptime checks, Vercel privileged actions, and smoke-account work
+  remain separate.
 - 2026-05-18: Prepared T-124 as the next F-083/R-028 smoke automation slice.
   It should add a GitHub Actions workflow for unauthenticated public smoke that
   can run manually with a supplied base URL and on a schedule after the owner
@@ -1054,8 +1063,9 @@ npm run lint
   workflows.
 - 2026-05-23: Reconciled A-022 deployment-adjacent findings into F-113,
   F-114, and duplicate F-116. T-231 has resolved middleware matcher narrowing,
-  T-232 resolved sitemap/default redirect freshness decisions, and ADR 0005
-  continues to block provider-backed instrumentation/web-vitals implementation.
+  T-232 resolved sitemap/default redirect freshness decisions, and ADR 0005 now
+  routes provider-backed instrumentation/web-vitals implementation to the Sentry
+  baseline task.
 - 2026-05-23: Completed T-231. Middleware matching is limited to protected
   frontend/API prefixes (`/account`, `/admin`, `/api/v2/admin`, and
   `/api/v2/user`), with focused coverage proving public pages, public APIs,
@@ -1106,26 +1116,31 @@ npm run lint
   tightening step before enforcement; no runtime headers changed.
 - 2026-05-26: Prepared T-304 as the report-only CSP implementation/test slice.
   It can run in parallel with T-305/T-306 and should not edit shared trackers.
+- 2026-05-26: Completed T-304. `Content-Security-Policy-Report-Only` is now
+  emitted alongside the unchanged enforced CSP, and focused security-header
+  coverage locks the enforced/report-only split. CSP enforcement, HSTS,
+  dynamic CORS, CSP reporting, and monitoring remain separate.
 
 ## Next Agent Action
 
-Use the production ops owner decision packet to collect owner/orchestrator
-answers for monitoring posture, incident owner roles, Vercel log/rollback
-authority, credentialed smoke accounts, and public-smoke repository variables.
-Do not implement monitoring providers, provider env variables, source-map
-upload, alert automation, credentialed smoke, Vercel privileged actions, or CI
-workflow changes until the matching answers exist.
+Sentry is approved as the monitoring provider and T-310 is prepared as the first
+implementation task. Do not start T-310 while T-307/T-308/T-309 are actively
+running if it would overlap package/config/global observability files. Keep
+source-map upload, alert automation, credentialed smoke, Vercel privileged
+actions, public-smoke repository variables, replay, profiling, broad tracing,
+uptime checks, and CI workflow changes separate unless a later owner-approved
+task explicitly scopes them.
 
 The first non-secret Main CI local-gate workflow is in place. Keep public
 smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
 production secrets separate unless a later owner-approved task explicitly
 changes that boundary.
 
-T-304 is ready to run in parallel with T-305 and T-306. It should add a
-report-only CSP allowlist and focused security-header test coverage while
-preserving the current enforced CSP. Do not enforce the tightened policy, add
-HSTS, change CORS, add a CSP report endpoint/provider, add monitoring, change
-environment variables, or edit shared trackers during the parallel run.
+T-304 is complete for the report-only CSP observation step. Do not enforce the
+tightened CSP, add HSTS, change CORS, add a CSP report endpoint/provider, add
+monitoring, or change environment variables without a separate scoped task. Any
+future CSP enforcement task should first collect narrow evidence that the
+report-only policy does not break public pages or admin upload behavior.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md);
@@ -1138,8 +1153,8 @@ unless route fallback source hygiene regresses or the owner/platform monitoring
 decision changes. More R-018 runtime work is blocked until owner input exists
 for Shopify policy URLs, real social URLs, jurisdiction/audience-specific legal
 claims, self-service privacy workflows, or comment moderation/reporting
-workflows. Monitoring implementation remains blocked by ADR 0005 until a
-provider, no-provider launch posture, or launch-blocking decision is approved.
+workflows. Monitoring provider choice is unblocked by ADR 0005 with Sentry
+approved; runtime implementation remains pending T-310.
 
 For the A-022 deployment-adjacent work, T-232 and T-233 are complete: sitemap
 and default redirect freshness are explicit, and `/biography` is the only

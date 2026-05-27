@@ -470,6 +470,10 @@ Use manual admin checks when changing dashboard behavior.
 - 2026-05-26: Prepared T-306 as the admin content-image URL feedback
   implementation slice. It can run in parallel with T-304/T-305 and should not
   edit shared trackers.
+- 2026-05-26: Completed T-306. Blog and collection create/update forms now
+  surface pre-submit malformed/unsupported image URL feedback and only advance
+  preview state for syntactically valid, allowed-host URLs. Routes, schemas,
+  persistence, Cloudinary lifecycle, and media-picker work were unchanged.
 
 ## Next Agent Action
 
@@ -481,12 +485,11 @@ relationship-control slices. Remaining A-031 admin-control candidates are lower
 priority: blog/collection image picker or pre-submit image feedback, and
 comment/user search filters only if operator lookup friction becomes routine.
 
-T-306 is ready to run in parallel with T-304 and T-305. It should add
-pre-submit allowed-host feedback and safe preview gating for blog and collection
-image URL fields using the existing content-image URL validation contract. Do
-not implement a media picker, Cloudinary upload/lifecycle changes, route/schema
-edits, persistence changes, comment/user search filters, or shared tracker
-updates during the parallel run.
+T-306 is complete for the blog/collection image URL feedback gap. Do not
+reassign it unless malformed/unsupported pre-submit feedback or safe preview
+gating regresses. Keep a media picker, Cloudinary upload/lifecycle changes,
+route/schema edits, persistence changes, image migration, and comment/user
+search filters separate.
 
 No further F-092 implementation slice is ready after T-165/T-172/T-178, and no
 admin archive maintenance task is currently prepared after T-183. T-218 is

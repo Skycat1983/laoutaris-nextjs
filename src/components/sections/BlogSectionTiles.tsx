@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath, publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -17,7 +18,7 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
           {/* Featured Section */}
           <div className="lg:col-span-2">
             <Link
-              href={`/blog/${blogEntries[0]?.slug}`}
+              href={blogDetailPath(String(blogEntries[0]?.slug))}
               className="group block"
             >
               <article className="relative rounded-3xl overflow-hidden">
@@ -49,7 +50,11 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
 
           {/* Secondary Articles */}
           {firstSevenEntries.slice(1).map((blog) => (
-            <Link href={`/blog/${blog.slug}`} key={blog.slug} className="group">
+            <Link
+              href={blogDetailPath(blog.slug)}
+              key={blog.slug}
+              className="group"
+            >
               <article className="flex flex-col gap-4">
                 <div className="aspect-[16/10] relative rounded-2xl overflow-hidden">
                   <Image
@@ -77,7 +82,7 @@ export const BlogSectionTiles = ({ blogEntries }: BlogLayoutProps) => {
 
       <div className="container mx-auto">
         <div className="flex flex-row w-full justify-end px-8 pt-4">
-          <Link href={`/blog/?sortby=popular`}>
+          <Link href={`${publicAppRoutes.blog}/?sortby=popular`}>
             <div className="flex flex-row items-center gap-2">
               <span className="text-xl font-bold underline">VIEW ALL</span>
 

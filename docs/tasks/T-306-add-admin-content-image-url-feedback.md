@@ -1,6 +1,6 @@
 # T-306 Add Admin Content Image URL Feedback
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -118,3 +118,32 @@ If a new helper/component test is added, include it in the focused test command.
 
 - Planned on 2026-05-26 after T-303 completed the admin image-control feedback
   audit.
+- Completed on 2026-05-26.
+- Added `contentImageUrlFeedback.ts` as the shared client-safe helper for draft
+  content image URL classification. It reuses `isAllowedContentImageUrl()` and
+  `CONTENT_IMAGE_URL_ALLOWED_HOST_ERROR`, with a separate malformed-URL message
+  for syntactically invalid drafts.
+- Updated `CreateBlogForm.tsx`, `UpdateBlogForm.tsx`,
+  `CreateCollectionForm.tsx`, and `UpdateCollectionForm.tsx` so image URL
+  changes show pre-submit field feedback and only advance preview state for
+  syntactically valid, allowed-host URLs.
+- Invalid drafts leave the existing placeholder or current saved preview in
+  place. Valid Cloudinary, Shopify CDN, and Flaticon URLs continue to preview
+  according to the shared policy.
+- Added focused form coverage in
+  `__tests__/unit/forms/adminArticleBlogForms.test.tsx` and
+  `__tests__/unit/forms/adminCollectionForms.test.tsx` for malformed values,
+  unsupported hosts, preview suppression, visible feedback, and allowed-host
+  preview behavior.
+- Routes, schemas, persistence contracts, allowed-host policy, Cloudinary
+  upload/lifecycle behavior, media picker work, product data, assets, and image
+  migration were unchanged.
+- Candidate shared tracker updates for orchestrator reconciliation:
+  - mark T-306 complete in `docs/tasks/README.md`;
+  - add a short T-306 completion progress note to
+    `docs/workstreams/content-assets-and-admin-ops.md`;
+  - add a short T-306 focused coverage note to
+    `docs/workstreams/testing-and-quality.md`.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/forms/adminArticleBlogForms.test.tsx __tests__/unit/forms/adminCollectionForms.test.tsx __tests__/unit/utils/contentImageUrlValidation.test.ts`
+  and `git diff --check`.

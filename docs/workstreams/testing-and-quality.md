@@ -1997,6 +1997,12 @@ git diff --check
   focused verification: security-header tests/build for report-only CSP, route
   import-boundary/focused route tests for public route builders, and admin form
   plus URL-validation tests for content-image feedback.
+- 2026-05-26: Completed T-304/T-305/T-306. T-304 added focused security-header
+  assertions for enforced versus report-only CSP plus build verification; T-305
+  added route-builder, main-nav skeleton, metadata/sitemap, policy-page, and
+  client/server import-boundary coverage; T-306 added admin blog/collection
+  form coverage for malformed/unsupported image URLs, preview suppression, and
+  allowed-host preview behavior.
 
 ## Next Agent Action
 
@@ -2045,13 +2051,18 @@ dependencies, commerce, route behavior, CI, or owner-decision work without a
 new scoped task. If saved-item action files change in a future task, rerun
 `npm test -- --runTestsByPath __tests__/unit/actions/savedItemActions.test.ts`.
 
-T-304, T-305, and T-306 are the next parallel implementation tasks. T-304
-should verify with the focused security-header Jest suite, build, and
-`git diff --check`; T-305 should verify route-builder consumers with lint,
-client/server import-boundary coverage, focused touched tests, and
-`git diff --check`; T-306 should verify admin blog/collection form tests,
-content-image URL validation tests, and `git diff --check`. Broaden only if a
-task touches shared behavior beyond its brief.
+T-304, T-305, and T-306 are complete. Do not reassign them unless their focused
+coverage or behavior regresses. Next non-Shopify quality work should follow the
+new scoped task brief for the selected route-builder or CSP evidence target and
+should keep owner-blocked production smoke, credentialed/admin smoke, Vercel log
+evidence, and scheduled/detail public smoke under F-126/operations.
+
+T-307, T-308, and T-309 are prepared. T-307 should include focused touched
+consumer tests plus `npm run lint`, the client/server import-boundary guard, and
+`git diff --check`. T-308 and T-309 are docs-only scoping tasks and should use
+`git diff --check` unless they create additional result-file checks. Keep
+Playwright, production smoke, credentialed/admin smoke, Vercel log evidence,
+and Shopify dashboard-dependent verification separate.
 
 T-194 `/prototype/frame` visual QA is complete and T-292 fixed the two
 narrow/mobile cropping blockers. T-292 verification used focused Jest suites,

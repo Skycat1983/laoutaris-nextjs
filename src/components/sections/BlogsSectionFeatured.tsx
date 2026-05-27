@@ -8,6 +8,7 @@ import { Skeleton } from "../shadcn/skeleton";
 import { SkeletonFactory } from "@/components/compositions/SkeletonFactory";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath, publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 interface BlogLayoutProps {
   blogEntries: BlogEntryFrontend[];
@@ -26,7 +27,7 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Featured Article - Full Width */}
           <div className="lg:col-span-4">
-            <Link href={`/blog/${featured.slug}`} className="group block">
+            <Link href={blogDetailPath(featured.slug)} className="group block">
               <article className="relative h-[630px] rounded-2xl overflow-hidden">
                 <Image
                   src={getCloudinaryDeliveryUrl(
@@ -58,7 +59,7 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
           {/* Secondary Articles - Grid */}
           {otherEntries.slice(0, 4).map((blog) => (
             <Link
-              href={`/blog/${blog.slug}`}
+              href={blogDetailPath(blog.slug)}
               key={blog.slug}
               className="group"
               // onMouseEnter={() => setFeaturedIndex(blogEntries.indexOf(blog))}
@@ -88,7 +89,7 @@ export const BlogsSectionFeatured = ({ blogEntries }: BlogLayoutProps) => {
       </div>
       <div className="container mx-auto">
         <div className="flex flex-row w-full justify-end px-8 pt-4">
-          <Link href={`/blog/?sortby=featured`}>
+          <Link href={`${publicAppRoutes.blog}/?sortby=featured`}>
             <div className="flex flex-row items-center gap-2">
               <span className="text-xl font-bold underline">VIEW ALL</span>
 

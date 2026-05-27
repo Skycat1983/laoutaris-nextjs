@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
+import { productDetailPath } from "@/lib/routes/publicAppRoutes";
 
 interface ProductCardProps {
   product: SimpleProduct;
@@ -22,7 +23,7 @@ export const ProductCard = ({
     variant === "contain" ? "object-contain" : "object-cover";
 
   return (
-    <Link href={`/shop/products/${product.handle}`}>
+    <Link href={productDetailPath(product.handle)}>
       <article className=" text-center overflow-hidden  hover:shadow-md transition-shadow duration-200 cursor-pointer">
         {/* Product Image */}
         {product.image ? (

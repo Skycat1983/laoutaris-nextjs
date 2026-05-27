@@ -585,3 +585,9 @@ through T-291. T-289
 is complete and should not be reassigned unless OAuth default-role callback
 coverage regresses. T-275 is complete and should not be reassigned unless its
 test mock typing regression returns.
+
+T-308 is prepared as a docs-only scope for auth/protected route constant
+consolidation. It should inventory route literals and tests before any runtime
+middleware, NextAuth, route-utils, or admin frontend redirect changes. Keep
+session behavior, OAuth behavior, role checks, admin dashboard access, and
+Shopify dashboard work unchanged.

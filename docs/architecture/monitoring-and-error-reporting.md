@@ -1,12 +1,14 @@
 # Monitoring And Error Reporting
 
 This document defines the owner decision and implementation contract for
-production monitoring and error reporting. It is provider-neutral by design:
-no SDK, `instrumentation.ts`, alert automation, or Vercel project setting should
-be added until the owner/platform decision is recorded.
+production monitoring and error reporting. Sentry is now the owner-approved
+provider, but implementation still needs a scoped task and current official
+Next.js setup verification before SDK, `instrumentation.ts`, source-map upload,
+alert automation, or Vercel project settings are changed.
 
 ## Current State
 
+- Sentry is approved as the monitoring provider by ADR 0005 on 2026-05-27.
 - The app has no monitoring or error-reporting dependency in `package.json`.
 - There is no app-level `instrumentation.ts`.
 - The only OpenTelemetry-related package evidence is Next.js optional peer
@@ -19,8 +21,8 @@ be added until the owner/platform decision is recorded.
   evidence, rollback, and `TBD` owner/escalation matrix placeholders.
 - Deployment smoke remains evidence-based and manual/scripted through
   `npm run smoke:public`; it is not continuous monitoring.
-- [ADR 0005](../decisions/0005-monitoring-provider-decision.md) records that no
-  provider or no-provider interim launch policy is approved as of 2026-05-23.
+- [ADR 0005](../decisions/0005-monitoring-provider-decision.md) records Sentry
+  as the approved provider. Runtime implementation remains pending.
 
 ## Required Capture Surfaces
 
@@ -41,7 +43,7 @@ these surfaces before production launch.
 
 ## Request ID And Logging Contract
 
-Provider integration must preserve the T-099 request-context contract.
+Sentry integration must preserve the T-099 request-context contract.
 
 - Accept only safe inbound `X-Request-Id` values using the current
   `isSafeRequestId()` rules; generate a UUID when the inbound value is absent or
@@ -91,8 +93,10 @@ The owner/platform decision should answer these questions before implementation.
 
 ## Environment Variable Rules
 
-Do not add concrete provider variables until a provider is approved. After
-approval, update `docs/runbooks/environment.md` before or with code changes.
+Do not add concrete Sentry variable values to the repo. Before or with code
+changes, update `docs/runbooks/environment.md` with Sentry variable names,
+purpose, classification, required environments, and rotation/configuration
+guidance.
 
 Classify provider variables this way:
 
@@ -119,10 +123,9 @@ Provider variables must also follow the existing environment rules:
 
 ## Implementation Contract After Approval
 
-The provider implementation task can proceed only after
-[ADR 0005](../decisions/0005-monitoring-provider-decision.md) is replaced or
-superseded by an accepted owner/platform decision that records the approved
-provider or no-provider policy and environment contract. That task should:
+The Sentry implementation task can proceed now that
+[ADR 0005](../decisions/0005-monitoring-provider-decision.md) records the
+approved provider. That task should:
 
 1. Add the approved SDK or integration with the smallest runtime surface that
    satisfies the decision.

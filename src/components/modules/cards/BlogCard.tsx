@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/shadcn/skeleton";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath } from "@/lib/routes/publicAppRoutes";
 
 interface BlogCardProps {
   blog: BlogEntryFrontend;
@@ -10,7 +11,7 @@ interface BlogCardProps {
 
 export const BlogCard = ({ blog }: BlogCardProps) => {
   return (
-    <Link href={`/blog/${blog.slug}`}>
+    <Link href={blogDetailPath(blog.slug)}>
       <div className="relative group w-full">
         <div className="relative">
           <Image

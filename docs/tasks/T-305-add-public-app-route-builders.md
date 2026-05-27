@@ -1,6 +1,6 @@
 # T-305 Add Public App Route Builders
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -126,3 +126,32 @@ tests in the focused `npm test -- --runTestsByPath` command.
 
 - Planned on 2026-05-26 after T-302 completed route-builder centralization
   scoping.
+- Completed on 2026-05-26.
+- Added `src/lib/routes/publicAppRoutes.ts` as a value-only, client-safe public
+  route module covering the scoped stable public roots plus encoded builders for
+  artwork, biography article, blog, collection, collection artwork, and shop
+  product detail paths.
+- Migrated `src/lib/metadata/publicDetailMetadata.ts` to consume and re-export
+  the route builders, and migrated
+  `src/lib/metadata/publicDynamicSitemap.ts` to import detail builders directly
+  from the route module.
+- Migrated `MainNavLoader.tsx`, `MainNav.tsx` skeleton routes, and footer
+  privacy/terms links to the public route constants without changing labels or
+  rendered paths.
+- Added focused coverage in
+  `__tests__/unit/routes/publicAppRoutes.test.ts` and
+  `__tests__/unit/loaders/MainNavSkeletonRoutes.test.tsx`; updated
+  `__tests__/unit/loaders/MainNavLoader.test.tsx` to assert the route-module
+  dependency.
+- Deferred areas remain unchanged: auth/protected route constants, API route
+  builders, admin routes/actions, middleware matchers, smoke route lists,
+  redirects, cache policy, and generated params.
+- Candidate shared tracker updates for orchestrator reconciliation:
+  architecture/code-health can note that the first public app route-builder
+  slice is complete; testing/quality can note the added route-builder and
+  skeleton-route coverage.
+- Verification:
+  `npm test -- --runTestsByPath __tests__/unit/routes/publicAppRoutes.test.ts __tests__/unit/loaders/MainNavLoader.test.tsx __tests__/unit/loaders/MainNavSkeletonRoutes.test.tsx __tests__/unit/deployment/publicDynamicSitemap.test.ts __tests__/unit/deployment/publicDetailMetadataStructuredData.test.tsx __tests__/unit/deployment/publicBreadcrumbStructuredData.test.tsx __tests__/unit/pages/PolicyPages.test.tsx`;
+  `npm run lint`;
+  `npm test -- --runTestsByPath __tests__/unit/security/clientServerImportBoundary.test.ts`;
+  `git diff --check`.

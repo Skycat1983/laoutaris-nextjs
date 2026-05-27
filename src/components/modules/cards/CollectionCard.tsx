@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CollectionFrontend } from "@/lib/data/types";
+import { collectionArtworkPath } from "@/lib/routes/publicAppRoutes";
 
 type CollectionCardProps = {
   collection: CollectionFrontend;
@@ -9,7 +10,10 @@ type CollectionCardProps = {
 export const CollectionCard = ({ collection }: CollectionCardProps) => {
   return (
     <Link
-      href={`/collections/${collection.slug}/${collection.firstArtworkId ?? ""}`}
+      href={collectionArtworkPath(
+        collection.slug,
+        collection.firstArtworkId ?? ""
+      )}
       className="relative row-span-1 col-span-1 h-64 overflow-hidden group"
     >
       <Image

@@ -1,6 +1,6 @@
 # Current Orchestration State
 
-Last updated: 2026-05-26
+Last updated: 2026-05-27
 
 ## Current Priority
 
@@ -55,10 +55,19 @@ T-301, T-302, and T-303 are complete. T-301 scoped report-only CSP allowlist
 tightening before enforcement; T-302 scoped route-builder centralization and
 selected public app route builders as the first implementation slice; T-303
 scoped admin blog/collection image URL feedback. T-304, T-305, and T-306 are
-the next prepared parallel-safe implementation tasks. T-304 owns report-only CSP
-header/test work, T-305 owns public app route-builder source/test work, and
-T-306 owns admin content-image URL feedback source/test work. Shared tracker
-updates remain orchestrator-owned after those agents return.
+also complete and reconciled: T-304 added the tightened CSP as report-only
+while preserving the enforced policy, T-305 added the first client-safe public
+route-builder slice, and T-306 added pre-submit image URL feedback plus preview
+gating for blog/collection admin forms. Owner clarified that work should
+continue on tasks that do not require Shopify dashboard changes; Shopify
+metadata, product policy URLs, option mapping, and dashboard-only decisions
+remain deferred. T-307, T-308, and T-309 are prepared as the next
+non-Shopify-dashboard route ownership wave: expand public route-builder
+consumers, scope auth/protected route constants, and scope API route builder/
+route-ID ownership. Owner also approved Sentry as the monitoring provider on
+2026-05-27. ADR 0005 is now accepted and T-310 is prepared as the first Sentry
+baseline, but do not start it in parallel with active route tasks if package,
+config, instrumentation, or observability files would overlap.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
@@ -137,9 +146,9 @@ correction request handoff. T-217 completed contact/product and artwork
 enquiry privacy/retention notice and manual privacy/legal handoff. T-218 is
 complete for footer placeholder social-link cleanup and stale copyright text.
 T-219 completed the docs-only owner-input packet for remaining R-018 blockers.
-T-139 completed the blocked monitoring decision record in ADR 0005: no provider
-and no explicit no-provider interim launch policy are approved, so monitoring
-implementation remains blocked until owner/platform approval.
+T-139 originally recorded the blocked monitoring decision in ADR 0005. On
+2026-05-27 the owner approved Sentry, so provider choice is no longer blocked;
+runtime implementation is routed to T-310.
 
 A-022 is complete and reconciled. F-111 through F-117 now route the Next.js
 feature-utilization findings: controlled public caching/ISR and sitemap/default
@@ -496,10 +505,10 @@ access, or committed production URLs.
 T-139 is complete:
 [Record monitoring provider decision](../tasks/T-139-record-monitoring-provider-decision.md).
 It added [ADR 0005](../decisions/0005-monitoring-provider-decision.md), which
-records the current blocked state: no monitoring provider and no explicit
-no-provider interim launch policy are approved. SDKs, `instrumentation.ts`,
-provider variables, source-map/release tracking, dashboards, uptime checks, and
-alert routing remain blocked until owner/platform approval.
+originally recorded the blocked provider decision. ADR 0005 now records Sentry
+as approved; SDKs, `instrumentation.ts`, provider variables, source-map/release
+tracking, dashboards, uptime checks, and alert routing remain pending scoped
+implementation.
 
 T-123 is complete:
 [Define monitoring provider plan](../tasks/T-123-define-monitoring-provider-plan.md).
@@ -856,16 +865,20 @@ Use this section as the first operational handoff for a new orchestrator.
   reconcile returned work into task/workstream/risk/finding trackers.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
-- Immediate handoff: assign these parallel-safe implementation tasks together:
-  - [T-304 Add report-only CSP allowlist](../tasks/T-304-add-report-only-csp-allowlist.md):
-    `/task effort: medium details: docs/tasks/T-304-add-report-only-csp-allowlist.md`.
-  - [T-305 Add public app route builders](../tasks/T-305-add-public-app-route-builders.md):
-    `/task effort: medium details: docs/tasks/T-305-add-public-app-route-builders.md`.
-  - [T-306 Add admin content image URL feedback](../tasks/T-306-add-admin-content-image-url-feedback.md):
-    `/task effort: medium details: docs/tasks/T-306-add-admin-content-image-url-feedback.md`.
-  These tasks should not edit shared trackers or indexes while running in
-  parallel; each owns separate source/test areas and should list candidate
-  shared updates in its handoff.
+- Immediate handoff: continue with non-Shopify-dashboard work. T-304, T-305,
+  and T-306 are complete and reconciled; do not reassign them unless their
+  behavior regresses. Next assignments should avoid Shopify dashboard
+  metadata/policy/option changes and focus on route-builder, security-header,
+  admin-ops, verification, or architecture tasks that can be completed from
+  source.
+- Prepared assignments:
+  - `/task effort: medium details: docs/tasks/T-307-expand-public-route-builder-consumers.md`
+  - `/task effort: medium details: docs/tasks/T-308-scope-auth-protected-route-constants.md`
+  - `/task effort: medium details: docs/tasks/T-309-scope-api-route-builder-ownership.md`
+- Sentry is approved and prepared separately:
+  - `/task effort: high details: docs/tasks/T-310-implement-sentry-monitoring-baseline.md`
+  Run this after the current route tasks finish or when no active task owns
+  package/config/instrumentation/observability files.
 - `/prototype/frame` is owner-review-ready for the T-194/T-292 scoped frame,
   room, and modal review. Product-page rail adoption remains paused until a
   later task or owner decision explicitly scopes it.
@@ -1622,19 +1635,16 @@ The recommended next assignments are:
 - T-301, T-302, and T-303 are complete. Do not reassign the CSP allowlist,
   route-builder centralization, or admin image-control feedback scoping tasks
   unless their result artifacts drift from current source.
-- The next prepared assignments can run in parallel because their write scopes
-  do not overlap:
-  - `/task effort: medium details: docs/tasks/T-304-add-report-only-csp-allowlist.md`
-  - `/task effort: medium details: docs/tasks/T-305-add-public-app-route-builders.md`
-  - `/task effort: medium details: docs/tasks/T-306-add-admin-content-image-url-feedback.md`
-  T-304 owns report-only CSP header/test work, T-305 owns public app
-  route-builder source/test work, and T-306 owns admin blog/collection
-  content-image URL feedback source/test work. Do not let these parallel tasks
-  edit shared trackers; reconcile their candidate updates after they return.
-- T-274 is complete as a docs packet. Do not assign monitoring, Vercel,
-  credentialed-smoke, scheduled-smoke, or incident-owner implementation until
-  the owner answers
-  [the production ops decision packet](../runbooks/production-ops-owner-decision-packet.md).
+- T-304, T-305, and T-306 are complete. The next prepared wave should be
+  assigned as separate non-Shopify-dashboard tasks:
+  - `/task effort: medium details: docs/tasks/T-307-expand-public-route-builder-consumers.md`
+  - `/task effort: medium details: docs/tasks/T-308-scope-auth-protected-route-constants.md`
+  - `/task effort: medium details: docs/tasks/T-309-scope-api-route-builder-ownership.md`
+- T-274 is complete as a docs packet. Sentry provider choice is answered and
+  routed to T-310. Do not assign Vercel privileged actions, credentialed-smoke,
+  scheduled-smoke, source-map upload, alert automation, replay/profiling/tracing,
+  uptime checks, or incident-owner implementation until the owner answers the
+  remaining production-ops packet sections.
 - Keep product-page rail adoption, Shopify option mapping, checkout/cart work,
   enquiry mutation, physical-dimension migration, real texture asset creation,
   and room-background selection paused until scoped owner decisions or later
@@ -1677,8 +1687,9 @@ self-service privacy workflows, and future comment moderation/reporting
 workflows separate until those decisions exist.
 
 T-139 is complete as ADR 0005. Do not reassign monitoring decision work unless
-the owner/platform decision changes; implementation remains blocked until a
-provider, no-provider launch posture, or launch-blocking decision is approved.
+the owner/platform decision changes again; Sentry implementation is routed to
+T-310 while alert/source-map/replay/profiling/tracing/uptime decisions remain
+separate.
 Owner-approved incident roles and backups remain a separate owner/orchestrator
 decision after T-134's blocked handoff.
 

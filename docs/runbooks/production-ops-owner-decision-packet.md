@@ -1,6 +1,6 @@
 # Production Ops Owner Decision Packet
 
-Status: Owner input needed
+Status: Partially answered
 
 Use this packet to answer the production operations blockers from
 [A-033](../audits/results/A-033-deployment-monitoring-smoke.md) without reading
@@ -24,8 +24,9 @@ Agents can continue docs, tests, route hardening, and provider-neutral logging
 work, but production operations implementation is blocked until the owner or
 orchestrator answers these questions:
 
-- Monitoring posture: no approved provider, no accepted no-provider launch
-  policy, and no launch-blocking decision.
+- Monitoring posture: Sentry is approved as the provider; runtime
+  implementation, environment classification, source-map policy, and alert
+  routing still need scoped follow-up.
 - Incident authority: no approved incident commander, service operators, or
   backups for privileged production actions.
 - Vercel authority: no recorded deployment/log/rollback operator or backup.
@@ -61,13 +62,20 @@ Owner response:
 
 ```md
 Monitoring posture:
-Provider or no-provider decision:
-Launch scope:
-Alert owner/destination:
-Source-map/release policy:
-Environment variable names/classes, no values:
-Review or decision date:
-Notes:
+Provider or no-provider decision: Sentry approved by owner on 2026-05-27.
+Launch scope: Initial error reporting for server/runtime and browser/client
+  errors; keep session replay, profiling, broad tracing, uptime checks,
+  source-map upload, and alert automation separate unless scoped later.
+Alert owner/destination: Pending.
+Source-map/release policy: Release/environment metadata allowed; source-map
+  upload requires a separate scoped decision/task.
+Environment variable names/classes, no values: Pending implementation task;
+  classify Sentry DSN/ingest identifiers, release/environment metadata, source
+  map upload credentials if later approved, sampling flags, and any alert
+  secrets.
+Review or decision date: 2026-05-27.
+Notes: Implementation should verify current official Sentry Next.js setup
+  before editing source.
 ```
 
 ## 2. Incident Owner Matrix
@@ -192,8 +200,8 @@ Implementation blocked until answered:
 
 Create focused implementation tasks only after the matching answer exists:
 
-- Replace ADR 0005 with an accepted monitoring provider, no-provider interim,
-  or launch-blocking decision.
+- Prepare a scoped Sentry implementation task using ADR 0005 and the monitoring
+  architecture.
 - Implement the approved monitoring provider scope and environment contract.
 - Update the incident response owner matrix with approved roles, backups,
   access sources, and authority boundaries.

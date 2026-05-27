@@ -5,6 +5,7 @@ import { getYearColor } from "@/lib/utils/colourUtils";
 import type { BlogEntryFrontend } from "@/lib/data/types";
 import { dateToYear } from "@/lib/utils/dateUtils";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
+import { blogDetailPath } from "@/lib/routes/publicAppRoutes";
 
 interface BlogsViewCardProps {
   blog: BlogEntryFrontend;
@@ -12,7 +13,7 @@ interface BlogsViewCardProps {
 
 export const BlogsViewCard = ({ blog }: BlogsViewCardProps) => {
   return (
-    <Link href={`/blog/${blog.slug}`}>
+    <Link href={blogDetailPath(blog.slug)}>
       <div className="relative group w-full">
         <div className="relative">
           <Image

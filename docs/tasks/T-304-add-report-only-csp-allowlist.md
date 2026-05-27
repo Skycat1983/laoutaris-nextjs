@@ -1,6 +1,6 @@
 # T-304 Add Report-Only CSP Allowlist
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -107,3 +107,23 @@ git diff --check
 ## Handoff Notes
 
 - Planned on 2026-05-26 after T-301 completed the CSP allowlist scoping pass.
+- Completed on 2026-05-26.
+- Added `Content-Security-Policy-Report-Only` globally in `next.config.mjs`
+  alongside the existing enforced `Content-Security-Policy`.
+- The enforced CSP remains unchanged:
+  `default-src 'self' https: data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com; style-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com; img-src 'self' data: https: blob:; font-src 'self' data: https://widget.cloudinary.com https://upload-widget.cloudinary.com; connect-src 'self' data: https: blob:; media-src 'self' data: https: blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'`.
+- Report-only directives added:
+  `default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://widget.cloudinary.com https://upload-widget.cloudinary.com; img-src 'self' data: blob: https://res.cloudinary.com https://cdn-icons-png.flaticon.com https://cdn.shopify.com; font-src 'self' data: https://widget.cloudinary.com https://upload-widget.cloudinary.com; connect-src 'self' https://api.cloudinary.com https://widget.cloudinary.com https://upload-widget.cloudinary.com; style-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com; script-src 'self' 'unsafe-inline' https://widget.cloudinary.com https://upload-widget.cloudinary.com https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' blob: https://res.cloudinary.com`.
+- Focused tests now assert the enforced CSP exact string, report-only header
+  presence, and report-only narrowing of broad `https:`, `data:`, `blob:`, and
+  `'unsafe-eval'` allowances where T-301 scoped observation as safe.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/deployment/nextConfigSecurityHeaders.test.ts`,
+  `npm run build`, and
+  `git diff --check`.
+- Candidate shared tracker updates for orchestrator reconciliation:
+  mark T-304 completed in `docs/tasks/README.md`; add a deployment/security
+  workstream note that report-only CSP observation is now configured; add a
+  testing workstream note that focused header tests lock the enforced/report-only
+  split; update R-004/F-052 notes to say stricter CSP remains report-only and
+  still needs evidence before enforcement.
