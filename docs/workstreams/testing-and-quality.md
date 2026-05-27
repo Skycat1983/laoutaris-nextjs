@@ -168,6 +168,10 @@ refactoring without turning every change into a manual QA pass.
   `404`s, unchanged invalid-ID `400` bodies, public-safe internal `500`s,
   private-message redaction, auth short-circuiting, and DB-before-model
   ordering.
+- T-314 extended focused admin read fetcher coverage for the new client-safe
+  path builders, explicit supported read resources, encoded detail URLs, and
+  preserved pagination/search/filter query-string behavior. Route/fetcher
+  parity remained explicit and green.
 - T-049 updated focused admin delete route coverage for shared helper envelopes,
   preserved success messages and `data: null`, unchanged invalid-ID `400`
   bodies, missing-resource `404`s, artwork conflict `409`, public-safe internal
@@ -2073,10 +2077,15 @@ import-boundary, lint, and `git diff --check` checks. T-310 focused
 observability checks, build, lint, and whitespace passed. T-313 restored the
 broad route-builder-era verification drift: explicit typecheck, focused
 route-builder/cache-policy Jest, full Jest, lint, and whitespace checks now
-pass again. Next non-Shopify verification should follow T-314 focused admin
-read fetcher/parity tests and T-315 `git diff --check` docs-only scoping. Keep
-Playwright, production smoke, credentialed/admin smoke, Vercel log evidence,
-and Shopify dashboard-dependent verification separate.
+pass again. T-314 focused admin read fetcher/parity tests, lint, typecheck, and
+whitespace passed, T-315 used `git diff --check` for docs-only scoping, and
+T-316 focused account route-builder, provider, navigation, import-boundary,
+lint, and whitespace checks passed. T-317 used `git diff --check` for
+docs-only scoping. Next non-Shopify verification should follow T-318 focused
+admin update fetcher/parity tests and T-319 focused admin dashboard route/
+sidebar tests plus the import-boundary guard. Keep Playwright, production
+smoke, credentialed/admin smoke, Vercel log evidence, and Shopify
+dashboard-dependent verification separate.
 
 T-194 `/prototype/frame` visual QA is complete and T-292 fixed the two
 narrow/mobile cropping blockers. T-292 verification used focused Jest suites,
@@ -2197,3 +2206,12 @@ T-313 repaired the post-route-builder verification drift by making
 `publicRouteCachePolicy` main-nav invariant for `publicAppRoutes` route-root
 ownership. `npm run typecheck`, focused Jest, full `npm test`, `npm run lint`,
 and `git diff --check` passed.
+T-318 added focused admin update fetcher coverage for the new client-safe path
+builders, explicit supported update resources, encoded update IDs, preserved
+`PATCH` request options, and route/fetcher parity. The focused Jest suites
+passed.
+T-319 added focused admin dashboard route-builder/sidebar coverage for exact
+dashboard segment paths, segment-builder parity, admin entry redirects,
+sidebar hrefs, and nested-prefix active-state behavior. The focused route test
+and client/server import-boundary suite passed, along with `git diff --check`
+and `npm run lint`.

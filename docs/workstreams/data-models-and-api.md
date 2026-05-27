@@ -152,6 +152,10 @@ consistent enough for production refactoring and Shopify integration.
   with shared success/error helpers, real empty-list/missing-resource/internal
   failure statuses, public-safe `500` bodies, and preserved guard behavior,
   invalid-ID validation, success DTOs, metadata, and DB-before-model ordering.
+- T-314 added client-safe admin read API path builders for the supported
+  article, artwork, blog, collection, comment, and user read resources. Admin
+  read fetchers now share list/detail path construction while preserving
+  pagination, search, filter query-string behavior, and encoded detail IDs.
 - T-049 completed the next response-helper slice, scoped to admin delete routes
   with shared success/error helpers, preserved success messages, `data: null`,
   conflict handling, missing-resource/internal-failure statuses, cascade
@@ -1036,8 +1040,13 @@ API route-builder runtime slice. T-312 completed that slice by adding
 client-safe admin delete destructive/preview path builders while keeping
 physical route files, request-context route IDs, route handlers, API response
 contracts, statuses, validation, auth/admin guards, DB ownership, logging
-behavior, and Shopify dashboard work unchanged. T-314 is prepared as the next
-source-only API route-builder slice for admin read list/detail fetcher paths.
-Keep route handlers, request-context route IDs, response contracts, validation,
-guard behavior, DB ownership, logging behavior, admin UI behavior, and Shopify
-dashboard work unchanged.
+behavior, and Shopify dashboard work unchanged. T-314 completed the next
+source-only API route-builder slice for admin read list/detail fetcher paths
+and preserved route handlers, request-context route IDs, response contracts,
+validation, guard behavior, DB ownership, logging behavior, admin UI behavior,
+and Shopify dashboard work. T-317 scoped the next API route-builder family to
+admin update client fetcher paths. T-318 completed that source-only slice by
+adding explicit article, artwork, blog, and collection update path builders and
+moving admin update fetchers to them while preserving route handlers,
+request-context route IDs, response contracts, validation, guard behavior, DB
+ownership, logging behavior, admin UI behavior, and Shopify dashboard work.

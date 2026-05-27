@@ -4,9 +4,10 @@ import type {
   UpdateArtworkFormValues,
   UpdateBlogFormValues,
 } from "@/lib/data/schemas";
-import { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
+import type { UpdateCollectionFormValues } from "@/lib/data/schemas/collectionSchema";
 import type { AdminArticle, AdminCollection, AdminArtwork, AdminBlog } from "@/lib/data/types/adminTypes";
 import type { SingleResult } from "@/lib/data/types/apiTypes";
+import { adminUpdatePath } from "./paths";
 
 export type UpdateArticleResult = SingleResult<AdminArticle>;
 export type UpdateCollectionResult = SingleResult<AdminCollection>;
@@ -16,9 +17,8 @@ export type UpdateBlogResult = SingleResult<AdminBlog>;
 export const createUpdateFetchers = (fetcher: Fetcher) => ({
   // Patch article
   patchArticle: async (articleId: string, data: UpdateArticleFormValues) => {
-    const encodedId = encodeURIComponent(articleId);
     return fetcher<UpdateArticleResult>(
-      `/api/v2/admin/article/update/${encodedId}`,
+      adminUpdatePath("article", articleId),
       {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -31,9 +31,8 @@ export const createUpdateFetchers = (fetcher: Fetcher) => ({
     collectionId: string,
     data: UpdateCollectionFormValues
   ) => {
-    const encodedId = encodeURIComponent(collectionId);
     return fetcher<UpdateCollectionResult>(
-      `/api/v2/admin/collection/update/${encodedId}`,
+      adminUpdatePath("collection", collectionId),
       {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -43,9 +42,8 @@ export const createUpdateFetchers = (fetcher: Fetcher) => ({
 
   // Patch artwork
   patchArtwork: async (artworkId: string, data: UpdateArtworkFormValues) => {
-    const encodedId = encodeURIComponent(artworkId);
     return fetcher<UpdateArtworkResult>(
-      `/api/v2/admin/artwork/update/${encodedId}`,
+      adminUpdatePath("artwork", artworkId),
       {
         method: "PATCH",
         body: JSON.stringify(data),
@@ -55,8 +53,7 @@ export const createUpdateFetchers = (fetcher: Fetcher) => ({
 
   // Patch blog
   patchBlog: async (blogId: string, data: UpdateBlogFormValues) => {
-    const encodedId = encodeURIComponent(blogId);
-    return fetcher<UpdateBlogResult>(`/api/v2/admin/blog/update/${encodedId}`, {
+    return fetcher<UpdateBlogResult>(adminUpdatePath("blog", blogId), {
       method: "PATCH",
       body: JSON.stringify(data),
     });

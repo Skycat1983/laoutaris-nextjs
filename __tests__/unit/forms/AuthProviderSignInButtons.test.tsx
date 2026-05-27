@@ -63,4 +63,15 @@ describe("AuthProviderSignInButtons", () => {
       callbackUrl: "/account/settings",
     });
   });
+
+  it("falls back to account settings when no callback URL is provided", () => {
+    mockUseSearchParams.mockReturnValueOnce(new URLSearchParams());
+
+    render(<AuthProviderSignInButtons />);
+    fireEvent.click(screen.getByRole("button", { name: "Continue with GitHub" }));
+
+    expect(mockSignIn).toHaveBeenCalledWith("github", {
+      callbackUrl: "/account/settings",
+    });
+  });
 });

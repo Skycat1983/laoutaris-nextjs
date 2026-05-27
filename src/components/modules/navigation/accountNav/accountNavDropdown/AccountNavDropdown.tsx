@@ -17,6 +17,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { UserIcon } from "@/components/elements/icons/UserIcon";
 import { MenubarSeparator, MenubarShortcut } from "@/components/shadcn/menubar";
+import {
+  accountRootPath,
+  accountSettingsPath,
+  accountSignInPath,
+  accountSignUpPath,
+} from "@/lib/routes/accountRoutes";
 
 interface UserSession {
   name?: string | null;
@@ -98,7 +104,7 @@ export function AccountNavDropdown({
     setIsLoading(true);
     try {
       await signOut({ redirect: false });
-      if (pathname.startsWith("/account")) {
+      if (pathname.startsWith(accountRootPath)) {
         openModal(<ModalMessage message="Logout successful." />, () =>
           router.push("/")
         );
@@ -138,7 +144,7 @@ export function AccountNavDropdown({
                   disabled={isProfileDisabled}
                   disabledClassName="opacity-50 cursor-not-allowed bg-whitish"
                   enabledClassName="from-muted/50 to-muted hover:bg-whitish hover:text-accent-foreground bg-whitish"
-                  href="/account/settings"
+                  href={accountSettingsPath}
                   icon={<CircleUserIcon className="w-4 h-4" />}
                   label="Profile"
                 />
@@ -151,7 +157,7 @@ export function AccountNavDropdown({
                   disabled={areAuthLinksDisabled}
                   disabledClassName="opacity-50 cursor-not-allowed"
                   enabledClassName="from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
-                  href="/sign-in"
+                  href={accountSignInPath}
                   icon={<LogIn className="w-4 h-4" />}
                   label="Sign in"
                 />
@@ -163,7 +169,7 @@ export function AccountNavDropdown({
                   disabled={areAuthLinksDisabled}
                   disabledClassName="bg-gradient-to-b from-muted/50 to-muted opacity-50 cursor-not-allowed"
                   enabledClassName="bg-gradient-to-b from-muted/50 to-muted hover:bg-accent hover:text-accent-foreground"
-                  href="/sign-in?mode=signup"
+                  href={accountSignUpPath}
                   icon={<Mail className="w-4 h-4" />}
                   label="Sign up"
                 />

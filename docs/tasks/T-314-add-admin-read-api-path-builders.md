@@ -1,6 +1,6 @@
 # T-314 Add Admin Read API Path Builders
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -89,3 +89,14 @@ types are changed.
   verification gate.
 - This is source-only and does not require Shopify dashboard work, privileged
   Vercel access, or network access.
+- Completed on 2026-05-27 by adding
+  `src/lib/api/admin/read/paths.ts`, moving admin read fetchers to shared
+  list/detail path builders, and extending focused coverage for explicit
+  supported resources, encoded detail IDs, and preserved list query-string
+  behavior.
+- Route handlers, request-context route IDs, guard helpers, DB work, response
+  contracts, DTO transforms, pagination parsing, validation, and admin UI
+  behavior were left unchanged.
+- Verification passed:
+  `npm test -- --runTestsByPath __tests__/unit/api/adminReadFetchers.test.ts __tests__/unit/api/routeFetcherParity.test.ts`,
+  `npm run lint`, `npm run typecheck`, and `git diff --check`.

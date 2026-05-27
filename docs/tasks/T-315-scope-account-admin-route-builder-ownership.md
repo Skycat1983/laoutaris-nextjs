@@ -1,6 +1,6 @@
 # T-315 Scope Account Admin Route Builder Ownership
 
-Status: Planned
+Status: Completed
 
 Workstreams:
 
@@ -80,3 +80,10 @@ git diff --check
   verification gate.
 - This is docs-only and does not require Shopify dashboard work, privileged
   Vercel access, or network access.
+- Completed on 2026-05-27 in
+  [T-315 account/admin route-builder ownership scope](../audits/results/T-315-account-admin-route-builder-ownership-scope.md).
+  Recommended next slice is a client-safe account UI route-builder task for
+  account entry redirects, account dropdown links, mobile drawer account links,
+  and provider sign-in callback defaults only. Admin dashboard segment links,
+  NextAuth callback paths, saved-item revalidation paths, smoke/sitemap
+  fixtures, and API route builders remain deferred to separate tasks.

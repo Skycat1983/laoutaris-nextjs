@@ -15,6 +15,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/shadcn/drawer";
+import {
+  accountRootPath,
+  accountSignInPath,
+  accountSignUpPath,
+} from "@/lib/routes/accountRoutes";
 
 interface MobileNavDrawerBodyProps {
   navLinks: NavBarLink[];
@@ -28,17 +33,17 @@ export function MobileNavDrawerBody({ navLinks }: MobileNavDrawerBodyProps) {
   const accountNavLinks = [
     {
       label: "Account",
-      path: "/account",
+      path: accountRootPath,
       disabled: !isLoggedIn,
     },
     {
       label: "Sign Up",
-      path: "/sign-in?mode=signup",
+      path: accountSignUpPath,
       disabled: isLoggedIn,
     },
     {
       label: "Log In",
-      path: "/sign-in",
+      path: accountSignInPath,
       disabled: isLoggedIn,
     },
     { label: "Logout", path: "/sign-out", disabled: !isLoggedIn },

@@ -143,6 +143,10 @@ or inconsistent code forward.
   now keeps only the current `/account/settings` redirect, active source no
   longer imports the retired wrappers, and `src/lib/api` no longer owns
   runtime `VERCEL_ENV`/`VERCEL_URL`/localhost base URL construction.
+- T-314 completed the second staged API route-builder runtime slice by adding
+  client-safe admin read list/detail path builders and moving admin read
+  fetchers to them while keeping physical route files and request-context route
+  IDs separate.
 - T-137 added a recursive static client runtime import-graph guard for current
   and future `"use client"` entries, and the first inventory passes without an
   allowlist.
@@ -232,8 +236,9 @@ or inconsistent code forward.
   slice after higher-priority boundary/cache work. T-235 owns that cleanup.
 - Consolidate taxonomy/filter option sources across constants, schemas, public
   filters, admin forms, and shop filters.
-- Centralize app route builders, API route builders, and auth path constants;
-  remove hard-coded localhost/same-app absolute routes.
+- Continue centralizing app route builders, API route builders, and auth path
+  constants in staged runtime slices; remove hard-coded localhost/same-app
+  absolute routes.
 - Document whether admin action-segment API routes are canonical, or open an ADR
   for migration to resource-oriented routes before mixing conventions.
 - Use T-015's inventory before any future Next major package edit; especially
@@ -900,5 +905,20 @@ after the route-builder wave without runtime route changes. Keep Shopify
 dashboard metadata/policy work, request-context route IDs, admin action route
 conventions, smoke/sitemap route constants, cache policy, auth callbacks,
 account navigation, and redirect behavior separate unless a later task scopes
-them. T-314 and T-315 are prepared as the next non-Shopify route ownership
-tasks: admin read API path builders and account/admin route-builder scoping.
+them. T-314 and T-315 are complete: admin read API path builders are in place,
+and account/admin route-builder ownership is scoped to account UI routes.
+T-316 is complete: account UI route builders now own account entry redirects,
+account dropdown/mobile links, saved-artwork account UI path builders, and
+provider sign-in fallback defaults without changing auth policy, admin routes,
+cache revalidation, smoke/sitemap fixtures, callbacks, or Shopify behavior.
+T-317 is complete and scoped the next API route-builder family to admin update
+paths. T-318 and T-319 are prepared as the next non-Shopify route ownership
+tasks.
+T-318 is complete: admin update API fetchers now use client-safe value-only
+path builders for the explicit article, artwork, blog, and collection update
+resources while leaving route handlers, request-context route IDs, admin UI,
+and broader route-builder families unchanged. T-319 is complete: admin
+dashboard entry redirects and sidebar segment links now use a client-safe
+value-only route surface for the dashboard root, articles default, supported
+segments, and current segment paths without changing auth, API, dashboard
+content, smoke/sitemap, cache, route segment config, or Shopify behavior.

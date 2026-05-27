@@ -4,25 +4,34 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import HorizontalDivider from "@/components/elements/misc/HorizontalDivider";
 import { FileText, Image as ImageIcon, User } from "lucide-react";
+import { adminDashboardSegmentPaths } from "@/lib/routes/adminDashboardRoutes";
 import { CollectionIcon } from "@/components/elements/icons";
 import { BlogIcon } from "@/components/elements/icons";
 import { LogoutIcon } from "@/components/elements/icons";
 import { CommentIcon } from "@/components/elements/icons";
 const sidebarItems = [
-  { label: "Articles", icon: <FileText />, href: "/admin/dashboard/articles" },
-  { label: "Artwork", icon: <ImageIcon />, href: "/admin/dashboard/artwork" },
-  { label: "Blogs", icon: <BlogIcon />, href: "/admin/dashboard/blogs" },
+  {
+    label: "Articles",
+    icon: <FileText />,
+    href: adminDashboardSegmentPaths.articles,
+  },
+  {
+    label: "Artwork",
+    icon: <ImageIcon />,
+    href: adminDashboardSegmentPaths.artwork,
+  },
+  { label: "Blogs", icon: <BlogIcon />, href: adminDashboardSegmentPaths.blogs },
   {
     label: "Collections",
     icon: <CollectionIcon />,
-    href: "/admin/dashboard/collections",
+    href: adminDashboardSegmentPaths.collections,
   },
   {
     label: "Comments",
     icon: <CommentIcon />,
-    href: "/admin/dashboard/comments",
+    href: adminDashboardSegmentPaths.comments,
   },
-  { label: "Users", icon: <User />, href: "/admin/dashboard/users" },
+  { label: "Users", icon: <User />, href: adminDashboardSegmentPaths.users },
 ] as const;
 
 export function AdminSidebar() {

@@ -79,6 +79,6 @@ describe("relative navigation URLs", () => {
       expect(source).not.toContain("process.env.VERCEL_URL");
     }
 
-    expect(touchedSources[2]).toContain('path: "/sign-in"');
+    expect(touchedSources[2]).toContain("accountSignInPath");
   });
 });

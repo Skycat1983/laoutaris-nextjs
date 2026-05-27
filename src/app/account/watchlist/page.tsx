@@ -1,9 +1,9 @@
-import dbConnect from "@/lib/db/mongodb";
 import { redirect } from "next/navigation";
+import { accountSettingsPath } from "@/lib/routes/accountRoutes";
 
 // TODO: get user watchlist default path
 export default async function Watchlist() {
-  const redirectUrl = "/account/settings";
+  const redirectUrl = accountSettingsPath;
   return redirect(redirectUrl);
 }
 

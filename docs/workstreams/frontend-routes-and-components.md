@@ -1665,9 +1665,14 @@ prototype-home links should wait for a separate task because they cross account
 or prototype ownership boundaries. Do not touch Shopify dashboard data,
 checkout/cart, auth/protected routes, API routes, admin routes, smoke lists,
 redirects, cache policy, or route segment config from this completed slice.
-T-315 is prepared to scope account/admin route-builder ownership before any
-frontend account links, admin dashboard segment links, saved-item paths, smoke
-fixtures, sitemap fixtures, or auth callback redirects move.
+T-315 is complete and scoped account/admin route-builder ownership. T-316 is
+complete for the account UI route-builder slice; scoped account redirects,
+dropdown links, mobile drawer account links, and provider sign-in defaults now
+use the client-safe account route surface. T-319 is complete for admin
+dashboard UI route builders; admin entry redirects and sidebar links now use
+the client-safe dashboard route surface while preserving labels, destinations,
+and prefix active-state semantics. Keep saved-item paths, smoke fixtures,
+sitemap fixtures, auth callback redirects, and Shopify dashboard work separate.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

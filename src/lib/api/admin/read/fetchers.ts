@@ -15,6 +15,7 @@ import type {
   UserFrontend,
   ArticleFrontendPopulated,
 } from "@/lib/data/types";
+import { adminReadDetailPath, adminReadListPath } from "./paths";
 // Filter types
 type FilterParams =
   | ArticleFilterParams
@@ -70,45 +71,39 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
   //! Single item fetchers
   // Artworks
   artwork: async (artworkId: string) => {
-    const encodedId = encodeURIComponent(artworkId);
     return fetcher<ReadArtworkResult>(
-      `/api/v2/admin/artwork/read/${encodedId}`
+      adminReadDetailPath("artwork", artworkId)
     );
   },
 
   // Articles
   article: async (articleId: string) => {
-    const encodedId = encodeURIComponent(articleId);
     return fetcher<ReadArticleResult>(
-      `/api/v2/admin/article/read/${encodedId}`
+      adminReadDetailPath("article", articleId)
     );
   },
 
   // Collections
   collection: async (collectionId: string) => {
-    const encodedId = encodeURIComponent(collectionId);
     return fetcher<ReadCollectionResult>(
-      `/api/v2/admin/collection/read/${encodedId}`
+      adminReadDetailPath("collection", collectionId)
     );
   },
 
   // Blogs
   blog: async (blogId: string) => {
-    const encodedId = encodeURIComponent(blogId);
-    return fetcher<ReadBlogResult>(`/api/v2/admin/blog/read/${encodedId}`);
+    return fetcher<ReadBlogResult>(adminReadDetailPath("blog", blogId));
   },
 
   // Users
   user: async (userId: string) => {
-    const encodedId = encodeURIComponent(userId);
-    return fetcher<ReadUserResult>(`/api/v2/admin/user/read/${encodedId}`);
+    return fetcher<ReadUserResult>(adminReadDetailPath("user", userId));
   },
 
   // Comments
   comment: async (commentId: string) => {
-    const encodedId = encodeURIComponent(commentId);
     return fetcher<ReadCommentResult>(
-      `/api/v2/admin/comment/read/${encodedId}`
+      adminReadDetailPath("comment", commentId)
     );
   },
 
@@ -120,24 +115,8 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     search,
     filter,
   }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    const trimmedSearch = search?.trim();
-
-    if (trimmedSearch) {
-      params.append("search", trimmedSearch);
-    }
-
-    if (filter?.key && filter?.value) {
-      params.append("filterKey", filter.key);
-      params.append("filterValue", filter.value);
-    }
-
     return fetcher<ReadArtworkListResult>(
-      `/api/v2/admin/artwork/read?${params}`
+      adminReadListPath("artwork", { page, limit, search, filter })
     );
   },
 
@@ -148,24 +127,8 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     search,
     filter,
   }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    const trimmedSearch = search?.trim();
-
-    if (trimmedSearch) {
-      params.append("search", trimmedSearch);
-    }
-
-    if (filter?.key && filter?.value) {
-      params.append("filterKey", filter.key);
-      params.append("filterValue", filter.value);
-    }
-
     return fetcher<ReadArticleListResult>(
-      `/api/v2/admin/article/read?${params}`
+      adminReadListPath("article", { page, limit, search, filter })
     );
   },
 
@@ -175,19 +138,8 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     limit = 10,
     search,
   }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    const trimmedSearch = search?.trim();
-
-    if (trimmedSearch) {
-      params.append("search", trimmedSearch);
-    }
-
     return fetcher<ReadCollectionListResult>(
-      `/api/v2/admin/collection/read?${params}`
+      adminReadListPath("collection", { page, limit, search })
     );
   },
 
@@ -198,44 +150,22 @@ export const createReadFetchers = (fetcher: Fetcher) => ({
     search,
     filter,
   }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    const trimmedSearch = search?.trim();
-
-    if (trimmedSearch) {
-      params.append("search", trimmedSearch);
-    }
-
-    if (filter?.key && filter?.value) {
-      params.append("filterKey", filter.key);
-      params.append("filterValue", filter.value);
-    }
-
-    return fetcher<ReadBlogListResult>(`/api/v2/admin/blog/read?${params}`);
+    return fetcher<ReadBlogListResult>(
+      adminReadListPath("blog", { page, limit, search, filter })
+    );
   },
 
   // Users
   users: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
-    return fetcher<ReadUserListResult>(`/api/v2/admin/user/read?${params}`);
+    return fetcher<ReadUserListResult>(
+      adminReadListPath("user", { page, limit })
+    );
   },
 
   // Comments
   comments: async ({ page = 1, limit = 10 }: ReadListParams = {}) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-
     return fetcher<ReadCommentListResult>(
-      `/api/v2/admin/comment/read?${params}`
+      adminReadListPath("comment", { page, limit })
     );
   },
 });

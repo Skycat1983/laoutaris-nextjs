@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/shadcn/button";
+import { accountSettingsPath } from "@/lib/routes/accountRoutes";
+import { publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
-const defaultCallbackUrl = "/account/settings";
+const defaultCallbackUrl = accountSettingsPath;
 
 const normalizeCallbackUrl = (value: string | null) => {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
@@ -28,11 +30,11 @@ const AuthProviderSignInButtons = () => {
       <h2 className="py-2 text-xl">Provider sign in</h2>
       <p className="pb-4 text-sm leading-6 text-[#000000BF]">
         By continuing with GitHub or Google, you acknowledge the account{" "}
-        <Link className="text-blue-600 underline" href="/privacy">
+        <Link className="text-blue-600 underline" href={publicAppRoutes.privacy}>
           Privacy Policy
         </Link>{" "}
         and{" "}
-        <Link className="text-blue-600 underline" href="/terms">
+        <Link className="text-blue-600 underline" href={publicAppRoutes.terms}>
           Terms of Use
         </Link>
         . New provider-created accounts store this acknowledgement with the

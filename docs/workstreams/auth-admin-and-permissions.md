@@ -590,8 +590,12 @@ T-308 is complete and scoped the first auth/protected route constant
 implementation. T-311 completed that runtime slice by centralizing stable
 auth/protected roots, sign-in/home redirect constants, middleware matcher
 derivation, NextAuth sign-in page config, and admin frontend guard redirects.
-T-315 is prepared as a docs-only scope for the next account/admin route-builder
-slice before touching auth callback redirect policy, UI navigation links,
-admin dashboard segment links, saved-item revalidation paths, smoke/sitemap
-fixtures, or Shopify dashboard work. Keep session behavior, OAuth behavior,
-role checks, and admin dashboard access unchanged.
+T-315 is complete and scoped the next account/admin route-builder slice to
+account UI routes only. T-316 is complete for account entry redirects, account
+dropdown links, mobile drawer account links, and provider sign-in fallback
+paths. T-319 is complete for admin dashboard UI route builders: `/admin`,
+`/admin/dashboard`, and the dashboard sidebar now share client-safe dashboard
+route values while preserving auth policy, role checks, persisted admin
+frontend access, and dashboard destinations. Keep auth callback redirect policy,
+saved-item revalidation paths, smoke/sitemap fixtures, session behavior, OAuth
+behavior, admin dashboard access, and Shopify dashboard work unchanged.
