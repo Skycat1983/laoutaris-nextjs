@@ -42,7 +42,7 @@ export function ProjectPrototypeSection() {
       data-testid="prototype-project-section"
     >
       <div className="md:hidden" data-testid="prototype-mobile-project">
-        <div className="mx-auto flex w-full max-w-[430px] flex-col bg-[#f8f7f4] px-5 pb-12 pt-14 text-slate sm:px-8 sm:pb-16 sm:pt-16">
+        <div className="mx-auto flex w-full max-w-[430px] flex-col bg-neutral-50 px-5 pb-12 pt-14 text-slate sm:px-8 sm:pb-16 sm:pt-16">
           <p className="font-archivo text-sm uppercase tracking-[0.24em] text-slate/75">
             Project
           </p>

@@ -16,6 +16,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import type { CollectionFrontend } from "@/lib/data/types/collectionTypes";
 import { buildUrl } from "@/lib/utils/urlUtils";
 import {
+  prototypeImageSkeletonClassName,
   prototypeHeadingStyle,
   prototypeSectionEyebrowClassName,
   prototypeSectionFrameClassName,
@@ -50,13 +51,17 @@ const sectionHeadingStyle = prototypeHeadingStyle({
 function CollectionImage({
   collection,
   priority = false,
+  loading = "lazy",
 }: {
   collection: CollectionFrontend;
   priority?: boolean;
+  loading?: "eager" | "lazy";
 }) {
   if (!collection.imageUrl) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-[#ddd6ca] px-5 text-center font-archivo text-sm text-slate/50">
+      <div
+        className={`${prototypeImageSkeletonClassName} flex h-full w-full items-center justify-center px-5 text-center font-archivo text-sm text-slate/50`}
+      >
         Collection image
       </div>
     );
@@ -68,12 +73,13 @@ function CollectionImage({
       alt={collection.title}
       fill
       priority={priority}
+      loading={priority ? undefined : loading}
       sizes={
         priority
           ? "(min-width: 1536px) 38vw, (min-width: 1024px) 34vw, 100vw"
           : "(min-width: 1536px) 11vw, (min-width: 1024px) 10vw, (min-width: 640px) 50vw, 100vw"
       }
-      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+      className="z-10 object-cover transition-transform duration-700 group-hover:scale-[1.03]"
     />
   );
 }
@@ -103,7 +109,7 @@ function CollectionAccordionPanel({
 
   return (
     <article
-      className={`group relative flex overflow-hidden border border-[#d7cdbd] bg-[#ddd6ca] transition-[flex,min-height] duration-700 ease-out motion-reduce:transition-none lg:basis-0 ${panelSizeClass}`}
+      className={`group ${prototypeImageSkeletonClassName} relative flex overflow-hidden border border-neutral-300 transition-[flex,min-height] duration-700 ease-out motion-reduce:transition-none lg:basis-0 ${panelSizeClass}`}
       data-state={isActive ? "open" : "closed"}
       data-testid={
         isActive
@@ -267,15 +273,15 @@ function CollectionAccordion({
 
 function getMobileCardVisualClass(offset: number) {
   if (offset === 0) {
-    return "left-1/2 top-5 z-40 h-[430px] w-[min(74vw,330px)] -translate-x-1/2 translate-y-0 scale-100 opacity-100 shadow-[0_24px_54px_rgba(74,60,44,0.28)]";
+    return "left-1/2 top-5 z-40 h-[430px] w-[min(74vw,330px)] -translate-x-1/2 translate-y-0 scale-100 opacity-100 shadow-[0_24px_54px_rgba(0,0,0,0.22)]";
   }
 
   if (offset === -1) {
-    return "left-[4.5vw] top-[95px] z-20 h-[350px] w-[min(45vw,205px)] translate-x-0 translate-y-0 scale-100 opacity-95 shadow-[0_14px_30px_rgba(74,60,44,0.18)] sm:left-[18vw]";
+    return "left-[4.5vw] top-[95px] z-20 h-[350px] w-[min(45vw,205px)] translate-x-0 translate-y-0 scale-100 opacity-95 shadow-[0_14px_30px_rgba(0,0,0,0.14)] sm:left-[18vw]";
   }
 
   if (offset === 1) {
-    return "right-[4.5vw] top-[95px] z-20 h-[350px] w-[min(45vw,205px)] translate-x-0 translate-y-0 scale-100 opacity-95 shadow-[0_14px_30px_rgba(74,60,44,0.18)] sm:right-[18vw]";
+    return "right-[4.5vw] top-[95px] z-20 h-[350px] w-[min(45vw,205px)] translate-x-0 translate-y-0 scale-100 opacity-95 shadow-[0_14px_30px_rgba(0,0,0,0.14)] sm:right-[18vw]";
   }
 
   if (offset === -2) {
@@ -408,7 +414,7 @@ function MobileCollectionDeck({
             return (
               <article
                 key={collection.slug || `${collection.title}-${index}`}
-                className={`group absolute origin-center overflow-hidden rounded-[14px] border border-white/35 bg-[#d8d0c4] transition-[opacity,transform] duration-500 ease-out will-change-transform motion-reduce:transition-none ${cardVisualClass}`}
+                className={`group ${prototypeImageSkeletonClassName} absolute origin-center overflow-hidden rounded-[14px] border border-white/45 transition-[opacity,transform] duration-500 ease-out will-change-transform motion-reduce:transition-none ${cardVisualClass}`}
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${collections.length}`}
@@ -420,7 +426,11 @@ function MobileCollectionDeck({
                 }
                 aria-hidden={!isVisiblyPeeking}
               >
-                <CollectionImage collection={collection} priority={isActive} />
+                <CollectionImage
+                  collection={collection}
+                  priority={isActive}
+                  loading={isVisiblyPeeking ? "eager" : "lazy"}
+                />
                 <div
                   className={`absolute inset-0 ${
                     isActive
@@ -498,7 +508,7 @@ function MobileCollectionDeck({
           aria-label="Show previous collection"
           onClick={selectPreviousCollection}
           disabled={!canNavigate}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c9c0b4] bg-white/55 text-[#5b4a3b] transition-[opacity,transform,background-color] hover:bg-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white/65 text-neutral-900 transition-[opacity,transform,background-color] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none"
         >
           <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </button>
@@ -516,8 +526,8 @@ function MobileCollectionDeck({
                 onClick={() => selectCollection(index)}
                 className={`h-4 w-4 rounded-full border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
                   isActive
-                    ? "border-[#7d6a55] bg-[#7d6a55]"
-                    : "border-[#c9c0b4] bg-[#c9c0b4]"
+                    ? "border-neutral-900 bg-neutral-900"
+                    : "border-neutral-300 bg-neutral-300"
                 }`}
               />
             );
@@ -529,7 +539,7 @@ function MobileCollectionDeck({
           aria-label="Show next collection"
           onClick={selectNextCollection}
           disabled={!canNavigate}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c9c0b4] bg-white/55 text-[#5b4a3b] transition-[opacity,transform,background-color] hover:bg-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white/65 text-neutral-900 transition-[opacity,transform,background-color] hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45 motion-reduce:transition-none"
         >
           <ArrowRight aria-hidden="true" className="h-5 w-5" />
         </button>
@@ -547,7 +557,7 @@ function MobileCollectionDeck({
 function CollectionPrototypeEmptyState() {
   return (
     <div
-      className="flex min-h-[420px] items-center justify-center border border-[#d7cdbd] bg-white/45 px-6 py-14 text-center"
+      className="flex min-h-[420px] items-center justify-center border border-neutral-300 bg-white/45 px-6 py-14 text-center"
       data-testid="prototype-collections-empty"
     >
       <div className="max-w-xl">

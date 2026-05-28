@@ -209,6 +209,40 @@ production while preserving MongoDB as the archive source of truth.
   keeps original inventory at `1`, keeps print inventory configurable with
   default `50`, and does not call Shopify or mutate MongoDB, Shopify, or
   Cloudinary.
+- T-329 added the Phase 2 read-only Shopify Admin reconciliation command:
+  `npm run reconcile:shopify-catalog`. It compares the Phase 1 plan with
+  existing Shopify products by proposed handle, exact
+  `custom.mongodb_artwork_id`, and manual artwork-number product matches before
+  any product creation task.
+- A live read-only T-329 run on 2026-05-28 against `laoutaris.myshopify.com`
+  scanned 430 planned products and reported 10 manual product matches to
+  preserve, 416 no-match rows, 4 manual-review conflicts, 0 exact/handle/
+  metafield matches, and 0 query errors. The 4 conflicts are caused by one
+  manually created Shopify product, `no-214-original-artwork`, because its
+  handle signals No.214 while its title says `No.104, Original Artwork`.
+- T-330 added the guarded Phase 3 pilot creation command:
+  `npm run create:shopify-catalog-pilot`. It gates live writes on exactly five
+  owner-approved artworks, owner-approved prices, explicit `DRAFT` status,
+  MongoDB linking disabled, a Shopify inventory location GID, clean selected
+  reconciliation rows, and `--confirm=CREATE_DRAFT_PILOT_PRODUCTS` before a
+  `write_products` command can create five draft originals and five draft
+  unframed prints.
+- T-331 is ready as the manual original/print cleanup plan. The owner decided
+  the hand-created original/print Shopify products can be removed or contained
+  if generated replacements will be created programmatically. Books, MongoDB
+  artworks, and Cloudinary assets remain out of scope.
+- T-331 added the guarded manual original/print cleanup command:
+  `npm run cleanup:shopify-manual-catalog`. It reads only the reconciliation
+  report allowlist, defaults to local dry-run, supports archive mode only with
+  the exact `ARCHIVE_MANUAL_ORIGINAL_PRINT_PRODUCTS` confirmation, rejects
+  book-like or non-original/print candidates, writes a local result report, and
+  does not delete products or touch MongoDB or Cloudinary.
+- T-332 records the recommended framed-print commerce model: embed frame
+  choices inside Shopify print products as variants rather than separate frame
+  products. The pilot generated draft print products should use exactly one
+  `Frame package = Unframed` variant; framed/material/mat variants remain
+  blocked until owner-approved labels, dimensions, prices, fulfilment handling,
+  and app-to-Shopify mappings exist.
 
 ## Backlog
 
@@ -227,6 +261,13 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Keep Shopify product search tied to the existing public product-list data path
   unless a separate search/indexing decision is made.
+- Run the guarded manual original/print cleanup in archive mode only after
+  owner approval for the exact T-331 candidate set. Permanent deletion still
+  requires separate explicit approval and a separate implementation task.
+- Keep generated pilot print products to the T-332 one-variant matrix:
+  `Frame package = Unframed`. Scope framed/material/mat purchasability only
+  after owner-approved labels, dimensions, prices, fulfilment handling, and
+  app-to-Shopify mappings exist.
 - Implement Shopify catalog generation in phases: dry-run MongoDB-to-Shopify
   product plan first, existing-product reconciliation second, small draft pilot
   third, and only then bulk draft creation. Originals default to inventory `1`;
@@ -684,6 +725,33 @@ Add targeted tests as shop behavior is hardened.
 - 2026-05-28: Completed T-328. The first Shopify catalog generation phase is
   implemented as a dry-run-only MongoDB reader and local JSON report writer,
   with focused helper tests and runbook command documentation.
+- 2026-05-28: Prepared T-329. Phase 2 is scoped as a read-only Shopify Admin
+  reconciliation by proposed handle and `custom.mongodb_artwork_id`, using a
+  local owner-review report before any Shopify writes, MongoDB link writes,
+  publishing, deletes, pricing rules, or dashboard automation.
+- 2026-05-28: Completed T-329. The read-only reconciliation command is in
+  place for comparing the Phase 1 plan against Shopify Admin by proposed
+  handle, exact `custom.mongodb_artwork_id`, and manual artwork-number product
+  matches before any live write task.
+- 2026-05-28: Prepared T-330 as the docs-only Phase 3 pilot creation plan for
+  five owner-approved artworks, creating only draft/unpublished originals and
+  prints after owner price/status/linking decisions, clean reconciliation, and
+  an explicit live-write confirmation gate.
+- 2026-05-28: Completed T-330. The guarded pilot creation command now reads
+  the dry-run plan, reconciliation report, and owner approval file; creates at
+  most ten draft products through Shopify Admin GraphQL `productSet`; stops on
+  the first Shopify user error; writes a local result report; and does not
+  publish products, write MongoDB links, or mutate Cloudinary.
+- 2026-05-28: Completed T-331. The guarded Shopify manual original/print
+  cleanup command now dry-runs by default, archives only exact allowlisted
+  reconciliation candidates with an explicit confirmation, rejects book-like
+  and non-original/print candidates, and writes a local result report without
+  deleting products or mutating MongoDB or Cloudinary.
+- 2026-05-28: Completed T-332 as a docs-only commerce-model decision. Generated
+  draft print products should start with one explicit
+  `Frame package = Unframed` variant, while framed/material/mat variants remain
+  blocked on owner-approved option labels, prices, fulfilment handling, and
+  app-to-Shopify mappings.
 
 ## Next Agent Action
 
@@ -726,11 +794,21 @@ have one original product with inventory `1` and one print product with default
 edition quantity `50`, while not all generated products should be listed at any
 one time. The phased plan is now documented in
 [Shopify catalog generation](../architecture/shopify-catalog-generation.md).
-T-328 completed the dry-run product plan. Next source work should wait for
-owner review of the generated report, then scope existing-product
-reconciliation as a separate read-only Shopify Admin task. Live writes,
-MongoDB link writes, publishing, deletes, pricing rules, and dashboard
-automation remain out of scope.
+T-328 completed the dry-run product plan, T-329 completed the read-only Shopify
+Admin reconciliation command, T-330 added the guarded Phase 3 pilot creation
+command, T-331 added the guarded manual original/print cleanup command, and
+T-332 selected one `Frame package = Unframed` variant for generated pilot print
+products. Next Shopify catalog work should either run T-331 archive mode only
+with owner approval for the exact candidate set and confirmation string, or run
+[T-330](../tasks/T-330-shopify-catalog-pilot-creation-plan.md) only after the
+owner supplies exactly five approved artwork IDs, original and print prices,
+draft status approval, inventory location, the unframed-only print variant
+policy, and MongoDB linking disabled, and after the reconciliation report is
+clean for those ten planned products. Live writes
+remain gated by explicit confirmation flags and a `write_products` token;
+publishing, bulk creation, framed/material/mat variant creation, MongoDB link
+writes, Cloudinary mutation, product deletion, checkout/cart work, and browser
+automation remain out of scope unless separately assigned.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

@@ -2239,3 +2239,15 @@ T-328 added focused pure-helper Jest coverage for the Shopify catalog dry-run
 planner; the suite verifies handle generation, inventory defaults and
 overrides, duplicate generated-handle warnings, safety flags, metafield shape,
 and report structure without MongoDB or Shopify network access.
+T-330 added focused pure-helper Jest coverage for the guarded Shopify catalog
+pilot creation command, covering exact confirmation, pinned Admin API
+environment validation, exactly five owner approvals, draft-only status,
+MongoDB-linking-disabled approval gates, clean reconciliation/idempotency
+refusal, productSet payload shape, token redaction, report shape, and
+stop-after-user-error behavior without live Shopify, MongoDB, or Cloudinary
+access.
+T-331 added focused pure-helper Jest coverage for the guarded manual
+original/print cleanup command, covering archive confirmation gates, delete
+mode rejection, reconciliation allowlist extraction, book/family rejection,
+dry-run behavior, query-error refusal, and the archive mutation payload without
+live Shopify, MongoDB, or Cloudinary access.

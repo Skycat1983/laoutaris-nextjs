@@ -91,6 +91,39 @@ deployment and targeted log inspection; treat it as operator-only capacity, not
 app runtime configuration, and do not use it for rollback/project settings/
 aliases/domains without separate approval.
 
+On 2026-05-28 the migrated live-homepage/prototype-nav patch received an owner
+follow-up for visual polish: warm image loading colors were replaced with
+neutral grey skeleton placeholders, visible mobile carousel/thumbnail images
+were made eager to reduce delayed peeking-card loads, and brown mobile shop/
+collection controls were neutralized. Keep the next step as narrow visual QA of
+`/` and representative global-nav routes before starting unrelated source
+implementation work.
+
+Also on 2026-05-28, the Shopify catalog generation track reached the first
+live read-only Admin reconciliation checkpoint. T-328 planned 430 products from
+215 MongoDB artworks. T-329 now ignores non-matching/null metafield search
+noise, preserves existing manual products by normalized artwork number, and a
+live read-only run against `laoutaris.myshopify.com` found 10 existing manual
+products to preserve, 416 planned products with no match, 4 manual-review
+conflicts, and 0 query errors. The conflicts all trace to the manually created
+Shopify product `no-214-original-artwork`, whose handle indicates No.214 while
+its title says `No.104, Original Artwork`. Do not run a write task until either
+that manual Shopify product is corrected/reconciled or the pilot selection
+explicitly excludes No.104 and No.214.
+The owner then clarified that hand-created original/print Shopify products do
+not need to be preserved if generated replacements can be created
+programmatically. T-331 added a guarded cleanup command for the manual
+original/print products from the reconciliation report, excluding books, MongoDB
+artworks, and Cloudinary assets. The command defaults to dry-run, supports
+archive mode only behind `ARCHIVE_MANUAL_ORIGINAL_PRINT_PRODUCTS`, and does not
+implement deletion. T-332 completed the framed-print commerce model decision:
+frame choices should be embedded in Shopify print products as variants, not
+separate standalone frame products, unless a later bundle/fulfilment workflow
+requires independent frame products. Generated pilot prints should use exactly
+one `Frame package = Unframed` variant; framed/material/mat variants remain
+blocked until owner-approved labels, dimensions, prices, fulfilment handling,
+and app-to-Shopify mappings exist.
+
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
 T-186 are done and reconciled. F-070, F-095, F-096, F-102, and F-092 are

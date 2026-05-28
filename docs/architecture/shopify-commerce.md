@@ -106,7 +106,10 @@ frame/mat controls. Book products use ordered Shopify product images for cover
 and page-gallery slots instead of generated room scenes. The print controls are
 preview-only local controls: they do not select Shopify variants, alter price
 or availability, persist to the database, create cart lines, or change enquiry
-submissions.
+submissions. Generated draft print products in the catalog pilot should expose
+only one Shopify print variant, `Frame package = Unframed`; framed, material,
+and mat variants require a later owner-approved option mapping before they are
+purchasable.
 
 ## Product Types
 

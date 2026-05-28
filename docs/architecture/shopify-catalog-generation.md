@@ -57,6 +57,10 @@ Default generated shape:
 
 - Product type: `Fine Art Print`
 - Tags: `print`, `fine-art-print`, `archive-artwork`
+- Variants: one explicit `Frame package = Unframed` variant for the pilot.
+  Framed, material, and mat variants are deferred until owner-approved option
+  labels, pricing, inventory/fulfilment handling, and app-to-Shopify mappings
+  exist.
 - Inventory quantity: `50`
 - Inventory policy: deny purchase when sold out unless the owner explicitly
   chooses otherwise.
@@ -79,9 +83,12 @@ joseph-laoutaris-print-<artwork-slug>-<short-artwork-id>
 ```
 
 The short artwork ID suffix prevents collisions between works with similar
-titles. If an existing manually created Shopify product already has a preferred
-handle, the import plan should preserve that handle and map it to the MongoDB
-artwork ID rather than creating a duplicate.
+titles. Earlier planning allowed preserving existing manually created
+original/print products. The current owner direction is to replace those
+hand-created original/print products with generated draft products where doing
+so is safer and more repeatable. Cleanup must be scoped to Shopify
+original/print products from reconciliation evidence only; MongoDB artworks,
+book products, and Cloudinary assets must not be deleted.
 
 The first implementation must generate a manifest that records:
 
@@ -91,6 +98,7 @@ The first implementation must generate a manifest that records:
 - existing Shopify product match, if any;
 - proposed create/update action;
 - product type, tags, inventory quantity, and status;
+- archive image URL for Shopify product media;
 - warnings for missing images, duplicate handles, missing required fields, or
   existing product conflicts.
 
@@ -151,6 +159,7 @@ Record the owner decisions needed before live writes:
 - handle policy;
 - price source;
 - print edition default: `50`, with override support;
+- print variant policy: one `Frame package = Unframed` variant for the pilot;
 - original inventory: `1`;
 - inventory location and fulfilment behavior;
 - image source policy;
@@ -177,10 +186,18 @@ Verification should be local and file-based. No Shopify token is required.
 ### Phase 2: Existing Shopify Reconciliation
 
 Add a read-only Shopify Admin query step that checks existing products by
-handle and/or `custom.mongodb_artwork_id`.
+handle, `custom.mongodb_artwork_id`, and manual owner-created artwork-number
+patterns.
 
 This prevents duplicates and lets the owner preserve products that were already
-created manually.
+created manually. Products returned by a metafield lookup are valid matches
+only when their `custom.mongodb_artwork_id` exactly equals the MongoDB artwork
+ID being reconciled; null or different metafield values must be ignored as
+metafield matches. Manual preservation matching uses the normalized artwork
+number from MongoDB titles such as `No.026` against Shopify product handles or
+titles such as `joseph-laoutaris-fine-art-print-no-026` and
+`joseph-laoutaris-original-artwork-no-043`, then assigns the product family from
+handle, title, tags, or `productType`.
 
 This phase requires read access to Shopify Admin API, but still performs no
 writes.
@@ -193,8 +210,9 @@ Create products for a small owner-approved sample, for example five artworks:
 - five print products.
 
 Products should be draft/unpublished unless the owner explicitly approves
-publishing. Verify product handles, images, metafields, inventory, and
-Storefront reads before expanding.
+publishing. Print products should use the one-variant pilot matrix:
+`Frame package = Unframed`. Verify product handles, images, metafields,
+variants, inventory, and Storefront reads before expanding.
 
 ### Phase 4: Bulk Draft Generation
 
@@ -244,6 +262,8 @@ After the first import, the generator should support:
 - Keep original inventory at `1` unless an owner override exists.
 - Keep print inventory at configurable default `50` unless an owner override
   exists.
+- Keep pilot print products to one `Frame package = Unframed` variant unless a
+  later owner-approved frame/material/mat matrix exists.
 - Keep app-owned checkout/cart work separate from product generation.
 
 ## First Implementation Task

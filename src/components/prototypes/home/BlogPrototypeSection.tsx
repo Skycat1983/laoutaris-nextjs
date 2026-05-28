@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import type { BlogEntryFrontend } from "@/lib/data/types/blogTypes";
 import { getCloudinaryDeliveryUrl } from "@/lib/images/cloudinaryDelivery";
 import {
+  prototypeImageSkeletonClassName,
   prototypeHeadingStyle,
   prototypeSectionEyebrowClassName,
   prototypeSectionFrameClassName,
@@ -65,18 +66,20 @@ function BlogImage({
   className,
   sizes,
   priority = false,
+  loading = "lazy",
 }: {
   blog: BlogEntryFrontend;
   variant: "blogHero" | "blogGridCard";
   className: string;
   sizes: string;
   priority?: boolean;
+  loading?: "eager" | "lazy";
 }) {
   if (!blog.imageUrl) {
     return (
       <div
         aria-hidden="true"
-        className="flex h-full w-full items-center justify-center bg-[#e5e2dc] font-cormorant text-4xl text-slate/30"
+        className={`${prototypeImageSkeletonClassName} flex h-full w-full items-center justify-center font-cormorant text-4xl text-slate/30`}
       >
         JL
       </div>
@@ -90,7 +93,8 @@ function BlogImage({
       fill
       sizes={sizes}
       priority={priority}
-      className={className}
+      loading={priority ? undefined : loading}
+      className={`z-10 ${className}`}
     />
   );
 }
@@ -105,11 +109,14 @@ function MobileBlogArchiveRow({ blog }: { blog: BlogEntryFrontend }) {
         href={getBlogHref(blog.slug)}
         className="group grid min-w-0 grid-cols-[88px_minmax(0,1fr)_1.5rem] items-center gap-4 py-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate sm:grid-cols-[132px_minmax(0,1fr)_minmax(92px,auto)_1.5rem] sm:gap-7 sm:py-7"
       >
-        <div className="relative aspect-[1.55/1] w-full overflow-hidden bg-[#e5e2dc]">
+        <div
+          className={`relative aspect-[1.55/1] w-full overflow-hidden ${prototypeImageSkeletonClassName}`}
+        >
           <BlogImage
             blog={blog}
             variant="blogGridCard"
             sizes="(min-width: 640px) 132px, 88px"
+            loading="eager"
             className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
         </div>
@@ -192,7 +199,9 @@ function MobileBlogSection({
             Featured memorial story
           </p>
           <div className="grid min-w-0 gap-7 sm:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)] sm:items-center">
-            <div className="relative aspect-[1.08/1] w-full overflow-hidden bg-[#e5e2dc]">
+            <div
+              className={`relative aspect-[1.08/1] w-full overflow-hidden ${prototypeImageSkeletonClassName}`}
+            >
               <BlogImage
                 blog={leadBlog}
                 variant="blogHero"
@@ -275,7 +284,9 @@ function BlogPrototypeCard({ blog }: { blog: BlogEntryFrontend }) {
         href={getBlogHref(blog.slug)}
         className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
       >
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#e5e2dc] 2xl:aspect-[3/2]">
+        <div
+          className={`relative aspect-[4/3] w-full overflow-hidden 2xl:aspect-[3/2] ${prototypeImageSkeletonClassName}`}
+        >
           <BlogImage
             blog={blog}
             variant="blogGridCard"
@@ -365,7 +376,9 @@ export function BlogPrototypeSection({
               href={getBlogHref(leadBlog.slug)}
               className="group block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate"
             >
-              <div className="relative aspect-[1.12/1] w-full overflow-hidden bg-[#e5e2dc] xl:aspect-[1.35/1] 2xl:aspect-[1.58/1]">
+              <div
+                className={`relative aspect-[1.12/1] w-full overflow-hidden xl:aspect-[1.35/1] 2xl:aspect-[1.58/1] ${prototypeImageSkeletonClassName}`}
+              >
                 <BlogImage
                   blog={leadBlog}
                   variant="blogHero"
@@ -376,7 +389,9 @@ export function BlogPrototypeSection({
               </div>
             </Link>
           ) : (
-            <div className="relative flex aspect-[1.12/1] w-full items-center justify-center bg-[#e5e2dc] px-8 text-center font-archivo text-sm leading-6 text-slate/60">
+            <div
+              className={`${prototypeImageSkeletonClassName} relative flex aspect-[1.12/1] w-full items-center justify-center px-8 text-center font-archivo text-sm leading-6 text-slate/60`}
+            >
               Blog entries will appear here when archive posts are available.
             </div>
           )}

@@ -407,6 +407,23 @@ If the owner wants the enquiry form to mention a frame before Shopify-backed
 variants exist, that should be a separate copy/data decision. It should not be
 added silently by the preview modal task.
 
+Recommended Shopify commerce model:
+
+- Treat frame choices as variants of the print product, not as separate
+  standalone frame products.
+- Use a small, controlled option matrix: print size, frame package, and
+  optional mat.
+- Map source-controlled frame profile IDs to stable Shopify option values or
+  variant metafields before a preview selection changes price, availability, or
+  checkout behavior.
+- Keep standalone frame products out of the first production model unless a
+  later fulfilment or bundle workflow requires frames to be sold independently.
+
+This keeps the purchasable item aligned with what the buyer receives: a
+configured print. It also avoids creating separate add-on products that can be
+selected without the matching print size while the app still relies on
+Shopify-hosted purchase handoff instead of owning cart or checkout.
+
 ## Failure And Fallback Behavior
 
 The product detail page should remain resilient:

@@ -37,6 +37,9 @@ consistent enough for production refactoring and Shopify integration.
 - Transform functions normalize model data for frontend use.
 - MongoDB connection helpers exist under `src/lib/db/`.
 - Shopify product links currently live on artwork data.
+- T-332 keeps generated pilot print products to one `Frame package = Unframed`
+  Shopify variant and does not add MongoDB persistence for frame/material/mat
+  selections.
 - A-013 and A-001 found response envelopes, status codes, and transform
   contracts are uneven across public, user, admin, and shop routes.
 - A-015 found several MongoDB-backed API routes and account actions without
@@ -1064,3 +1067,10 @@ MongoDB artwork fields (`_id`, `title`, `image`) and writes a local plan report
 without mutating MongoDB or writing generated `shopifyProducts` links. Existing
 product reconciliation and any MongoDB linking decision remain separate future
 tasks.
+T-330 is complete: the guarded Shopify catalog pilot creation command reads
+the dry-run plan, reconciliation report, and owner approval file, but it does
+not read or write MongoDB, does not persist generated `shopifyProducts` links,
+and requires MongoDB linking to remain disabled in the approval record.
+T-331 is complete for Shopify manual original/print cleanup tooling. It reads
+the reconciliation report only and does not read, write, or migrate MongoDB
+artworks, `shopifyProducts`, API routes, or Cloudinary assets.

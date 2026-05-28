@@ -40,6 +40,9 @@ describe("build Shopify catalog plan helpers", () => {
       originalQuantity: 1,
       printQuantity: DEFAULT_PRINT_QUANTITY,
     });
+    expect(report.artworks[0].imageUrl).toBe(
+      "https://res.cloudinary.com/demo/image.jpg"
+    );
     expect(report.artworks[0].products).toMatchObject([
       {
         productFamily: "original",
@@ -146,6 +149,7 @@ describe("build Shopify catalog plan helpers", () => {
           artworkId: "665544332211009988776655",
           title: null,
           imageUrlPresent: false,
+          imageUrl: null,
           proposedOriginalHandle:
             "joseph-laoutaris-original-untitled-artwork-88776655",
           proposedPrintHandle:

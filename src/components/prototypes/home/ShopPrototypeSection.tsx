@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import {
+  prototypeImageSkeletonClassName,
   prototypeHeadingStyle,
   prototypeSectionEyebrowClassName,
   prototypeSectionFrameClassName,
@@ -103,21 +104,26 @@ function ShopProductImage({
   product,
   sizes,
   className = "object-cover transition-transform duration-300 group-hover:scale-[1.02]",
+  loading = "lazy",
 }: {
   product: SimpleProduct;
   sizes: string;
   className?: string;
+  loading?: "eager" | "lazy";
 }) {
   return product.image ? (
     <Image
       src={product.image.url}
       alt={product.image.altText || product.title}
       fill
-      className={className}
+      className={`z-10 ${className}`}
       sizes={sizes}
+      loading={loading}
     />
   ) : (
-    <div className="flex h-full w-full items-center justify-center px-6 text-center font-archivo text-sm text-slate/45">
+    <div
+      className={`${prototypeImageSkeletonClassName} flex h-full w-full items-center justify-center px-6 text-center font-archivo text-sm text-slate/45`}
+    >
       Image pending
     </div>
   );
@@ -262,10 +268,10 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
               aria-selected={isSelected}
               aria-controls="prototype-mobile-shop-panel"
               onClick={() => selectCategory(category)}
-              className={`shrink-0 rounded-full px-7 py-3 text-center font-cormorant text-lg font-semibold leading-none shadow-[inset_0_0_0_1px_#b9aa98] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
+              className={`shrink-0 rounded-full px-7 py-3 text-center font-cormorant text-lg font-semibold leading-none shadow-[inset_0_0_0_1px_#d4d4d4] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
                 isSelected
-                  ? "bg-[#5b4a3b] text-[#f8f5ef] shadow-[inset_0_0_0_1px_#5b4a3b]"
-                  : "bg-[#f6f2ea]/60 text-[#5b4a3b] hover:bg-white"
+                  ? "bg-neutral-900 text-white shadow-[inset_0_0_0_1px_#171717]"
+                  : "bg-white/70 text-neutral-700 hover:bg-white hover:text-neutral-950"
               }`}
             >
               {category}
@@ -292,7 +298,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           title="Show previous shop product"
           disabled={displayedProducts.length < 2}
           onClick={showPrevious}
-          className="absolute left-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
+          className="absolute left-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-900 shadow-[0_12px_24px_rgba(0,0,0,0.14)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ArrowLeft aria-hidden="true" className="h-6 w-6" />
         </button>
@@ -302,7 +308,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
           title="Show next shop product"
           disabled={displayedProducts.length < 2}
           onClick={showNext}
-          className="absolute right-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-[#f7f4ee] text-[#5b4a3b] shadow-[0_12px_24px_rgba(47,38,28,0.16)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
+          className="absolute right-8 top-[245px] z-30 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-900 shadow-[0_12px_24px_rgba(0,0,0,0.14)] transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate disabled:cursor-not-allowed disabled:opacity-45"
         >
           <ArrowRight aria-hidden="true" className="h-6 w-6" />
         </button>
@@ -324,7 +330,7 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
                     cardRefs.current[index] = card;
                   }}
                   href={`/shop/products/${product.handle}`}
-                  className={`group flex w-[72vw] min-w-[270px] max-w-[310px] shrink-0 snap-center flex-col overflow-hidden bg-white shadow-[0_22px_44px_rgba(47,38,28,0.16)] transition-[box-shadow,opacity,transform] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
+                  className={`group flex w-[72vw] min-w-[270px] max-w-[310px] shrink-0 snap-center flex-col overflow-hidden bg-white shadow-[0_22px_44px_rgba(0,0,0,0.14)] transition-[box-shadow,opacity,transform] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate ${
                     isActive
                       ? "opacity-100"
                       : "opacity-90 hover:opacity-100 focus-visible:opacity-100"
@@ -337,10 +343,13 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
                   }
                 >
                   <article className="flex h-full flex-col">
-                    <div className="relative h-[330px] bg-[#ebe6dc]">
+                    <div
+                      className={`relative h-[330px] ${prototypeImageSkeletonClassName}`}
+                    >
                       <ShopProductImage
                         product={product}
                         sizes="(max-width: 768px) 72vw, 310px"
+                        loading="eager"
                       />
                     </div>
                     <ShopProductCardDetails
@@ -368,12 +377,12 @@ function MobileShopDeck({ products }: { products: SimpleProduct[] }) {
         className="mx-auto mt-1 max-w-[320px] text-center"
         data-testid="prototype-mobile-shop-progress"
       >
-        <p className="font-archivo text-xs uppercase tracking-[0.22em] text-[#5b4a3b]">
+        <p className="font-archivo text-xs uppercase tracking-[0.22em] text-neutral-700">
           Swipe to browse
         </p>
-        <div className="mt-5 h-1 overflow-hidden rounded-full bg-[#d9d0c3]">
+        <div className="mt-5 h-1 overflow-hidden rounded-full bg-neutral-300">
           <div
-            className="h-full rounded-full bg-[#7b6045] transition-[width]"
+            className="h-full rounded-full bg-neutral-900 transition-[width]"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -487,7 +496,9 @@ export function ShopPrototypeSection({
                     data-testid="prototype-shop-product-card"
                   >
                     <article className="flex h-full flex-col">
-                      <div className="relative aspect-[4/5] bg-[#ebe8e0]">
+                      <div
+                        className={`relative aspect-[4/5] ${prototypeImageSkeletonClassName}`}
+                      >
                         <ShopProductImage
                           product={product}
                           sizes={activeProductSize.imageSizes}

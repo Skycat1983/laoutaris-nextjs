@@ -64,6 +64,9 @@ const hasImageUrl = (artwork) =>
   typeof artwork?.image?.secure_url === "string" &&
   artwork.image.secure_url.trim().length > 0;
 
+const getImageUrl = (artwork) =>
+  hasImageUrl(artwork) ? artwork.image.secure_url.trim() : null;
+
 const parsePositiveInteger = (value, optionName) => {
   const parsed = Number(value);
 
@@ -124,6 +127,7 @@ const createArtworkPlan = (artwork, options) => {
   const artworkId = toArtworkId(artwork);
   const title = toArtworkTitle(artwork);
   const imageUrlPresent = hasImageUrl(artwork);
+  const imageUrl = getImageUrl(artwork);
   const warnings = [];
 
   if (!artworkId) {
@@ -164,6 +168,7 @@ const createArtworkPlan = (artwork, options) => {
     artworkId: artworkId || null,
     title: title || null,
     imageUrlPresent,
+    imageUrl,
     proposedOriginalHandle: originalProduct.proposedHandle,
     proposedPrintHandle: printProduct.proposedHandle,
     customMongodbArtworkId: artworkId || null,

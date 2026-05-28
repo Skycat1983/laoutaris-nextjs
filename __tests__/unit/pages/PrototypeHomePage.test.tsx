@@ -283,7 +283,7 @@ describe("/prototype/home page", () => {
     expect(prototype).toHaveStyle({
       "--prototype-home-frame-max": "1920px",
       "--prototype-home-heading-scale": "0.9",
-      "--prototype-home-alt-bg": "#eeece6",
+      "--prototype-home-alt-bg": "#f5f5f5",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
     expect(screen.getByRole("combobox", { name: "Nav height" })).toHaveValue(
@@ -329,7 +329,7 @@ describe("/prototype/home page", () => {
     expect(prototype).toHaveStyle({
       "--prototype-home-frame-max": "1920px",
       "--prototype-home-heading-scale": "0.9",
-      "--prototype-home-alt-bg": "#eeece6",
+      "--prototype-home-alt-bg": "#f5f5f5",
     });
     expect(productRail).toHaveAttribute("data-size-preset", "feature");
     expect(
@@ -425,8 +425,9 @@ describe("/prototype/home page", () => {
       "--prototype-home-primary-accent-color: #262626"
     );
     expect(layoutSource).toContain(
-      "--prototype-home-alt-accent-color: #5b4a3b"
+      "--prototype-home-alt-accent-color: #262626"
     );
+    expect(layoutSource).toContain("prototypeImageSkeletonClassName");
     expect(homeSource).toContain("1180px");
     expect(sectionSource).not.toContain("max-w-[1440px]");
     expect(sectionSource).not.toContain("max-w-[1536px]");

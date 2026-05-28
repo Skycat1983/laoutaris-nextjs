@@ -71,6 +71,9 @@ Next.js server/client component boundaries.
   modal controls, a noindex `/prototype/frame` workshop route, product-page
   launcher wiring for eligible print products, and a prototype-only rail
   renderer with non-repeating material panel backgrounds.
+- T-332 keeps generated pilot print products to one `Frame package = Unframed`
+  Shopify variant, so current product-page frame and mat controls remain
+  preview-only until a later owner-approved option-mapping task.
 - `/prototype/frame` room-scene previews now use a shared centered hanging
   anchor and fixed-artwork wall geometry so room background switches do not move
   the artwork and mat margin changes grow the framed object around the print.
@@ -358,6 +361,21 @@ Next.js server/client component boundaries.
   alternate background. The prototype navbar control defaults now feed both
   the first-render header CSS fallbacks and the hydrated control state from a
   shared constants module.
+- 2026-05-28: The approved `/prototype/home` navbar direction now renders
+  through the global `MainNav` path for all routes while preserving the existing
+  lower breadcrumb/search row. The live homepage keeps the existing hero and
+  subscribe section, and now renders the prototype-derived collections,
+  biography, blog, documentary, and shop teaser sections inside a full-width
+  default-background shell instead of the old alternating `ContentLayout`
+  wrappers.
+- 2026-05-28: Homepage prototype image placeholders now use a shared neutral
+  grey skeleton color instead of the previous warm alternate-background palette.
+  Biography, blog, collections, and shop image wrappers expose the neutral
+  skeleton while images load, and mobile carousel/thumbnail images that are
+  visible or immediately peeking are loaded eagerly without promoting every
+  homepage image to priority. Mobile shop tabs, arrows, progress text, progress
+  rail, and related shadows now use black/neutral grey styling instead of the
+  brown accent palette.
 
 ## Backlog
 
@@ -465,6 +483,33 @@ passed with network access.
 ## Progress
 
 - Documentation scaffold created.
+- 2026-05-28: Ported the `/prototype/home` top navbar layout and tight-crop
+  logo into the global header by making `MainNav` render the centered prototype
+  nav layout for all routes and removing the route-specific
+  `HeaderMainNavLoader` switch. Replaced the live homepage's old collections,
+  biography, blog, and project teaser renderers with the prototype-derived
+  sections, added the prototype shop teaser through a new `ShopSectionLoader`,
+  kept the existing hero and subscribe section, and set the migrated sections
+  to the default background instead of alternating section backgrounds.
+  Verification:
+  `npm test -- --runTestsByPath __tests__/integration/views/Home.test.tsx __tests__/unit/loaders/CollectionSectionLoader.test.tsx __tests__/unit/loaders/BiographySectionLoader.test.tsx __tests__/unit/loaders/BlogSectionLoader.test.tsx __tests__/unit/loaders/ShopSectionLoader.test.tsx __tests__/unit/loaders/MainNavLoader.test.tsx __tests__/unit/loaders/MainNavSkeletonRoutes.test.tsx __tests__/unit/prototypes/prototypeMainNavLayout.test.tsx __tests__/unit/pages/PrototypeHomePage.test.tsx`
+  passed, `npm run typecheck` passed, `npm test` passed with 208 suites and
+  1452 tests, `npm run lint` passed, `git diff --check` passed, and
+  `npm run build` passed after clearing/retrying transient `.next` artifact
+  failures. A built-server smoke check on `http://localhost:3001/` confirmed
+  the global prototype nav hook, `home-redesign-sections`, migrated homepage
+  section hooks, retained mailing-list copy, and no `home-content-layout`
+  marker in the rendered response. No screenshot/browser visual check was run
+  because Playwright is not installed in the project.
+- 2026-05-28: Replaced the migrated homepage prototype sections' warm image
+  loading placeholders with a shared neutral grey skeleton class, added that
+  skeleton coverage to all prototype-home image wrappers, neutralized the
+  remaining brown mobile shop/collection controls, and made visible mobile
+  carousel/thumbnail images eager so small peeking cards do not wait for lazy
+  loading after they are already in view. Verification:
+  `npm test -- --runTestsByPath __tests__/unit/pages/PrototypeHomePage.test.tsx __tests__/integration/views/Home.test.tsx __tests__/unit/loaders/ShopSectionLoader.test.tsx __tests__/unit/loaders/CollectionSectionLoader.test.tsx __tests__/unit/loaders/BlogSectionLoader.test.tsx __tests__/unit/loaders/BiographySectionLoader.test.tsx`
+  passed, `npm run lint` passed, `git diff --check` passed, and
+  `npm run build` passed with the pre-existing middleware matcher warning.
 - 2026-05-26: Cropped `prototype_logos/jl_logo_tight_crop.png` vertically so
   the tight-crop prototype navbar logo canvas now starts and ends with the
   vertical divider while preserving the existing width and navbar selection

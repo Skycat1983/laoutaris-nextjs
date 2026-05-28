@@ -130,6 +130,10 @@ are needed.
   warnings, and missing image warnings.
 - The default output path is `reports/shopify-catalog-dry-run-plan.json`, and
   `/reports` is gitignored to reduce accidental report commits.
+- T-330 extended future dry-run reports to include the selected artwork
+  `imageUrl` alongside `imageUrlPresent` so the guarded pilot creation command
+  can pass approved archive media URLs to Shopify without reading MongoDB or
+  touching Cloudinary during the live write.
 - Verification:
   - `npm test -- --runTestsByPath __tests__/unit/scripts/buildShopifyCatalogPlanHelpers.test.js`
     passed on 2026-05-28.

@@ -114,14 +114,14 @@ const fontScale = {
 } as const;
 
 const alternateBackgroundOptions = {
-  stone: { label: "Chalk stone", value: "#eeece6" },
-  plaster: { label: "Soft plaster", value: "#f5f4f1" },
-  ivory: { label: "Warm ivory", value: "#f6f5f1" },
-  ricePaper: { label: "Rice paper", value: "#f7f6f2" },
-  bone: { label: "Bone white", value: "#f5f4f0" },
-  oatMilk: { label: "Oat milk", value: "#f6f4ef" },
-  porcelain: { label: "Porcelain white", value: "#f8f7f4" },
-  linenWhite: { label: "Linen white", value: "#f7f5f1" },
+  stone: { label: "Soft grey", value: "#f5f5f5" },
+  plaster: { label: "Gallery grey", value: "#f2f2f2" },
+  ivory: { label: "Mist grey", value: "#f7f7f7" },
+  ricePaper: { label: "Paper grey", value: "#f6f6f6" },
+  bone: { label: "Light grey", value: "#eeeeee" },
+  oatMilk: { label: "Ash grey", value: "#e8e8e8" },
+  porcelain: { label: "Porcelain", value: "#fafafa" },
+  linenWhite: { label: "White", value: "#ffffff" },
 } as const;
 
 type PrototypeFramePreset = keyof typeof frameWidth;
@@ -195,7 +195,7 @@ function PrototypeHomeControlRail({
   return (
     <section
       aria-label="Prototype layout controls"
-      className="fixed bottom-0 left-0 right-0 z-50 hidden max-h-[46vh] w-full overflow-y-auto border-t border-black/15 bg-[#f7f5f1]/95 text-slate shadow-[0_-12px_30px_rgba(0,0,0,0.08)] backdrop-blur lg:block"
+      className="fixed bottom-0 left-0 right-0 z-50 hidden max-h-[46vh] w-full overflow-y-auto border-t border-black/15 bg-neutral-50/95 text-slate shadow-[0_-12px_30px_rgba(0,0,0,0.08)] backdrop-blur lg:block"
       data-testid="prototype-home-controls"
     >
       <div

@@ -9,11 +9,14 @@ export const prototypeSectionEyebrowClassName =
 export const prototypeSectionMutedEyebrowClassName =
   "font-archivo text-sm uppercase tracking-[0.14em] opacity-70";
 
+export const prototypeImageSkeletonClassName =
+  "bg-neutral-200 motion-safe:animate-pulse";
+
 export const prototypeHomeTypographyCss = `
   .prototype-home-shell {
     --prototype-home-primary-bg: #f5f5f5;
     --prototype-home-primary-accent-color: #262626;
-    --prototype-home-alt-accent-color: #5b4a3b;
+    --prototype-home-alt-accent-color: #262626;
   }
 
   .prototype-home-primary-bg {

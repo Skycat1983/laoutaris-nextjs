@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import type { ArticleFrontend } from "@/lib/data/types/articleTypes";
 import {
+  prototypeImageSkeletonClassName,
   prototypeHeadingStyle,
   prototypeSectionEyebrowClassName,
   prototypeSectionFrameClassName,
@@ -79,16 +80,18 @@ function BiographyPrototypeImage({
   className,
   imageClassName = "object-cover",
   priority = false,
+  loading = "lazy",
 }: {
   article: BiographyPrototypeArticle;
   className: string;
   imageClassName?: string;
   priority?: boolean;
+  loading?: "eager" | "lazy";
 }) {
   if (!article.imageUrl) {
     return (
       <div
-        className={`${className} flex items-center justify-center bg-[#e7e2d8] text-center font-archivo text-xs uppercase tracking-[0.16em] text-black/45`}
+        className={`${className} ${prototypeImageSkeletonClassName} flex items-center justify-center text-center font-archivo text-xs uppercase tracking-[0.16em] text-black/45`}
       >
         Biography image
       </div>
@@ -96,18 +99,21 @@ function BiographyPrototypeImage({
   }
 
   return (
-    <div className={`${className} relative overflow-hidden bg-[#e7e2d8]`}>
+    <div
+      className={`${className} ${prototypeImageSkeletonClassName} relative overflow-hidden`}
+    >
       <Image
         src={article.imageUrl}
         alt={article.title}
         fill
         priority={priority}
+        loading={priority ? undefined : loading}
         sizes={
           priority
             ? "(min-width: 1536px) 31vw, (min-width: 1024px) 32vw, 100vw"
             : "(min-width: 1536px) 15vw, (min-width: 1280px) 18vw, (min-width: 640px) 42vw, 100vw"
         }
-        className={`${imageClassName} transition duration-500 group-hover:scale-[1.03]`}
+        className={`z-10 ${imageClassName} transition duration-500 group-hover:scale-[1.03]`}
       />
     </div>
   );
@@ -217,12 +223,13 @@ function MobileBiographyPrototype({
               >
                 <BiographyPrototypeImage
                   article={article}
-                  className={`aspect-[0.72] w-full border bg-[#e8e3d9] transition ${
+                  className={`aspect-[0.72] w-full border transition ${
                     isActive
                       ? "border-black shadow-[0_0_0_2px_#ffffff,0_0_0_4px_#111111]"
                       : "border-black/10 group-hover:border-black/45"
                   }`}
                   imageClassName="object-cover"
+                  loading="eager"
                 />
                 <span className="mt-4 block font-archivo text-base leading-none text-black">
                   {formatIndex(index)}
