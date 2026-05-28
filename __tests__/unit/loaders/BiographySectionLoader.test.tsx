@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { render, screen } from "@testing-library/react";
 import { BiographySectionLoader } from "@/components/loaders/sectionLoaders/BiographySectionLoader";
-import { BiographySection } from "@/components/sections/BiographySection";
+import { BiographyPrototypeSection } from "@/components/prototypes/home/BiographyPrototypeSection";
 import { getArticleList } from "@/lib/data/services/getArticleList";
 import { isNextError } from "@/lib/helpers/isNextError";
 
@@ -11,8 +11,12 @@ jest.mock("@/lib/data/services/getArticleList", () => ({
   getArticleList: jest.fn(),
 }));
 
-jest.mock("@/components/sections/BiographySection", () => ({
-  BiographySection: jest.fn(() => null),
+jest.mock("@/components/prototypes/home/BiographyPrototypeSection", () => ({
+  BiographyPrototypeSection: jest.fn(() => (
+    <section data-testid="prototype-biography-section">
+      Biography articles are unavailable.
+    </section>
+  )),
 }));
 
 jest.mock("@/lib/helpers/isNextError", () => ({
@@ -29,7 +33,7 @@ const createArticle = (slug: string) =>
     slug,
     title: slug,
     linkTo: `/biography/${slug}`,
-  }) as never;
+  } as never);
 
 describe("BiographySectionLoader", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -65,9 +69,11 @@ describe("BiographySectionLoader", () => {
 
     expect(mockGetArticleList).toHaveBeenCalledWith({
       section: "biography",
+      fields: "title subtitle imageUrl slug",
+      limit: 5,
     });
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(element.type).toBe(BiographySection);
+    expect(element.type).toBe(BiographyPrototypeSection);
     expect(element.props).toEqual({ articles });
   });
 
@@ -89,14 +95,8 @@ describe("BiographySectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BiographySection).not.toHaveBeenCalled();
-    expect(
-      screen.getByTestId("biography-section-unavailable")
-    ).toHaveTextContent("Biography is temporarily unavailable");
-    expect(screen.getByText("Biography:")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /read more/i })).toHaveAttribute(
-      "href",
-      "/biography"
+    expect(screen.getByTestId("prototype-biography-section")).toHaveTextContent(
+      "Biography articles are unavailable."
     );
   });
 
@@ -117,9 +117,8 @@ describe("BiographySectionLoader", () => {
     expect(mockIsNextError).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BiographySection).not.toHaveBeenCalled();
-    expect(screen.getByTestId("biography-section-empty")).toHaveTextContent(
-      "No biography entries are available yet"
+    expect(screen.getByTestId("prototype-biography-section")).toHaveTextContent(
+      "Biography articles are unavailable."
     );
   });
 
@@ -140,10 +139,9 @@ describe("BiographySectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BiographySection).not.toHaveBeenCalled();
-    expect(
-      screen.getByTestId("biography-section-unavailable")
-    ).toHaveTextContent("Biography is temporarily unavailable");
+    expect(screen.getByTestId("prototype-biography-section")).toHaveTextContent(
+      "Biography articles are unavailable."
+    );
   });
 
   it("rethrows Next control-flow errors", async () => {

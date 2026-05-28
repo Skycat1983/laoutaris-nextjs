@@ -1,23 +1,9 @@
-import { MobileNavLayout } from "@/components/modules/navigation/mainNav/MobileNavLayout";
-import { TabletNavLayout } from "@/components/modules/navigation/mainNav/TabletNavLayout";
-import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/DesktopNavLayout";
 import type { NavBarLink } from "@/components/modules/navigation/mainNav/types";
+import { PrototypeMainNav } from "@/components/modules/navigation/prototypeMainNav/PrototypeMainNav";
 import { publicAppRoutes } from "@/lib/routes/publicAppRoutes";
 
 export async function MainNav({ navLinks }: { navLinks: NavBarLink[] }) {
-  return (
-    <nav className="">
-      <div className="block sm:hidden">
-        <MobileNavLayout navLinks={navLinks} />
-      </div>
-      <div className="hidden sm:block lg:hidden">
-        <TabletNavLayout navLinks={navLinks} />
-      </div>
-      <div className="hidden lg:block">
-        <DesktopNavLayout navLinks={navLinks} />
-      </div>
-    </nav>
-  );
+  return <PrototypeMainNav navLinks={navLinks} />;
 }
 
 export const MainNavSkeleton = () => {
@@ -54,17 +40,5 @@ export const MainNavSkeleton = () => {
     },
   ];
 
-  return (
-    <nav className="">
-      <div className="block sm:hidden">
-        <MobileNavLayout navLinks={allLinksDisabled} />
-      </div>
-      <div className="hidden sm:block lg:hidden">
-        <TabletNavLayout navLinks={allLinksDisabled} />
-      </div>
-      <div className="hidden lg:block">
-        <DesktopNavLayout navLinks={allLinksDisabled} />
-      </div>
-    </nav>
-  );
+  return <PrototypeMainNav navLinks={allLinksDisabled} />;
 };

@@ -11,6 +11,7 @@ import {
 
 type BlogPrototypeSectionProps = {
   blogs: BlogEntryFrontend[];
+  useAlternateBackground?: boolean;
 };
 
 const sectionHeadingId = "prototype-blog-heading";
@@ -302,16 +303,22 @@ function BlogPrototypeCard({ blog }: { blog: BlogEntryFrontend }) {
   );
 }
 
-export function BlogPrototypeSection({ blogs }: BlogPrototypeSectionProps) {
+export function BlogPrototypeSection({
+  blogs,
+  useAlternateBackground = true,
+}: BlogPrototypeSectionProps) {
   const [leadBlog, ...secondaryBlogs] = blogs;
   const cardBlogs = secondaryBlogs.slice(0, 4);
   const mobileArchiveBlogs = secondaryBlogs.slice(0, mobileArchiveLimit);
   const leadSummary = leadBlog ? getBlogSummary(leadBlog) : "";
+  const backgroundClassName = useAlternateBackground
+    ? "prototype-home-alt-bg"
+    : "prototype-home-primary-bg";
 
   return (
     <section
       aria-label="Journal"
-      className="prototype-home-alt-bg w-full border-t border-slate/10 text-slate"
+      className={`${backgroundClassName} w-full border-t border-slate/10 text-slate`}
       data-testid="prototype-blog-section"
     >
       <MobileBlogSection

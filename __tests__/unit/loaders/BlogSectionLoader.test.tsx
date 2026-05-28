@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { render, screen } from "@testing-library/react";
 import { BlogSectionLoader } from "@/components/loaders/sectionLoaders/BlogSectionLoader";
-import { BlogSection } from "@/components/sections/BlogSection";
+import { BlogPrototypeSection } from "@/components/prototypes/home/BlogPrototypeSection";
 import { getBlogList } from "@/lib/data/services/getBlogList";
 import { isNextError } from "@/lib/helpers/isNextError";
 
@@ -11,8 +11,12 @@ jest.mock("@/lib/data/services/getBlogList", () => ({
   getBlogList: jest.fn(),
 }));
 
-jest.mock("@/components/sections/BlogSection", () => ({
-  BlogSection: jest.fn(() => null),
+jest.mock("@/components/prototypes/home/BlogPrototypeSection", () => ({
+  BlogPrototypeSection: jest.fn(() => (
+    <section data-testid="prototype-blog-section">
+      Blog entries will appear here when archive posts are available.
+    </section>
+  )),
 }));
 
 jest.mock("@/lib/helpers/isNextError", () => ({
@@ -27,7 +31,7 @@ const createBlog = (slug: string) =>
     slug,
     title: slug,
     linkTo: `/blog/${slug}`,
-  }) as never;
+  } as never);
 
 describe("BlogSectionLoader", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -44,35 +48,40 @@ describe("BlogSectionLoader", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("renders the latest four blogs through the server service without same-app fetches", async () => {
+  it("renders the latest five blogs through the server service without same-app fetches", async () => {
     const blogs = [
       createBlog("one"),
       createBlog("two"),
       createBlog("three"),
       createBlog("four"),
+      createBlog("five"),
     ];
     mockGetBlogList.mockResolvedValue({
       success: true,
       data: blogs,
       metadata: {
         page: 1,
-        limit: 4,
-        total: 4,
+        limit: 5,
+        total: 5,
         totalPages: 1,
       },
     });
 
     const element = (await BlogSectionLoader()) as ReactElement<{
       blogs: typeof blogs;
+      useAlternateBackground: boolean;
     }>;
 
     expect(mockGetBlogList).toHaveBeenCalledWith({
       sortby: "latest",
-      limit: 4,
+      limit: 5,
     });
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(element.type).toBe(BlogSection);
-    expect(element.props).toEqual({ blogs });
+    expect(element.type).toBe(BlogPrototypeSection);
+    expect(element.props).toEqual({
+      blogs,
+      useAlternateBackground: false,
+    });
   });
 
   it("renders an unavailable fallback when the blog result is missing", async () => {
@@ -93,14 +102,8 @@ describe("BlogSectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BlogSection).not.toHaveBeenCalled();
-    expect(screen.getByTestId("blog-section-unavailable")).toHaveTextContent(
-      "Recent posts are temporarily unavailable"
-    );
-    expect(screen.getByText("Blog:")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /see more/i })).toHaveAttribute(
-      "href",
-      "/blog"
+    expect(screen.getByTestId("prototype-blog-section")).toHaveTextContent(
+      "Blog entries will appear here when archive posts are available."
     );
   });
 
@@ -110,7 +113,7 @@ describe("BlogSectionLoader", () => {
       data: [],
       metadata: {
         page: 1,
-        limit: 4,
+        limit: 5,
         total: 0,
         totalPages: 0,
       },
@@ -121,9 +124,8 @@ describe("BlogSectionLoader", () => {
     expect(mockIsNextError).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BlogSection).not.toHaveBeenCalled();
-    expect(screen.getByTestId("blog-section-empty")).toHaveTextContent(
-      "No recent posts are available yet"
+    expect(screen.getByTestId("prototype-blog-section")).toHaveTextContent(
+      "Blog entries will appear here when archive posts are available."
     );
   });
 
@@ -146,9 +148,8 @@ describe("BlogSectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(BlogSection).not.toHaveBeenCalled();
-    expect(screen.getByTestId("blog-section-unavailable")).toHaveTextContent(
-      "Recent posts are temporarily unavailable"
+    expect(screen.getByTestId("prototype-blog-section")).toHaveTextContent(
+      "Blog entries will appear here when archive posts are available."
     );
   });
 

@@ -1,20 +1,13 @@
 import { render } from "@testing-library/react";
 import { MainNavSkeleton } from "@/components/modules/navigation/mainNav/MainNav";
-import { DesktopNavLayout } from "@/components/modules/navigation/mainNav/DesktopNavLayout";
-import { MobileNavLayout } from "@/components/modules/navigation/mainNav/MobileNavLayout";
-import { TabletNavLayout } from "@/components/modules/navigation/mainNav/TabletNavLayout";
+import { PrototypeMainNav } from "@/components/modules/navigation/prototypeMainNav/PrototypeMainNav";
 
-jest.mock("@/components/modules/navigation/mainNav/MobileNavLayout", () => ({
-  MobileNavLayout: jest.fn(() => null),
-}));
-
-jest.mock("@/components/modules/navigation/mainNav/TabletNavLayout", () => ({
-  TabletNavLayout: jest.fn(() => null),
-}));
-
-jest.mock("@/components/modules/navigation/mainNav/DesktopNavLayout", () => ({
-  DesktopNavLayout: jest.fn(() => null),
-}));
+jest.mock(
+  "@/components/modules/navigation/prototypeMainNav/PrototypeMainNav",
+  () => ({
+    PrototypeMainNav: jest.fn(() => null),
+  })
+);
 
 const expectedDisabledSkeletonLinks = [
   { label: "Artwork", path: "/artwork", disabled: true },
@@ -33,15 +26,7 @@ describe("MainNavSkeleton", () => {
   it("uses the public app route constants for disabled skeleton links", () => {
     render(<MainNavSkeleton />);
 
-    expect(MobileNavLayout).toHaveBeenCalledWith(
-      { navLinks: expectedDisabledSkeletonLinks },
-      {}
-    );
-    expect(TabletNavLayout).toHaveBeenCalledWith(
-      { navLinks: expectedDisabledSkeletonLinks },
-      {}
-    );
-    expect(DesktopNavLayout).toHaveBeenCalledWith(
+    expect(PrototypeMainNav).toHaveBeenCalledWith(
       { navLinks: expectedDisabledSkeletonLinks },
       {}
     );

@@ -15,6 +15,7 @@ type ShopPrototypeSectionProps = {
   products: SimpleProduct[];
   hasLoadError?: boolean;
   productSizePreset?: ProductSizePreset;
+  useAlternateBackground?: boolean;
 };
 
 const SHOP_ROUTE = "/shop/products";
@@ -136,9 +137,7 @@ function ShopProductCardDetails({
   return (
     <div
       className={
-        compact
-          ? "flex flex-col p-5"
-          : "flex flex-1 flex-col gap-4 p-4 sm:p-5"
+        compact ? "flex flex-col p-5" : "flex flex-1 flex-col gap-4 p-4 sm:p-5"
       }
     >
       <div>
@@ -387,10 +386,14 @@ export function ShopPrototypeSection({
   products,
   hasLoadError = false,
   productSizePreset = "large",
+  useAlternateBackground = true,
 }: ShopPrototypeSectionProps) {
   const railRef = useRef<HTMLDivElement>(null);
   const hasProducts = products.length > 0;
   const activeProductSize = shopProductSizePresets[productSizePreset];
+  const backgroundClassName = useAlternateBackground
+    ? "prototype-home-alt-bg"
+    : "prototype-home-primary-bg";
 
   const scrollProducts = (direction: -1 | 1) => {
     const rail = railRef.current;
@@ -406,7 +409,7 @@ export function ShopPrototypeSection({
     <section
       id="shop"
       aria-labelledby="prototype-shop-heading"
-      className="prototype-home-alt-bg w-full text-slate"
+      className={`${backgroundClassName} w-full text-slate`}
       data-testid="prototype-shop-section"
     >
       <div

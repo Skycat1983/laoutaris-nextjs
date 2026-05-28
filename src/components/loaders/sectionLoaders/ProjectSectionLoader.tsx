@@ -1,7 +1,5 @@
-import { delay } from "@/lib/utils/debugUtils";
-import { ProjectSection } from "@/components/sections/ProjectSection";
+import { ProjectPrototypeSection } from "@/components/prototypes/home/ProjectPrototypeSection";
 
 export async function ProjectSectionLoader() {
-  // simulate fetching projects
-  return <ProjectSection />;
+  return <ProjectPrototypeSection />;
 }

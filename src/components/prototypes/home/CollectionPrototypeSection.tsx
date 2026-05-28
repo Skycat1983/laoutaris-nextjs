@@ -23,6 +23,7 @@ import {
 
 type CollectionPrototypeSectionProps = {
   collections: CollectionFrontend[];
+  useAlternateBackground?: boolean;
 };
 
 type CollectionCarouselApi = UseEmblaCarouselType[1];
@@ -38,11 +39,7 @@ const sectionHeadingId = "prototype-collections-heading";
 const formatIndex = (index: number) => String(index + 1).padStart(2, "0");
 
 const getCollectionHref = (collection: CollectionFrontend) =>
-  buildUrl([
-    "collections",
-    collection.slug,
-    collection.firstArtworkId ?? "",
-  ]);
+  buildUrl(["collections", collection.slug, collection.firstArtworkId ?? ""]);
 
 const sectionHeadingStyle = prototypeHeadingStyle({
   base: "4.05rem",
@@ -567,15 +564,19 @@ function CollectionPrototypeEmptyState() {
 
 export function CollectionPrototypeSection({
   collections,
+  useAlternateBackground = true,
 }: CollectionPrototypeSectionProps) {
   const visibleCollections = collections.slice(0, MAX_VISIBLE_COLLECTIONS);
   const hasCollections = visibleCollections.length > 0;
+  const backgroundClassName = useAlternateBackground
+    ? "prototype-home-alt-bg"
+    : "prototype-home-primary-bg";
 
   return (
     <section
       id="collections"
       aria-labelledby={sectionHeadingId}
-      className="prototype-home-alt-bg prototype-home-accent-divider-border w-full border-t text-slate"
+      className={`${backgroundClassName} prototype-home-accent-divider-border w-full border-t text-slate`}
       data-testid="prototype-collections-section"
     >
       <div
@@ -607,8 +608,8 @@ export function CollectionPrototypeSection({
             Explore the collections
           </h2>
           <p className="mt-8 max-w-[340px] break-words font-archivo text-base leading-7 text-slate/70 sm:text-lg lg:max-w-[340px]">
-            Discover curated groups of works, each offering a unique
-            perspective into the artist&apos;s world.
+            Discover curated groups of works, each offering a unique perspective
+            into the artist&apos;s world.
           </p>
           <Link
             href="/collections"

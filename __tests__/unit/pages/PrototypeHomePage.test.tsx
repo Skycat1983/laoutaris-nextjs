@@ -68,7 +68,9 @@ const readRepoFile = (relativePath: string) =>
   readFileSync(path.join(process.cwd(), relativePath), "utf8");
 
 const mockGetBlogPrototypeEntries =
-  getBlogPrototypeEntries as jest.MockedFunction<typeof getBlogPrototypeEntries>;
+  getBlogPrototypeEntries as jest.MockedFunction<
+    typeof getBlogPrototypeEntries
+  >;
 const mockGetBiographyPrototypeArticles =
   getBiographyPrototypeArticles as jest.MockedFunction<
     typeof getBiographyPrototypeArticles
@@ -95,7 +97,7 @@ const createBlog = (
     summary: `${title} archive summary`,
     imageUrl: `https://res.cloudinary.com/dzncmfirr/image/upload/${slug}.jpg`,
     displayDate,
-  }) as never;
+  } as never);
 
 const createBiographyArticle = (
   slug: string,
@@ -107,7 +109,7 @@ const createBiographyArticle = (
     title,
     subtitle,
     imageUrl: `https://res.cloudinary.com/dzncmfirr/image/upload/${slug}.jpg`,
-  }) as never;
+  } as never);
 
 const createCollection = (
   slug: string,
@@ -124,7 +126,7 @@ const createCollection = (
     section: "collections",
     artworkCount: 4,
     firstArtworkId,
-  }) as never;
+  } as never);
 
 const createProduct = (
   handle: string,
@@ -287,9 +289,7 @@ describe("/prototype/home page", () => {
     expect(screen.getByRole("combobox", { name: "Nav height" })).toHaveValue(
       "standard"
     );
-    expect(screen.getByRole("combobox", { name: "X pad" })).toHaveValue(
-      "wide"
-    );
+    expect(screen.getByRole("combobox", { name: "X pad" })).toHaveValue("wide");
     expect(screen.getByRole("combobox", { name: "Link size" })).toHaveValue(
       "standard"
     );
@@ -366,8 +366,9 @@ describe("/prototype/home page", () => {
       "prototype-mobile-project-video"
     );
     const iframe = within(projectVideo).getByTitle("YouTube video player");
-    const mobileIframe =
-      within(mobileProjectVideo).getByTitle("YouTube video player");
+    const mobileIframe = within(mobileProjectVideo).getByTitle(
+      "YouTube video player"
+    );
 
     expect(iframe).toHaveAttribute(
       "src",
@@ -419,14 +420,14 @@ describe("/prototype/home page", () => {
     expect(layoutSource).toContain("--prototype-home-frame-max");
     expect(layoutSource).toContain("1920px");
     expect(layoutSource).toContain("prototypeSectionEyebrowClassName");
-    expect(homeSource).toContain("1180px");
-    expect(homeSource).toContain("prototype-home-section-heading");
-    expect(homeSource).toContain(
+    expect(layoutSource).toContain("prototype-home-section-heading");
+    expect(layoutSource).toContain(
       "--prototype-home-primary-accent-color: #262626"
     );
-    expect(homeSource).toContain(
+    expect(layoutSource).toContain(
       "--prototype-home-alt-accent-color: #5b4a3b"
     );
+    expect(homeSource).toContain("1180px");
     expect(sectionSource).not.toContain("max-w-[1440px]");
     expect(sectionSource).not.toContain("max-w-[1536px]");
     expect(sectionSource).not.toContain("prototype-home-heading");
@@ -512,8 +513,7 @@ describe("/prototype/home page", () => {
       within(desktopBiography)
         .getAllByTestId("prototype-biography-card")
         .map(
-          (card) =>
-            within(card).getByRole("heading", { level: 3 }).textContent
+          (card) => within(card).getByRole("heading", { level: 3 }).textContent
         )
     ).toEqual(["Meeting Beryl", "Ethos", "Later Years", "Obituary"]);
     expect(
@@ -709,25 +709,14 @@ describe("/prototype/home page", () => {
     ).toBeInTheDocument();
     expect(
       within(desktopBlog).getByRole("link", { name: /Read more/i })
-    ).toHaveAttribute(
-      "href",
-      "/blog"
-    );
+    ).toHaveAttribute("href", "/blog");
     expect(
       within(desktopBlog).getByRole("link", { name: /Lead Story/i })
-    ).toHaveAttribute(
-      "href",
-      "/blog/lead-story"
-    );
+    ).toHaveAttribute("href", "/blog/lead-story");
     expect(
       within(desktopBlog).getByRole("link", { name: /Studio Note/i })
-    ).toHaveAttribute(
-      "href",
-      "/blog/studio-note"
-    );
-    expect(
-      screen.queryByText(/grandfather's story/i)
-    ).not.toBeInTheDocument();
+    ).toHaveAttribute("href", "/blog/studio-note");
+    expect(screen.queryByText(/grandfather's story/i)).not.toBeInTheDocument();
   });
 
   it("renders the mobile blog mockup as a journal archive backed by real posts", () => {
@@ -1013,7 +1002,9 @@ describe("/prototype/home page", () => {
     );
 
     expect(
-      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+      within(mobileDeck).getByTestId(
+        "prototype-mobile-collection-featured-card"
+      )
     ).toHaveTextContent("Extra Large");
     expect(mockEmblaApi.scrollPrev).toHaveBeenCalled();
 
@@ -1024,14 +1015,18 @@ describe("/prototype/home page", () => {
     );
 
     expect(
-      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+      within(mobileDeck).getByTestId(
+        "prototype-mobile-collection-featured-card"
+      )
     ).toHaveTextContent("Family Favourites");
     expect(mockEmblaApi.scrollTo).toHaveBeenCalledWith(2);
 
     fireEvent.keyDown(mobileDeck, { key: "ArrowRight" });
 
     expect(
-      within(mobileDeck).getByTestId("prototype-mobile-collection-featured-card")
+      within(mobileDeck).getByTestId(
+        "prototype-mobile-collection-featured-card"
+      )
     ).toHaveTextContent("Semi-Abstract");
   });
 
@@ -1059,7 +1054,9 @@ describe("/prototype/home page", () => {
     expect(mobileDeckSource).not.toContain("onTouchStart");
     expect(mobileDeckSource).not.toContain("onTouchEnd");
     expect(mobileDeckSource).not.toContain("touchStart");
-    expect(mobileDeckSource).not.toContain("transition-[opacity,transform,width,height]");
+    expect(mobileDeckSource).not.toContain(
+      "transition-[opacity,transform,width,height]"
+    );
     const mobileTransitions =
       mobileDeckSource.match(/transition-\[[^\]]+\]/g) ?? [];
     expect(mobileTransitions).not.toEqual(
@@ -1130,10 +1127,7 @@ describe("/prototype/home page", () => {
     ).toBeInTheDocument();
     const desktopRail = screen.getByTestId("prototype-shop-product-rail");
 
-    expect(desktopRail).toHaveAttribute(
-      "data-size-preset",
-      "large"
-    );
+    expect(desktopRail).toHaveAttribute("data-size-preset", "large");
     expect(
       screen.getByRole("link", { name: /View full shop/i })
     ).toHaveAttribute("href", "/shop/products");
@@ -1228,9 +1222,7 @@ describe("/prototype/home page", () => {
     expect(updatedFeaturedCard).toHaveTextContent("Red Form");
     expect(updatedFeaturedCard).toHaveTextContent("original");
 
-    fireEvent.click(
-      within(mobileShop).getByRole("tab", { name: "Prints" })
-    );
+    fireEvent.click(within(mobileShop).getByRole("tab", { name: "Prints" }));
 
     expect(
       within(mobileShop).getByRole("tab", { name: "Prints" })
@@ -1241,9 +1233,7 @@ describe("/prototype/home page", () => {
     expect(mobileShop).not.toHaveTextContent("Yellow Composition");
     expect(mobileShop).not.toHaveTextContent("Blue Study");
 
-    fireEvent.click(
-      within(mobileShop).getByRole("tab", { name: "Books" })
-    );
+    fireEvent.click(within(mobileShop).getByRole("tab", { name: "Books" }));
 
     expect(
       within(mobileShop).getByRole("tab", { name: "Books" })

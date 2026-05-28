@@ -1,5 +1,4 @@
-import { BlogSection } from "@/components/sections/BlogSection";
-import { HomeSectionFallback } from "@/components/sections/HomeSectionFallback";
+import { BlogPrototypeSection } from "@/components/prototypes/home/BlogPrototypeSection";
 import { getBlogList } from "@/lib/data/services/getBlogList";
 import { isNextError } from "@/lib/helpers/isNextError";
 import { createServerLogger } from "@/lib/observability/logger";
@@ -12,33 +11,12 @@ const logger = createServerLogger({
 
 const BLOG_FETCH_CONFIG = {
   sortby: "latest" as const,
-  limit: 4,
+  limit: 5,
   // fields: ["title", "subtitle", "slug", "imageUrl"] as const,
 } as const;
 
-const blogFallbackConfig = {
-  heading: "Blog:",
-  subheading: "Recent posts",
-  buttonLabel: "See more",
-  buttonLink: "/blog",
-} as const;
-
-const renderBlogUnavailableFallback = () => (
-  <HomeSectionFallback
-    {...blogFallbackConfig}
-    title="Recent posts are temporarily unavailable"
-    message="This section could not be loaded right now. The blog archive remains available from the blog page."
-    testId="blog-section-unavailable"
-  />
-);
-
-const renderBlogEmptyFallback = () => (
-  <HomeSectionFallback
-    {...blogFallbackConfig}
-    title="No recent posts are available yet"
-    message="Blog posts will appear here once they are published."
-    testId="blog-section-empty"
-  />
+const renderBlogFallback = () => (
+  <BlogPrototypeSection blogs={[]} useAlternateBackground={false} />
 );
 
 export async function BlogSectionLoader() {
@@ -54,16 +32,21 @@ export async function BlogSectionLoader() {
     }
 
     if (result.data.length === 0) {
-      return renderBlogEmptyFallback();
+      return renderBlogFallback();
     }
 
-    return <BlogSection blogs={result.data} />;
+    return (
+      <BlogPrototypeSection
+        blogs={result.data}
+        useAlternateBackground={false}
+      />
+    );
   } catch (error) {
     if (isNextError(error)) {
       throw error;
     }
     logger.error("loader.public.blog_section.failed", { error });
-    return renderBlogUnavailableFallback();
+    return renderBlogFallback();
   }
 }
 

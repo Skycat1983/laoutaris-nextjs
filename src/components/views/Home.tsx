@@ -1,8 +1,8 @@
-import React, { Suspense } from "react";
+import React, { Suspense, type CSSProperties } from "react";
 
 // ! COMPONENTS
 import { Hero } from "../modules/hero/Hero";
-import { ContentLayout } from "../layouts/public/ContentLayout";
+import { prototypeHomeTypographyCss } from "@/components/prototypes/home/prototypeHomeLayout";
 
 // ! LOADERS
 import { BiographySectionLoader } from "../loaders/sectionLoaders/BiographySectionLoader";
@@ -10,67 +10,93 @@ import { BlogSectionLoader } from "../loaders/sectionLoaders/BlogSectionLoader";
 import { CollectionsSectionLoader } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
 import { SubscribeSectionLoader } from "@/components/loaders/sectionLoaders/SubscribeSectionLoader";
 import { ProjectSectionLoader } from "@/components/loaders/sectionLoaders/ProjectSectionLoader";
+import { ShopSectionLoader } from "@/components/loaders/sectionLoaders/ShopSectionLoader";
 
 // ! SKELETONS
-import { BlogSectionSkeleton } from "../sections/BlogSection";
-import { CollectionSectionSkeleton } from "../sections/CollectionSection";
-import { BiographySectionSkeleton } from "@/components/sections/BiographySection";
 import { SubscribeSectionSkeleton } from "../sections/SubscribeSection";
-import { ProjectSectionSkeleton } from "@/components/sections/ProjectSection";
 //  GET /api/auth/session 200 in 8242ms
+
+type HomeSectionShellStyle = CSSProperties & {
+  "--prototype-home-frame-max": string;
+  "--prototype-home-heading-scale": string;
+  "--prototype-home-alt-bg": string;
+};
+
+const homeSectionShellStyle: HomeSectionShellStyle = {
+  "--prototype-home-frame-max": "1920px",
+  "--prototype-home-heading-scale": "0.9",
+  "--prototype-home-alt-bg": "#f5f5f5",
+};
+
+function HomeSectionLoadingFallback({ testId }: { testId: string }) {
+  return (
+    <section
+      className="prototype-home-primary-bg w-full border-t border-slate/10 py-16"
+      data-testid={testId}
+    />
+  );
+}
 
 export async function Home() {
   return (
     <div data-testid="home-container">
-      <Hero data-testid="home-hero" />
+      <Hero />
 
-      <ContentLayout data-testid="home-content-layout">
+      <div
+        className="prototype-home-shell prototype-home-primary-bg w-full text-slate"
+        data-testid="home-redesign-sections"
+        style={homeSectionShellStyle}
+      >
+        <style>{prototypeHomeTypographyCss}</style>
+
         <Suspense
           fallback={
-            <CollectionSectionSkeleton data-testid="collection-section-skeleton" />
+            <HomeSectionLoadingFallback testId="collection-section-skeleton" />
           }
         >
-          <CollectionsSectionLoader data-testid="home-collection-section" />
+          <CollectionsSectionLoader />
         </Suspense>
-      </ContentLayout>
 
-      <ContentLayout bg="bg-slate/5">
         <Suspense
           fallback={
-            <ProjectSectionSkeleton data-testid="project-section-skeleton" />
+            <HomeSectionLoadingFallback testId="biography-section-skeleton" />
           }
         >
-          <ProjectSectionLoader data-testid="home-project-section" />
+          <BiographySectionLoader />
         </Suspense>
-      </ContentLayout>
 
-      <ContentLayout>
-        <Suspense
-          fallback={
-            <BiographySectionSkeleton data-testid="biography-section-skeleton" />
-          }
-        >
-          <BiographySectionLoader data-testid="home-biography-section" />
-        </Suspense>
-      </ContentLayout>
-
-      <ContentLayout bg="bg-slate/5">
         <Suspense
           fallback={
             <SubscribeSectionSkeleton data-testid="subscribe-section-skeleton" />
           }
         >
-          <SubscribeSectionLoader data-testid="home-subscribe-section" />
+          <SubscribeSectionLoader />
         </Suspense>
-      </ContentLayout>
 
-      <ContentLayout bg="">
         <Suspense
-          fallback={<BlogSectionSkeleton data-testid="blog-section-skeleton" />}
+          fallback={
+            <HomeSectionLoadingFallback testId="blog-section-skeleton" />
+          }
         >
-          <BlogSectionLoader data-testid="home-blog-section" />
+          <BlogSectionLoader />
         </Suspense>
-      </ContentLayout>
+
+        <Suspense
+          fallback={
+            <HomeSectionLoadingFallback testId="project-section-skeleton" />
+          }
+        >
+          <ProjectSectionLoader />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <HomeSectionLoadingFallback testId="shop-section-skeleton" />
+          }
+        >
+          <ShopSectionLoader />
+        </Suspense>
+      </div>
     </div>
   );
 }

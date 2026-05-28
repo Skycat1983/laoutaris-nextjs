@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { render, screen } from "@testing-library/react";
 import { CollectionsSectionLoader } from "@/components/loaders/sectionLoaders/CollectionSectionLoader";
-import { CollectionSection } from "@/components/sections/CollectionSection";
+import { CollectionPrototypeSection } from "@/components/prototypes/home/CollectionPrototypeSection";
 import { getCollectionList } from "@/lib/data/services/getCollectionList";
 import { isNextError } from "@/lib/helpers/isNextError";
 
@@ -11,8 +11,12 @@ jest.mock("@/lib/data/services/getCollectionList", () => ({
   getCollectionList: jest.fn(),
 }));
 
-jest.mock("@/components/sections/CollectionSection", () => ({
-  CollectionSection: jest.fn(() => null),
+jest.mock("@/components/prototypes/home/CollectionPrototypeSection", () => ({
+  CollectionPrototypeSection: jest.fn(() => (
+    <section data-testid="prototype-collections-section">
+      Collection rooms are unavailable.
+    </section>
+  )),
 }));
 
 jest.mock("@/lib/helpers/isNextError", () => ({
@@ -29,7 +33,7 @@ const createCollection = (slug: string) =>
     slug,
     title: slug,
     linkTo: `/collections/${slug}`,
-  }) as never;
+  } as never);
 
 describe("CollectionsSectionLoader", () => {
   let consoleErrorSpy: jest.SpyInstance;
@@ -64,6 +68,7 @@ describe("CollectionsSectionLoader", () => {
 
     const element = (await CollectionsSectionLoader()) as ReactElement<{
       collections: typeof collections;
+      useAlternateBackground: boolean;
     }>;
 
     expect(mockGetCollectionList).toHaveBeenCalledWith({
@@ -71,8 +76,11 @@ describe("CollectionsSectionLoader", () => {
       limit: 9,
     });
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(element.type).toBe(CollectionSection);
-    expect(element.props).toEqual({ collections });
+    expect(element.type).toBe(CollectionPrototypeSection);
+    expect(element.props).toEqual({
+      collections,
+      useAlternateBackground: false,
+    });
   });
 
   it("renders an unavailable fallback when the section collection list is missing", async () => {
@@ -93,15 +101,9 @@ describe("CollectionsSectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(CollectionSection).not.toHaveBeenCalled();
     expect(
-      screen.getByTestId("collections-section-unavailable")
-    ).toHaveTextContent("Collections are temporarily unavailable");
-    expect(screen.getByText("Collections:")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /see more/i })).toHaveAttribute(
-      "href",
-      "/collections"
-    );
+      screen.getByTestId("prototype-collections-section")
+    ).toHaveTextContent("Collection rooms are unavailable.");
   });
 
   it("renders an empty fallback when no section collections are available", async () => {
@@ -121,10 +123,9 @@ describe("CollectionsSectionLoader", () => {
     expect(mockIsNextError).not.toHaveBeenCalled();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(CollectionSection).not.toHaveBeenCalled();
-    expect(screen.getByTestId("collections-section-empty")).toHaveTextContent(
-      "No collections are available yet"
-    );
+    expect(
+      screen.getByTestId("prototype-collections-section")
+    ).toHaveTextContent("Collection rooms are unavailable.");
   });
 
   it("renders an unavailable fallback for non-Next loading failures", async () => {
@@ -144,10 +145,9 @@ describe("CollectionsSectionLoader", () => {
       })
     );
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(CollectionSection).not.toHaveBeenCalled();
     expect(
-      screen.getByTestId("collections-section-unavailable")
-    ).toHaveTextContent("Collections are temporarily unavailable");
+      screen.getByTestId("prototype-collections-section")
+    ).toHaveTextContent("Collection rooms are unavailable.");
   });
 
   it("rethrows Next control-flow errors", async () => {

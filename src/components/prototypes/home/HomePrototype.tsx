@@ -11,7 +11,10 @@ import {
   ShopPrototypeSection,
   type ProductSizePreset,
 } from "./ShopPrototypeSection";
-import { prototypeSectionFrameClassName } from "./prototypeHomeLayout";
+import {
+  prototypeHomeTypographyCss,
+  prototypeSectionFrameClassName,
+} from "./prototypeHomeLayout";
 import {
   DEFAULT_PROTOTYPE_NAV_HEIGHT_PRESET,
   DEFAULT_PROTOTYPE_NAV_LINK_FONT_PRESET,
@@ -99,87 +102,6 @@ const prototypeSections = [
   },
 ];
 
-const prototypeHomeTypographyCss = `
-  .prototype-home-shell {
-    --prototype-home-primary-bg: #f5f5f5;
-    --prototype-home-primary-accent-color: #262626;
-    --prototype-home-alt-accent-color: #5b4a3b;
-  }
-
-  .prototype-home-primary-bg {
-    --prototype-home-section-accent-color: var(--prototype-home-primary-accent-color);
-    --prototype-home-accent-muted: color-mix(in srgb, var(--prototype-home-section-accent-color) 34%, transparent);
-    --prototype-home-accent-soft: color-mix(in srgb, var(--prototype-home-section-accent-color) 72%, transparent);
-    background-color: var(--prototype-home-primary-bg);
-  }
-
-  .prototype-home-alt-bg {
-    --prototype-home-section-accent-color: var(--prototype-home-alt-accent-color);
-    --prototype-home-accent-muted: color-mix(in srgb, var(--prototype-home-section-accent-color) 34%, transparent);
-    --prototype-home-accent-soft: color-mix(in srgb, var(--prototype-home-section-accent-color) 72%, transparent);
-    background-color: var(--prototype-home-alt-bg);
-  }
-
-  .prototype-home-accent-text {
-    color: var(--prototype-home-section-accent-color);
-  }
-
-  .prototype-home-accent-link {
-    border-color: var(--prototype-home-section-accent-color);
-    color: var(--prototype-home-section-accent-color);
-  }
-
-  .prototype-home-accent-link:hover {
-    color: #262626;
-  }
-
-  .prototype-home-accent-border {
-    border-color: var(--prototype-home-section-accent-color);
-  }
-
-  .prototype-home-accent-divider-border {
-    border-color: var(--prototype-home-accent-muted);
-  }
-
-  .prototype-home-accent-divider {
-    background-color: var(--prototype-home-accent-soft);
-  }
-
-  .prototype-home-shell .prototype-home-section-heading {
-    font-size: calc(var(--prototype-heading-base) * var(--prototype-home-heading-scale, 1));
-  }
-
-  @media (min-width: 640px) {
-    .prototype-home-shell .prototype-home-section-heading {
-      font-size: calc(var(--prototype-heading-sm, var(--prototype-heading-base)) * var(--prototype-home-heading-scale, 1));
-    }
-  }
-
-  @media (min-width: 768px) {
-    .prototype-home-shell .prototype-home-section-heading {
-      font-size: calc(var(--prototype-heading-md, var(--prototype-heading-sm, var(--prototype-heading-base))) * var(--prototype-home-heading-scale, 1));
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .prototype-home-shell .prototype-home-section-heading {
-      font-size: calc(var(--prototype-heading-lg, var(--prototype-heading-md, var(--prototype-heading-sm, var(--prototype-heading-base)))) * var(--prototype-home-heading-scale, 1));
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .prototype-home-shell .prototype-home-section-heading {
-      font-size: calc(var(--prototype-heading-xl, var(--prototype-heading-lg, var(--prototype-heading-md, var(--prototype-heading-sm, var(--prototype-heading-base))))) * var(--prototype-home-heading-scale, 1));
-    }
-  }
-
-  @media (min-width: 1536px) {
-    .prototype-home-shell .prototype-home-section-heading {
-      font-size: calc(var(--prototype-heading-2xl, var(--prototype-heading-xl, var(--prototype-heading-lg, var(--prototype-heading-md, var(--prototype-heading-sm, var(--prototype-heading-base)))))) * var(--prototype-home-heading-scale, 1));
-    }
-  }
-`;
-
 const frameWidth = {
   wide: "1920px",
   inset: "1180px",
@@ -247,9 +169,7 @@ function PrototypeHomeControlRail({
   prototypeNavLinkSizePreset: PrototypeNavLinkSizePreset;
   prototypeNavLinkFontPreset: PrototypeNavLinkFontPreset;
   prototypeNavTintPreset: PrototypeNavTintPreset;
-  onPrototypeNavHeightPresetChange: (
-    preset: PrototypeNavHeightPreset
-  ) => void;
+  onPrototypeNavHeightPresetChange: (preset: PrototypeNavHeightPreset) => void;
   onPrototypeNavLogoIdChange: (logoId: PrototypeNavLogoId) => void;
   onPrototypeNavLogoSizePresetChange: (
     preset: PrototypeNavLogoSizePreset
@@ -458,13 +378,11 @@ function PrototypeHomeControlRail({
             }
             className="h-10 w-full appearance-none border border-slate/25 bg-white px-3 font-archivo text-sm normal-case tracking-normal text-slate shadow-sm focus:outline-none focus:ring-2 focus:ring-slate"
           >
-            {Object.entries(prototypeNavTintOptions).map(
-              ([preset, option]) => (
-                <option key={preset} value={preset}>
-                  {option.label}
-                </option>
-              )
-            )}
+            {Object.entries(prototypeNavTintOptions).map(([preset, option]) => (
+              <option key={preset} value={preset}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </label>
 
@@ -542,9 +460,7 @@ export function HomePrototype({
     setPrototypeNavLogoSizePreset(DEFAULT_PROTOTYPE_NAV_LOGO_SIZE_PRESET);
     setPrototypeNavPaddingPreset(DEFAULT_PROTOTYPE_NAV_PADDING_PRESET);
     setPrototypeNavPaddingXPreset(DEFAULT_PROTOTYPE_NAV_PADDING_X_PRESET);
-    setPrototypeNavLinkSpacingPreset(
-      DEFAULT_PROTOTYPE_NAV_LINK_SPACING_PRESET
-    );
+    setPrototypeNavLinkSpacingPreset(DEFAULT_PROTOTYPE_NAV_LINK_SPACING_PRESET);
     setPrototypeNavLinkSizePreset(DEFAULT_PROTOTYPE_NAV_LINK_SIZE_PRESET);
     setPrototypeNavLinkFontPreset(DEFAULT_PROTOTYPE_NAV_LINK_FONT_PRESET);
     setPrototypeNavTintPreset(DEFAULT_PROTOTYPE_NAV_TINT_PRESET);
@@ -563,10 +479,7 @@ export function HomePrototype({
       tintPreset: prototypeNavTintPreset,
     });
 
-    root.style.setProperty(
-      "--prototype-main-nav-height",
-      navCssValues.height
-    );
+    root.style.setProperty("--prototype-main-nav-height", navCssValues.height);
     root.style.setProperty(
       "--prototype-main-nav-logo-height",
       navCssValues.logoHeight
@@ -623,10 +536,7 @@ export function HomePrototype({
       "--prototype-main-nav-link-letter-spacing",
       navCssValues.linkLetterSpacing
     );
-    root.style.setProperty(
-      "--prototype-main-nav-bg",
-      navCssValues.background
-    );
+    root.style.setProperty("--prototype-main-nav-bg", navCssValues.background);
     root.dataset.prototypeMainNavLogo = prototypeNavLogoId;
 
     return () => {
