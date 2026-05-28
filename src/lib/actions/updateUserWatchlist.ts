@@ -5,6 +5,8 @@ import { ArtworkModel, UserModel } from "../data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
 import { createServerLogger } from "@/lib/observability/logger";
+import { accountWatchlistPath } from "@/lib/routes/accountRoutes";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 import type { WatchlistButtonState } from "@/components/elements/buttons/WatchlistButton";
 
 const logger = createServerLogger({
@@ -104,9 +106,9 @@ export async function updateUserWatchlist(
         ? "Added to watchlist"
         : "Removed from watchlist";
 
-      revalidatePath("/account/watchlist");
-      revalidatePath(`/account/watchlist/${artworkId}`);
-      revalidatePath(`/artwork/${artworkId}`);
+      revalidatePath(accountWatchlistPath());
+      revalidatePath(accountWatchlistPath(artworkId));
+      revalidatePath(artworkDetailPath(artworkId));
 
       return {
         success: true,

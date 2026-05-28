@@ -24,8 +24,10 @@ type PrototypeMainNavRootStyle = CSSProperties & {
   "--prototype-main-nav-effective-mobile-logo-width": string;
   "--prototype-main-nav-effective-padding-y": string;
   "--prototype-main-nav-effective-padding-x": string;
-  "--prototype-main-nav-effective-link-gap": string;
-  "--prototype-main-nav-effective-link-font-size": string;
+  "--prototype-main-nav-default-link-gap": string;
+  "--prototype-main-nav-default-link-gap-wide": string;
+  "--prototype-main-nav-default-link-font-size": string;
+  "--prototype-main-nav-default-link-font-size-wide": string;
   "--prototype-main-nav-effective-link-font-family": string;
   "--prototype-main-nav-effective-link-font-weight": string;
   "--prototype-main-nav-effective-link-font-style": string;
@@ -41,8 +43,13 @@ const prototypeMainNavRootStyle: PrototypeMainNavRootStyle = {
   "--prototype-main-nav-effective-mobile-logo-width": `var(--prototype-main-nav-mobile-logo-width, ${defaultMainNavCssValues.mobileLogoWidth})`,
   "--prototype-main-nav-effective-padding-y": `var(--prototype-main-nav-padding-y, ${defaultMainNavCssValues.paddingY})`,
   "--prototype-main-nav-effective-padding-x": `var(--prototype-main-nav-padding-x, ${defaultMainNavCssValues.paddingX})`,
-  "--prototype-main-nav-effective-link-gap": `var(--prototype-main-nav-link-gap, ${defaultMainNavCssValues.linkGap})`,
-  "--prototype-main-nav-effective-link-font-size": `var(--prototype-main-nav-link-font-size, ${defaultMainNavCssValues.linkFontSize})`,
+  "--prototype-main-nav-default-link-gap": defaultMainNavCssValues.linkGap,
+  "--prototype-main-nav-default-link-gap-wide":
+    defaultMainNavCssValues.wideLinkGap,
+  "--prototype-main-nav-default-link-font-size":
+    defaultMainNavCssValues.linkFontSize,
+  "--prototype-main-nav-default-link-font-size-wide":
+    defaultMainNavCssValues.wideLinkFontSize,
   "--prototype-main-nav-effective-link-font-family": `var(--prototype-main-nav-link-font-family, ${defaultMainNavCssValues.linkFontFamily})`,
   "--prototype-main-nav-effective-link-font-weight": `var(--prototype-main-nav-link-font-weight, ${defaultMainNavCssValues.linkFontWeight})`,
   "--prototype-main-nav-effective-link-font-style": `var(--prototype-main-nav-link-font-style, ${defaultMainNavCssValues.linkFontStyle})`,
@@ -228,7 +235,7 @@ function PrototypeMobileNav({ navLinks }: { navLinks: NavBarLink[] }) {
 export function PrototypeMainNav({ navLinks }: { navLinks: NavBarLink[] }) {
   return (
     <nav
-      className="bg-whitish"
+      className="prototype-main-nav bg-whitish"
       style={prototypeMainNavRootStyle}
       data-testid="prototype-main-nav"
     >

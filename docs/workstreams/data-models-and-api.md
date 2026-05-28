@@ -1050,7 +1050,9 @@ adding explicit article, artwork, blog, and collection update path builders and
 moving admin update fetchers to them while preserving route handlers,
 request-context route IDs, response contracts, validation, guard behavior, DB
 ownership, logging behavior, admin UI behavior, and Shopify dashboard work.
-T-320 is prepared as the next source-only API route-builder slice for admin
-create fetcher paths. Keep route handlers, request-context route IDs, response
-contracts, validation, guard behavior, DB ownership, logging behavior, admin UI
-behavior, and Shopify dashboard work unchanged.
+T-320 is complete: admin create fetchers now use explicit client-safe path
+builders for article, artwork, blog, and collection create URLs. Route
+handlers, request-context route IDs, response contracts, validation, guard
+behavior, DB ownership, logging behavior, admin UI behavior, and Shopify
+dashboard work remain unchanged. Broader public/user API route-builder families
+remain separate future scopes.

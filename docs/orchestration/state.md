@@ -1,6 +1,6 @@
 # Current Orchestration State
 
-Last updated: 2026-05-27
+Last updated: 2026-05-28
 
 ## Current Priority
 
@@ -62,7 +62,7 @@ gating for blog/collection admin forms. Owner clarified that work should
 continue on tasks that do not require Shopify dashboard changes; Shopify
 metadata, product policy URLs, option mapping, and dashboard-only decisions
 remain deferred. T-307, T-308, T-309, T-311, T-312, T-314, T-315, T-316,
-T-317, T-318, and T-319 are complete and
+T-317, T-318, T-319, T-320, and T-321 are complete and
 reconciled: T-307 expanded public route-builder consumers across low-risk
 public UI surfaces, T-308 scoped the first auth/protected route constants
 implementation, T-311 completed that runtime slice, T-309 scoped the first API
@@ -71,8 +71,16 @@ completed that runtime slice. T-314 added admin read API path builders, and
 T-315 scoped account/admin route-builder ownership to account UI route builders
 as the next implementation slice. T-316 completed account UI route builders,
 T-317 scoped the next API family to admin update paths, T-318 completed admin
-update API path builders, and T-319 completed admin dashboard UI route
-builders. Owner also approved Sentry as the monitoring
+update API path builders, T-319 completed admin dashboard UI route builders,
+T-320 completed admin create API path builders, and T-321 scoped the remaining
+release-fixture, crawler, auth callback, and saved-item route ownership
+surfaces. Public smoke and sitemap/robots paths remain explicit for now; T-322
+completed the safe saved-item revalidation route-builder slice, T-323 scoped
+auth callback redirects as a separate runtime contract, T-324 added
+coverage-only tests for the current auth callback redirect behavior, and T-325
+aligned the public smoke product not-found check with live route-local not-found
+UI behavior. Owner also
+approved Sentry as the monitoring
 provider on 2026-05-27. ADR 0005 is now accepted and T-310 completed the first
 Sentry baseline with SDK/runtime initialization, App Router error capture,
 redacted structured logger forwarding, and environment documentation. T-313
@@ -882,17 +890,20 @@ Use this section as the first operational handoff for a new orchestrator.
 - No active audits are recorded.
 - No active running agent is recorded in docs.
 - Immediate handoff: continue with non-Shopify-dashboard work. T-304 through
-  T-319 are complete and reconciled; do not reassign them unless their behavior
+  T-325 are complete and reconciled; do not reassign them unless their behavior
   or scoped result artifacts regress. Next assignments should avoid Shopify
   dashboard metadata/policy/option changes and focus on route-builder,
   security-header, admin-ops, verification, observability, or architecture tasks
   that can be completed from source.
-- Prepared route assignments:
-  - `/task effort: medium details: docs/tasks/T-320-add-admin-create-api-path-builders.md`
-  - `/task effort: medium details: docs/tasks/T-321-scope-release-fixture-auth-callback-route-ownership.md`
-- Sentry baseline T-310 is complete. Keep source-map upload, alert automation,
-  replay, profiling, broad tracing, uptime checks, credentialed smoke, public
-  smoke variables, Vercel privileged actions, and CI workflow changes separate.
+- Current recommended source-side follow-ups: continue route-builder cleanup
+  only for remaining safe admin/API route families, keep release-contract
+  fixtures explicit unless scoped otherwise, and treat any auth redirect
+  destination change as a separate behavior task.
+- Sentry baseline T-310 is complete. Owner-approved defaults now route alerts
+  to Heron initially, defer source maps, keep replay/profiling/broad tracing
+  off, and allow a simple public uptime check as a separate scoped task.
+  Credentialed smoke, Vercel privileged actions, and CI workflow changes remain
+  separate.
 - Vercel log/deployment inspection capacity: owner local shell may expose
   `VERCEL_TOKEN`. Use only for approved targeted inspection; never print or
   record the token.
@@ -1652,15 +1663,19 @@ The recommended next assignments are:
 - T-301, T-302, and T-303 are complete. Do not reassign the CSP allowlist,
   route-builder centralization, or admin image-control feedback scoping tasks
   unless their result artifacts drift from current source.
-- T-304 through T-319 are complete. The next prepared non-Shopify-dashboard
-  route tasks are:
-  - `/task effort: medium details: docs/tasks/T-320-add-admin-create-api-path-builders.md`
-  - `/task effort: medium details: docs/tasks/T-321-scope-release-fixture-auth-callback-route-ownership.md`
+- T-304 through T-325 are complete. Do not reassign the completed route-builder,
+  saved-item revalidation, auth callback scoping, or auth callback coverage
+  tasks, or the public smoke product not-found alignment unless their contracts
+  regress.
 - T-274 is complete as a docs packet. Sentry provider choice is answered and
-  routed to T-310. Do not assign Vercel privileged actions, credentialed-smoke,
-  scheduled-smoke, source-map upload, alert automation, replay/profiling/tracing,
-  uptime checks, or incident-owner implementation until the owner answers the
-  remaining production-ops packet sections.
+  routed to T-310. Owner accepted conservative production-ops defaults on
+  2026-05-28: Heron is the initial incident commander, alert recipient, and
+  rollback approver; source maps are later; replay, profiling, and broad tracing
+  are off; simple public uptime checks are wanted as a separate task; Vercel
+  access is read-only by default. Do not assign rollback execution,
+  project-setting changes, alias/domain changes, credentialed-smoke automation,
+  source-map upload, replay/profiling/tracing, or broad monitoring expansion
+  without a separate scoped approval.
 - Vercel targeted deployment/log inspection is now possible when the owner
   local `VERCEL_TOKEN` is available to the operator shell, but rollback,
   project-setting changes, alias/domain changes, and deployment promotion still
@@ -1670,9 +1685,11 @@ The recommended next assignments are:
   and room-background selection paused until scoped owner decisions or later
   tasks. Book owner review remains blocked until durable Shopify book metadata
   exists and Storefront reads verify it for the candidate handle.
-- Keep scheduled/detail public smoke, credentialed/admin smoke, Vercel log
-  evidence, and production ops ownership under the owner-blocked F-126/R-038
-  path.
+- Public smoke owner variables are approved, `SMOKE_BASE_URL` is
+  owner-configured, and T-325 verified the approved production values with a
+  green live public smoke run. Credentialed/admin smoke, Vercel log evidence,
+  backup operator assignment, rollback execution, and broader production ops
+  work stay staged under F-126/R-038.
 
 For the homepage prototype track, most section-content decisions from
 [T-162 Review homepage prototype visual QA](../tasks/T-162-review-homepage-prototype-visual-qa.md)

@@ -291,10 +291,10 @@ describe("/prototype/home page", () => {
       "wide"
     );
     expect(screen.getByRole("combobox", { name: "Link size" })).toHaveValue(
-      "gallery"
+      "standard"
     );
     expect(screen.getByRole("combobox", { name: "Link font" })).toHaveValue(
-      "avenir-next"
+      "archivo-regular"
     );
 
     fireEvent.change(screen.getByRole("combobox", { name: "Link size" }), {
@@ -335,6 +335,11 @@ describe("/prototype/home page", () => {
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("16px");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size-wide"
       )
     ).toBe("18px");
     expect(

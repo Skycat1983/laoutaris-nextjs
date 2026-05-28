@@ -212,7 +212,7 @@ record and note that substitution in the evidence.
 | Robots discovery | `GET /robots.txt` | `200`, includes an absolute `Sitemap:` directive for `/sitemap.xml`. |
 | Sitemap discovery | `GET /sitemap.xml` | `200`, XML-like sitemap output containing stable public archive URLs and no `/admin`, `/account`, or `/api` URL paths. When dynamic archive/shop URLs are expected, confirm representative expected URLs are present rather than relying on the stable URL set alone. |
 | Product detail | `GET /shop/products/<smoke-product-handle>` | `200` for an approved product handle. |
-| Product not found | `GET /shop/products/<known-missing-product-handle>` | `404`, not `500`. |
+| Product not found | `GET /shop/products/<known-missing-product-handle>` | `404`, or `200` only when the route-local `Product not found` UI is present; never a normal product page or `500`. |
 | Sign-in shell | `GET /api/auth/signin` | `200`, no provider/config crash. |
 | Sign-out shell | `GET /api/auth/signout` | `200`, no provider/config crash. |
 | Credentials sign-in | Deployed UI or approved credentials callback flow | Successful sign-in with an owner-provided smoke account; no secret values recorded. |
@@ -249,7 +249,8 @@ The script checks:
   URLs, and absence of private/admin/account/API sitemap paths.
 - Optional detail routes when the smoke record variables are present.
 - Product not-found behavior with `SMOKE_MISSING_PRODUCT_HANDLE`, defaulting to
-  `codex-smoke-missing-product`.
+  `codex-smoke-missing-product`; the script accepts `404`, or `200` only when
+  the route-local `Product not found` UI is present.
 - NextAuth sign-in/sign-out shell pages.
 - Unauthenticated admin denial by checking that `/admin/dashboard/articles`
   redirects to `/api/auth/signin`.
@@ -375,7 +376,8 @@ Start rollback or block promotion when any critical smoke path fails:
   approved artwork detail, return repeatable `5xx` responses.
 - `/shop/products` or an approved product detail returns repeatable `5xx`
   responses not confirmed as a Shopify outage.
-- A missing product route returns `500` instead of `404`.
+- A missing product route returns `500`, or returns `200` with a normal product
+  page instead of the route-local `Product not found` UI.
 - Credentials sign-in returns `500` or all approved credentials fail
   unexpectedly.
 - A non-admin smoke account can access admin UI or admin APIs.

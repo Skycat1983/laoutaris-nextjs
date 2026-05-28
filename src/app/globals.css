@@ -248,6 +248,30 @@
     text-transform: uppercase;
   }
 
+  .prototype-main-nav {
+    --prototype-main-nav-effective-link-gap: var(
+      --prototype-main-nav-link-gap,
+      var(--prototype-main-nav-default-link-gap)
+    );
+    --prototype-main-nav-effective-link-font-size: var(
+      --prototype-main-nav-link-font-size,
+      var(--prototype-main-nav-default-link-font-size)
+    );
+  }
+
+  @media (min-width: 1920px) {
+    .prototype-main-nav {
+      --prototype-main-nav-effective-link-gap: var(
+        --prototype-main-nav-link-gap-wide,
+        var(--prototype-main-nav-default-link-gap-wide)
+      );
+      --prototype-main-nav-effective-link-font-size: var(
+        --prototype-main-nav-link-font-size-wide,
+        var(--prototype-main-nav-default-link-font-size-wide)
+      );
+    }
+  }
+
   /* ! COLOUR PICKER CLASSES */
   .picker {
   position: relative;

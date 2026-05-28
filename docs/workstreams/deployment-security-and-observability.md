@@ -1158,9 +1158,23 @@ The first non-secret Main CI local-gate workflow is in place. Keep public
 smoke, credentialed/admin smoke, Vercel logs, monitoring, rollback, and
 production secrets separate unless a later owner-approved task explicitly
 changes that boundary.
-T-321 is prepared as a docs-only scoping task for public smoke, sitemap, and
-robots route ownership before any source changes touch those release-contract
-fixtures.
+T-321 is complete. Public smoke route lists, required sitemap paths, private
+sitemap prefixes, product not-found checks, unauthenticated admin denial checks,
+stable sitemap routes, and robots disallow paths remain explicit release
+contracts for now, not route-helper consumers. Any future change to those
+fixtures must preserve independent release-evidence coverage.
+Owner configured `SMOKE_BASE_URL` and approved the optional non-secret public
+smoke values for artwork, collection, blog, product, search, and missing-product
+checks on 2026-05-28. The production ops decision packet now records Heron
+Laoutaris as initial incident commander, alert recipient, and rollback approval
+owner; source-map upload remains later, replay/profiling/broad tracing are off,
+simple uptime checks are desired as a separate scoped task, and Vercel
+inspection stays read-only unless separately approved.
+T-325 aligned `npm run smoke:public` with the live route-local product
+not-found contract: the missing product check accepts `404`, or `200` only when
+the body contains `Product not found`, and fails if the missing handle renders a
+normal product page. The approved production values produced a green live smoke
+run on 2026-05-28.
 
 T-304 is complete for the report-only CSP observation step. Do not enforce the
 tightened CSP, add HSTS, change CORS, add a CSP report endpoint/provider, add

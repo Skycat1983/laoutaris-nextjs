@@ -95,6 +95,11 @@ describe("prototype home main navigation layout", () => {
     expect(globalCssSource).toContain(
       "--prototype-main-nav-effective-link-font-size"
     );
+    expect(globalCssSource).toContain("@media (min-width: 1920px)");
+    expect(globalCssSource).toContain("--prototype-main-nav-link-gap-wide");
+    expect(globalCssSource).toContain(
+      "--prototype-main-nav-link-font-size-wide"
+    );
     expect(globalCssSource).toContain("text-transform: uppercase");
     expect(globalCssSource).toContain("mix-blend-mode: multiply");
     expect(prototypeNavSource).not.toContain("prototype-main-nav-separator");
@@ -110,7 +115,9 @@ describe("prototype home main navigation layout", () => {
     expect(prototypeNavSource).not.toContain("px-6");
     expect(prototypeNavSource).not.toContain("md:px-6");
     expect(prototypeNavSource).not.toContain("xl:px-10");
-    expect(prototypeNavSource).toContain("--prototype-main-nav-link-gap");
+    expect(prototypeNavSource).toContain(
+      "--prototype-main-nav-default-link-gap"
+    );
     expect(prototypeNavSource).toContain(
       "--prototype-main-nav-effective-link-gap"
     );
@@ -142,8 +149,8 @@ describe("prototype home main navigation layout", () => {
       logoSizePreset: "standard",
       paddingXPreset: "wide",
       linkSpacingPreset: "open",
-      linkSizePreset: "gallery",
-      linkFontPreset: "avenir-next",
+      linkSizePreset: "standard",
+      linkFontPreset: "archivo-regular",
     });
     expect(getPrototypeMainNavCssValues()).toMatchObject({
       logoHeight: "56px",
@@ -152,8 +159,10 @@ describe("prototype home main navigation layout", () => {
       mobileLogoWidth: "220px",
       paddingX: "24px",
       linkGap: "48px",
-      linkFontSize: "18px",
-      linkFontFamily: '"Avenir Next", Avenir, sans-serif',
+      wideLinkGap: "60px",
+      linkFontSize: "16px",
+      wideLinkFontSize: "18px",
+      linkFontFamily: "var(--font-archivo), sans-serif",
     });
   });
 

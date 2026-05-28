@@ -223,9 +223,9 @@ export const DEFAULT_PROTOTYPE_NAV_PADDING_X_PRESET: PrototypeNavPaddingXPreset 
 export const DEFAULT_PROTOTYPE_NAV_LINK_SPACING_PRESET: PrototypeNavLinkSpacingPreset =
   "open";
 export const DEFAULT_PROTOTYPE_NAV_LINK_SIZE_PRESET: PrototypeNavLinkSizePreset =
-  "gallery";
+  "standard";
 export const DEFAULT_PROTOTYPE_NAV_LINK_FONT_PRESET: PrototypeNavLinkFontPreset =
-  "avenir-next";
+  "archivo-regular";
 export const DEFAULT_PROTOTYPE_NAV_TINT_PRESET: PrototypeNavTintPreset = "off";
 
 export type PrototypeMainNavControlPresets = {
@@ -248,7 +248,9 @@ export type PrototypeMainNavCssValues = {
   paddingY: string;
   paddingX: string;
   linkGap: string;
+  wideLinkGap: string;
   linkFontSize: string;
+  wideLinkFontSize: string;
   linkFontFamily: string;
   linkFontWeight: string;
   linkFontStyle: string;
@@ -273,6 +275,22 @@ export const getPrototypeMainNavCssValues = (
 ): PrototypeMainNavCssValues => {
   const logoSize = prototypeNavLogoSizeOptions[presets.logoSizePreset];
   const linkFont = prototypeNavLinkFontOptions[presets.linkFontPreset];
+  const linkSpacingPresets = Object.keys(
+    prototypeNavLinkSpacingOptions
+  ) as PrototypeNavLinkSpacingPreset[];
+  const linkSizePresets = Object.keys(
+    prototypeNavLinkSizeOptions
+  ) as PrototypeNavLinkSizePreset[];
+  const linkSpacingIndex = linkSpacingPresets.indexOf(
+    presets.linkSpacingPreset
+  );
+  const linkSizeIndex = linkSizePresets.indexOf(presets.linkSizePreset);
+  const wideLinkSpacingPreset =
+    linkSpacingPresets[
+      Math.min(linkSpacingIndex + 1, linkSpacingPresets.length - 1)
+    ];
+  const wideLinkSizePreset =
+    linkSizePresets[Math.min(linkSizeIndex + 1, linkSizePresets.length - 1)];
 
   return {
     height: prototypeNavHeightOptions[presets.heightPreset].value,
@@ -283,7 +301,9 @@ export const getPrototypeMainNavCssValues = (
     paddingY: prototypeNavPaddingOptions[presets.paddingPreset].value,
     paddingX: prototypeNavPaddingXOptions[presets.paddingXPreset].value,
     linkGap: prototypeNavLinkSpacingOptions[presets.linkSpacingPreset].value,
+    wideLinkGap: prototypeNavLinkSpacingOptions[wideLinkSpacingPreset].value,
     linkFontSize: prototypeNavLinkSizeOptions[presets.linkSizePreset].value,
+    wideLinkFontSize: prototypeNavLinkSizeOptions[wideLinkSizePreset].value,
     linkFontFamily: linkFont.family,
     linkFontWeight: linkFont.weight,
     linkFontStyle: linkFont.style,

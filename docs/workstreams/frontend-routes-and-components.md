@@ -1673,9 +1673,11 @@ dashboard UI route builders; admin entry redirects and sidebar links now use
 the client-safe dashboard route surface while preserving labels, destinations,
 and prefix active-state semantics. Keep saved-item paths, smoke fixtures,
 sitemap fixtures, auth callback redirects, and Shopify dashboard work separate.
-T-321 is prepared as a docs-only scoping task before any future source changes
-to public release fixtures, auth callback paths, or saved-item route/cache
-ownership.
+T-321 is complete: public smoke and sitemap/robots fixtures stay explicit
+release contracts, auth callback paths stay explicit pending a redirect
+contract scope, and saved-item revalidation is the next safe route-builder
+implementation candidate. T-322 and T-323 are prepared for those two follow-up
+paths.
 
 Do not reassign T-081, T-082, T-083, T-084, T-085, T-086, T-087, T-088,
 T-089, T-090, T-091, T-092, T-093, T-094, or T-095 unless a regression is

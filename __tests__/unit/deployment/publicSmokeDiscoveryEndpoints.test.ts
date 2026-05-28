@@ -158,6 +158,41 @@ describe("public smoke discovery endpoint checks", () => {
     expect(result.stdout).toContain("Summary: 12 passed, 0 failed, 4 skipped.");
   });
 
+  it("passes when the missing product route returns route-local not-found UI with 200", async () => {
+    const result = await runSmoke(
+      defaultRoutes({
+        "/shop/products/codex-smoke-missing-product": {
+          status: 200,
+          body: "<h1>Product not found</h1><a>Browse shop</a>",
+        },
+      })
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain(
+      "[PASS] Product not found: GET /shop/products/codex-smoke-missing-product -> 200"
+    );
+  });
+
+  it("fails when the missing product route returns a normal product page with 200", async () => {
+    const result = await runSmoke(
+      defaultRoutes({
+        "/shop/products/codex-smoke-missing-product": {
+          status: 200,
+          body: "<h1>Limited Edition Print</h1>",
+        },
+      })
+    );
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain("[FAIL] Product not found");
+    expect(result.stdout).toContain(
+      "body check failed: expected the missing product route to render Product not found"
+    );
+  });
+
   it("fails without dumping robots body when the sitemap directive is missing", async () => {
     const result = await runSmoke(
       defaultRoutes({

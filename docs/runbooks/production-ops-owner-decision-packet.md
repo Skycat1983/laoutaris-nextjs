@@ -1,6 +1,6 @@
 # Production Ops Owner Decision Packet
 
-Status: Partially answered
+Status: Partially answered; recommended launch-safe defaults accepted
 
 Use this packet to answer the production operations blockers from
 [A-033](../audits/results/A-033-deployment-monitoring-smoke.md) without reading
@@ -25,17 +25,20 @@ work, but production operations implementation is blocked until the owner or
 orchestrator answers these questions:
 
 - Monitoring posture: Sentry is approved as the provider; runtime
-  implementation, environment classification, source-map policy, and alert
-  routing still need scoped follow-up.
-- Incident authority: no approved incident commander, service operators, or
-  backups for privileged production actions.
+  implementation and environment classification are in place. Alert routing,
+  source-map upload, replay, profiling, broad tracing, and uptime checks remain
+  separate staged follow-ups under the owner-approved defaults below.
+- Incident authority: Heron Laoutaris is the initial incident commander and
+  rollback approver. Backup/escalation remains unassigned.
 - Vercel authority: owner has created a local `VERCEL_TOKEN` for approved CLI
   log/deployment inspection, but rollback, project settings, aliases/domains,
   and backup operator authority remain unapproved.
-- Credentialed smoke: no approved non-admin/admin smoke accounts and no private
-  secret delivery path.
-- Public smoke automation: no approved `SMOKE_BASE_URL` or optional non-secret
-  public detail records for scheduled GitHub Actions coverage.
+- Credentialed smoke: non-admin and admin smoke accounts are approved in
+  principle, with credentials kept in the owner password manager. Actual secret
+  values must never be recorded here.
+- Public smoke automation: `SMOKE_BASE_URL` is owner-configured in repository
+  variables, and the owner approved the non-secret optional detail values listed
+  below.
 
 ## How To Answer
 
@@ -68,16 +71,17 @@ Provider or no-provider decision: Sentry approved by owner on 2026-05-27.
 Launch scope: Initial error reporting for server/runtime and browser/client
   errors; keep session replay, profiling, broad tracing, uptime checks,
   source-map upload, and alert automation separate unless scoped later.
-Alert owner/destination: Pending.
+Alert owner/destination: Heron Laoutaris / hlaoutaris@gmail.com initially.
 Source-map/release policy: Release/environment metadata allowed; source-map
-  upload requires a separate scoped decision/task.
+  upload later, only after a separate scoped task.
 Environment variable names/classes, no values: Pending implementation task;
   classify Sentry DSN/ingest identifiers, release/environment metadata, source
   map upload credentials if later approved, sampling flags, and any alert
   secrets.
-Review or decision date: 2026-05-27.
-Notes: Implementation should verify current official Sentry Next.js setup
-  before editing source.
+Review or decision date: 2026-05-28.
+Notes: Initial Sentry error reporting is implemented. Session replay: No.
+  Profiling: No. Broad tracing: No. Uptime checks: Yes, simple public uptime
+  only, as a separate scoped task.
 ```
 
 ## 2. Incident Owner Matrix
@@ -112,6 +116,20 @@ Implementation blocked until answered:
 - Credential or secret rotation.
 - Privacy/security/data-loss user-facing communication.
 
+Owner response on 2026-05-28:
+
+| Area | Primary owner or role | Backup/escalation | Access source | Authority boundary |
+| --- | --- | --- | --- | --- |
+| Incident commander | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Owner contact path | Coordinates incidents and closure. |
+| Repository release authority | Heron Laoutaris | Owner-approved backup operator, not yet assigned | GitHub repository | Approves production release/merge decisions. |
+| MongoDB production data | Heron Laoutaris | Owner-approved backup operator, not yet assigned | MongoDB provider dashboard | Data restore/destructive changes require explicit owner approval. |
+| Shopify Storefront/API | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Shopify admin/status | Dashboard metadata/policy changes remain owner-operated. |
+| Cloudinary media/upload | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Cloudinary console | Asset deletion remains blocked until separate cleanup policy approval. |
+| Auth/NextAuth credentials | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Owner password manager, deployment environment | Secret rotation and smoke credentials stay private. |
+| OAuth providers | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Google/GitHub provider consoles | Provider config changes require explicit owner approval. |
+| DNS/domain/TLS | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Registrar, DNS, Vercel domain settings | Domain/alias changes require explicit owner approval. |
+| Privacy/legal communication | Heron Laoutaris | Owner-approved backup operator, not yet assigned | Owner/legal process | Owner approves user-facing privacy/security communication. |
+
 ## 3. Vercel Deployment, Logs, And Rollback
 
 Decision needed: approve who can inspect Vercel logs, verify deployment aliases,
@@ -123,14 +141,18 @@ Accepted answer format:
 Vercel operator role/name:
 Owner local shell with `VERCEL_TOKEN` for approved deployment/log inspection.
 Backup operator role/name:
+Owner-approved backup operator, not yet assigned.
 Access source:
 Owner local shell profile/password manager; token value must not be recorded.
 Can inspect deployment logs: Yes | No
 Yes, for approved targeted CLI/API inspection when the token is available to
 the operator shell.
 Can verify production aliases/domains: Yes | No
+Yes, read-only.
 Can promote rollback target: Yes | No
+No by default; only after explicit Heron Laoutaris approval per incident.
 Rollback approval required from:
+Heron Laoutaris.
 Redacted log excerpt delivery path for agents without Vercel access:
 Owner-provided redacted excerpts remain the fallback when `VERCEL_TOKEN` is not
 available to the agent shell.
@@ -152,13 +174,20 @@ private path for sharing credentials with approved operators.
 Accepted answer format:
 
 ```md
-Non-admin smoke account approved: Yes | No
-Admin smoke account approved: Yes | No
+Non-admin smoke account approved: Yes
+Admin smoke account approved: Yes
 Credential storage/delivery channel, no values:
+Owner password manager; no credentials in repo, docs, or chat.
 Who may retrieve credentials:
+Heron Laoutaris and explicitly approved operators during a scoped
+smoke/deployment task.
 Allowed environments: Production | Preview | Both
+Production for now; preview only after preview has a safe/stable database.
 Account rotation owner:
+Heron Laoutaris.
 Account retirement conditions:
+Immediately if exposed, after operator access changes, after an incident, or on
+a regular 90-day rotation.
 Notes:
 ```
 
@@ -192,6 +221,20 @@ Accepted answer format:
 | `SMOKE_BLOG_SLUG` |  | Optional | Public blog slug approved for smoke. |
 | `SMOKE_PRODUCT_HANDLE` |  | Optional | Public Shopify product handle approved for smoke. |
 | `SMOKE_MISSING_PRODUCT_HANDLE` |  | Optional | Public nonexistent handle used to prove `404`. |
+
+Owner-approved repository variable values on 2026-05-28:
+
+| Variable | Approved value or source | Required? | Notes |
+| --- | --- | --- | --- |
+| `SMOKE_BASE_URL` | Owner configured in GitHub Actions variables | Required for scheduled runs | Public production base URL. |
+| `SMOKE_TIMEOUT_MS` | unset | Optional | Use script default. |
+| `SMOKE_SEARCH_QUERY` | `art` | Optional | Matches script default; explicit value is acceptable. |
+| `SMOKE_ARTWORK_ID` | `661fc617648efb163cffacee` | Optional | Observed in production sitemap and verified with `200` on 2026-05-28. |
+| `SMOKE_COLLECTION_SLUG` | `xxl` | Optional | Observed in production sitemap. |
+| `SMOKE_COLLECTION_ARTWORK_ID` | `661fc617648efb163cffacee` | Optional | Observed in production sitemap under `/collections/xxl/...` and verified with `200` on 2026-05-28. |
+| `SMOKE_BLOG_SLUG` | `progress-report` | Optional | Observed in production sitemap and verified with `200` on 2026-05-28. |
+| `SMOKE_PRODUCT_HANDLE` | `joseph-laoutaris-fine-art-print-no-034` | Optional | Observed in production sitemap and verified with `200` on 2026-05-28. |
+| `SMOKE_MISSING_PRODUCT_HANDLE` | `codex-smoke-missing-product` | Optional | Script default; keep nonexistent to prove product not-found behavior. |
 
 Only public, non-secret values belong in repository variables. Credentials,
 tokens, cookies, Vercel API keys, private account identifiers, and private admin

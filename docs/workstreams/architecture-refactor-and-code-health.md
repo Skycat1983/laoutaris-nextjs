@@ -921,6 +921,14 @@ dashboard entry redirects and sidebar segment links now use a client-safe
 value-only route surface for the dashboard root, articles default, supported
 segments, and current segment paths without changing auth, API, dashboard
 content, smoke/sitemap, cache, route segment config, or Shopify behavior.
-T-320 and T-321 are prepared as the next non-Shopify route ownership tasks:
-admin create API path builders as the next source slice, and docs-only scoping
-for smoke/sitemap/robots, auth callback, and saved-item cache route ownership.
+T-320 is complete: admin create API fetchers now use client-safe value-only
+path builders for the explicit article, artwork, blog, and collection create
+resources while preserving request bodies, route handlers, request-context
+route IDs, and route/fetcher parity. T-321 is complete: public smoke,
+sitemap/robots, and auth callback paths should remain explicit for now. T-322
+is complete: saved-item revalidation now reuses existing account/public route
+builders while preserving exact invalidation order and failure behavior. T-323
+and T-324 scoped and covered the current auth callback redirect contract without
+changing `/dashboard`. Broader public/user API route builders, root-layout
+session/cache ownership, and any future decided auth callback destination
+change remain separate.

@@ -59,7 +59,13 @@ describe("prototype home navbar controls", () => {
       "--prototype-main-nav-link-gap"
     );
     document.documentElement.style.removeProperty(
+      "--prototype-main-nav-link-gap-wide"
+    );
+    document.documentElement.style.removeProperty(
       "--prototype-main-nav-link-font-size"
+    );
+    document.documentElement.style.removeProperty(
+      "--prototype-main-nav-link-font-size-wide"
     );
     document.documentElement.style.removeProperty(
       "--prototype-main-nav-link-font-family"
@@ -94,8 +100,8 @@ describe("prototype home navbar controls", () => {
     expect(screen.getByLabelText("Y pad")).toHaveValue("standard");
     expect(screen.getByLabelText("X pad")).toHaveValue("wide");
     expect(screen.getByLabelText("Link gap")).toHaveValue("open");
-    expect(screen.getByLabelText("Link size")).toHaveValue("gallery");
-    expect(screen.getByLabelText("Link font")).toHaveValue("avenir-next");
+    expect(screen.getByLabelText("Link size")).toHaveValue("standard");
+    expect(screen.getByLabelText("Link font")).toHaveValue("archivo-regular");
     expect(screen.getByLabelText("Nav tint")).toHaveValue("off");
     expect(screen.getByLabelText("Link font").querySelectorAll("option")).toHaveLength(
       34
@@ -168,14 +174,24 @@ describe("prototype home navbar controls", () => {
     ).toBe("48px");
     expect(
       document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-gap-wide"
+      )
+    ).toBe("60px");
+    expect(
+      document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("16px");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size-wide"
       )
     ).toBe("18px");
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-family"
       )
-    ).toBe('"Avenir Next", Avenir, sans-serif');
+    ).toBe("var(--font-archivo), sans-serif");
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-weight"
@@ -267,7 +283,17 @@ describe("prototype home navbar controls", () => {
     ).toBe("120px");
     expect(
       document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-gap-wide"
+      )
+    ).toBe("120px");
+    expect(
+      document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("22px");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size-wide"
       )
     ).toBe("22px");
     expect(
@@ -340,14 +366,24 @@ describe("prototype home navbar controls", () => {
     ).toBe("48px");
     expect(
       document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-gap-wide"
+      )
+    ).toBe("60px");
+    expect(
+      document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("16px");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size-wide"
       )
     ).toBe("18px");
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-family"
       )
-    ).toBe('"Avenir Next", Avenir, sans-serif');
+    ).toBe("var(--font-archivo), sans-serif");
     expect(
       document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-weight"
@@ -427,7 +463,22 @@ describe("prototype home navbar controls", () => {
     ).toBe("");
     expect(
       document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-gap"
+      )
+    ).toBe("");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-gap-wide"
+      )
+    ).toBe("");
+    expect(
+      document.documentElement.style.getPropertyValue(
         "--prototype-main-nav-link-font-size"
+      )
+    ).toBe("");
+    expect(
+      document.documentElement.style.getPropertyValue(
+        "--prototype-main-nav-link-font-size-wide"
       )
     ).toBe("");
     expect(

@@ -5,6 +5,8 @@ import { ArtworkModel, UserModel } from "../data/models";
 import dbConnect from "@/lib/db/mongodb";
 import { revalidatePath } from "next/cache";
 import { createServerLogger } from "@/lib/observability/logger";
+import { accountFavouritesPath } from "@/lib/routes/accountRoutes";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 import type { FavouritesButtonState } from "@/components/elements/buttons/FavouritesButton";
 
 const logger = createServerLogger({
@@ -104,9 +106,9 @@ export async function updateUserFavourites(
         ? "Added to favourites"
         : "Removed from favourites";
 
-      revalidatePath("/account/favourites");
-      revalidatePath(`/account/favourites/${artworkId}`);
-      revalidatePath(`/artwork/${artworkId}`);
+      revalidatePath(accountFavouritesPath());
+      revalidatePath(accountFavouritesPath(artworkId));
+      revalidatePath(artworkDetailPath(artworkId));
 
       return {
         success: true,

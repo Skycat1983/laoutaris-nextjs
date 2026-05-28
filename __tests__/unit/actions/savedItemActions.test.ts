@@ -2,6 +2,11 @@ import { updateUserFavourites } from "@/lib/actions/updateUserFavourites";
 import { updateUserWatchlist } from "@/lib/actions/updateUserWatchlist";
 import { ArtworkModel, UserModel } from "@/lib/data/models";
 import dbConnect from "@/lib/db/mongodb";
+import {
+  accountFavouritesPath,
+  accountWatchlistPath,
+} from "@/lib/routes/accountRoutes";
+import { artworkDetailPath } from "@/lib/routes/publicAppRoutes";
 import { getUserIdFromSession } from "@/lib/session/getUserIdFromSession";
 import { revalidatePath } from "next/cache";
 
@@ -71,7 +76,7 @@ const mockArtworkFindByIdAndUpdate =
 
 const userId = "507f1f77bcf86cd799439011";
 const artworkId = "64f1f77bcf86cd799439022";
-const artworkPath = `/artwork/${artworkId}`;
+const artworkPath = artworkDetailPath(artworkId);
 
 const createFormData = (value?: FormDataEntryValue) => {
   const formData = new FormData();
@@ -102,8 +107,8 @@ const actionCases: SavedItemActionCase[] = [
     addMessage: "Added to favourites",
     removeMessage: "Removed from favourites",
     failureMessage: "Failed to update favourites/favourited",
-    listPath: "/account/favourites",
-    detailPath: `/account/favourites/${artworkId}`,
+    listPath: accountFavouritesPath(),
+    detailPath: accountFavouritesPath(artworkId),
     addUserUpdate: { $addToSet: { favourites: artworkId } },
     addArtworkUpdate: { $addToSet: { favourited: userId } },
     removeUserUpdate: { $pull: { favourites: artworkId } },
@@ -130,8 +135,8 @@ const actionCases: SavedItemActionCase[] = [
     addMessage: "Added to watchlist",
     removeMessage: "Removed from watchlist",
     failureMessage: "Failed to update watchlist/watcherlist",
-    listPath: "/account/watchlist",
-    detailPath: `/account/watchlist/${artworkId}`,
+    listPath: accountWatchlistPath(),
+    detailPath: accountWatchlistPath(artworkId),
     addUserUpdate: { $addToSet: { watchlist: artworkId } },
     addArtworkUpdate: { $addToSet: { watcherlist: userId } },
     removeUserUpdate: { $pull: { watchlist: artworkId } },

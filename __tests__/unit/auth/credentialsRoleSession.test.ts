@@ -206,6 +206,42 @@ describe("credentials role propagation", () => {
   });
 });
 
+describe("auth redirect callback", () => {
+  const baseUrl = "https://laoutaris-nextjs.vercel.app";
+
+  it("keeps the current sign-in callback redirect destination explicit", async () => {
+    await expect(
+      authCallbacks.redirect({ url: "/api/auth/signin", baseUrl })
+    ).resolves.toBe(`${baseUrl}/dashboard`);
+  });
+
+  it("redirects sign-out callbacks to the site origin", async () => {
+    await expect(
+      authCallbacks.redirect({
+        url: `${baseUrl}/api/auth/signout`,
+        baseUrl,
+      })
+    ).resolves.toBe(baseUrl);
+  });
+
+  it("passes through same-origin callback URLs", async () => {
+    const callbackUrl = `${baseUrl}/account/settings?source=auth`;
+
+    await expect(
+      authCallbacks.redirect({ url: callbackUrl, baseUrl })
+    ).resolves.toBe(callbackUrl);
+  });
+
+  it("falls back to the site origin for off-origin callback URLs", async () => {
+    await expect(
+      authCallbacks.redirect({
+        url: "https://example.com/account/settings",
+        baseUrl,
+      })
+    ).resolves.toBe(baseUrl);
+  });
+});
+
 describe("stable session user ownership", () => {
   beforeEach(() => {
     jest.clearAllMocks();

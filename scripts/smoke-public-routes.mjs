@@ -223,6 +223,18 @@ const validateSitemapXml = (body) => {
   return null;
 };
 
+const validateProductNotFound = (body, { responseStatus }) => {
+  if (responseStatus === 404) {
+    return null;
+  }
+
+  if (!/\bProduct not found\b/i.test(body)) {
+    return "expected the missing product route to render Product not found";
+  }
+
+  return null;
+};
+
 const makeChecks = (options) => {
   const searchQuery = readOption(
     options,
@@ -284,7 +296,9 @@ const makeChecks = (options) => {
     {
       name: "Product not found",
       path: `/shop/products/${encodePathSegment(missingProductHandle)}`,
-      expectedStatuses: [404],
+      expectedStatuses: [200, 404],
+      validateBody: validateProductNotFound,
+      note: "Next.js may return 200 for streamed route-local not-found UI.",
     },
     {
       name: "Sign-in shell",
@@ -412,7 +426,11 @@ const requestCheck = async (baseUrl, check, timeoutMs) => {
       : true;
     const bodyCheckError =
       statusMatches && locationMatches && check.validateBody
-        ? check.validateBody(await response.text(), { baseUrl, check })
+        ? check.validateBody(await response.text(), {
+            baseUrl,
+            check,
+            responseStatus: response.status,
+          })
         : null;
 
     return {

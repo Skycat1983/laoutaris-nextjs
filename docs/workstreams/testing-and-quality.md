@@ -2083,8 +2083,11 @@ T-316 focused account route-builder, provider, navigation, import-boundary,
 lint, and whitespace checks passed. T-317 used `git diff --check` for
 docs-only scoping. T-318 focused admin update fetcher/parity tests passed, and
 T-319 focused admin dashboard route/sidebar tests plus the import-boundary
-guard passed. Next non-Shopify verification should follow T-320 focused admin
-create fetcher/parity tests and T-321 docs-only `git diff --check`. Keep
+guard passed. T-320 focused admin create fetcher/parity tests, lint, and
+whitespace passed; T-321 docs-only scoping passed `git diff --check`. Next
+non-Shopify verification should include the completed T-322 saved-item
+action/account/public route-builder/import-boundary tests, T-323 docs-only
+`git diff --check`, and T-324 focused auth callback redirect test. Keep
 Playwright, production smoke, credentialed/admin smoke, Vercel log evidence,
 and Shopify dashboard-dependent verification separate.
 
@@ -2216,5 +2219,13 @@ dashboard segment paths, segment-builder parity, admin entry redirects,
 sidebar hrefs, and nested-prefix active-state behavior. The focused route test
 and client/server import-boundary suite passed, along with `git diff --check`
 and `npm run lint`.
-Next non-Shopify verification should follow T-320 focused admin create
-fetcher/parity tests and T-321 docs-only `git diff --check`.
+T-320 added focused admin create fetcher coverage for the new client-safe path
+builders, explicit supported create resources, preserved `POST` options, and
+route/fetcher parity. T-321 used docs-only `git diff --check` for the release
+fixture/auth callback route ownership scope. T-322 passed focused saved-item
+action/account/public route-builder/import-boundary tests plus lint and
+whitespace. T-323 passed docs-only whitespace checks. T-324 passed focused auth
+callback redirect coverage for the current contract plus `git diff --check`.
+T-325 passed focused public smoke discovery tests for product not-found status
+handling and a live production `npm run smoke:public` run with all approved
+public values: 16 passed, 0 failed, 0 skipped.

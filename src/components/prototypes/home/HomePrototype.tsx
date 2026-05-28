@@ -596,8 +596,16 @@ export function HomePrototype({
       navCssValues.linkGap
     );
     root.style.setProperty(
+      "--prototype-main-nav-link-gap-wide",
+      navCssValues.wideLinkGap
+    );
+    root.style.setProperty(
       "--prototype-main-nav-link-font-size",
       navCssValues.linkFontSize
+    );
+    root.style.setProperty(
+      "--prototype-main-nav-link-font-size-wide",
+      navCssValues.wideLinkFontSize
     );
     root.style.setProperty(
       "--prototype-main-nav-link-font-family",
@@ -630,7 +638,9 @@ export function HomePrototype({
       root.style.removeProperty("--prototype-main-nav-padding-y");
       root.style.removeProperty("--prototype-main-nav-padding-x");
       root.style.removeProperty("--prototype-main-nav-link-gap");
+      root.style.removeProperty("--prototype-main-nav-link-gap-wide");
       root.style.removeProperty("--prototype-main-nav-link-font-size");
+      root.style.removeProperty("--prototype-main-nav-link-font-size-wide");
       root.style.removeProperty("--prototype-main-nav-link-font-family");
       root.style.removeProperty("--prototype-main-nav-link-font-weight");
       root.style.removeProperty("--prototype-main-nav-link-font-style");
