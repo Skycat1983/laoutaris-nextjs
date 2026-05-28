@@ -109,7 +109,11 @@ conflicts, and 0 query errors. The conflicts all trace to the manually created
 Shopify product `no-214-original-artwork`, whose handle indicates No.214 while
 its title says `No.104, Original Artwork`. Do not run a write task until either
 that manual Shopify product is corrected/reconciled or the pilot selection
-explicitly excludes No.104 and No.214.
+explicitly excludes No.104 and No.214. T-330 added the guarded Phase 3 pilot
+creation command, `npm run create:shopify-catalog-pilot`, which can create at
+most five draft originals and five draft unframed prints only after an owner
+approval file, clean selected reconciliation rows, `write_products` credentials,
+and the exact `CREATE_DRAFT_PILOT_PRODUCTS` confirmation are supplied.
 The owner then clarified that hand-created original/print Shopify products do
 not need to be preserved if generated replacements can be created
 programmatically. T-331 added a guarded cleanup command for the manual
@@ -122,7 +126,45 @@ separate standalone frame products, unless a later bundle/fulfilment workflow
 requires independent frame products. Generated pilot prints should use exactly
 one `Frame package = Unframed` variant; framed/material/mat variants remain
 blocked until owner-approved labels, dimensions, prices, fulfilment handling,
-and app-to-Shopify mappings exist.
+and app-to-Shopify mappings exist. T-333 prepared the local source-only pilot
+approval example at `reports/shopify-catalog-pilot-owner-approval.example.json`
+for five clean no-match artworks (`No.002`, `No.075`, `No.008`, `No.033`, and
+`No.041`). The owner approved draft placeholder prices on 2026-05-28:
+originals `1000.00` and prints `100.00`, with print edition quantity `50`, and
+provided Shopify inventory location GID `gid://shopify/Location/112925409544`.
+The real local approval file now exists at
+`reports/shopify-catalog-pilot-owner-approval.json` and passes local T-330
+preflight after regenerating the dry-run plan with explicit image URLs. Do not
+run the live T-330 command until the owner explicitly approves using a
+`write_products` token for the draft pilot write. The first live T-330 attempt
+on 2026-05-28 was correctly blocked by Shopify access control because the app
+token/user lacked `write_products` and product-create permission. After the
+owner updated the app authorization, the second live T-330 attempt succeeded:
+`reports/shopify-catalog-pilot-create-report.json` records 10 created Shopify
+products, 0 failures, and 0 skips. All created products are `DRAFT`, have the
+expected `custom.mongodb_artwork_id`, originals have inventory `1`, prints have
+inventory `50`, and print variants use `Frame package = Unframed`. Do not write
+MongoDB `shopifyProducts` links, publish products, bulk-create more products,
+delete/archive products, or add framed/material/mat variants without a separate
+scoped task and owner approval. The owner then selected a clean-slate Shopify
+catalog reset before bulk upload. T-334 added the guarded
+`npm run cleanup:shopify-clean-slate-catalog` command. Its live dry-run on
+2026-05-28 scanned 23 Shopify products, kept exactly 2 book/publication
+products (`the-complete-artwork-of-joseph-laoutaris` and
+`the-life-and-work-of-joseph-laoutaris`), marked 21 non-book products for
+deletion, and rejected 0 products. Live deletion remains blocked until the
+owner explicitly approves the exact `DELETE_ALL_NON_BOOK_SHOPIFY_PRODUCTS`
+confirmation. The owner approved that exact confirmation on 2026-05-28, and the
+live T-334 delete run succeeded: 21 non-book Shopify products deleted, 0
+delete failures, 2 book/publication products kept. A post-delete read-only
+verification report scanned 2 Shopify products, kept both as books, and found 0
+non-book delete candidates. Shopify is now clean-slate for generated artwork
+catalog work except for the two books. T-335 then completed the docs-only
+MongoDB-to-Shopify metadata mapping for generated originals and prints. The
+next catalog step is T-336: expand the dry-run planner/report to project the
+accepted metadata fields, tags, metafields, and explicit exclusions without
+calling Shopify or mutating MongoDB/Cloudinary. Do not bulk-create products
+until the expanded dry-run report is generated, reviewed, and reconciled.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through

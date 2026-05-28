@@ -154,13 +154,39 @@ Required environment:
 - Shopify credentials are not required because the dry-run does not call
   Shopify.
 
-The dry-run reads only the `artworks` collection with `_id`, `title`, and
-`image` projected. It writes a local JSON report with one proposed original
-product and one proposed print product per artwork, including generated
-handles, product type, tags, inventory quantity, `custom.mongodb_artwork_id`,
-archive image URL, image URL presence, and warnings for missing titles,
-missing images,
-duplicate generated handles, or unsupported required data.
+The dry-run reads only the `artworks` collection with the T-335 approved
+projection: `_id`, `title`, `decade`, `artstyle`, `medium`, `surface`,
+`featured`, and selected archive image fields (`secure_url`, `public_id`,
+`pixelWidth`, `pixelHeight`, `format`). It writes a local JSON report with one
+proposed original product and one proposed print product per artwork. Generated
+products include:
+
+- Shopify product fields: generated handle, family-specific product title,
+  vendor `Joseph Laoutaris`, `productType`, `DRAFT` status, existing
+  `image.secure_url` as product media, inventory policy `deny`, original
+  inventory `1`, print inventory default/override, and one print variant
+  `Frame package = Unframed`.
+- Shopify tags: the family tags already used by the planner plus
+  `decade-<decade>`, `artstyle-<artstyle>`, `medium-<medium>`,
+  `surface-<surface>`, and `featured-artwork` only when MongoDB `featured` is
+  true.
+- Shopify metafields in the `custom` namespace:
+  `mongodb_artwork_id`, `artwork_title`, optional `artwork_number`,
+  `artwork_decade`, `artwork_artstyle`, `artwork_medium`, `artwork_surface`,
+  `artwork_featured`, `archive_image_url`, `archive_image_public_id`,
+  `archive_image_width`, `archive_image_height`, `archive_image_format`, and
+  print-only `print_edition_quantity`.
+
+The report also records selected archive image metadata, explicit field/value
+exclusions, image URL presence, generated handle duplication, and warnings for
+missing titles, missing images, missing required taxonomy metadata, or
+unsupported required metadata.
+
+Do not include `shopifyProducts`, user favourite/watchlist state, watcher or
+favourited arrays, collection metadata, Cloudinary color analysis, image byte
+size, generated frame/material/mat options, sale copy, publishing state, or
+MongoDB link writes in the planner expansion. Collection metadata is deferred
+to a separate collection-join task.
 
 Safety rules:
 
@@ -268,6 +294,58 @@ Exit behavior:
 - `1`: required Shopify Admin environment is missing, input validation failed,
   Shopify lookups produced query errors, or the report contains manual-review
   conflicts.
+
+## Shopify Catalog Pilot Owner Approval Template
+
+Before running the guarded pilot creation command, prepare an owner approval
+file from the local source-only example:
+
+```text
+reports/shopify-catalog-pilot-owner-approval.example.json
+```
+
+The T-333 example selects five reconciliation-clean artworks whose original and
+print rows are both `matchStatus: "no_match"` with
+`recommendedAction: "safe_to_create_later"`, no manual product matches, and no
+product conflicts. The selected artworks are:
+
+| Artwork ID | Title |
+| --- | --- |
+| `661fc617648efb163cffacee` | `No.002` |
+| `661fc784648efb163cffacf6` | `No.075` |
+| `661fc7b7648efb163cffacff` | `No.008` |
+| `661fcae840f59e26cc761dd5` | `No.033` |
+| `661fccea40f59e26cc761e0f` | `No.041` |
+
+To turn the example into a real approval file, the owner must create the
+command input file at:
+
+```text
+reports/shopify-catalog-pilot-owner-approval.json
+```
+
+Then replace every placeholder:
+
+- `inventoryLocationId` must be a real Shopify location GID such as
+  `gid://shopify/Location/1234567890`.
+- `inventoryLocationName` should name the same Shopify location for human
+  review.
+- `originalPrice` must be the owner-approved original artwork price in the
+  store currency.
+- `printPrice` must be the owner-approved unframed print price in the store
+  currency.
+- `productStatus` must remain `DRAFT`.
+- `mongoDbLinking` must remain `none` for this pilot.
+- `printEditionQuantity` may remain `50` unless the owner approves a
+  per-artwork override.
+
+The example file is not sufficient approval while any placeholder remains.
+Do not add a sixth artwork, replace one selected artwork with a manual/conflict
+row, or use an artwork whose original or print reconciliation row is not clean
+`no_match` / `safe_to_create_later`. Preparing this approval file is source-only
+work: do not mutate Shopify, MongoDB, or Cloudinary, and do not run the live
+pilot command until the owner has approved the completed JSON and explicitly
+authorized `write_products` token use.
 
 ## Shopify Catalog Pilot Creation
 
@@ -395,6 +473,75 @@ Exit behavior:
 - `1`: confirmation or environment validation failed, the reconciliation report
   was invalid or had query errors, a candidate was rejected by cleanup
   validation, or Shopify returned an archive failure.
+
+## Clean-Slate Shopify Catalog Cleanup
+
+Run the clean-slate dry-run when the owner wants Shopify reduced to
+book/publication products before continuing generated catalog work:
+
+```bash
+npm run cleanup:shopify-clean-slate-catalog -- \
+  --output=reports/shopify-clean-slate-catalog-cleanup-report.json
+```
+
+Required environment for dry-run:
+
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be the pinned Admin GraphQL API version,
+  currently `2026-04`.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  `read_products` scope.
+
+The dry-run reads all Shopify Admin products through paginated product reads,
+classifies book/publication products to keep, classifies every valid non-book
+product as `would_delete_product`, and writes the local report. Book/publication
+classification comes from durable Shopify product type, tags, handle/title
+book/publication markers, or `custom.featured_artwork_ids`.
+If an intended book/publication appears as a delete candidate, stop and fix its
+Shopify metadata before approving delete mode.
+
+Live deletion is allowed only after the owner reviews and approves the dry-run
+report:
+
+```bash
+npm run cleanup:shopify-clean-slate-catalog -- \
+  --output=reports/shopify-clean-slate-catalog-cleanup-report.json \
+  --mode=delete \
+  --confirm=DELETE_ALL_NON_BOOK_SHOPIFY_PRODUCTS
+```
+
+Required environment for delete mode:
+
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be `2026-04`.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  `write_products` scope.
+
+Delete mode uses Shopify Admin GraphQL `productDelete` only for report entries
+classified as non-book delete candidates. Products classified as
+book/publication products are kept and never receive a delete action. Products
+with invalid Shopify product IDs or missing handles block the run before any
+delete attempt.
+
+Safety rules:
+
+- Run dry-run first and get owner approval for the local report.
+- Do not run delete mode without the exact confirmation string.
+- Do not use `SHOPIFY_STOREFRONT_ACCESS_TOKEN` for this command.
+- Do not print, persist, commit, or paste `SHOPIFY_ADMIN_ACCESS_TOKEN`.
+- Do not delete book/publication products.
+- Do not mutate MongoDB, Cloudinary, orders, customers, collections,
+  publications, domains, aliases, Vercel state, checkout/cart behavior, or
+  runtime UI.
+
+Exit behavior:
+
+- `0`: dry-run report was written, or delete mode completed without Shopify
+  delete failures.
+- `1`: confirmation or environment validation failed, product validation
+  blocked deletion, Shopify reads failed, or Shopify returned a delete failure.
 
 ## Purchase Handoff
 

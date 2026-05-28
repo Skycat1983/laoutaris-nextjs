@@ -70,7 +70,16 @@ try {
         projection: {
           _id: 1,
           title: 1,
-          image: 1,
+          decade: 1,
+          artstyle: 1,
+          medium: 1,
+          surface: 1,
+          featured: 1,
+          "image.secure_url": 1,
+          "image.public_id": 1,
+          "image.pixelWidth": 1,
+          "image.pixelHeight": 1,
+          "image.format": 1,
         },
       }
     )
@@ -85,9 +94,14 @@ try {
   console.log(
     `Products planned: ${report.summary.originalProductsPlanned} originals, ${report.summary.printProductsPlanned} prints`
   );
-  console.log(
-    `Warnings: ${report.summary.artworksMissingTitle} missing titles, ${report.summary.artworksMissingImage} missing images, ${report.summary.duplicateGeneratedHandleCount} duplicate generated handles`
-  );
+  const warningSummary = [
+    `${report.summary.artworksMissingTitle} missing titles`,
+    `${report.summary.artworksMissingImage} missing images`,
+    `${report.summary.artworksMissingRequiredMetadata} artworks missing required metadata`,
+    `${report.summary.unsupportedRequiredMetadataCount} artworks with unsupported required metadata`,
+    `${report.summary.duplicateGeneratedHandleCount} duplicate generated handles`,
+  ];
+  console.log(`Warnings: ${warningSummary.join(", ")}`);
 } catch (error) {
   exitCode = 1;
   console.error("Shopify catalog dry-run plan failed.");

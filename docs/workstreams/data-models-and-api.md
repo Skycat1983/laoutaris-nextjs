@@ -1074,3 +1074,14 @@ and requires MongoDB linking to remain disabled in the approval record.
 T-331 is complete for Shopify manual original/print cleanup tooling. It reads
 the reconciliation report only and does not read, write, or migrate MongoDB
 artworks, `shopifyProducts`, API routes, or Cloudinary assets.
+T-335 is complete as a docs-only MongoDB-to-Shopify metadata mapping. The next
+planner implementation should read selected artwork identity, taxonomy,
+featured, and archive image metadata for report generation only, while
+excluding `shopifyProducts`, user saved-item state, collection joins, and
+Cloudinary color/byte metadata until separately scoped.
+T-336 is complete: the dry-run planner now projects selected artwork identity,
+taxonomy, `featured`, and image metadata only, writes the expanded T-335
+product/tag/metafield report, and preserves the no-Shopify, no-MongoDB-write,
+no-Cloudinary-mutation boundary. Collection joins, existing `shopifyProducts`
+link writes, and user saved-item state remain excluded from generated product
+metadata.

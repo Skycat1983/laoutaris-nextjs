@@ -227,10 +227,10 @@ production while preserving MongoDB as the archive source of truth.
   reconciliation rows, and `--confirm=CREATE_DRAFT_PILOT_PRODUCTS` before a
   `write_products` command can create five draft originals and five draft
   unframed prints.
-- T-331 is ready as the manual original/print cleanup plan. The owner decided
-  the hand-created original/print Shopify products can be removed or contained
-  if generated replacements will be created programmatically. Books, MongoDB
-  artworks, and Cloudinary assets remain out of scope.
+- T-331 completed the manual original/print cleanup tooling after the owner
+  decided the hand-created original/print Shopify products can be removed or
+  contained if generated replacements will be created programmatically. Books,
+  MongoDB artworks, and Cloudinary assets remain out of scope.
 - T-331 added the guarded manual original/print cleanup command:
   `npm run cleanup:shopify-manual-catalog`. It reads only the reconciliation
   report allowlist, defaults to local dry-run, supports archive mode only with
@@ -243,6 +243,57 @@ production while preserving MongoDB as the archive source of truth.
   `Frame package = Unframed` variant; framed/material/mat variants remain
   blocked until owner-approved labels, dimensions, prices, fulfilment handling,
   and app-to-Shopify mappings exist.
+- T-333 created a source-only local owner approval example for five clean
+  no-match pilot artworks: `No.002`, `No.075`, `No.008`, `No.033`, and
+  `No.041`. The template keeps prices and `inventoryLocationId` as owner-filled
+  placeholders and does not authorize any Shopify, MongoDB, or Cloudinary
+  mutation.
+- The real local pilot approval file now exists at
+  `reports/shopify-catalog-pilot-owner-approval.json` with owner-approved
+  draft placeholder prices (`1000.00` originals, `100.00` prints), print
+  quantity `50`, MongoDB linking disabled, and Shopify inventory location
+  `gid://shopify/Location/112925409544`. Local T-330 preflight passes after
+  regenerating the dry-run plan with explicit image URLs. Live execution still
+  requires separate owner approval for `write_products` token use.
+- The first owner-approved live T-330 attempt on 2026-05-28 created 0 products:
+  Shopify rejected the first `productSet` mutation because the token/user lacks
+  `write_products` and product-create permission. The command stopped after the
+  first failure, wrote a local result report, and skipped the remaining 9
+  planned products.
+- After the owner updated the app authorization, the second live T-330 attempt
+  on 2026-05-28 created all 10 pilot products. The local result report shows 5
+  draft originals, 5 draft unframed prints, 0 failures, expected
+  `custom.mongodb_artwork_id` values, original inventory `1`, print inventory
+  `50`, and print variant option `Frame package = Unframed`.
+- T-334 added the guarded clean-slate Shopify catalog cleanup command:
+  `npm run cleanup:shopify-clean-slate-catalog`. It reads all Shopify Admin
+  products, writes a local dry-run report by default, keeps products classified
+  as books/publications, marks all valid non-book products as delete
+  candidates, and allows live deletion only with the exact
+  `DELETE_ALL_NON_BOOK_SHOPIFY_PRODUCTS` confirmation after owner approval of
+  the dry-run report. It does not mutate MongoDB or Cloudinary.
+- The T-334 live dry-run on 2026-05-28 scanned 23 Shopify products, kept 2
+  book/publication products, marked 21 non-book products for deletion, and
+  rejected 0 products. The delete candidates include the old manual
+  originals/prints and the 10 draft pilot products; this matches the owner's
+  clean-slate direction but still requires explicit live-delete approval.
+- The owner approved `DELETE_ALL_NON_BOOK_SHOPIFY_PRODUCTS` on 2026-05-28. The
+  live T-334 delete run deleted 21 non-book Shopify products with 0 failures.
+  Post-delete verification scanned 2 Shopify products, kept both
+  book/publication products, and found 0 remaining non-book delete candidates.
+- T-335 completed the docs-only generated catalog metadata mapping for MongoDB
+  `_id`, title, taxonomy fields, `featured`, and selected archive image
+  metadata into Shopify product fields, taxonomy tags, and `custom` metafields
+  while excluding `shopifyProducts`, user saved-item state, collection joins,
+  Cloudinary color/byte metadata, framed purchasable options, publishing,
+  checkout/cart, and MongoDB link writes.
+- T-336 expanded the Phase 1 dry-run planner to apply the T-335 mapping in
+  source/report form only. `npm run plan:shopify-catalog` still performs no
+  Shopify calls and no MongoDB or Cloudinary mutations, and now reports
+  generated product titles, vendor, `DRAFT` status, family/taxonomy tags,
+  typed `custom` metafields, selected image metadata, explicit exclusions,
+  print-only edition quantity, and exactly one print variant
+  `Frame package = Unframed`.
 
 ## Backlog
 
@@ -264,10 +315,16 @@ production while preserving MongoDB as the archive source of truth.
 - Run the guarded manual original/print cleanup in archive mode only after
   owner approval for the exact T-331 candidate set. Permanent deletion still
   requires separate explicit approval and a separate implementation task.
+- Run the T-334 clean-slate cleanup dry-run before any permanent Shopify
+  product deletion, then get owner approval for the exact local report before
+  using delete mode with the exact confirmation string.
 - Keep generated pilot print products to the T-332 one-variant matrix:
   `Frame package = Unframed`. Scope framed/material/mat purchasability only
   after owner-approved labels, dimensions, prices, fulfilment handling, and
   app-to-Shopify mappings exist.
+- Use the T-336 expanded dry-run report as the source for any future
+  full-catalog draft-generation write task. Keep writes separately gated and do
+  not add Shopify, MongoDB, or Cloudinary mutations to the planner.
 - Implement Shopify catalog generation in phases: dry-run MongoDB-to-Shopify
   product plan first, existing-product reconciliation second, small draft pilot
   third, and only then bulk draft creation. Originals default to inventory `1`;
@@ -752,6 +809,27 @@ Add targeted tests as shop behavior is hardened.
   `Frame package = Unframed` variant, while framed/material/mat variants remain
   blocked on owner-approved option labels, prices, fulfilment handling, and
   app-to-Shopify mappings.
+- 2026-05-28: Completed T-333 as a source-only pilot approval-template task.
+  The local example approval JSON selects five clean no-match reconciliation
+  artworks, leaves owner prices and `inventoryLocationId` as placeholders, and
+  documents the owner fill-in workflow without running Shopify, MongoDB, or
+  Cloudinary mutations.
+- 2026-05-28: Completed T-334. The guarded clean-slate Shopify catalog cleanup
+  command reads all Shopify Admin products, keeps book/publication products,
+  marks every valid non-book product as a delete candidate, writes a local
+  dry-run report by default, and gates live deletion behind exact owner
+  confirmation without touching MongoDB or Cloudinary.
+- 2026-05-28: Completed T-335 as a docs-only metadata mapping. Generated
+  original/print products should now map selected MongoDB artwork identity,
+  taxonomy, featured, and archive image metadata into Shopify product fields,
+  tags, and `custom` metafields. Collection metadata is deferred to a later
+  collection-join task, and T-336 is prepared as the dry-run planner
+  implementation follow-up.
+- 2026-05-28: Completed T-336. The dry-run planner now applies the T-335
+  mapping in source/report form only, with generated product titles, vendor,
+  `DRAFT` status, family/taxonomy tags, typed `custom` metafields, selected
+  image metadata, explicit exclusions, print-only edition quantity, and one
+  `Frame package = Unframed` print variant.
 
 ## Next Agent Action
 
@@ -798,17 +876,18 @@ T-328 completed the dry-run product plan, T-329 completed the read-only Shopify
 Admin reconciliation command, T-330 added the guarded Phase 3 pilot creation
 command, T-331 added the guarded manual original/print cleanup command, and
 T-332 selected one `Frame package = Unframed` variant for generated pilot print
-products. Next Shopify catalog work should either run T-331 archive mode only
-with owner approval for the exact candidate set and confirmation string, or run
-[T-330](../tasks/T-330-shopify-catalog-pilot-creation-plan.md) only after the
-owner supplies exactly five approved artwork IDs, original and print prices,
-draft status approval, inventory location, the unframed-only print variant
-policy, and MongoDB linking disabled, and after the reconciliation report is
-clean for those ten planned products. Live writes
+products, T-333 prepared the owner approval file for five clean no-match pilot
+artworks, and T-334 added a clean-slate cleanup dry-run/delete gate for all
+Shopify products. The live T-330 pilot has now created 10 draft Shopify
+products. T-334 has now reset Shopify to the two book/publication products.
+T-335 completed the docs-only metadata mapping for generated original/print
+products, and T-336 applied that mapping to the dry-run planner. Next Shopify
+catalog work should use the expanded dry-run report for owner review and
+separately scope any full-catalog draft-generation write task. Live writes
 remain gated by explicit confirmation flags and a `write_products` token;
-publishing, bulk creation, framed/material/mat variant creation, MongoDB link
-writes, Cloudinary mutation, product deletion, checkout/cart work, and browser
-automation remain out of scope unless separately assigned.
+publishing, framed/material/mat variant creation, MongoDB link writes,
+Cloudinary mutation, checkout/cart work, and browser automation remain out of
+scope unless separately assigned.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

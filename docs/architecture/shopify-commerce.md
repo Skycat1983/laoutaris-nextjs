@@ -158,6 +158,13 @@ saving.
 
 - Product availability, price, variants, images, and handle should come from
   Shopify.
+- Generated original and print products should use the metadata contract in
+  [Shopify catalog generation](shopify-catalog-generation.md): MongoDB `_id`,
+  title, taxonomy fields, `featured`, and selected archive image metadata map
+  to product identity, tags, and `custom` metafields; user-specific state,
+  existing `shopifyProducts` links, collection joins, Cloudinary color analysis,
+  and framed/material/mat purchasable options are excluded from the next catalog
+  expansion.
 - Public product DTOs expose Shopify's hosted product URL only through
   `SimpleProduct.onlineStoreUrl` after URL validation. Missing, empty,
   relative, malformed, or non-HTTP(S) values become `null`; the app must not

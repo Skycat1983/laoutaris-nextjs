@@ -370,6 +370,10 @@ tasks must not reuse `T-221`.
 | [T-330 Shopify catalog pilot creation plan](T-330-shopify-catalog-pilot-creation-plan.md) | Completed | Added the guarded Phase 3 pilot creation command for exactly five owner-approved draft originals and five draft unframed prints, with confirmation, clean reconciliation, owner price/status/linking/location gates, local report output, and no MongoDB or Cloudinary writes. |
 | [T-331 Shopify manual product cleanup plan](T-331-shopify-manual-product-cleanup-plan.md) | Complete | Adds the guarded cleanup command for hand-created Shopify original/print products before generated replacements are created, excluding deletion, MongoDB artworks, books, and Cloudinary assets. |
 | [T-332 Frame option commerce model](T-332-frame-option-commerce-model.md) | Completed | Selected one explicit `Frame package = Unframed` variant for generated draft print products and deferred framed/material/mat variants until owner-approved option mapping exists. |
+| [T-333 Shopify pilot approval template](T-333-shopify-pilot-approval-template.md) | Completed | Created a source-only local owner approval example for five clean no-match pilot artworks, with placeholder prices and `inventoryLocationId`, and documented the owner fill-in workflow. |
+| [T-334 Shopify clean-slate catalog cleanup](T-334-shopify-clean-slate-catalog-cleanup.md) | Completed | Added a read-all Shopify product cleanup report that keeps books/publications, marks all valid non-books as delete candidates, and gates live deletion behind exact owner confirmation. |
+| [T-335 Shopify catalog metadata mapping](T-335-shopify-catalog-metadata-mapping.md) | Completed | Defined which MongoDB artwork fields become Shopify product fields, tags, metafields, or explicit exclusions before bulk draft generation. |
+| [T-336 Expand Shopify catalog dry-run metadata](T-336-expand-shopify-catalog-dry-run-metadata.md) | Completed | Applied the T-335 mapping to the dry-run planner report with product fields, taxonomy tags, typed `custom` metafields, selected image metadata, explicit exclusions, and focused helper tests without Shopify, MongoDB, or Cloudinary mutations. |
 
 ## Rules
 

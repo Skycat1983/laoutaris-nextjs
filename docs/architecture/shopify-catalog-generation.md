@@ -33,6 +33,133 @@ custom.mongodb_artwork_id = <MongoDB artwork _id>
 The current public app already reads this metafield for original and print
 product detail pages.
 
+## Catalog Metadata Mapping
+
+Generated original and print products should carry only commerce-safe archive
+metadata that helps identify, filter, reconcile, and operate Shopify products.
+The mapping below is the accepted contract for expanding the dry-run planner
+before the full catalog is generated again.
+
+### MongoDB Fields To Project
+
+The planner should read these artwork fields from `mongodb.artworks`:
+
+| MongoDB field | Use |
+| --- | --- |
+| `_id` | Canonical archive identity and Shopify reconciliation key. |
+| `title` | Artwork display title and source for normalized artwork number when the title follows `No.###`. |
+| `decade` | Product filtering/admin tag and durable archive metafield. |
+| `artstyle` | Product filtering/admin tag and durable archive metafield. |
+| `medium` | Product filtering/admin tag and durable archive metafield. |
+| `surface` | Product filtering/admin tag and durable archive metafield. |
+| `featured` | Optional owner/editorial marker as tag and metafield. |
+| `image.secure_url` | Product media source and archive image URL metafield. |
+| `image.public_id` | Cloudinary source identifier for reconciliation only. |
+| `image.pixelWidth` | Archive image width metafield for preview/layout operations. |
+| `image.pixelHeight` | Archive image height metafield for preview/layout operations. |
+| `image.format` | Archive image format metafield for source inspection. |
+
+### Shopify Product Fields
+
+For each MongoDB artwork, generate one original product and one print product:
+
+| Shopify product field | Original product | Print product |
+| --- | --- | --- |
+| `handle` | `joseph-laoutaris-original-<artwork-slug>-<short-artwork-id>` | `joseph-laoutaris-print-<artwork-slug>-<short-artwork-id>` |
+| `title` | `<MongoDB title> - Original Artwork` | `<MongoDB title> - Fine Art Print` |
+| `vendor` | `Joseph Laoutaris` | `Joseph Laoutaris` |
+| `productType` | `Original Artwork` | `Fine Art Print` |
+| `status` | `DRAFT` until owner listing approval | `DRAFT` until owner listing approval |
+| product media | Existing `image.secure_url`; no Cloudinary mutation | Existing `image.secure_url`; no Cloudinary mutation |
+| inventory quantity | `1` | Configurable default `50` unless owner override exists |
+| inventory policy | deny purchase when sold out | deny purchase when sold out |
+| variants | Default single original variant | One `Frame package = Unframed` variant |
+| body/description | Do not generate owner-facing prose yet | Do not generate owner-facing prose yet |
+
+Prices, sales-channel publication, hosted product URLs, and active listing state
+remain owner/Shopify-controlled and must not be inferred from MongoDB.
+
+### Shopify Tags
+
+Tags are flat, admin/search/filter helpers. Keep them lowercase and stable.
+
+Common tag:
+
+- `archive-artwork`
+
+Original tags:
+
+- `original`
+- `painting`
+
+Print tags:
+
+- `print`
+- `fine-art-print`
+
+Artwork taxonomy tags:
+
+- `decade-<decade>`, for example `decade-1970s`
+- `artstyle-<artstyle>`, for example `artstyle-semi-abstract`
+- `medium-<medium>`, for example `medium-oil`
+- `surface-<surface>`, for example `surface-canvas`
+- `featured-artwork` only when MongoDB `featured` is `true`
+
+Do not add collection tags in the first metadata expansion. Collection mapping
+is deferred because it requires joining collection documents, deciding whether
+collection titles, slugs, or sections should be public commerce taxonomy, and
+handling artworks that belong to multiple collections.
+
+### Shopify Metafields
+
+Use the `custom` namespace for generated archive relationship metadata.
+
+| Metafield | Applies to | Value source | Recommended type |
+| --- | --- | --- | --- |
+| `custom.mongodb_artwork_id` | original, print | MongoDB `_id` string | `single_line_text_field` |
+| `custom.artwork_title` | original, print | Exact MongoDB `title` | `single_line_text_field` |
+| `custom.artwork_number` | original, print | Normalized `No.###` from `title`, when present | `single_line_text_field` |
+| `custom.artwork_decade` | original, print | MongoDB `decade` | `single_line_text_field` |
+| `custom.artwork_artstyle` | original, print | MongoDB `artstyle` | `single_line_text_field` |
+| `custom.artwork_medium` | original, print | MongoDB `medium` | `single_line_text_field` |
+| `custom.artwork_surface` | original, print | MongoDB `surface` | `single_line_text_field` |
+| `custom.artwork_featured` | original, print | MongoDB `featured` | `boolean` |
+| `custom.archive_image_url` | original, print | `image.secure_url` | `url` |
+| `custom.archive_image_public_id` | original, print | `image.public_id` | `single_line_text_field` |
+| `custom.archive_image_width` | original, print | `image.pixelWidth` | `number_integer` |
+| `custom.archive_image_height` | original, print | `image.pixelHeight` | `number_integer` |
+| `custom.archive_image_format` | original, print | `image.format` | `single_line_text_field` |
+| `custom.print_edition_quantity` | print only | approved/default print inventory quantity | `number_integer` |
+
+Metafields should duplicate taxonomy tags intentionally. Tags support Shopify
+admin filtering and simple Storefront/tag use; metafields preserve the exact
+archive contract for reconciliation and future app reads.
+
+### Explicit Exclusions
+
+Do not send these MongoDB fields or derived values into generated Shopify
+original/print products in the first full-catalog expansion:
+
+- `shopifyProducts`, because existing links are operational state and must not
+  be echoed into Shopify as generated archive metadata.
+- `watcherlist`, `favourited`, user `watchlist`, user `favourites`, comments,
+  accounts, enquiry data, or any user-specific/private state.
+- Collection ObjectIds or collection metadata until a separate collection-join
+  task approves the taxonomy shape.
+- `image.bytes`, `image.hexColors`, and `image.predominantColors`; these are
+  not needed for commerce identity and can be noisy operational data.
+- MongoDB `createdAt`, `updatedAt`, internal version fields, raw ObjectId
+  relationship arrays, and admin-only audit state.
+- Framed, material, mat, room-preview, or app-specific frame profile values.
+  Generated print products stay at one `Frame package = Unframed` variant until
+  a later owner-approved option mapping exists.
+- Owner price rules, sale copy, sales-channel publication, checkout/cart state,
+  and MongoDB `shopifyProducts` link writes.
+
+Missing required taxonomy, title, or archive image fields should become planner
+warnings before any Shopify write task. The generator should not silently fill
+unknown archive metadata with invented values.
+
 ## Product Families
 
 ### Original Painting

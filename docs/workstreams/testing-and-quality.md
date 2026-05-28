@@ -2239,6 +2239,12 @@ T-328 added focused pure-helper Jest coverage for the Shopify catalog dry-run
 planner; the suite verifies handle generation, inventory defaults and
 overrides, duplicate generated-handle warnings, safety flags, metafield shape,
 and report structure without MongoDB or Shopify network access.
+T-336 expanded that focused helper coverage for the T-335 metadata mapping:
+taxonomy tag generation, typed `custom` metafields, optional artwork-number
+extraction, featured false/true behavior, print edition quantity, selected
+archive image metadata, explicit exclusions, and the one
+`Frame package = Unframed` print variant are covered without MongoDB, Shopify,
+or Cloudinary network access.
 T-330 added focused pure-helper Jest coverage for the guarded Shopify catalog
 pilot creation command, covering exact confirmation, pinned Admin API
 environment validation, exactly five owner approvals, draft-only status,
