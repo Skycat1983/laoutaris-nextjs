@@ -381,11 +381,15 @@ security headers, environment documentation, and actionable operational signals.
 - Use the monitoring architecture plan to choose and document an
   error-reporting/monitoring provider, or explicitly record a no-provider
   decision for launch.
-- Resolve the T-134 blocked owner-decision rows by recording owner-approved
-  role labels, named owners, team aliases, backups, and authority boundaries
-  for incident command, Vercel rollback/logs, repository release authority,
-  MongoDB, Shopify, Cloudinary, auth/OAuth, DNS/domain, and privacy/legal
-  communication.
+- Keep the T-326 owner-routing contract current: Heron Laoutaris is the
+  initial incident commander, Sentry alert recipient, release/service owner,
+  and rollback approver; backup operators and alert destinations remain
+  unassigned.
+- Prepare separate provider-dashboard tasks for the initial Sentry error alert
+  policy and simple public uptime checks. Keep source-map upload, replay,
+  profiling, broad tracing, provider webhooks, sampling changes, credentialed
+  smoke, and privileged Vercel mutations out of those baseline tasks unless the
+  owner explicitly expands scope.
 - Keep the GitHub Actions public smoke workflow current as route contracts and
   owner-approved non-secret smoke records change; keep credentialed, admin, and
   Vercel-log smoke evidence owner-run until safe synthetic accounts and access
@@ -397,9 +401,11 @@ security headers, environment documentation, and actionable operational signals.
   and future route-specific metadata once those route contracts are assigned.
 - Define sitemap/default redirect freshness through T-232 before any runtime
   ISR/static-param changes affect deployment expectations.
-- Sentry is approved as the monitoring provider in ADR 0005. Keep
-  source-map upload, alert routing, replay, profiling, broad tracing, uptime
-  checks, and Vercel privileged actions separate from the T-310 baseline.
+- Sentry is approved as the monitoring provider in ADR 0005. T-326 documents
+  the initial alert and uptime routing contract. Keep source-map upload,
+  replay, profiling, broad tracing, provider-dashboard mutation, uptime
+  provider setup, and Vercel privileged actions separate from the T-310
+  baseline unless a later task explicitly scopes them.
 - T-310 implemented the first Sentry baseline with `@sentry/nextjs`,
   server/edge/browser initialization, Next instrumentation registration,
   App Router error-boundary capture, structured logger error capture using
@@ -1175,6 +1181,14 @@ not-found contract: the missing product check accepts `404`, or `200` only when
 the body contains `Product not found`, and fails if the missing handle renders a
 normal product page. The approved production values produced a green live smoke
 run on 2026-05-28.
+T-326 is complete as a docs-only owner-routing update. The incident runbook now
+records Heron Laoutaris as initial incident commander, service/release owner,
+rollback approver, and Sentry alert destination through
+`hlaoutaris@gmail.com`; backup operators remain unassigned. The monitoring
+architecture now documents the first Sentry alert recommendation and simple
+unauthenticated public uptime-check scope while keeping source-map upload,
+replay, profiling, broad tracing, provider webhooks, sampling changes,
+credentialed/admin checks, and privileged Vercel actions separate.
 
 T-304 is complete for the report-only CSP observation step. Do not enforce the
 tightened CSP, add HSTS, change CORS, add a CSP report endpoint/provider, add
@@ -1194,9 +1208,10 @@ decision changes. More R-018 runtime work is blocked until owner input exists
 for Shopify policy URLs, real social URLs, jurisdiction/audience-specific legal
 claims, self-service privacy workflows, or comment moderation/reporting
 workflows. Monitoring provider choice is unblocked by ADR 0005 with Sentry
-approved, and T-310 completed the first runtime baseline. Alerting, source-map
-upload, replay, profiling, broad tracing, uptime checks, Vercel privileged
-actions, and provider smoke remain separate follow-ups.
+approved, T-310 completed the first runtime baseline, and T-326 documented the
+initial alert/uptime routing contract. Provider-dashboard alert setup, uptime
+provider setup, source-map upload, replay, profiling, broad tracing, Vercel
+privileged actions, and provider smoke remain separate follow-ups.
 
 For the A-022 deployment-adjacent work, T-232 and T-233 are complete: sitemap
 and default redirect freshness are explicit, and `/biography` is the only
@@ -1204,9 +1219,10 @@ route-level redirect ISR export added by the biography proof. Do not reassign
 T-231 or T-233 unless the protected middleware matcher contract or biography
 cache policy regresses.
 
-Keep credential/admin smoke, Vercel log inspection, rollback automation,
-owner approval to replace the T-134 blocked incident owner rows, and broad
-remaining implementation cleanup separate. T-122, T-123, T-124, T-125,
+Keep credential/admin smoke, Vercel log inspection, rollback automation, and
+broad remaining implementation cleanup separate. T-326 replaced stale T-134
+blocked incident owner wording with the accepted initial owner-routing defaults
+only. T-122, T-123, T-124, T-125,
 T-126, T-127, T-128, T-129, T-130, T-131, T-132, T-133, T-134, and T-172 are
 complete and should not be reassigned unless their source-hygiene,
 documentation, policy, workflow, structured logging, public browsing client

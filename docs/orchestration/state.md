@@ -1667,6 +1667,9 @@ The recommended next assignments are:
   saved-item revalidation, auth callback scoping, or auth callback coverage
   tasks, or the public smoke product not-found alignment unless their contracts
   regress.
+- T-326 and T-327 are prepared as the next non-Shopify-dashboard pair:
+  - `/task effort: medium details: docs/tasks/T-326-document-alert-uptime-owner-routing.md`
+  - `/task effort: medium details: docs/tasks/T-327-scope-public-user-api-route-builders.md`
 - T-274 is complete as a docs packet. Sentry provider choice is answered and
   routed to T-310. Owner accepted conservative production-ops defaults on
   2026-05-28: Heron is the initial incident commander, alert recipient, and
@@ -1685,6 +1688,13 @@ The recommended next assignments are:
   and room-background selection paused until scoped owner decisions or later
   tasks. Book owner review remains blocked until durable Shopify book metadata
   exists and Storefront reads verify it for the candidate handle.
+- Shopify catalog generation is now a documented phased plan. The owner
+  confirmed that each MongoDB artwork should eventually have one original
+  product with inventory `1` and one print product with default configurable
+  edition quantity `50`, while not all generated products should be listed at
+  once. T-328 is prepared as the first dry-run-only implementation task; do not
+  assign live Shopify writes, publishing, deletes, MongoDB product-link
+  mutation, or Admin API token handling before the dry-run plan is reviewed.
 - Public smoke owner variables are approved, `SMOKE_BASE_URL` is
   owner-configured, and T-325 verified the approved production values with a
   green live public smoke run. Credentialed/admin smoke, Vercel log evidence,

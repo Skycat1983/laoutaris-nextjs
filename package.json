@@ -13,6 +13,7 @@
     "env:guard": "node scripts/validate-next-config-env.mjs",
     "smoke:public": "node scripts/smoke-public-routes.mjs",
     "audit:shopify-products": "node scripts/audit-shopify-product-links.mjs",
+    "plan:shopify-catalog": "node scripts/build-shopify-catalog-plan.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit --pretty false --skipLibCheck",
     "verify:local": "npm run typecheck && npm test && npm run build && npm run lint && git diff --check",

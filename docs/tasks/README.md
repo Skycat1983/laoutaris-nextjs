@@ -363,6 +363,9 @@ tasks must not reuse `T-221`.
 | [T-323 Scope auth callback redirect contract](T-323-scope-auth-callback-redirect-contract.md) | Completed | Scoped and test-planned NextAuth redirect callback behavior before changing `/api/auth/signin`, `/api/auth/signout`, or the current `/dashboard` destination. |
 | [T-324 Add auth callback redirect coverage](T-324-add-auth-callback-redirect-coverage.md) | Completed | Added coverage-only tests for current `authCallbacks.redirect()` behavior, preserving `/api/auth/signin -> /dashboard` as documented current behavior. |
 | [T-325 Align public smoke product not-found check](T-325-align-public-smoke-product-not-found-check.md) | Completed | Allowed public smoke to accept route-local product not-found UI returned with HTTP `200` while still failing if the missing handle renders a normal product page. |
+| [T-326 Document alert and uptime owner routing](T-326-document-alert-uptime-owner-routing.md) | Ready | Reconcile owner-approved incident, alert, Vercel, and uptime-routing defaults into docs without dashboard mutation or runtime changes. |
+| [T-327 Scope public and user API route builders](T-327-scope-public-user-api-route-builders.md) | Ready | Inventory public/user API client fetcher paths and choose the next safe route-builder implementation slice without touching runtime source. |
+| [T-328 Build Shopify catalog dry-run plan](T-328-build-shopify-catalog-dry-run-plan.md) | Completed | Added the dry-run MongoDB-to-Shopify product plan command for one original and one print per artwork, with original quantity `1` and configurable print quantity default `50`, without Shopify writes. |
 
 ## Rules
 

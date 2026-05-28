@@ -931,4 +931,5 @@ builders while preserving exact invalidation order and failure behavior. T-323
 and T-324 scoped and covered the current auth callback redirect contract without
 changing `/dashboard`. Broader public/user API route builders, root-layout
 session/cache ownership, and any future decided auth callback destination
-change remain separate.
+change remain separate. T-327 is prepared as the next controlled docs-only
+scope for public/user API route builders before any broader source changes.

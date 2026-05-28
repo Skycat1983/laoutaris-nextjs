@@ -123,6 +123,47 @@ upstream failures show warnings. These warnings do not block save. Admin
 create/update persistence still relies on the form schema and admin route
 validation, and the write routes do not call Shopify.
 
+## Shopify Catalog Dry-Run Plan
+
+Run the MongoDB-to-Shopify catalog dry-run before any live Shopify product
+creation task:
+
+```bash
+npm run plan:shopify-catalog -- --output=reports/shopify-catalog-dry-run-plan.json
+```
+
+Optional print edition quantity override:
+
+```bash
+npm run plan:shopify-catalog -- --print-quantity=25 --output=reports/shopify-catalog-dry-run-plan.json
+```
+
+Alternatively set `SHOPIFY_PRINT_QUANTITY`; the CLI option wins when both are
+present. If neither is set, print quantity defaults to `50`.
+
+Required environment:
+
+- `MONGO_URI` must point to the MongoDB database to plan from.
+- Shopify credentials are not required because the dry-run does not call
+  Shopify.
+
+The dry-run reads only the `artworks` collection with `_id`, `title`, and
+`image` projected. It writes a local JSON report with one proposed original
+product and one proposed print product per artwork, including generated
+handles, product type, tags, inventory quantity, `custom.mongodb_artwork_id`,
+image URL presence, and warnings for missing titles, missing images,
+duplicate generated handles, or unsupported required data.
+
+Safety rules:
+
+- Do not treat the report as owner approval to create products.
+- Do not publish, create, update, delete, or archive Shopify products from this
+  dry-run.
+- Do not write generated `shopifyProducts` links back to MongoDB from this
+  dry-run.
+- Do not commit generated reports unless an owner-reviewed evidence artifact is
+  explicitly requested.
+
 ## Read-Only Product Link Audit
 
 Run the MongoDB product-link audit before planning a data cleanup or admin

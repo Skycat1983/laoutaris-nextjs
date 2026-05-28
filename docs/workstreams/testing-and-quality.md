@@ -2229,3 +2229,13 @@ callback redirect coverage for the current contract plus `git diff --check`.
 T-325 passed focused public smoke discovery tests for product not-found status
 handling and a live production `npm run smoke:public` run with all approved
 public values: 16 passed, 0 failed, 0 skipped.
+T-326 completed as a docs-only alert/uptime owner-routing task with
+verification limited to `git diff --check`; no runtime source, tests,
+Playwright, provider dashboards, production browser checks, credentialed smoke,
+or provider log collection were in scope. T-327 remains prepared as a
+controlled docs/scoping task with the same narrow verification boundary unless
+an assigned agent unexpectedly changes runtime source.
+T-328 added focused pure-helper Jest coverage for the Shopify catalog dry-run
+planner; the suite verifies handle generation, inventory defaults and
+overrides, duplicate generated-handle warnings, safety flags, metafield shape,
+and report structure without MongoDB or Shopify network access.

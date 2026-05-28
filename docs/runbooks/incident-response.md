@@ -96,61 +96,120 @@ Use the smallest relevant slice.
 
 ## Owner And Escalation Matrix
 
-This matrix records the current approved operating state. The owner has not yet
-approved named owners, team aliases, or permanent backup roles for these
-surfaces. Until those decisions are recorded, treat every row below as blocked:
-operators may collect non-sensitive evidence, but delegated approval authority
-does not exist. Escalate to the owner/orchestrator to identify the approved
-operator for the affected surface before changing production configuration,
-rotating credentials, restoring data, publishing legal/privacy communication,
-or promoting/rolling back a deployment.
+This matrix records the current approved operating state. On 2026-05-28, the
+owner approved Heron Laoutaris as the initial incident commander, repository
+release authority, service owner for provider checks, rollback approver, and
+initial Sentry alert destination through `hlaoutaris@gmail.com`.
+
+Backup operators are not assigned yet. Operators may collect non-sensitive
+evidence, but delegated backup authority does not exist until the owner records
+it. Escalate to Heron Laoutaris or the owner/orchestrator before changing
+production configuration, rotating credentials, restoring data, publishing
+legal/privacy communication, or promoting/rolling back a deployment.
 
 | Area | Primary owner | Backup/escalation | Access source | Authority |
 | --- | --- | --- | --- | --- |
-| Incident commander | Blocked: owner/orchestrator must approve the commander role. | Escalate to owner/orchestrator to name the active commander and backup for the incident. | Repo/task docs | Until approved, owner/orchestrator classifies severity, coordinates updates, and closes the incident or delegates those actions in writing. |
-| Vercel deployment and rollback | Partially available: owner has a local `VERCEL_TOKEN` for approved deployment/log inspection. Rollback, project setting changes, alias/domain changes, and backup operator authority remain unapproved. | Escalate to owner/orchestrator before any privileged action beyond targeted log/deployment inspection. | Owner local shell or Vercel dashboard; never record token values. | Approved operators may inspect targeted logs when `VERCEL_TOKEN` is available. Rollback, deployment promotion, environment changes, alias/domain changes, and project setting changes require separate owner/orchestrator approval. |
-| Repository release authority | Blocked: repository release owner or maintainer alias is not recorded. | Escalate to owner/orchestrator to identify the release approver with GitHub access. | GitHub repository | Only the approved release authority can approve commits, branches, merges, reverts, or release changes. |
-| MongoDB production data | Blocked: production database owner is not recorded. | Escalate to owner/orchestrator to identify the MongoDB operator and backup. | MongoDB provider dashboard | Only the approved database operator can inspect production DB health, backups, restore options, and data scope. Restore requires owner/orchestrator approval while this row is blocked. |
-| Shopify Storefront/API | Blocked: Shopify store owner or commerce operator is not recorded. | Escalate to owner/orchestrator to identify the commerce operator and backup. | Shopify admin/status | Only the approved commerce operator can inspect Storefront API health, product availability, and store configuration. |
-| Cloudinary media/upload | Blocked: Cloudinary owner or media operator is not recorded. | Escalate to owner/orchestrator to identify the media operator and backup. | Cloudinary console | Only the approved media operator can inspect upload preset, cloud, delivery, transformation, and asset state. Destructive media changes also require the Cloudinary runbook. |
-| Auth/NextAuth credentials | Blocked: auth credential owner is not recorded. | Escalate to owner/orchestrator to identify the auth operator and admin backup. | Password manager, deployment environment, OAuth dashboards | Only the approved auth operator can approve smoke accounts, rotate NextAuth credentials, or approve auth-provider checks. |
-| OAuth providers | Blocked: Google/GitHub OAuth console owner is not recorded. | Escalate to owner/orchestrator to identify the OAuth operator and auth backup. | Provider consoles | Only the approved OAuth operator can inspect callback/client configuration, provider incidents, and provider secret rotation. |
-| DNS/domain/TLS | Blocked: domain, DNS, or TLS owner is not recorded. | Escalate to owner/orchestrator to identify the DNS/domain operator and infra backup. | Registrar, DNS, and Vercel domain settings | Only the approved domain operator can inspect or change DNS, TLS, aliases, and production domain routing. |
-| Privacy/legal communication | Blocked: owner/legal reviewer and backup are not recorded. | Escalate to owner/orchestrator to identify the legal/privacy approver. | Owner/legal process | Only the approved owner/legal reviewer can approve privacy, security, data-loss, or other user-facing legal communication. |
+| Incident commander | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Owner contact path and repo/task docs. | Classifies severity, coordinates incident updates, decides closure, and delegates actions in writing. |
+| Sentry alert recipient | Heron Laoutaris / `hlaoutaris@gmail.com`. | Owner-approved backup alert destination, not yet assigned. | Sentry dashboard; never record provider secrets or dashboard screenshots. | Receives initial SEV-1/SEV-2 Sentry error alerts after the alert policy is configured in a separate provider-dashboard task. |
+| Vercel deployment and rollback | Heron Laoutaris approves rollback. Owner local shell has `VERCEL_TOKEN` for approved deployment/log inspection. | Owner-approved backup operator, not yet assigned. | Owner local shell or Vercel dashboard; never record token values. | Targeted deployment/log inspection and read-only alias/domain verification are allowed only when scoped. Rollback execution, deployment promotion, environment changes, alias/domain changes, and project setting changes require separate Heron Laoutaris approval per incident/task. |
+| Repository release authority | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | GitHub repository. | Approves production release, merge, revert, branch, and fix-forward decisions. |
+| MongoDB production data | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | MongoDB provider dashboard. | May inspect production DB health, backups, restore options, and data scope when scoped. Data restore, export, deletion, or destructive changes require explicit owner approval. |
+| Shopify Storefront/API | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Shopify admin/status. | May inspect Storefront API health, product availability, and provider status when scoped. Dashboard metadata, product policy, and store configuration changes remain owner-operated unless separately approved. |
+| Cloudinary media/upload | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Cloudinary console. | May inspect upload preset, cloud, delivery, transformation, and asset state when scoped. Asset deletion remains blocked until separate cleanup policy approval. |
+| Auth/NextAuth credentials | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Owner password manager, deployment environment, OAuth dashboards. | Approves smoke accounts and auth-provider checks. Secret rotation and smoke credentials stay private and require explicit scoped approval. |
+| OAuth providers | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Google/GitHub provider consoles. | May inspect callback/client configuration and provider incidents when scoped. Provider config changes and secret rotation require explicit owner approval. |
+| DNS/domain/TLS | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Registrar, DNS, and Vercel domain settings. | Read-only domain/alias verification is allowed only when scoped. DNS, TLS, alias, domain-routing, and Vercel project setting changes require explicit owner approval. |
+| Privacy/legal communication | Heron Laoutaris. | Owner-approved backup operator, not yet assigned. | Owner/legal process. | Approves user-facing privacy, security, data-loss, or other legal communication. |
 
-### Blocked Owner Decisions
+## Initial Sentry Alert Policy
 
-These decisions must be supplied by the owner/orchestrator before production
-launch or before an affected incident requires the authority.
+This runbook documents the first alert recommendation only; it does not create,
+edit, or verify provider dashboard alerts.
+
+- Route initial Sentry error alerts to Heron Laoutaris at
+  `hlaoutaris@gmail.com`.
+- Start with error-event alerting for production server/runtime, edge, and
+  browser/client errors captured by the T-310 Sentry baseline.
+- Prioritize repeated `500`/unhandled exceptions, App Router render-boundary
+  errors, and provider-adjacent failures that affect public archive, auth/admin,
+  shop/enquiry, MongoDB, Shopify, Cloudinary, OAuth, DNS/domain, or deployment
+  surfaces.
+- Alert evidence should preserve Sentry event IDs, request IDs, route, method,
+  environment, release/deployment metadata when available, and redacted error
+  category. Do not include raw request bodies, cookies, authorization headers,
+  credentials, tokens, customer personal data, provider secrets, or dashboard
+  screenshots in repo docs.
+- Keep session replay, profiling, broad tracing, source-map upload, provider
+  webhooks, and sampling changes disabled unless a later owner-approved task
+  explicitly scopes them.
+- Alert silencing, threshold tuning, destination changes, and backup recipient
+  setup require a separate provider-dashboard task.
+
+## Simple Public Uptime Check Policy
+
+Simple uptime checks are approved as a future provider/dashboard setup step.
+They supplement `npm run smoke:public`; they do not replace deployment smoke,
+incident triage, Vercel log inspection, or credentialed smoke.
+
+Initial uptime checks should be unauthenticated public availability checks only:
+
+- `GET /`
+- `GET /artwork`
+- `GET /collections`
+- `GET /blog`
+- `GET /shop/products`
+- `GET /robots.txt`
+- `GET /sitemap.xml`
+
+Optional detail checks may use the current owner-approved public smoke records
+from the production ops decision packet. Do not configure credentialed,
+sessioned, admin, password-manager, private dashboard, mutation, enquiry-submit,
+cart/checkout, or provider-console checks as part of this uptime policy.
+
+Uptime alert destinations should start with Heron Laoutaris /
+`hlaoutaris@gmail.com`. Provider choice, check interval, threshold, region,
+notification channel, and any escalation schedule belong to the future scoped
+dashboard task. Vercel project settings, aliases/domains, rollback execution,
+and deployment promotion remain separate approval-gated actions.
+
+### Remaining Owner Decisions
+
+These decisions remain open before permanent production operations coverage is
+complete, or before an affected incident needs delegated authority.
 
 | Decision needed | Interim escalation | Next owner action |
 | --- | --- | --- |
-| Name the incident commander role and backup process. | Owner/orchestrator. | Approve a named owner, role label, team alias, or explicit commander assignment process. |
-| Name the Vercel deployment/log/rollback operator and backup. | Owner/orchestrator. | Confirm who can access Vercel logs, verify aliases, and promote rollback targets. |
-| Name the repository release approver and backup maintainer. | Owner/orchestrator. | Confirm who can approve merges, reverts, release branches, and fix-forward changes. |
-| Name the MongoDB production data operator and restore approver. | Owner/orchestrator. | Confirm who can inspect health/backups and who can approve restore or data-scope decisions. |
-| Name the Shopify commerce operator and backup. | Owner/orchestrator. | Confirm who can inspect Storefront API/product state and approve commerce-provider outage handling. |
-| Name the Cloudinary media operator and backup. | Owner/orchestrator. | Confirm who can inspect upload/delivery state and approve any future destructive asset operation. |
-| Name the auth credential and OAuth provider operators. | Owner/orchestrator. | Confirm who can approve smoke accounts, credentials rotation, callback checks, and provider incident checks. |
-| Name the DNS/domain/TLS operator and backup. | Owner/orchestrator. | Confirm who can inspect or change DNS, TLS, Vercel aliases, and production domain routing. |
-| Name the privacy/legal communication approver and backup. | Owner/orchestrator. | Confirm who can approve user-facing privacy, security, data-loss, or legal statements. |
+| Assign backup incident commander and backup alert recipient. | Heron Laoutaris / owner-orchestrator. | Approve named backup people, role labels, team aliases, or an explicit backup assignment process. |
+| Configure Sentry alert policy in the provider dashboard. | Heron Laoutaris. | Create the initial production error-alert policy and destination without enabling replay, profiling, broad tracing, source-map upload, webhooks, or sampling changes. |
+| Configure simple public uptime checks. | Heron Laoutaris. | Approve provider/check interval/threshold/region/channel for unauthenticated public-route availability checks only. |
+| Assign backup Vercel deployment/log/rollback operator. | Heron Laoutaris. | Confirm who can inspect Vercel logs, verify aliases, and execute a rollback after explicit incident approval. |
+| Assign backup repository release maintainer. | Heron Laoutaris. | Confirm who can approve merges, reverts, release branches, and fix-forward changes if Heron is unavailable. |
+| Assign backup MongoDB production data operator. | Heron Laoutaris. | Confirm who can inspect health/backups and who can approve restore or data-scope decisions if Heron is unavailable. |
+| Assign backup Shopify commerce operator. | Heron Laoutaris. | Confirm who can inspect Storefront API/product state and provider outage state if Heron is unavailable. |
+| Assign backup Cloudinary media operator. | Heron Laoutaris. | Confirm who can inspect upload/delivery state and approve any future destructive asset operation if Heron is unavailable. |
+| Assign backup auth credential and OAuth provider operators. | Heron Laoutaris. | Confirm who can approve smoke accounts, credentials rotation, callback checks, and provider incident checks if Heron is unavailable. |
+| Assign backup DNS/domain/TLS operator. | Heron Laoutaris. | Confirm who can inspect or change DNS, TLS, Vercel aliases, and production domain routing if Heron is unavailable. |
+| Assign backup privacy/legal communication approver. | Heron Laoutaris. | Confirm who can approve user-facing privacy, security, data-loss, or legal statements if Heron is unavailable. |
 
-### Approval Authority While Blocked
+### Approval Authority
 
-| Action | Required approval while owner rows are blocked |
+| Action | Required approval |
 | --- | --- |
-| Rollback or production deployment promotion | Owner/orchestrator approval plus an identified Vercel operator with project access. Repository release authority is also required if a code revert or fix-forward follows. |
-| Release changes, merge, revert, or fix-forward | Owner/orchestrator approval plus the identified GitHub release approver. |
-| Provider health checks or dashboard inspection | Owner/orchestrator approval plus the identified operator for the affected provider: Vercel, MongoDB, Shopify, Cloudinary, Auth/NextAuth, OAuth, or DNS/domain. |
-| MongoDB restore or data-scope decision | Owner/orchestrator approval plus the identified MongoDB operator. Do not restore, delete, export, or mutate production data from this runbook alone. |
-| Credential or secret rotation | Owner/orchestrator approval plus the identified owner for the affected secret source, such as Auth/NextAuth, OAuth, Shopify, Cloudinary, MongoDB, Vercel, or DNS. |
-| Privacy, security, data-loss, or legal communication | Owner/legal reviewer approval. If no reviewer has been approved, do not publish user-facing communication beyond private owner/orchestrator escalation. |
+| Rollback execution or production deployment promotion | Explicit Heron Laoutaris approval for the incident/task plus an identified Vercel operator with project access. Repository release authority is also required if a code revert or fix-forward follows. |
+| Release changes, merge, revert, or fix-forward | Heron Laoutaris approval, or a future owner-approved backup release maintainer. |
+| Provider health checks or dashboard inspection | Heron Laoutaris approval plus the identified operator for the affected provider: Vercel, Sentry, MongoDB, Shopify, Cloudinary, Auth/NextAuth, OAuth, or DNS/domain. |
+| Sentry alert or uptime dashboard changes | Separate Heron Laoutaris approval for the scoped provider-dashboard task. Do not enable replay, profiling, broad tracing, source-map upload, webhooks, or sampling changes as part of the initial alert/uptime policy. |
+| Vercel project settings, aliases/domains, or deployment promotion | Separate Heron Laoutaris approval. Read-only inspection does not authorize mutation. |
+| MongoDB restore or data-scope decision | Heron Laoutaris approval plus the identified MongoDB operator. Do not restore, delete, export, or mutate production data from this runbook alone. |
+| Credential or secret rotation | Heron Laoutaris approval plus the identified owner for the affected secret source, such as Auth/NextAuth, OAuth, Shopify, Cloudinary, MongoDB, Vercel, Sentry, or DNS. |
+| Privacy, security, data-loss, or legal communication | Heron Laoutaris or future owner-approved legal/privacy reviewer approval. |
 
 For SEV-1, the incident commander must escalate to the owner/orchestrator and
 the relevant service owner immediately. For SEV-2, escalate when the first
 triage pass cannot identify a safe rollback, defer, or provider-outage path.
-If the affected owner row is blocked, the owner/orchestrator must identify the
-approved operator before any privileged action continues.
+If Heron is unavailable and no backup has been assigned for the affected
+surface, do not continue privileged action until the owner/orchestrator
+identifies the approved operator.
 
 ## Rollback, Defer, Or Mitigate
 
@@ -159,11 +218,11 @@ failures. This runbook adds incident-level decision rules:
 
 | Decision | Use when | Approval |
 | --- | --- | --- |
-| Roll back | A recent deployment caused repeatable SEV-1 or SEV-2 failure, security/admin regression, wrong commit/environment promotion, root/serverless crash, public archive/shop `5xx`, credentials/admin smoke regression, or product not-found `500`. | Vercel rollback owner plus incident commander. Repository release owner if code revert/fix-forward follows. While owner rows are blocked, owner/orchestrator approval plus an identified Vercel operator is required. |
-| Defer release | A preview or pending production change fails smoke, build, auth/admin, Shopify, or runtime checks before promotion. | Repository release owner or orchestrator. While owner rows are blocked, owner/orchestrator approval plus the identified release approver is required. |
-| Mitigate in place | The issue is scoped, reversible, not caused by the current deployment, and can be contained through config, content, provider recovery, or a small follow-up without increasing user/data risk. | Incident commander plus affected service owner. While owner rows are blocked, owner/orchestrator must identify the affected service operator before privileged changes. |
-| Treat as provider outage | Evidence points to MongoDB, Shopify, Cloudinary, OAuth, DNS, or Vercel external outage and the current deployment is otherwise healthy. | Incident commander plus affected service owner; owner approves any user-facing communication. While owner rows are blocked, owner/orchestrator must identify the affected provider operator. |
-| Pause destructive/admin action | Data loss, data corruption, privacy/security issue, or destructive admin workflow risk is suspected. | Incident commander immediately; owner/database/privacy authority before resuming. While owner rows are blocked, keep the action paused until owner/orchestrator identifies the required authority. |
+| Roll back | A recent deployment caused repeatable SEV-1 or SEV-2 failure, security/admin regression, wrong commit/environment promotion, root/serverless crash, public archive/shop `5xx`, credentials/admin smoke regression, or product not-found `500`. | Heron Laoutaris as incident commander/rollback approver plus an identified Vercel operator. Repository release authority is required if code revert/fix-forward follows. |
+| Defer release | A preview or pending production change fails smoke, build, auth/admin, Shopify, or runtime checks before promotion. | Heron Laoutaris as repository release authority, or a future owner-approved backup release maintainer. |
+| Mitigate in place | The issue is scoped, reversible, not caused by the current deployment, and can be contained through config, content, provider recovery, or a small follow-up without increasing user/data risk. | Incident commander plus affected service owner. Heron Laoutaris currently owns both roles unless a future backup is assigned. |
+| Treat as provider outage | Evidence points to MongoDB, Shopify, Cloudinary, OAuth, DNS, Sentry, or Vercel external outage and the current deployment is otherwise healthy. | Incident commander plus affected service owner; Heron Laoutaris approves any user-facing communication. |
+| Pause destructive/admin action | Data loss, data corruption, privacy/security issue, or destructive admin workflow risk is suspected. | Incident commander immediately; owner/database/privacy authority before resuming. Heron Laoutaris currently owns these approvals unless a future backup is assigned. |
 
 After rollback or mitigation, rerun the minimum checks from
 [deployment smoke checks](deployment.md#smoke-checks-after-deploy) that match

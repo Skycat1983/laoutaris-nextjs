@@ -8,6 +8,7 @@ production while preserving MongoDB as the archive source of truth.
 ## Depends On
 
 - [Shopify commerce architecture](../architecture/shopify-commerce.md)
+- [Shopify catalog generation](../architecture/shopify-catalog-generation.md)
 - [Routes and API architecture](../architecture/routes-and-api.md)
 - [Shopify operations runbook](../runbooks/shopify-operations.md)
 - [Production-readiness risks](../risks/production-readiness.md)
@@ -202,6 +203,12 @@ production while preserving MongoDB as the archive source of truth.
   `src/lib/data/options/shopSortOptions.ts`, preserving the T-269 `sortBy`
   values while keeping shop client components out of runtime imports from
   `src/lib/data/types`.
+- T-328 added the Phase 1 Shopify catalog dry-run command:
+  `npm run plan:shopify-catalog`. It reads MongoDB artworks, writes a local
+  JSON product-plan report, proposes one original and one print per artwork,
+  keeps original inventory at `1`, keeps print inventory configurable with
+  default `50`, and does not call Shopify or mutate MongoDB, Shopify, or
+  Cloudinary.
 
 ## Backlog
 
@@ -220,6 +227,11 @@ production while preserving MongoDB as the archive source of truth.
   controls again.
 - Keep Shopify product search tied to the existing public product-list data path
   unless a separate search/indexing decision is made.
+- Implement Shopify catalog generation in phases: dry-run MongoDB-to-Shopify
+  product plan first, existing-product reconciliation second, small draft pilot
+  third, and only then bulk draft creation. Originals default to inventory `1`;
+  prints default to configurable edition quantity `50`. Do not publish,
+  delete, or overwrite Shopify products by default.
 - Implement the framed print preview plan in separate slices: frame profile and
   geometry contracts, standalone preview component, modal controls,
   `/prototype/frame`, product-page launcher wiring, targeted owner review,
@@ -669,6 +681,9 @@ Add targeted tests as shop behavior is hardened.
   handoffs, task index, and orchestration state now reflect that print/original
   scoped review is complete, book review is blocked on durable Shopify
   metadata, and further commerce/design implementation is owner-packet-gated.
+- 2026-05-28: Completed T-328. The first Shopify catalog generation phase is
+  implemented as a dry-run-only MongoDB reader and local JSON report writer,
+  with focused helper tests and runbook command documentation.
 
 ## Next Agent Action
 
@@ -705,6 +720,17 @@ T-297 sale-gallery outcomes. Next sale-gallery work should start only after the
 owner review packet decisions are answered or Shopify Storefront data confirms
 durable book metadata for the candidate handle. Keep tracker-only cleanup,
 runtime commerce changes, visual implementation, and browser QA separate.
+
+The owner confirmed on 2026-05-28 that every MongoDB artwork should eventually
+have one original product with inventory `1` and one print product with default
+edition quantity `50`, while not all generated products should be listed at any
+one time. The phased plan is now documented in
+[Shopify catalog generation](../architecture/shopify-catalog-generation.md).
+T-328 completed the dry-run product plan. Next source work should wait for
+owner review of the generated report, then scope existing-product
+reconciliation as a separate read-only Shopify Admin task. Live writes,
+MongoDB link writes, publishing, deletes, pricing rules, and dashboard
+automation remain out of scope.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

@@ -10,6 +10,7 @@ reality changes.
 - [Routes and API](routes-and-api.md)
 - [Data field contracts](data-field-contracts.md)
 - [Shopify commerce](shopify-commerce.md)
+- [Shopify catalog generation](shopify-catalog-generation.md)
 - [Framed print preview](framed-print-preview.md)
 - [Rendering and data fetching](rendering-and-data-fetching.md)
 - [Monitoring and error reporting](monitoring-and-error-reporting.md)

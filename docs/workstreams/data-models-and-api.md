@@ -1055,4 +1055,12 @@ builders for article, artwork, blog, and collection create URLs. Route
 handlers, request-context route IDs, response contracts, validation, guard
 behavior, DB ownership, logging behavior, admin UI behavior, and Shopify
 dashboard work remain unchanged. Broader public/user API route-builder families
-remain separate future scopes.
+remain separate future scopes. T-327 is prepared to inventory public/user API
+client fetcher paths and choose one safe implementation slice before any source
+changes.
+
+T-328 is complete: the Shopify catalog dry-run script reads only projected
+MongoDB artwork fields (`_id`, `title`, `image`) and writes a local plan report
+without mutating MongoDB or writing generated `shopifyProducts` links. Existing
+product reconciliation and any MongoDB linking decision remain separate future
+tasks.

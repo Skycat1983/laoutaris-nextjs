@@ -3,8 +3,10 @@
 This document defines the owner decision and implementation contract for
 production monitoring and error reporting. Sentry is now the owner-approved
 provider, and T-310 implemented the first scoped error-reporting baseline.
-Source-map upload, alert automation, profiling, replay, broad tracing, uptime
-checks, and Vercel project settings remain separate owner-approved tasks.
+T-326 documents the first alert and public uptime routing contract. Source-map
+upload, alert automation/dashboard mutation, profiling, replay, broad tracing,
+uptime provider setup, and Vercel project settings remain separate
+owner-approved tasks.
 
 ## Current State
 
@@ -16,6 +18,15 @@ checks, and Vercel project settings remain separate owner-approved tasks.
   `tracesSampleRate: 0`, disables Sentry source-map upload in
   `next.config.mjs`, and does not configure replay, profiling, alerts,
   uptime checks, Vercel project settings, or Shopify dashboard work.
+- T-326 documents Heron Laoutaris / `hlaoutaris@gmail.com` as the initial
+  Sentry alert destination and Heron Laoutaris as the initial incident
+  commander and rollback approver.
+- T-326 recommends first Sentry alerting for production server/runtime, edge,
+  and browser/client error events while keeping replay, profiling, broad
+  tracing, source-map upload, provider webhooks, and sampling changes disabled.
+- T-326 scopes future uptime checks to simple unauthenticated public-route
+  availability checks only; credentialed/admin, mutation, provider-console, and
+  private dashboard checks are out of scope.
 - The only OpenTelemetry-related package evidence is Next.js optional peer
   metadata in `package-lock.json`; the app does not depend on or configure
   OpenTelemetry directly.
@@ -28,11 +39,14 @@ checks, and Vercel project settings remain separate owner-approved tasks.
 - `src/app/error.tsx` and `src/app/global-error.tsx` capture client/App Router
   render-boundary errors without changing the existing visible fallback copy.
 - T-116 added the incident-response runbook, including severity, triage,
-  evidence, rollback, and `TBD` owner/escalation matrix placeholders.
+  evidence, rollback, and owner/escalation matrix placeholders. T-134 made the
+  missing owner decisions explicit, and T-326 replaced the stale fully-blocked
+  incident routing with the owner-approved initial Heron routing.
 - Deployment smoke remains evidence-based and manual/scripted through
   `npm run smoke:public`; it is not continuous monitoring.
 - [ADR 0005](../decisions/0005-monitoring-provider-decision.md) records Sentry
-  as the approved provider. Runtime implementation remains pending.
+  as the approved provider. T-310 completed the first runtime implementation
+  baseline; provider-dashboard alert and uptime setup remain separate.
 
 ## Required Capture Surfaces
 
@@ -149,11 +163,16 @@ approved provider:
 
 Remaining follow-ups:
 
-1. Document alert routing and owner responsibilities in the incident-response
-   runbook once real owners are approved.
-2. Keep source-map upload, profiling, session replay, broad tracing, uptime
-   checks, CI/scheduled smoke, and Vercel project configuration separate unless
-   a later owner-approved task scopes them.
+1. Configure the initial Sentry error alert policy in the provider dashboard
+   using Heron Laoutaris / `hlaoutaris@gmail.com` as the destination, without
+   enabling source-map upload, profiling, session replay, broad tracing,
+   provider webhooks, or sampling changes.
+2. Configure simple public uptime checks only after a separate
+   owner-approved provider/dashboard task chooses provider, interval, threshold,
+   region, and notification channel.
+3. Keep source-map upload, profiling, session replay, broad tracing, uptime
+   provider setup, CI/scheduled smoke changes, and Vercel project configuration
+   separate unless a later owner-approved task scopes them.
 
 ## No-Provider Interim Policy
 
@@ -165,5 +184,5 @@ interim operating posture should remain:
 - `npm run smoke:public` remains the deploy smoke baseline.
 - The incident-response runbook remains the escalation and evidence contract.
 - Manual Vercel log inspection remains required for production incidents.
-- Provider selection, alert automation, client error capture, and owner matrix
-  completion remain open production risks.
+- Provider-dashboard alert setup, uptime checks, source-map upload, and backup
+  operator assignment remain open production risks.
