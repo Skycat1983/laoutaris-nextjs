@@ -102,6 +102,7 @@ const artworkSchema = new mongoose.Schema(
           enum: ["original", "print", "book"],
           required: true,
         },
+        publicListing: { type: Boolean, default: true },
         _id: false, // Disable _id for subdocuments
       },
     ],

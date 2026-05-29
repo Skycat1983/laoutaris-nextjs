@@ -23,6 +23,7 @@ Artwork documents should store minimal Shopify references:
 type ShopifyProductLink = {
   productId: string;
   type: "original" | "print" | "book";
+  publicListing?: boolean;
 };
 ```
 
@@ -32,6 +33,13 @@ example `"10538938761480"`. Code that calls Shopify can construct the full GID:
 ```text
 gid://shopify/Product/10538938761480
 ```
+
+`publicListing` controls whether a linked product participates in broad public
+listing surfaces. Missing values are treated as public/listable for legacy and
+manual links. Generated original and print links should be written with
+`publicListing: false` by default so artwork pages can retain one-click product
+relationships without automatically expanding `/shop/products`, public search,
+homepage shop sections, or product sitemap output.
 
 ## Shopify Metafields
 
@@ -68,10 +76,16 @@ Product listing:
 1. Fetch or filter artwork records from MongoDB.
 2. Extract linked Shopify product IDs.
 3. Normalize linked product IDs to numeric Shopify product IDs.
-4. Ignore malformed stored product IDs, including legacy full GID strings.
-5. Deduplicate normalized product IDs.
-6. Fetch product details from Shopify.
-7. Render products and apply client-side sorting where appropriate.
+4. Exclude links where `publicListing` is explicitly `false`; absent values are
+   treated as public/listable for backward compatibility.
+5. Ignore malformed stored product IDs, including legacy full GID strings.
+6. Deduplicate normalized product IDs.
+7. Fetch product details from Shopify.
+8. Exclude products Shopify reports as unavailable for sale before returning
+   public listing data. This keeps generated draft products out of automatic
+   list, search, homepage, prototype, API, and sitemap surfaces even if a
+   MongoDB link is later present.
+9. Render products and apply client-side sorting where appropriate.
 
 ## Purchase Handoff
 

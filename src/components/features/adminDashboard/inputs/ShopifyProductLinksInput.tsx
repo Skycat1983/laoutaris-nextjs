@@ -7,6 +7,7 @@ import {
   Control,
   FieldErrors,
   UseFormRegister,
+  UseFormSetValue,
 } from "react-hook-form";
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
@@ -35,6 +36,7 @@ const SHOPIFY_PRODUCT_TYPE_LABELS: Record<ShopifyProductLink["type"], string> =
 const EMPTY_SHOPIFY_PRODUCT_LINK = {
   productId: "",
   type: "original",
+  publicListing: true,
 } satisfies ShopifyProductLink;
 
 const SHOPIFY_NUMERIC_PRODUCT_ID_PATTERN = /^\d+$/;
@@ -187,6 +189,7 @@ const formatProductPrice = (product: SimpleProduct) =>
 interface ShopifyProductLinksInputProps {
   control: Control<ArtworkFormValues>;
   register: UseFormRegister<ArtworkFormValues>;
+  setValue: UseFormSetValue<ArtworkFormValues>;
   errors?: FieldErrors<ArtworkFormValues>["shopifyProducts"];
   disabled?: boolean;
 }
@@ -203,6 +206,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
 export function ShopifyProductLinksInput({
   control,
   register,
+  setValue,
   errors,
   disabled = false,
 }: ShopifyProductLinksInputProps) {
@@ -221,6 +225,18 @@ export function ShopifyProductLinksInput({
   const arrayErrorMessage = getErrorMessage(errors);
 
   useEffect(() => {
+    fields.forEach((field, index) => {
+      setValue(
+        `shopifyProducts.${index}.publicListing`,
+        field.publicListing ?? true,
+        {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        }
+      );
+    });
+
     const currentFieldIds = new Set(fields.map((field) => field.id));
 
     setVerificationByFieldId((current) => {
@@ -234,7 +250,7 @@ export function ShopifyProductLinksInput({
 
       return currentKeys.length === nextKeys.length ? current : next;
     });
-  }, [fields]);
+  }, [fields, setValue]);
 
   const getEffectiveVerification = (
     fieldId: string,

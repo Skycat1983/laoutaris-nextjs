@@ -78,11 +78,16 @@ const shouldIncludeProductLink = (
     showBooks = true,
   }: GetShopProductListParams
 ) => {
+  if (link.publicListing === false) return false;
   if (link.type === "original" && !showOriginals) return false;
   if (link.type === "print" && !showPrints) return false;
   if (link.type === "book" && !showBooks) return false;
   return true;
 };
+
+const isPubliclyListableProduct = (
+  product: SimpleProduct | null
+): product is SimpleProduct => product !== null && product.availableForSale;
 
 const getErrorForLog = (error: unknown) =>
   error instanceof Error
@@ -133,9 +138,7 @@ export const getShopProductList = async (
     })
   );
 
-  const products = productResults.filter(
-    (product): product is SimpleProduct => product !== null
-  );
+  const products = productResults.filter(isPubliclyListableProduct);
   const sortedProducts = sortShopProducts(products, params.sortBy ?? "type");
 
   return {

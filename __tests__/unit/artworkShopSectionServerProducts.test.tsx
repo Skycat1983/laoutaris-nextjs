@@ -92,15 +92,16 @@ describe("ArtworkShopSection server-provided products", () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it("renders the section shell without loading badges when linked products were all skipped server-side", () => {
-    render(
+  it("does not render purchase affordances when linked products were all skipped server-side", () => {
+    const { container } = render(
       <ArtworkShopSection
         artwork={artwork}
         shopProducts={{ original: null, prints: [], books: [] }}
       />
     );
 
-    expect(screen.getByText("Available for Purchase")).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByText("Available for Purchase")).not.toBeInTheDocument();
     expect(screen.queryByText("Original Available")).not.toBeInTheDocument();
     expect(screen.queryByText("Prints Available")).not.toBeInTheDocument();
     expect(screen.queryByText("Featured in Books")).not.toBeInTheDocument();

@@ -429,6 +429,24 @@ const inferProductFamily = (product) => {
   return isOriginal ? "original" : "print";
 };
 
+const getDuplicateProductFamilies = (products) => {
+  const countsByFamily = new Map();
+
+  products.forEach((product) => {
+    const family = inferProductFamily(product);
+
+    if (!family) {
+      return;
+    }
+
+    countsByFamily.set(family, (countsByFamily.get(family) ?? 0) + 1);
+  });
+
+  return Array.from(countsByFamily.entries())
+    .filter(([, count]) => count > 1)
+    .map(([family]) => family);
+};
+
 const getExactArtworkMetafieldMatches = (products, artworkId) =>
   dedupeShopifyProducts(products).filter(
     (product) => product.customMongodbArtworkId === artworkId
@@ -548,11 +566,14 @@ const classifyPlannedProduct = ({
     });
   });
 
-  if (allMetafieldMatches.length > 1) {
+  const duplicateMetafieldFamilies =
+    getDuplicateProductFamilies(allMetafieldMatches);
+
+  if (duplicateMetafieldFamilies.length > 0) {
     conflicts.push(
       createConflict(
         "duplicate_shopify_products_by_artwork_id",
-        "More than one Shopify product has this custom.mongodb_artwork_id.",
+        "More than one Shopify product has this custom.mongodb_artwork_id for the same product family.",
         null
       )
     );
@@ -580,16 +601,6 @@ const classifyPlannedProduct = ({
       createConflict(
         "ambiguous_shopify_product_family",
         "Shopify product matched by artwork metafield cannot be assigned to original or print.",
-        product
-      )
-    );
-  });
-
-  conflictingManualNumberMatches.forEach((product) => {
-    conflicts.push(
-      createConflict(
-        "manual_number_match_metafield_artwork_mismatch",
-        "Shopify product matched by manual artwork number has a different custom.mongodb_artwork_id.",
         product
       )
     );
@@ -654,6 +665,32 @@ const classifyPlannedProduct = ({
         )
       );
     }
+  }
+
+  const handleMatchIsExact = handleMatch?.customMongodbArtworkId === artworkId;
+  const metafieldMatchIsExact = compatibleMetafieldMatches.length > 0;
+
+  if (
+    conflictingManualNumberMatches.length > 0 &&
+    !handleMatchIsExact &&
+    !metafieldMatchIsExact
+  ) {
+    conflictingManualNumberMatches.forEach((product) => {
+      conflicts.push(
+        createConflict(
+          "manual_number_match_metafield_artwork_mismatch",
+          "Shopify product matched by manual artwork number has a different custom.mongodb_artwork_id.",
+          product
+        )
+      );
+    });
+  } else if (conflictingManualNumberMatches.length > 0) {
+    warnings.push({
+      code: "manual_number_matches_other_artworks_ignored",
+      message:
+        "Other Shopify products matched the same artwork number but were ignored because the proposed handle or custom.mongodb_artwork_id matched this planned product exactly.",
+      count: conflictingManualNumberMatches.length,
+    });
   }
 
   if (
@@ -929,11 +966,12 @@ const buildReconciliationReport = ({
     const conflicts = [];
     const warnings = ignoredMetafieldWarning ? [ignoredMetafieldWarning] : [];
 
-    if (matchesByArtworkMetafield.length > 1) {
+    if (getDuplicateProductFamilies(matchesByArtworkMetafield).length > 0) {
       summary.duplicateShopifyProductsByArtworkId += 1;
       conflicts.push({
         code: "duplicate_shopify_products_by_artwork_id",
-        message: "More than one Shopify product has this custom.mongodb_artwork_id.",
+        message:
+          "More than one Shopify product has this custom.mongodb_artwork_id for the same product family.",
       });
     }
 

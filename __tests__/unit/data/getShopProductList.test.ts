@@ -53,6 +53,7 @@ const mockArtworkQuery = (
     shopifyProducts?: Array<{
       productId: string;
       type: "original" | "print" | "book";
+      publicListing?: boolean;
     }>;
   }>
 ) => {
@@ -325,5 +326,65 @@ describe("getShopProductList", () => {
         },
       })
     );
+  });
+
+  it("skips unavailable products so draft-linked products are not returned automatically", async () => {
+    mockArtworkQuery([
+      {
+        shopifyProducts: [
+          { productId: "601", type: "original" },
+          { productId: "602", type: "print" },
+        ],
+      },
+    ]);
+    mockGetProductById.mockImplementation((gid) => {
+      if (gid.endsWith("/602")) {
+        return Promise.resolve(
+          createProduct("602", {
+            availableForSale: false,
+          })
+        );
+      }
+
+      return Promise.resolve(createProduct("601"));
+    });
+
+    await expect(getShopProductList()).resolves.toEqual({
+      success: true,
+      data: [createProduct("601")],
+      metadata: {
+        totalArtworks: 1,
+        totalProducts: 1,
+      },
+    });
+    expect(mockGetProductById).toHaveBeenCalledTimes(2);
+  });
+
+  it("skips links explicitly disabled from public listing before Shopify fan-out", async () => {
+    mockArtworkQuery([
+      {
+        shopifyProducts: [
+          { productId: "701", type: "original", publicListing: false },
+          { productId: "702", type: "print", publicListing: true },
+          { productId: "703", type: "book" },
+        ],
+      },
+    ]);
+
+    const result = await getShopProductList();
+
+    expect(mockGetProductById).toHaveBeenCalledTimes(2);
+    expect(mockGetProductById).toHaveBeenNthCalledWith(
+      1,
+      "gid://shopify/Product/702"
+    );
+    expect(mockGetProductById).toHaveBeenNthCalledWith(
+      2,
+      "gid://shopify/Product/703"
+    );
+    expect(result.metadata).toEqual({
+      totalArtworks: 1,
+      totalProducts: 2,
+    });
   });
 });

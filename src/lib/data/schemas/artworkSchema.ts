@@ -51,6 +51,7 @@ const shopifyProductLinkSchema = z
       required_error: "Shopify product type is required",
       invalid_type_error: "Shopify product type is required",
     }),
+    publicListing: z.boolean().default(true),
   })
   .strict();
 

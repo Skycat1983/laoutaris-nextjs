@@ -88,8 +88,8 @@ const validCreatePayload = {
 };
 
 const validShopifyProducts = [
-  { productId: "10538938761480", type: "original" },
-  { productId: "10538937319688", type: "book" },
+  { productId: "10538938761480", type: "original", publicListing: true },
+  { productId: "10538937319688", type: "book", publicListing: true },
 ] as const;
 
 const validUpdatePayload = {
@@ -592,6 +592,39 @@ describe("PATCH /api/v2/admin/artwork/update/[id]", () => {
       {
         $set: {
           shopifyProducts: validShopifyProducts,
+        },
+      },
+      { new: true }
+    );
+  });
+
+  it("preserves non-public Shopify product links during updates", async () => {
+    const request = createRequest({
+      shopifyProducts: [
+        {
+          productId: "10538938761480",
+          type: "original",
+          publicListing: false,
+        },
+      ],
+    });
+
+    const response = await PATCH(request as never, {
+      params: { id: artworkId },
+    });
+
+    expect(response.status).toBe(200);
+    expect(mockArtworkFindByIdAndUpdate).toHaveBeenCalledWith(
+      artworkId,
+      {
+        $set: {
+          shopifyProducts: [
+            {
+              productId: "10538938761480",
+              type: "original",
+              publicListing: false,
+            },
+          ],
         },
       },
       { new: true }

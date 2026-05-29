@@ -21,6 +21,10 @@ const ArtworkShopSection = ({
   const { original: originalProduct, prints: printProducts, books: bookProducts } =
     shopProducts;
 
+  if (!originalProduct && printProducts.length === 0 && bookProducts.length === 0) {
+    return null;
+  }
+
   return (
     <div className="bg-gray-50 border-t border-gray-200 p-6">
       <h3 className="text-xl font-semibold mb-6">Available for Purchase</h3>

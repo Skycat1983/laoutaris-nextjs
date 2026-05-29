@@ -142,7 +142,7 @@ const existingArtwork = {
   ...baseArtworkFormValues,
   image: validImage,
   shopifyProducts: [
-    { productId: "10538938761480", type: "original" },
+    { productId: "10538938761480", type: "original", publicListing: false },
     { productId: "10538937319688", type: "book" },
   ],
 } as never;
@@ -178,7 +178,28 @@ describe("admin artwork Shopify product-link form schema", () => {
     });
 
     expect(parsed.shopifyProducts).toEqual([
-      { productId: "10538938761480", type: "print" },
+      { productId: "10538938761480", type: "print", publicListing: true },
+    ]);
+  });
+
+  it("preserves explicit non-public Shopify product links", () => {
+    const parsed = artworkFormSchema.parse({
+      ...baseArtworkFormValues,
+      shopifyProducts: [
+        {
+          productId: "10538938761480",
+          type: "original",
+          publicListing: false,
+        },
+      ],
+    });
+
+    expect(parsed.shopifyProducts).toEqual([
+      {
+        productId: "10538938761480",
+        type: "original",
+        publicListing: false,
+      },
     ]);
   });
 
@@ -257,7 +278,11 @@ describe("admin artwork Shopify product-link forms", () => {
           title: "Archive Work",
           image: validImage,
           shopifyProducts: [
-            { productId: "10538938761480", type: "book" },
+            {
+              productId: "10538938761480",
+              type: "book",
+              publicListing: true,
+            },
           ],
         })
       );
@@ -462,7 +487,11 @@ describe("admin artwork Shopify product-link forms", () => {
       expect(mockCreateArtwork).toHaveBeenCalledWith(
         expect.objectContaining({
           shopifyProducts: [
-            { productId: "10538938761480", type: "original" },
+            {
+              productId: "10538938761480",
+              type: "original",
+              publicListing: true,
+            },
           ],
         })
       );
@@ -521,6 +550,37 @@ describe("admin artwork Shopify product-link forms", () => {
         artworkId,
         expect.objectContaining({
           shopifyProducts: [],
+        })
+      );
+    });
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves existing non-public listing links from the update artwork form", async () => {
+    const onSuccess = jest.fn();
+
+    render(
+      <UpdateArtworkForm artworkInfo={existingArtwork} onSuccess={onSuccess} />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Update Artwork" }));
+
+    await waitFor(() => {
+      expect(mockPatchArtwork).toHaveBeenCalledWith(
+        artworkId,
+        expect.objectContaining({
+          shopifyProducts: [
+            {
+              productId: "10538938761480",
+              type: "original",
+              publicListing: false,
+            },
+            {
+              productId: "10538937319688",
+              type: "book",
+              publicListing: true,
+            },
+          ],
         })
       );
     });
@@ -598,8 +658,16 @@ describe("admin artwork Shopify product-link forms", () => {
         expect.objectContaining({
           image: replacementImage,
           shopifyProducts: [
-            { productId: "10538938761480", type: "original" },
-            { productId: "10538937319688", type: "book" },
+            {
+              productId: "10538938761480",
+              type: "original",
+              publicListing: false,
+            },
+            {
+              productId: "10538937319688",
+              type: "book",
+              publicListing: true,
+            },
           ],
         })
       );

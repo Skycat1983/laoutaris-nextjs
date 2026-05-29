@@ -2,6 +2,7 @@
 export type ShopifyProductLink = {
   productId: string; // Shopify numeric product ID (e.g., "10538938761480")
   type: "original" | "print" | "book";
+  publicListing?: boolean; // Absent legacy values are treated as public.
 };
 
 // Helper type guards

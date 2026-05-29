@@ -148,6 +148,19 @@ production while preserving MongoDB as the archive source of truth.
   validation, stored ID skipping, deduplication, Shopify fan-out, success
   metadata, validation `400`s, and public-safe `500`s; `ShopProductsLoader` no
   longer depends on `NEXT_PUBLIC_BASE_URL`, localhost, or same-app `fetch()`.
+- Public shop list data now returns only Shopify products where
+  `availableForSale` is true. This keeps generated draft or unavailable
+  products out of automatic list, search, homepage/prototype, API, and sitemap
+  surfaces even if product IDs are later linked from MongoDB.
+- Artwork `shopifyProducts` links now support optional `publicListing`. Missing
+  values are treated as public/listable for existing manual links. Generated
+  original/print links should be written with `publicListing: false` by default
+  so per-artwork product relationships can exist without broad public shop
+  exposure.
+- All generated print links have since been promoted to app-listable with
+  `publicListing: true`; generated original links remain hidden by default with
+  `publicListing: false`. A generated print still appears publicly only after
+  Shopify Storefront reports it as available for sale.
 - T-097 completed the visible admin artwork form workflow for creating,
   editing, and removing canonical `shopifyProducts` links while preserving
   T-082 server-side validation.
@@ -830,6 +843,103 @@ Add targeted tests as shop behavior is hardened.
   `DRAFT` status, family/taxonomy tags, typed `custom` metafields, selected
   image metadata, explicit exclusions, print-only edition quantity, and one
   `Frame package = Unframed` print variant.
+- 2026-05-28: T-337 regenerated the expanded dry-run plan from MongoDB: 215
+  artworks scanned, 215 originals planned, 215 prints planned, 0 missing
+  titles, 0 missing images, 0 missing required taxonomy metadata, 0
+  unsupported required metadata, and 0 duplicate generated handles. The
+  read-only post-clean-slate Shopify reconciliation did not run because
+  `SHOPIFY_ADMIN_API_VERSION` and `SHOPIFY_ADMIN_ACCESS_TOKEN` were not
+  exported in the current environment; the older local reconciliation report
+  must not be treated as evidence for the regenerated plan.
+- 2026-05-29: T-337 reran the read-only reconciliation after sourcing local
+  `.env`. `SHOPIFY_ADMIN_ACCESS_TOKEN` was still not present, so the run mapped
+  the available `SHOPIFY_APP_AUTOMATION_TOKEN` to the script-required token name
+  for that process only. The command reached Shopify during a network-approved
+  rerun but Shopify returned `401 Unauthorized` for all 859 lookups. The
+  regenerated reconciliation report is not clean evidence: 215 artworks and 430
+  planned products scanned, 0 exact/handle/metafield/manual/no-match rows,
+  0 conflicts, 859 query errors, and 430 manual-review rows caused by failed
+  lookups.
+- 2026-05-29: T-337 generated a local Shopify Admin access token through the
+  app client credentials flow, wrote it to `.env` as
+  `SHOPIFY_ADMIN_ACCESS_TOKEN`, and reran the read-only reconciliation. The
+  successful report scanned 215 artworks and 430 planned products, found 430
+  no-match rows, 0 exact/handle/metafield/manual matches, 0 conflicts, 0 query
+  errors, and 0 manual-review rows. T-337 is complete, and the full-catalog
+  draft-generation implementation can now be scoped as a separate write-gated
+  task.
+- 2026-05-29: Prepared T-338 as the guarded full-catalog draft-generation
+  implementation task. It may add the command and tests, but live Shopify
+  product creation remains blocked until the owner approves the exact
+  confirmation and approval input.
+- 2026-05-29: Completed T-338. The guarded
+  `npm run create:shopify-catalog-drafts` command now validates the clean plan,
+  reconciliation report, owner approval input, DRAFT status, prices, inventory
+  location, MongoDB-linking disablement, clean `no_match` rows, and exact
+  confirmation before Shopify mutation. After owner approval, the live run
+  created 430 DRAFT Shopify products with 0 failures and 0 skips. A separate
+  post-create read-only reconciliation report found 430 exact matches,
+  0 conflicts, and 0 query errors. No products were published, no MongoDB
+  `shopifyProducts` links were written, and no Cloudinary/runtime/checkout/cart
+  behavior changed.
+- 2026-05-29: Completed T-339 after the owner clarified that draft products
+  should not be returned automatically. The shared public product-list service
+  now excludes Shopify products where `availableForSale` is false before
+  sorting and metadata calculation, with focused unit coverage. This guards
+  `/shop/products`, the public shop API, homepage/prototype shop sections,
+  dynamic product sitemap generation, and explicit `type=shop-products` public
+  search. Direct product-detail route behavior and MongoDB linking policy remain
+  separate.
+- 2026-05-29: Completed T-340 after the owner approved generated links for all
+  215 artworks with public listing disabled by default. The Shopify product-link
+  model, route/form schema, Mongoose schema, admin forms, admin routes, and
+  public product-list service now support `publicListing`. Public listing skips
+  links marked `publicListing: false` before Shopify fan-out while legacy links
+  remain listable by default.
+- 2026-05-29: Completed T-341 as the guarded MongoDB link-write preparation.
+  `npm run link:shopify-catalog-products` now supports read-only plan mode and
+  exact-confirmation write mode. The live read-only plan against the current
+  MongoDB target scanned 215 artworks, planned 430 generated non-public links,
+  preserved 92 existing book links, and marked 7 existing original/print links
+  for replacement. Live MongoDB write remains blocked until exact owner
+  confirmation `LINK_GENERATED_SHOPIFY_PRODUCTS`.
+- 2026-05-29: Completed T-342 after the owner provided the exact confirmation.
+  The live MongoDB link write updated all 215 artworks, wrote 430 generated
+  original/print links with `publicListing: false`, preserved 92 book links,
+  and performed no Shopify, Cloudinary, checkout/cart, order, customer,
+  publication, domain, alias, or Vercel mutations. Post-write plan verification
+  found 0 artworks still needing update. The product-link audit found
+  0 invalid product IDs, 0 unknown product types, 0 within-artwork duplicates,
+  and the expected shared book cross-artwork duplicate group.
+- 2026-05-29: Completed T-343 runtime exposure verification. Public shop API and
+  `/shop/products` expose the preserved book but not generated draft
+  original/print handles. Explicit `type=shop-products` search for `No.003`
+  returns the no-match state. The direct generated print route is non-purchase/
+  route-local not-found. A narrow runtime issue was fixed so artwork detail no
+  longer renders the `Available for Purchase` shell when every linked product is
+  skipped server-side as unavailable.
+- 2026-05-29: Completed T-344 after the owner clarified that all prints should
+  be app-listable and Shopify can remain the day-to-day on/off control. Added
+  the guarded `npm run set:shopify-link-listing` command, planned the print
+  update, then ran confirmed write mode with
+  `SET_SHOPIFY_PRODUCT_LINK_PUBLIC_LISTING`. All 215 print links now have
+  `publicListing: true`; generated original links remain hidden, book links are
+  unchanged, Shopify product status/publication was not changed, and the
+  product-link audit remained clean except for the expected shared book
+  duplicate group.
+- 2026-05-29: Completed T-345 after the owner asked for 10 originals and 25
+  prints with partial overlap. Added `npm run prepare:shopify-sale-sample` and
+  `npm run apply:shopify-sale-sample`, generated a reproducible selection with
+  7 overlap artworks, 3 original-only artworks, and 18 print-only artworks, and
+  wrote an activation plan. The first guarded live activation was blocked before
+  mutation because the Admin token lacked publication scopes. After the owner
+  updated Shopify app scopes, `currentAppInstallation.accessScopes` reported
+  `read_products`, `write_products`, `read_publications`, and
+  `write_publications`; the confirmed write activated 35 selected Shopify
+  products, published 35 selected Shopify products to `Online Store`, updated
+  17 selected MongoDB link groups, and had 0 MongoDB/Shopify failures. A
+  read-only product-link audit remained clean except for the expected shared
+  book duplicate group.
 
 ## Next Agent Action
 
@@ -881,13 +991,25 @@ artworks, and T-334 added a clean-slate cleanup dry-run/delete gate for all
 Shopify products. The live T-330 pilot has now created 10 draft Shopify
 products. T-334 has now reset Shopify to the two book/publication products.
 T-335 completed the docs-only metadata mapping for generated original/print
-products, and T-336 applied that mapping to the dry-run planner. Next Shopify
-catalog work should use the expanded dry-run report for owner review and
-separately scope any full-catalog draft-generation write task. Live writes
-remain gated by explicit confirmation flags and a `write_products` token;
-publishing, framed/material/mat variant creation, MongoDB link writes,
-Cloudinary mutation, checkout/cart work, and browser automation remain out of
-scope unless separately assigned.
+products, and T-336 applied that mapping to the dry-run planner. T-337 and
+T-338 are complete: the expanded dry-run report reconciled cleanly, the guarded
+full-catalog draft command created 430 DRAFT Shopify products, and post-create
+read-only reconciliation found 430 exact matches, 0 conflicts, and 0 query
+errors. T-339 prevents unavailable products from broad public listing/search/
+sitemap surfaces, and T-340 added the explicit `publicListing` flag so generated
+links can be stored without automatic public exposure. T-341 created the
+read-only MongoDB link plan and exact-confirmation write command. T-342 ran the
+confirmed live MongoDB write, so every artwork now has generated original and
+print links with `publicListing: false`; existing book links were preserved.
+T-343 completed runtime exposure verification and fixed the only found runtime
+exposure issue. T-344 then promoted all generated print links to
+`publicListing: true` while leaving generated originals hidden and leaving
+Shopify product status/publication untouched. T-345 then activated and
+published the smaller pre-launch sale sample of 10 originals and 25 prints.
+Next commerce work should verify public shop/API behavior for that selected
+sample and keep full-catalog activation, framed/material/mat variants,
+Cloudinary mutation, checkout/cart work, and broader browser automation
+separate unless explicitly assigned.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

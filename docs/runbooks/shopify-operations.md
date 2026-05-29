@@ -413,6 +413,270 @@ Exit behavior:
 - `1`: confirmation, environment, approval, plan, reconciliation, output-path,
   Shopify user-error, or mutation validation failed.
 
+## Shopify Full Catalog Draft Creation
+
+Run the guarded full-catalog draft command only after the expanded dry-run plan
+and read-only reconciliation are clean and the owner has approved the full
+draft creation input:
+
+```bash
+npm run create:shopify-catalog-drafts -- \
+  --plan=reports/shopify-catalog-dry-run-plan.json \
+  --reconciliation=reports/shopify-catalog-reconciliation-report.json \
+  --approval=reports/shopify-catalog-full-owner-approval.json \
+  --output=reports/shopify-catalog-draft-create-report.json \
+  --confirm=CREATE_FULL_CATALOG_DRAFT_PRODUCTS
+```
+
+Required environment:
+
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be `2026-04`.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  product write scope.
+
+Approval requirements:
+
+- explicit full-catalog approval for `all_planned_no_match_products`;
+- explicit `DRAFT` product status;
+- global original and print prices;
+- MongoDB linking explicitly disabled;
+- a Shopify inventory location GID;
+- optional print quantity override, otherwise default `50`;
+- optional expected artwork/product counts to catch stale plan inputs.
+
+The command refuses to run unless every planned original and print row is
+`matchStatus: "no_match"` with
+`recommendedAction: "safe_to_create_later"` in the reconciliation report, and
+the report has no conflicts, query errors, or manual-review blockers. It
+creates draft products through Shopify Admin GraphQL `productSet`. Originals
+use inventory `1`. Prints use exactly one `Frame package = Unframed` variant
+and default inventory `50` unless the approval file provides an override.
+
+Safety rules:
+
+- Do not run without the exact `CREATE_FULL_CATALOG_DRAFT_PRODUCTS`
+  confirmation.
+- Do not use `SHOPIFY_STOREFRONT_ACCESS_TOKEN` for this command.
+- Do not print, persist, commit, or paste `SHOPIFY_ADMIN_ACCESS_TOKEN`.
+- Do not publish products or write sales-channel publications.
+- Do not create framed, material, or mat variants beyond
+  `Frame package = Unframed`.
+- Do not write MongoDB `shopifyProducts` links.
+- Do not mutate MongoDB, Cloudinary, books, orders, customers, collections,
+  publications, domains, aliases, Vercel state, checkout/cart behavior, or
+  runtime UI.
+- Stop after the first Shopify mutation failure or user error and write the
+  local result report.
+
+Exit behavior:
+
+- `0`: all approved draft products were created and the local result report was
+  written.
+- `1`: confirmation, environment, approval, plan, reconciliation, output-path,
+  Shopify user-error, or mutation validation failed.
+
+## Generated Shopify Product MongoDB Linking
+
+Run the read-only link plan after the post-create reconciliation report shows
+exact matches for all generated originals and prints:
+
+```bash
+npm run link:shopify-catalog-products -- \
+  --mode=plan \
+  --reconciliation=reports/shopify-catalog-post-draft-create-reconciliation-report.json \
+  --output=reports/shopify-catalog-mongodb-link-plan.json
+```
+
+Required environment:
+
+- `MONGO_URI` must point at the owner-approved MongoDB target.
+
+Plan mode reads MongoDB artwork `_id`, title, and existing `shopifyProducts`.
+It writes a local report with the desired link state per artwork and performs
+no MongoDB, Shopify, or Cloudinary writes.
+
+The desired generated links use:
+
+```json
+{ "type": "original", "productId": "11991754408200", "publicListing": false }
+{ "type": "print", "productId": "11991754473736", "publicListing": false }
+```
+
+Existing book links are preserved. Existing original and print links are
+reported as replaced by generated original/print links. This initial generated
+link write keeps generated originals and prints hidden from broad app listing;
+use the link-listing command below to intentionally promote one family after
+the owner decides the public-listing policy.
+
+Live write mode is allowed only after owner review of the local plan report and
+the exact confirmation:
+
+```bash
+npm run link:shopify-catalog-products -- \
+  --mode=write \
+  --reconciliation=reports/shopify-catalog-post-draft-create-reconciliation-report.json \
+  --output=reports/shopify-catalog-mongodb-link-write-report.json \
+  --confirm=LINK_GENERATED_SHOPIFY_PRODUCTS
+```
+
+Safety rules:
+
+- Run plan mode first and review the local report.
+- Do not run write mode without the exact confirmation string.
+- Do not publish Shopify products or write Shopify sales-channel publications.
+- Do not mutate Cloudinary, orders, customers, collections, publications,
+  domains, aliases, Vercel state, checkout/cart behavior, or generated Shopify
+  product data.
+- Generated links must stay `publicListing: false` until the owner explicitly
+  promotes one product family or selected links into broad public shop listing.
+
+Exit behavior:
+
+- `0`: plan report was written, or write mode completed without MongoDB update
+  failures.
+- `1`: confirmation, environment, reconciliation, MongoDB read/write, or
+  output-path validation failed.
+
+## Shopify Product Link Public Listing
+
+Use the guarded link-listing command when the app-side listing gate needs to be
+changed for one link type without changing Shopify product status or sales
+channel publication.
+
+Plan mode:
+
+```bash
+npm run set:shopify-link-listing -- \
+  --mode=plan \
+  --type=print \
+  --public-listing=true \
+  --output=reports/shopify-print-public-listing-plan.json
+```
+
+Write mode is allowed only after owner review of the local plan report and the
+exact confirmation:
+
+```bash
+npm run set:shopify-link-listing -- \
+  --mode=write \
+  --type=print \
+  --public-listing=true \
+  --output=reports/shopify-print-public-listing-write-report.json \
+  --confirm=SET_SHOPIFY_PRODUCT_LINK_PUBLIC_LISTING
+```
+
+Required environment:
+
+- `MONGO_URI` must point at the owner-approved MongoDB target.
+
+Current generated catalog policy:
+
+- Generated print links are app-listable: `publicListing: true`.
+- Generated original links remain hidden by default:
+  `publicListing: false`.
+- Existing book links remain governed by their stored link values; missing
+  `publicListing` is treated as public/listable for legacy manual links.
+
+This command does not activate, draft, publish, unpublish, delete, or update
+Shopify products. A print only appears in broad public shop surfaces when both
+conditions are true: the MongoDB link is app-listable and Shopify Storefront
+reports the product as available for sale.
+
+Safety rules:
+
+- Run plan mode first and review the local report.
+- Do not run write mode without the exact confirmation string.
+- Do not use this command to change Shopify Active/Draft status or sales
+  channel publication.
+- Do not mutate Cloudinary, orders, customers, collections, publications,
+  domains, aliases, Vercel state, checkout/cart behavior, or generated Shopify
+  product data.
+
+Exit behavior:
+
+- `0`: plan report was written, or write mode completed without MongoDB update
+  failures.
+- `1`: confirmation, environment, input validation, MongoDB read/write, or
+  output-path validation failed.
+
+## Shopify Pre-Launch Sale Sample
+
+Use this workflow when a small mixed set of generated products should be made
+sellable before the full catalog launch.
+
+Prepare a reproducible random sample:
+
+```bash
+npm run prepare:shopify-sale-sample -- \
+  --reconciliation=reports/shopify-catalog-post-draft-create-reconciliation-report.json \
+  --output=reports/shopify-sale-sample-selection.json \
+  --original-count=10 \
+  --print-count=25 \
+  --overlap-count=7 \
+  --seed=owner-sale-sample-2026-05-29
+```
+
+Plan the activation:
+
+```bash
+npm run apply:shopify-sale-sample -- \
+  --mode=plan \
+  --selection=reports/shopify-sale-sample-selection.json \
+  --output=reports/shopify-sale-sample-activation-plan.json
+```
+
+Run the guarded live activation only after the owner approves the selected
+sample and the Shopify Admin token has the needed product and publication
+scopes:
+
+```bash
+npm run apply:shopify-sale-sample -- \
+  --mode=write \
+  --selection=reports/shopify-sale-sample-selection.json \
+  --output=reports/shopify-sale-sample-activation-write-report.json \
+  --confirm=ACTIVATE_SHOPIFY_SALE_SAMPLE
+```
+
+Required environment for write mode:
+
+- `MONGO_URI` must point at the owner-approved MongoDB target.
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be `2026-04`.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  product write scope plus `read_publications` and `write_publications`.
+
+The write command sets selected MongoDB product links to
+`publicListing: true`, updates selected Shopify products to `ACTIVE`, and
+publishes selected products to the resolved `Online Store` publication. It does
+not change unselected products.
+
+The current T-345 sample uses 7 overlap artworks, 3 original-only artworks, and
+18 print-only artworks to make exactly 10 originals and 25 prints. The first
+live attempt was blocked before mutation because the Admin token lacked
+`read_publications`; the report recorded 0 MongoDB updates, 0 Shopify status
+updates, and 0 Shopify publication writes.
+
+Safety rules:
+
+- Run selection and activation plan mode first.
+- Do not run write mode without exact owner approval of the selected sample.
+- Do not activate, publish, draft, archive, or delete unselected generated
+  products.
+- Do not mutate Cloudinary, orders, customers, collections, domains, aliases,
+  Vercel state, checkout/cart behavior, product prices, or framed/material/mat
+  variants.
+
+Exit behavior:
+
+- `0`: selection/plan report was written, or write mode completed without
+  MongoDB, Shopify status, or Shopify publication failures.
+- `1`: confirmation, environment, selection validation, publication scope/
+  resolution, MongoDB, Shopify status, Shopify publication, or output-path
+  validation failed.
+
 ## Manual Original/Print Cleanup
 
 Run the guarded cleanup command only after the read-only reconciliation report
@@ -563,6 +827,13 @@ unavailable-product behavior.
 ## Manual Verification
 
 - `/shop/products` shows the expected product set.
+- `/shop/products`, explicit `type=shop-products` search, homepage/prototype
+  shop sections, public shop API responses, and product sitemap generation do
+  not automatically include Shopify products that Storefront reports as
+  `availableForSale: false`, including generated drafts.
+- Broad public product listing surfaces also skip MongoDB links marked
+  `publicListing: false`. Generated print links are currently app-listable;
+  generated original links remain hidden by default.
 - Product filters do not duplicate book products.
 - Product detail loads from `/shop/products/[productHandle]`.
 - Product detail shows an external Shopify purchase link for available products

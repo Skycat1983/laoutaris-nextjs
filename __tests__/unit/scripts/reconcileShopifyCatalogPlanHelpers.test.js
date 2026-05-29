@@ -278,9 +278,9 @@ describe("reconcile Shopify catalog plan helpers", () => {
     });
     const secondDuplicate = createShopifyProduct({
       id: "2003",
-      handle: "joseph-laoutaris-print-duplicate-b",
-      productType: "Fine Art Print",
-      tags: ["print"],
+      handle: "joseph-laoutaris-original-duplicate-b",
+      productType: "Original Artwork",
+      tags: ["original"],
       customMongodbArtworkId: "artwork-conflict",
     });
 
@@ -340,6 +340,145 @@ describe("reconcile Shopify catalog plan helpers", () => {
       },
     ]);
     expect(hasBlockingReconciliationFindings(report)).toBe(true);
+  });
+
+  it("allows one original and one print to share the same artwork metafield", () => {
+    const artworkId = "artwork-generated-pair";
+    const original = createShopifyProduct({
+      id: "2501",
+      handle: "joseph-laoutaris-original-generated-pair",
+      title: "No.001 - Original Artwork",
+      productType: "Original Artwork",
+      tags: ["original"],
+      customMongodbArtworkId: artworkId,
+    });
+    const print = createShopifyProduct({
+      id: "2502",
+      handle: "joseph-laoutaris-print-generated-pair",
+      title: "No.001 - Fine Art Print",
+      productType: "Fine Art Print",
+      tags: ["print", "fine-art-print"],
+      customMongodbArtworkId: artworkId,
+    });
+
+    const report = buildReconciliationReport({
+      plan: {
+        artworks: [
+          createPlannedArtwork({
+            artworkId,
+            title: "No.001",
+            products: [
+              createPlannedProduct({
+                family: "original",
+                handle: "joseph-laoutaris-original-generated-pair",
+              }),
+              createPlannedProduct({
+                family: "print",
+                handle: "joseph-laoutaris-print-generated-pair",
+              }),
+            ],
+          }),
+        ],
+      },
+      handleLookups: {
+        "joseph-laoutaris-original-generated-pair": { product: original },
+        "joseph-laoutaris-print-generated-pair": { product: print },
+      },
+      metafieldLookups: {
+        [artworkId]: { products: [original, print] },
+      },
+      manualNumberLookups: {
+        [artworkId]: { products: [original, print] },
+      },
+      source: {
+        planInputPath: "reports/shopify-catalog-dry-run-plan.json",
+        shopDomain: SHOP_DOMAIN,
+        adminApiVersion: "2026-04",
+      },
+    });
+
+    expect(report.summary).toMatchObject({
+      plannedProductsWithExactMatch: 2,
+      plannedProductsWithConflict: 0,
+      duplicateShopifyProductsByArtworkId: 0,
+      manualReviewCount: 0,
+    });
+    expect(report.artworks[0].conflicts).toEqual([]);
+    expect(report.artworks[0].products).toEqual([
+      expect.objectContaining({ matchStatus: "exact_match" }),
+      expect.objectContaining({ matchStatus: "exact_match" }),
+    ]);
+    expect(hasBlockingReconciliationFindings(report)).toBe(false);
+  });
+
+  it("does not block exact generated matches when another artwork shares the same number", () => {
+    const artworkId = "artwork-shared-number-a";
+    const sameNumberArtworkId = "artwork-shared-number-b";
+    const exactOriginal = createShopifyProduct({
+      id: "2601",
+      handle: "joseph-laoutaris-original-no205-artwork-a",
+      title: "No.205 - Original Artwork",
+      productType: "Original Artwork",
+      tags: ["original"],
+      customMongodbArtworkId: artworkId,
+    });
+    const otherOriginal = createShopifyProduct({
+      id: "2602",
+      handle: "joseph-laoutaris-original-no205-artwork-b",
+      title: "No.205 - Original Artwork",
+      productType: "Original Artwork",
+      tags: ["original"],
+      customMongodbArtworkId: sameNumberArtworkId,
+    });
+
+    const report = buildReconciliationReport({
+      plan: {
+        artworks: [
+          createPlannedArtwork({
+            artworkId,
+            title: "No.205",
+            products: [
+              createPlannedProduct({
+                family: "original",
+                handle: "joseph-laoutaris-original-no205-artwork-a",
+              }),
+            ],
+          }),
+        ],
+      },
+      handleLookups: {
+        "joseph-laoutaris-original-no205-artwork-a": {
+          product: exactOriginal,
+        },
+      },
+      metafieldLookups: {
+        [artworkId]: { products: [exactOriginal] },
+      },
+      manualNumberLookups: {
+        [artworkId]: { products: [exactOriginal, otherOriginal] },
+      },
+      source: {
+        planInputPath: "reports/shopify-catalog-dry-run-plan.json",
+        shopDomain: SHOP_DOMAIN,
+        adminApiVersion: "2026-04",
+      },
+    });
+
+    expect(report.summary).toMatchObject({
+      plannedProductsWithExactMatch: 1,
+      plannedProductsWithConflict: 0,
+      manualReviewCount: 0,
+    });
+    expect(report.artworks[0].products[0]).toMatchObject({
+      matchStatus: "exact_match",
+      warnings: [
+        expect.objectContaining({
+          code: "manual_number_matches_other_artworks_ignored",
+          count: 1,
+        }),
+      ],
+    });
+    expect(hasBlockingReconciliationFindings(report)).toBe(false);
   });
 
   it("ignores null or mismatched metafield lookup results and preserves clean manual number matches", () => {

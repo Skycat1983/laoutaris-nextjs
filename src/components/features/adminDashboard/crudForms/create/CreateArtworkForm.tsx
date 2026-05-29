@@ -300,6 +300,7 @@ export function CreateArtworkForm({
             <ShopifyProductLinksInput
               control={form.control}
               register={form.register}
+              setValue={form.setValue}
               errors={form.formState.errors.shopifyProducts}
               disabled={isSubmitting || !uploadInfo}
             />
