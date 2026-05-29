@@ -91,14 +91,16 @@ export const ProductCard = ({
 
 export const ProductCardSkeleton = () => {
   return (
-    <article className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-      <Skeleton className="w-full aspect-square" />
-      <div className="p-4">
-        <Skeleton className="h-6 w-3/4 mb-2" />
-        <Skeleton className="h-4 w-1/2 mb-2" />
-        <Skeleton className="h-4 w-full mb-4" />
-        <Skeleton className="h-8 w-1/3 mb-4" />
-        <Skeleton className="h-4 w-1/4" />
+    <article className="overflow-hidden text-center" aria-hidden="true">
+      <Skeleton className="w-full aspect-square rounded-none" />
+      <div className="py-8">
+        <Skeleton className="mx-auto h-px w-24 rounded-none" />
+      </div>
+      <div className="space-y-3 p-4">
+        <Skeleton className="mx-auto h-6 w-3/4" />
+        <Skeleton className="mx-auto h-4 w-full" />
+        <Skeleton className="mx-auto h-4 w-2/3" />
+        <Skeleton className="mx-auto h-4 w-24" />
       </div>
     </article>
   );

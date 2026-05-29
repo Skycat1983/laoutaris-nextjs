@@ -383,6 +383,7 @@ tasks must not reuse `T-221`.
 | [T-343 Verify generated Shopify runtime exposure](T-343-verify-generated-shopify-runtime-exposure.md) | Completed | Verified public shop listing/search and generated product/artwork detail runtime behavior after linking; fixed artwork detail so no purchase section renders when all linked products are unavailable. |
 | [T-344 Set generated print links public listed](T-344-set-generated-print-links-public-listed.md) | Completed | Added a guarded link-listing script and set all 215 print links to `publicListing: true`, leaving originals hidden and Shopify product status/publication untouched. |
 | [T-345 Prepare Shopify sale sample](T-345-prepare-shopify-sale-sample.md) | Completed | Added guarded sale-sample selection/activation tooling and activated/published the selected 10-original/25-print mixed sample after the Shopify Admin token gained publication scopes. |
+| [T-346 Improve shop product loading](T-346-improve-shop-product-loading.md) | Completed | Narrowed app listing to the selected sale sample, published it to the Headless publication, bounded Shopify fanout concurrency, and added batched shop-grid rendering with product-card skeletons. |
 
 ## Rules
 

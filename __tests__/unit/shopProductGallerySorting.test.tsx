@@ -7,6 +7,7 @@ jest.mock("@/components/modules/cards/ProductCard", () => ({
   ProductCard: ({ product }: { product: SimpleProduct }) => (
     <article data-testid="product-card">{product.title}</article>
   ),
+  ProductCardSkeleton: () => <article data-testid="product-card-skeleton" />,
 }));
 
 jest.mock("@/components/modules/filters/ShopFilters", () => ({
@@ -73,6 +74,14 @@ const products: SimpleProduct[] = [
   createProduct("C Title Original", "Original Artwork", "20.00"),
   createProduct("B Title Book", " BOOK ", "40.00"),
 ];
+
+const manyProducts: SimpleProduct[] = Array.from({ length: 14 }, (_, index) =>
+  createProduct(
+    `Product ${String(index + 1).padStart(2, "0")}`,
+    "Fine Art Print",
+    String(index + 1)
+  )
+);
 
 const renderedProductTitles = () =>
   screen.getAllByTestId("product-card").map((card) => card.textContent);
@@ -194,10 +203,11 @@ describe("ShopProductGallery sorting", () => {
 
     expect(
       screen.getByRole("status", { name: "Updating product results" })
-    ).toHaveTextContent("Updating products...");
+    ).toHaveTextContent("Updating products");
     expect(global.fetch).toHaveBeenCalledWith(
       "/api/v2/public/shop/products?showPrints=false"
     );
+    expect(screen.getAllByTestId("product-card-skeleton")).toHaveLength(6);
     expect(window.location.search).toBe("?showPrints=false");
 
     await waitFor(() =>
@@ -245,5 +255,21 @@ describe("ShopProductGallery sorting", () => {
       "/api/v2/public/shop/products?sortBy=price-high&showPrints=false"
     );
     expect(window.location.search).toBe("?sortBy=price-high&showPrints=false");
+  });
+
+  it("reveals shop products in batches instead of rendering the full list at once", () => {
+    render(<ShopProductGallery initialProducts={manyProducts} />);
+
+    expect(screen.getAllByTestId("product-card")).toHaveLength(12);
+    expect(
+      screen.getByRole("button", { name: "Show more (2)" })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Show more (2)" }));
+
+    expect(screen.getAllByTestId("product-card")).toHaveLength(14);
+    expect(
+      screen.queryByRole("button", { name: /Show more/ })
+    ).not.toBeInTheDocument();
   });
 });

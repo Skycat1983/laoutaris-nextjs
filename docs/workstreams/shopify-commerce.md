@@ -157,10 +157,11 @@ production while preserving MongoDB as the archive source of truth.
   original/print links should be written with `publicListing: false` by default
   so per-artwork product relationships can exist without broad public shop
   exposure.
-- All generated print links have since been promoted to app-listable with
-  `publicListing: true`; generated original links remain hidden by default with
-  `publicListing: false`. A generated print still appears publicly only after
-  Shopify Storefront reports it as available for sale.
+- Only the current pre-launch sale sample generated links are app-listable:
+  10 originals and 25 prints. Unselected generated original and print links
+  remain hidden by default with `publicListing: false`. A generated product
+  still appears publicly only after Shopify Storefront reports it as available
+  for sale.
 - T-097 completed the visible admin artwork form workflow for creating,
   editing, and removing canonical `shopifyProducts` links while preserving
   T-082 server-side validation.
@@ -926,7 +927,8 @@ Add targeted tests as shop behavior is hardened.
   `publicListing: true`; generated original links remain hidden, book links are
   unchanged, Shopify product status/publication was not changed, and the
   product-link audit remained clean except for the expected shared book
-  duplicate group.
+  duplicate group. This was later narrowed by T-345 so only the sale-sample
+  print links remain public-listed.
 - 2026-05-29: Completed T-345 after the owner asked for 10 originals and 25
   prints with partial overlap. Added `npm run prepare:shopify-sale-sample` and
   `npm run apply:shopify-sale-sample`, generated a reproducible selection with
@@ -939,7 +941,11 @@ Add targeted tests as shop behavior is hardened.
   products, published 35 selected Shopify products to `Online Store`, updated
   17 selected MongoDB link groups, and had 0 MongoDB/Shopify failures. A
   read-only product-link audit remained clean except for the expected shared
-  book duplicate group.
+  book duplicate group. Runtime verification then showed `Online Store` was not
+  sufficient for the app's Storefront API token, so the same 35 products were
+  also published to `Laoutaris Headless`. The app-side print gate was narrowed
+  back down from all 215 prints to the selected 25 print links. The public shop
+  API now returns 36 products: 1 book, 10 originals, and 25 prints.
 
 ## Next Agent Action
 
@@ -1002,14 +1008,19 @@ read-only MongoDB link plan and exact-confirmation write command. T-342 ran the
 confirmed live MongoDB write, so every artwork now has generated original and
 print links with `publicListing: false`; existing book links were preserved.
 T-343 completed runtime exposure verification and fixed the only found runtime
-exposure issue. T-344 then promoted all generated print links to
-`publicListing: true` while leaving generated originals hidden and leaving
-Shopify product status/publication untouched. T-345 then activated and
-published the smaller pre-launch sale sample of 10 originals and 25 prints.
-Next commerce work should verify public shop/API behavior for that selected
-sample and keep full-catalog activation, framed/material/mat variants,
-Cloudinary mutation, checkout/cart work, and broader browser automation
-separate unless explicitly assigned.
+exposure issue. T-344 temporarily promoted all generated print links to
+`publicListing: true`, then T-345 narrowed the app listing gate to the smaller
+pre-launch sale sample of 10 originals and 25 prints and published that sample
+to both Online Store and Laoutaris Headless. The public shop API now returns
+exactly the selected generated sample plus the preserved book. Next commerce
+work should verify the public UI routes for that selected sample and keep
+full-catalog activation, framed/material/mat variants, Cloudinary mutation,
+checkout/cart work, and broader browser automation separate unless explicitly
+assigned. T-346 then improved shop loading by bounding Shopify product-list
+fanout concurrency, rendering the shop grid in client-side batches of 12, and
+using product-card skeletons during filter refreshes. Future larger-catalog
+work should add server-backed pagination/cursors so the API itself only asks
+Shopify for one page at a time.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

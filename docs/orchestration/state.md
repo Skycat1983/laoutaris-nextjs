@@ -267,6 +267,26 @@ link groups already public, and 0 MongoDB/Shopify failures. The product-link
 audit remained clean except for the expected shared book duplicate group. Next
 action is public app/API verification for the selected sale sample and
 unselected generated product boundaries.
+That verification found two issues and both were corrected. First, all 215
+print links were still app-listable even though only 25 prints were selected
+for sale, causing the dev server to fan out to many draft/unpublished Shopify
+IDs and log Storefront fetch failures. The print app gate was reset to false
+for all prints, then the selected sale sample was reapplied, leaving exactly
+10 original links and 25 print links public-listed. Second, publishing to
+`Online Store` did not expose generated products to the Storefront API token;
+the selected 35 products were also published to the `Laoutaris Headless`
+publication. After bounding Shopify product-list fanout concurrency in
+`getShopProductList`, `/api/v2/public/shop/products` returned 36 products:
+1 book, 10 originals, and 25 prints, with 0 selected products missing. Next
+action is public UI route verification for `/shop/products`, selected product
+detail routes, and representative selected/unselected artwork pages.
+T-346 then improved the user-facing shop loading path: public shop product
+fanout is bounded instead of fully parallel, the client grid initially renders
+12 products and reveals more in batches of 12, and filter refreshes use
+product-card skeletons instead of a spinner overlay. The next larger-catalog
+loading step should be an explicit API pagination/cursor task so the server
+does not need to resolve every listable Shopify product before returning the
+first page.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through

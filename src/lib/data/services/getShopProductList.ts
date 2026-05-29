@@ -22,6 +22,8 @@ const shopProductListLogger = createServerLogger({
   operation: "shopify.product_list",
 });
 
+const SHOPIFY_PRODUCT_LIST_FETCH_CONCURRENCY = 6;
+
 const SHOP_ARTWORK_FILTER_KEYS = [
   "decade",
   "artstyle",
@@ -94,6 +96,47 @@ const getErrorForLog = (error: unknown) =>
     ? error
     : new Error("Unknown Shopify product list error");
 
+const mapWithConcurrency = async <Item, Result>(
+  items: Item[],
+  concurrency: number,
+  mapper: (item: Item) => Promise<Result>
+) => {
+  const results: Result[] = new Array(items.length);
+  let nextIndex = 0;
+  const workerCount = Math.min(concurrency, items.length);
+
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (nextIndex < items.length) {
+        const currentIndex = nextIndex;
+        nextIndex += 1;
+        results[currentIndex] = await mapper(items[currentIndex]);
+      }
+    })
+  );
+
+  return results;
+};
+
+const fetchProductForList = async (productId: string) => {
+  const gid = shopifyProductIdToGid(productId);
+
+  if (!gid) {
+    return null;
+  }
+
+  return getProductById(gid).catch((error) => {
+    shopProductListLogger.error("service.shopify.product_fetch.failed", {
+      provider: "shopify",
+      shopifyOperation: "getProductById",
+      statusCategory: "product_fanout_failed",
+      publicProductId: productId,
+      error: getErrorForLog(error),
+    });
+    return null;
+  });
+};
+
 export const getShopProductList = async (
   params: GetShopProductListParams = {}
 ): Promise<ShopProductListServiceResult> => {
@@ -117,25 +160,10 @@ export const getShopProductList = async (
     )
   );
 
-  const productResults = await Promise.all(
-    uniqueProductIds.map((productId) => {
-      const gid = shopifyProductIdToGid(productId);
-
-      if (!gid) {
-        return Promise.resolve(null);
-      }
-
-      return getProductById(gid).catch((error) => {
-        shopProductListLogger.error("service.shopify.product_fetch.failed", {
-          provider: "shopify",
-          shopifyOperation: "getProductById",
-          statusCategory: "product_fanout_failed",
-          publicProductId: productId,
-          error: getErrorForLog(error),
-        });
-        return null;
-      });
-    })
+  const productResults = await mapWithConcurrency(
+    uniqueProductIds,
+    SHOPIFY_PRODUCT_LIST_FETCH_CONCURRENCY,
+    fetchProductForList
   );
 
   const products = productResults.filter(isPubliclyListableProduct);

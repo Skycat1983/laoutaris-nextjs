@@ -328,6 +328,38 @@ describe("getShopProductList", () => {
     );
   });
 
+  it("bounds Shopify fan-out concurrency for public product listing", async () => {
+    const productIds = Array.from({ length: 10 }, (_, index) =>
+      String(801 + index)
+    );
+    let activeRequests = 0;
+    let maxActiveRequests = 0;
+
+    mockArtworkQuery([
+      {
+        shopifyProducts: productIds.map((productId) => ({
+          productId,
+          type: "print",
+        })),
+      },
+    ]);
+    mockGetProductById.mockImplementation(async (gid) => {
+      activeRequests += 1;
+      maxActiveRequests = Math.max(maxActiveRequests, activeRequests);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      activeRequests -= 1;
+
+      const gidParts = gid.split("/");
+      return createProduct(gidParts[gidParts.length - 1]);
+    });
+
+    const result = await getShopProductList();
+
+    expect(mockGetProductById).toHaveBeenCalledTimes(10);
+    expect(maxActiveRequests).toBeLessThanOrEqual(6);
+    expect(result.metadata.totalProducts).toBe(10);
+  });
+
   it("skips unavailable products so draft-linked products are not returned automatically", async () => {
     mockArtworkQuery([
       {

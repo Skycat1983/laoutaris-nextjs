@@ -573,8 +573,9 @@ Required environment:
 
 Current generated catalog policy:
 
-- Generated print links are app-listable: `publicListing: true`.
-- Generated original links remain hidden by default:
+- Only the pre-launch sale sample generated links are app-listable:
+  10 originals and 25 prints.
+- Unselected generated original and print links remain hidden by default:
   `publicListing: false`.
 - Existing book links remain governed by their stored link values; missing
   `publicListing` is treated as public/listable for legacy manual links.
@@ -657,7 +658,10 @@ The current T-345 sample uses 7 overlap artworks, 3 original-only artworks, and
 18 print-only artworks to make exactly 10 originals and 25 prints. The first
 live attempt was blocked before mutation because the Admin token lacked
 `read_publications`; the report recorded 0 MongoDB updates, 0 Shopify status
-updates, and 0 Shopify publication writes.
+updates, and 0 Shopify publication writes. After publication scopes were added,
+the sample was activated and published to `Online Store`. The sample then had
+to be published to the separate `Laoutaris Headless` publication as well before
+the Storefront API returned the selected products.
 
 Safety rules:
 
@@ -832,8 +836,9 @@ unavailable-product behavior.
   not automatically include Shopify products that Storefront reports as
   `availableForSale: false`, including generated drafts.
 - Broad public product listing surfaces also skip MongoDB links marked
-  `publicListing: false`. Generated print links are currently app-listable;
-  generated original links remain hidden by default.
+  `publicListing: false`. Only the current pre-launch sale sample generated
+  links are app-listable; unselected generated originals and prints remain
+  hidden by default.
 - Product filters do not duplicate book products.
 - Product detail loads from `/shop/products/[productHandle]`.
 - Product detail shows an external Shopify purchase link for available products

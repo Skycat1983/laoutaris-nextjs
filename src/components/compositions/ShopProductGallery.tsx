@@ -2,16 +2,22 @@
 
 import { useState, useMemo } from "react";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
-import { ProductCard } from "@/components/modules/cards/ProductCard";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+} from "@/components/modules/cards/ProductCard";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
-import { LoadingStatus } from "@/components/elements/misc/LoadingStatus";
 import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 import {
   SHOP_SORT_OPTIONS,
   type ShopSortOption,
 } from "@/lib/data/options/shopSortOptions";
 import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
+
+const INITIAL_VISIBLE_PRODUCT_COUNT = 12;
+const PRODUCT_BATCH_SIZE = 12;
+const LOADING_SKELETON_COUNT = 6;
 
 interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
@@ -32,6 +38,9 @@ export const ShopProductGallery = ({
   const [products, setProducts] = useState<SimpleProduct[]>(initialProducts);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState<ShopSortOption>(initialSortBy);
+  const [visibleProductCount, setVisibleProductCount] = useState(
+    INITIAL_VISIBLE_PRODUCT_COUNT
+  );
   const [filters, setFilters] = useState<ShopFiltersState>(
     initialFilters || {
       artstyle: "all-style",
@@ -116,15 +125,22 @@ export const ShopProductGallery = ({
     }
 
     setProducts(data.data);
+    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
   };
 
   // Sort products based on current sortBy value
   const sortedProducts = useMemo(() => {
     return sortShopProducts(products, sortBy);
   }, [products, sortBy]);
+  const visibleProducts = sortedProducts.slice(0, visibleProductCount);
+  const hiddenProductCount = Math.max(
+    sortedProducts.length - visibleProductCount,
+    0
+  );
 
   const handleSortChange = (newSortBy: ShopSortOption) => {
     setSortBy(newSortBy);
+    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
     setFilters((currentFilters) => {
       const updatedFilters = { ...currentFilters, sortBy: newSortBy };
       updateBrowserUrl(updatedFilters, newSortBy);
@@ -177,8 +193,15 @@ export const ShopProductGallery = ({
     setFilters(resetFilters);
     setSortBy("type");
     setProducts(initialProducts);
+    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
     setFetchError(null);
     updateBrowserUrl(resetFilters, "type");
+  };
+
+  const showMoreProducts = () => {
+    setVisibleProductCount((currentCount) =>
+      Math.min(currentCount + PRODUCT_BATCH_SIZE, sortedProducts.length)
+    );
   };
 
   return (
@@ -212,13 +235,21 @@ export const ShopProductGallery = ({
       {/* Products Section */}
       <div className="px-8 py-12 relative" aria-busy={isLoading}>
         {isLoading && (
-          <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-            <LoadingStatus
-              label="Updating product results"
-              visibleLabel="Updating products..."
-              size="large"
-              className="text-gray-900"
-            />
+          <div>
+            <div
+              role="status"
+              aria-label="Updating product results"
+              className="sr-only"
+            >
+              Updating products
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
+              {Array.from({ length: LOADING_SKELETON_COUNT }).map(
+                (_, index) => (
+                  <ProductCardSkeleton key={index} />
+                )
+              )}
+            </div>
           </div>
         )}
 
@@ -234,17 +265,31 @@ export const ShopProductGallery = ({
               Reset Filters
             </button>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
-            {sortedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                variant="contain"
-              />
-            ))}
+        ) : !isLoading ? (
+          <div className="space-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
+              {visibleProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  variant="contain"
+                />
+              ))}
+            </div>
+
+            {hiddenProductCount > 0 && (
+              <div className="flex justify-center">
+                <button
+                  type="button"
+                  onClick={showMoreProducts}
+                  className="border border-gray-900 px-6 py-3 text-sm uppercase tracking-[0.08em] text-gray-900 transition-colors hover:bg-gray-900 hover:text-white"
+                >
+                  Show more ({hiddenProductCount})
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );
