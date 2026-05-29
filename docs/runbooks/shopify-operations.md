@@ -734,6 +734,61 @@ Exit behavior:
   failed. If a report is written with read failures, review
   `summary.queryErrorCount` and row warnings before retrying.
 
+## Guarded Framed Print Variant Apply
+
+The guarded apply command was prepared in T-351. Its default mode is a local
+write plan and does not call Shopify:
+
+```bash
+npm run apply:framed-print-variants
+```
+
+Current local plan output:
+
+- `reports/framed-print-variant-write-report.json`
+- 25 planned `Mat` option mutations.
+- 100 missing framed/matted variants to create in a future write.
+- 25 existing `Unframed / No mat` variants preserved.
+- 0 write failures.
+
+Live write mode exists but must not be run without separate explicit owner
+approval:
+
+```bash
+npm run apply:framed-print-variants -- \
+  --mode=write \
+  --confirm=CREATE_FRAMED_PRINT_VARIANTS
+```
+
+Required environment for write mode:
+
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be set for the Admin API endpoint.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  product write access.
+
+Safety rules:
+
+- Run default plan mode first and review
+  `reports/framed-print-variant-write-report.json`.
+- Do not run write mode without the exact confirmation string and a separate
+  owner approval for the live write.
+- Live write mode may create visible/buyable placeholder-priced variants on
+  active Shopify products. Either explicitly accept that exposure risk or make
+  selected products non-public/non-purchase before running write mode.
+- Do not publish/unpublish products, change product status, mutate MongoDB,
+  mutate Cloudinary, touch orders/customers, or add checkout/cart behavior from
+  this command.
+- Do not treat pixel-derived prices as launch-approved real prices.
+
+Exit behavior:
+
+- `0`: plan report was written, or confirmed write completed without recorded
+  write failures.
+- `1`: input validation, confirmation, environment, Shopify request/user error,
+  or output writing failed. Write mode stops after the first product failure.
+
 ## Manual Original/Print Cleanup
 
 Run the guarded cleanup command only after the read-only reconciliation report
