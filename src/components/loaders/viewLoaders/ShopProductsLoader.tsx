@@ -1,7 +1,9 @@
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
 import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
+import type { PaginationMetadata } from "@/lib/data/types/apiTypes";
 import {
+  SHOP_PRODUCT_LIST_QUERY_LIMITS,
   parseShopProductListQuery,
   type ShopProductListQueryInput,
 } from "@/lib/data/schemas/shopProductListQuerySchema";
@@ -25,6 +27,8 @@ const filtersToShopProductListQueryInput = (
   initialFilters?: ShopFiltersState
 ): ShopProductListQueryInput => ({
   sortBy: initialFilters?.sortBy,
+  page: String(SHOP_PRODUCT_LIST_QUERY_LIMITS.defaultPage),
+  limit: String(SHOP_PRODUCT_LIST_QUERY_LIMITS.defaultLimit),
   artstyle: filterValueToQueryArray(initialFilters?.artstyle, "all-style"),
   medium: filterValueToQueryArray(initialFilters?.medium, "all-medium"),
   surface: filterValueToQueryArray(initialFilters?.surface, "all-surface"),
@@ -47,6 +51,7 @@ export const ShopProductsLoader = async ({
   initialFilters,
 }: ShopProductsLoaderProps) => {
   let products: SimpleProduct[] = [];
+  let paginationMetadata: Required<PaginationMetadata> | undefined;
   let error: string | null = null;
 
   try {
@@ -60,6 +65,7 @@ export const ShopProductsLoader = async ({
 
     const result = await getShopProductList(parsedQuery.data);
     products = result.data;
+    paginationMetadata = result.metadata;
   } catch (err) {
     logger.error("loader.public.shop_products.failed", {
       error: err,
@@ -84,6 +90,7 @@ export const ShopProductsLoader = async ({
     <ShopProductGallery
       initialProducts={products}
       initialFilters={initialFilters}
+      initialPaginationMetadata={paginationMetadata}
     />
   );
 };

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useCallback, useState } from "react";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import {
   ProductCard,
   ProductCardSkeleton,
 } from "@/components/modules/cards/ProductCard";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import type { PaginationMetadata } from "@/lib/data/types/apiTypes";
 import ShopFilters from "@/components/modules/filters/ShopFilters";
 import ShopResultsBar from "@/components/modules/filters/ShopResultsBar";
 import type { ShopFiltersState } from "@/lib/data/types/shopTypes";
@@ -13,16 +15,21 @@ import {
   SHOP_SORT_OPTIONS,
   type ShopSortOption,
 } from "@/lib/data/options/shopSortOptions";
-import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 
-const INITIAL_VISIBLE_PRODUCT_COUNT = 12;
-const PRODUCT_BATCH_SIZE = 12;
 const LOADING_SKELETON_COUNT = 6;
+const PRODUCT_PAGE_SIZE = 12;
 
 interface ShopProductGalleryProps {
   initialProducts: SimpleProduct[];
   initialFilters?: ShopFiltersState;
+  initialPaginationMetadata?: Required<PaginationMetadata>;
 }
+
+type ShopProductListResponse = {
+  success: true;
+  data: SimpleProduct[];
+  metadata?: Required<PaginationMetadata>;
+};
 
 const isShopSortOption = (value: unknown): value is ShopSortOption =>
   typeof value === "string" &&
@@ -31,16 +38,22 @@ const isShopSortOption = (value: unknown): value is ShopSortOption =>
 export const ShopProductGallery = ({
   initialProducts,
   initialFilters,
+  initialPaginationMetadata,
 }: ShopProductGalleryProps) => {
   const initialSortBy = isShopSortOption(initialFilters?.sortBy)
     ? initialFilters.sortBy
     : "type";
+  const initialPage = initialPaginationMetadata?.page ?? 1;
+  const initialTotal = initialPaginationMetadata?.total ?? initialProducts.length;
+  const initialHasMore = initialPaginationMetadata
+    ? initialPaginationMetadata.page < initialPaginationMetadata.totalPages
+    : false;
   const [products, setProducts] = useState<SimpleProduct[]>(initialProducts);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
   const [sortBy, setSortBy] = useState<ShopSortOption>(initialSortBy);
-  const [visibleProductCount, setVisibleProductCount] = useState(
-    INITIAL_VISIBLE_PRODUCT_COUNT
-  );
+  const [page, setPage] = useState(initialPage);
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [totalResults, setTotalResults] = useState(initialTotal);
   const [filters, setFilters] = useState<ShopFiltersState>(
     initialFilters || {
       artstyle: "all-style",
@@ -55,9 +68,10 @@ export const ShopProductGallery = ({
   );
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const queryParamsForFilters = (
+  const queryParamsForFilters = useCallback((
     updatedFilters: ShopFiltersState,
-    updatedSortBy: ShopSortOption
+    updatedSortBy: ShopSortOption,
+    pageNumber?: number
   ) => {
     const params = new URLSearchParams();
 
@@ -87,9 +101,13 @@ export const ShopProductGallery = ({
     if (updatedFilters.showBooks === false) {
       params.set("showBooks", "false");
     }
+    if (typeof pageNumber === "number") {
+      params.set("page", String(pageNumber));
+      params.set("limit", String(PRODUCT_PAGE_SIZE));
+    }
 
     return params;
-  };
+  }, []);
 
   const updateBrowserUrl = (
     updatedFilters: ShopFiltersState,
@@ -102,13 +120,18 @@ export const ShopProductGallery = ({
     window.history.replaceState(null, "", nextUrl);
   };
 
-  const fetchProductsForFilters = async (
+  const fetchProductsForFilters = useCallback(async (
     updatedFilters: ShopFiltersState,
-    updatedSortBy: ShopSortOption
-  ) => {
+    updatedSortBy: ShopSortOption,
+    pageNumber = 1
+  ): Promise<ShopProductListResponse> => {
     setFetchError(null);
 
-    const params = queryParamsForFilters(updatedFilters, updatedSortBy);
+    const params = queryParamsForFilters(
+      updatedFilters,
+      updatedSortBy,
+      pageNumber
+    );
     const query = params.toString();
     const requestUrl = `/api/v2/public/shop/products${query ? `?${query}` : ""}`;
 
@@ -124,62 +147,71 @@ export const ShopProductGallery = ({
       throw new Error(data.error || "Failed to fetch products");
     }
 
+    return data;
+  }, [queryParamsForFilters]);
+
+  const replaceProductsFromFirstPage = (data: ShopProductListResponse) => {
+    const metadata = data.metadata;
+
     setProducts(data.data);
-    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
+    setPage(metadata?.page ?? 1);
+    setHasMore(metadata ? metadata.page < metadata.totalPages : false);
+    setTotalResults(metadata?.total ?? data.data.length);
   };
 
-  // Sort products based on current sortBy value
-  const sortedProducts = useMemo(() => {
-    return sortShopProducts(products, sortBy);
-  }, [products, sortBy]);
-  const visibleProducts = sortedProducts.slice(0, visibleProductCount);
-  const hiddenProductCount = Math.max(
-    sortedProducts.length - visibleProductCount,
-    0
-  );
-
-  const handleSortChange = (newSortBy: ShopSortOption) => {
+  const handleSortChange = async (newSortBy: ShopSortOption) => {
+    const updatedFilters = { ...filters, sortBy: newSortBy };
     setSortBy(newSortBy);
-    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
-    setFilters((currentFilters) => {
-      const updatedFilters = { ...currentFilters, sortBy: newSortBy };
-      updateBrowserUrl(updatedFilters, newSortBy);
-      return updatedFilters;
-    });
+    setFilters(updatedFilters);
+    updateBrowserUrl(updatedFilters, newSortBy);
+
+    try {
+      setIsFilterLoading(true);
+      const data = await fetchProductsForFilters(updatedFilters, newSortBy);
+      replaceProductsFromFirstPage(data);
+    } catch {
+      setFetchError(
+        "Unable to update product sorting. The current products are still shown."
+      );
+    } finally {
+      setIsFilterLoading(false);
+    }
   };
 
   const handleFilterChange = async (newFilters: Partial<ShopFiltersState>) => {
     try {
-      setIsLoading(true);
+      setIsFilterLoading(true);
 
       const updatedFilters = { ...filters, ...newFilters, sortBy };
       setFilters(updatedFilters);
       updateBrowserUrl(updatedFilters, sortBy);
 
-      await fetchProductsForFilters(updatedFilters, sortBy);
+      const data = await fetchProductsForFilters(updatedFilters, sortBy);
+      replaceProductsFromFirstPage(data);
     } catch {
       setFetchError(
         "Unable to update product filters. The current products are still shown."
       );
     } finally {
-      setIsLoading(false);
+      setIsFilterLoading(false);
     }
   };
 
   const retryProductFetch = async () => {
     try {
-      setIsLoading(true);
-      await fetchProductsForFilters(filters, sortBy);
+      setIsFilterLoading(true);
+      const data = await fetchProductsForFilters(filters, sortBy);
+      replaceProductsFromFirstPage(data);
     } catch {
       setFetchError(
         "Unable to update product filters. The current products are still shown."
       );
     } finally {
-      setIsLoading(false);
+      setIsFilterLoading(false);
     }
   };
 
-  const clearFilters = () => {
+  const clearFilters = async () => {
     const resetFilters = {
       artstyle: "all-style",
       medium: "all-medium",
@@ -192,17 +224,63 @@ export const ShopProductGallery = ({
     };
     setFilters(resetFilters);
     setSortBy("type");
-    setProducts(initialProducts);
-    setVisibleProductCount(INITIAL_VISIBLE_PRODUCT_COUNT);
     setFetchError(null);
     updateBrowserUrl(resetFilters, "type");
+
+    try {
+      setIsFilterLoading(true);
+      const data = await fetchProductsForFilters(resetFilters, "type");
+      replaceProductsFromFirstPage(data);
+    } catch {
+      setFetchError(
+        "Unable to reset product filters. The current products are still shown."
+      );
+    } finally {
+      setIsFilterLoading(false);
+    }
   };
 
-  const showMoreProducts = () => {
-    setVisibleProductCount((currentCount) =>
-      Math.min(currentCount + PRODUCT_BATCH_SIZE, sortedProducts.length)
-    );
-  };
+  const loadMoreProducts = useCallback(async () => {
+    if (!hasMore || isFilterLoading) return;
+
+    const nextPage = page + 1;
+    const data = await fetchProductsForFilters(filters, sortBy, nextPage);
+    const metadata = data.metadata;
+
+    setProducts((currentProducts) => {
+      const existingIds = new Set(
+        currentProducts.map((product) => product.id)
+      );
+      const uniqueProducts = data.data.filter(
+        (product) => !existingIds.has(product.id)
+      );
+      return uniqueProducts.length
+        ? [...currentProducts, ...uniqueProducts]
+        : currentProducts;
+    });
+    setPage(metadata?.page ?? nextPage);
+    setHasMore(metadata ? metadata.page < metadata.totalPages : false);
+    setTotalResults(metadata?.total ?? products.length + data.data.length);
+  }, [
+    fetchProductsForFilters,
+    filters,
+    hasMore,
+    isFilterLoading,
+    page,
+    products.length,
+    sortBy,
+  ]);
+
+  const {
+    observerRef,
+    isLoading: isScrollLoading,
+    error: scrollError,
+    retry: retryLoadMore,
+  } = useInfiniteScroll({
+    onLoadMore: loadMoreProducts,
+    hasMore,
+    rootMargin: "200px",
+  });
 
   return (
     <>
@@ -211,9 +289,11 @@ export const ShopProductGallery = ({
 
       {/* Results Bar */}
       <ShopResultsBar
-        totalResults={products.length}
+        totalResults={totalResults}
         sortBy={sortBy}
-        onSortChange={handleSortChange}
+        onSortChange={(newSortBy) => {
+          void handleSortChange(newSortBy);
+        }}
       />
 
       {fetchError && (
@@ -233,8 +313,8 @@ export const ShopProductGallery = ({
       )}
 
       {/* Products Section */}
-      <div className="px-8 py-12 relative" aria-busy={isLoading}>
-        {isLoading && (
+      <div className="px-8 py-12 relative" aria-busy={isFilterLoading}>
+        {isFilterLoading && (
           <div>
             <div
               role="status"
@@ -253,41 +333,74 @@ export const ShopProductGallery = ({
           </div>
         )}
 
-        {products.length === 0 && !isLoading ? (
+        {products.length === 0 && !isFilterLoading ? (
           <div className="text-center py-12">
             <p className="text-gray-600 mb-4">
               No products match your filters.
             </p>
             <button
-              onClick={clearFilters}
+              onClick={() => {
+                void clearFilters();
+              }}
               className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
             >
               Reset Filters
             </button>
           </div>
-        ) : !isLoading ? (
+        ) : !isFilterLoading ? (
           <div className="space-y-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
-              {visibleProducts.map((product) => (
+              {products.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   variant="contain"
                 />
               ))}
+              {isScrollLoading &&
+                Array.from({ length: LOADING_SKELETON_COUNT }).map(
+                  (_, index) => (
+                    <ProductCardSkeleton key={`load-more-${index}`} />
+                  )
+                )}
             </div>
 
-            {hiddenProductCount > 0 && (
-              <div className="flex justify-center">
-                <button
-                  type="button"
-                  onClick={showMoreProducts}
-                  className="border border-gray-900 px-6 py-3 text-sm uppercase tracking-[0.08em] text-gray-900 transition-colors hover:bg-gray-900 hover:text-white"
+            <div ref={observerRef} className="min-h-4">
+              {scrollError && (
+                <div
+                  role="alert"
+                  className="flex flex-col items-center gap-3 text-center text-red-600"
                 >
-                  Show more ({hiddenProductCount})
-                </button>
-              </div>
-            )}
+                  <p>
+                    Unable to load more products. The products already loaded
+                    are still shown.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void retryLoadMore();
+                    }}
+                    className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+              {isScrollLoading && (
+                <div
+                  role="status"
+                  aria-label="Loading more product results"
+                  className="sr-only"
+                >
+                  Loading more products
+                </div>
+              )}
+              {!hasMore && products.length > 0 && (
+                <p className="text-center text-sm text-gray-500">
+                  All available products are shown.
+                </p>
+              )}
+            </div>
           </div>
         ) : null}
       </div>

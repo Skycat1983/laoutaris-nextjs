@@ -13,6 +13,7 @@ import {
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopSortOption } from "@/lib/data/options/shopSortOptions";
 import type { ShopifyProductLink } from "@/lib/data/types/shopifyTypes";
+import type { PaginationMetadata } from "@/lib/data/types/apiTypes";
 import { sortShopProducts } from "@/lib/data/utils/shopProductSorting";
 import dbConnect from "@/lib/db/mongodb";
 import { createServerLogger } from "@/lib/observability/logger";
@@ -36,6 +37,8 @@ export type GetShopProductListParams = {
   artstyle?: string[];
   medium?: string[];
   surface?: string[];
+  page?: number;
+  limit?: number;
   showOriginals?: boolean;
   showPrints?: boolean;
   showBooks?: boolean;
@@ -45,7 +48,7 @@ export type GetShopProductListParams = {
 export type ShopProductListServiceResult = {
   success: true;
   data: SimpleProduct[];
-  metadata: {
+  metadata: Required<PaginationMetadata> & {
     totalArtworks: number;
     totalProducts: number;
   };
@@ -168,13 +171,24 @@ export const getShopProductList = async (
 
   const products = productResults.filter(isPubliclyListableProduct);
   const sortedProducts = sortShopProducts(products, params.sortBy ?? "type");
+  const totalProducts = sortedProducts.length;
+  const isPaginatedRequest = typeof params.limit === "number";
+  const page = params.page ?? 1;
+  const limit = params.limit ?? totalProducts;
+  const paginatedProducts = isPaginatedRequest
+    ? sortedProducts.slice((page - 1) * limit, page * limit)
+    : sortedProducts;
 
   return {
     success: true,
-    data: sortedProducts,
+    data: paginatedProducts,
     metadata: {
+      page,
+      limit,
+      total: totalProducts,
+      totalPages: limit > 0 ? Math.ceil(totalProducts / limit) : 0,
       totalArtworks: artworks.length,
-      totalProducts: sortedProducts.length,
+      totalProducts,
     },
   };
 };

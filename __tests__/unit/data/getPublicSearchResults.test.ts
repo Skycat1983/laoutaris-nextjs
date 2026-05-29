@@ -176,6 +176,10 @@ describe("getPublicSearchResults", () => {
       success: true,
       data: [product, otherProduct],
       metadata: {
+        page: 1,
+        limit: 2,
+        total: 2,
+        totalPages: 1,
         totalArtworks: 2,
         totalProducts: 2,
       },

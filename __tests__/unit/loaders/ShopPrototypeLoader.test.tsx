@@ -65,6 +65,10 @@ describe("getShopPrototypeProducts", () => {
       success: true,
       data: products,
       metadata: {
+        page: 1,
+        limit: 10,
+        total: 10,
+        totalPages: 1,
         totalArtworks: 10,
         totalProducts: 10,
       },

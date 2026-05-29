@@ -36,12 +36,24 @@ grid loading experience after the pre-launch sale sample was activated.
   more in batches of 12.
 - Replaced the visible filter-update spinner overlay with product-card
   skeletons.
+- Added `page`/`limit` validation to `/api/v2/public/shop/products` and
+  `getShopProductList`, returning `page`, `limit`, `total`, and `totalPages`
+  metadata alongside the existing shop counts.
+- Replaced the temporary client-side "Show more" batcher with `useInfiniteScroll`
+  loading against the paginated public API, including product-card skeletons and
+  retry state for next-page failures.
+- Kept filters, sort, `publicListing`, and `availableForSale` behavior backed by
+  the shared service. The current service still fetches/sorts eligible Shopify
+  products before slicing so availability and route-backed sort metadata remain
+  authoritative.
 
 ## Verification
 
 ```bash
 curl -sS http://localhost:3000/api/v2/public/shop/products
 npm test -- --runTestsByPath __tests__/unit/shopProductGallerySorting.test.tsx __tests__/unit/data/getShopProductList.test.ts
+npm test -- --runTestsByPath __tests__/unit/data/getShopProductList.test.ts __tests__/unit/api/shopProductsRoute.test.ts __tests__/unit/loaders/ShopProductsLoader.test.tsx __tests__/unit/shopProductGallerySorting.test.tsx
+npm test -- --runTestsByPath __tests__/unit/data/getPublicSearchResults.test.ts __tests__/unit/loaders/ShopPrototypeLoader.test.tsx __tests__/unit/loaders/ShopSectionLoader.test.tsx
 npm run lint
 npm run typecheck
 git diff --check
@@ -51,6 +63,7 @@ git diff --check
 
 - The public product API returned 36 products: 1 book, 10 originals, and
   25 prints, with 0 selected sale-sample products missing.
-- Current batching is client-side rendering control. A future API contract
-  should add server-backed pagination/cursors so the app only asks Shopify for
-  one page of products at a time when the sale catalog grows.
+- Public shop pagination is now API-backed offset pagination for returned
+  products. A future larger-catalog task can replace the current full
+  Shopify-resolution-before-slice implementation with cursor-backed Shopify
+  reads if the catalog size makes full fanout too expensive.

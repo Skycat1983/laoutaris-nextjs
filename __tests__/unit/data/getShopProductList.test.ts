@@ -123,6 +123,10 @@ describe("getShopProductList", () => {
         createProduct("104"),
       ],
       metadata: {
+        page: 1,
+        limit: 4,
+        total: 4,
+        totalPages: 1,
         totalArtworks: 2,
         totalProducts: 4,
       },
@@ -172,6 +176,10 @@ describe("getShopProductList", () => {
       "gid://shopify/Product/103"
     );
     expect(response.metadata).toEqual({
+      page: 1,
+      limit: 1,
+      total: 1,
+      totalPages: 1,
       totalArtworks: 2,
       totalProducts: 1,
     });
@@ -193,6 +201,10 @@ describe("getShopProductList", () => {
       success: true,
       data: [createProduct("201")],
       metadata: {
+        page: 1,
+        limit: 1,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
@@ -230,6 +242,10 @@ describe("getShopProductList", () => {
       "gid://shopify/Product/302"
     );
     expect(result.metadata).toEqual({
+      page: 1,
+      limit: 2,
+      total: 2,
+      totalPages: 1,
       totalArtworks: 2,
       totalProducts: 2,
     });
@@ -304,6 +320,10 @@ describe("getShopProductList", () => {
       success: true,
       data: [createProduct("401")],
       metadata: {
+        page: 1,
+        limit: 1,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
@@ -385,6 +405,10 @@ describe("getShopProductList", () => {
       success: true,
       data: [createProduct("601")],
       metadata: {
+        page: 1,
+        limit: 1,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
@@ -415,8 +439,27 @@ describe("getShopProductList", () => {
       "gid://shopify/Product/703"
     );
     expect(result.metadata).toEqual({
+      page: 1,
+      limit: 2,
+      total: 2,
+      totalPages: 1,
       totalArtworks: 1,
       totalProducts: 2,
     });
+  });
+
+  it("returns a requested product page with pagination metadata", async () => {
+    const result = await getShopProductList({ page: 2, limit: 2 });
+
+    expect(result.data).toEqual([createProduct("103"), createProduct("104")]);
+    expect(result.metadata).toEqual({
+      page: 2,
+      limit: 2,
+      total: 4,
+      totalPages: 2,
+      totalArtworks: 2,
+      totalProducts: 4,
+    });
+    expect(mockGetProductById).toHaveBeenCalledTimes(4);
   });
 });

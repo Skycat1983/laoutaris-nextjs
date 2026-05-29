@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { ShopProductGallery } from "@/components/compositions/ShopProductGallery";
 import type { SimpleProduct } from "@/lib/data/types/shopify";
 import type { ShopSortOption } from "@/lib/data/options/shopSortOptions";
@@ -75,6 +81,41 @@ const products: SimpleProduct[] = [
   createProduct("B Title Book", " BOOK ", "40.00"),
 ];
 
+const typeSortedProducts: SimpleProduct[] = [
+  products[3],
+  products[2],
+  products[1],
+  products[0],
+];
+
+const priceLowProducts: SimpleProduct[] = [
+  products[1],
+  products[2],
+  products[0],
+  products[3],
+];
+
+const priceHighProducts: SimpleProduct[] = [
+  products[3],
+  products[0],
+  products[2],
+  products[1],
+];
+
+const titleAscProducts: SimpleProduct[] = [
+  products[1],
+  products[3],
+  products[0],
+  products[2],
+];
+
+const titleDescProducts: SimpleProduct[] = [
+  products[2],
+  products[0],
+  products[3],
+  products[1],
+];
+
 const manyProducts: SimpleProduct[] = Array.from({ length: 14 }, (_, index) =>
   createProduct(
     `Product ${String(index + 1).padStart(2, "0")}`,
@@ -89,10 +130,24 @@ const renderedProductTitles = () =>
 describe("ShopProductGallery sorting", () => {
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
+  let intersectionCallback: IntersectionObserverCallback | null;
 
   beforeEach(() => {
     (global.fetch as jest.Mock).mockReset();
     window.history.replaceState(null, "", "/shop/products");
+    intersectionCallback = null;
+    global.IntersectionObserver = jest.fn((callback) => {
+      intersectionCallback = callback;
+      return {
+        observe: jest.fn(),
+        unobserve: jest.fn(),
+        disconnect: jest.fn(),
+        takeRecords: jest.fn(() => []),
+        root: null,
+        rootMargin: "",
+        thresholds: [],
+      };
+    }) as unknown as typeof IntersectionObserver;
     consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
     consoleErrorSpy = jest
       .spyOn(console, "error")
@@ -106,8 +161,8 @@ describe("ShopProductGallery sorting", () => {
     consoleLogSpy.mockRestore();
   });
 
-  it("sorts the default type view by productType metadata instead of title text", () => {
-    render(<ShopProductGallery initialProducts={products} />);
+  it("renders the initial server-sorted type view without reordering by title text", () => {
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     expect(renderedProductTitles()).toEqual([
       "B Title Book",
@@ -117,61 +172,113 @@ describe("ShopProductGallery sorting", () => {
     ]);
   });
 
-  it("sorts unknown product types after known book, original, and print products", () => {
-    render(<ShopProductGallery initialProducts={products} />);
+  it("preserves the initial server order for unknown product types", () => {
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     const titles = renderedProductTitles();
     expect(titles[titles.length - 1]).toBe("Bookish Unknown");
   });
 
-  it("preserves price sorting modes", () => {
-    render(<ShopProductGallery initialProducts={products} />);
+  it("fetches route-backed price sorting modes", async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: priceLowProducts,
+          metadata: { page: 1, limit: 12, total: 4, totalPages: 1 },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: priceHighProducts,
+          metadata: { page: 1, limit: 12, total: 4, totalPages: 1 },
+        }),
+      });
+
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     fireEvent.click(screen.getByRole("button", { name: "price-low" }));
     expect(window.location.search).toBe("?sortBy=price-low");
-    expect(renderedProductTitles()).toEqual([
-      "A Title Print",
-      "C Title Original",
-      "Bookish Unknown",
-      "B Title Book",
-    ]);
+    await waitFor(() =>
+      expect(renderedProductTitles()).toEqual([
+        "A Title Print",
+        "C Title Original",
+        "Bookish Unknown",
+        "B Title Book",
+      ])
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "price-high" }));
     expect(window.location.search).toBe("?sortBy=price-high");
-    expect(renderedProductTitles()).toEqual([
-      "B Title Book",
-      "Bookish Unknown",
-      "C Title Original",
-      "A Title Print",
-    ]);
+    await waitFor(() =>
+      expect(renderedProductTitles()).toEqual([
+        "B Title Book",
+        "Bookish Unknown",
+        "C Title Original",
+        "A Title Print",
+      ])
+    );
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
+      "/api/v2/public/shop/products?sortBy=price-low&page=1&limit=12"
+    );
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      "/api/v2/public/shop/products?sortBy=price-high&page=1&limit=12"
+    );
   });
 
-  it("preserves title sorting modes", () => {
-    render(<ShopProductGallery initialProducts={products} />);
+  it("fetches route-backed title sorting modes", async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: titleAscProducts,
+          metadata: { page: 1, limit: 12, total: 4, totalPages: 1 },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: titleDescProducts,
+          metadata: { page: 1, limit: 12, total: 4, totalPages: 1 },
+        }),
+      });
+
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     fireEvent.click(screen.getByRole("button", { name: "title-asc" }));
     expect(window.location.search).toBe("?sortBy=title-asc");
-    expect(renderedProductTitles()).toEqual([
-      "A Title Print",
-      "B Title Book",
-      "Bookish Unknown",
-      "C Title Original",
-    ]);
+    await waitFor(() =>
+      expect(renderedProductTitles()).toEqual([
+        "A Title Print",
+        "B Title Book",
+        "Bookish Unknown",
+        "C Title Original",
+      ])
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "title-desc" }));
     expect(window.location.search).toBe("?sortBy=title-desc");
-    expect(renderedProductTitles()).toEqual([
-      "C Title Original",
-      "Bookish Unknown",
-      "B Title Book",
-      "A Title Print",
-    ]);
+    await waitFor(() =>
+      expect(renderedProductTitles()).toEqual([
+        "C Title Original",
+        "Bookish Unknown",
+        "B Title Book",
+        "A Title Print",
+      ])
+    );
   });
 
   it("honors an initial route sort option", () => {
     render(
       <ShopProductGallery
-        initialProducts={products}
+        initialProducts={priceLowProducts}
         initialFilters={{ sortBy: "price-low" }}
       />
     );
@@ -197,7 +304,7 @@ describe("ShopProductGallery sorting", () => {
         }),
       });
 
-    render(<ShopProductGallery initialProducts={products} />);
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     fireEvent.click(screen.getByRole("button", { name: "filter prints" }));
 
@@ -205,7 +312,7 @@ describe("ShopProductGallery sorting", () => {
       screen.getByRole("status", { name: "Updating product results" })
     ).toHaveTextContent("Updating products");
     expect(global.fetch).toHaveBeenCalledWith(
-      "/api/v2/public/shop/products?showPrints=false"
+      "/api/v2/public/shop/products?showPrints=false&page=1&limit=12"
     );
     expect(screen.getAllByTestId("product-card-skeleton")).toHaveLength(6);
     expect(window.location.search).toBe("?showPrints=false");
@@ -243,31 +350,62 @@ describe("ShopProductGallery sorting", () => {
       }),
     });
 
-    render(<ShopProductGallery initialProducts={products} />);
+    render(<ShopProductGallery initialProducts={typeSortedProducts} />);
 
     fireEvent.click(screen.getByRole("button", { name: "price-high" }));
+    await waitFor(() =>
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/v2/public/shop/products?sortBy=price-high&page=1&limit=12"
+      )
+    );
     fireEvent.click(screen.getByRole("button", { name: "filter prints" }));
 
     await waitFor(() =>
       expect(screen.getByText("Filtered Original")).toBeInTheDocument()
     );
     expect(global.fetch).toHaveBeenCalledWith(
-      "/api/v2/public/shop/products?sortBy=price-high&showPrints=false"
+      "/api/v2/public/shop/products?sortBy=price-high&showPrints=false&page=1&limit=12"
     );
     expect(window.location.search).toBe("?sortBy=price-high&showPrints=false");
   });
 
-  it("reveals shop products in batches instead of rendering the full list at once", () => {
-    render(<ShopProductGallery initialProducts={manyProducts} />);
+  it("loads the next product page with infinite scroll", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: manyProducts.slice(12),
+        metadata: { page: 2, limit: 12, total: 14, totalPages: 2 },
+      }),
+    });
+
+    render(
+      <ShopProductGallery
+        initialProducts={manyProducts.slice(0, 12)}
+        initialPaginationMetadata={{
+          page: 1,
+          limit: 12,
+          total: 14,
+          totalPages: 2,
+        }}
+      />
+    );
 
     expect(screen.getAllByTestId("product-card")).toHaveLength(12);
-    expect(
-      screen.getByRole("button", { name: "Show more (2)" })
-    ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Show more (2)" }));
+    await act(async () => {
+      intersectionCallback?.(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver
+      );
+    });
 
-    expect(screen.getAllByTestId("product-card")).toHaveLength(14);
+    await waitFor(() =>
+      expect(screen.getAllByTestId("product-card")).toHaveLength(14)
+    );
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/v2/public/shop/products?page=2&limit=12"
+    );
     expect(
       screen.queryByRole("button", { name: /Show more/ })
     ).not.toBeInTheDocument();

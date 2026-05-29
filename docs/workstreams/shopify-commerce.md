@@ -66,6 +66,24 @@ production while preserving MongoDB as the archive source of truth.
   for cover/page gallery slots. Selection state is not persisted, submitted to
   enquiries, mapped to Shopify variants, or used to change price or
   availability.
+- T-347 records the forward framed-print commerce roadmap. Frame and mat
+  choices should become Shopify variants inside print products, priced from
+  owner-approved formulas. Until real physical print dimensions exist, planning
+  and pricing should use image pixels as a temporary measurement only; do not
+  show physical size labels to customers.
+- T-348 completed the first read-only framed-print commerce size/pricing audit.
+  It reads the local generated catalog plan, marks current sale-sample prints
+  when the selection report is present, and writes a local owner-review report
+  without mutating Shopify, MongoDB, Cloudinary, prices, variants, publications,
+  checkout/cart, orders, or customers.
+- T-349 replaced threshold-class pricing in the read-only framed-print commerce
+  audit with a unit-agnostic formula: use image pixels as the temporary
+  measurement now, later substitute real print centimeters, and price
+  framed/matted variants from mat-expanded outer dimensions, frame perimeter,
+  and mat area. The formula report is
+  `reports/framed-print-commerce-formula-audit.json`; it is owner-review
+  evidence only and does not mutate Shopify, MongoDB, Cloudinary, prices,
+  variants, publications, checkout/cart, orders, or customers.
 - `/prototype/frame` now has a prototype-only rail renderer with mitred seams,
   bevel styling, non-repeating procedural material panel backgrounds, neutral
   sample controls, and mat margin presets. T-261 extracted the shared room-scene
@@ -332,10 +350,18 @@ production while preserving MongoDB as the archive source of truth.
 - Run the T-334 clean-slate cleanup dry-run before any permanent Shopify
   product deletion, then get owner approval for the exact local report before
   using delete mode with the exact confirmation string.
-- Keep generated pilot print products to the T-332 one-variant matrix:
-  `Frame package = Unframed`. Scope framed/material/mat purchasability only
-  after owner-approved labels, dimensions, prices, fulfilment handling, and
-  app-to-Shopify mappings exist.
+- Keep generated print products to the current one-variant matrix until a
+  separate framed-print commerce task is assigned. T-347 defines that path:
+  read-only pixel-derived size/pricing audit first, owner approval second,
+  Shopify variant planning third, and guarded variant writes only after exact
+  approval.
+- Use the T-348 report only as image-distribution evidence. Its draft
+  thresholds and prices are not approved production prices and must not be
+  written to Shopify.
+- Do not use threshold-class pricing for framed prints. T-348 remains useful
+  image-distribution evidence only. T-349's formula report is the current
+  owner-review input before any approval packet, Shopify variant plan, or
+  Shopify write task.
 - Use the T-336 expanded dry-run report as the source for any future
   full-catalog draft-generation write task. Keep writes separately gated and do
   not add Shopify, MongoDB, or Cloudinary mutations to the planner.
@@ -946,6 +972,30 @@ Add targeted tests as shop behavior is hardened.
   also published to `Laoutaris Headless`. The app-side print gate was narrowed
   back down from all 215 prints to the selected 25 print links. The public shop
   API now returns 36 products: 1 book, 10 originals, and 25 prints.
+- 2026-05-29: Prepared T-347 as the documented forward roadmap for framed print
+  commerce. The first implementation slice should be read-only size and pricing
+  audit using existing image pixel metrics, not Shopify mutation. Shopify
+  variant writes, physical-size claims, checkout/cart changes, and price changes
+  remain blocked until owner-approved labels, thresholds, and upcharges exist.
+- 2026-05-29: Completed T-348. Added
+  `npm run audit:framed-print-commerce`, focused helper tests, and the local
+  report `reports/framed-print-commerce-size-price-audit.json`. The audit read
+  the generated catalog plan and sale-sample selection, audited 215 print
+  products, found 215 valid metric rows and 0 invalid metric rows, marked
+  25 sale-sample prints, and produced 1,075 draft owner-review variant rows.
+  No Shopify, MongoDB, Cloudinary, checkout/cart, price, variant, publication,
+  order, customer, domain, alias, or Vercel state was mutated.
+- 2026-05-29: Completed T-349. `npm run audit:framed-print-commerce` remains
+  read-only and now writes
+  `reports/framed-print-commerce-formula-audit.json` using a normalized
+  measurement resolver, pixel fallback, mat-expanded geometry, frame-perimeter
+  pricing, mat-area pricing, optional handling, and rounding support. The run
+  audited 215 print products, found 215 valid measurement rows and 0 invalid
+  rows, marked 25 sale-sample prints, and produced 1,075 draft owner-review
+  variant rows without mutating Shopify, MongoDB, Cloudinary, prices, variants,
+  publications, checkout/cart, orders, or customers. Centimeters can replace
+  pixels later through the measurement resolver when real print dimensions and
+  owner-approved framemaker rates exist.
 
 ## Next Agent Action
 
@@ -1018,9 +1068,24 @@ full-catalog activation, framed/material/mat variants, Cloudinary mutation,
 checkout/cart work, and broader browser automation separate unless explicitly
 assigned. T-346 then improved shop loading by bounding Shopify product-list
 fanout concurrency, rendering the shop grid in client-side batches of 12, and
-using product-card skeletons during filter refreshes. Future larger-catalog
-work should add server-backed pagination/cursors so the API itself only asks
-Shopify for one page at a time.
+using product-card skeletons during filter refreshes. A follow-up T-346 pass
+replaced that temporary client-side batcher with `/api/v2/public/shop/products`
+`page`/`limit` support, paginated `getShopProductList` metadata, route-backed
+page-1 filter/sort reloads, and `useInfiniteScroll` page loading with
+product-card skeleton and retry states. The service still resolves Shopify
+products before slicing so `availableForSale`, `publicListing`, backed
+taxonomy filters, and route-backed sorting remain authoritative; future
+larger-catalog work may replace the current offset pagination with a Shopify
+cursor/read model that avoids full fanout per request.
+
+T-348 is complete for the first framed-print commerce audit, but the owner has
+rejected threshold-class pricing as the next direction. T-349 is complete:
+`npm run audit:framed-print-commerce` now writes
+`reports/framed-print-commerce-formula-audit.json` with pixel-fallback
+measurements, mat margin, outer width/height, frame perimeter, mat area, and
+draft final prices. Do not implement Shopify variant planning or writing until
+the formula report has been reviewed and explicit owner-approved labels,
+rates, rounding, and matrix choices exist.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

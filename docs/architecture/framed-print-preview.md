@@ -227,6 +227,55 @@ invalid, or not tied to the selected purchasable print size.
 The UI should not need a redesign when physical dimensions are added; only the
 metrics resolver and geometry calculation should change.
 
+## Commerce Pricing Measurement
+
+Framed print commerce pricing should follow the same substitution principle as
+preview geometry. The pricing layer should consume a normalized measurement
+box, not a hard-coded physical-size assumption.
+
+Planned shape:
+
+```ts
+type FrameCommerceMeasurement = {
+  width: number;
+  height: number;
+  unit: "px" | "cm";
+  source: "pixel_ratio_fallback" | "physical_print_dimensions";
+};
+```
+
+Until real print dimensions exist, use `image.pixelWidth` and
+`image.pixelHeight` as `unit: "px"` planning inputs. This is not a
+customer-facing size claim. It preserves ratio and relative material demand so
+frame/mat pricing can be audited before the framemaker supplies real rates.
+
+When physical print dimensions exist, the resolver should return centimeters
+instead. The formula should not change:
+
+```text
+shortSide = min(printWidth, printHeight)
+matMargin = shortSide * mat.marginRatio
+outerWidth = printWidth + (matMargin * 2)
+outerHeight = printHeight + (matMargin * 2)
+framePerimeter = (outerWidth * 2) + (outerHeight * 2)
+matArea = (outerWidth * outerHeight) - (printWidth * printHeight)
+```
+
+Frame price should be based on outer perimeter. Mat price should be based on
+mat area. Wider mat profiles naturally increase both the outer frame length and
+the mat area. Source-controlled placeholder rates can be used for read-only
+reports, but owner-approved framemaker rates are required before any Shopify
+price or variant mutation.
+
+T-349 implemented the current read-only formula audit in
+`scripts/audit-framed-print-commerce-helpers.cjs`. `npm run
+audit:framed-print-commerce` writes
+`reports/framed-print-commerce-formula-audit.json` from local reports only and
+declares no Shopify, MongoDB, Cloudinary, price, variant, publication,
+checkout/cart, order, or customer mutation. The older
+`reports/framed-print-commerce-size-price-audit.json` remains historical T-348
+threshold evidence and should not be used as a pricing approval source.
+
 ## Frame Profiles
 
 Frame options should be data-driven. The first catalog can live in source
@@ -498,10 +547,14 @@ Manual or browser checks should cover:
 ## Open Decisions
 
 - Exact product metadata that marks a Shopify product as frame-preview eligible.
-- First frame profile catalog and labels.
-- Whether mat selection appears in the MVP or waits until a second slice.
-- Whether framed print options are Shopify variants, separate products, or a
-  future custom line-item model.
+- Final sellable frame package labels and whether `White wood` is included in
+  the first paid matrix.
+- Whether `White mat` is the only first mat option, and whether matted
+  unframed prints are sellable.
+- Exact owner-approved formula rates, rounding policy, handling charges, and
+  future centimeter-based framemaker rates.
+- Whether framed variants share print inventory or use separate manual
+  inventory values.
 - Where physical artwork or print dimensions will live once available, and how
   source units will be normalized.
 - Whether previews should eventually support export or sharing.

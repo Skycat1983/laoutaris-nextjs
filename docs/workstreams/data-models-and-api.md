@@ -1085,3 +1085,9 @@ product/tag/metafield report, and preserves the no-Shopify, no-MongoDB-write,
 no-Cloudinary-mutation boundary. Collection joins, existing `shopifyProducts`
 link writes, and user saved-item state remain excluded from generated product
 metadata.
+T-349 is complete for formula-based framed-print pricing audit data contracts.
+The audit consumes local generated catalog report metrics only, resolves a
+normalized measurement from physical centimeters first or source pixels as the
+fallback, and does not add MongoDB persistence, API routes, Shopify variant
+contracts, Cloudinary mutation, checkout/cart behavior, or customer/order data
+contracts.

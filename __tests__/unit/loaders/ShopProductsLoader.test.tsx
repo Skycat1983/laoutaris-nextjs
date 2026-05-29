@@ -51,6 +51,10 @@ describe("ShopProductsLoader", () => {
       success: true,
       data: [product],
       metadata: {
+        page: 1,
+        limit: 12,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
@@ -95,6 +99,8 @@ describe("ShopProductsLoader", () => {
 
     expect(mockGetShopProductList).toHaveBeenCalledWith({
       sortBy: "type",
+      page: 1,
+      limit: 12,
       showOriginals: true,
       showPrints: false,
       showBooks: true,
@@ -108,6 +114,14 @@ describe("ShopProductsLoader", () => {
     expect(element.props).toEqual({
       initialProducts: [product],
       initialFilters,
+      initialPaginationMetadata: {
+        page: 1,
+        limit: 12,
+        total: 1,
+        totalPages: 1,
+        totalArtworks: 1,
+        totalProducts: 1,
+      },
     });
     expect(mockShopProductGallery).not.toHaveBeenCalled();
   });
@@ -117,6 +131,8 @@ describe("ShopProductsLoader", () => {
 
     expect(mockGetShopProductList).toHaveBeenCalledWith({
       sortBy: undefined,
+      page: 1,
+      limit: 12,
       showOriginals: true,
       showPrints: true,
       showBooks: true,
@@ -170,6 +186,8 @@ describe("ShopProductsLoader", () => {
 
     expect(mockGetShopProductList).toHaveBeenCalledWith({
       sortBy: "price-high",
+      page: 1,
+      limit: 12,
       showOriginals: true,
       showPrints: true,
       showBooks: true,

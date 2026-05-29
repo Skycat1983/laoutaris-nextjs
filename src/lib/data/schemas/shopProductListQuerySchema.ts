@@ -9,6 +9,8 @@ import { SHOP_SORT_OPTIONS } from "@/lib/data/options/shopSortOptions";
 
 export type ShopProductListQueryInput = {
   sortBy?: string | string[] | null;
+  page?: string | string[] | null;
+  limit?: string | string[] | null;
   showOriginals?: string | string[] | null;
   showPrints?: string | string[] | null;
   showBooks?: string | string[] | null;
@@ -22,7 +24,35 @@ const firstParamValue = (value: string | string[] | null | undefined) =>
   (Array.isArray(value) ? value[0] : value) ?? undefined;
 
 const optionalParamValue = (value: unknown) =>
+  value == null || (typeof value === "string" && value.trim() === "")
+    ? undefined
+    : value;
+
+const optionalBooleanParamValue = (value: unknown) =>
   value == null ? undefined : value;
+
+export const SHOP_PRODUCT_LIST_QUERY_LIMITS = {
+  defaultPage: 1,
+  maxPage: 1000,
+  defaultLimit: 12,
+  maxLimit: 50,
+} as const;
+
+const boundedIntegerParam = (
+  fieldName: string,
+  defaultValue: number,
+  maxValue: number
+) =>
+  z.preprocess(
+    (value) => optionalParamValue(value) ?? defaultValue,
+    z.coerce
+      .number({
+        invalid_type_error: `${fieldName} must be a number`,
+      })
+      .int(`${fieldName} must be an integer`)
+      .min(1, `${fieldName} must be at least 1`)
+      .max(maxValue, `${fieldName} must be ${maxValue} or less`)
+  );
 
 const enumArrayParam = <T extends readonly [string, ...string[]]>(
   values: T,
@@ -33,7 +63,7 @@ const enumArrayParam = <T extends readonly [string, ...string[]]>(
 const optionalBooleanStringParam = (fieldName: string) =>
   z
     .preprocess(
-      optionalParamValue,
+      optionalBooleanParamValue,
       z
         .enum(["true", "false"], {
           errorMap: () => ({ message: `${fieldName} must be true or false` }),
@@ -53,6 +83,16 @@ export const shopProductListQuerySchema = z.object({
         }),
       })
       .optional()
+  ),
+  page: boundedIntegerParam(
+    "Page",
+    SHOP_PRODUCT_LIST_QUERY_LIMITS.defaultPage,
+    SHOP_PRODUCT_LIST_QUERY_LIMITS.maxPage
+  ),
+  limit: boundedIntegerParam(
+    "Limit",
+    SHOP_PRODUCT_LIST_QUERY_LIMITS.defaultLimit,
+    SHOP_PRODUCT_LIST_QUERY_LIMITS.maxLimit
   ),
   showOriginals: optionalBooleanStringParam("showOriginals"),
   showPrints: optionalBooleanStringParam("showPrints"),
@@ -83,6 +123,8 @@ export type ShopProductListQueryFieldErrors = Partial<
 export const parseShopProductListQuery = (input: ShopProductListQueryInput) =>
   shopProductListQuerySchema.safeParse({
     sortBy: firstParamValue(input.sortBy),
+    page: firstParamValue(input.page),
+    limit: firstParamValue(input.limit),
     showOriginals: firstParamValue(input.showOriginals),
     showPrints: firstParamValue(input.showPrints),
     showBooks: firstParamValue(input.showBooks),
@@ -96,6 +138,8 @@ export const searchParamsToShopProductListQueryInput = (
   searchParams: URLSearchParams
 ): ShopProductListQueryInput => ({
   sortBy: searchParams.get("sortBy"),
+  page: searchParams.get("page"),
+  limit: searchParams.get("limit"),
   showOriginals: searchParams.get("showOriginals"),
   showPrints: searchParams.get("showPrints"),
   showBooks: searchParams.get("showBooks"),

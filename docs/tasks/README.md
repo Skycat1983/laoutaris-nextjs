@@ -384,6 +384,9 @@ tasks must not reuse `T-221`.
 | [T-344 Set generated print links public listed](T-344-set-generated-print-links-public-listed.md) | Completed | Added a guarded link-listing script and set all 215 print links to `publicListing: true`, leaving originals hidden and Shopify product status/publication untouched. |
 | [T-345 Prepare Shopify sale sample](T-345-prepare-shopify-sale-sample.md) | Completed | Added guarded sale-sample selection/activation tooling and activated/published the selected 10-original/25-print mixed sample after the Shopify Admin token gained publication scopes. |
 | [T-346 Improve shop product loading](T-346-improve-shop-product-loading.md) | Completed | Narrowed app listing to the selected sale sample, published it to the Headless publication, bounded Shopify fanout concurrency, and added batched shop-grid rendering with product-card skeletons. |
+| [T-347 Framed print commerce roadmap](T-347-framed-print-commerce-roadmap.md) | Ready | Defines the staged path for turning preview-only frame/mat controls into Shopify-backed print variants using pixel measurements now and physical print dimensions later. |
+| [T-348 Framed print commerce size and price audit](T-348-framed-print-commerce-size-price-audit.md) | Completed | Added a read-only local audit command for pixel-derived print size classes and draft owner-review frame/mat price rows without mutating Shopify, MongoDB, or Cloudinary. |
+| [T-349 Formula-based framed print pricing](T-349-formula-based-framed-print-pricing.md) | Completed | Replaced threshold-class pricing in the framed-print audit with a read-only formula report using pixel dimensions now and future centimeter dimensions later, based on mat-expanded outer box, frame perimeter, and mat area. |
 
 ## Rules
 

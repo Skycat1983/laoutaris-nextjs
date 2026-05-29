@@ -62,6 +62,10 @@ describe("GET /api/v2/public/shop/products", () => {
       success: true,
       data: [createProduct("101")],
       metadata: {
+        page: 1,
+        limit: 12,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
@@ -91,6 +95,8 @@ describe("GET /api/v2/public/shop/products", () => {
     expect(response.status).toBe(200);
     expect(mockGetShopProductList).toHaveBeenCalledWith({
       sortBy: "price-low",
+      page: 1,
+      limit: 12,
       showOriginals: true,
       showPrints: false,
       showBooks: true,
@@ -103,9 +109,44 @@ describe("GET /api/v2/public/shop/products", () => {
       success: true,
       data: [createProduct("101")],
       metadata: {
+        page: 1,
+        limit: 12,
+        total: 1,
+        totalPages: 1,
         totalArtworks: 1,
         totalProducts: 1,
       },
+    });
+  });
+
+  it("accepts bounded page and limit params", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/shop/products?page=3&limit=6"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(mockGetShopProductList).toHaveBeenCalledWith({
+      sortBy: undefined,
+      page: 3,
+      limit: 6,
+      showOriginals: true,
+      showPrints: true,
+      showBooks: true,
+      decade: [],
+      artstyle: [],
+      medium: [],
+      surface: [],
+    });
+    expect(body.metadata).toEqual({
+      page: 1,
+      limit: 12,
+      total: 1,
+      totalPages: 1,
+      totalArtworks: 1,
+      totalProducts: 1,
     });
   });
 
@@ -151,6 +192,27 @@ describe("GET /api/v2/public/shop/products", () => {
         showOriginals: ["showOriginals must be true or false"],
         showPrints: ["showPrints must be true or false"],
         showBooks: ["showBooks must be true or false"],
+      },
+      formErrors: [],
+    });
+    expect(mockGetShopProductList).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 for invalid page and limit params before service work", async () => {
+    const response = await GET(
+      createRequest(
+        "https://example.test/api/v2/public/shop/products?page=0&limit=51"
+      )
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      success: false,
+      error: "Invalid shop products query",
+      fieldErrors: {
+        page: ["Page must be at least 1"],
+        limit: ["Limit must be 50 or less"],
       },
       formErrors: [],
     });

@@ -2245,6 +2245,12 @@ extraction, featured false/true behavior, print edition quantity, selected
 archive image metadata, explicit exclusions, and the one
 `Frame package = Unframed` print variant are covered without MongoDB, Shopify,
 or Cloudinary network access.
+T-349 added focused pure-helper coverage for the framed-print formula audit:
+physical dimensions before pixel fallback, invalid measurements, no-mat outer
+box preservation, mat-expanded geometry, larger mat perimeter/area increase,
+perimeter and area formulas, zero unframed frame price, invalid
+`Unframed / White mat`, final price composition with handling/rounding, and
+no-mutation report safety without live Shopify, MongoDB, or Cloudinary access.
 T-330 added focused pure-helper Jest coverage for the guarded Shopify catalog
 pilot creation command, covering exact confirmation, pinned Admin API
 environment validation, exactly five owner approvals, draft-only status,

@@ -287,6 +287,27 @@ product-card skeletons instead of a spinner overlay. The next larger-catalog
 loading step should be an explicit API pagination/cursor task so the server
 does not need to resolve every listable Shopify product before returning the
 first page.
+T-347 is now prepared as the forward framed-print commerce roadmap. It keeps
+the T-332 decision that frame choices belong inside print products as Shopify
+variants, but sequences the work through a read-only size/pricing audit first.
+Until real physical print dimensions exist, use existing image pixel metrics as
+a temporary measurement only; do not show customer physical-size labels or
+mutate Shopify prices/variants before owner-approved labels, formulas, and
+rates exist.
+T-348 completed that first read-only audit slice. The new
+`npm run audit:framed-print-commerce` command reads local catalog/selection
+reports only and wrote
+`reports/framed-print-commerce-size-price-audit.json`: 215 generated print
+products audited, 215 valid metric rows, 0 invalid metric rows, 25 sale-sample
+prints marked, and 1,075 draft owner-review variant rows. The next framed-print
+commerce direction has since changed away from threshold-class pricing; do not
+move to Shopify variant planning or writes from this report.
+Owner then clarified that threshold-class pricing is not the right next model.
+T-349 is now prepared to replace that direction with formula-based pricing:
+resolve a unit-agnostic measurement box, use pixels now and centimeters later,
+calculate mat-expanded outer dimensions, frame perimeter, mat area, and draft
+final prices. Implement T-349 before any owner approval packet, Shopify variant
+planning, or Shopify write task.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through
