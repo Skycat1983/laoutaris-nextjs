@@ -308,6 +308,26 @@ resolve a unit-agnostic measurement box, use pixels now and centimeters later,
 calculate mat-expanded outer dimensions, frame perimeter, mat area, and draft
 final prices. Implement T-349 before any owner approval packet, Shopify variant
 planning, or Shopify write task.
+T-349 is now complete, and the owner approved the narrow first-pass frame/mat
+matrix for read-only variant planning only on 2026-05-29: `Unframed`,
+`Black wood`, `Oak`, `No mat`, `White mat`, no `Unframed / White mat`, no
+`White wood`, no `Wide white mat`, rounding `none`, and placeholder formula
+rates only. T-350 is now complete: `npm run plan:framed-print-variants`
+produced `reports/framed-print-variant-plan.json` for the 25 sale-sample
+prints, fetched all 25 Shopify products, preserved 25 existing
+`Unframed / No mat` variants, planned 100 missing framed/matted variants, and
+reported 0 manual-review rows, 0 Shopify read errors, 0 missing formula rows,
+and 0 missing Shopify product IDs. Any next step that creates Shopify variants
+or writes prices needs a separate owner-approved write task and exact
+confirmation gate.
+T-351 has now prepared that guarded command without running the live write:
+`npm run apply:framed-print-variants` defaults to local plan mode and wrote
+`reports/framed-print-variant-write-report.json` with 25 planned `Mat` option
+mutations, 100 missing variants to create later, 25 preserved existing
+variants, and 0 write failures. Live write mode remains blocked until the owner
+explicitly approves `--mode=write --confirm=CREATE_FRAMED_PRINT_VARIANTS` and
+accepts the placeholder-price exposure risk, or first makes the selected
+products non-public/non-purchase.
 
 The prepared implementation waves after A-011, A-017, and A-018 are complete:
 T-134, T-135, T-136, T-137, T-138, T-140, T-141, T-142, and T-144 through

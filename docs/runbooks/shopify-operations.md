@@ -681,6 +681,59 @@ Exit behavior:
   resolution, MongoDB, Shopify status, Shopify publication, or output-path
   validation failed.
 
+## Framed Print Variant Plan
+
+Use this command only after the owner approves a read-only framed-print
+planning pass. It compares the current 25 sale-sample print products with the
+approved first matrix from the formula audit:
+
+- `Unframed / No mat`
+- `Black wood / No mat`
+- `Black wood / White mat`
+- `Oak / No mat`
+- `Oak / White mat`
+
+Run:
+
+```bash
+npm run plan:framed-print-variants
+```
+
+Optional paths:
+
+```bash
+npm run plan:framed-print-variants -- \
+  --input=reports/framed-print-commerce-formula-audit.json \
+  --selection=reports/shopify-sale-sample-selection.json \
+  --output=reports/framed-print-variant-plan.json
+```
+
+Required environment:
+
+- `SHOPIFY_STORE_DOMAIN` must be the `.myshopify.com` store domain without
+  protocol.
+- `SHOPIFY_ADMIN_API_VERSION` must be set for the Admin API endpoint.
+- `SHOPIFY_ADMIN_ACCESS_TOKEN` must be an owner-approved Admin API token with
+  product read access.
+
+Safety rules:
+
+- This command reads Shopify Admin product option/variant state only.
+- It writes a local report only.
+- It must not create Shopify variants, write prices, publish/unpublish
+  products, change product status, mutate MongoDB, mutate Cloudinary, or add
+  checkout/cart behavior.
+- Any future write command needs a separate task, explicit owner approval, and
+  an exact confirmation gate.
+
+Exit behavior:
+
+- `0`: report was written and Shopify product reads completed without read
+  errors.
+- `1`: environment/input validation failed or one or more Shopify product reads
+  failed. If a report is written with read failures, review
+  `summary.queryErrorCount` and row warnings before retrying.
+
 ## Manual Original/Print Cleanup
 
 Run the guarded cleanup command only after the read-only reconciliation report

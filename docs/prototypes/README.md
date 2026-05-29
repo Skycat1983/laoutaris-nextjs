@@ -11,6 +11,10 @@ design exploration before those designs are approved for production routes.
   the pre-prototype navbar layout.
 - [Framed print preview owner review plan](framed-print-preview-owner-review-plan.md):
   review checklist for the planned product-page framed print preview modal.
+- [Framed print pricing owner approval packet](framed-print-pricing-owner-approval-packet.md):
+  decision guide for the post-T-349 formula pricing report, frame/mat labels,
+  placeholder rates, rounding, invalid combinations, and the next read-only
+  Shopify variant-plan gate.
 - [Sale gallery owner review packet](sale-gallery-owner-review-packet.md):
   decision guide for the ready print/original product sale galleries, the
   blocked book metadata path, and follow-up commerce choices.

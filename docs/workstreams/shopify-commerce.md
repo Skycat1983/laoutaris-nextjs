@@ -84,6 +84,29 @@ production while preserving MongoDB as the archive source of truth.
   `reports/framed-print-commerce-formula-audit.json`; it is owner-review
   evidence only and does not mutate Shopify, MongoDB, Cloudinary, prices,
   variants, publications, checkout/cart, orders, or customers.
+- The post-T-349 framed print pricing owner approval packet is
+  [framed-print-pricing-owner-approval-packet.md](../prototypes/framed-print-pricing-owner-approval-packet.md).
+  It summarizes the formula report into owner decisions for frame labels, mat
+  profiles, placeholder rates, rounding, invalid combinations, and the next
+  read-only Shopify variant-plan gate. It does not authorize or implement
+  Shopify writes.
+- The owner approved the narrow first-pass matrix on 2026-05-29 for read-only
+  variant planning only: `Unframed`, `Black wood`, `Oak`, `No mat`,
+  `White mat`, no `Unframed / White mat`, no `White wood`, no `Wide white mat`,
+  rounding `none`, and placeholder formula rates only.
+- T-350 added `npm run plan:framed-print-variants`, a read-only Shopify Admin
+  variant-plan command for the 25 sale-sample prints. The generated
+  `reports/framed-print-variant-plan.json` preserves 25 existing
+  `Unframed / No mat` variants and plans 100 missing framed/matted variants
+  against the approved matrix, without creating variants, writing prices,
+  publishing products, mutating MongoDB/Cloudinary, or adding checkout/cart
+  behavior.
+- T-351 prepared the guarded write command but did not run it live.
+  `npm run apply:framed-print-variants` writes a local plan report by default.
+  The current report plans 25 `Mat` option mutations and 100 missing
+  framed/matted variants. Live write mode requires
+  `--mode=write --confirm=CREATE_FRAMED_PRINT_VARIANTS` and separate explicit
+  owner approval.
 - `/prototype/frame` now has a prototype-only rail renderer with mitred seams,
   bevel styling, non-repeating procedural material panel backgrounds, neutral
   sample controls, and mat margin presets. T-261 extracted the shared room-scene
@@ -360,8 +383,9 @@ production while preserving MongoDB as the archive source of truth.
   written to Shopify.
 - Do not use threshold-class pricing for framed prints. T-348 remains useful
   image-distribution evidence only. T-349's formula report is the current
-  owner-review input before any approval packet, Shopify variant plan, or
-  Shopify write task.
+  owner-review evidence, and the framed print pricing owner approval packet is
+  the current decision guide before any Shopify variant plan or Shopify write
+  task.
 - Use the T-336 expanded dry-run report as the source for any future
   full-catalog draft-generation write task. Keep writes separately gated and do
   not add Shopify, MongoDB, or Cloudinary mutations to the planner.
@@ -996,8 +1020,41 @@ Add targeted tests as shop behavior is hardened.
   publications, checkout/cart, orders, or customers. Centimeters can replace
   pixels later through the measurement resolver when real print dimensions and
   owner-approved framemaker rates exist.
+- 2026-05-29: Prepared the post-T-349 framed print pricing owner approval
+  packet at
+  [framed-print-pricing-owner-approval-packet.md](../prototypes/framed-print-pricing-owner-approval-packet.md).
+  The packet summarizes the formula report for owner decisions on first-matrix
+  frame labels, mat profiles, placeholder rates, rounding, invalid
+  combinations, and the next read-only Shopify variant-plan gate. No Shopify,
+  MongoDB, Cloudinary, price, variant, publication, checkout/cart, order, or
+  customer write was implemented.
+- 2026-05-29: Owner approved the first-pass framed print planning matrix for
+  read-only variant planning only. T-350 was prepared to compare the approved
+  formula rows with current Shopify variants for the 25 sale-sample print
+  products and write a local variant-plan report without mutation.
+- 2026-05-29: Completed T-350. Added
+  `npm run plan:framed-print-variants`, focused helper tests, and
+  `reports/framed-print-variant-plan.json`. The approved Shopify Admin read
+  fetched all 25 sale-sample print products, preserved 25 existing
+  `Unframed / No mat` variants, planned 100 missing `Black wood`/`Oak` and
+  `No mat`/`White mat` variants, and reported 0 read errors, 0 manual-review
+  rows, 0 missing formula rows, and 0 missing Shopify product IDs. The command
+  performs no Shopify mutations, price writes, publication/status changes,
+  MongoDB writes, Cloudinary writes, or checkout/cart work.
+- 2026-05-29: Completed T-351 preparation. Added
+  `npm run apply:framed-print-variants`, focused helper tests, and
+  `reports/framed-print-variant-write-report.json` in plan mode. The local plan
+  records 25 products, 25 planned `Mat` option mutations, 100 missing variants
+  to create in a future write, 25 preserved existing variants, and 0 write
+  failures. Write mode was not run.
 
 ## Next Agent Action
+
+For framed print commerce, review
+`reports/framed-print-variant-plan.json` with the owner. Do not implement
+Shopify variant creation, price writes, product status/publication changes,
+MongoDB/Cloudinary mutation, or checkout/cart behavior until a separate task
+captures explicit owner approval and an exact confirmation gate.
 
 T-266, T-269, and T-281 are complete for the recalibrated public search/shop
 listing contracts: untyped public search no longer performs the full Shopify
@@ -1083,9 +1140,20 @@ rejected threshold-class pricing as the next direction. T-349 is complete:
 `npm run audit:framed-print-commerce` now writes
 `reports/framed-print-commerce-formula-audit.json` with pixel-fallback
 measurements, mat margin, outer width/height, frame perimeter, mat area, and
-draft final prices. Do not implement Shopify variant planning or writing until
-the formula report has been reviewed and explicit owner-approved labels,
-rates, rounding, and matrix choices exist.
+draft final prices. The post-T-349 owner approval packet is ready at
+[framed-print-pricing-owner-approval-packet.md](../prototypes/framed-print-pricing-owner-approval-packet.md).
+The owner approved those values for read-only planning only, and T-350 is now
+complete. `npm run plan:framed-print-variants` compares the 25 sale-sample
+print products with the approved matrix and writes
+`reports/framed-print-variant-plan.json`. The latest report fetched all 25
+Shopify products, preserved 25 existing `Unframed / No mat` variants, planned
+100 missing framed/matted variants, and reported 0 Shopify read errors. Do not
+create variants or write prices without a separate owner-approved write task.
+T-351 prepared that guarded write command, but live write mode remains blocked.
+Before running `npm run apply:framed-print-variants -- --mode=write
+--confirm=CREATE_FRAMED_PRINT_VARIANTS`, the owner must explicitly accept that
+placeholder-priced framed/matted variants may become visible/buyable on active
+Shopify products, or first make the selected products non-public/non-purchase.
 
 Do not reassign
 [T-209 Align commerce assurance copy](../tasks/T-209-align-commerce-assurance-copy.md)

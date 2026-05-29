@@ -387,6 +387,8 @@ tasks must not reuse `T-221`.
 | [T-347 Framed print commerce roadmap](T-347-framed-print-commerce-roadmap.md) | Ready | Defines the staged path for turning preview-only frame/mat controls into Shopify-backed print variants using pixel measurements now and physical print dimensions later. |
 | [T-348 Framed print commerce size and price audit](T-348-framed-print-commerce-size-price-audit.md) | Completed | Added a read-only local audit command for pixel-derived print size classes and draft owner-review frame/mat price rows without mutating Shopify, MongoDB, or Cloudinary. |
 | [T-349 Formula-based framed print pricing](T-349-formula-based-framed-print-pricing.md) | Completed | Replaced threshold-class pricing in the framed-print audit with a read-only formula report using pixel dimensions now and future centimeter dimensions later, based on mat-expanded outer box, frame perimeter, and mat area. |
+| [T-350 Read-only framed print variant plan](T-350-read-only-framed-print-variant-plan.md) | Completed | Added `npm run plan:framed-print-variants` and generated the read-only 25-print Shopify Admin variant plan: preserve 25 existing `Unframed / No mat` variants and plan 100 missing framed/matted variants, without creating variants or writing prices. |
+| [T-351 Guarded framed print variant write](T-351-guarded-framed-print-variant-write.md) | Completed preparation; live write not run | Added `npm run apply:framed-print-variants` with plan/write modes, exact confirmation gating, and a local write plan for 25 Mat option mutations and 100 missing framed/matted variants. |
 
 ## Rules
 

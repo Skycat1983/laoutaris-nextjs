@@ -2251,6 +2251,12 @@ box preservation, mat-expanded geometry, larger mat perimeter/area increase,
 perimeter and area formulas, zero unframed frame price, invalid
 `Unframed / White mat`, final price composition with handling/rounding, and
 no-mutation report safety without live Shopify, MongoDB, or Cloudinary access.
+T-350 added focused pure-helper coverage for the read-only framed-print
+variant plan: sale-sample print scoping, approved matrix filtering, existing
+`Unframed / No mat` preservation, missing framed variant planning, price
+mismatch reporting without writes, unexpected option-name manual review,
+duplicate variant-combination manual review, missing Shopify/formula warnings,
+and mutation-negative report safety.
 T-330 added focused pure-helper Jest coverage for the guarded Shopify catalog
 pilot creation command, covering exact confirmation, pinned Admin API
 environment validation, exactly five owner approvals, draft-only status,

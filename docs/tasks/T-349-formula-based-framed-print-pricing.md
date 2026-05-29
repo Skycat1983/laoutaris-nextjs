@@ -345,7 +345,9 @@ git diff --check
 
 ## Next Agent Action
 
-Owner review is next. Approve or revise frame/mat labels, placeholder formula
-rates, rounding behavior, and whether `White wood` or wider mat profiles belong
-in the first sellable matrix before any Shopify variant planning or live write
-task.
+Owner review is next through
+[framed-print-pricing-owner-approval-packet.md](../prototypes/framed-print-pricing-owner-approval-packet.md).
+Approve or revise frame/mat labels, placeholder formula rates, rounding
+behavior, invalid combinations, and whether `White wood` or wider mat profiles
+belong in the first sellable matrix before any Shopify variant planning or live
+write task.
